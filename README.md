@@ -1,5 +1,9 @@
 # Knot.x
 
+<p align="center">
+  <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
+</p>
+
 Knot.x is a light-weight and high-performance **reactive microservice assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
 
 We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the well performing framework for event driven applications.
@@ -160,6 +164,8 @@ To point out where the remote instance is, please configure `url` parameter.
 
 # Roadmap
 
-- Extend ‘templateDebug’ mode
-- Extend service exception handling
-- Grouped service invocations
+- Extend ‘templateDebug’ mode,
+- Extend service exception handling (template should provide information how to behave when service is not available or service return error)
+- Remote template repository support (for remote repositories like Apache, Redis, AEM Dispatcher)
+- Support for POST requests to services (forms)
+- Authentication and authorization solution based on JWT Tokens
