@@ -1,6 +1,4 @@
-![Cognifide logo](http://cognifide.github.io/images/cognifide-logo.png)
-
-[![Build Status](https://travis-ci.org/Cognifide/knotx.svg?branch=master)](https://travis-ci.org/Cognifide/knotx)
+![Cognifide logo](http://cognifide.github.io/images/cognifide-logo.png) [![Build Status](https://travis-ci.org/Cognifide/knotx.svg?branch=master)](https://travis-ci.org/Cognifide/knotx)
 
 # Knot.x
 
