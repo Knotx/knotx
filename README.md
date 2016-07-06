@@ -52,6 +52,12 @@ It's worth mentioning that this architecture scales very easily. Not only you ma
 
 ![Architecture with load balancer](https://github.com/Cognifide/knotx/blob/master/icons/architecture/with-load-balancer.png)
 
+## Flow diagram
+
+The following diagram shows asynchronous nature of **Knot.x**. After obtaining template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
+
+![Flow diagram](https://github.com/Cognifide/knotx/blob/master/icons/architecture/flow-diagram.png)
+
 # Getting started
 
 ## Requirements
