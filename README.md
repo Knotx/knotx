@@ -46,7 +46,7 @@ In this case the microservice response could have the following format:
 ```
 
 ## Architecture
-The HTTP Request which comes to **Knot.x** triggers a request to one of the available Content Repositories for a template. For each script with `data-api-type="templating"` there is a request to a microservice for the data. After this [Handlebars.js](http://handlebarsjs.com/) merges content and data and returns the built document.
+The HTTP Request which comes to **Knot.x** causes a request for a template to be sent to one of the available Content Repositories. For each script with `data-api-type="templating"` there is a request to a microservice for the data. After this [Handlebars.js](http://handlebarsjs.com/) merges content and data and returns the built document.
 
 ![Architecture without load balancer](https://github.com/Cognifide/knotx/blob/master/icons/architecture/without-load-balancer.png)
 
