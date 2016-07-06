@@ -2,7 +2,7 @@
 
     Knot.x - reactive microservice assembler
 
-    Copyright (C) 2013 Cognifide Limited
+    Copyright (C) 2016 Cognifide Limited
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 	<artifactId>knot.x</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Knot.x - reactive microservice assembler</name>
-	<inceptionYear>2013</inceptionYear>
+	<inceptionYear>2016</inceptionYear>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
