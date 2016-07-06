@@ -41,8 +41,6 @@ In this case the data provided by a microservice could have the following format
 }
 ```
 
->Please note that this format is compatible with Node.js templating engine, which allows seemless migration to **Knot.x**.
-
 ## Architecture
 The HTTP Request which comes to **Knot.x** triggers request to one of Content Repositories for a template. Then for each script with `data-api-type="templating"` there is a request to a microservice for the data. After this [Handlebars.js](http://handlebarsjs.com/) merges content and data and returns the built document.
 
