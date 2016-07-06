@@ -25,13 +25,13 @@ import java.util.Optional;
 @Component
 public class ServiceEndpointFacade {
 
-	@Autowired
-	private ServiceEndpointManager serviceEndpointManager;
+    @Autowired
+    private ServiceEndpointManager serviceEndpointManager;
 
-	public Optional<? extends ServiceEndpoint> getServiceEndpoint(String path) {
-		return serviceEndpointManager.getManagedResource().stream()
-				.filter(service -> service.support(path))
-				.findFirst();
-	}
+    public Optional<? extends ServiceEndpoint> getServiceEndpoint(String path) {
+        return serviceEndpointManager.getManagedResource().stream()
+                .filter(service -> service.support(path))
+                .findFirst();
+    }
 
 }

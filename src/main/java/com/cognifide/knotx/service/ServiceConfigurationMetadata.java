@@ -17,30 +17,31 @@
  */
 package com.cognifide.knotx.service;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
 @XmlRootElement(name = "serviceConfiguration")
 class ServiceConfigurationMetadata {
 
-	@XmlElement(name = "services")
-	private Services services;
+    @XmlElement(name = "services")
+    private Services services;
 
-	Services getServices() {
-		return services;
-	}
+    Services getServices() {
+        return services;
+    }
 
-	@XmlRootElement(name = "services")
-	static class Services {
+    @XmlRootElement(name = "services")
+    static class Services {
 
-		@XmlElements({@XmlElement(name = "service")})
-		private List<ServiceEndpointProvider.ServiceEndpointProviderMetadata> services;
+        @XmlElements({@XmlElement(name = "service")})
+        private List<ServiceEndpointProvider.ServiceEndpointProviderMetadata> services;
 
-		List<ServiceEndpointProvider.ServiceEndpointProviderMetadata> getServices() {
-			return services;
-		}
-	}
+        List<ServiceEndpointProvider.ServiceEndpointProviderMetadata> getServices() {
+            return services;
+        }
+    }
 
 }

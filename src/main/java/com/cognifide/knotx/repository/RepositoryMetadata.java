@@ -24,6 +24,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlSeeAlso({LocalRepository.LocalRepositoryMetadata.class, RemoteRepository.RemoteRepositoryMetadata.class})
 interface RepositoryMetadata {
 
-	RepositoryType getRepositoryType();
+    RepositoryType getRepositoryType();
 
 }

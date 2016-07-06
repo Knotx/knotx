@@ -18,13 +18,14 @@
 package com.cognifide.knotx.template;
 
 import com.cognifide.knotx.repository.Template;
-import io.vertx.core.http.HttpServerRequest;
 
 import java.io.Serializable;
 
+import io.vertx.core.http.HttpServerRequest;
+
 public interface TemplateHandler<T, ID extends Serializable> {
 
-	void handle(Template<T, ID> template, HttpServerRequest request);
+    void handle(Template<T, ID> template, HttpServerRequest request);
 
-	void finishIfLast(HttpServerRequest request);
+    void finishIfLast(HttpServerRequest request);
 }

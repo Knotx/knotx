@@ -17,31 +17,32 @@
  */
 package com.cognifide.knotx.repository;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
 
 @XmlRootElement(name = "configuration")
 class ConfigurationMetadata {
 
-	@XmlElement(name = "repositories")
-	private Repositories repositories;
+    @XmlElement(name = "repositories")
+    private Repositories repositories;
 
-	Repositories getRepositories() {
-		return repositories;
-	}
+    Repositories getRepositories() {
+        return repositories;
+    }
 
-	@XmlRootElement(name = "repositories")
-	static class Repositories {
+    @XmlRootElement(name = "repositories")
+    static class Repositories {
 
-		@XmlElements({@XmlElement(name = "local", type = LocalRepository.LocalRepositoryMetadata.class),
-				@XmlElement(name = "remote", type = RemoteRepository.RemoteRepositoryMetadata.class)})
-		private List<RepositoryMetadata> repositories;
+        @XmlElements({@XmlElement(name = "local", type = LocalRepository.LocalRepositoryMetadata.class),
+                @XmlElement(name = "remote", type = RemoteRepository.RemoteRepositoryMetadata.class)})
+        private List<RepositoryMetadata> repositories;
 
-		List<RepositoryMetadata> getRepositories() {
-			return repositories;
-		}
-	}
+        List<RepositoryMetadata> getRepositories() {
+            return repositories;
+        }
+    }
 
 }

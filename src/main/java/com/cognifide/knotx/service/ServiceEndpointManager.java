@@ -18,6 +18,7 @@
 package com.cognifide.knotx.service;
 
 import com.cognifide.knotx.manager.AbstractResourceManager;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,19 +28,19 @@ import java.util.stream.Collectors;
 @Component
 public class ServiceEndpointManager extends AbstractResourceManager<ServiceEndpointProvider, ServiceConfigurationMetadata> {
 
-	@Value("${service.configuration}")
-	private String configurationPath;
+    @Value("${service.configuration}")
+    private String configurationPath;
 
-	@Override
-	protected List<ServiceEndpointProvider> extract(ServiceConfigurationMetadata configurationMetadata) {
-		return configurationMetadata.getServices().getServices().stream()
-				.map(ServiceEndpointProvider::from)
-				.collect(Collectors.toList());
-	}
+    @Override
+    protected List<ServiceEndpointProvider> extract(ServiceConfigurationMetadata configurationMetadata) {
+        return configurationMetadata.getServices().getServices().stream()
+                .map(ServiceEndpointProvider::from)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	protected String getConfigurationPath() {
-		return configurationPath;
-	}
+    @Override
+    protected String getConfigurationPath() {
+        return configurationPath;
+    }
 
 }

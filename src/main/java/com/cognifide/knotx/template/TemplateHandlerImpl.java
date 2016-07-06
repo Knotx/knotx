@@ -17,15 +17,15 @@
  */
 package com.cognifide.knotx.template;
 
+import com.google.common.collect.Iterables;
+
 import com.cognifide.knotx.Server;
 import com.cognifide.knotx.event.ObservableRequest;
 import com.cognifide.knotx.event.TrafficObserver;
 import com.cognifide.knotx.handler.RestServiceResponseHandler;
 import com.cognifide.knotx.repository.Template;
 import com.github.jknack.handlebars.Handlebars;
-import com.google.common.collect.Iterables;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpServerRequest;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,80 +37,83 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import rx.Observable;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpServerRequest;
+import rx.Observable;
+
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TemplateHandlerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateHandlerImpl.class);
 
-	private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
+    private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
-	@Autowired
-	private Server server;
+    @Autowired
+    private Server server;
 
-	@Value("${template.debug}")
-	private Boolean templateDebug;
+    @Value("${template.debug}")
+    private Boolean templateDebug;
 
-	private CountDownLatch templatesLatch;
+    private CountDownLatch templatesLatch;
 
-	private TrafficObserver trafficObserver = new TrafficObserver();
+    private TrafficObserver trafficObserver = new TrafficObserver();
 
-	private Document htmlDocument;
+    private Document htmlDocument;
 
-	private Handlebars handlebars = new Handlebars();
+    private Handlebars handlebars = new Handlebars();
 
-	@Override
-	public void handle(Template<String, URI> template, HttpServerRequest request) {
-		htmlDocument = Jsoup.parse(template.get());
-		final Elements snippets = htmlDocument.select(SNIPPET_TAG);
-		templatesLatch = new CountDownLatch(Iterables.size(snippets));
+    @Override
+    public void handle(Template<String, URI> template, HttpServerRequest request) {
+        htmlDocument = Jsoup.parse(template.get());
+        final Elements snippets = htmlDocument.select(SNIPPET_TAG);
+        templatesLatch = new CountDownLatch(Iterables.size(snippets));
 
-		Observable.from(snippets).subscribe(
-				snippet -> handleTemplate(snippet, request),
-				throwable -> {
-					LOGGER.error("Fatal error when requesting {}", request.absoluteURI(), throwable);
-					finishIfLast(request);
-				});
-	}
+        Observable.from(snippets).subscribe(
+                snippet -> handleTemplate(snippet, request),
+                throwable -> {
+                    LOGGER.error("Fatal error when requesting {}", request.absoluteURI(), throwable);
+                    finishIfLast(request);
+                });
+    }
 
-	@Override
-	public void finishIfLast(HttpServerRequest request) {
-		templatesLatch.countDown();
-		if (templatesLatch.getCount() == 0) {
-			LOGGER.info("Finished: " + request.absoluteURI());
-			request.response().putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML).end(htmlDocument.html());
-			trafficObserver.onFinish();
-		}
-	}
+    @Override
+    public void finishIfLast(HttpServerRequest request) {
+        templatesLatch.countDown();
+        if (templatesLatch.getCount() == 0) {
+            LOGGER.info("Finished: " + request.absoluteURI());
+            request.response().putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML).end(htmlDocument.html());
+            trafficObserver.onFinish();
+        }
+    }
 
-	private void handleTemplate(Element snippet, HttpServerRequest request) {
-		final String dataCallUri = getServiceUrl(request, snippet);
-		ObservableRequest observableRequest = new ObservableRequest(dataCallUri);
-		observableRequest.addObserver(trafficObserver);
-		observableRequest.onStart();
+    private void handleTemplate(Element snippet, HttpServerRequest request) {
+        final String dataCallUri = getServiceUrl(request, snippet);
+        ObservableRequest observableRequest = new ObservableRequest(dataCallUri);
+        observableRequest.addObserver(trafficObserver);
+        observableRequest.onStart();
 
-		String templateContent = snippet.html();
-		try {
-			com.github.jknack.handlebars.Template template = handlebars.compileInline(templateContent);
-			RestServiceResponseHandler serviceResponseHandler =
-					new RestServiceResponseHandler(request, template, this, dataCallUri, observableRequest, snippet, templateDebug);
-			server.callService(request, dataCallUri, serviceResponseHandler);
-		} catch (IOException e) {
-			LOGGER.error("Could not process template [{}]", dataCallUri);
-		}
-	}
+        String templateContent = snippet.html();
+        try {
+            com.github.jknack.handlebars.Template template = handlebars.compileInline(templateContent);
+            RestServiceResponseHandler serviceResponseHandler =
+                    new RestServiceResponseHandler(request, template, this, dataCallUri, observableRequest, snippet, templateDebug);
+            server.callService(request, dataCallUri, serviceResponseHandler);
+        } catch (IOException e) {
+            LOGGER.error("Could not process template [{}]", dataCallUri);
+        }
+    }
 
-	private String getServiceUrl(HttpServerRequest request, Element snippet) {
-		final String templateCallUri = snippet.attr("data-call-uri");
-		final StringBuilder urlSB = new StringBuilder(templateCallUri.contains("?") ? templateCallUri : templateCallUri + "?");
-		request.params().entries().forEach(
-				param -> urlSB.append("&").append(param.getKey()).append("=").append(param.getValue()));
-		return urlSB.toString();
-	}
+    private String getServiceUrl(HttpServerRequest request, Element snippet) {
+        final String templateCallUri = snippet.attr("data-call-uri");
+        final StringBuilder urlSB = new StringBuilder(templateCallUri.contains("?") ? templateCallUri : templateCallUri + "?");
+        request.params().entries().forEach(
+                param -> urlSB.append("&").append(param.getKey()).append("=").append(param.getValue()));
+        return urlSB.toString();
+    }
 }

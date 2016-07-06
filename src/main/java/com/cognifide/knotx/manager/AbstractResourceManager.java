@@ -18,6 +18,7 @@
 package com.cognifide.knotx.manager;
 
 import com.cognifide.knotx.repository.Repository;
+
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,62 +28,60 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.oxm.Unmarshaller;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.util.List;
 
+import javax.xml.transform.stream.StreamSource;
+
 public abstract class AbstractResourceManager<R, M> implements InitializingBean, ResourceLoaderAware {
 
-	@Autowired
-	private Unmarshaller unmarshaller;
+    @Autowired
+    protected ApplicationContext applicationContext;
+    protected ResourceLoader resourceLoader;
+    @Autowired
+    private Unmarshaller unmarshaller;
+    private List<R> resources;
 
-	@Autowired
-	protected ApplicationContext applicationContext;
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
-	protected ResourceLoader resourceLoader;
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        resources = initializeResourcesFromConfig();
+        if (resources.isEmpty()) {
+            throw new IllegalArgumentException("A list of AuthenticationProviders is required");
+        }
+    }
 
-	private List<R> resources;
+    public List<R> getManagedResource() {
+        if (resources == null) {
+            initializeResourcesFromConfig();
+        }
+        return resources;
+    }
 
-	@Override
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
-	}
+    @SuppressWarnings("unchecked")
+    private M getMetadataFromResource(Resource authConfigResource) throws IOException {
+        return (M) unmarshaller.unmarshal(new StreamSource(authConfigResource.getInputStream()));
+    }
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		resources = initializeResourcesFromConfig();
-		if (resources.isEmpty()) {
-			throw new IllegalArgumentException("A list of AuthenticationProviders is required");
-		}
-	}
+    private List<R> initializeResourcesFromConfig() {
+        try {
+            Resource authConfigResource = resourceLoader.getResource(getConfigurationPath());
+            if (authConfigResource.isReadable()) {
+                return extract(getMetadataFromResource(authConfigResource));
+            } else {
+                throw new BeanInstantiationException(Repository.class, "Error while creating repository chain");
+            }
+        } catch (IOException e) {
+            throw new BeanInstantiationException(Repository.class, "Error while creating repository chain", e);
+        }
+    }
 
-	public List<R> getManagedResource() {
-		if (resources == null) {
-			initializeResourcesFromConfig();
-		}
-		return resources;
-	}
+    protected abstract List<R> extract(M configurationMetadata);
 
-	@SuppressWarnings("unchecked")
-	private M getMetadataFromResource(Resource authConfigResource) throws IOException {
-		return (M) unmarshaller.unmarshal(new StreamSource(authConfigResource.getInputStream()));
-	}
-
-	private List<R> initializeResourcesFromConfig() {
-		try {
-			Resource authConfigResource = resourceLoader.getResource(getConfigurationPath());
-			if (authConfigResource.isReadable()) {
-				return extract(getMetadataFromResource(authConfigResource));
-			} else {
-				throw new BeanInstantiationException(Repository.class, "Error while creating repository chain");
-			}
-		} catch (IOException e) {
-			throw new BeanInstantiationException(Repository.class, "Error while creating repository chain", e);
-		}
-	}
-
-	protected abstract List<R> extract(M configurationMetadata);
-
-	protected abstract String getConfigurationPath();
+    protected abstract String getConfigurationPath();
 
 }

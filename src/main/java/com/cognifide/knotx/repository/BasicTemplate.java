@@ -21,21 +21,21 @@ import java.net.URI;
 
 class BasicTemplate implements Template<String, URI> {
 
-	private final URI uri;
-	private final String content;
+    private final URI uri;
+    private final String content;
 
-	BasicTemplate(URI uri, String content) {
-		this.uri = uri;
-		this.content = content;
-	}
+    BasicTemplate(URI uri, String content) {
+        this.uri = uri;
+        this.content = content;
+    }
 
-	@Override
-	public URI getId() {
-		return uri;
-	}
+    @Override
+    public URI getId() {
+        return uri;
+    }
 
-	@Override
-	public String get() {
-		return content;
-	}
+    @Override
+    public String get() {
+        return content;
+    }
 }

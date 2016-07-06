@@ -19,18 +19,18 @@ package com.cognifide.knotx.repository;
 
 enum RepositoryType {
 
-	LOCAL(new LocalRepository.LocalRepositoryBuilder()),
+    LOCAL(new LocalRepository.LocalRepositoryBuilder()),
 
-	REMOTE(new RemoteRepository.RemoteRepositoryBuilder());
+    REMOTE(new RemoteRepository.RemoteRepositoryBuilder());
 
-	private RepositoryBuilder repositoryBuilder;
+    private RepositoryBuilder repositoryBuilder;
 
-	RepositoryType(RepositoryBuilder repositoryBuilder) {
-		this.repositoryBuilder = repositoryBuilder;
-	}
+    RepositoryType(RepositoryBuilder repositoryBuilder) {
+        this.repositoryBuilder = repositoryBuilder;
+    }
 
-	public RepositoryBuilder getRepositoryBuilder() {
-		return repositoryBuilder;
-	}
+    public RepositoryBuilder getRepositoryBuilder() {
+        return repositoryBuilder;
+    }
 
 }

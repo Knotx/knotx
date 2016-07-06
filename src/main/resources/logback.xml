@@ -19,18 +19,18 @@
 
 -->
 <configuration>
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- Log message format -->
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- Log message format -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
 
-	<logger name="com.cognifide" level="DEBUG"/>
+    <logger name="com.cognifide" level="DEBUG"/>
 
-	<!-- Setting the root level of logging to INFO -->
-	<root level="info">
-		<appender-ref ref="STDOUT"/>
-	</root>
+    <!-- Setting the root level of logging to INFO -->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
 </configuration>

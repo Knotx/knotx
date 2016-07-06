@@ -22,62 +22,62 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 class ServiceEndpointProvider implements ServiceEndpoint {
 
-	private String path;
+    private String path;
 
-	private String domain;
+    private String domain;
 
-	private Integer port;
+    private Integer port;
 
-	private ServiceEndpointProvider() {
-		// hidden constructor
-	}
+    private ServiceEndpointProvider() {
+        // hidden constructor
+    }
 
-	@Override
-	public String getDomain() {
-		return domain;
-	}
+    static ServiceEndpointProvider from(ServiceEndpointProviderMetadata metadata) {
+        ServiceEndpointProvider provider = new ServiceEndpointProvider();
+        provider.path = metadata.getPath();
+        provider.domain = metadata.getDomain();
+        provider.port = Integer.valueOf(metadata.getPort());
+        return provider;
+    }
 
-	@Override
-	public Integer getPort() {
-		return port;
-	}
+    @Override
+    public String getDomain() {
+        return domain;
+    }
 
-	boolean support(String path) {
-		return path.matches(this.path);
-	}
+    @Override
+    public Integer getPort() {
+        return port;
+    }
 
-	static ServiceEndpointProvider from(ServiceEndpointProviderMetadata metadata) {
-		ServiceEndpointProvider provider = new ServiceEndpointProvider();
-		provider.path = metadata.getPath();
-		provider.domain = metadata.getDomain();
-		provider.port = Integer.valueOf(metadata.getPort());
-		return provider;
-	}
+    boolean support(String path) {
+        return path.matches(this.path);
+    }
 
-	@SuppressWarnings("unused")
-	@XmlRootElement(name = "service")
-	static class ServiceEndpointProviderMetadata {
+    @SuppressWarnings("unused")
+    @XmlRootElement(name = "service")
+    static class ServiceEndpointProviderMetadata {
 
-		@XmlElement(name = "path")
-		private String path;
+        @XmlElement(name = "path")
+        private String path;
 
-		@XmlElement(name = "domain")
-		private String domain;
+        @XmlElement(name = "domain")
+        private String domain;
 
-		@XmlElement(name = "port")
-		private String port;
+        @XmlElement(name = "port")
+        private String port;
 
-		String getPath() {
-			return path;
-		}
+        String getPath() {
+            return path;
+        }
 
-		String getDomain() {
-			return domain;
-		}
+        String getDomain() {
+            return domain;
+        }
 
-		String getPort() {
-			return port;
-		}
-	}
+        String getPort() {
+            return port;
+        }
+    }
 
 }

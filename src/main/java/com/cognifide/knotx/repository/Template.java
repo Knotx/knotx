@@ -21,8 +21,8 @@ import java.io.Serializable;
 
 public interface Template<T, ID extends Serializable> {
 
-	ID getId();
+    ID getId();
 
-	T get();
+    T get();
 
 }

@@ -25,17 +25,17 @@ import java.util.Observer;
 
 public class TrafficObserver implements Observer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TrafficObserver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrafficObserver.class);
 
-	public TrafficObserver() {
-	}
+    public TrafficObserver() {
+    }
 
-	@Override
-	public void update(Observable o, Object arg) {
-		LOGGER.info("Event {}", arg);
-	}
+    @Override
+    public void update(Observable o, Object arg) {
+        LOGGER.info("Event {}", arg);
+    }
 
-	public void onFinish() {
-		// empty
-	}
+    public void onFinish() {
+        // empty
+    }
 }

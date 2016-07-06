@@ -19,8 +19,7 @@ package com.cognifide.knotx.service;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,30 +28,33 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpServerRequest;
+
 @Component
 public class MockServiceHandler implements Handler<HttpServerRequest> {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
 
-	@SuppressWarnings("unused")
-	@Value("${service.mock.catalogue}")
-	private String catalogue;
+    @SuppressWarnings("unused")
+    @Value("${service.mock.catalogue}")
+    private String catalogue;
 
-	@Override
-	public void handle(HttpServerRequest event) {
-		String resourcePath = catalogue + event.path();
-		String htmlContent = "";
-		try {
-			URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-			if (resourceUrl != null) {
-				URL url = Resources.getResource(resourcePath);
-				htmlContent = Resources.toString(url, Charsets.UTF_8);
-				LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
-			}
-		} catch (IOException e) {
-			LOGGER.error("Could not read content!", e);
-		}
-		event.response().end(htmlContent);
-	}
+    @Override
+    public void handle(HttpServerRequest event) {
+        String resourcePath = catalogue + event.path();
+        String htmlContent = "";
+        try {
+            URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
+            if (resourceUrl != null) {
+                URL url = Resources.getResource(resourcePath);
+                htmlContent = Resources.toString(url, Charsets.UTF_8);
+                LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
+            }
+        } catch (IOException e) {
+            LOGGER.error("Could not read content!", e);
+        }
+        event.response().end(htmlContent);
+    }
 
 }

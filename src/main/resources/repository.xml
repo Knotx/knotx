@@ -19,14 +19,14 @@
 
 -->
 <configuration>
-	<repositories>
-		<local>
-			<path>/content/local/.*</path>
-			<catalogue></catalogue>
-		</local>
-		<remote>
-			<path>/content/.*</path>
-			<url>localhost:8080</url>
-		</remote>
-	</repositories>
+    <repositories>
+        <local>
+            <path>/content/local/.*</path>
+            <catalogue></catalogue>
+        </local>
+        <remote>
+            <path>/content/.*</path>
+            <url>localhost:8080</url>
+        </remote>
+    </repositories>
 </configuration>

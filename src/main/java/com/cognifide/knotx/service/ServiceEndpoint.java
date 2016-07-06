@@ -19,8 +19,8 @@ package com.cognifide.knotx.service;
 
 public interface ServiceEndpoint {
 
-	String getDomain();
+    String getDomain();
 
-	Integer getPort();
+    Integer getPort();
 
 }

@@ -17,33 +17,34 @@
  */
 package com.cognifide.knotx.repository;
 
-import io.vertx.core.AsyncResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
 
+import io.vertx.core.AsyncResultHandler;
+
 @Component
 public class RepositoryFacade implements Repository<String, URI> {
 
-	@Autowired
-	RepositoryManager repositoryManager;
+    @Autowired
+    RepositoryManager repositoryManager;
 
-	@Override
-	public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-		repositoryManager.getManagedResource().stream()
-				.filter(repository -> repository.support(uri))
-				.findFirst()
-				.orElseThrow(() -> new RuntimeException(String.format("Can't obtain repository for uri %s", uri)))
-				.get(uri, handler);
-	}
+    @Override
+    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+        repositoryManager.getManagedResource().stream()
+                .filter(repository -> repository.support(uri))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format("Can't obtain repository for uri %s", uri)))
+                .get(uri, handler);
+    }
 
-	@Override
-	public boolean support(URI uri) {
-		return repositoryManager.getManagedResource().stream()
-				.filter(repository -> repository.support(uri))
-				.findFirst()
-				.isPresent();
-	}
+    @Override
+    public boolean support(URI uri) {
+        return repositoryManager.getManagedResource().stream()
+                .filter(repository -> repository.support(uri))
+                .findFirst()
+                .isPresent();
+    }
 }

@@ -23,14 +23,7 @@ import com.cognifide.knotx.service.MockServiceHandler;
 import com.cognifide.knotx.service.ServiceEndpoint;
 import com.cognifide.knotx.service.ServiceEndpointFacade;
 import com.cognifide.knotx.template.TemplateHandlerFactory;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -40,65 +33,74 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 @Component
 public class Server extends AbstractVerticle {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
-	@Autowired
-	private RepositoryFacade repositoryFacade;
+    @Autowired
+    private RepositoryFacade repositoryFacade;
 
-	@Autowired
-	private ServiceEndpointFacade serviceEndpointFacade;
+    @Autowired
+    private ServiceEndpointFacade serviceEndpointFacade;
 
-	@Autowired
-	private MockServiceHandler mockServiceHandler;
+    @Autowired
+    private MockServiceHandler mockServiceHandler;
 
-	@Autowired
-	private TemplateHandlerFactory templateHandlerFactory;
+    @Autowired
+    private TemplateHandlerFactory templateHandlerFactory;
 
-	@Value("#{'${service.call.headers}'.split(',')}")
-	private List<String> serviceCallHeaders;
+    @Value("#{'${service.call.headers}'.split(',')}")
+    private List<String> serviceCallHeaders;
 
-	@Value("${service.mock.enabled}")
-	private Boolean mockServiceEnabled;
+    @Value("${service.mock.enabled}")
+    private Boolean mockServiceEnabled;
 
-	@Value("${service.mock.port}")
-	private Integer mockServicePort;
+    @Value("${service.mock.port}")
+    private Integer mockServicePort;
 
-	@Value("${server.requestHandler.port}")
-	private Integer requestHandlerPort;
+    @Value("${server.requestHandler.port}")
+    private Integer requestHandlerPort;
 
-	@Override
-	public void start() throws IOException, URISyntaxException {
-		vertx.createHttpServer()
-				.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
-				.listen(requestHandlerPort);
-		if (mockServiceEnabled) {
-			vertx.createHttpServer()
-					.requestHandler(mockServiceHandler)
-					.listen(mockServicePort);
-		}
-	}
+    @Override
+    public void start() throws IOException, URISyntaxException {
+        vertx.createHttpServer()
+                .requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
+                .listen(requestHandlerPort);
+        if (mockServiceEnabled) {
+            vertx.createHttpServer()
+                    .requestHandler(mockServiceHandler)
+                    .listen(mockServicePort);
+        }
+    }
 
-	public void callService(HttpServerRequest request, String dataCallUri, Handler<HttpClientResponse> serviceResponseHandler) {
-		HttpClient httpClient = vertx.createHttpClient();
-		Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade.getServiceEndpoint(dataCallUri);
-		if (optionalServiceEndpoint.isPresent()) {
-			final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-			HttpClientRequest httpClientRequest =
-					httpClient.get(serviceEndpoint.getPort(), serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
-			rewriteHeaders(request, httpClientRequest);
-			httpClientRequest.end();
-		} else {
-			LOGGER.error("No provider found! Request can't be processed.");
-		}
-	}
+    public void callService(HttpServerRequest request, String dataCallUri, Handler<HttpClientResponse> serviceResponseHandler) {
+        HttpClient httpClient = vertx.createHttpClient();
+        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade.getServiceEndpoint(dataCallUri);
+        if (optionalServiceEndpoint.isPresent()) {
+            final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
+            HttpClientRequest httpClientRequest =
+                    httpClient.get(serviceEndpoint.getPort(), serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
+            rewriteHeaders(request, httpClientRequest);
+            httpClientRequest.end();
+        } else {
+            LOGGER.error("No provider found! Request can't be processed.");
+        }
+    }
 
-	private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-		request.headers().entries().stream()
-				.filter(entry -> serviceCallHeaders.contains(entry.getKey()))
-				.forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
-	}
+    private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
+        request.headers().entries().stream()
+                .filter(entry -> serviceCallHeaders.contains(entry.getKey()))
+                .forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
+    }
 
 }

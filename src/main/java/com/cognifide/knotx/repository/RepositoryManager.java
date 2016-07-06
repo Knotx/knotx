@@ -18,6 +18,7 @@
 package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.manager.AbstractResourceManager;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,24 +29,24 @@ import java.util.stream.Collectors;
 @Component
 class RepositoryManager extends AbstractResourceManager<Repository<String, URI>, ConfigurationMetadata> {
 
-	@Value("${repository.configuration}")
-	private String configurationPath;
+    @Value("${repository.configuration}")
+    private String configurationPath;
 
-	@Override
-	protected List<Repository<String, URI>> extract(ConfigurationMetadata configurationMetadata) {
-		return configurationMetadata.getRepositories().getRepositories().stream()
-				.map(this::getRepositoryByMetadata)
-				.collect(Collectors.toList());
-	}
+    @Override
+    protected List<Repository<String, URI>> extract(ConfigurationMetadata configurationMetadata) {
+        return configurationMetadata.getRepositories().getRepositories().stream()
+                .map(this::getRepositoryByMetadata)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	protected String getConfigurationPath() {
-		return configurationPath;
-	}
+    @Override
+    protected String getConfigurationPath() {
+        return configurationPath;
+    }
 
-	@SuppressWarnings("unchecked")
-	private Repository<String, URI> getRepositoryByMetadata(RepositoryMetadata metadata) {
-		return metadata.getRepositoryType().getRepositoryBuilder().create(metadata, resourceLoader, applicationContext);
-	}
+    @SuppressWarnings("unchecked")
+    private Repository<String, URI> getRepositoryByMetadata(RepositoryMetadata metadata) {
+        return metadata.getRepositoryType().getRepositoryBuilder().create(metadata, resourceLoader, applicationContext);
+    }
 
 }

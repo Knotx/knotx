@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx;
 
-import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,32 +30,34 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import javax.annotation.PostConstruct;
 
+import io.vertx.core.Vertx;
+
 @SpringBootApplication
 @Configuration
 public class Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	@Autowired
-	private Server server;
+    @Autowired
+    private Server server;
 
-	@Autowired
-	private ApplicationContext context;
+    @Autowired
+    private ApplicationContext context;
 
-	@Bean
-	public Unmarshaller getUnmarshaller() {
-		Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-		unmarshaller.setPackagesToScan("com.cognifide.knotx");
-		return unmarshaller;
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    @Bean
+    public Unmarshaller getUnmarshaller() {
+        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
+        unmarshaller.setPackagesToScan("com.cognifide.knotx");
+        return unmarshaller;
+    }
 
-	@PostConstruct
-	public void deployVerticle() {
-		Vertx.vertx().deployVerticle(server);
-	}
+    @PostConstruct
+    public void deployVerticle() {
+        Vertx.vertx().deployVerticle(server);
+    }
 
 }

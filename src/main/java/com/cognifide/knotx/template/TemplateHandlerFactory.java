@@ -24,10 +24,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class TemplateHandlerFactory {
 
-	@Autowired
-	private BeanFactory beanFactory;
+    @Autowired
+    private BeanFactory beanFactory;
 
-	public TemplateHandler newInstance() {
-		return beanFactory.getBean(TemplateHandler.class);
-	}
+    public TemplateHandler newInstance() {
+        return beanFactory.getBean(TemplateHandler.class);
+    }
 }

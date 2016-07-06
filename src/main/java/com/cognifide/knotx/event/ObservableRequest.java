@@ -27,27 +27,27 @@ import java.util.concurrent.TimeUnit;
 
 public class ObservableRequest extends Observable {
 
-	private final String requestUrl;
+    private final String requestUrl;
 
-	private Stopwatch stopwatch;
+    private Stopwatch stopwatch;
 
-	private DateFormat df = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss.SSS");
+    private DateFormat df = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss.SSS");
 
-	public ObservableRequest(String requestUrl) {
-		this.requestUrl = requestUrl;
-		stopwatch = Stopwatch.createUnstarted();
-	}
+    public ObservableRequest(String requestUrl) {
+        this.requestUrl = requestUrl;
+        stopwatch = Stopwatch.createUnstarted();
+    }
 
-	public void onStart() {
-		stopwatch.start();
-		setChanged();
-		notifyObservers("[" + df.format(new Date()) + "] request '" + requestUrl + "' started");
-	}
+    public void onStart() {
+        stopwatch.start();
+        setChanged();
+        notifyObservers("[" + df.format(new Date()) + "] request '" + requestUrl + "' started");
+    }
 
-	public void onFinish() {
-		setChanged();
-		notifyObservers("[" + df.format(new Date()) + "] request '" + requestUrl + "' finished in "
-				+ stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + "ms");
-	}
+    public void onFinish() {
+        setChanged();
+        notifyObservers("[" + df.format(new Date()) + "] request '" + requestUrl + "' finished in "
+                + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + "ms");
+    }
 
 }

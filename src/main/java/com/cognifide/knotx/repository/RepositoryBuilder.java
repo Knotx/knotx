@@ -25,7 +25,7 @@ import java.net.URI;
 
 interface RepositoryBuilder<M extends RepositoryMetadata> extends Serializable {
 
-	Repository<String, URI> create(M metadata, ResourceLoader resourceLoader,
-	                               ApplicationContext applicationContext);
+    Repository<String, URI> create(M metadata, ResourceLoader resourceLoader,
+                                   ApplicationContext applicationContext);
 
 }

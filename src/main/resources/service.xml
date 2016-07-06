@@ -19,16 +19,16 @@
 
 -->
 <serviceConfiguration>
-	<services>
-		<service>
-			<path>/service/mock/.*</path>
-			<domain>localhost</domain>
-			<port>3000</port>
-		</service>
-		<service>
-			<path>/service/.*</path>
-			<domain>localhost</domain>
-			<port>8080</port>
-		</service>
-	</services>
+    <services>
+        <service>
+            <path>/service/mock/.*</path>
+            <domain>localhost</domain>
+            <port>3000</port>
+        </service>
+        <service>
+            <path>/service/.*</path>
+            <domain>localhost</domain>
+            <port>8080</port>
+        </service>
+    </services>
 </serviceConfiguration>
