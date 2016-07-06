@@ -32,7 +32,7 @@ The following table describes all elements and attributes used in the template.
 | `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
 | `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section |
 | `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
-| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from json provided from microservice |
+| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice |
 
 In this case the data provided by the microservice could have the following format:
 
