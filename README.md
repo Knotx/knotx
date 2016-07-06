@@ -64,19 +64,20 @@ The following diagram shows the asynchronous nature of **Knot.x**. After obtaini
 
 ## Requirements
 
-To run the Knot.x you need only Java 8.
+To run Knot.x you only need Java 8.
 
-To build it you also need maven.
+To build it you also need Maven.
 
 ## Building
 
-To build it simply checkout the project and run:
+To build it simply checkout the project, run:
 
 ```
 mvn clean install
 ```
+and find the executable jar in the `target` directory.
 
-or just download the most recent `.jar` file.
+Alternatively, you can just download the most recent `.jar` file.
 
 ## Executing
 
@@ -119,7 +120,7 @@ Here's how configuration files should look:
 </serviceConfiguration>
 ```
 
-There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match regular expression:
+There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
 
 - `/service/mock/.*` will by handled by `localhost:3000`
 - `/service/.*` will be handled by `localhost:8080`
