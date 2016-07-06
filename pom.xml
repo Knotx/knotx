@@ -122,6 +122,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<!-- plugin for generating licensing header in headers of defined files -->
 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
@@ -144,6 +145,31 @@
 						<phase>validate</phase>
 						<goals>
 							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- plugin for checking if licensing header is present in headers of defined files -->
+			<plugin>
+				<groupId>org.apache.rat</groupId>
+				<artifactId>apache-rat-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<includes>
+						<include>src/main/java/**</include>
+						<include>src/test/java/**</include>
+						<include>src/main/resources/**</include>
+						<include>pom.xml</include>
+					</includes>
+					<excludes>
+						<exclude>**/*.json</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
