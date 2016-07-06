@@ -34,7 +34,7 @@ The following table describes all elements and attributes used in the template.
 | `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
 | `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice |
 
-In this case the data provided by the microservice could have the following format:
+In this case the microservice response could have the following format:
 
 ```json
 {
