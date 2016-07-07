@@ -8,15 +8,15 @@
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
 </p>
 
-Knot.x is a light-weight and high-performance **reactive microservice assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
+Knot.x is a lightweight and high-performance **reactive microservice assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
 
-We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the well performing framework for event driven applications.
+We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
 # How it works
 
 ## Templating
 
-In order to separate static content and dynamic data we introduced a Templating Engine, which merges a template obtained from a repositories and data from microservices using [Handlebars.js](http://handlebarsjs.com/). Here is how a template looks like:
+In order to separate static content and dynamic data we introduced a Templating Engine, which merges a template obtained from the content repository and dynamic data provided by microservices using [Handlebars.js](http://handlebarsjs.com/). Here is what a template looks like:
 
 ```html
 <script data-api-type="templating" data-call-uri="/path/to/service.json" type="text/x-handlebars-template">
@@ -25,16 +25,16 @@ In order to separate static content and dynamic data we introduced a Templating 
 </script>
 ```
 
-The following table describes all elements used in the template.
+The following table describes all elements and attributes used in the template.
 
 | Element                             | Description                                                              |
 | ----------------------------------- | ------------------------------------------------------------------------ |
 | `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
-| `data-call-uri`                     | path to microsevice which provides data - it will be handled by a service described in section "_Configuration_" |
+| `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section |
 | `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
-| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from json provided from microservice |
+| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice |
 
-In this case the data provided by a microservice could have the following format:
+In this case the microservice response could have the following format:
 
 ```json
 {
@@ -46,17 +46,17 @@ In this case the data provided by a microservice could have the following format
 ```
 
 ## Architecture
-The HTTP Request which comes to **Knot.x** triggers request to one of Content Repositories for a template. Then for each script with `data-api-type="templating"` there is a request to a microservice for the data. After this [Handlebars.js](http://handlebarsjs.com/) merges content and data and returns the built document.
+The HTTP Request which comes to **Knot.x** causes a request for a template to be sent to one of the available Content Repositories. For each script with `data-api-type="templating"` there is a request to a microservice for the data. After both requests are completed, [Handlebars.js](http://handlebarsjs.com/) merges the static content and the dynamic data and returns a complete document.
 
 ![Architecture without load balancer](https://github.com/Cognifide/knotx/blob/master/icons/architecture/without-load-balancer.png)
 
-It's worth mentioning that this architecture scales very easily. Not only you may add as many microservices and repositories as you want, but also you may just add another Templating Engines with load balancer ahead to handle more traffic.
+It's worth mentioning that this architecture scales very easily. Not only can you add as many microservices and repositories as you want, but you can also use multiple Templating Engines set up behind a load balancer if you need to handle more traffic.
 
 ![Architecture with load balancer](https://github.com/Cognifide/knotx/blob/master/icons/architecture/with-load-balancer.png)
 
 ## Flow diagram
 
-The following diagram shows asynchronous nature of **Knot.x**. After obtaining template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
+The following diagram shows the asynchronous nature of **Knot.x**. After obtaining a template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
 
 ![Flow diagram](https://github.com/Cognifide/knotx/blob/master/icons/architecture/flow-diagram.png)
 
@@ -64,19 +64,20 @@ The following diagram shows asynchronous nature of **Knot.x**. After obtaining t
 
 ## Requirements
 
-To run the Knot.x you need only Java 8.
+To run Knot.x you only need Java 8.
 
-To build it you also need maven.
+To build it you also need Maven.
 
 ## Building
 
-To build it simply run:
+To build it simply checkout the project, run:
 
 ```
 mvn clean install
 ```
+and find the executable jar in the `target` directory.
 
-or just download the most recent `.jar` file.
+Alternatively, you can just download the most recent `.jar` file.
 
 ## Executing
 
@@ -92,14 +93,14 @@ This will run the server with default settings. To run with your own configurati
 -Dservice.configuration=<path to your service.xml> -Drepository.configuration=<path to your repository.xml>
 ```
 
-As you can notice there are two files which need to be defined in order to configure your services and repositories. Please note that paths should be compatible with [Spring Resources](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html) format, for example:
+As you may notice, there are two files that need to be defined in order to configure your services and repositories. Please note that the paths should be compatible with the [Spring Resources](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html) format, for example:
 
-- `file:///data/config.xml` on Linux or 
-- `file:c:\\data\config.xml` on Windows.
+- `file:///data/config.xml` on Linux
+- `file:c:\\data\config.xml` on Windows
 
 ## Configuration
 
-Here's how configuration files should look like:
+Here's how configuration files should look:
 
 **service.xml**
 ```xml
@@ -119,7 +120,7 @@ Here's how configuration files should look like:
 </serviceConfiguration>
 ```
 
-There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match regular expression:
+There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
 
 - `/service/mock/.*` will by handled by `localhost:3000`
 - `/service/.*` will be handled by `localhost:8080`
@@ -142,19 +143,19 @@ The first matched service will handle the request or, if there's no service matc
 </configuration>
 ```
 
-There are two repositories defined - local and remote. Each of them define `path` - a regular expression which indicates which resources will be taken from this repository. The first matched one will handle the request or, if no repository is matched, **Knot.x** will return `404 Not found` response for the given request.
+There are two repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 
 ### Local repositories
 
-If you need to take files from local machine this is the kind of repository you want to use. It's perfect for mocking data. 
+If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
 
-Second parameter to define is `catalogue` - it defines where to take the resources from. If empty they will be taken from classpath. It may be treated like a prefix to the requested resources.
+Second parameter to define is `catalogue` - it determines where to take the resources from. If left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
 ### Remote repositories
 
 This kind of repository connects with an external server to fetch templates.
 
-To point out where the remote instance is, please configure `url` parameter.
+To specify where the remote instance is, please configure the `url` parameter.
 
 # Licence
 
@@ -173,7 +174,7 @@ To point out where the remote instance is, please configure `url` parameter.
 # Roadmap
 
 - Extend ‘templateDebug’ mode,
-- Extend service exception handling (template should provide information how to behave when service is not available or service return error)
+- Extend service exception handling (templates should provide information how to behave when a service is not available or returns an error)
 - Remote template repository support (for remote repositories like Apache, Redis, AEM Dispatcher)
 - Support for POST requests to services (forms)
 - Authentication and authorization solution based on JWT Tokens
