@@ -55,7 +55,7 @@ public class RepositoryConfiguration {
 
         private String catalogue;
 
-        private RepositoryType repositoryType;
+        private RepositoryType type;
 
         public String getPath() {
             return path;
@@ -81,12 +81,12 @@ public class RepositoryConfiguration {
             this.catalogue = catalogue;
         }
 
-        public RepositoryType getRepositoryType() {
-            return repositoryType;
+        public RepositoryType getType() {
+            return type;
         }
 
-        public void setRepositoryType(RepositoryType repositoryType) {
-            this.repositoryType = repositoryType;
+        public void setType(RepositoryType type) {
+            this.type = type;
         }
     }
 }

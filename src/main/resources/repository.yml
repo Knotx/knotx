@@ -16,10 +16,10 @@
 
 repositories:
 
-  - repositoryType: local
+  - type: local
     path: /content/local/.*
     catalogue:
 
-  - repositoryType: remote
+  - type: remote
     path: /content/.*
     serviceUrl: localhost:8080

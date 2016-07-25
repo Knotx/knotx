@@ -52,6 +52,6 @@ public class RepositoryFacade implements Repository<String, URI> {
 
     @SuppressWarnings("unchecked")
     private Repository<String, URI> getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
-        return metadata.getRepositoryType().create(metadata, repositoryConfiguration.getServer());
+        return metadata.getType().create(metadata, repositoryConfiguration.getServer());
     }
 }
