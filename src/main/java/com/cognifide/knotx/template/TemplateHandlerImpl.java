@@ -54,7 +54,7 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
-	private final Handlebars handlebars;
+    private final Handlebars handlebars;
 
     private final Server server;
 
@@ -67,13 +67,13 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private Document htmlDocument;
 
-	@Autowired
-	public TemplateHandlerImpl(Server server, Handlebars handlebars) {
-		this.server = server;
-		this.handlebars = handlebars;
-	}
+    @Autowired
+    public TemplateHandlerImpl(Server server, Handlebars handlebars) {
+        this.server = server;
+        this.handlebars = handlebars;
+    }
 
-	@Override
+    @Override
     public void handle(Template<String, URI> template, HttpServerRequest request) {
         htmlDocument = Jsoup.parse(template.get());
         final Elements snippets = htmlDocument.select(SNIPPET_TAG);

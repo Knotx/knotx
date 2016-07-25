@@ -58,12 +58,12 @@ public class Application {
         return unmarshaller;
     }
 
-	@Bean
-	public Handlebars getHandlebars() {
-		Handlebars handlebars = new Handlebars();
-		Helpers.registerHelpers(handlebars);
-		return handlebars;
-	}
+    @Bean
+    public Handlebars getHandlebars() {
+        Handlebars handlebars = new Handlebars();
+        Helpers.registerHelpers(handlebars);
+        return handlebars;
+    }
 
     @PostConstruct
     public void deployVerticle() {
