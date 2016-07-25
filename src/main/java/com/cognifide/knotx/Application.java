@@ -61,7 +61,7 @@ public class Application {
     @Bean
     public Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
-        Helpers.registerHelpers(handlebars);
+        Helpers.register(handlebars);
         return handlebars;
     }
 

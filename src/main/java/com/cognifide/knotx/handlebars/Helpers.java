@@ -65,7 +65,7 @@ public enum Helpers implements Helper<Object> {
         this.name = name;
     }
 
-    public static void registerHelpers(Handlebars handlebars) {
+    public static void register(Handlebars handlebars) {
         Stream.of(values()).forEach(helper -> handlebars.registerHelper(helper.name, helper));
     }
 
