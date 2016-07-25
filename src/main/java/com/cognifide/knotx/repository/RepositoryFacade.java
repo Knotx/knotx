@@ -50,8 +50,6 @@ public class RepositoryFacade implements Repository<String, URI> {
                 .isPresent();
     }
 
-
-
     @SuppressWarnings("unchecked")
     private Repository<String, URI> getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
         return metadata.getRepositoryType().create(metadata, repositoryConfiguration.getServer());

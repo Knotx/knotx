@@ -35,7 +35,6 @@ public class RepositoryConfiguration {
 
     private List<RepositoryMetadata> repositories;
 
-
     public Server getServer() {
         return server;
     }
@@ -47,7 +46,6 @@ public class RepositoryConfiguration {
     public void setRepositories(List<RepositoryMetadata> repositories) {
         this.repositories = repositories;
     }
-
 
     public static class RepositoryMetadata {
 
