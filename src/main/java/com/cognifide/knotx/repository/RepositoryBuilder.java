@@ -17,15 +17,13 @@
  */
 package com.cognifide.knotx.repository;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ResourceLoader;
+import com.cognifide.knotx.Server;
 
 import java.io.Serializable;
 import java.net.URI;
 
-interface RepositoryBuilder<M extends RepositoryMetadata> extends Serializable {
+interface RepositoryBuilder extends Serializable {
 
-    Repository<String, URI> create(M metadata, ResourceLoader resourceLoader,
-                                   ApplicationContext applicationContext);
+    Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
 
 }

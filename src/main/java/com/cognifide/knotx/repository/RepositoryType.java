@@ -17,20 +17,26 @@
  */
 package com.cognifide.knotx.repository;
 
-enum RepositoryType {
+import com.cognifide.knotx.Server;
 
-    LOCAL(new LocalRepository.LocalRepositoryBuilder()),
+import java.net.URI;
 
-    REMOTE(new RemoteRepository.RemoteRepositoryBuilder());
+enum RepositoryType implements RepositoryBuilder {
 
-    private RepositoryBuilder repositoryBuilder;
+    LOCAL {
+        @Override
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
+        }
+    },
 
-    RepositoryType(RepositoryBuilder repositoryBuilder) {
-        this.repositoryBuilder = repositoryBuilder;
-    }
+    REMOTE {
+        @Override
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+            return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
+        }
+    };
 
-    public RepositoryBuilder getRepositoryBuilder() {
-        return repositoryBuilder;
-    }
+    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
 
 }

@@ -26,10 +26,11 @@ import java.util.Optional;
 public class ServiceEndpointFacade {
 
     @Autowired
-    private ServiceEndpointManager serviceEndpointManager;
+    private ServiceConfiguration serviceConfiguration;
 
     public Optional<? extends ServiceEndpoint> getServiceEndpoint(String path) {
-        return serviceEndpointManager.getManagedResource().stream()
+        return serviceConfiguration.getServices().stream()
+                .map(ServiceEndpointProvider::from)
                 .filter(service -> service.support(path))
                 .findFirst();
     }

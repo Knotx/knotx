@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx.service;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 class ServiceEndpointProvider implements ServiceEndpoint {
 
     private String path;
@@ -32,7 +29,7 @@ class ServiceEndpointProvider implements ServiceEndpoint {
         // hidden constructor
     }
 
-    static ServiceEndpointProvider from(ServiceEndpointProviderMetadata metadata) {
+    static ServiceEndpointProvider from(ServiceConfiguration.ServiceEndpointProviderMetadata metadata) {
         ServiceEndpointProvider provider = new ServiceEndpointProvider();
         provider.path = metadata.getPath();
         provider.domain = metadata.getDomain();
@@ -52,32 +49,6 @@ class ServiceEndpointProvider implements ServiceEndpoint {
 
     boolean support(String path) {
         return path.matches(this.path);
-    }
-
-    @SuppressWarnings("unused")
-    @XmlRootElement(name = "service")
-    static class ServiceEndpointProviderMetadata {
-
-        @XmlElement(name = "path")
-        private String path;
-
-        @XmlElement(name = "domain")
-        private String domain;
-
-        @XmlElement(name = "port")
-        private String port;
-
-        String getPath() {
-            return path;
-        }
-
-        String getDomain() {
-            return domain;
-        }
-
-        String getPort() {
-            return port;
-        }
     }
 
 }

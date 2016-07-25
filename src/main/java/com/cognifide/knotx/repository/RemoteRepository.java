@@ -17,14 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ResourceLoader;
-
 import java.io.IOException;
 import java.net.URI;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import io.vertx.core.AsyncResultHandler;
 
@@ -38,7 +32,7 @@ class RemoteRepository implements Repository<String, URI> {
         // hidden constructor
     }
 
-    private static RemoteRepository of(String path, String serviceUrl) {
+    static RemoteRepository of(String path, String serviceUrl) {
         RemoteRepository remoteRepository = new RemoteRepository();
         remoteRepository.path = path;
         remoteRepository.serviceUrl = serviceUrl;
@@ -52,43 +46,7 @@ class RemoteRepository implements Repository<String, URI> {
 
     @Override
     public boolean support(URI uri) {
-        return Boolean.FALSE;
-    }
-
-    @SuppressWarnings("unused")
-    @XmlRootElement(name = "remote")
-    static class RemoteRepositoryMetadata implements RepositoryMetadata {
-
-        @XmlElement(name = "path")
-        private String path;
-
-        @XmlElement(name = "url")
-        private String serviceUrl;
-
-        String getPath() {
-            return path;
-        }
-
-        String getServiceUrl() {
-            return serviceUrl;
-        }
-
-        @Override
-        public RepositoryType getRepositoryType() {
-            return RepositoryType.REMOTE;
-        }
-    }
-
-    static class RemoteRepositoryBuilder implements
-            RepositoryBuilder<RemoteRepository.RemoteRepositoryMetadata> {
-
-        private static final long serialVersionUID = 3007511016213749712L;
-
-        @Override
-        public Repository<String, URI> create(RemoteRepository.RemoteRepositoryMetadata metadata,
-                                              ResourceLoader resourceLoader, ApplicationContext applicationContext) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
-        }
+        return false;
     }
 
 }
