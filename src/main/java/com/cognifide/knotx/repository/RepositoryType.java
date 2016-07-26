@@ -19,14 +19,22 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.Server;
 
-import java.net.URI;
+import org.apache.commons.lang3.StringUtils;
 
-enum RepositoryType implements RepositoryBuilder {
+import java.net.URI;
+import java.util.stream.Stream;
+
+enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     LOCAL {
         @Override
         public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
             return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
+        }
+
+        @Override
+        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+            return isNotEmpty(metadata.getPath());
         }
     },
 
@@ -35,8 +43,18 @@ enum RepositoryType implements RepositoryBuilder {
         public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
             return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
         }
+
+        @Override
+        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+            return isNotEmpty(metadata.getPath(), metadata.getServiceUrl());
+        }
     };
+
+    private static boolean isNotEmpty(String... values) {
+        return Stream.of(values).filter(StringUtils::isBlank).count() == 0;
+    }
 
     public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
 
+    public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

@@ -19,15 +19,18 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.Server;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @ConfigurationProperties(locations = {"${repository.configuration}"})
-public class RepositoryConfiguration {
+public class RepositoryConfiguration implements InitializingBean {
 
     @Autowired
     private Server server;
@@ -44,6 +47,17 @@ public class RepositoryConfiguration {
 
     public void setRepositories(List<RepositoryMetadata> repositories) {
         this.repositories = repositories;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        String invalidMetadata = repositories.stream()
+                .filter(metadata -> !metadata.getType().validate(metadata))
+                .map(RepositoryMetadata::toString)
+                .collect(Collectors.joining(", "));
+        if (StringUtils.isNotEmpty(invalidMetadata)) {
+            throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
+        }
     }
 
     public static class RepositoryMetadata {
@@ -86,6 +100,16 @@ public class RepositoryConfiguration {
 
         public void setType(RepositoryType type) {
             this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return "RepositoryMetadata{" +
+                    "path='" + path + '\'' +
+                    ", serviceUrl='" + serviceUrl + '\'' +
+                    ", catalogue='" + catalogue + '\'' +
+                    ", type=" + type +
+                    '}';
         }
     }
 }
