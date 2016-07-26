@@ -115,6 +115,8 @@ As you may notice, there are two files that need to be defined in order to confi
 
 ## Configuration
 
+### Services
+
 Here's how configuration files should look:
 
 **service.yml**
@@ -137,6 +139,8 @@ There are two groups of services defined. Each one will be handled by a differen
 
 The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
 
+### Repositories
+
 **repository.yml**
 ```yaml
 repositories:
@@ -152,17 +156,35 @@ repositories:
 
 There are two repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 
-### Local repositories
+#### Local repositories
 
 If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
 
 Second parameter to define is `catalogue` - it determines where to take the resources from. If left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
-### Remote repositories
+#### Remote repositories
 
 This kind of repository connects with an external server to fetch templates.
 
 To specify where the remote instance is, please configure the `url` parameter.
+
+### Using command line arguments and environment variables
+
+Often some properties are sensitive and we do not want to expose them in configuration files, eg. passwords. In such case we can use command line arguments or environment variables to inject values of those properties into configuration.
+Lets assume following repository configuration:
+```yaml
+repositories:
+
+  - type: db
+    user: db.user
+    password: ${db.password}
+```
+Since we do not want to expose the database password we can use placeholder instead and provide a value for it with command line argument while starting our application:
+```
+--db.password=passw0rd
+```
+or setting evironment variable `db.password` with password value.
+>Notice: command line arguments take precedence over environment variables.
 
 # Licence
 
