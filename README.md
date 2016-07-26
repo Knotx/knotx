@@ -183,7 +183,7 @@ Since we do not want to expose the database password we can use placeholder inst
 ```
 --db.password=passw0rd
 ```
-or setting evironment variable `db.password` with password value.
+Setting evironment variable `db.password` is the other way to provide a value for password placeholder.
 >Notice: command line arguments take precedence over environment variables.
 
 # Licence
