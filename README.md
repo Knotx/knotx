@@ -170,8 +170,8 @@ To specify where the remote instance is, please configure the `url` parameter.
 
 ### Using command line arguments and environment variables
 
-Often some properties are sensitive and we do not want to expose them in configuration files, eg. passwords. In such case we can use command line arguments or environment variables to inject values of those properties into configuration.
-Lets assume following repository configuration:
+Often some properties are sensitive and we do not want to expose them in configuration files, e.g. passwords. In such case we can use command line arguments or environment variables to inject the values of those properties into the configuration.
+Let's assume the following repository configuration is present:
 ```yaml
 repositories:
 
@@ -179,11 +179,12 @@ repositories:
     user: db.user
     password: ${db.password}
 ```
-Since we do not want to expose the database password we can use placeholder instead and provide a value for it with command line argument while starting our application:
+Since we do not want to expose the database password, we can use a placeholder and substitute it with the value of a command line argument while starting our application:
 ```
 --db.password=passw0rd
 ```
-Setting evironment variable `db.password` is the other way to provide a value for password placeholder.
+Another way to provide a value for the password placeholder shown above is to set an evironment variable `db.password`.
+
 >Notice: command line arguments take precedence over environment variables.
 
 # Licence
