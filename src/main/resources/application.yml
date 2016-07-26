@@ -15,15 +15,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# GENERAL
-server.port=8091
-server.requestHandler.port=8092
-template.debug=true
-# HTTP HEADERS
-service.call.headers=User-Agent,X-Solr-Core-Key,X-Language-Code
-repository.configuration=classpath:repository.yml
-service.configuration=classpath:service.yml
-# MOCK SERIVICE
-service.mock.enabled=true
-service.mock.port=3000
-service.mock.catalogue=json
+
+server:
+  port: 8091
+
+requestHandler:
+  port: 8092
+
+template:
+  debug: true
+
+request:
+  preserved:
+    headers: User-Agent,X-Solr-Core-Key,X-Language-Code
+
+service:
+  mock:
+    enabled: true
+    port: 3000
+    catalogue: json
+
+  configuration: classpath:service.yml
+
+repository:
+  configuration: classpath:repository.yml
