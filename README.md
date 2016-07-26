@@ -87,10 +87,25 @@ To run it execute the following command:
 java -jar knot.x.jar
 ```
 
-This will run the server with default settings. To run with your own configuration add this to the command:
+This will run the server with default settings.
+
+In order to run the server with your own configuration add this to the command:
 
 ```
 -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
+```
+
+or provide environment variables that will hold locations of your configuration files.
+
+For windows:
+```
+SET service.configuration=<path to your service.yml>
+SET repository.configuration=<path to your repository.yml>
+```
+For Unix:
+```
+export service.configuration=<path to your service.yml>
+export repository.configuration=<path to your repository.yml>
 ```
 
 As you may notice, there are two files that need to be defined in order to configure your services and repositories. Please note that the paths should be compatible with the [Spring Resources](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html) format, for example:
