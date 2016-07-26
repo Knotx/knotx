@@ -28,17 +28,17 @@ import java.util.List;
 })
 public class ServiceConfiguration {
 
-    private List<ServiceEndpointProviderMetadata> services;
+    private List<ServiceMetadata> services;
 
-    public List<ServiceEndpointProviderMetadata> getServices() {
+    public List<ServiceMetadata> getServices() {
         return services;
     }
 
-    public void setServices(List<ServiceEndpointProviderMetadata> services) {
+    public void setServices(List<ServiceMetadata> services) {
         this.services = services;
     }
 
-    public static class ServiceEndpointProviderMetadata {
+    public static class ServiceMetadata {
 
         private String path;
 

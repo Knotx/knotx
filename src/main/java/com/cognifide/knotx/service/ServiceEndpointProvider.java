@@ -29,7 +29,7 @@ class ServiceEndpointProvider implements ServiceEndpoint {
         // hidden constructor
     }
 
-    static ServiceEndpointProvider from(ServiceConfiguration.ServiceEndpointProviderMetadata metadata) {
+    static ServiceEndpointProvider from(ServiceConfiguration.ServiceMetadata metadata) {
         ServiceEndpointProvider provider = new ServiceEndpointProvider();
         provider.path = metadata.getPath();
         provider.domain = metadata.getDomain();
