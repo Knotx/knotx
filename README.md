@@ -103,7 +103,7 @@ As you may notice, there are two files that need to be defined in order to confi
 Here's how configuration files should look:
 
 **service.yml**
-```
+```yaml
 services:
 
   - path: /service/mock/.*
@@ -123,7 +123,7 @@ There are two groups of services defined. Each one will be handled by a differen
 The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
 
 **repository.yml**
-```
+```yaml
 repositories:
 
   - type: local
