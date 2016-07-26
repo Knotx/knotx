@@ -17,12 +17,16 @@
  */
 package com.cognifide.knotx;
 
+import com.cognifide.knotx.handlebars.Helpers;
+import com.github.jknack.handlebars.Handlebars;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -43,6 +47,13 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public Handlebars getHandlebars() {
+        Handlebars handlebars = new Handlebars();
+        Helpers.register(handlebars);
+        return handlebars;
     }
 
     @PostConstruct

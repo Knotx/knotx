@@ -185,3 +185,10 @@ To specify where the remote instance is, please configure the `url` parameter.
 - Remote template repository support (for remote repositories like Apache, Redis, AEM Dispatcher)
 - Support for POST requests to services (forms)
 - Authentication and authorization solution based on JWT Tokens
+- Placeholders in service-url for dynamic parameters (e.g. GET/POST/HEADER parameters rewritten to service request: ?x=${header.x}).
+- Support configuration formats other than XML (e.g. Json, YAML, System parameters as fallback).
+- Multidomain support, single Knot.x cluster can support whole platform with multiple sites. Each domian restricted to set of services to call.
+- Docker + Cookbook for easy production setup.
+- Kitchen integration tests.
+- More Service Repositories implementations, e.g. for Redis.
+- More template engines support (e.g. FreeMarker).
