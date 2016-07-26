@@ -23,9 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties(locations = {
-        "${service.configuration}"
-})
+@ConfigurationProperties(locations = {"${service.configuration}"})
 public class ServiceConfiguration {
 
     private List<ServiceMetadata> services;

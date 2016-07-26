@@ -26,9 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties(locations = {
-        "${repository.configuration}"
-})
+@ConfigurationProperties(locations = {"${repository.configuration}"})
 public class RepositoryConfiguration {
 
     @Autowired
