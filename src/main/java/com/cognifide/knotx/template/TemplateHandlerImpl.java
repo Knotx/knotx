@@ -54,8 +54,9 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
-    @Autowired
-    private Server server;
+    private final Handlebars handlebars;
+
+    private final Server server;
 
     @Value("${template.debug}")
     private Boolean templateDebug;
@@ -66,7 +67,11 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private Document htmlDocument;
 
-    private Handlebars handlebars = new Handlebars();
+    @Autowired
+    public TemplateHandlerImpl(Server server, Handlebars handlebars) {
+        this.server = server;
+        this.handlebars = handlebars;
+    }
 
     @Override
     public void handle(Template<String, URI> template, HttpServerRequest request) {
