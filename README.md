@@ -19,7 +19,7 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 In order to separate static content and dynamic data we introduced a Templating Engine, which merges a template obtained from the content repository and dynamic data provided by microservices using [Handlebars.js](http://handlebarsjs.com/). Here is what a template looks like:
 
 ```html
-<script data-api-type="templating" data-call-uri="/path/to/service.json" type="text/x-handlebars-template">
+<script data-api-type="templating" data-call-uri="/path/to/service.json" type="text/x-handlebars-template" data-no-cache="true">
     <h2>{{header}}</h2>
     <div>{{body.content}}</div>
 </script>
@@ -27,12 +27,13 @@ In order to separate static content and dynamic data we introduced a Templating 
 
 The following table describes all elements and attributes used in the template.
 
-| Element                             | Description                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------ |
-| `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
-| `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section |
-| `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
-| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice |
+| Element                             | Description                                                              | Required |
+| ----------------------------------- | ------------------------------------------------------------------------ | -------- |
+| `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process | true     |
+| `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section | true     |
+| `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating | true     |
+| `data-no-cache`                     | by default responses from microservices are cached, adding optional `data-no-cache` attribute with a value of `true` will prevent response from being cached | false    |
+| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice | n/a      |
 
 In this case the microservice response could have the following format:
 
@@ -158,7 +159,7 @@ There are two repositories defined - `local` and `remote`. Each of them define `
 
 #### Local repositories
 
-If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
+If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data.
 
 Second parameter to define is `catalogue` - it determines where to take the resources from. If left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
@@ -195,7 +196,7 @@ Another way to provide a value for the password placeholder shown above is to se
 
 - io.vertx
 - io.reactivex
-- org.springframework 
+- org.springframework
 - org.jsoup
 - com.github.jknack.handlebars
 - com.google.code.gson

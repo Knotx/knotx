@@ -17,19 +17,17 @@
  */
 package com.cognifide.knotx.handler;
 
-
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import com.cognifide.knotx.event.ObservableRequest;
-import com.cognifide.knotx.template.TemplateHandler;
-import com.github.jknack.handlebars.Template;
+import com.cognifide.knotx.cache.ServiceResponseCache;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import io.vertx.core.Handler;
@@ -42,27 +40,20 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
     private final HttpServerRequest request;
 
-    private final Template template;
-
-    private final TemplateHandler templateHandler;
-
     private final String dataCallUri;
 
-    private final ObservableRequest observableRequest;
+    private final ResponseHandlerHelper handlerHelper;
 
     private final Element snippet;
 
-    private final boolean templateDebug;
+    private final ServiceResponseCache cache;
 
-    public RestServiceResponseHandler(HttpServerRequest request, Template template, TemplateHandler templateHandler, String dataCallUri,
-                                      ObservableRequest observableRequest, Element snippet, boolean templateDebug) {
+    public RestServiceResponseHandler(HttpServerRequest request, String dataCallUri, ResponseHandlerHelper handlerHelper, Element snippet, ServiceResponseCache cache) {
         this.request = request;
-        this.template = template;
-        this.templateHandler = templateHandler;
         this.dataCallUri = dataCallUri;
-        this.observableRequest = observableRequest;
+        this.handlerHelper = handlerHelper;
         this.snippet = snippet;
-        this.templateDebug = templateDebug;
+        this.cache = cache;
     }
 
     @Override
@@ -70,20 +61,16 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
         response.bodyHandler(buffer -> {
             String responseContent = buffer.getString(0, buffer.length());
             LOGGER.debug("Request in: " + request.absoluteURI() + " for " + dataCallUri);
-            try {
-                String compiledContent = template.apply(new Gson().fromJson(responseContent, Map.class));
-                Element snippetParent = new Element(Tag.valueOf("div"), "");
-                if (templateDebug) {
-                    String debugComment = "<!-- webservice `" + dataCallUri + "` call -->";
-                    snippetParent.prepend(debugComment);
-                }
-                snippet.replaceWith(snippetParent.append(compiledContent));
-            } catch (IOException e) {
-                LOGGER.error("Can't apply response to template!", e);
-            } finally {
-                observableRequest.onFinish();
-                templateHandler.finishIfLast(request);
-            }
+            Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> map = new Gson().fromJson(responseContent, mapType);
+            cacheIfAllowed(map);
+            handlerHelper.applyData(map);
         });
+    }
+
+    private void cacheIfAllowed(Map<String, Object> map) {
+        if (!BooleanUtils.toBoolean(snippet.attr("data-no-cache"))) {
+            cache.put(dataCallUri, map);
+        }
     }
 }
