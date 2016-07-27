@@ -29,7 +29,6 @@ import com.github.jknack.handlebars.Handlebars;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +36,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerRequest;
@@ -48,7 +54,7 @@ import rx.Observable;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
+class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateHandlerImpl.class);
 
@@ -67,6 +73,8 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private Document htmlDocument;
 
+    private MultiValueMap<String, Element> snippetGroups = new LinkedMultiValueMap<>();
+
     @Autowired
     public TemplateHandlerImpl(Server server, Handlebars handlebars) {
         this.server = server;
@@ -76,11 +84,11 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     @Override
     public void handle(Template<String, URI> template, HttpServerRequest request) {
         htmlDocument = Jsoup.parse(template.get());
-        final Elements snippets = htmlDocument.select(SNIPPET_TAG);
-        templatesLatch = new CountDownLatch(Iterables.size(snippets));
+        htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
+        templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
-        Observable.from(snippets).subscribe(
-                snippet -> handleTemplate(snippet, request),
+        Observable.from(snippetGroups.entrySet()).subscribe(
+                snippetGroup -> handleTemplate(snippetGroup, request),
                 throwable -> {
                     LOGGER.error("Fatal error when requesting {}", request.absoluteURI(), throwable);
                     finishIfLast(request);
@@ -97,21 +105,28 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         }
     }
 
-    private void handleTemplate(Element snippet, HttpServerRequest request) {
-        final String dataCallUri = getServiceUrl(request, snippet);
+    private void handleTemplate(Entry<String, List<Element>> snippetGroup, HttpServerRequest request) {
+        final String dataCallUri = snippetGroup.getKey();
         ObservableRequest observableRequest = new ObservableRequest(dataCallUri);
         observableRequest.addObserver(trafficObserver);
         observableRequest.onStart();
 
-        String templateContent = snippet.html();
+        Map<Element, com.github.jknack.handlebars.Template> snippetTemplateMap = snippetGroup.getValue().stream()
+                .map(snippet -> new SimpleEntry<>(snippet, compile(snippet.html(), dataCallUri)))
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+        RestServiceResponseHandler serviceResponseHandler =
+                new RestServiceResponseHandler(request, snippetTemplateMap, this, dataCallUri, observableRequest, templateDebug);
+        server.callService(request, dataCallUri, serviceResponseHandler);
+    }
+
+    private com.github.jknack.handlebars.Template compile(String html, String dataCallUri) {
         try {
-            com.github.jknack.handlebars.Template template = handlebars.compileInline(templateContent);
-            RestServiceResponseHandler serviceResponseHandler =
-                    new RestServiceResponseHandler(request, template, this, dataCallUri, observableRequest, snippet, templateDebug);
-            server.callService(request, dataCallUri, serviceResponseHandler);
+            return handlebars.compileInline(html);
         } catch (IOException e) {
             LOGGER.error("Could not process template [{}]", dataCallUri);
         }
+        return null;
     }
 
     private String getServiceUrl(HttpServerRequest request, Element snippet) {

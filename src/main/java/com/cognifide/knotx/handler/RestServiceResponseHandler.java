@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.handler;
 
-
 import com.google.gson.Gson;
 
 import com.cognifide.knotx.event.ObservableRequest;
@@ -42,26 +41,23 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
     private final HttpServerRequest request;
 
-    private final Template template;
-
     private final TemplateHandler templateHandler;
 
     private final String dataCallUri;
 
     private final ObservableRequest observableRequest;
 
-    private final Element snippet;
-
     private final boolean templateDebug;
 
-    public RestServiceResponseHandler(HttpServerRequest request, Template template, TemplateHandler templateHandler, String dataCallUri,
-                                      ObservableRequest observableRequest, Element snippet, boolean templateDebug) {
+    private final Map<Element, Template> snippetTemplateMap;
+
+    public RestServiceResponseHandler(HttpServerRequest request, Map<Element, Template> snippetTemplateMap, TemplateHandler templateHandler,
+                                      String dataCallUri, ObservableRequest observableRequest, Boolean templateDebug) {
         this.request = request;
-        this.template = template;
+        this.snippetTemplateMap = snippetTemplateMap;
         this.templateHandler = templateHandler;
         this.dataCallUri = dataCallUri;
         this.observableRequest = observableRequest;
-        this.snippet = snippet;
         this.templateDebug = templateDebug;
     }
 
@@ -70,19 +66,25 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
         response.bodyHandler(buffer -> {
             String responseContent = buffer.getString(0, buffer.length());
             LOGGER.debug("Request in: " + request.absoluteURI() + " for " + dataCallUri);
+            Map serviceData = new Gson().fromJson(responseContent, Map.class);
+            applyData(serviceData);
+            observableRequest.onFinish();
+            templateHandler.finishIfLast(request);
+        });
+    }
+
+    private void applyData(Map serviceData) {
+        snippetTemplateMap.entrySet().forEach(entry -> {
             try {
-                String compiledContent = template.apply(new Gson().fromJson(responseContent, Map.class));
+                String compiledContent = entry.getValue().apply(serviceData);
                 Element snippetParent = new Element(Tag.valueOf("div"), "");
                 if (templateDebug) {
                     String debugComment = "<!-- webservice `" + dataCallUri + "` call -->";
                     snippetParent.prepend(debugComment);
                 }
-                snippet.replaceWith(snippetParent.append(compiledContent));
+                entry.getKey().replaceWith(snippetParent.append(compiledContent));
             } catch (IOException e) {
                 LOGGER.error("Can't apply response to template!", e);
-            } finally {
-                observableRequest.onFinish();
-                templateHandler.finishIfLast(request);
             }
         });
     }
