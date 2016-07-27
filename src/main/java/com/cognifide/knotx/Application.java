@@ -17,7 +17,8 @@
  */
 package com.cognifide.knotx;
 
-import javax.annotation.PostConstruct;
+import com.cognifide.knotx.handlebars.Helpers;
+import com.github.jknack.handlebars.Handlebars;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import com.cognifide.knotx.handlebars.Helpers;
-import com.github.jknack.handlebars.Handlebars;
+import javax.annotation.PostConstruct;
 
 import io.vertx.core.Vertx;
 
@@ -49,13 +47,6 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-    }
-
-    @Bean
-    public Unmarshaller getUnmarshaller() {
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setPackagesToScan("com.cognifide.knotx");
-        return unmarshaller;
     }
 
     @Bean

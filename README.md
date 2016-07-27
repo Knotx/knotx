@@ -87,37 +87,49 @@ To run it execute the following command:
 java -jar knot.x.jar
 ```
 
-This will run the server with default settings. To run with your own configuration add this to the command:
+This will run the server with default settings.
+
+In order to run the server with your own configuration add this to the command:
 
 ```
--Dservice.configuration=<path to your service.xml> -Drepository.configuration=<path to your repository.xml>
+-Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
+```
+
+or provide environment variables that will hold locations of your configuration files.
+
+For windows:
+```
+SET service.configuration=<path to your service.yml>
+SET repository.configuration=<path to your repository.yml>
+```
+For Unix:
+```
+export service.configuration=<path to your service.yml>
+export repository.configuration=<path to your repository.yml>
 ```
 
 As you may notice, there are two files that need to be defined in order to configure your services and repositories. Please note that the paths should be compatible with the [Spring Resources](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html) format, for example:
 
-- `file:///data/config.xml` on Linux
-- `file:c:\\data\config.xml` on Windows
+- `file:///data/config.yml` on Linux
+- `file:c:\\data\config.yml` on Windows
 
 ## Configuration
 
+### Services
+
 Here's how configuration files should look:
 
-**service.xml**
-```xml
-<serviceConfiguration>
-   <services>
-      <service>
-         <path>/service/mock/.*</path>
-         <domain>localhost</domain>
-         <port>3000</port>
-      </service>
-      <service>
-         <path>/service/.*</path>
-         <domain>localhost</domain>
-         <port>8080</port>
-      </service>
-   </services>
-</serviceConfiguration>
+**service.yml**
+```yaml
+services:
+
+  - path: /service/mock/.*
+    domain: localhost
+    port: 3000
+
+  - path: /service/.*
+    domain: localhost
+    port: 8080
 ```
 
 There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
@@ -127,35 +139,53 @@ There are two groups of services defined. Each one will be handled by a differen
 
 The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
 
-**repository.xml**
-```xml
-<configuration>
-   <repositories>
-      <local>
-         <path>/content/local/.*</path>
-         <catalogue></catalogue>
-      </local>
-      <remote>
-         <path>/content/.*</path>
-         <url>localhost:8080</url>
-      </remote>
-   </repositories>
-</configuration>
+### Repositories
+
+**repository.yml**
+```yaml
+repositories:
+
+  - type: local
+    path: /content/local/.*
+    catalogue:
+
+  - type: remote
+    path: /content/.*
+    serviceUrl: localhost:8080
 ```
 
 There are two repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 
-### Local repositories
+#### Local repositories
 
 If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
 
 Second parameter to define is `catalogue` - it determines where to take the resources from. If left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
-### Remote repositories
+#### Remote repositories
 
 This kind of repository connects with an external server to fetch templates.
 
 To specify where the remote instance is, please configure the `url` parameter.
+
+### Using command line arguments and environment variables
+
+Often some properties are sensitive and we do not want to expose them in configuration files, e.g. passwords. In such case we can use command line arguments or environment variables to inject the values of those properties into the configuration.
+Let's assume the following repository configuration is present:
+```yaml
+repositories:
+
+  - type: db
+    user: db.user
+    password: ${db.password}
+```
+Since we do not want to expose the database password, we can use a placeholder and substitute it with the value of a command line argument while starting our application:
+```
+--db.password=passw0rd
+```
+Another way to provide a value for the password placeholder shown above is to set an evironment variable `db.password`.
+
+>Notice: command line arguments take precedence over environment variables.
 
 # Licence
 

@@ -17,13 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
+interface RepositoryMetadataValidator {
 
-@XmlTransient
-@XmlSeeAlso({LocalRepository.LocalRepositoryMetadata.class, RemoteRepository.RemoteRepositoryMetadata.class})
-interface RepositoryMetadata {
-
-    RepositoryType getRepositoryType();
-
+    boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

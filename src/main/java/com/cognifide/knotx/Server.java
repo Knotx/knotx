@@ -59,7 +59,7 @@ public class Server extends AbstractVerticle {
     @Autowired
     private TemplateHandlerFactory templateHandlerFactory;
 
-    @Value("#{'${service.call.headers}'.split(',')}")
+    @Value("#{'${request.preserved.headers}'.split(',')}")
     private List<String> serviceCallHeaders;
 
     @Value("${service.mock.enabled}")
@@ -68,7 +68,7 @@ public class Server extends AbstractVerticle {
     @Value("${service.mock.port}")
     private Integer mockServicePort;
 
-    @Value("${server.requestHandler.port}")
+    @Value("${requestHandler.port}")
     private Integer requestHandlerPort;
 
     @Override

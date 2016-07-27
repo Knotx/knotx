@@ -17,20 +17,44 @@
  */
 package com.cognifide.knotx.repository;
 
-enum RepositoryType {
+import com.cognifide.knotx.Server;
 
-    LOCAL(new LocalRepository.LocalRepositoryBuilder()),
+import org.apache.commons.lang3.StringUtils;
 
-    REMOTE(new RemoteRepository.RemoteRepositoryBuilder());
+import java.net.URI;
+import java.util.stream.Stream;
 
-    private RepositoryBuilder repositoryBuilder;
+enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
-    RepositoryType(RepositoryBuilder repositoryBuilder) {
-        this.repositoryBuilder = repositoryBuilder;
+    LOCAL {
+        @Override
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
+        }
+
+        @Override
+        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+            return isNotEmpty(metadata.getPath());
+        }
+    },
+
+    REMOTE {
+        @Override
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+            return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
+        }
+
+        @Override
+        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+            return isNotEmpty(metadata.getPath(), metadata.getServiceUrl());
+        }
+    };
+
+    private static boolean isNotEmpty(String... values) {
+        return !Stream.of(values).anyMatch(StringUtils::isBlank);
     }
 
-    public RepositoryBuilder getRepositoryBuilder() {
-        return repositoryBuilder;
-    }
+    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
 
+    public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

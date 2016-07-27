@@ -29,11 +29,12 @@ import io.vertx.core.AsyncResultHandler;
 public class RepositoryFacade implements Repository<String, URI> {
 
     @Autowired
-    RepositoryManager repositoryManager;
+    private RepositoryConfiguration repositoryConfiguration;
 
     @Override
     public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-        repositoryManager.getManagedResource().stream()
+        repositoryConfiguration.getRepositories().stream()
+                .map(this::getRepositoryByMetadata)
                 .filter(repository -> repository.support(uri))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(String.format("Can't obtain repository for uri %s", uri)))
@@ -42,9 +43,14 @@ public class RepositoryFacade implements Repository<String, URI> {
 
     @Override
     public boolean support(URI uri) {
-        return repositoryManager.getManagedResource().stream()
+        return repositoryConfiguration.getRepositories().stream()
+                .map(this::getRepositoryByMetadata)
                 .filter(repository -> repository.support(uri))
                 .findFirst()
                 .isPresent();
+    }
+
+    private Repository<String, URI> getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
+        return metadata.getType().create(metadata, repositoryConfiguration.getServer());
     }
 }

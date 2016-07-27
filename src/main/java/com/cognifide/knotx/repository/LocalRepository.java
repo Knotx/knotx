@@ -22,14 +22,9 @@ import com.cognifide.knotx.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
 import java.net.URI;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.AsyncResultHandler;
@@ -49,7 +44,7 @@ class LocalRepository implements Repository<String, URI> {
         // hidden constructor
     }
 
-    private static LocalRepository of(String path, String catalogue, Server server) {
+    static LocalRepository of(String path, String catalogue, Server server) {
         LocalRepository repository = new LocalRepository();
         repository.path = path;
         repository.catalogue = catalogue;
@@ -95,42 +90,6 @@ class LocalRepository implements Repository<String, URI> {
     public boolean support(URI uri) {
         String path = uri.getPath();
         return path.matches(this.path);
-    }
-
-    @SuppressWarnings("unused")
-    @XmlRootElement(name = "local")
-    static class LocalRepositoryMetadata implements RepositoryMetadata {
-
-        @XmlElement(name = "path")
-        private String path;
-
-        @XmlElement(name = "catalogue")
-        private String catalogue;
-
-        String getCatalogue() {
-            return catalogue;
-        }
-
-        String getPath() {
-            return path;
-        }
-
-        @Override
-        public RepositoryType getRepositoryType() {
-            return RepositoryType.LOCAL;
-        }
-    }
-
-    static class LocalRepositoryBuilder implements RepositoryBuilder<LocalRepositoryMetadata> {
-
-        private static final long serialVersionUID = 3007511016213749712L;
-
-        @Override
-        public Repository<String, URI> create(LocalRepositoryMetadata metadata,
-                                              ResourceLoader resourceLoader, ApplicationContext applicationContext) {
-            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(),
-                    applicationContext.getBean(Server.class));
-        }
     }
 
 }

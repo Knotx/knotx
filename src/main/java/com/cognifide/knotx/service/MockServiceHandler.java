@@ -36,7 +36,6 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
 
-    @SuppressWarnings("unused")
     @Value("${service.mock.catalogue}")
     private String catalogue;
 
