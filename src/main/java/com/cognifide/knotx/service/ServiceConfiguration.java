@@ -26,67 +26,67 @@ import java.util.List;
 @ConfigurationProperties(locations = {"${service.configuration}"})
 public class ServiceConfiguration {
 
-    private List<ServiceMetadata> services;
+	private List<ServiceMetadata> services;
 
-    public List<ServiceMetadata> getServices() {
-        return services;
-    }
+	public List<ServiceMetadata> getServices() {
+		return services;
+	}
 
-    public void setServices(List<ServiceMetadata> services) {
-        this.services = services;
-    }
+	public void setServices(List<ServiceMetadata> services) {
+		this.services = services;
+	}
 
-    public static class ServiceMetadata {
+	public static class ServiceMetadata {
 
-        private String path;
+		private String path;
 
-        private String domain;
+		private String domain;
 
-        private String port;
+		private String port;
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
 
-            ServiceMetadata that = (ServiceMetadata) o;
+			ServiceMetadata that = (ServiceMetadata) o;
 
-            if (path != null ? !path.equals(that.path) : that.path != null) return false;
-            if (domain != null ? !domain.equals(that.domain) : that.domain != null) return false;
-            return port != null ? port.equals(that.port) : that.port == null;
+			if (path != null ? !path.equals(that.path) : that.path != null) return false;
+			if (domain != null ? !domain.equals(that.domain) : that.domain != null) return false;
+			return port != null ? port.equals(that.port) : that.port == null;
 
-        }
+		}
 
-        @Override
-        public int hashCode() {
-            int result = path != null ? path.hashCode() : 0;
-            result = 31 * result + (domain != null ? domain.hashCode() : 0);
-            result = 31 * result + (port != null ? port.hashCode() : 0);
-            return result;
-        }
+		@Override
+		public int hashCode() {
+			int result = path != null ? path.hashCode() : 0;
+			result = 31 * result + (domain != null ? domain.hashCode() : 0);
+			result = 31 * result + (port != null ? port.hashCode() : 0);
+			return result;
+		}
 
-        public String getPath() {
-            return path;
-        }
+		public String getPath() {
+			return path;
+		}
 
-        public void setPath(String path) {
-            this.path = path;
-        }
+		public void setPath(String path) {
+			this.path = path;
+		}
 
-        public String getDomain() {
-            return domain;
-        }
+		public String getDomain() {
+			return domain;
+		}
 
-        public void setDomain(String domain) {
-            this.domain = domain;
-        }
+		public void setDomain(String domain) {
+			this.domain = domain;
+		}
 
-        public String getPort() {
-            return port;
-        }
+		public String getPort() {
+			return port;
+		}
 
-        public void setPort(String port) {
-            this.port = port;
-        }
-    }
+		public void setPort(String port) {
+			this.port = port;
+		}
+	}
 }

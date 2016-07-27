@@ -26,37 +26,37 @@ import java.util.stream.Stream;
 
 enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
-    LOCAL {
-        @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
-            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
-        }
+	LOCAL {
+		@Override
+		public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+			return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
+		}
 
-        @Override
-        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
-            return isNotEmpty(metadata.getPath());
-        }
-    },
+		@Override
+		public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+			return isNotEmpty(metadata.getPath());
+		}
+	},
 
-    REMOTE {
-        @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
-        }
+	REMOTE {
+		@Override
+		public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+			return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
+		}
 
-        @Override
-        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
-            return isNotEmpty(metadata.getPath(), metadata.getServiceUrl());
-        }
-    };
+		@Override
+		public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+			return isNotEmpty(metadata.getPath(), metadata.getServiceUrl());
+		}
+	};
 
-    private static boolean isNotEmpty(String... values) {
-        return !Stream.of(values).anyMatch(StringUtils::isBlank);
-    }
+	private static boolean isNotEmpty(String... values) {
+		return !Stream.of(values).anyMatch(StringUtils::isBlank);
+	}
 
-    @Override
-    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
+	@Override
+	public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
 
-    @Override
-    public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
+	@Override
+	public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

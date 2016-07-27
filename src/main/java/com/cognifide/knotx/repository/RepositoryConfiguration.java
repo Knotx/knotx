@@ -37,101 +37,101 @@ import javax.annotation.PostConstruct;
 @ConfigurationProperties(locations = {"${repository.configuration}"})
 public class RepositoryConfiguration  {
 
-    @Autowired
-    private Server server;
+	@Autowired
+	private Server server;
 
-    private List<RepositoryMetadata> repositories;
+	private List<RepositoryMetadata> repositories;
 
-    public Server getServer() {
-        return server;
-    }
+	public Server getServer() {
+		return server;
+	}
 
-    public List<RepositoryMetadata> getRepositories() {
-        return repositories;
-    }
+	public List<RepositoryMetadata> getRepositories() {
+		return repositories;
+	}
 
-    public void setRepositories(List<RepositoryMetadata> repositories) {
-        this.repositories = repositories;
-    }
+	public void setRepositories(List<RepositoryMetadata> repositories) {
+		this.repositories = repositories;
+	}
 
-    public void afterPropertiesSet() throws Exception {
-        String invalidMetadata = repositories.stream()
-                .filter(metadata -> !metadata.getType().validate(metadata))
-                .map(RepositoryMetadata::toString)
-                .collect(Collectors.joining(", "));
-        if (StringUtils.isNotEmpty(invalidMetadata)) {
-            throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
-        }
-    }
+	public void afterPropertiesSet() throws Exception {
+		String invalidMetadata = repositories.stream()
+				.filter(metadata -> !metadata.getType().validate(metadata))
+				.map(RepositoryMetadata::toString)
+				.collect(Collectors.joining(", "));
+		if (StringUtils.isNotEmpty(invalidMetadata)) {
+			throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
+		}
+	}
 
-    public static class RepositoryMetadata {
+	public static class RepositoryMetadata {
 
-        private String path;
+		private String path;
 
-        private String serviceUrl;
+		private String serviceUrl;
 
-        private String catalogue;
+		private String catalogue;
 
-        private RepositoryType type;
+		private RepositoryType type;
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
 
-            RepositoryMetadata that = (RepositoryMetadata) o;
+			RepositoryMetadata that = (RepositoryMetadata) o;
 
-            if (path != null ? !path.equals(that.path) : that.path != null) return false;
-            if (serviceUrl != null ? !serviceUrl.equals(that.serviceUrl) : that.serviceUrl != null) return false;
-            if (catalogue != null ? !catalogue.equals(that.catalogue) : that.catalogue != null) return false;
-            return type == that.type;
+			if (path != null ? !path.equals(that.path) : that.path != null) return false;
+			if (serviceUrl != null ? !serviceUrl.equals(that.serviceUrl) : that.serviceUrl != null) return false;
+			if (catalogue != null ? !catalogue.equals(that.catalogue) : that.catalogue != null) return false;
+			return type == that.type;
 
-        }
+		}
 
-        @Override
-        public int hashCode() {
-            int result = path != null ? path.hashCode() : 0;
-            result = 31 * result + (serviceUrl != null ? serviceUrl.hashCode() : 0);
-            result = 31 * result + (catalogue != null ? catalogue.hashCode() : 0);
-            result = 31 * result + (type != null ? type.hashCode() : 0);
-            return result;
-        }
+		@Override
+		public int hashCode() {
+			int result = path != null ? path.hashCode() : 0;
+			result = 31 * result + (serviceUrl != null ? serviceUrl.hashCode() : 0);
+			result = 31 * result + (catalogue != null ? catalogue.hashCode() : 0);
+			result = 31 * result + (type != null ? type.hashCode() : 0);
+			return result;
+		}
 
-        public String getPath() {
-            return path;
-        }
+		public String getPath() {
+			return path;
+		}
 
-        public void setPath(String path) {
-            this.path = path;
-        }
+		public void setPath(String path) {
+			this.path = path;
+		}
 
-        public String getServiceUrl() {
-            return serviceUrl;
-        }
+		public String getServiceUrl() {
+			return serviceUrl;
+		}
 
-        public void setServiceUrl(String serviceUrl) {
-            this.serviceUrl = serviceUrl;
-        }
+		public void setServiceUrl(String serviceUrl) {
+			this.serviceUrl = serviceUrl;
+		}
 
-        public String getCatalogue() {
-            return catalogue;
-        }
+		public String getCatalogue() {
+			return catalogue;
+		}
 
-        public void setCatalogue(String catalogue) {
-            this.catalogue = catalogue;
-        }
+		public void setCatalogue(String catalogue) {
+			this.catalogue = catalogue;
+		}
 
-        public RepositoryType getType() {
-            return type;
-        }
+		public RepositoryType getType() {
+			return type;
+		}
 
-        public void setType(RepositoryType type) {
-            this.type = type;
-        }
+		public void setType(RepositoryType type) {
+			this.type = type;
+		}
 
-        @Override
-        public String toString() {
-            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-        }
-    }
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		}
+	}
 }
