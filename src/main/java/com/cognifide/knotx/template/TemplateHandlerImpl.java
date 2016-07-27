@@ -20,8 +20,11 @@ package com.cognifide.knotx.template;
 import com.google.common.collect.Iterables;
 
 import com.cognifide.knotx.Server;
+import com.cognifide.knotx.cache.ServiceResponseCache;
+import com.cognifide.knotx.cache.ServiceResponseCacheFactory;
 import com.cognifide.knotx.event.ObservableRequest;
 import com.cognifide.knotx.event.TrafficObserver;
+import com.cognifide.knotx.handler.ResponseHandlerHelper;
 import com.cognifide.knotx.handler.RestServiceResponseHandler;
 import com.cognifide.knotx.repository.Template;
 import com.github.jknack.handlebars.Handlebars;
@@ -40,6 +43,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import io.vertx.core.http.HttpHeaders;
@@ -56,6 +61,8 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private final Handlebars handlebars;
 
+    private final ServiceResponseCache cache;
+
     private final Server server;
 
     @Value("${template.debug}")
@@ -68,9 +75,10 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     private Document htmlDocument;
 
     @Autowired
-    public TemplateHandlerImpl(Server server, Handlebars handlebars) {
+    public TemplateHandlerImpl(Server server, Handlebars handlebars, ServiceResponseCacheFactory cacheFactory) {
         this.server = server;
         this.handlebars = handlebars;
+        this.cache = cacheFactory.getInstance();
     }
 
     @Override
@@ -106,9 +114,14 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         String templateContent = snippet.html();
         try {
             com.github.jknack.handlebars.Template template = handlebars.compileInline(templateContent);
-            RestServiceResponseHandler serviceResponseHandler =
-                    new RestServiceResponseHandler(request, template, this, dataCallUri, observableRequest, snippet, templateDebug);
-            server.callService(request, dataCallUri, serviceResponseHandler);
+            Optional<Map<String, Object>> serviceData = cache.get(dataCallUri);
+            ResponseHandlerHelper handlerHelper = new ResponseHandlerHelper(observableRequest, request, this, snippet, dataCallUri, template, templateDebug);
+            if (serviceData.isPresent()) {
+                handlerHelper.applyData(serviceData.get());
+            } else {
+                RestServiceResponseHandler serviceResponseHandler = new RestServiceResponseHandler(request, dataCallUri, handlerHelper, snippet, cache);
+                server.callService(request, dataCallUri, serviceResponseHandler);
+            }
         } catch (IOException e) {
             LOGGER.error("Could not process template [{}]", dataCallUri);
         }
