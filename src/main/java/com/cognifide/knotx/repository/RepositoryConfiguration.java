@@ -20,6 +20,8 @@ package com.cognifide.knotx.repository;
 import com.cognifide.knotx.Server;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -104,12 +106,7 @@ public class RepositoryConfiguration implements InitializingBean {
 
         @Override
         public String toString() {
-            return "RepositoryMetadata{" +
-                    "path='" + path + '\'' +
-                    ", serviceUrl='" + serviceUrl + '\'' +
-                    ", catalogue='" + catalogue + '\'' +
-                    ", type=" + type +
-                    '}';
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
         }
     }
 }
