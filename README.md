@@ -27,13 +27,13 @@ In order to separate static content and dynamic data we introduced a Templating 
 
 The following table describes all elements and attributes used in the template.
 
-| Element                             | Description                                                              | Optional  |
-| ----------------------------------- | ------------------------------------------------------------------------ | --------- |
-| `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process | false     |
-| `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section | false |
-| `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating | false |
-| `data-no-cache`                     | by default responses from microservices are cached, adding `data-no-cache` attribute with a value of `true` will prevent response from being cached | true  |
-| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice | n/a   |
+| Element                             | Description                                                              | Required |
+| ----------------------------------- | ------------------------------------------------------------------------ | -------- |
+| `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process | true     |
+| `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section | true     |
+| `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating | true     |
+| `data-no-cache`                     | by default responses from microservices are cached, adding optional `data-no-cache` attribute with a value of `true` will prevent response from being cached | false    |
+| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice | n/a      |
 
 In this case the microservice response could have the following format:
 
