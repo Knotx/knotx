@@ -54,16 +54,6 @@ public class RepositoryConfiguration  {
 		this.repositories = repositories;
 	}
 
-	public void afterPropertiesSet() throws Exception {
-		String invalidMetadata = repositories.stream()
-				.filter(metadata -> !metadata.getType().validate(metadata))
-				.map(RepositoryMetadata::toString)
-				.collect(Collectors.joining(", "));
-		if (StringUtils.isNotEmpty(invalidMetadata)) {
-			throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
-		}
-	}
-
 	public static class RepositoryMetadata {
 
 		private String path;
