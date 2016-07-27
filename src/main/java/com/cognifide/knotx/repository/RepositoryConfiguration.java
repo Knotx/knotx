@@ -22,6 +22,7 @@ import com.cognifide.knotx.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.junit.After;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,9 +31,11 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 @ConfigurationProperties(locations = {"${repository.configuration}"})
-public class RepositoryConfiguration implements InitializingBean {
+public class RepositoryConfiguration  {
 
     @Autowired
     private Server server;
@@ -51,7 +54,6 @@ public class RepositoryConfiguration implements InitializingBean {
         this.repositories = repositories;
     }
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         String invalidMetadata = repositories.stream()
                 .filter(metadata -> !metadata.getType().validate(metadata))
@@ -71,6 +73,29 @@ public class RepositoryConfiguration implements InitializingBean {
         private String catalogue;
 
         private RepositoryType type;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            RepositoryMetadata that = (RepositoryMetadata) o;
+
+            if (path != null ? !path.equals(that.path) : that.path != null) return false;
+            if (serviceUrl != null ? !serviceUrl.equals(that.serviceUrl) : that.serviceUrl != null) return false;
+            if (catalogue != null ? !catalogue.equals(that.catalogue) : that.catalogue != null) return false;
+            return type == that.type;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = path != null ? path.hashCode() : 0;
+            result = 31 * result + (serviceUrl != null ? serviceUrl.hashCode() : 0);
+            result = 31 * result + (catalogue != null ? catalogue.hashCode() : 0);
+            result = 31 * result + (type != null ? type.hashCode() : 0);
+            return result;
+        }
 
         public String getPath() {
             return path;
