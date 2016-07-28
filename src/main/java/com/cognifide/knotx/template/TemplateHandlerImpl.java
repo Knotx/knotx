@@ -29,7 +29,6 @@ import com.github.jknack.handlebars.Handlebars;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +36,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
 
 import io.vertx.core.http.HttpHeaders;
@@ -48,7 +50,7 @@ import rx.Observable;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
+class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateHandlerImpl.class);
 
@@ -59,13 +61,15 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     private final Server server;
 
     @Value("${template.debug}")
-    private Boolean templateDebug;
+    private boolean templateDebug;
 
     private CountDownLatch templatesLatch;
 
     private TrafficObserver trafficObserver = new TrafficObserver();
 
     private Document htmlDocument;
+
+    private MultiValueMap<String, Element> snippetGroups = new LinkedMultiValueMap<>();
 
     @Autowired
     public TemplateHandlerImpl(Server server, Handlebars handlebars) {
@@ -76,11 +80,11 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     @Override
     public void handle(Template<String, URI> template, HttpServerRequest request) {
         htmlDocument = Jsoup.parse(template.get());
-        final Elements snippets = htmlDocument.select(SNIPPET_TAG);
-        templatesLatch = new CountDownLatch(Iterables.size(snippets));
+        htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
+        templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
-        Observable.from(snippets).subscribe(
-                snippet -> handleTemplate(snippet, request),
+        Observable.from(snippetGroups.entrySet()).subscribe(
+                snippetGroup -> handleTemplate(snippetGroup, request),
                 throwable -> {
                     LOGGER.error("Fatal error when requesting {}", request.absoluteURI(), throwable);
                     finishIfLast(request);
@@ -97,21 +101,15 @@ public class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         }
     }
 
-    private void handleTemplate(Element snippet, HttpServerRequest request) {
-        final String dataCallUri = getServiceUrl(request, snippet);
+    private void handleTemplate(Entry<String, List<Element>> snippetGroup, HttpServerRequest request) {
+        final String dataCallUri = snippetGroup.getKey();
         ObservableRequest observableRequest = new ObservableRequest(dataCallUri);
         observableRequest.addObserver(trafficObserver);
         observableRequest.onStart();
 
-        String templateContent = snippet.html();
-        try {
-            com.github.jknack.handlebars.Template template = handlebars.compileInline(templateContent);
-            RestServiceResponseHandler serviceResponseHandler =
-                    new RestServiceResponseHandler(request, template, this, dataCallUri, observableRequest, snippet, templateDebug);
-            server.callService(request, dataCallUri, serviceResponseHandler);
-        } catch (IOException e) {
-            LOGGER.error("Could not process template [{}]", dataCallUri);
-        }
+        RestServiceResponseHandler serviceResponseHandler =
+                new RestServiceResponseHandler(request, snippetGroup, this, observableRequest, handlebars, templateDebug);
+        server.callService(request, dataCallUri, serviceResponseHandler);
     }
 
     private String getServiceUrl(HttpServerRequest request, Element snippet) {
