@@ -215,7 +215,7 @@ Let's assume that we obtained the following template from repository:
 ```
 In this case only one call to microservice will be made, since both snippets share the same `data-call-uri`. Data retrived from `/searchService` will be applied to both snippets.
 
-Notice: Following `data-call-uri` attributes
+Notice: The following `data-call-uri` attributes
 ```
 /searchService?q=first
 ```
