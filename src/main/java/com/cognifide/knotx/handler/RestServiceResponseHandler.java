@@ -18,9 +18,11 @@
 package com.cognifide.knotx.handler;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.cognifide.knotx.event.ObservableRequest;
 import com.cognifide.knotx.template.TemplateHandler;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
 import org.jsoup.nodes.Element;
@@ -29,7 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClientResponse;
@@ -41,23 +46,27 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
     private final HttpServerRequest request;
 
+    private final List<Element> snippets;
+
     private final TemplateHandler templateHandler;
 
     private final String dataCallUri;
 
     private final ObservableRequest observableRequest;
 
+    private final Handlebars handlebars;
+
     private final boolean templateDebug;
 
-    private final Map<Element, Template> snippetTemplateMap;
-
-    public RestServiceResponseHandler(HttpServerRequest request, Map<Element, Template> snippetTemplateMap, TemplateHandler templateHandler,
-                                      String dataCallUri, ObservableRequest observableRequest, Boolean templateDebug) {
+    public RestServiceResponseHandler(HttpServerRequest request, Entry<String, List<Element>> snippetGroup,
+                                      TemplateHandler templateHandler, ObservableRequest observableRequest,
+                                      Handlebars handlebars, boolean templateDebug) {
         this.request = request;
-        this.snippetTemplateMap = snippetTemplateMap;
+        this.snippets = snippetGroup.getValue();
         this.templateHandler = templateHandler;
-        this.dataCallUri = dataCallUri;
+        this.dataCallUri = snippetGroup.getKey();
         this.observableRequest = observableRequest;
+        this.handlebars = handlebars;
         this.templateDebug = templateDebug;
     }
 
@@ -66,26 +75,32 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
         response.bodyHandler(buffer -> {
             String responseContent = buffer.getString(0, buffer.length());
             LOGGER.debug("Request in: " + request.absoluteURI() + " for " + dataCallUri);
-            Map serviceData = new Gson().fromJson(responseContent, Map.class);
+            Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> serviceData = new Gson().fromJson(responseContent, mapType);
             applyData(serviceData);
             observableRequest.onFinish();
             templateHandler.finishIfLast(request);
         });
     }
 
-    private void applyData(Map serviceData) {
-        snippetTemplateMap.entrySet().forEach(entry -> {
+    private void applyData(Map<String, Object> serviceData) {
+        snippets.forEach(snippet -> {
             try {
-                String compiledContent = entry.getValue().apply(serviceData);
+                Template template = compile(snippet.html());
+                String compiledContent = template.apply(serviceData);
                 Element snippetParent = new Element(Tag.valueOf("div"), "");
                 if (templateDebug) {
                     String debugComment = "<!-- webservice `" + dataCallUri + "` call -->";
                     snippetParent.prepend(debugComment);
                 }
-                entry.getKey().replaceWith(snippetParent.append(compiledContent));
+                snippet.replaceWith(snippetParent.append(compiledContent));
             } catch (IOException e) {
-                LOGGER.error("Can't apply response to template!", e);
+                LOGGER.error("Cannot apply response to template!", e);
             }
         });
+    }
+
+    private Template compile(String html) throws IOException {
+        return handlebars.compileInline(html);
     }
 }

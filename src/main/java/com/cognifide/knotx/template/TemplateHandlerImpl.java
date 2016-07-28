@@ -39,14 +39,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.io.IOException;
 import java.net.URI;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServerRequest;
@@ -65,7 +61,7 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     private final Server server;
 
     @Value("${template.debug}")
-    private Boolean templateDebug;
+    private boolean templateDebug;
 
     private CountDownLatch templatesLatch;
 
@@ -111,22 +107,9 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         observableRequest.addObserver(trafficObserver);
         observableRequest.onStart();
 
-        Map<Element, com.github.jknack.handlebars.Template> snippetTemplateMap = snippetGroup.getValue().stream()
-                .map(snippet -> new SimpleEntry<>(snippet, compile(snippet.html(), dataCallUri)))
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
         RestServiceResponseHandler serviceResponseHandler =
-                new RestServiceResponseHandler(request, snippetTemplateMap, this, dataCallUri, observableRequest, templateDebug);
+                new RestServiceResponseHandler(request, snippetGroup, this, observableRequest, handlebars, templateDebug);
         server.callService(request, dataCallUri, serviceResponseHandler);
-    }
-
-    private com.github.jknack.handlebars.Template compile(String html, String dataCallUri) {
-        try {
-            return handlebars.compileInline(html);
-        } catch (IOException e) {
-            LOGGER.error("Could not process template [{}]", dataCallUri);
-        }
-        return null;
     }
 
     private String getServiceUrl(HttpServerRequest request, Element snippet) {
