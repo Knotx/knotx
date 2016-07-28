@@ -191,7 +191,7 @@ Another way to provide a value for the password placeholder shown above is to se
 
 ## Requests grouping
 
-Template obtained from the repository may containt many snippets that will trigger microservice calls for data. There is a chance that some of the snippets will have the same `data-call-uri` attribute set, meaning they will request data from the same source.
+Template obtained from the repository may contain many snippets that will trigger microservice calls for data. There is a chance that some of the snippets will have the same `data-call-uri` attribute set, meaning they will request data from the same source.
 In such case only one call to miscroservice shall be made and data retrieved from service call should be applied to all snippets sharing the same `data-call-uri`.
 
 Example:
@@ -222,7 +222,7 @@ Notice: Following `data-call-uri` attributes
 ```
 /searchService?q=second
 ```
-would trigger two calls for data becasue of the difference in query strings, even though the path to service is the same in both.
+would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
 
 # Licence
 
