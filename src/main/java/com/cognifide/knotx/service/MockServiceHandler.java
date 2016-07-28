@@ -52,8 +52,10 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
             }
         } catch (IOException e) {
             LOGGER.error("Could not read content!", e);
+        }finally {
+            event.response().end(htmlContent);
+            event.connection().close();
         }
-        event.response().end(htmlContent);
     }
 
 }
