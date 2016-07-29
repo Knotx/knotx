@@ -19,6 +19,8 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.Server;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,28 +61,28 @@ public class RepositoryConfiguration {
         private RepositoryType type;
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            RepositoryMetadata that = (RepositoryMetadata) o;
-
-            if (path != null ? !path.equals(that.path) : that.path != null) return false;
-            if (serviceUrl != null ? !serviceUrl.equals(that.serviceUrl) : that.serviceUrl != null)
+        public boolean equals(Object obj) {
+            if (obj != null && obj instanceof RepositoryMetadata) {
+                final RepositoryMetadata other = (RepositoryMetadata) obj;
+                return new EqualsBuilder()
+                        .append(path, other.getPath())
+                        .append(serviceUrl, other.getServiceUrl())
+                        .append(catalogue, other.getCatalogue())
+                        .append(type, other.getType()).isEquals();
+            } else {
                 return false;
-            if (catalogue != null ? !catalogue.equals(that.catalogue) : that.catalogue != null)
-                return false;
-            return type == that.type;
+            }
 
         }
 
         @Override
         public int hashCode() {
-            int result = path != null ? path.hashCode() : 0;
-            result = 31 * result + (serviceUrl != null ? serviceUrl.hashCode() : 0);
-            result = 31 * result + (catalogue != null ? catalogue.hashCode() : 0);
-            result = 31 * result + (type != null ? type.hashCode() : 0);
-            return result;
+            return new HashCodeBuilder()
+                    .append(path)
+                    .append(serviceUrl)
+                    .append(catalogue)
+                    .append(type)
+                    .toHashCode();
         }
 
         public String getPath() {
