@@ -24,6 +24,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -31,16 +32,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-
 @Configuration
 @ConfigurationProperties(locations = {"${repository.configuration}"})
-public class RepositoryConfiguration {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConfiguration.class);
+public class RepositoryConfiguration implements InitializingBean {
 
     @Autowired
     private Server server;
@@ -59,27 +53,15 @@ public class RepositoryConfiguration {
         this.repositories = repositories;
     }
 
-    @PostConstruct
+    @Override
     public void afterPropertiesSet() throws Exception {
-        logInvalidMetadata();
-        filterValidRepositories();
-        repositories.stream().forEach(repositoryMetadata -> LOGGER.info("Repository configuration loaded + " + repositoryMetadata));
-    }
-
-    private void logInvalidMetadata() {
         String invalidMetadata = repositories.stream()
                 .filter(metadata -> !metadata.getType().validate(metadata))
                 .map(RepositoryMetadata::toString)
                 .collect(Collectors.joining(", "));
         if (StringUtils.isNotEmpty(invalidMetadata)) {
-            LOGGER.error("Invalid repositories configuration " + invalidMetadata);
+            throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
         }
-    }
-
-    private void filterValidRepositories() {
-        repositories = repositories.stream()
-                .filter(metadata -> metadata.getType().validate(metadata))
-                .collect(Collectors.toList());
     }
 
     public static class RepositoryMetadata {
@@ -104,6 +86,7 @@ public class RepositoryConfiguration {
             } else {
                 return false;
             }
+
         }
 
         @Override
