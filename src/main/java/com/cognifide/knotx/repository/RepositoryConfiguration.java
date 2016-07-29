@@ -19,6 +19,7 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.Server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -28,10 +29,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 @Configuration
 @ConfigurationProperties(locations = {"${repository.configuration}"})
 public class RepositoryConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConfiguration.class);
 
     @Autowired
     private Server server;
@@ -48,6 +57,17 @@ public class RepositoryConfiguration {
 
     public void setRepositories(List<RepositoryMetadata> repositories) {
         this.repositories = repositories;
+    }
+
+    @PostConstruct
+    public void afterPropertiesSet() throws Exception {
+        String invalidMetadata = repositories.stream()
+                .filter(metadata -> !metadata.getType().validate(metadata))
+                .map(RepositoryMetadata::toString)
+                .collect(Collectors.joining(", "));
+        if (StringUtils.isNotEmpty(invalidMetadata)) {
+            LOGGER.warn("Invalid repositories configuration " + invalidMetadata);
+        }
     }
 
     public static class RepositoryMetadata {
