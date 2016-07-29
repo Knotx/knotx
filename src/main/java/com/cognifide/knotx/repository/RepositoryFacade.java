@@ -34,7 +34,6 @@ public class RepositoryFacade implements Repository<String, URI> {
     @Override
     public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
         repositoryConfiguration.getRepositories().stream()
-                .filter(metadata -> metadata.getType().validate(metadata))
                 .map(this::getRepositoryByMetadata)
                 .filter(repository -> repository.support(uri))
                 .findFirst()
@@ -45,7 +44,6 @@ public class RepositoryFacade implements Repository<String, URI> {
     @Override
     public boolean support(URI uri) {
         return repositoryConfiguration.getRepositories().stream()
-                .filter(metadata -> metadata.getType().validate(metadata))
                 .map(this::getRepositoryByMetadata)
                 .filter(repository -> repository.support(uri))
                 .findFirst()

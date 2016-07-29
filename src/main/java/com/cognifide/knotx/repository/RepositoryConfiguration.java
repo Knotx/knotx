@@ -61,13 +61,25 @@ public class RepositoryConfiguration {
 
     @PostConstruct
     public void afterPropertiesSet() throws Exception {
+        logInvalidMetadata();
+        filterValidRepositories();
+        repositories.stream().forEach(repositoryMetadata -> LOGGER.info("Repository configuration loaded + " + repositoryMetadata));
+    }
+
+    private void logInvalidMetadata() {
         String invalidMetadata = repositories.stream()
                 .filter(metadata -> !metadata.getType().validate(metadata))
                 .map(RepositoryMetadata::toString)
                 .collect(Collectors.joining(", "));
         if (StringUtils.isNotEmpty(invalidMetadata)) {
-            LOGGER.warn("Invalid repositories configuration " + invalidMetadata);
+            LOGGER.error("Invalid repositories configuration " + invalidMetadata);
         }
+    }
+
+    private void filterValidRepositories() {
+        repositories = repositories.stream()
+                .filter(metadata -> metadata.getType().validate(metadata))
+                .collect(Collectors.toList());
     }
 
     public static class RepositoryMetadata {
@@ -92,7 +104,6 @@ public class RepositoryConfiguration {
             } else {
                 return false;
             }
-
         }
 
         @Override
