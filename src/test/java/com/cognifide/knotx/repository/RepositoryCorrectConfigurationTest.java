@@ -17,10 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import com.cognifide.knotx.TestApplication;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
@@ -31,61 +28,64 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cognifide.knotx.TestApplication;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = { "repository.configuration=classpath:repository-correct.yml" })
+@TestPropertySource(properties = {"repository.configuration=classpath:repository-correct.yml"})
 public class RepositoryCorrectConfigurationTest {
 
-	@Autowired
-	private RepositoryConfiguration configuration;
+    @Autowired
+    private RepositoryConfiguration configuration;
 
-	private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
+    private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
 
-	private RepositoryConfiguration.RepositoryMetadata expectedRemoteRepositoryMetadata;
-
-
-	@Before
-	public void setUp() throws Exception {
-		expectedLocalRepositoryMetadata = setupLocalRepositoryMetadata();
-		expectedRemoteRepositoryMetadata = setupRemoteRepositoryMetadata();
-	}
-
-	@Test
-	public void testConfigBeanInitializedProperly() {
-		assertThat(configuration.getRepositories(), is(notNullValue()));
-		assertThat(configuration.getRepositories().size(), is(2));
-		assertThat(configuration.getRepositories(), hasItem(expectedLocalRepositoryMetadata));
-		assertThat(configuration.getRepositories(), hasItem(expectedRemoteRepositoryMetadata));
-
-	}
-
-	@Test
-	public void testValidation() {
-		assertThat(configuration.getRepositories(), is(notNullValue()));
-		assertThat(configuration.getRepositories().size(), is(2));
-		assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(0)), is(true));
-		assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(1)), is(true));
-
-	}
+    private RepositoryConfiguration.RepositoryMetadata expectedRemoteRepositoryMetadata;
 
 
-	private RepositoryConfiguration.RepositoryMetadata setupLocalRepositoryMetadata() {
-		RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
-		expectedLocalRepositoryMetadata.setPath("/content/local/.*");
-		expectedLocalRepositoryMetadata.setType(RepositoryType.LOCAL);
-		expectedLocalRepositoryMetadata.setCatalogue(StringUtils.EMPTY);
-		return expectedLocalRepositoryMetadata;
-	}
+    @Before
+    public void setUp() throws Exception {
+        expectedLocalRepositoryMetadata = setupLocalRepositoryMetadata();
+        expectedRemoteRepositoryMetadata = setupRemoteRepositoryMetadata();
+    }
 
-	private RepositoryConfiguration.RepositoryMetadata setupRemoteRepositoryMetadata() {
-		RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
-		expectedLocalRepositoryMetadata.setPath("/content/.*");
-		expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
-		expectedLocalRepositoryMetadata.setServiceUrl("localhost:8080");
-		return expectedLocalRepositoryMetadata;
-	}
+    @Test
+    public void testConfigBeanInitializedProperly() {
+        assertThat(configuration.getRepositories(), is(notNullValue()));
+        assertThat(configuration.getRepositories().size(), is(2));
+        assertThat(configuration.getRepositories(), hasItem(expectedLocalRepositoryMetadata));
+        assertThat(configuration.getRepositories(), hasItem(expectedRemoteRepositoryMetadata));
+
+    }
+
+    @Test
+    public void testValidation() {
+        assertThat(configuration.getRepositories(), is(notNullValue()));
+        assertThat(configuration.getRepositories().size(), is(2));
+        assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(0)), is(true));
+        assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(1)), is(true));
+
+    }
+
+
+    private RepositoryConfiguration.RepositoryMetadata setupLocalRepositoryMetadata() {
+        RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
+        expectedLocalRepositoryMetadata.setPath("/content/local/.*");
+        expectedLocalRepositoryMetadata.setType(RepositoryType.LOCAL);
+        expectedLocalRepositoryMetadata.setCatalogue(StringUtils.EMPTY);
+        return expectedLocalRepositoryMetadata;
+    }
+
+    private RepositoryConfiguration.RepositoryMetadata setupRemoteRepositoryMetadata() {
+        RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
+        expectedLocalRepositoryMetadata.setPath("/content/.*");
+        expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
+        expectedLocalRepositoryMetadata.setServiceUrl("localhost:8080");
+        return expectedLocalRepositoryMetadata;
+    }
 
 
 }

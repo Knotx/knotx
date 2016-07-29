@@ -28,31 +28,31 @@ import io.vertx.core.AsyncResultHandler;
 @Component
 public class RepositoryFacade implements Repository<String, URI> {
 
-	@Autowired
-	private RepositoryConfiguration repositoryConfiguration;
+    @Autowired
+    private RepositoryConfiguration repositoryConfiguration;
 
-	@Override
-	public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-		repositoryConfiguration.getRepositories().stream()
-				.filter(metadata -> metadata.getType().validate(metadata))
-				.map(this::getRepositoryByMetadata)
-				.filter(repository -> repository.support(uri))
-				.findFirst()
-				.orElseThrow(() -> new RuntimeException(String.format("Can't obtain repository for uri %s", uri)))
-				.get(uri, handler);
-	}
+    @Override
+    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+        repositoryConfiguration.getRepositories().stream()
+                .filter(metadata -> metadata.getType().validate(metadata))
+                .map(this::getRepositoryByMetadata)
+                .filter(repository -> repository.support(uri))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format("Can't obtain repository for uri %s", uri)))
+                .get(uri, handler);
+    }
 
-	@Override
-	public boolean support(URI uri) {
-		return repositoryConfiguration.getRepositories().stream()
-				.filter(metadata -> metadata.getType().validate(metadata))
-				.map(this::getRepositoryByMetadata)
-				.filter(repository -> repository.support(uri))
-				.findFirst()
-				.isPresent();
-	}
+    @Override
+    public boolean support(URI uri) {
+        return repositoryConfiguration.getRepositories().stream()
+                .filter(metadata -> metadata.getType().validate(metadata))
+                .map(this::getRepositoryByMetadata)
+                .filter(repository -> repository.support(uri))
+                .findFirst()
+                .isPresent();
+    }
 
-	private Repository<String, URI> getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
-		return metadata.getType().create(metadata, repositoryConfiguration.getServer());
-	}
+    private Repository<String, URI> getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
+        return metadata.getType().create(metadata, repositoryConfiguration.getServer());
+    }
 }

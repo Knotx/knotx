@@ -17,10 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import com.cognifide.knotx.TestApplication;
+import com.cognifide.knotx.service.ServiceConfiguration;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,46 +28,48 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cognifide.knotx.TestApplication;
-import com.cognifide.knotx.service.ServiceConfiguration;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 /**
  * @author pawel.koper on 27.07.16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = { "service.configuration=classpath:service-correct.yml" })
+@TestPropertySource(properties = {"service.configuration=classpath:service-correct.yml"})
 public class ServiceCorrectConfigurationTest {
 
-	@Autowired
-	private ServiceConfiguration serviceConfiguration;
+    @Autowired
+    private ServiceConfiguration serviceConfiguration;
 
-	private ServiceConfiguration.ServiceMetadata expectedServiceOne;
-	private ServiceConfiguration.ServiceMetadata expectedServiceTwo;
+    private ServiceConfiguration.ServiceMetadata expectedServiceOne;
+    private ServiceConfiguration.ServiceMetadata expectedServiceTwo;
 
 
-	@Before
-	public void setUp() throws Exception {
-		expectedServiceOne = createMockedService("/service/mock/.*", "localhost", "3000");
-		expectedServiceTwo = createMockedService("/service/.*", "localhost", "8080");
-	}
+    @Before
+    public void setUp() throws Exception {
+        expectedServiceOne = createMockedService("/service/mock/.*", "localhost", "3000");
+        expectedServiceTwo = createMockedService("/service/.*", "localhost", "8080");
+    }
 
-	@Test
-	public void testConfigBeanInitializedProperly() {
-		assertThat(serviceConfiguration.getServices(), is(notNullValue()));
-		assertThat(serviceConfiguration.getServices().size(), is(2));
-		assertThat(serviceConfiguration.getServices(), hasItem(expectedServiceOne));
-		assertThat(serviceConfiguration.getServices(), hasItem(expectedServiceTwo));
+    @Test
+    public void testConfigBeanInitializedProperly() {
+        assertThat(serviceConfiguration.getServices(), is(notNullValue()));
+        assertThat(serviceConfiguration.getServices().size(), is(2));
+        assertThat(serviceConfiguration.getServices(), hasItem(expectedServiceOne));
+        assertThat(serviceConfiguration.getServices(), hasItem(expectedServiceTwo));
 
-	}
+    }
 
-	private ServiceConfiguration.ServiceMetadata createMockedService(String path, String domain, String port){
-		ServiceConfiguration.ServiceMetadata newService = new ServiceConfiguration.ServiceMetadata();
-		newService.setPath(path);
-		newService.setDomain(domain);
-		newService.setPort(port);
-		return newService;
-	}
+    private ServiceConfiguration.ServiceMetadata createMockedService(String path, String domain, String port) {
+        ServiceConfiguration.ServiceMetadata newService = new ServiceConfiguration.ServiceMetadata();
+        newService.setPath(path);
+        newService.setDomain(domain);
+        newService.setPort(port);
+        return newService;
+    }
 
 
 }

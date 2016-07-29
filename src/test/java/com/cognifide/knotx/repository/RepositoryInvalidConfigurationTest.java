@@ -14,9 +14,7 @@
  */
 package com.cognifide.knotx.repository;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import com.cognifide.knotx.TestApplication;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,27 +25,29 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cognifide.knotx.TestApplication;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = { "repository.configuration=classpath:repository-invalid.yml" })
+@TestPropertySource(properties = {"repository.configuration=classpath:repository-invalid.yml"})
 public class RepositoryInvalidConfigurationTest {
 
-	@Rule
-	public final ExpectedException exception = ExpectedException.none();
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
-	@Autowired
-	private RepositoryConfiguration configuration;
+    @Autowired
+    private RepositoryConfiguration configuration;
 
-	private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
+    private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
 
-	@Test
-	public void testConfiguration() {
-		assertThat(configuration.getRepositories(), is(notNullValue()));
-		assertThat(configuration.getRepositories().size(), is(1));
-		assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(0)), is(false));
-	}
+    @Test
+    public void testConfiguration() {
+        assertThat(configuration.getRepositories(), is(notNullValue()));
+        assertThat(configuration.getRepositories().size(), is(1));
+        assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(0)), is(false));
+    }
 
 
 }
