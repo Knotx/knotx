@@ -245,8 +245,7 @@ would trigger two calls for data because of the difference in query strings, eve
 - Remote template repository support (for remote repositories like Apache, Redis, AEM Dispatcher)
 - Support for POST requests to services (forms)
 - Authentication and authorization solution based on JWT Tokens
-- Placeholders in service-url for dynamic parameters (e.g. GET/POST/HEADER parameters rewritten to service request: ?x=${header.x}).
-- Support configuration formats other than XML (e.g. Json, YAML, System parameters as fallback).
+- Placeholders in service-url for dynamic parameters (e.g. GET/POST/HEADER parameters rewritten to service request). https://github.com/Cognifide/knotx/issues/8
 - Multidomain support, single Knot.x cluster can support whole platform with multiple sites. Each domian restricted to set of services to call.
 - Docker + Cookbook for easy production setup.
 - Kitchen integration tests.
