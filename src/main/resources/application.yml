@@ -38,4 +38,9 @@ service:
   configuration: classpath:service.yml
 
 repository:
+  mock:
+    enabled: true
+    port: 3001
+    catalogue:
+
   configuration: classpath:repository.yml

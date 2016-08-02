@@ -19,6 +19,7 @@ package com.cognifide.knotx;
 
 import com.cognifide.knotx.handler.IncomingRequestsHandler;
 import com.cognifide.knotx.repository.RepositoryFacade;
+import com.cognifide.knotx.service.MockRemoteRepositoryHandler;
 import com.cognifide.knotx.service.MockServiceHandler;
 import com.cognifide.knotx.service.ServiceEndpoint;
 import com.cognifide.knotx.service.ServiceEndpointFacade;
@@ -57,6 +58,9 @@ public class Server extends AbstractVerticle {
     private MockServiceHandler mockServiceHandler;
 
     @Autowired
+    private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
+
+    @Autowired
     private TemplateHandlerFactory templateHandlerFactory;
 
     @Value("#{'${request.preserved.headers}'.split(',')}")
@@ -65,8 +69,14 @@ public class Server extends AbstractVerticle {
     @Value("${service.mock.enabled}")
     private Boolean mockServiceEnabled;
 
+    @Value("${repository.mock.enabled}")
+    private Boolean mockRepositoryEnabled;
+
     @Value("${service.mock.port}")
     private Integer mockServicePort;
+
+    @Value("${repository.mock.port}")
+    private Integer repositoryServicePort;
 
     @Value("${requestHandler.port}")
     private Integer requestHandlerPort;
@@ -80,6 +90,11 @@ public class Server extends AbstractVerticle {
             vertx.createHttpServer()
                     .requestHandler(mockServiceHandler)
                     .listen(mockServicePort);
+        }
+        if (mockRepositoryEnabled) {
+            vertx.createHttpServer()
+                    .requestHandler(mockRemoteRepositoryHandler)
+                    .listen(repositoryServicePort);
         }
     }
 
