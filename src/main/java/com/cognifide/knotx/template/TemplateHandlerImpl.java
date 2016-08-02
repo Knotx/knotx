@@ -83,6 +83,12 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
         templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
+        if (templatesLatch.getCount() == 0) {
+            LOGGER.info("Finished: " + request.absoluteURI());
+            request.response().putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML).end(htmlDocument.html());
+            trafficObserver.onFinish();
+        }
+
         Observable.from(snippetGroups.entrySet()).subscribe(
                 snippetGroup -> handleTemplate(snippetGroup, request),
                 throwable -> {
