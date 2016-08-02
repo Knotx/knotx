@@ -6,7 +6,7 @@ We appreciate all commits and improvements, feel free to join Knot.x community a
 
 ## How to start
 Please refer to [Getting started](https://github.com/Cognifide/knotx#getting-started) section in the README file.
-After setting up Knot.x instance you may check if it works properly entering http://localhost:8092/content/local/simple.html (when running default configuration).
+After setting up Knot.x instance you may check if it works properly entering [http://localhost:8092/content/local/simple.html](http://localhost:8092/content/local/simple.html) (when running default configuration).
 
 ## Guidelines
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
