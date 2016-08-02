@@ -12,6 +12,6 @@ After setting up Knot.x instance you may check if it works properly entering htt
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
 - follow [google styleguide](https://github.com/HPI-Information-Systems/Metanome/wiki/Installing-the-google-styleguide-settings-in-intellij-and-eclipse),
 - write tests,
-- write a [good commit message][commit],
+- write a [good commit message](http://chris.beams.io/posts/git-commit/),
 - update documentation,
 - when committing an improvement, try to show it in local demo example.
