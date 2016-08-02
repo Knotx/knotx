@@ -15,7 +15,7 @@ Project License: [Apache License Version 2.0](https://github.com/Cognifide/knotx
 - Whatever content You Contribute will be provided under the Project License(s).
 
 ## Commit Messages
-When writing a commit message, please follow [How to Write a Git Commit Message](http://chris.beams.io/posts/git-commit/) guideline.
+When writing a commit message, please follow the guidelines in [How to Write a Git Commit Message](http://chris.beams.io/posts/git-commit/).
 
 ## Pull Requests
 Please add the following lines to your pull request description:
@@ -28,9 +28,9 @@ I hereby agree to the terms of the Knot.x Contributor License Agreement.
 
 ## Coding Conventions
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
-- Follow [google styleguide](https://github.com/google/styleguide) code formatting,
+- Follow [Google Style Guide](https://github.com/google/styleguide) code formatting,
 - write tests,
 - write javadoc, especially for interfaces and abstract methods,
-- update documentation,
+- update [documentation](https://github.com/Cognifide/knotx/blob/master/README.md),
 - when committing an improvement, try to show it in local demo example,
 - when logging use proper levels: `INFO` and `WARNING` should log only very important messages. 
