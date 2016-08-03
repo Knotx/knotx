@@ -151,10 +151,22 @@ repositories:
 
   - type: remote
     path: /content/.*
-    serviceUrl: localhost:8080
+    domain: localhost
+    port: 3001
 ```
 
 There are two repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
+
+Additionally for testing purposes remote repository points mocked template repository endpoint. It works similar to local repository (reads templates from local machine).
+**application.yaml**
+```yaml
+repository:
+  mock:
+    enabled: true
+    port: 3001
+    catalogue:
+```
+Mocked template repository can be simply disabled with `-Drepository.mock.enabled=false`.
 
 #### Local repositories
 
@@ -166,7 +178,7 @@ Second parameter to define is `catalogue` - it determines where to take the reso
 
 This kind of repository connects with an external server to fetch templates.
 
-To specify where the remote instance is, please configure the `url` parameter.
+To specify where the remote instance is, please configure the `domain` and `port` parameters.
 
 ### Using command line arguments and environment variables
 
