@@ -166,7 +166,8 @@ repository:
     port: 3001
     catalogue:
 ```
-Mocked template repository can be simply disabled with `-Drepository.mock.enabled=false`.
+The repository can be accessed with url `http://localhost:8092/content/remote/simple.html`.
+Mocked template repository endpoint can be simply disabled with `-Drepository.mock.enabled=false`.
 
 #### Local repositories
 
