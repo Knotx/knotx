@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - reactive microservice assembler
+    Knot.x - Parent Pom
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -22,10 +22,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knot.x</artifactId>
+    <artifactId>knot.x-root</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>Knot.x - reactive microservice assembler</name>
-    <inceptionYear>2016</inceptionYear>
+	<packaging>pom</packaging>
+
+	<name>Knot.x - Parent Pom</name>
+
+	<inceptionYear>2016</inceptionYear>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -57,130 +60,144 @@
         <vertx.version>3.3.0</vertx.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
+	<dependencyManagement>
+		<dependencies>
+			<!-- CORE -->
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-core</artifactId>
+				<version>${vertx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-web</artifactId>
+				<version>${vertx.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.reactivex</groupId>
+				<artifactId>rxjava</artifactId>
+				<version>1.1.5</version>
+			</dependency>
+			<!-- REPOSITORY -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-oxm</artifactId>
+				<version>4.3.0.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.9.2</version>
+			</dependency>
 
-        <!-- CORE -->
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-            <version>${vertx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-web</artifactId>
-            <version>${vertx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>1.1.5</version>
-        </dependency>
+			<!-- HANDLEBARS -->
+			<dependency>
+				<groupId>com.github.jknack</groupId>
+				<artifactId>handlebars</artifactId>
+				<version>${handlebars.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.jknack</groupId>
+				<artifactId>handlebars-jackson2</artifactId>
+				<version>${handlebars.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.7</version>
+			</dependency>
 
-        <!-- REPOSITORY -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-oxm</artifactId>
-            <version>4.3.0.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.9.2</version>
-        </dependency>
-
-        <!-- HANDLEBARS -->
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
-            <version>${handlebars.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars-jackson2</artifactId>
-            <version>${handlebars.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.7</version>
-        </dependency>
-
-        <!-- COMMON -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>19.0</version>
-        </dependency>
-    </dependencies>
+			<!-- COMMON -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>19.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- plugin for generating licensing header in headers of defined files -->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.11</version>
-                <configuration>
-                    <skipExistingHeaders>false</skipExistingHeaders>
-                    <header>${basedir}/license-template</header>
-                    <headerDefinitions>
-                        <header>${basedir}/license-header-definition.xml</header>
-                    </headerDefinitions>
-                    <includes>
-                        <include>src/main/java/**</include>
-                        <include>src/test/java/**</include>
-                        <include>src/main/resources/**</include>
-                        <include>pom.xml</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- plugin for checking if licensing header is present in headers of defined files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>0.12</version>
-                <configuration>
-                    <includes>
-                        <include>src/main/java/**</include>
-                        <include>src/test/java/**</include>
-                        <include>src/main/resources/**</include>
-                        <include>pom.xml</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/*.json</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+	    <pluginManagement>
+		    <plugins>
+			    <plugin>
+				    <groupId>org.springframework.boot</groupId>
+				    <artifactId>spring-boot-maven-plugin</artifactId>
+			    </plugin>
+			    <!-- plugin for generating licensing header in headers of defined files -->
+			    <plugin>
+				    <groupId>com.mycila</groupId>
+				    <artifactId>license-maven-plugin</artifactId>
+				    <version>2.11</version>
+				    <configuration>
+					    <skipExistingHeaders>false</skipExistingHeaders>
+					    <header>${basedir}/license-template</header>
+					    <headerDefinitions>
+						    <header>${basedir}/license-header-definition.xml</header>
+					    </headerDefinitions>
+					    <includes>
+						    <include>src/main/java/**</include>
+						    <include>src/test/java/**</include>
+						    <include>src/main/resources/**</include>
+						    <include>pom.xml</include>
+					    </includes>
+				    </configuration>
+				    <executions>
+					    <execution>
+						    <phase>validate</phase>
+						    <goals>
+							    <goal>format</goal>
+						    </goals>
+					    </execution>
+				    </executions>
+			    </plugin>
+			    <!-- plugin for checking if licensing header is present in headers of defined files -->
+			    <plugin>
+				    <groupId>org.apache.rat</groupId>
+				    <artifactId>apache-rat-plugin</artifactId>
+				    <version>0.12</version>
+				    <configuration>
+					    <includes>
+						    <include>src/main/java/**</include>
+						    <include>src/test/java/**</include>
+						    <include>src/main/resources/**</include>
+						    <include>pom.xml</include>
+					    </includes>
+					    <excludes>
+						    <exclude>**/*.json</exclude>
+					    </excludes>
+				    </configuration>
+				    <executions>
+					    <execution>
+						    <phase>validate</phase>
+						    <goals>
+							    <goal>check</goal>
+						    </goals>
+					    </execution>
+				    </executions>
+			    </plugin>
+		    </plugins>
+	    </pluginManagement>
+	    <plugins>
+		    <plugin>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot-maven-plugin</artifactId>
+		    </plugin>
+		    <!-- plugin for generating licensing header in headers of defined files -->
+		    <plugin>
+			    <groupId>com.mycila</groupId>
+			    <artifactId>license-maven-plugin</artifactId>
+		    </plugin>
+		    <!-- plugin for checking if licensing header is present in headers of defined files -->
+		    <plugin>
+			    <groupId>org.apache.rat</groupId>
+			    <artifactId>apache-rat-plugin</artifactId>
+		    </plugin>
+	    </plugins>
     </build>
+
+	<modules>
+		<module>knot.x</module>
+		<module>sample</module>
+	</modules>
 
 </project>
