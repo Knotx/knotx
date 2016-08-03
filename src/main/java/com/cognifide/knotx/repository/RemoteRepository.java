@@ -17,98 +17,61 @@
  */
 package com.cognifide.knotx.repository;
 
-import java.io.IOException;
-import java.net.URI;
+import com.cognifide.knotx.util.AsyncResultFactory;
 
 import org.springframework.http.HttpStatus;
 
-import io.vertx.core.AsyncResult;
+import java.io.IOException;
+import java.net.URI;
+
 import io.vertx.core.AsyncResultHandler;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 
 class RemoteRepository implements Repository<String, URI> {
 
-	private String path;
+    private String path;
 
-	private String domain;
+    private String domain;
 
-	private Integer port;
+    private Integer port;
 
-	private HttpClient httpClient;
+    private HttpClient httpClient;
 
-	private RemoteRepository() {
-		// hidden constructor
-	}
+    private RemoteRepository() {
+        // hidden constructor
+    }
 
-	static RemoteRepository of(String path, String domain, Integer port, HttpClient httpClient) {
-		RemoteRepository remoteRepository = new RemoteRepository();
-		remoteRepository.path = path;
-		remoteRepository.domain = domain;
-		remoteRepository.port = port;
-		remoteRepository.httpClient = httpClient;
-		return remoteRepository;
-	}
+    static RemoteRepository of(String path, String domain, Integer port, HttpClient httpClient) {
+        RemoteRepository remoteRepository = new RemoteRepository();
+        remoteRepository.path = path;
+        remoteRepository.domain = domain;
+        remoteRepository.port = port;
+        remoteRepository.httpClient = httpClient;
+        return remoteRepository;
+    }
 
-	@Override
-	public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-		HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(), httpClientResponse -> {
-			if (httpClientResponse.statusCode() == HttpStatus.OK.value()) {
-				httpClientResponse.bodyHandler(buffer -> {
-					String responseContent = buffer.getString(0, buffer.length());
-					handler.handle(new AsyncResult<Template<String, URI>>() {
-						@Override
-						public Template<String, URI> result() {
-							return new BasicTemplate(uri, responseContent);
-						}
+    @Override
+    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+        HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(),
+                httpClientResponse -> {
+                    if (httpClientResponse.statusCode() == HttpStatus.OK.value()) {
+                        httpClientResponse.bodyHandler(buffer -> {
+                            String responseContent = buffer.getString(0, buffer.length());
+                            handler.handle(AsyncResultFactory.createSuccess(new BasicTemplate(uri,
+                                    responseContent)));
+                        });
+                    } else {
+                        handler.handle(AsyncResultFactory.createFailure());
+                    }
+                });
+        httpClientRequest.end();
+    }
 
-						@Override
-						public Throwable cause() {
-							return null;
-						}
-
-						@Override
-						public boolean succeeded() {
-							return true;
-						}
-
-						@Override
-						public boolean failed() {
-							return false;
-						}
-					});
-				});
-			} else {
-				handler.handle(new AsyncResult<Template<String, URI>>() {
-					@Override
-					public Template<String, URI> result() {
-						return null;
-					}
-
-					@Override
-					public Throwable cause() {
-						return null;
-					}
-
-					@Override
-					public boolean succeeded() {
-						return false;
-					}
-
-					@Override
-					public boolean failed() {
-						return true;
-					}
-				});
-			}
-		});
-		httpClientRequest.end();
-	}
-
-	@Override
-	public boolean support(URI uri) {
-		String path = uri.getPath();
-		return path.matches(this.path);
-	}
+    @Override
+    public boolean support(URI uri) {
+        String path = uri.getPath();
+        return path.matches(this.path);
+    }
 
 }

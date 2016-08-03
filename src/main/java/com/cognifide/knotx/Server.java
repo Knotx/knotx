@@ -87,24 +87,23 @@ public class Server extends AbstractVerticle {
                 .requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
                 .listen(requestHandlerPort);
         if (mockServiceEnabled) {
-            vertx.createHttpServer()
-                    .requestHandler(mockServiceHandler)
-                    .listen(mockServicePort);
+            vertx.createHttpServer().requestHandler(mockServiceHandler).listen(mockServicePort);
         }
         if (mockRepositoryEnabled) {
-            vertx.createHttpServer()
-                    .requestHandler(mockRemoteRepositoryHandler)
+            vertx.createHttpServer().requestHandler(mockRemoteRepositoryHandler)
                     .listen(repositoryServicePort);
         }
     }
 
-    public void callService(HttpServerRequest request, String dataCallUri, Handler<HttpClientResponse> serviceResponseHandler) {
+    public void callService(HttpServerRequest request, String dataCallUri,
+                            Handler<HttpClientResponse> serviceResponseHandler) {
         HttpClient httpClient = vertx.createHttpClient();
-        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade.getServiceEndpoint(dataCallUri);
+        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
+                .getServiceEndpoint(dataCallUri);
         if (optionalServiceEndpoint.isPresent()) {
             final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-            HttpClientRequest httpClientRequest =
-                    httpClient.get(serviceEndpoint.getPort(), serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
+            HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
+                    serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
             rewriteHeaders(request, httpClientRequest);
             httpClientRequest.end();
         } else {
@@ -113,8 +112,7 @@ public class Server extends AbstractVerticle {
     }
 
     private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-        request.headers().entries().stream()
-                .filter(entry -> serviceCallHeaders.contains(entry.getKey()))
+        request.headers().entries().stream().filter(entry -> serviceCallHeaders.contains(entry.getKey()))
                 .forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
     }
 
