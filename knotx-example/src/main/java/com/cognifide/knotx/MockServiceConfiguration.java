@@ -1,5 +1,5 @@
 /*
- * Knot.x - Mock service
+ * Knot.x - Sample App with Mock service
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -17,28 +17,16 @@
  */
 package com.cognifide.knotx;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
-import com.cognifide.knotx.service.MockServiceHandler;
-import io.vertx.core.AbstractVerticle;
-
-@Component
-public class MockServiceVerticle extends AbstractVerticle {
-
+@Configuration
+public class MockServiceConfiguration {
 	@Autowired
-	private MockServiceConfiguration configuration;
+	private Environment environment;
 
-	@Autowired
-	private MockServiceHandler mockServiceHandler;
-
-	@Override
-	public void start() throws IOException, URISyntaxException {
-		vertx.createHttpServer()
-				.requestHandler(mockServiceHandler)
-				.listen(configuration.mockServicePort());
+	Integer mockServicePort() {
+		return environment.getProperty("service.mock.port", Integer.class);
 	}
 }

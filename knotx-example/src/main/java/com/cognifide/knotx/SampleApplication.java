@@ -1,5 +1,5 @@
 /*
- * Knot.x - Mock service
+ * Knot.x - Sample App with Mock service
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -54,9 +54,7 @@ public class SampleApplication {
     @PostConstruct
     public void deployVerticle() {
 		Vertx vertx = Vertx.vertx();
-		if (configuration.mockServiceEnabled()) {
-			vertx.deployVerticle(mockServiceVerticle);
-		}
+		vertx.deployVerticle(mockServiceVerticle);
 		vertx.deployVerticle(knotxVerticle);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Knot.x - Mock service
+ * Knot.x - Sample App with Mock service
  *
  * Copyright (C) 2016 Cognifide Limited
  *

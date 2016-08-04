@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - Mock service
+    Knot.x - Sample App with Mock service
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -23,11 +23,11 @@
     <modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.cognifide.knotx</groupId>
-		<artifactId>knot.x-root</artifactId>
+		<artifactId>knotx-root</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>sample</artifactId>
+	<artifactId>knotx-example</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
 	<name>Knot.x - Sample App with Mock service</name>
@@ -97,6 +97,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
 			</plugin>
 			<!-- plugin for generating licensing header in headers of defined files -->
 			<plugin>

@@ -22,7 +22,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knot.x-root</artifactId>
+    <artifactId>knotx-root</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -181,6 +181,9 @@
 		    <plugin>
 			    <groupId>org.springframework.boot</groupId>
 			    <artifactId>spring-boot-maven-plugin</artifactId>
+			    <configuration>
+				    <skip>true</skip>
+			    </configuration>
 		    </plugin>
 		    <!-- plugin for generating licensing header in headers of defined files -->
 		    <plugin>
@@ -196,8 +199,8 @@
     </build>
 
 	<modules>
-		<module>knot.x</module>
-		<module>sample</module>
+		<module>knotx-core</module>
+		<module>knotx-example</module>
 	</modules>
 
 </project>

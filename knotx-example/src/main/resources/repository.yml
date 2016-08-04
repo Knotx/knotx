@@ -1,5 +1,5 @@
 #
-# Knot.x - Mock service
+# Knot.x - Sample App with Mock service
 #
 # Copyright (C) 2016 Cognifide Limited
 #
@@ -16,12 +16,12 @@
 # limitations under the License.
 #
 
-services:
+repositories:
 
-  - path: /service/mock/.*
-    domain: localhost
-    port: 3000
+  - type: local
+    path: /content/local/.*
+    catalogue:
 
-  - path: /service/.*
-    domain: localhost
-    port: 8080
+  - type: remote
+    path: /content/.*
+    serviceUrl: localhost:8080
