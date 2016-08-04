@@ -20,6 +20,8 @@ package com.cognifide.knotx.repository;
 import com.cognifide.knotx.Server;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.InitializingBean;
@@ -73,6 +75,33 @@ public class RepositoryConfiguration implements InitializingBean {
         private String catalogue;
 
         private RepositoryType type;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj != null && obj instanceof RepositoryMetadata) {
+                final RepositoryMetadata other = (RepositoryMetadata) obj;
+                return new EqualsBuilder()
+                        .append(path, other.getPath())
+                        .append(domain, other.getDomain())
+                        .append(port, other.getPort())
+                        .append(catalogue, other.getCatalogue())
+                        .append(type, other.getType()).isEquals();
+            } else {
+                return false;
+            }
+
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(path)
+                    .append(domain)
+                    .append(port)
+                    .append(catalogue)
+                    .append(type)
+                    .toHashCode();
+        }
 
         public String getPath() {
             return path;

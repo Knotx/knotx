@@ -57,8 +57,10 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
         return !Stream.of(values).anyMatch(StringUtils::isBlank);
     }
 
+
     public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
                                                    Server server);
 
+    @Override
     public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

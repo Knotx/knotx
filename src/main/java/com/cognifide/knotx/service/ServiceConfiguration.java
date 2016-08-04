@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.service;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -43,6 +45,28 @@ public class ServiceConfiguration {
         private String domain;
 
         private String port;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj != null && obj instanceof ServiceMetadata) {
+                final ServiceMetadata other = (ServiceMetadata) obj;
+                return new EqualsBuilder()
+                        .append(path, other.getPath())
+                        .append(domain, other.getDomain())
+                        .append(port, other.getPort()).isEquals();
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(path)
+                    .append(domain)
+                    .append(port)
+                    .toHashCode();
+        }
 
         public String getPath() {
             return path;

@@ -17,46 +17,16 @@
  */
 package com.cognifide.knotx;
 
-import com.cognifide.knotx.handlebars.Helpers;
-import com.github.jknack.handlebars.Handlebars;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
-
-import io.vertx.core.Vertx;
 
 @SpringBootApplication
 @Configuration
-public class Application {
-
-    @Autowired
-    private Server server;
-
-    @Autowired
-    private ApplicationContext context;
+public class TestApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
-    @Bean
-    public Handlebars getHandlebars() {
-        Handlebars handlebars = new Handlebars();
-        Helpers.register(handlebars);
-        return handlebars;
-    }
-
-    @PostConstruct
-    public void deployVerticle() {
-        Vertx.vertx().deployVerticle(server);
+        SpringApplication.run(TestApplication.class, args);
     }
 
 }
