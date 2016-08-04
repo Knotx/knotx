@@ -17,13 +17,12 @@
  */
 package com.cognifide.knotx.repository;
 
+import io.vertx.core.AsyncResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
-
-import io.vertx.core.AsyncResultHandler;
 
 @Component
 public class RepositoryFacade implements Repository<String, URI> {

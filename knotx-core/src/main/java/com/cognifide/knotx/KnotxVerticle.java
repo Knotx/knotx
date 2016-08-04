@@ -54,9 +54,6 @@ public class KnotxVerticle extends AbstractVerticle {
     private ServiceEndpointFacade serviceEndpointFacade;
 
     @Autowired
-    private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
-
-    @Autowired
     private TemplateHandlerFactory templateHandlerFactory;
 
     @Override
@@ -66,26 +63,25 @@ public class KnotxVerticle extends AbstractVerticle {
                 .listen(configuration.requestHandlerPort());
     }
 
-    public void callService(HttpServerRequest request, String dataCallUri,
-                            Handler<HttpClientResponse> serviceResponseHandler) {
-        HttpClient httpClient = vertx.createHttpClient();
-        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
-                .getServiceEndpoint(dataCallUri);
-        if (optionalServiceEndpoint.isPresent()) {
-            final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-            HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
-                    serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
-            rewriteHeaders(request, httpClientRequest);
-            httpClientRequest.end();
-        } else {
-            LOGGER.error("No provider found! Request can't be processed.");
-        }
-    }
+	public void callService(HttpServerRequest request, String dataCallUri,
+							Handler<HttpClientResponse> serviceResponseHandler) {
+		HttpClient httpClient = vertx.createHttpClient();
+		Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
+				.getServiceEndpoint(dataCallUri);
+		if (optionalServiceEndpoint.isPresent()) {
+			final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
+			HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
+					serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
+			rewriteHeaders(request, httpClientRequest);
+			httpClientRequest.end();
+		} else {
+			LOGGER.error("No provider found! Request can't be processed.");
+		}
+	}
 
-    private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-        request.headers().entries().stream()
-                .filter(entry -> configuration.serviceCallHeaders().contains(entry.getKey()))
-                .forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
-    }
+	private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
+		request.headers().entries().stream().filter(entry -> configuration.serviceCallHeaders().contains(entry.getKey()))
+				.forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
+	}
 
 }

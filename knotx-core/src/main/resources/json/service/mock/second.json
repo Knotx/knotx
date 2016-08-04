@@ -1,0 +1,10 @@
+{
+  "message": "this is webservice no. 2",
+  "body": {
+    "a": "message - a",
+    "b": "message - b",
+    "c": "message - c"
+  },
+  "statistics": 20,
+  "status": "success"
+}

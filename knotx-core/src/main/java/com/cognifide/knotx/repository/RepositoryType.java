@@ -18,7 +18,6 @@
 package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.KnotxVerticle;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
@@ -29,8 +28,8 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
     LOCAL {
         @Override
         public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                              Server server) {
-            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
+											  KnotxVerticle verticle) {
+            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), verticle);
         }
 
         @Override
@@ -42,8 +41,8 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
     REMOTE {
         @Override
         public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                              Server server) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), server
+											  KnotxVerticle verticle) {
+            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), verticle
                     .getVertx().createHttpClient());
         }
 
@@ -57,10 +56,9 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
         return !Stream.of(values).anyMatch(StringUtils::isBlank);
     }
 
-    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, KnotxVerticle verticle);
 
     public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                                   Server server);
+												   KnotxVerticle verticle);
 
     @Override
     public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);

@@ -44,3 +44,7 @@ repository:
     catalogue:
 
   configuration: classpath:repository.yml
+
+spring:
+  main:
+    web-environment: false

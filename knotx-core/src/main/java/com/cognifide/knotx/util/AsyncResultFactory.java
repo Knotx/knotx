@@ -1,5 +1,5 @@
 /*
- * Knot.x - reactive microservice assembler
+ * Knot.x - Reactive microservice assembler
  *
  * Copyright (C) 2016 Cognifide Limited
  *

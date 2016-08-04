@@ -17,15 +17,15 @@
  */
 package com.cognifide.knotx.template;
 
-import com.google.common.collect.Iterables;
-
 import com.cognifide.knotx.KnotxVerticle;
 import com.cognifide.knotx.event.ObservableRequest;
 import com.cognifide.knotx.event.TrafficObserver;
 import com.cognifide.knotx.handler.RestServiceResponseHandler;
 import com.cognifide.knotx.repository.Template;
 import com.github.jknack.handlebars.Handlebars;
-
+import com.google.common.collect.Iterables;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpServerRequest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -39,15 +39,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import rx.Observable;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
-
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpServerRequest;
-import rx.Observable;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

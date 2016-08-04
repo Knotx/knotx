@@ -19,7 +19,8 @@ package com.cognifide.knotx.service;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpServerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,20 +29,18 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URL;
 
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
-
 @Component
-public class MockServiceHandler implements Handler<HttpServerRequest> {
+public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
 
-    @Value("${service.mock.catalogue}")
+    @Value("${repository.mock.catalogue}")
     private String catalogue;
 
     @Override
     public void handle(HttpServerRequest event) {
-        String resourcePath = catalogue + event.path();
+
+        String resourcePath = catalogue + getContentPath(event.path());
         String htmlContent = "";
         try {
             URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
@@ -55,6 +54,14 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
         } finally {
             event.response().end(htmlContent);
             event.connection().close();
+        }
+    }
+
+    private String getContentPath(String path) {
+        if (path.startsWith("/")) {
+            return path.replaceFirst("/", "");
+        } else {
+            return path;
         }
     }
 

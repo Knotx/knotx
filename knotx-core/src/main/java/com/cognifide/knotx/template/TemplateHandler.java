@@ -18,10 +18,9 @@
 package com.cognifide.knotx.template;
 
 import com.cognifide.knotx.repository.Template;
+import io.vertx.core.http.HttpServerRequest;
 
 import java.io.Serializable;
-
-import io.vertx.core.http.HttpServerRequest;
 
 public interface TemplateHandler<T, ID extends Serializable> {
 

@@ -17,14 +17,15 @@
  */
 package com.cognifide.knotx.handler;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import com.cognifide.knotx.event.ObservableRequest;
 import com.cognifide.knotx.template.TemplateHandler;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpServerRequest;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
@@ -35,10 +36,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpServerRequest;
 
 public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 

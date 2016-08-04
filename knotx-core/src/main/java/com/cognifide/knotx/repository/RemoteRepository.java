@@ -18,15 +18,13 @@
 package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.util.AsyncResultFactory;
-
+import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientRequest;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.net.URI;
-
-import io.vertx.core.AsyncResultHandler;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
 
 class RemoteRepository implements Repository<String, URI> {
 
@@ -59,7 +57,7 @@ class RemoteRepository implements Repository<String, URI> {
                         httpClientResponse.bodyHandler(buffer -> {
                             String responseContent = buffer.getString(0, buffer.length());
                             handler.handle(AsyncResultFactory.createSuccess(new BasicTemplate(uri,
-                                    responseContent)));
+									responseContent)));
                         });
                     } else {
                         handler.handle(AsyncResultFactory.createFailure());

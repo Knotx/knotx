@@ -20,7 +20,6 @@ package com.cognifide.knotx.handlebars;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
