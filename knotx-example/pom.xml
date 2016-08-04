@@ -66,8 +66,8 @@
 	    <!-- Knot.x -->
 	    <dependency>
 		    <groupId>com.cognifide.knotx</groupId>
-		    <artifactId>knot.x</artifactId>
-		    <version>${project.version}</version>
+		    <artifactId>knotx-core</artifactId>
+		    <version>1.0.0-SNAPSHOT</version>
 	    </dependency>
 
         <!-- CORE -->
@@ -106,9 +106,9 @@
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<configuration>
-					<header>${basedir}/../license-template</header>
+					<header>${project.parent.basedir}/license-template</header>
 					<headerDefinitions>
-						<header>${basedir}/../license-header-definition.xml</header>
+						<header>${project.parent.basedir}/license-header-definition.xml</header>
 					</headerDefinitions>
 				</configuration>
 			</plugin>

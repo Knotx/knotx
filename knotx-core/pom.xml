@@ -122,9 +122,9 @@
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<configuration>
-					<header>${basedir}/../license-template</header>
+					<header>${project.parent.basedir}/license-template</header>
 					<headerDefinitions>
-						<header>${basedir}/../license-header-definition.xml</header>
+						<header>${project.parent.basedir}/license-header-definition.xml</header>
 					</headerDefinitions>
 				</configuration>
 			</plugin>
