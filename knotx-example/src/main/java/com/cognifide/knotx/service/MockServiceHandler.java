@@ -20,6 +20,7 @@ package com.cognifide.knotx.service;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,12 +37,14 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
 
+    private static final String SEPARATOR = "/";
+
     @Value("${service.mock.catalogue}")
     private String catalogue;
 
     @Override
     public void handle(HttpServerRequest event) {
-        String resourcePath = catalogue + event.path();
+        String resourcePath = getFilePath(event);
         String htmlContent = "";
         try {
             URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
@@ -56,6 +59,10 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
             event.response().end(htmlContent);
             event.connection().close();
         }
+    }
+
+    private String getFilePath(HttpServerRequest event) {
+        return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
     }
 
 }

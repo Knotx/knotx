@@ -30,7 +30,7 @@ service:
   mock:
     enabled: true
     port: 3000
-    catalogue: json
+    catalogue: mock
 
   configuration: classpath:service.yml
 
