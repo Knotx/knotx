@@ -1,5 +1,5 @@
 sudo: required
 language: java
-script: mvn clean package
+script: mvn clean install
 jdk:
   - oraclejdk8
