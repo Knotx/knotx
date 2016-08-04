@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import com.cognifide.knotx.service.MockRemoteRepositoryHandler;
+import io.vertx.core.http.HttpServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,10 +37,17 @@ public class MockServiceVerticle extends AbstractVerticle {
 	@Autowired
 	private MockServiceHandler mockServiceHandler;
 
+	private HttpServer httpServer;
+
 	@Override
 	public void start() throws IOException, URISyntaxException {
-		vertx.createHttpServer()
-				.requestHandler(mockServiceHandler)
+		httpServer = vertx.createHttpServer();
+		httpServer.requestHandler(mockServiceHandler)
 				.listen(configuration.mockServicePort());
+	}
+
+	@Override
+	public void stop() throws Exception {
+		httpServer.close();
 	}
 }

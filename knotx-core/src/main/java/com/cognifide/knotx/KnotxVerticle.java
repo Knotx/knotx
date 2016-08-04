@@ -23,12 +23,14 @@ import com.cognifide.knotx.service.ServiceEndpoint;
 import com.cognifide.knotx.service.ServiceEndpointFacade;
 import com.cognifide.knotx.template.TemplateHandlerFactory;
 
+import io.vertx.core.http.HttpServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.concurrent.Future;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
@@ -56,12 +58,20 @@ public class KnotxVerticle extends AbstractVerticle {
     @Autowired
     private TemplateHandlerFactory templateHandlerFactory;
 
+	private HttpServer httpServer;
+
     @Override
     public void start() throws IOException, URISyntaxException {
-        vertx.createHttpServer()
-                .requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
+		httpServer = vertx.createHttpServer();
+
+		httpServer.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
                 .listen(configuration.requestHandlerPort());
     }
+
+	@Override
+	public void stop() throws Exception {
+		httpServer.close();
+	}
 
 	public void callService(HttpServerRequest request, String dataCallUri,
 							Handler<HttpClientResponse> serviceResponseHandler) {

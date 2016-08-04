@@ -1,0 +1,464 @@
+
+Active Connections
+
+  Proto  Local Address          Foreign Address        State
+  TCP    0.0.0.0:80             0.0.0.0:0              LISTENING
+ [Skype.exe]
+  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING
+  RpcSs
+ [svchost.exe]
+  TCP    0.0.0.0:443            0.0.0.0:0              LISTENING
+ [Skype.exe]
+  TCP    0.0.0.0:445            0.0.0.0:0              LISTENING
+ Can not obtain ownership information
+  TCP    0.0.0.0:623            0.0.0.0:0              LISTENING
+ [LMS.exe]
+  TCP    0.0.0.0:2864           0.0.0.0:0              LISTENING
+ [idea64.exe]
+  TCP    0.0.0.0:2869           0.0.0.0:0              LISTENING
+ Can not obtain ownership information
+  TCP    0.0.0.0:3389           0.0.0.0:0              LISTENING
+  CryptSvc
+ [svchost.exe]
+  TCP    0.0.0.0:5357           0.0.0.0:0              LISTENING
+ Can not obtain ownership information
+  TCP    0.0.0.0:16992          0.0.0.0:0              LISTENING
+ [LMS.exe]
+  TCP    0.0.0.0:17500          0.0.0.0:0              LISTENING
+ [Dropbox.exe]
+  TCP    0.0.0.0:17501          0.0.0.0:0              LISTENING
+ [Dropbox.exe]
+  TCP    0.0.0.0:33961          0.0.0.0:0              LISTENING
+ [java.exe]
+  TCP    0.0.0.0:49152          0.0.0.0:0              LISTENING
+ [wininit.exe]
+  TCP    0.0.0.0:49153          0.0.0.0:0              LISTENING
+  EventLog
+ [svchost.exe]
+  TCP    0.0.0.0:49154          0.0.0.0:0              LISTENING
+  Schedule
+ [svchost.exe]
+  TCP    0.0.0.0:49155          0.0.0.0:0              LISTENING
+ [spoolsv.exe]
+  TCP    0.0.0.0:49156          0.0.0.0:0              LISTENING
+ [lsass.exe]
+  TCP    0.0.0.0:49166          0.0.0.0:0              LISTENING
+ [lsass.exe]
+  TCP    0.0.0.0:49168          0.0.0.0:0              LISTENING
+ Can not obtain ownership information
+  TCP    0.0.0.0:49559          0.0.0.0:0              LISTENING
+  PolicyAgent
+ [svchost.exe]
+  TCP    0.0.0.0:52014          0.0.0.0:0              LISTENING
+ [idea64.exe]
+  TCP    0.0.0.0:52020          0.0.0.0:0              LISTENING
+ [java.exe]
+  TCP    0.0.0.0:52021          0.0.0.0:0              LISTENING
+ [idea64.exe]
+  TCP    0.0.0.0:58568          0.0.0.0:0              LISTENING
+ [Skype.exe]
+  TCP    127.0.0.1:843          0.0.0.0:0              LISTENING
+ [Dropbox.exe]
+  TCP    127.0.0.1:5354         0.0.0.0:0              LISTENING
+ [mDNSResponder.exe]
+  TCP    127.0.0.1:6942         0.0.0.0:0              LISTENING
+ [idea64.exe]
+  TCP    127.0.0.1:15292        0.0.0.0:0              LISTENING
+ [Adobe Desktop Service.exe]
+  TCP    127.0.0.1:17600        0.0.0.0:0              LISTENING
+ [Dropbox.exe]
+  TCP    127.0.0.1:49255        0.0.0.0:0              LISTENING
+ [node.exe]
+  TCP    127.0.0.1:49305        127.0.0.1:49306        ESTABLISHED
+ [Dropbox.exe]
+  TCP    127.0.0.1:49306        127.0.0.1:49305        ESTABLISHED
+ [Dropbox.exe]
+  TCP    127.0.0.1:49370        127.0.0.1:49371        ESTABLISHED
+ [Dropbox.exe]
+  TCP    127.0.0.1:49371        127.0.0.1:49370        ESTABLISHED
+ [Dropbox.exe]
+  TCP    127.0.0.1:49400        0.0.0.0:0              LISTENING
+ [LMS.exe]
+  TCP    127.0.0.1:50911        0.0.0.0:0              LISTENING
+ [ss_conn_service.exe]
+  TCP    127.0.0.1:52010        127.0.0.1:52011        ESTABLISHED
+ [idea64.exe]
+  TCP    127.0.0.1:52011        127.0.0.1:52010        ESTABLISHED
+ [idea64.exe]
+  TCP    127.0.0.1:52012        127.0.0.1:52013        ESTABLISHED
+ [idea64.exe]
+  TCP    127.0.0.1:52013        127.0.0.1:52012        ESTABLISHED
+ [idea64.exe]
+  TCP    127.0.0.1:52021        127.0.0.1:53587        ESTABLISHED
+ [idea64.exe]
+  TCP    127.0.0.1:53544        127.0.0.1:52021        TIME_WAIT
+  TCP    127.0.0.1:53587        127.0.0.1:52021        ESTABLISHED
+ [java.exe]
+  TCP    127.0.0.1:59682        127.0.0.1:59683        ESTABLISHED
+ [Dropbox.exe]
+  TCP    127.0.0.1:59683        127.0.0.1:59682        ESTABLISHED
+ [Dropbox.exe]
+  TCP    127.0.0.1:62514        0.0.0.0:0              LISTENING
+ [cvpnd.exe]
+  TCP    192.168.36.12:139      0.0.0.0:0              LISTENING
+ Can not obtain ownership information
+  TCP    192.168.36.12:49714    192.30.253.125:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:51039    192.30.253.125:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:51396    162.125.66.4:443       CLOSE_WAIT
+ [Dropbox.exe]
+  TCP    192.168.36.12:51521    192.30.253.125:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:51877    162.125.17.131:443     ESTABLISHED
+ [Dropbox.exe]
+  TCP    192.168.36.12:51887    162.125.17.131:443     ESTABLISHED
+ [Dropbox.exe]
+  TCP    192.168.36.12:52018    208.68.163.218:5222    ESTABLISHED
+ [idea64.exe]
+  TCP    192.168.36.12:52433    208.68.163.218:5222    ESTABLISHED
+ [idea64.exe]
+  TCP    192.168.36.12:52677    192.30.253.124:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:52991    52.20.134.145:443      CLOSE_WAIT
+ [Dropbox.exe]
+  TCP    192.168.36.12:53058    216.58.198.142:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53089    137.117.155.100:50005  ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53090    40.113.80.187:50007    ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53143    199.16.156.9:443       ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53150    192.168.36.146:41698   ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53165    40.115.32.252:50004    ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53170    40.115.11.84:50004     ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53176    137.135.138.99:50007   ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53179    137.135.138.99:50000   ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53186    204.154.94.82:443      ESTABLISHED
+ [Evernote.exe]
+  TCP    192.168.36.12:53199    40.113.89.219:50007    TIME_WAIT
+  TCP    192.168.36.12:53200    40.113.18.164:50003    TIME_WAIT
+  TCP    192.168.36.12:53228    104.156.85.134:80      TIME_WAIT
+  TCP    192.168.36.12:53247    151.101.60.134:80      TIME_WAIT
+  TCP    192.168.36.12:53252    151.101.60.249:80      TIME_WAIT
+  TCP    192.168.36.12:53253    151.101.60.249:80      TIME_WAIT
+  TCP    192.168.36.12:53259    23.235.37.233:80       TIME_WAIT
+  TCP    192.168.36.12:53292    199.16.156.120:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53307    151.101.60.249:80      TIME_WAIT
+  TCP    192.168.36.12:53387    54.235.208.205:443     ESTABLISHED
+ [CoreSync.exe]
+  TCP    192.168.36.12:53410    64.233.166.102:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53448    216.58.212.227:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53487    54.230.230.144:443     CLOSE_WAIT
+ [Dropbox.exe]
+  TCP    192.168.36.12:53488    216.58.198.132:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53496    216.58.212.238:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53500    216.58.198.142:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53501    216.58.198.142:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53506    216.58.212.238:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53545    54.154.168.215:443     TIME_WAIT
+  TCP    192.168.36.12:53547    172.217.16.194:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53548    40.114.149.220:443     TIME_WAIT
+  TCP    192.168.36.12:53549    40.114.149.220:443     TIME_WAIT
+  TCP    192.168.36.12:53550    216.58.198.131:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53551    192.168.34.12:2222     TIME_WAIT
+  TCP    192.168.36.12:53552    54.154.168.215:443     TIME_WAIT
+  TCP    192.168.36.12:53553    108.160.172.193:443    ESTABLISHED
+ [Dropbox.exe]
+  TCP    192.168.36.12:53554    104.94.128.88:443      ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:53555    151.101.1.69:80        ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53556    68.232.35.121:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53557    68.232.35.121:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53558    104.16.109.18:80       ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53559    104.16.109.18:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53560    68.232.35.121:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53561    68.232.35.121:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53562    104.16.109.18:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53563    68.232.35.121:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53564    104.16.109.18:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53565    68.232.35.121:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53566    104.16.109.18:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53567    50.19.125.241:443      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53568    104.103.94.139:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53569    192.168.36.223:58867   TIME_WAIT
+  TCP    192.168.36.12:53570    40.127.181.246:50002   TIME_WAIT
+  TCP    192.168.36.12:53571    216.58.198.142:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53572    40.114.220.143:50002   TIME_WAIT
+  TCP    192.168.36.12:53574    50.19.125.241:80       ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53575    72.247.182.89:80       ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53576    151.101.1.69:80        ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53577    104.16.12.8:80         ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53578    50.19.125.241:80       ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53579    50.19.125.241:80       ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53581    151.101.193.69:80      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53582    151.101.193.69:80      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53583    151.101.193.69:80      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53584    151.101.193.69:80      ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:53585    54.154.168.215:443     ESTABLISHED
+ [CoreSync.exe]
+  TCP    192.168.36.12:53586    192.168.34.12:2222     TIME_WAIT
+  TCP    192.168.36.12:58568    192.168.36.29:64301    ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:58568    192.168.36.71:50744    ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:58568    192.168.36.137:65234   ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:58568    192.168.36.145:60212   ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:58568    192.168.37.58:56678    TIME_WAIT
+  TCP    192.168.36.12:59783    157.55.235.175:40008   ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:59849    54.88.208.130:443      ESTABLISHED
+ [slack.exe]
+  TCP    192.168.36.12:60149    74.125.133.188:5228    ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:60164    191.232.139.13:443     ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:60168    104.40.201.142:443     ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:60304    157.56.121.231:443     ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:60348    52.202.127.112:443     ESTABLISHED
+ [Adobe Desktop Service.exe]
+  TCP    192.168.36.12:60367    91.190.218.59:12350    ESTABLISHED
+ [Skype.exe]
+  TCP    192.168.36.12:61665    192.30.253.124:443     ESTABLISHED
+ [chrome.exe]
+  TCP    192.168.36.12:64983    136.1.70.20:443        CLOSE_WAIT
+ [rf-chrome-nm-host.exe]
+  TCP    192.168.99.1:139       0.0.0.0:0              LISTENING
+ Can not obtain ownership information
+  TCP    [::]:135               [::]:0                 LISTENING
+  RpcSs
+ [svchost.exe]
+  TCP    [::]:445               [::]:0                 LISTENING
+ Can not obtain ownership information
+  TCP    [::]:623               [::]:0                 LISTENING
+ [LMS.exe]
+  TCP    [::]:2869              [::]:0                 LISTENING
+ Can not obtain ownership information
+  TCP    [::]:3389              [::]:0                 LISTENING
+  CryptSvc
+ [svchost.exe]
+  TCP    [::]:5357              [::]:0                 LISTENING
+ Can not obtain ownership information
+  TCP    [::]:16992             [::]:0                 LISTENING
+ [LMS.exe]
+  TCP    [::]:17500             [::]:0                 LISTENING
+ [Dropbox.exe]
+  TCP    [::]:17501             [::]:0                 LISTENING
+ [Dropbox.exe]
+  TCP    [::]:33961             [::]:0                 LISTENING
+ [java.exe]
+  TCP    [::]:49152             [::]:0                 LISTENING
+ [wininit.exe]
+  TCP    [::]:49153             [::]:0                 LISTENING
+  EventLog
+ [svchost.exe]
+  TCP    [::]:49154             [::]:0                 LISTENING
+  Schedule
+ [svchost.exe]
+  TCP    [::]:49155             [::]:0                 LISTENING
+ [spoolsv.exe]
+  TCP    [::]:49156             [::]:0                 LISTENING
+ [lsass.exe]
+  TCP    [::]:49166             [::]:0                 LISTENING
+ [lsass.exe]
+  TCP    [::]:49168             [::]:0                 LISTENING
+ Can not obtain ownership information
+  TCP    [::]:49559             [::]:0                 LISTENING
+  PolicyAgent
+ [svchost.exe]
+  TCP    [::]:52020             [::]:0                 LISTENING
+ [java.exe]
+  TCP    [::1]:49399            [::]:0                 LISTENING
+ [jhi_service.exe]
+  TCP    [::1]:59731            [::1]:59733            ESTABLISHED
+ [LMS.exe]
+  TCP    [::1]:59733            [::1]:59731            ESTABLISHED
+ [LMS.exe]
+  UDP    0.0.0.0:123            *:*                    
+  W32Time
+ [svchost.exe]
+  UDP    0.0.0.0:443            *:*                    
+ [Skype.exe]
+  UDP    0.0.0.0:500            *:*                    
+  IKEEXT
+ [svchost.exe]
+  UDP    0.0.0.0:2863           *:*                    
+ [idea64.exe]
+  UDP    0.0.0.0:2863           *:*                    
+ [idea64.exe]
+  UDP    0.0.0.0:3389           *:*                    
+  CryptSvc
+ [svchost.exe]
+  UDP    0.0.0.0:3702           *:*                    
+ [dashost.exe]
+  UDP    0.0.0.0:3702           *:*                    
+ [dashost.exe]
+  UDP    0.0.0.0:4500           *:*                    
+  IKEEXT
+ [svchost.exe]
+  UDP    0.0.0.0:5355           *:*                    
+  Dnscache
+ [svchost.exe]
+  UDP    0.0.0.0:9876           *:*                    
+ [idea64.exe]
+  UDP    0.0.0.0:17500          *:*                    
+ [Dropbox.exe]
+  UDP    0.0.0.0:17500          *:*                    
+ [Dropbox.exe]
+  UDP    0.0.0.0:51208          *:*                    
+ [chrome.exe]
+  UDP    0.0.0.0:54800          *:*                    
+ [Skype.exe]
+  UDP    0.0.0.0:55242          *:*                    
+ [dashost.exe]
+  UDP    0.0.0.0:55340          *:*                    
+ [chrome.exe]
+  UDP    0.0.0.0:56802          *:*                    
+  SharedAccess
+ [svchost.exe]
+  UDP    0.0.0.0:57554          *:*                    
+ [chrome.exe]
+  UDP    0.0.0.0:58568          *:*                    
+ [Skype.exe]
+  UDP    0.0.0.0:58948          *:*                    
+ [chrome.exe]
+  UDP    0.0.0.0:59850          *:*                    
+ [chrome.exe]
+  UDP    0.0.0.0:62831          *:*                    
+ [chrome.exe]
+  UDP    0.0.0.0:63473          *:*                    
+ [spoolsv.exe]
+  UDP    0.0.0.0:63474          *:*                    
+ [mDNSResponder.exe]
+  UDP    127.0.0.1:1900         *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    127.0.0.1:51863        *:*                    
+ [EXCEL.EXE]
+  UDP    127.0.0.1:55142        *:*                    
+ [lsass.exe]
+  UDP    127.0.0.1:56785        *:*                    
+  NlaSvc
+ [svchost.exe]
+  UDP    127.0.0.1:56803        *:*                    
+  SharedAccess
+ [svchost.exe]
+  UDP    127.0.0.1:58105        *:*                    
+ [svchost.exe]
+  UDP    127.0.0.1:60402        *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    127.0.0.1:61997        *:*                    
+ [Skype.exe]
+  UDP    127.0.0.1:62514        *:*                    
+ [cvpnd.exe]
+  UDP    192.168.36.12:137      *:*                    
+ Can not obtain ownership information
+  UDP    192.168.36.12:138      *:*                    
+ Can not obtain ownership information
+  UDP    192.168.36.12:1900     *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    192.168.36.12:5353     *:*                    
+ [mDNSResponder.exe]
+  UDP    192.168.36.12:60401    *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    192.168.99.1:137       *:*                    
+ Can not obtain ownership information
+  UDP    192.168.99.1:138       *:*                    
+ Can not obtain ownership information
+  UDP    192.168.99.1:1900      *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    192.168.99.1:5353      *:*                    
+ [mDNSResponder.exe]
+  UDP    192.168.99.1:58413     *:*                    
+ [idea64.exe]
+  UDP    [::]:123               *:*                    
+  W32Time
+ [svchost.exe]
+  UDP    [::]:500               *:*                    
+  IKEEXT
+ [svchost.exe]
+  UDP    [::]:3389              *:*                    
+  CryptSvc
+ [svchost.exe]
+  UDP    [::]:3702              *:*                    
+ [dashost.exe]
+  UDP    [::]:3702              *:*                    
+ [dashost.exe]
+  UDP    [::]:4500              *:*                    
+  IKEEXT
+ [svchost.exe]
+  UDP    [::]:5355              *:*                    
+  Dnscache
+ [svchost.exe]
+  UDP    [::]:54800             *:*                    
+ [Skype.exe]
+  UDP    [::]:55243             *:*                    
+ [dashost.exe]
+  UDP    [::]:63475             *:*                    
+ [mDNSResponder.exe]
+  UDP    [::1]:1900             *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    [::1]:5353             *:*                    
+ [mDNSResponder.exe]
+  UDP    [::1]:60400            *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    [fe80::3418:d6c:aa50:c1f1%37]:1900  *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    [fe80::34ec:c1a7:149e:3a74%4]:1900  *:*                    
+  SSDPSRV
+ [svchost.exe]
+  UDP    [fe80::34ec:c1a7:149e:3a74%4]:60399  *:*                    
+  SSDPSRV
+ [svchost.exe]
