@@ -17,36 +17,61 @@
  */
 package com.cognifide.knotx.repository;
 
+import com.cognifide.knotx.util.AsyncResultFactory;
+
+import org.springframework.http.HttpStatus;
+
 import java.io.IOException;
 import java.net.URI;
 
 import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientRequest;
 
 class RemoteRepository implements Repository<String, URI> {
 
     private String path;
 
-    private String serviceUrl;
+    private String domain;
+
+    private Integer port;
+
+    private HttpClient httpClient;
 
     private RemoteRepository() {
         // hidden constructor
     }
 
-    static RemoteRepository of(String path, String serviceUrl) {
+    static RemoteRepository of(String path, String domain, Integer port, HttpClient httpClient) {
         RemoteRepository remoteRepository = new RemoteRepository();
         remoteRepository.path = path;
-        remoteRepository.serviceUrl = serviceUrl;
+        remoteRepository.domain = domain;
+        remoteRepository.port = port;
+        remoteRepository.httpClient = httpClient;
         return remoteRepository;
     }
 
     @Override
     public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet!");
+        HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(),
+                httpClientResponse -> {
+                    if (httpClientResponse.statusCode() == HttpStatus.OK.value()) {
+                        httpClientResponse.bodyHandler(buffer -> {
+                            String responseContent = buffer.getString(0, buffer.length());
+                            handler.handle(AsyncResultFactory.createSuccess(new BasicTemplate(uri,
+                                    responseContent)));
+                        });
+                    } else {
+                        handler.handle(AsyncResultFactory.createFailure());
+                    }
+                });
+        httpClientRequest.end();
     }
 
     @Override
     public boolean support(URI uri) {
-        return false;
+        String path = uri.getPath();
+        return path.matches(this.path);
     }
 
 }

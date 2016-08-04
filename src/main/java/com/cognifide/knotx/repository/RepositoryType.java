@@ -28,7 +28,8 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     LOCAL {
         @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                              Server server) {
             return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
         }
 
@@ -40,13 +41,15 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     REMOTE {
         @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                              Server server) {
+            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), server
+                    .getVertx().createHttpClient());
         }
 
         @Override
         public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
-            return isNotEmpty(metadata.getPath(), metadata.getServiceUrl());
+            return isNotEmpty(metadata.getPath(), metadata.getDomain()) && metadata.getPort() != null;
         }
     };
 
@@ -54,7 +57,8 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
         return !Stream.of(values).anyMatch(StringUtils::isBlank);
     }
 
-    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, Server server);
+    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                                   Server server);
 
     public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }
