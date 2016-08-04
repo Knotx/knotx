@@ -18,10 +18,6 @@
 
 services:
 
-  - path: /service/mock/.*
-    domain: localhost
-    port: 3000
-
-  - path: /service/.*
-    domain: localhost
-    port: 8080
+  - path: ${service.path}
+    domain: ${service.domain}
+    port: ${service.port}
