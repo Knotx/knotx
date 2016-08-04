@@ -17,26 +17,27 @@
  */
 package com.cognifide.knotx;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 @Configuration
 public class KnotxConfiguration {
-	@Autowired
-	private Environment environment;
+
+	@Value("#{'${request.preserved.headers}'.split(',')}")
+	private List<String> serviceCallHeaders;
+
+	@Value("${requestHandler.port}")
+	private Integer requestHandlerPort;
+
 
 	Integer requestHandlerPort() {
-		return environment.getProperty("requestHandler.port", Integer.class);
+		return requestHandlerPort;
 	}
 
 	List<String> serviceCallHeaders() {
-		String headers = environment.getProperty("request.preserved.headers", String.class);
-		return Lists.newArrayList(headers.split(","));
+		return serviceCallHeaders;
 	}
 
 }

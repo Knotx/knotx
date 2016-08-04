@@ -17,16 +17,17 @@
  */
 package com.cognifide.knotx;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 @Configuration
 public class MockServiceConfiguration {
-	@Autowired
-	private Environment environment;
+
+	@Value("${service.mock.port}")
+	private Integer mockServicePort;
+
 
 	Integer mockServicePort() {
-		return environment.getProperty("service.mock.port", Integer.class);
+		return mockServicePort;
 	}
 }
