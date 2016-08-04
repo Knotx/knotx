@@ -29,18 +29,11 @@ public class MockServiceConfiguration {
 	@Value("${repository.mock.port}")
 	private Integer repositoryServicePort;
 
-	@Value("${repository.mock.enabled}")
-	private Boolean mockRepositoryEnabled;
-
 	Integer mockServicePort() {
 		return mockServicePort;
 	}
 
 	Integer repositoryServicePort() {
 		return repositoryServicePort;
-	}
-
-	Boolean mockRepositoryEnabled() {
-		return mockRepositoryEnabled;
 	}
 }

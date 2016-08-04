@@ -52,9 +52,7 @@ public class SampleApplication {
 		Vertx vertx = Vertx.vertx();
 		vertx.deployVerticle(mockServiceVerticle);
 		vertx.deployVerticle(knotxVerticle);
-		if (configuration.mockRepositoryEnabled()) {
-			vertx.deployVerticle(mockRemoteRepositoryVerticle);
-		}
+		vertx.deployVerticle(mockRemoteRepositoryVerticle);
 	}
 
 }
