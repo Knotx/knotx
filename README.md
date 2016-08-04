@@ -79,7 +79,15 @@ and find the executable jar in the `target` directory.
 
 Alternatively, you can just download the most recent `.jar` file.
 
-## Executing
+## Executing from maven
+
+To run it from maven execute the following command:
+```
+mvn spring-boot:run
+```
+This will run the sample server with mock service and default settings.
+
+## Executing fat jar
 
 To run it execute the following command:
 
