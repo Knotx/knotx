@@ -82,7 +82,8 @@ public class RepositoryConfiguration implements InitializingBean {
                 final RepositoryMetadata other = (RepositoryMetadata) obj;
                 return new EqualsBuilder()
                         .append(path, other.getPath())
-                        .append(serviceUrl, other.getServiceUrl())
+                        .append(domain, other.getDomain())
+                        .append(port, other.getPort())
                         .append(catalogue, other.getCatalogue())
                         .append(type, other.getType()).isEquals();
             } else {
@@ -95,7 +96,8 @@ public class RepositoryConfiguration implements InitializingBean {
         public int hashCode() {
             return new HashCodeBuilder()
                     .append(path)
-                    .append(serviceUrl)
+                    .append(domain)
+                    .append(port)
                     .append(catalogue)
                     .append(type)
                     .toHashCode();

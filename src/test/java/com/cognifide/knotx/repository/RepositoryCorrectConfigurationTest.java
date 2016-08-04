@@ -83,7 +83,8 @@ public class RepositoryCorrectConfigurationTest {
         RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
         expectedLocalRepositoryMetadata.setPath("/content/.*");
         expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
-        expectedLocalRepositoryMetadata.setServiceUrl("localhost:8080");
+        expectedLocalRepositoryMetadata.setDomain("localhost");
+        expectedLocalRepositoryMetadata.setPort(8080);
         return expectedLocalRepositoryMetadata;
     }
 
