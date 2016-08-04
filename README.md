@@ -68,31 +68,38 @@ To run Knot.x you only need Java 8.
 
 To build it you also need Maven.
 
+## Modules
+Knot.x has two modules: **knotx-core** and **knotx-example**.
+
+*Core module* contains Knot.x application without any example data / mock endpoints. It can be deployed as standalone verticle (see http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html). See configuration section to deploy Knot.x core module.
+
+*Example module* contains Knot.x application, example template repositories and mock services. Internally it starts three independent verticles (for Knot.x application, example template repositories and mock services). This module is perfect entry point to Knot.x world. 
+
 ## Building
 
-To build it simply checkout the project, run:
+To build it simply checkout the project, run (from parent directory):
 
 ```
-mvn clean install
+mvn clean package
 ```
-and find the executable jar in the `target` directory.
+and find the executable jar in the `knotx-example/target` directory.
 
-Alternatively, you can just download the most recent `.jar` file.
+Alternatively, you can just download the most recent `knotx-example-XXX.jar` file.
 
-## Executing from maven
+### Executing from maven
 
-To run it from maven execute the following command:
+To run it from maven execute the following command (from parent directory):
 ```
-mvn spring-boot:run
+mvn clean spring-boot:run
 ```
-This will run the sample server with mock service and default settings.
+This will run the sample server with mock service and default settings (Spring Boot is configured to run knotx-example module as default module).
 
-## Executing fat jar
+### Executing fat jar
 
 To run it execute the following command:
 
 ```
-java -jar knot.x.jar
+java -jar knotx-example-XXX.jar
 ```
 
 This will run the server with default settings.
@@ -120,6 +127,20 @@ As you may notice, there are two files that need to be defined in order to confi
 
 - `file:///data/config.yml` on Linux
 - `file:c:\\data\config.yml` on Windows
+ 
+## Production deployment
+
+The example module is provided for testing purposes. Only core module should be deployed on production environment (Knot.x application as single verticle without any dependencies).
+
+### Executing fat jar
+
+To run it execute the following command:
+
+```
+java -jar knotx-core-XXX.jar -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
+```
+
+This will run the server with production settings. For more informations see configuration section.
 
 ## Configuration
 
