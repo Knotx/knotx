@@ -25,4 +25,4 @@ repositories:
   - type: remote
     path: /content/.*
     domain: localhost
-    port: 4502
+    port: 3001

@@ -17,20 +17,20 @@
  */
 package com.cognifide.knotx;
 
-import io.vertx.core.Vertx;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
-import javax.annotation.PostConstruct;
+import io.vertx.core.Vertx;
 
 @SpringBootApplication
-@Configuration
+@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = Application.class))
 public class SampleApplication {
+
 	@Autowired
 	private KnotxVerticle knotxVerticle;
 
