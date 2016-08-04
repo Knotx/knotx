@@ -17,8 +17,7 @@
  */
 package com.cognifide.knotx;
 
-import javax.annotation.PostConstruct;
-
+import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +26,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
-import io.vertx.core.Vertx;
+import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @Configuration
 public class SampleApplication {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SampleApplication.class);
-
-    @Autowired
-    private KnotxVerticle knotxVerticle;
+	@Autowired
+	private KnotxVerticle knotxVerticle;
 
 	@Autowired
 	private MockServiceConfiguration configuration;
@@ -44,18 +40,21 @@ public class SampleApplication {
 	@Autowired
 	private MockServiceVerticle mockServiceVerticle;
 
-    @Autowired
-    private ApplicationContext context;
+	@Autowired
+	private MockRemoteRepositoryVerticle mockRemoteRepositoryVerticle;
 
-    public static void main(String[] args) {
-        SpringApplication.run(SampleApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(SampleApplication.class, args);
+	}
 
-    @PostConstruct
-    public void deployVerticle() {
+	@PostConstruct
+	public void deployVerticle() {
 		Vertx vertx = Vertx.vertx();
 		vertx.deployVerticle(mockServiceVerticle);
 		vertx.deployVerticle(knotxVerticle);
+		if (configuration.mockRepositoryEnabled()) {
+			vertx.deployVerticle(mockRemoteRepositoryVerticle);
+		}
 	}
 
 }

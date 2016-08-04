@@ -16,9 +16,6 @@
 # limitations under the License.
 #
 
-server:
-  port: 8091
-
 requestHandler:
   port: 8092
 
@@ -40,7 +37,7 @@ service:
 repository:
   mock:
     enabled: true
-    port: 3001
+    port: 4502
     catalogue:
 
   configuration: classpath:repository.yml

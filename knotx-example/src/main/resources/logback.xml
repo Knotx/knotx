@@ -21,4 +21,5 @@
 <configuration>
 	<include resource="org/springframework/boot/logging/logback/base.xml"/>
 	<logger name="com.cognifide" level="DEBUG"/>
+	<logger name="io.vertx.core" level="DEBUG"/>
 </configuration>
