@@ -24,4 +24,5 @@ repositories:
 
   - type: remote
     path: /content/.*
-    serviceUrl: localhost:8080
+    domain: localhost
+    port: 3001

@@ -151,10 +151,23 @@ repositories:
 
   - type: remote
     path: /content/.*
-    serviceUrl: localhost:8080
+    domain: localhost
+    port: 3001
 ```
 
 There are two repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
+
+Additionally for testing purposes remote repository points mocked template repository endpoint. It works similar to local repository (reads templates from local machine).
+**application.yaml**
+```yaml
+repository:
+  mock:
+    enabled: true
+    port: 3001
+    catalogue:
+```
+The repository can be accessed with url `http://localhost:8092/content/remote/simple.html`.
+Mocked template repository endpoint can be simply disabled with `-Drepository.mock.enabled=false`.
 
 #### Local repositories
 
@@ -166,7 +179,7 @@ Second parameter to define is `catalogue` - it determines where to take the reso
 
 This kind of repository connects with an external server to fetch templates.
 
-To specify where the remote instance is, please configure the `url` parameter.
+To specify where the remote instance is, please configure the `domain` and `port` parameters.
 
 ### Using command line arguments and environment variables
 
@@ -186,6 +199,43 @@ Since we do not want to expose the database password, we can use a placeholder a
 Another way to provide a value for the password placeholder shown above is to set an evironment variable `db.password`.
 
 >Notice: command line arguments take precedence over environment variables.
+
+# Features
+
+## Requests grouping
+
+Template obtained from the repository may contain many snippets that will trigger microservice calls for data. There is a chance that some of the snippets will have the same `data-call-uri` attribute set, meaning they will request data from the same source.
+In such case only one call to microservice shall be made and data retrieved from service call should be applied to all snippets sharing the same `data-call-uri`.
+
+Example:
+Let's assume that we obtained the following template from repository:
+```html
+<div>
+<script data-api-type="templating" data-call-uri="/searchService" type="text/x-handlebars-template">
+    <div>{{search.term}}</div>
+</script>
+</div>
+...
+<div>
+<script data-api-type="templating" data-call-uri="/searchService" type="text/x-handlebars-template">
+    <ul>
+    {{#each search.results}}
+      <li>{{result}}<li>
+    {{/each}}
+    </ul>
+</script>
+</div>
+```
+In this case only one call to microservice will be made, since both snippets share the same `data-call-uri`. Data retrived from `/searchService` will be applied to both snippets.
+
+Notice: The following `data-call-uri` attributes
+```
+/searchService?q=first
+```
+```
+/searchService?q=second
+```
+would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
 
 # Licence
 
@@ -208,8 +258,7 @@ Another way to provide a value for the password placeholder shown above is to se
 - Remote template repository support (for remote repositories like Apache, Redis, AEM Dispatcher)
 - Support for POST requests to services (forms)
 - Authentication and authorization solution based on JWT Tokens
-- Placeholders in service-url for dynamic parameters (e.g. GET/POST/HEADER parameters rewritten to service request: ?x=${header.x}).
-- Support configuration formats other than XML (e.g. Json, YAML, System parameters as fallback).
+- Placeholders in service-url for dynamic parameters (e.g. GET/POST/HEADER parameters rewritten to service request). https://github.com/Cognifide/knotx/issues/8
 - Multidomain support, single Knot.x cluster can support whole platform with multiple sites. Each domian restricted to set of services to call.
 - Docker + Cookbook for easy production setup.
 - Kitchen integration tests.

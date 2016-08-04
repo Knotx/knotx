@@ -17,11 +17,12 @@
  */
 package com.cognifide.knotx.handler;
 
-
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.cognifide.knotx.event.ObservableRequest;
 import com.cognifide.knotx.template.TemplateHandler;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
 import org.jsoup.nodes.Element;
@@ -30,7 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClientResponse;
@@ -42,7 +46,7 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
     private final HttpServerRequest request;
 
-    private final Template template;
+    private final List<Element> snippets;
 
     private final TemplateHandler templateHandler;
 
@@ -50,18 +54,19 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
     private final ObservableRequest observableRequest;
 
-    private final Element snippet;
+    private final Handlebars handlebars;
 
     private final boolean templateDebug;
 
-    public RestServiceResponseHandler(HttpServerRequest request, Template template, TemplateHandler templateHandler, String dataCallUri,
-                                      ObservableRequest observableRequest, Element snippet, boolean templateDebug) {
+    public RestServiceResponseHandler(HttpServerRequest request, Entry<String, List<Element>> snippetGroup,
+                                      TemplateHandler templateHandler, ObservableRequest observableRequest,
+                                      Handlebars handlebars, boolean templateDebug) {
         this.request = request;
-        this.template = template;
+        this.snippets = snippetGroup.getValue();
         this.templateHandler = templateHandler;
-        this.dataCallUri = dataCallUri;
+        this.dataCallUri = snippetGroup.getKey();
         this.observableRequest = observableRequest;
-        this.snippet = snippet;
+        this.handlebars = handlebars;
         this.templateDebug = templateDebug;
     }
 
@@ -70,8 +75,19 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
         response.bodyHandler(buffer -> {
             String responseContent = buffer.getString(0, buffer.length());
             LOGGER.debug("Request in: " + request.absoluteURI() + " for " + dataCallUri);
+            Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> serviceData = new Gson().fromJson(responseContent, mapType);
+            applyData(serviceData);
+            observableRequest.onFinish();
+            templateHandler.finishIfLast(request);
+        });
+    }
+
+    private void applyData(Map<String, Object> serviceData) {
+        snippets.forEach(snippet -> {
             try {
-                String compiledContent = template.apply(new Gson().fromJson(responseContent, Map.class));
+                Template template = compile(snippet.html());
+                String compiledContent = template.apply(serviceData);
                 Element snippetParent = new Element(Tag.valueOf("div"), "");
                 if (templateDebug) {
                     String debugComment = "<!-- webservice `" + dataCallUri + "` call -->";
@@ -79,11 +95,12 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
                 }
                 snippet.replaceWith(snippetParent.append(compiledContent));
             } catch (IOException e) {
-                LOGGER.error("Can't apply response to template!", e);
-            } finally {
-                observableRequest.onFinish();
-                templateHandler.finishIfLast(request);
+                LOGGER.error("Cannot apply response to template!", e);
             }
         });
+    }
+
+    private Template compile(String html) throws IOException {
+        return handlebars.compileInline(html);
     }
 }

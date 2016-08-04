@@ -68,7 +68,9 @@ public class RepositoryConfiguration implements InitializingBean {
 
         private String path;
 
-        private String serviceUrl;
+        private String domain;
+
+        private Integer port;
 
         private String catalogue;
 
@@ -107,12 +109,20 @@ public class RepositoryConfiguration implements InitializingBean {
             this.path = path;
         }
 
-        public String getServiceUrl() {
-            return serviceUrl;
+        public String getDomain() {
+            return domain;
         }
 
-        public void setServiceUrl(String serviceUrl) {
-            this.serviceUrl = serviceUrl;
+        public void setDomain(String domain) {
+            this.domain = domain;
+        }
+
+        public Integer getPort() {
+            return port;
+        }
+
+        public void setPort(Integer port) {
+            this.port = port;
         }
 
         public String getCatalogue() {
