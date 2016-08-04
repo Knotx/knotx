@@ -18,35 +18,37 @@
 package com.cognifide.knotx;
 
 import com.cognifide.knotx.service.MockRemoteRepositoryHandler;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.http.HttpServer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.http.HttpServer;
+
 @Component
 public class MockRemoteRepositoryVerticle extends AbstractVerticle {
 
-	@Autowired
-	private MockServiceConfiguration configuration;
+    @Autowired
+    private MockServiceConfiguration configuration;
 
-	@Autowired
-	private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
+    @Autowired
+    private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
 
-	private HttpServer httpServer;
+    private HttpServer httpServer;
 
-	@Override
-	public void start() throws IOException, URISyntaxException {
-		httpServer = vertx.createHttpServer();
-		httpServer.requestHandler(mockRemoteRepositoryHandler)
-				.listen(configuration.repositoryServicePort());
-	}
+    @Override
+    public void start() throws IOException, URISyntaxException {
+        httpServer = vertx.createHttpServer();
+        httpServer.requestHandler(mockRemoteRepositoryHandler)
+                .listen(configuration.repositoryServicePort());
+    }
 
-	@Override
-	public void stop() throws Exception {
-		httpServer.close();
-	}
+    @Override
+    public void stop() throws Exception {
+        httpServer.close();
+    }
 }
 

@@ -17,31 +17,31 @@
  */
 package com.cognifide.knotx;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+
+import javax.annotation.PostConstruct;
 
 import io.vertx.core.Vertx;
 
 @SpringBootApplication
 public class Application {
 
-	@Autowired
-	private KnotxVerticle verticle;
+    @Autowired
+    private KnotxVerticle verticle;
 
-	@Autowired
-	private ApplicationContext context;
+    @Autowired
+    private ApplicationContext context;
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@PostConstruct
-	public void deployVerticle() {
-		Vertx.vertx().deployVerticle(verticle);
-	}
+    @PostConstruct
+    public void deployVerticle() {
+        Vertx.vertx().deployVerticle(verticle);
+    }
 
 }

@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+
+import javax.annotation.PostConstruct;
 
 import io.vertx.core.Vertx;
 
@@ -31,28 +31,28 @@ import io.vertx.core.Vertx;
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = Application.class))
 public class SampleApplication {
 
-	@Autowired
-	private KnotxVerticle knotxVerticle;
+    @Autowired
+    private KnotxVerticle knotxVerticle;
 
-	@Autowired
-	private MockServiceConfiguration configuration;
+    @Autowired
+    private MockServiceConfiguration configuration;
 
-	@Autowired
-	private MockServiceVerticle mockServiceVerticle;
+    @Autowired
+    private MockServiceVerticle mockServiceVerticle;
 
-	@Autowired
-	private MockRemoteRepositoryVerticle mockRemoteRepositoryVerticle;
+    @Autowired
+    private MockRemoteRepositoryVerticle mockRemoteRepositoryVerticle;
 
-	public static void main(String[] args) {
-		SpringApplication.run(SampleApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SampleApplication.class, args);
+    }
 
-	@PostConstruct
-	public void deployVerticle() {
-		Vertx vertx = Vertx.vertx();
-		vertx.deployVerticle(mockServiceVerticle);
-		vertx.deployVerticle(knotxVerticle);
-		vertx.deployVerticle(mockRemoteRepositoryVerticle);
-	}
+    @PostConstruct
+    public void deployVerticle() {
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(mockServiceVerticle);
+        vertx.deployVerticle(knotxVerticle);
+        vertx.deployVerticle(mockRemoteRepositoryVerticle);
+    }
 
 }

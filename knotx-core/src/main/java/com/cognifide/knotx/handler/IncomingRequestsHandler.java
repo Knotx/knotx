@@ -20,14 +20,16 @@ package com.cognifide.knotx.handler;
 import com.cognifide.knotx.repository.Repository;
 import com.cognifide.knotx.repository.Template;
 import com.cognifide.knotx.template.TemplateHandlerFactory;
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpServerRequest;
 
 public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
 

@@ -19,6 +19,7 @@ package com.cognifide.knotx;
 
 import com.cognifide.knotx.handlebars.Helpers;
 import com.github.jknack.handlebars.Handlebars;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,24 +29,24 @@ import java.util.List;
 @Configuration
 public class KnotxConfiguration {
 
-	@Value("#{'${request.preserved.headers}'.split(',')}")
-	private List<String> serviceCallHeaders;
+    @Value("#{'${request.preserved.headers}'.split(',')}")
+    private List<String> serviceCallHeaders;
 
-	@Value("${requestHandler.port}")
-	private Integer requestHandlerPort;
+    @Value("${requestHandler.port}")
+    private Integer requestHandlerPort;
 
-	Integer requestHandlerPort() {
-		return requestHandlerPort;
-	}
+    Integer requestHandlerPort() {
+        return requestHandlerPort;
+    }
 
-	List<String> serviceCallHeaders() {
-		return serviceCallHeaders;
-	}
+    List<String> serviceCallHeaders() {
+        return serviceCallHeaders;
+    }
 
-	@Bean
-	public Handlebars getHandlebars() {
-		Handlebars handlebars = new Handlebars();
-		Helpers.register(handlebars);
-		return handlebars;
-	}
+    @Bean
+    public Handlebars getHandlebars() {
+        Handlebars handlebars = new Handlebars();
+        Helpers.register(handlebars);
+        return handlebars;
+    }
 }

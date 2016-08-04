@@ -23,20 +23,19 @@ import com.cognifide.knotx.service.ServiceEndpoint;
 import com.cognifide.knotx.service.ServiceEndpointFacade;
 import com.cognifide.knotx.template.TemplateHandlerFactory;
 
-import io.vertx.core.http.HttpServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.concurrent.Future;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -46,8 +45,8 @@ public class KnotxVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnotxVerticle.class);
 
-	@Autowired
-	private KnotxConfiguration configuration;
+    @Autowired
+    private KnotxConfiguration configuration;
 
     @Autowired
     private RepositoryFacade repositoryFacade;
@@ -58,40 +57,40 @@ public class KnotxVerticle extends AbstractVerticle {
     @Autowired
     private TemplateHandlerFactory templateHandlerFactory;
 
-	private HttpServer httpServer;
+    private HttpServer httpServer;
 
     @Override
     public void start() throws IOException, URISyntaxException {
-		httpServer = vertx.createHttpServer();
+        httpServer = vertx.createHttpServer();
 
-		httpServer.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
+        httpServer.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
                 .listen(configuration.requestHandlerPort());
     }
 
-	@Override
-	public void stop() throws Exception {
-		httpServer.close();
-	}
+    @Override
+    public void stop() throws Exception {
+        httpServer.close();
+    }
 
-	public void callService(HttpServerRequest request, String dataCallUri,
-							Handler<HttpClientResponse> serviceResponseHandler) {
-		HttpClient httpClient = vertx.createHttpClient();
-		Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
-				.getServiceEndpoint(dataCallUri);
-		if (optionalServiceEndpoint.isPresent()) {
-			final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-			HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
-					serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
-			rewriteHeaders(request, httpClientRequest);
-			httpClientRequest.end();
-		} else {
-			LOGGER.error("No provider found! Request can't be processed.");
-		}
-	}
+    public void callService(HttpServerRequest request, String dataCallUri,
+                            Handler<HttpClientResponse> serviceResponseHandler) {
+        HttpClient httpClient = vertx.createHttpClient();
+        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
+                .getServiceEndpoint(dataCallUri);
+        if (optionalServiceEndpoint.isPresent()) {
+            final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
+            HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
+                    serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
+            rewriteHeaders(request, httpClientRequest);
+            httpClientRequest.end();
+        } else {
+            LOGGER.error("No provider found! Request can't be processed.");
+        }
+    }
 
-	private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-		request.headers().entries().stream().filter(entry -> configuration.serviceCallHeaders().contains(entry.getKey()))
-				.forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
-	}
+    private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
+        request.headers().entries().stream().filter(entry -> configuration.serviceCallHeaders().contains(entry.getKey()))
+                .forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
+    }
 
 }
