@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -79,9 +80,21 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     @Override
     public void handle(Template<String, URI> template, HttpServerRequest request) {
-        htmlDocument = Jsoup.parse(template.get());
-        htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
-        templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
+        if (template != null) {
+            htmlDocument = Jsoup.parse(template.get());
+            htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
+            templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
+
+            if (noSnippetsToProcessLeft()) {
+                finishRequest(request);
+            }
+        } else {
+            request.response()
+                    .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML)
+                    .setStatusCode(HttpStatus.NOT_FOUND.value())
+                    .end();
+            trafficObserver.onFinish();
+        }
 
         Observable.from(snippetGroups.entrySet()).subscribe(
                 snippetGroup -> handleTemplate(snippetGroup, request),
@@ -94,11 +107,19 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     @Override
     public void finishIfLast(HttpServerRequest request) {
         templatesLatch.countDown();
-        if (templatesLatch.getCount() == 0) {
-            LOGGER.info("Finished: " + request.absoluteURI());
-            request.response().putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML).end(htmlDocument.html());
-            trafficObserver.onFinish();
+        if (noSnippetsToProcessLeft()) {
+            finishRequest(request);
         }
+    }
+
+    private boolean noSnippetsToProcessLeft() {
+        return templatesLatch.getCount() == 0;
+    }
+
+    private void finishRequest(HttpServerRequest request) {
+        LOGGER.info("Finished: " + request.absoluteURI());
+        request.response().putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML).end(htmlDocument.html());
+        trafficObserver.onFinish();
     }
 
     private void handleTemplate(Entry<String, List<Element>> snippetGroup, HttpServerRequest request) {

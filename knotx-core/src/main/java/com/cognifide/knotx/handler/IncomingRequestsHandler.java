@@ -18,6 +18,7 @@
 package com.cognifide.knotx.handler;
 
 import com.cognifide.knotx.repository.Repository;
+import com.cognifide.knotx.repository.Template;
 import com.cognifide.knotx.template.TemplateHandlerFactory;
 
 import org.slf4j.Logger;
@@ -50,8 +51,11 @@ public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
             final URI requestUri = new URI(request.path());
             if (repository.support(requestUri)) {
                 repository.get(requestUri, event -> {
-                    LOGGER.trace("Template content: {}", event.result().get());
-                    templateHandlerFactory.newInstance().handle(event.result(), request);
+                    final Template<String, URI> result = event.result();
+                    if (result != null) {
+                        LOGGER.trace("Template content: {}", result.get());
+                    }
+                    templateHandlerFactory.newInstance().handle(result, request);
                 });
             } else {
                 LOGGER.error("Can't handle request. No matching repository found for request `{}`!", request.absoluteURI());

@@ -20,6 +20,8 @@ package com.cognifide.knotx.repository;
 import com.cognifide.knotx.KnotxVerticle;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.InitializingBean;
@@ -66,11 +68,40 @@ public class RepositoryConfiguration implements InitializingBean {
 
         private String path;
 
-        private String serviceUrl;
+        private String domain;
+
+        private Integer port;
 
         private String catalogue;
 
         private RepositoryType type;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj != null && obj instanceof RepositoryMetadata) {
+                final RepositoryMetadata other = (RepositoryMetadata) obj;
+                return new EqualsBuilder()
+                        .append(path, other.getPath())
+                        .append(domain, other.getDomain())
+                        .append(port, other.getPort())
+                        .append(catalogue, other.getCatalogue())
+                        .append(type, other.getType()).isEquals();
+            } else {
+                return false;
+            }
+
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(path)
+                    .append(domain)
+                    .append(port)
+                    .append(catalogue)
+                    .append(type)
+                    .toHashCode();
+        }
 
         public String getPath() {
             return path;
@@ -80,12 +111,20 @@ public class RepositoryConfiguration implements InitializingBean {
             this.path = path;
         }
 
-        public String getServiceUrl() {
-            return serviceUrl;
+        public String getDomain() {
+            return domain;
         }
 
-        public void setServiceUrl(String serviceUrl) {
-            this.serviceUrl = serviceUrl;
+        public void setDomain(String domain) {
+            this.domain = domain;
+        }
+
+        public Integer getPort() {
+            return port;
+        }
+
+        public void setPort(Integer port) {
+            this.port = port;
         }
 
         public String getCatalogue() {

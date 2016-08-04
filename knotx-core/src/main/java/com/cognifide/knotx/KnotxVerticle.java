@@ -54,6 +54,9 @@ public class KnotxVerticle extends AbstractVerticle {
     private ServiceEndpointFacade serviceEndpointFacade;
 
     @Autowired
+    private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
+
+    @Autowired
     private TemplateHandlerFactory templateHandlerFactory;
 
     @Override
@@ -63,13 +66,15 @@ public class KnotxVerticle extends AbstractVerticle {
                 .listen(configuration.requestHandlerPort());
     }
 
-    public void callService(HttpServerRequest request, String dataCallUri, Handler<HttpClientResponse> serviceResponseHandler) {
+    public void callService(HttpServerRequest request, String dataCallUri,
+                            Handler<HttpClientResponse> serviceResponseHandler) {
         HttpClient httpClient = vertx.createHttpClient();
-        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade.getServiceEndpoint(dataCallUri);
+        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
+                .getServiceEndpoint(dataCallUri);
         if (optionalServiceEndpoint.isPresent()) {
             final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-            HttpClientRequest httpClientRequest =
-                    httpClient.get(serviceEndpoint.getPort(), serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
+            HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
+                    serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
             rewriteHeaders(request, httpClientRequest);
             httpClientRequest.end();
         } else {

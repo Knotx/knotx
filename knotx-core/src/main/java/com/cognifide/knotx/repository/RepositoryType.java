@@ -28,8 +28,9 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     LOCAL {
         @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, KnotxVerticle verticle) {
-            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), verticle);
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                              Server server) {
+            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), server);
         }
 
         @Override
@@ -40,13 +41,15 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     REMOTE {
         @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, KnotxVerticle verticle) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getServiceUrl());
+        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                              Server server) {
+            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), server
+                    .getVertx().createHttpClient());
         }
 
         @Override
         public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
-            return isNotEmpty(metadata.getPath(), metadata.getServiceUrl());
+            return isNotEmpty(metadata.getPath(), metadata.getDomain()) && metadata.getPort() != null;
         }
     };
 
@@ -56,5 +59,9 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, KnotxVerticle verticle);
 
+    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                                   Server server);
+
+    @Override
     public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }
