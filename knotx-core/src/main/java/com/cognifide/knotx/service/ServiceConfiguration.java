@@ -44,7 +44,7 @@ public class ServiceConfiguration {
 
         private String domain;
 
-        private String port;
+        private Integer port;
 
         @Override
         public boolean equals(Object obj) {
@@ -84,11 +84,11 @@ public class ServiceConfiguration {
             this.domain = domain;
         }
 
-        public String getPort() {
+        public Integer getPort() {
             return port;
         }
 
-        public void setPort(String port) {
+        public void setPort(Integer port) {
             this.port = port;
         }
     }

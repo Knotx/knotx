@@ -33,7 +33,7 @@ class ServiceEndpointProvider implements ServiceEndpoint {
         ServiceEndpointProvider provider = new ServiceEndpointProvider();
         provider.path = metadata.getPath();
         provider.domain = metadata.getDomain();
-        provider.port = Integer.valueOf(metadata.getPort());
+        provider.port = metadata.getPort();
         return provider;
     }
 

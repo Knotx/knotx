@@ -35,7 +35,7 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = {"repository.configuration=classpath:repository-correct.yml"})
+@TestPropertySource(properties = {"repository.configuration=classpath:repository-correct.yml", "service.configuration=classpath:service-correct.yml"})
 public class RepositoryCorrectConfigurationTest {
 
     @Autowired

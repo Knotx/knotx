@@ -38,7 +38,7 @@ import static org.hamcrest.core.Is.is;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = {"service.configuration=classpath:service-correct.yml"})
+@TestPropertySource(properties = {"repository.configuration=classpath:repository-correct.yml", "service.configuration=classpath:service-correct.yml"})
 public class ServiceCorrectConfigurationTest {
 
     @Autowired
@@ -50,8 +50,8 @@ public class ServiceCorrectConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
-        expectedServiceOne = createMockedService("/service/mock/.*", "localhost", "3000");
-        expectedServiceTwo = createMockedService("/service/.*", "localhost", "8080");
+        expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000);
+        expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ServiceCorrectConfigurationTest {
 
     }
 
-    private ServiceConfiguration.ServiceMetadata createMockedService(String path, String domain, String port) {
+    private ServiceConfiguration.ServiceMetadata createMockedService(String path, String domain, Integer port) {
         ServiceConfiguration.ServiceMetadata newService = new ServiceConfiguration.ServiceMetadata();
         newService.setPath(path);
         newService.setDomain(domain);
