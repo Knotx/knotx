@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - Parent Pom
+    Knot.x
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -26,7 +26,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Knot.x - Parent Pom</name>
+    <name>Knot.x</name>
 
     <inceptionYear>2016</inceptionYear>
     <licenses>
