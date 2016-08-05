@@ -28,7 +28,6 @@
     </parent>
 
     <artifactId>knotx-example</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <name>Knot.x - Sample App with Mock service</name>
 
@@ -67,7 +66,7 @@
         <dependency>
             <groupId>com.cognifide.knotx</groupId>
             <artifactId>knotx-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- CORE -->
@@ -88,7 +87,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
         </dependency>
     </dependencies>
 
