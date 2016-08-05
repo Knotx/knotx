@@ -19,11 +19,11 @@ package com.cognifide.knotx.result;
 
 import io.vertx.core.AsyncResult;
 
-public class FailureAsyncResult<T> implements AsyncResult<T> {
+class FailureAsyncResult<T> implements AsyncResult<T> {
 
     private final Throwable cause;
 
-    public FailureAsyncResult(Throwable cause) {
+    FailureAsyncResult(Throwable cause) {
         this.cause = cause;
     }
 

@@ -19,11 +19,11 @@ package com.cognifide.knotx.result;
 
 import io.vertx.core.AsyncResult;
 
-public class SuccessAsyncResult<T> implements AsyncResult<T> {
+class SuccessAsyncResult<T> implements AsyncResult<T> {
 
     private final T result;
 
-    public SuccessAsyncResult(T result) {
+    SuccessAsyncResult(T result) {
         this.result = result;
     }
 
