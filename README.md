@@ -97,7 +97,7 @@ To build it you also need Maven.
 ## Modules
 Knot.x has two modules: **knotx-core** and **knotx-example**.
 
-*Core module* contains Knot.x application without any example data / mock endpoints. It can be deployed as standalone [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html). See [configuration section](#configuration) to deploy Knot.x core module.
+*Core module* contains Knot.x [verticle]((http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html)) without any example data / mock endpoints. See [configuration section](#configuration_) to deploy Knot.x core module.
 
 *Example module* contains Knot.x application, example template repositories and mock services. Internally it starts three independent verticles (for Knot.x application, example template repositories and mock services). This module is perfect entry point to Knot.x world. 
 
@@ -118,7 +118,7 @@ To run it from maven execute the following command from parent directory:
 ```
 mvn spring-boot:run
 ```
-This will run the sample server with mock services and sample local and remote repositories. Sample templates are avaiable at:
+This will run the sample server with mock services and sample repositories. Sample pages are available at:
 
 ```
 http://localhost:8092/content/local/simple.html
@@ -133,7 +133,7 @@ To run it execute the following command:
 java -jar knotx-example-XXX.jar
 ```
 
-This will run the server with mock services and sample local and remote repositories.
+This will run the server with sample data.
 
 In order to run the server with your own configuration add this to the command:
 
@@ -159,25 +159,14 @@ As you may notice, there are two files that need to be defined in order to confi
 - `file:///data/config.yml` on Linux
 - `file:c:\\data\config.yml` on Windows
  
-## Production deployment
-
-The example module is provided for testing purposes. Only the core module should be deployed in a production environment. (The Knot.x application runs as a single verticle without any dependencies).
-
-### Executing fat jar
-
-To run it execute the following command:
-
-```
-java -jar knotx-core-XXX.jar -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
-```
-
-This will run the server with production settings. For more information see the configuration section.
 
 ## Configuration
 
-### Services
+Knot.x separate sample configuration and production ready one (this section describes example module configuration)
 
-Here's how **sample** configuration files should look:
+Here's how configuration files look:
+
+### Services
 
 **service.yml**
 ```yaml
@@ -217,6 +206,7 @@ repositories:
 
 There are two sample repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 
+
 #### Local repositories
 
 If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
@@ -229,15 +219,28 @@ This kind of repository connects with an external server to fetch templates.
 
 To specify where the remote instance is, please configure the `domain` and `port` parameters.
 
-In the example module remote repository listens at port 3001:
-**application.yaml**
+### Application
+
+**application.yml**
 ```yaml
+service:
+  mock:
+    enabled: true
+    port: 3000
+    catalogue: mock
+
+  configuration: classpath:service.yml
+
 repository:
   mock:
     enabled: true
     port: 3001
     catalogue:
+
+  configuration: classpath:repository.yml
 ```
+
+There are two mock endpoints in application configuration: one for mock services and one for sample remote repository. Those endpoints are deployed as separate verticles.
 
 ### Using command line arguments and environment variables
 
@@ -294,6 +297,49 @@ Notice: The following `data-call-uri` attributes
 /searchService?q=second
 ```
 would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
+
+# Production
+
+The example module is provided for testing purposes. Only the core module should be deployed in a production environment. (The Knot.x application runs as a single verticle without any dependencies).
+
+### Executing
+
+To run it execute the following command:
+
+```
+java -jar knotx-core-XXX.jar -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
+```
+
+This will run the server with production settings. For more information see the configuration section.
+
+### Configuration
+
+Core module contains Knot.x verticle without any sample data. Here's how its configuration files look:
+
+**service.yml**
+```yaml
+services:
+
+  - path: ${service.path}
+    domain: ${service.domain}
+    port: ${service.port}
+```
+
+**repository.yml**
+```yaml
+repositories:
+
+  - type: local
+    path: ${local.repository.path}
+    catalogue: ${local.repository.catalogue}
+
+  - type: remote
+    path: ${remote.repository.path}
+    domain: ${remote.repository.domain}
+    port: ${remote.repository.port}
+```
+
+All placeholders can be simply filled with command line arguments and environment variables. See [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables) section.
 
 # Licence
 
