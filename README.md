@@ -14,6 +14,10 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 
 # Contents
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
 - [How it works](#how-it-works)
   - [Templating](#templating)
   - [Architecture](#architecture)
@@ -24,19 +28,23 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
   - [Building](#building)
     - [Executing from Maven](#executing-from-maven)
     - [Executing fat jar](#executing-fat-jar)
-  - [Production deployment](#production-deployment)
-    - [Executing fat jar](#executing-fat-jar-1)
   - [Configuration](#configuration)
     - [Services](#services)
     - [Repositories](#repositories)
       - [Local repositories](#local-repositories)
       - [Remote repositories](#remote-repositories)
+    - [Application](#application)
     - [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables)
 - [Features](#features)
   - [Requests grouping](#requests-grouping)
+- [Production](#production)
+    - [Executing](#executing)
+    - [Configuration](#configuration-1)
 - [Licence](#licence)
 - [Dependencies](#dependencies)
 - [Roadmap](#roadmap)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # How it works
 
