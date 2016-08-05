@@ -13,8 +13,10 @@ Knot.x is a lightweight and high-performance **reactive microservice assembler**
 We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
 # Contents
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 - [How it works](#how-it-works)
   - [Templating](#templating)
   - [Architecture](#architecture)
@@ -38,6 +40,7 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 - [Licence](#licence)
 - [Dependencies](#dependencies)
 - [Roadmap](#roadmap)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # How it works
