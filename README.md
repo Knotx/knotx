@@ -97,7 +97,7 @@ To build it you also need Maven.
 ## Modules
 Knot.x has two modules: **knotx-core** and **knotx-example**.
 
-*Core module* contains Knot.x application without any example data / mock endpoints. It can be deployed as standalone verticle (see http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html). See configuration section to deploy Knot.x core module.
+*Core module* contains Knot.x application without any example data / mock endpoints. It can be deployed as standalone [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html). See [configuration section](#configuration) to deploy Knot.x core module.
 
 *Example module* contains Knot.x application, example template repositories and mock services. Internally it starts three independent verticles (for Knot.x application, example template repositories and mock services). This module is perfect entry point to Knot.x world. 
 
@@ -116,7 +116,7 @@ Alternatively, you can just download the most recent `knotx-example-XXX.jar` fil
 
 To run it from maven execute the following command from parent directory:
 ```
-mvn clean spring-boot:run
+mvn spring-boot:run
 ```
 This will run the sample server with mock services and sample local and remote repositories. Sample templates are avaiable at:
 
