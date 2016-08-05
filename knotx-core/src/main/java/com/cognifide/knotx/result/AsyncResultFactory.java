@@ -15,58 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.util;
+package com.cognifide.knotx.result;
 
 import io.vertx.core.AsyncResult;
 
 public class AsyncResultFactory {
 
     public static <T> AsyncResult<T> createSuccess(T result) {
-        return new AsyncResult<T>() {
-            @Override
-            public T result() {
-                return result;
-            }
-
-            @Override
-            public Throwable cause() {
-                return null;
-            }
-
-            @Override
-            public boolean succeeded() {
-                return true;
-            }
-
-            @Override
-            public boolean failed() {
-                return false;
-            }
-        };
+        return new SuccessAsyncResult<>(result);
     }
 
     public static <T> AsyncResult<T> createFailure(Throwable t) {
-        return new AsyncResult<T>() {
-            @Override
-            public T result() {
-                return null;
-            }
-
-            @Override
-            public Throwable cause() {
-                return t;
-            }
-
-            @Override
-            public boolean succeeded() {
-                return false;
-            }
-
-            @Override
-            public boolean failed() {
-                return true;
-            }
-        };
+        return new FailureAsyncResult<>(t);
     }
 
     public static <T> AsyncResult<T> createFailure() {

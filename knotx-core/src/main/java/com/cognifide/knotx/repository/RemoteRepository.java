@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.util.AsyncResultFactory;
+import com.cognifide.knotx.result.AsyncResultFactory;
 
 import org.springframework.http.HttpStatus;
 
