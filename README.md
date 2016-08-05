@@ -86,13 +86,18 @@ and find the executable jar in the `knotx-example/target` directory.
 
 Alternatively, you can just download the most recent `knotx-example-XXX.jar` file.
 
-### Executing from maven
+### Executing from Maven
 
-To run it from maven execute the following command (from parent directory):
+To run it from maven execute the following command from parent directory:
 ```
 mvn clean spring-boot:run
 ```
-This will run the sample server with mock service and default settings (Spring Boot is configured to run knotx-example module as default module).
+This will run the sample server with mock services and sample local and remote repositories. Sample templates are avaiable at:
+
+```
+http://localhost:8092/content/local/simple.html
+http://localhost:8092/content/remote/simple.html
+```
 
 ### Executing fat jar
 
@@ -102,7 +107,7 @@ To run it execute the following command:
 java -jar knotx-example-XXX.jar
 ```
 
-This will run the server with default settings.
+This will run the server with mock services and sample local and remote repositories.
 
 In order to run the server with your own configuration add this to the command:
 
@@ -130,7 +135,7 @@ As you may notice, there are two files that need to be defined in order to confi
  
 ## Production deployment
 
-The example module is provided for testing purposes. Only core module should be deployed on production environment (Knot.x application as single verticle without any dependencies).
+The example module is provided for testing purposes. Only the core module should be deployed in a production environment. (The Knot.x application runs as a single verticle without any dependencies).
 
 ### Executing fat jar
 
@@ -140,13 +145,13 @@ To run it execute the following command:
 java -jar knotx-core-XXX.jar -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
 ```
 
-This will run the server with production settings. For more informations see configuration section.
+This will run the server with production settings. For more information see the configuration section.
 
 ## Configuration
 
 ### Services
 
-Here's how configuration files should look:
+Here's how **sample** configuration files should look:
 
 **service.yml**
 ```yaml
@@ -184,19 +189,7 @@ repositories:
     port: 3001
 ```
 
-There are two repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
-
-Additionally for testing purposes remote repository points mocked template repository endpoint. It works similar to local repository (reads templates from local machine).
-**application.yaml**
-```yaml
-repository:
-  mock:
-    enabled: true
-    port: 3001
-    catalogue:
-```
-The repository can be accessed with url `http://localhost:8092/content/remote/simple.html`.
-Mocked template repository endpoint can be simply disabled with `-Drepository.mock.enabled=false`.
+There are two sample repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 
 #### Local repositories
 
@@ -209,6 +202,16 @@ Second parameter to define is `catalogue` - it determines where to take the reso
 This kind of repository connects with an external server to fetch templates.
 
 To specify where the remote instance is, please configure the `domain` and `port` parameters.
+
+In the example module remote repository listens at port 3001:
+**application.yaml**
+```yaml
+repository:
+  mock:
+    enabled: true
+    port: 3001
+    catalogue:
+```
 
 ### Using command line arguments and environment variables
 
