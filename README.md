@@ -114,7 +114,7 @@ Knot.x has two modules: **knotx-core** and **knotx-example**.
 To build it simply checkout the project, run (from parent directory):
 
 ```
-mvn clean package
+mvn clean install
 ```
 and find the executable jar in the `knotx-example/target` directory.
 
