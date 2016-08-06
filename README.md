@@ -103,26 +103,24 @@ To run Knot.x you only need Java 8.
 To build it you also need Maven.
 
 ## Modules
-Knot.x has two modules: **knotx-core** and **knotx-example**.
+The Knot.x project has two Maven modules: **knotx-core** and **knotx-example**.
 
-*Core module* contains Knot.x [verticle]((http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html)) without any example data / mock endpoints. See [configuration section](#configuration_) to deploy Knot.x core module.
+The *core* module contains the Knot.x [verticle]((http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html)) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
 
-*Example module* contains Knot.x application, example template repositories and mock services. Internally it starts three independent verticles (for Knot.x application, example template repositories and mock services). This module is perfect entry point to Knot.x world. 
+The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts three independent verticles (for the Knot.x application, example template repositories and mock services). This module is a perfect fit for those getting started with Knot.x. 
 
 ## Building
 
-To build it simply checkout the project, run (from parent directory):
+To build it, simply checkout the project, navigate to the project root and run the following command:
 
 ```
 mvn clean install
 ```
-and find the executable jar in the `knotx-example/target` directory.
-
-Alternatively, you can just download the most recent `knotx-example-XXX.jar` file.
+This will create executable JAR files for both *core* and *example* modules in the `knotx-core/target` and `knotx-example/target` directories respectively.
 
 ### Executing from Maven
 
-To run it from maven execute the following command from parent directory:
+To run Knot.x from Maven, execute the following command from the project's root directory:
 ```
 mvn spring-boot:run
 ```
@@ -170,7 +168,9 @@ As you may notice, there are two files that need to be defined in order to confi
 
 ## Configuration
 
-Knot.x separate sample configuration and production ready one (this section describes example module configuration)
+The Knot.x verticle, as well as sample services and repositories can be customised using dedicated YAML configuration files. This section explains their structure and the meaning of specific fields.
+
+Please mind that this set of examples depicts a valid setup of the example module and is not fit for use in production environments. To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
 
 Here's how configuration files look:
 
@@ -212,7 +212,7 @@ repositories:
     port: 3001
 ```
 
-There are two sample repositories defined - `local` and `remote`. Each of them define `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
+There are two sample repositories defined - `local` and `remote`. Each of them defines a `path` - a regular expression that indicates which resources will be taken from this repository. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 
 
 #### Local repositories
@@ -248,7 +248,7 @@ repository:
   configuration: classpath:repository.yml
 ```
 
-There are two mock endpoints in application configuration: one for mock services and one for sample remote repository. Those endpoints are deployed as separate verticles.
+There are two mock endpoints in the application configuration: one for mock services and one for the sample remote repository. Those endpoints are deployed as separate verticles.
 
 ### Using command line arguments and environment variables
 
@@ -312,17 +312,17 @@ The example module is provided for testing purposes. Only the core module should
 
 ### Executing
 
-To run it execute the following command:
+To run it, execute the following command:
 
 ```
 java -jar knotx-core-XXX.jar -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
 ```
 
-This will run the server with production settings. For more information see the configuration section.
+This will run the server with production settings. For more information see the [Configuration](#configuration-1) section.
 
 ### Configuration
 
-Core module contains Knot.x verticle without any sample data. Here's how its configuration files look:
+The *core* module contains a Knot.x verticle without any sample data. Here's how its configuration files look:
 
 **service.yml**
 ```yaml
@@ -347,7 +347,7 @@ repositories:
     port: ${remote.repository.port}
 ```
 
-All placeholders can be simply filled with command line arguments and environment variables. See [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables) section.
+All placeholders can be replaced with command line arguments and environment variables. See [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables) section.
 
 # Licence
 
