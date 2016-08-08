@@ -39,7 +39,7 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
 
     private static final String SEPARATOR = "/";
 
-    @Value("${service.mock.catalogue}")
+    @Value("${mock.service.root}")
     private String catalogue;
 
     @Override

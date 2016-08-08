@@ -23,10 +23,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MockServiceConfiguration {
 
-    @Value("${service.mock.port}")
+    @Value("${mock.service.port}")
     private Integer mockServicePort;
 
-    @Value("${repository.mock.port}")
+    @Value("${mock.repository.port}")
     private Integer repositoryServicePort;
 
     Integer mockServicePort() {
