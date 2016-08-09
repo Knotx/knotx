@@ -238,10 +238,10 @@ To specify where the remote instance is, please configure the `domain` and `port
 mock:
   service:
     port: 3000
-    root: mock/data/service
+    root: mock/service
   repository:
     port: 3001
-    root: mock/data/repository
+    root: mock/repository
 ```
 
 There are two mock endpoints in the application configuration: one for mock services and one for mock remote repository. Those endpoints are deployed as separate verticles.
