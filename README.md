@@ -231,24 +231,20 @@ To specify where the remote instance is, please configure the `domain` and `port
 
 **application.yml**
 ```yaml
-service:
-  mock:
-    enabled: true
+#
+# configuration specific to knotx-core were omitted for brevity
+#
+
+mock:
+  service:
     port: 3000
-    catalogue: mock
-
-  configuration: classpath:service.yml
-
-repository:
-  mock:
-    enabled: true
+    root: mock/data/service
+  repository:
     port: 3001
-    catalogue:
-
-  configuration: classpath:repository.yml
+    root: mock/data/repository
 ```
 
-There are two mock endpoints in the application configuration: one for mock services and one for the sample remote repository. Those endpoints are deployed as separate verticles.
+There are two mock endpoints in the application configuration: one for mock services and one for mock remote repository. Those endpoints are deployed as separate verticles.
 
 ### Using command line arguments and environment variables
 
