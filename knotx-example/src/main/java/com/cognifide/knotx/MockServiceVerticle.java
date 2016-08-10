@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.http.HttpServer;
+import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.http.HttpServer;
 
 @Component
 public class MockServiceVerticle extends AbstractVerticle {

@@ -46,7 +46,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
 
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpServerRequest;
 import rx.Observable;
 
 @Service
@@ -90,7 +90,7 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
             }
         } else {
             request.response()
-                    .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML)
+                    .putHeader(HttpHeaders.CONTENT_TYPE.toString(), HttpHeaders.TEXT_HTML.toString())
                     .setStatusCode(HttpStatus.NOT_FOUND.value())
                     .end();
             trafficObserver.onFinish();
@@ -118,7 +118,7 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private void finishRequest(HttpServerRequest request) {
         LOGGER.info("Finished: " + request.absoluteURI());
-        request.response().putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaders.TEXT_HTML).end(htmlDocument.html());
+        request.response().putHeader(HttpHeaders.CONTENT_TYPE.toString(), HttpHeaders.TEXT_HTML.toString()).end(htmlDocument.html());
         trafficObserver.onFinish();
     }
 
@@ -136,8 +136,8 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     private String getServiceUrl(HttpServerRequest request, Element snippet) {
         final String templateCallUri = snippet.attr("data-call-uri");
         final StringBuilder urlSB = new StringBuilder(templateCallUri.contains("?") ? templateCallUri : templateCallUri + "?");
-        request.params().entries().forEach(
-                param -> urlSB.append("&").append(param.getKey()).append("=").append(param.getValue()));
+        request.params().names().forEach(
+                paramName -> urlSB.append("&").append(paramName).append("=").append(request.getParam(paramName)));
         return urlSB.toString();
     }
 }

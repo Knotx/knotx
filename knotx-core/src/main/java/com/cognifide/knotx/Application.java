@@ -24,13 +24,14 @@ import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
 
-import io.vertx.core.Vertx;
+import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.Vertx;
 
 @SpringBootApplication
 public class Application {
 
     @Autowired
-    private KnotxVerticle verticle;
+    private KnotxVerticle knotx;
 
     @Autowired
     private ApplicationContext context;
@@ -41,7 +42,6 @@ public class Application {
 
     @PostConstruct
     public void deployVerticle() {
-        Vertx.vertx().deployVerticle(verticle);
+        RxHelper.deployVerticle(Vertx.vertx(), knotx);
     }
-
 }

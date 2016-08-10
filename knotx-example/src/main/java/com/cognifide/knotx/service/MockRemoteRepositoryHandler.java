@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpServerRequest;
 
 @Component
 public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {

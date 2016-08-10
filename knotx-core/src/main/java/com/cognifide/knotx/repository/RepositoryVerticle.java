@@ -15,17 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template;
+package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.repository.Template;
+import io.vertx.rxjava.core.AbstractVerticle;
 
-import java.io.Serializable;
-
-import io.vertx.rxjava.core.http.HttpServerRequest;
-
-public interface TemplateHandler<T, ID extends Serializable> {
-
-    void handle(Template<T, ID> template, HttpServerRequest request);
-
-    void finishIfLast(HttpServerRequest request);
+public class RepositoryVerticle extends AbstractVerticle {
 }

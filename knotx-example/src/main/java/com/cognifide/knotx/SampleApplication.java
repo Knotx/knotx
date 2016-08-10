@@ -25,7 +25,8 @@ import org.springframework.context.annotation.FilterType;
 
 import javax.annotation.PostConstruct;
 
-import io.vertx.core.Vertx;
+import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.Vertx;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = Application.class))
@@ -50,9 +51,9 @@ public class SampleApplication {
     @PostConstruct
     public void deployVerticle() {
         Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(mockServiceVerticle);
-        vertx.deployVerticle(knotxVerticle);
-        vertx.deployVerticle(mockRemoteRepositoryVerticle);
+        RxHelper.deployVerticle(vertx, mockServiceVerticle);
+        RxHelper.deployVerticle(vertx, knotxVerticle);
+        RxHelper.deployVerticle(vertx, mockRemoteRepositoryVerticle);
     }
 
 }

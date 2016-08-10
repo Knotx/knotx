@@ -30,13 +30,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientRequest;
+import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.rxjava.core.http.HttpServer;
+import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -89,8 +89,11 @@ public class KnotxVerticle extends AbstractVerticle {
     }
 
     private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-        request.headers().entries().stream().filter(entry -> configuration.serviceCallHeaders().contains(entry.getKey()))
-                .forEach(entry -> httpClientRequest.putHeader(entry.getKey(), entry.getValue()));
+        request.headers().names().stream()
+                .filter(headerName ->
+                        configuration.serviceCallHeaders().contains(headerName))
+                .forEach(headerName ->
+                        httpClientRequest.putHeader(headerName, request.getHeader(headerName))
+                );
     }
-
 }

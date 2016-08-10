@@ -29,7 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
 

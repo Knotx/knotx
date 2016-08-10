@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpClientResponse;
-import io.vertx.core.http.HttpServerRequest;
+import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
