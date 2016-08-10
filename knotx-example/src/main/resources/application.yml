@@ -42,4 +42,4 @@ mock:
     root: mock-service
   repository:
     port: 3001
-    root: mock/repository
+    root: mock-remote-repository
