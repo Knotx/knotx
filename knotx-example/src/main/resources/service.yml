@@ -25,3 +25,7 @@ services:
   - path: /service/.*
     domain: localhost
     port: 8080
+
+  - path: /photos/.*
+    domain: jsonplaceholder.typicode.com
+    port: 80
