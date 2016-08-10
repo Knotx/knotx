@@ -36,13 +36,15 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
 
-    @Value("${repository.mock.catalogue}")
+    private static final String SEPARATOR = "/";
+
+    @Value("${mock.repository.root}")
     private String catalogue;
 
     @Override
     public void handle(HttpServerRequest event) {
 
-        String resourcePath = catalogue + getContentPath(event.path());
+        String resourcePath = catalogue + SEPARATOR + getContentPath(event.path());
         String htmlContent = "";
         try {
             URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);

@@ -27,21 +27,19 @@ request:
     headers: User-Agent,X-Solr-Core-Key,X-Language-Code
 
 service:
-  mock:
-    enabled: true
-    port: 3000
-    catalogue: mock
-
   configuration: classpath:service.yml
 
 repository:
-  mock:
-    enabled: true
-    port: 3001
-    catalogue:
-
   configuration: classpath:repository.yml
 
 spring:
   main:
     web-environment: false
+
+mock:
+  service:
+    port: 3000
+    root: mock/service
+  repository:
+    port: 3001
+    root: mock/repository
