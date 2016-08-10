@@ -79,11 +79,6 @@
                     <skip>false</skip>
                 </configuration>
             </plugin>
-            <!-- plugin for checking if licensing header is present in headers of defined files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 </project>
