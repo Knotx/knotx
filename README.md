@@ -129,6 +129,7 @@ This will run the sample server with mock services and sample repositories. Samp
 ```
 http://localhost:8092/content/local/simple.html
 http://localhost:8092/content/remote/simple.html
+http://localhost:8092/content/jsonplaceholder/remote.html
 ```
 
 ### Executing fat jar
@@ -187,6 +188,10 @@ services:
   - path: /service/.*
     domain: localhost
     port: 8080
+
+  - path: /photos/.*
+    domain: jsonplaceholder.typicode.com
+    port: 80
 ```
 
 There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
@@ -238,10 +243,10 @@ To specify where the remote instance is, please configure the `domain` and `port
 mock:
   service:
     port: 3000
-    root: mock/service
+    root: mock-service
   repository:
     port: 3001
-    root: mock/repository
+    root: mock-remote-repository
 ```
 
 There are two mock endpoints in the application configuration: one for mock services and one for mock remote repository. Those endpoints are deployed as separate verticles.
