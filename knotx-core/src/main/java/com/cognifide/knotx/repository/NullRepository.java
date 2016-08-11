@@ -17,25 +17,24 @@
  */
 package com.cognifide.knotx.repository;
 
-import java.net.URI;
+import com.cognifide.knotx.api.RepositoryResponse;
 
-class BasicTemplate implements Template<String, URI> {
+import rx.Observable;
 
-    private final URI uri;
-    private final String content;
+public class NullRepository implements Repository {
 
-    BasicTemplate(URI uri, String content) {
-        this.uri = uri;
-        this.content = content;
+    public NullRepository() {
+        // No constructor
+    }
+
+
+    @Override
+    public Observable<RepositoryResponse> get(String path) {
+        return Observable.just(RepositoryResponse.error("No repository found for given path %s", path));
     }
 
     @Override
-    public URI getId() {
-        return uri;
-    }
-
-    @Override
-    public String get() {
-        return content;
+    public boolean support(String path) {
+        return false;
     }
 }

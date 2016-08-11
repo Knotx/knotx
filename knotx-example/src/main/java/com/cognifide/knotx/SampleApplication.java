@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx;
 
+import com.cognifide.knotx.repository.RepositoryVerticle;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,12 +27,15 @@ import org.springframework.context.annotation.FilterType;
 
 import javax.annotation.PostConstruct;
 
-import io.vertx.rxjava.core.RxHelper;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = Application.class))
 public class SampleApplication {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleApplication.class);
 
     @Autowired
     private KnotxVerticle knotxVerticle;
@@ -42,6 +47,9 @@ public class SampleApplication {
     private MockServiceVerticle mockServiceVerticle;
 
     @Autowired
+    private RepositoryVerticle repositoryVerticle;
+
+    @Autowired
     private MockRemoteRepositoryVerticle mockRemoteRepositoryVerticle;
 
     public static void main(String[] args) {
@@ -51,9 +59,27 @@ public class SampleApplication {
     @PostConstruct
     public void deployVerticle() {
         Vertx vertx = Vertx.vertx();
-        RxHelper.deployVerticle(vertx, mockServiceVerticle);
-        RxHelper.deployVerticle(vertx, knotxVerticle);
-        RxHelper.deployVerticle(vertx, mockRemoteRepositoryVerticle);
+
+        // Register codec for RepositoryResponse
+        vertx.deployVerticle(repositoryVerticle);
+        vertx.deployVerticle(mockServiceVerticle);
+        vertx.deployVerticle(mockRemoteRepositoryVerticle);
+        vertx.deployVerticle(knotxVerticle);
+
+//        VertxOptions options = new VertxOptions();
+//        Vertx.clusteredVertx(options,
+//                res -> {
+//                    if (res.succeeded()) {
+//                        Vertx vertx = res.result();
+//                        RxHelper.deployVerticle(vertx, repositoryVerticle);
+//                        RxHelper.deployVerticle(vertx, mockServiceVerticle);
+//                        RxHelper.deployVerticle(vertx, knotxVerticle);
+//                        RxHelper.deployVerticle(vertx, mockRemoteRepositoryVerticle);
+//                    } else {
+//                        LOGGER.fatal("Failed to start vertx server: ", res.cause());
+//                    }
+//                }
+//        );
     }
 
 }

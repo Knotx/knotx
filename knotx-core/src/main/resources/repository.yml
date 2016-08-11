@@ -17,12 +17,11 @@
 #
 
 repositories:
+  local:
+    - path: ${local.repository.path}
+      catalogue: ${local.repository.catalogue}
 
-  - type: local
-    path: ${local.repository.path}
-    catalogue: ${local.repository.catalogue}
-
-  - type: remote
-    path: ${remote.repository.path}
-    domain: ${remote.repository.domain}
-    port: ${remote.repository.port}
+  remote:
+    - path: ${remote.repository.path}
+      domain: ${remote.repository.domain}
+      port: ${remote.repository.port}

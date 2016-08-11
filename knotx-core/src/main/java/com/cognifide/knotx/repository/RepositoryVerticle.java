@@ -17,7 +17,90 @@
  */
 package com.cognifide.knotx.repository;
 
-import io.vertx.rxjava.core.AbstractVerticle;
+import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.template.TemplateHandlerFactory;
+import com.cognifide.knotx.util.RepositoryResponseCodec;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
+import rx.Observable;
+
+@Component
 public class RepositoryVerticle extends AbstractVerticle {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryVerticle.class);
+
+    @Autowired
+    private TemplateHandlerFactory templateHandlerFactory;
+
+    @Autowired
+    private RepositoryConfiguration repositoryConfiguration;
+
+    private List<Repository> repositories = Lists.newArrayList();
+
+    @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        vertx.eventBus().registerDefaultCodec(RepositoryResponse.class, new RepositoryResponseCodec());
+
+        repositories = repositoryConfiguration.getRepositories()
+                .stream()
+                .map(this::getRepositoryByMetadata)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void start() throws Exception {
+        LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
+
+        EventBus eventBus = vertx.eventBus();
+
+        Observable<Message<String>> messageObservable = eventBus.<String>consumer("template-repository").toObservable();
+
+        messageObservable
+                .doOnNext(this::traceMessage)
+                .flatMap(this::getTemplateContent, Pair::of)
+                .subscribe(
+                        response -> response.getLeft().reply(response.getRight()),
+                        error -> LOGGER.error("Unable to get template from the repository", error)
+                );
+    }
+
+    private Observable<RepositoryResponse> getTemplateContent(final Message<String> pathMsg) {
+        final String path = pathMsg.body();
+
+        return Observable.just(findRepository(path))
+                .flatMap(repo -> repo.get(path));
+    }
+
+    private Repository findRepository(final String path) {
+        return repositories.stream()
+                .filter(repo -> repo.support(path))
+                .findFirst()
+                .orElse(new NullRepository());
+    }
+
+    private Repository getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
+        return metadata.getType().create(metadata, vertx);
+    }
+
+    private void traceMessage(Message<?> message) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(String.format("Got message from <%s> with value <%s>", message.replyAddress(), message.body()));
+        }
+    }
 }

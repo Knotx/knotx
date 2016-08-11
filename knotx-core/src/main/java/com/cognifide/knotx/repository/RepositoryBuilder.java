@@ -17,13 +17,12 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.KnotxVerticle;
-
 import java.io.Serializable;
-import java.net.URI;
+
+import io.vertx.rxjava.core.Vertx;
 
 interface RepositoryBuilder extends Serializable {
 
-    Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata, KnotxVerticle verticle);
+    Repository create(RepositoryConfiguration.RepositoryMetadata metadata, Vertx vertx);
 
 }

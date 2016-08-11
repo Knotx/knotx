@@ -17,15 +17,12 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.KnotxVerticle;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,14 +33,8 @@ import java.util.stream.Collectors;
 @ConfigurationProperties(locations = {"${repository.configuration}"})
 public class RepositoryConfiguration implements InitializingBean {
 
-    @Autowired
-    private KnotxVerticle verticle;
-
     private List<RepositoryMetadata> repositories;
 
-    public KnotxVerticle getVerticle() {
-        return verticle;
-    }
 
     public List<RepositoryMetadata> getRepositories() {
         return repositories;

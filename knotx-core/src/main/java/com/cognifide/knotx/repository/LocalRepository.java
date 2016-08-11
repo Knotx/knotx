@@ -17,79 +17,55 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.KnotxVerticle;
+import com.cognifide.knotx.api.RepositoryResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
+import io.vertx.core.file.OpenOptions;
+import io.vertx.rxjava.core.file.AsyncFile;
+import io.vertx.rxjava.core.file.FileSystem;
+import rx.Observable;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.AsyncResultHandler;
-import io.vertx.core.buffer.Buffer;
-
-class LocalRepository implements Repository<String, URI> {
-
+public class LocalRepository implements Repository {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
 
     private String path;
 
     private String catalogue;
 
-    private KnotxVerticle verticle;
+    private FileSystem fileSystem;
 
     private LocalRepository() {
-        // hidden constructor
+        // Hidden constructor
     }
 
-    static LocalRepository of(String path, String catalogue, KnotxVerticle verticle) {
+    static LocalRepository of(String path, String catlogue, FileSystem fileSystem) {
         LocalRepository repository = new LocalRepository();
         repository.path = path;
-        repository.catalogue = catalogue;
-        repository.verticle = verticle;
+        repository.catalogue = catlogue;
+        repository.fileSystem = fileSystem;
         return repository;
     }
 
     @Override
-    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-        final String localFile = catalogue + StringUtils.stripStart(uri.getPath(), "/");
-        LOGGER.debug("Fetching file `{}` from local repository.", localFile);
-        verticle.getVertx().fileSystem().readFile(localFile, (AsyncResultHandler<Buffer>) event -> {
-            if (event.succeeded()) {
-                String templateContent = event.result().toString();
-                handler.handle(new AsyncResult<Template<String, URI>>() {
-                    @Override
-                    public Template<String, URI> result() {
-                        return new BasicTemplate(uri, templateContent);
-                    }
+    public Observable<RepositoryResponse> get(String path) {
+        final String localFile = catalogue + StringUtils.stripStart(path, "/");
+        LOGGER.trace("Fetching file `{}` from local repository.", localFile);
 
-                    @Override
-                    public Throwable cause() {
-                        return event.cause();
-                    }
-
-                    @Override
-                    public boolean succeeded() {
-                        return event.succeeded();
-                    }
-
-                    @Override
-                    public boolean failed() {
-                        return event.failed();
-                    }
+        return fileSystem.openObservable(localFile, new OpenOptions())
+                .flatMap(AsyncFile::toObservable)
+                .flatMap(buffer -> RepositoryResponse.success(buffer).toObservable())
+                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", path))
+                .onErrorReturn(error -> {
+                    LOGGER.error("Error reading template file from file system", error);
+                    return RepositoryResponse.error("No Template found for path <%s>", path);
                 });
-            } else {
-                throw new RuntimeException("Can't obtain template!", event.cause());
-            }
-        });
     }
 
     @Override
-    public boolean support(URI uri) {
-        String path = uri.getPath();
+    public boolean support(String path) {
         return path.matches(this.path);
     }
-
 }

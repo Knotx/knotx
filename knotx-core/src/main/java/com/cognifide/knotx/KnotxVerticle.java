@@ -17,8 +17,7 @@
  */
 package com.cognifide.knotx;
 
-import com.cognifide.knotx.handler.IncomingRequestsHandler;
-import com.cognifide.knotx.repository.RepositoryFacade;
+import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.service.ServiceEndpoint;
 import com.cognifide.knotx.service.ServiceEndpointFacade;
 import com.cognifide.knotx.template.TemplateHandlerFactory;
@@ -30,15 +29,17 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 @Component
 public class KnotxVerticle extends AbstractVerticle {
@@ -47,9 +48,6 @@ public class KnotxVerticle extends AbstractVerticle {
 
     @Autowired
     private KnotxConfiguration configuration;
-
-    @Autowired
-    private RepositoryFacade repositoryFacade;
 
     @Autowired
     private ServiceEndpointFacade serviceEndpointFacade;
@@ -61,15 +59,41 @@ public class KnotxVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws IOException, URISyntaxException {
+        LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
         httpServer = vertx.createHttpServer();
+        EventBus eventBus = vertx.eventBus();
 
-        httpServer.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
-                .listen(configuration.requestHandlerPort());
+        httpServer.requestHandler(
+                request -> {
+                    eventBus.<RepositoryResponse>sendObservable("template-repository", request.path())
+                            .doOnNext(this::traceMessage)
+                            .subscribe(
+                                    reply -> {
+                                        RepositoryResponse repository = reply.body();
+                                        if (repository.isSuccess()) {
+                                            request.response().end(repository.getData());
+                                        } else {
+                                            request.response().setStatusCode(404).end(repository.getReason());
+                                        }
+                                    },
+                                    error -> LOGGER.error("Error: ", error)
+                            );
+                }
+        ).listen(configuration.requestHandlerPort());
+
+//        httpServer.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
+//                .listen(configuration.requestHandlerPort());
     }
 
     @Override
     public void stop() throws Exception {
         httpServer.close();
+    }
+
+    private void traceMessage(Message<?> message) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(String.format("Got message from <template-repository> with value <%s>", message.body()));
+        }
     }
 
     public void callService(HttpServerRequest request, String dataCallUri,

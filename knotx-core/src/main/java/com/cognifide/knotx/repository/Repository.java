@@ -17,15 +17,13 @@
  */
 package com.cognifide.knotx.repository;
 
-import java.io.IOException;
-import java.io.Serializable;
+import com.cognifide.knotx.api.RepositoryResponse;
 
-import io.vertx.core.AsyncResultHandler;
+import rx.Observable;
 
-public interface Repository<T, ID extends Serializable> {
+public interface Repository {
 
-    void get(ID id, AsyncResultHandler<Template<T, ID>> handler) throws IOException;
+    Observable<RepositoryResponse> get(String path);
 
-    boolean support(ID id);
-
+    boolean support(String path);
 }

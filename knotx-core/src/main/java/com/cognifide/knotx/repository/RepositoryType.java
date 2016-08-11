@@ -17,20 +17,21 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.KnotxVerticle;
-
 import org.apache.commons.lang3.StringUtils;
 
-import java.net.URI;
 import java.util.stream.Stream;
+
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.Vertx;
 
 enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     LOCAL {
         @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                              KnotxVerticle verticle) {
-            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), verticle);
+        public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                                 Vertx vertx) {
+            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), vertx.fileSystem());
         }
 
         @Override
@@ -41,10 +42,10 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     REMOTE {
         @Override
-        public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                              KnotxVerticle verticle) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), verticle
-                    .getVertx().createHttpClient());
+        public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                                 Vertx vertx) {
+            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(),
+                    vertx.createHttpClient(new HttpClientOptions().setLogActivity(true)));
         }
 
         @Override
@@ -58,8 +59,8 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
     }
 
 
-    public abstract Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                                   KnotxVerticle verticle);
+    public abstract Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                                      Vertx vertx);
 
     @Override
     public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);

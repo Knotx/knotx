@@ -17,18 +17,21 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.result.AsyncResultFactory;
+import com.cognifide.knotx.api.RepositoryResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
-import java.io.IOException;
-import java.net.URI;
+import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientResponse;
+import rx.Observable;
 
-import io.vertx.core.AsyncResultHandler;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
+class RemoteRepository implements Repository {
 
-class RemoteRepository implements Repository<String, URI> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteRepository.class);
 
     private String path;
 
@@ -52,26 +55,45 @@ class RemoteRepository implements Repository<String, URI> {
     }
 
     @Override
-    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
-        HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(),
-                httpClientResponse -> {
-                    if (httpClientResponse.statusCode() == HttpStatus.OK.value()) {
-                        httpClientResponse.bodyHandler(buffer -> {
-                            String responseContent = buffer.getString(0, buffer.length());
-                            handler.handle(AsyncResultFactory.createSuccess(new BasicTemplate(uri,
-                                    responseContent)));
-                        });
-                    } else {
-                        handler.handle(AsyncResultFactory.createFailure());
-                    }
-                });
-        httpClientRequest.end();
+    public Observable<RepositoryResponse> get(String path) {
+        Observable<HttpClientResponse> clientResponse = RxHelper.get(httpClient, port, domain, path);
+
+        return clientResponse
+                .doOnNext(this::traceResponse)
+                .filter(this::onlySuccess)
+                .flatMap(HttpClientResponse::toObservable)
+                .flatMap(this::toRepositoryResponse)
+                .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", path))
+                .onErrorReturn(error -> {
+                            LOGGER.error("Unable to fetch template from remote repository for path `{}`", path, error);
+                            return RepositoryResponse.error("No Template found for path %s", path);
+                        }
+                );
+    }
+
+    private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer) {
+        Observable<RepositoryResponse> response;
+        if (buffer.length() > 0) {
+            response = RepositoryResponse.success(buffer).toObservable();
+        } else {
+            LOGGER.error("Remote repository returned empty template for path `{}`", path);
+            response = RepositoryResponse.error("No Template found for path %s", path).toObservable();
+        }
+        return response;
+    }
+
+    private void traceResponse(HttpClientResponse response) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(String.format("Got response from remote repository %s", response.statusCode()));
+        }
+    }
+
+    private boolean onlySuccess(HttpClientResponse response) {
+        return response.statusCode() == HttpStatus.OK.value();
     }
 
     @Override
-    public boolean support(URI uri) {
-        String path = uri.getPath();
+    public boolean support(String path) {
         return path.matches(this.path);
     }
-
 }
