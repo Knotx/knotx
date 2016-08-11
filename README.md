@@ -194,10 +194,11 @@ services:
     port: 80
 ```
 
-There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
+There are three groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
 
-- `/service/mock/.*` will by handled by `localhost:3000`
-- `/service/.*` will be handled by `localhost:8080`
+- `/service/mock/.*` will by handled by `localhost:3000`,
+- `/service/.*` will be handled by `localhost:8080`,
+- `/photos/.*` will be handled by `jsonplaceholder.typicode.com`.
 
 The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
 
