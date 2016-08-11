@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.template;
 
+import com.cognifide.knotx.placeholder.UriHelper;
+import com.cognifide.knotx.placeholder.UriPlaceholderResolver;
 import com.google.common.collect.Iterables;
 
 import com.cognifide.knotx.KnotxVerticle;
@@ -82,7 +84,9 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     public void handle(Template<String, URI> template, HttpServerRequest request) {
         if (template != null) {
             htmlDocument = Jsoup.parse(template.get());
-            htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
+            final UriPlaceholderResolver resolver = new UriPlaceholderResolver(request);
+            htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups
+                    .add(UriHelper.getServiceUrl(request, snippet, resolver), snippet));
             templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
             if (noSnippetsToProcessLeft()) {
@@ -133,11 +137,4 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         verticle.callService(request, dataCallUri, serviceResponseHandler);
     }
 
-    private String getServiceUrl(HttpServerRequest request, Element snippet) {
-        final String templateCallUri = snippet.attr("data-call-uri");
-        final StringBuilder urlSB = new StringBuilder(templateCallUri.contains("?") ? templateCallUri : templateCallUri + "?");
-        request.params().entries().forEach(
-                param -> urlSB.append("&").append(param.getKey()).append("=").append(param.getValue()));
-        return urlSB.toString();
-    }
 }
