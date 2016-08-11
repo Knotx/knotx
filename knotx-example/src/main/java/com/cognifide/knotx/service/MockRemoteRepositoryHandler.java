@@ -36,15 +36,13 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
 
-    private static final String SEPARATOR = "/";
-
     @Value("${mock.repository.root}")
     private String catalogue;
 
     @Override
     public void handle(HttpServerRequest event) {
 
-        String resourcePath = catalogue + SEPARATOR + getContentPath(event.path());
+        String resourcePath = catalogue + event.path();
         String htmlContent = "";
         try {
             URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
@@ -60,13 +58,4 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
             event.connection().close();
         }
     }
-
-    private String getContentPath(String path) {
-        if (path.startsWith("/")) {
-            return path.replaceFirst("/", "");
-        } else {
-            return path;
-        }
-    }
-
 }

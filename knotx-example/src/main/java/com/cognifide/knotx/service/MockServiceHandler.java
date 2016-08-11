@@ -44,7 +44,7 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
 
     @Override
     public void handle(HttpServerRequest event) {
-        String resourcePath = getFilePath(event);
+        String resourcePath = catalogue +  event.path();
         String htmlContent = "";
         try {
             URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
@@ -60,9 +60,4 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
             event.connection().close();
         }
     }
-
-    private String getFilePath(HttpServerRequest event) {
-        return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
-    }
-
 }
