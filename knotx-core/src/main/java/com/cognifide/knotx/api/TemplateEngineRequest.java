@@ -15,17 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template.engine;
+package com.cognifide.knotx.api;
 
-import com.cognifide.knotx.repository.Template;
+import io.vertx.rxjava.core.buffer.Buffer;
 
-import java.io.Serializable;
+public class TemplateEngineRequest {
+    private Buffer template;
 
-import io.vertx.rxjava.core.http.HttpServerRequest;
+    private String params;
 
-public interface TemplateHandler<T, ID extends Serializable> {
+    public TemplateEngineRequest(Buffer template, String params) {
+        this.template = template;
+        this.params = params;
+    }
 
-    void handle(Template<T, ID> template, HttpServerRequest request);
+    public Buffer getTemplate() {
+        return template;
+    }
 
-    void finishIfLast(HttpServerRequest request);
+    public String getParams() {
+        return params;
+    }
 }

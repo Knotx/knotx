@@ -19,8 +19,8 @@ package com.cognifide.knotx.repository;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.template.engine.TemplateHandlerFactory;
 import com.cognifide.knotx.util.RepositoryResponseCodec;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,9 +45,6 @@ public class RepositoryVerticle extends AbstractVerticle {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryVerticle.class);
 
     @Autowired
-    private TemplateHandlerFactory templateHandlerFactory;
-
-    @Autowired
     private RepositoryConfiguration repositoryConfiguration;
 
     private List<Repository> repositories = Lists.newArrayList();
@@ -69,7 +66,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
         EventBus eventBus = vertx.eventBus();
 
-        Observable<Message<String>> messageObservable = eventBus.<String>consumer("template-repository").toObservable();
+        Observable<Message<String>> messageObservable = eventBus.<String>consumer(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS).toObservable();
 
         messageObservable
                 .doOnNext(this::traceMessage)

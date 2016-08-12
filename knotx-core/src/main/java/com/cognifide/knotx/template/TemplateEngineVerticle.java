@@ -17,14 +17,30 @@
  */
 package com.cognifide.knotx.template;
 
+import com.cognifide.knotx.api.KnotxConst;
+import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.template.engine.TemplateEngine;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
+import rx.Observable;
 
 @Component
 public class TemplateEngineVerticle extends AbstractVerticle {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngineVerticle.class);
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -33,6 +49,34 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        super.start();
+        LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
+
+        EventBus eventBus = vertx.eventBus();
+
+        Observable<Message<io.vertx.core.buffer.Buffer>> messageObservable = eventBus.<io.vertx.core.buffer.Buffer>consumer(KnotxConst.TEMPLATE_ENGINE_ADDRESS).toObservable();
+
+        messageObservable
+                .doOnNext(this::traceMessage)
+                .subscribe(
+                        msg -> {
+                            templateEngine.process(new TemplateEngineRequest(Buffer.newInstance(msg.body()), null))
+                                    .subscribe(
+                                            data -> msg.reply(data),
+                                            error -> {
+                                                LOGGER.error("Error happened", error);
+                                                msg.reply(Buffer.buffer("ERROR").getDelegate());
+                                            }
+                                    );
+                            LOGGER.info("Got message: " + msg.body());
+                        }
+                );
+
+
+    }
+
+    private void traceMessage(Message<?> message) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(String.format("Got message from <%s> with value <%s>", message.replyAddress(), message.body()));
+        }
     }
 }

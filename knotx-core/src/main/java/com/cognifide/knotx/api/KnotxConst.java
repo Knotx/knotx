@@ -15,19 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template.engine;
+package com.cognifide.knotx.api;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-@Component
-public class TemplateHandlerFactory {
-
-    @Autowired
-    private BeanFactory beanFactory;
-
-    public TemplateHandler newInstance() {
-        return beanFactory.getBean(TemplateHandler.class);
-    }
+public interface KnotxConst {
+    String TEMPLATE_REPOSITORY_ADDRESS = "template-repository";
+    String TEMPLATE_ENGINE_ADDRESS = "template-engine";
 }

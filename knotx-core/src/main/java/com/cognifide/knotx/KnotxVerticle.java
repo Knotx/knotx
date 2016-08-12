@@ -17,29 +17,22 @@
  */
 package com.cognifide.knotx;
 
+import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.template.service.ServiceEndpoint;
 import com.cognifide.knotx.template.service.ServiceEndpointFacade;
-import com.cognifide.knotx.template.engine.TemplateHandlerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
-import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientRequest;
-import io.vertx.rxjava.core.http.HttpClientResponse;
 import io.vertx.rxjava.core.http.HttpServer;
-import io.vertx.rxjava.core.http.HttpServerRequest;
 
 @Component
 public class KnotxVerticle extends AbstractVerticle {
@@ -52,9 +45,6 @@ public class KnotxVerticle extends AbstractVerticle {
     @Autowired
     private ServiceEndpointFacade serviceEndpointFacade;
 
-    @Autowired
-    private TemplateHandlerFactory templateHandlerFactory;
-
     private HttpServer httpServer;
 
     @Override
@@ -65,13 +55,20 @@ public class KnotxVerticle extends AbstractVerticle {
 
         httpServer.requestHandler(
                 request -> {
-                    eventBus.<RepositoryResponse>sendObservable("template-repository", request.path())
+                    eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, request.path())
                             .doOnNext(this::traceMessage)
                             .subscribe(
                                     reply -> {
                                         RepositoryResponse repository = reply.body();
                                         if (repository.isSuccess()) {
-                                            request.response().end(repository.getData());
+                                            eventBus.sendObservable(KnotxConst.TEMPLATE_ENGINE_ADDRESS, repository.getData().getDelegate())
+                                                    .subscribe(
+                                                            result -> request.response().end(repository.getData()),
+                                                            error -> {
+                                                                LOGGER.error("Error happened", error);
+                                                                request.response().setStatusCode(500).end(error.toString());
+                                                            }
+                                                    );
                                         } else {
                                             request.response().setStatusCode(404).end(repository.getReason());
                                         }
@@ -91,30 +88,5 @@ public class KnotxVerticle extends AbstractVerticle {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace(String.format("Got message from <template-repository> with value <%s>", message.body()));
         }
-    }
-
-    public void callService(HttpServerRequest request, String dataCallUri,
-                            Handler<HttpClientResponse> serviceResponseHandler) {
-        HttpClient httpClient = vertx.createHttpClient();
-        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
-                .getServiceEndpoint(dataCallUri);
-        if (optionalServiceEndpoint.isPresent()) {
-            final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-            HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
-                    serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
-            rewriteHeaders(request, httpClientRequest);
-            httpClientRequest.end();
-        } else {
-            LOGGER.error("No provider found! Request can't be processed.");
-        }
-    }
-
-    private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-        request.headers().names().stream()
-                .filter(headerName ->
-                        configuration.serviceCallHeaders().contains(headerName))
-                .forEach(headerName ->
-                        httpClientRequest.putHeader(headerName, request.getHeader(headerName))
-                );
     }
 }

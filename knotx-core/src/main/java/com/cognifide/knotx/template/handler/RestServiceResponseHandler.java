@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import com.cognifide.knotx.template.event.ObservableRequest;
-import com.cognifide.knotx.template.engine.TemplateHandler;
+import com.cognifide.knotx.template.engine.TemplateEngine;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
@@ -48,7 +48,7 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
 
     private final List<Element> snippets;
 
-    private final TemplateHandler templateHandler;
+    private final TemplateEngine templateEngine;
 
     private final String dataCallUri;
 
@@ -59,11 +59,11 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
     private final boolean templateDebug;
 
     public RestServiceResponseHandler(HttpServerRequest request, Entry<String, List<Element>> snippetGroup,
-                                      TemplateHandler templateHandler, ObservableRequest observableRequest,
+                                      TemplateEngine templateEngine, ObservableRequest observableRequest,
                                       Handlebars handlebars, boolean templateDebug) {
         this.request = request;
         this.snippets = snippetGroup.getValue();
-        this.templateHandler = templateHandler;
+        this.templateEngine = templateEngine;
         this.dataCallUri = snippetGroup.getKey();
         this.observableRequest = observableRequest;
         this.handlebars = handlebars;
@@ -80,7 +80,7 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
             Map<String, Object> serviceData = new Gson().fromJson(responseContent, mapType);
             applyData(serviceData);
             observableRequest.onFinish();
-            templateHandler.finishIfLast(request);
+            //templateEngine.finishIfLast(request);
         });
     }
 
