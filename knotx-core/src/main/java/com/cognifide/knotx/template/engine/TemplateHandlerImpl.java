@@ -15,14 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template;
+package com.cognifide.knotx.template.engine;
 
 import com.google.common.collect.Iterables;
 
 import com.cognifide.knotx.KnotxVerticle;
-import com.cognifide.knotx.event.ObservableRequest;
-import com.cognifide.knotx.event.TrafficObserver;
-import com.cognifide.knotx.handler.RestServiceResponseHandler;
+import com.cognifide.knotx.template.event.ObservableRequest;
+import com.cognifide.knotx.template.event.TrafficObserver;
+import com.cognifide.knotx.template.handler.RestServiceResponseHandler;
 import com.cognifide.knotx.repository.Template;
 import com.github.jknack.handlebars.Handlebars;
 

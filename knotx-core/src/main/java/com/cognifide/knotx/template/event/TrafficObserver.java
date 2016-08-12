@@ -15,19 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template;
+package com.cognifide.knotx.template.event;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Component
-public class TemplateHandlerFactory {
+import java.util.Observable;
+import java.util.Observer;
 
-    @Autowired
-    private BeanFactory beanFactory;
+public class TrafficObserver implements Observer {
 
-    public TemplateHandler newInstance() {
-        return beanFactory.getBean(TemplateHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrafficObserver.class);
+
+    public TrafficObserver() {
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        LOGGER.info("Event {}", arg);
+    }
+
+    public void onFinish() {
+        // empty
     }
 }

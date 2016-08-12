@@ -15,12 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.service;
+package com.cognifide.knotx.template.engine;
 
-public interface ServiceEndpoint {
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-    String getDomain();
+@Component
+public class TemplateHandlerFactory {
 
-    Integer getPort();
+    @Autowired
+    private BeanFactory beanFactory;
 
+    public TemplateHandler newInstance() {
+        return beanFactory.getBean(TemplateHandler.class);
+    }
 }

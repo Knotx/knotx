@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx;
 
-import com.cognifide.knotx.handlebars.Helpers;
+import com.cognifide.knotx.template.handlebars.Helpers;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.springframework.beans.factory.annotation.Value;

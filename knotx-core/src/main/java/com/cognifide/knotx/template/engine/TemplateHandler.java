@@ -15,24 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.service;
+package com.cognifide.knotx.template.engine;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import com.cognifide.knotx.repository.Template;
 
-import java.util.Optional;
+import java.io.Serializable;
 
-@Component
-public class ServiceEndpointFacade {
+import io.vertx.rxjava.core.http.HttpServerRequest;
 
-    @Autowired
-    private ServiceConfiguration serviceConfiguration;
+public interface TemplateHandler<T, ID extends Serializable> {
 
-    public Optional<? extends ServiceEndpoint> getServiceEndpoint(String path) {
-        return serviceConfiguration.getServices().stream()
-                .map(ServiceEndpointProvider::from)
-                .filter(service -> service.support(path))
-                .findFirst();
-    }
+    void handle(Template<T, ID> template, HttpServerRequest request);
 
+    void finishIfLast(HttpServerRequest request);
 }

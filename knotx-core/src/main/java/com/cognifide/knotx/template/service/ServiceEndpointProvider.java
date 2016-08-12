@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.service;
+package com.cognifide.knotx.template.service;
 
 class ServiceEndpointProvider implements ServiceEndpoint {
 

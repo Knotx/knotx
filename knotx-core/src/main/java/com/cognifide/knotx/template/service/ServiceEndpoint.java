@@ -15,27 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.event;
+package com.cognifide.knotx.template.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface ServiceEndpoint {
 
-import java.util.Observable;
-import java.util.Observer;
+    String getDomain();
 
-public class TrafficObserver implements Observer {
+    Integer getPort();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TrafficObserver.class);
-
-    public TrafficObserver() {
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        LOGGER.info("Event {}", arg);
-    }
-
-    public void onFinish() {
-        // empty
-    }
 }

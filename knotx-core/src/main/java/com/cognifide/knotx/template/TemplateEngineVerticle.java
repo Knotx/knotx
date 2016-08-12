@@ -17,15 +17,22 @@
  */
 package com.cognifide.knotx.template;
 
-import com.cognifide.knotx.repository.Template;
+import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
+import io.vertx.rxjava.core.AbstractVerticle;
 
-import io.vertx.rxjava.core.http.HttpServerRequest;
+@Component
+public class TemplateEngineVerticle extends AbstractVerticle {
 
-public interface TemplateHandler<T, ID extends Serializable> {
+    @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+    }
 
-    void handle(Template<T, ID> template, HttpServerRequest request);
-
-    void finishIfLast(HttpServerRequest request);
+    @Override
+    public void start() throws Exception {
+        super.start();
+    }
 }

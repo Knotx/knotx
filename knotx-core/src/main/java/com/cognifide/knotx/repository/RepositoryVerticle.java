@@ -20,7 +20,7 @@ package com.cognifide.knotx.repository;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.template.TemplateHandlerFactory;
+import com.cognifide.knotx.template.engine.TemplateHandlerFactory;
 import com.cognifide.knotx.util.RepositoryResponseCodec;
 
 import org.apache.commons.lang3.tuple.Pair;

@@ -18,9 +18,9 @@
 package com.cognifide.knotx;
 
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.service.ServiceEndpoint;
-import com.cognifide.knotx.service.ServiceEndpointFacade;
-import com.cognifide.knotx.template.TemplateHandlerFactory;
+import com.cognifide.knotx.template.service.ServiceEndpoint;
+import com.cognifide.knotx.template.service.ServiceEndpointFacade;
+import com.cognifide.knotx.template.engine.TemplateHandlerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

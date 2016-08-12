@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.handler;
+package com.cognifide.knotx.template.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import com.cognifide.knotx.event.ObservableRequest;
-import com.cognifide.knotx.template.TemplateHandler;
+import com.cognifide.knotx.template.event.ObservableRequest;
+import com.cognifide.knotx.template.engine.TemplateHandler;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
