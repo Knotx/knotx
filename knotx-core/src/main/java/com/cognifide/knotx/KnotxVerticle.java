@@ -80,9 +80,6 @@ public class KnotxVerticle extends AbstractVerticle {
                             );
                 }
         ).listen(configuration.requestHandlerPort());
-
-//        httpServer.requestHandler(new IncomingRequestsHandler(templateHandlerFactory, repositoryFacade))
-//                .listen(configuration.requestHandlerPort());
     }
 
     @Override
