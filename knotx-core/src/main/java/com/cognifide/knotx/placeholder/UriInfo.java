@@ -46,7 +46,7 @@ public class UriInfo {
 
             selectorString = matcher.group(3);
             if (selectorString != null) {
-                selectors = selectorString.split(".");
+                selectors = selectorString.split("\\.");
             }
 
             extension = matcher.group(5);
