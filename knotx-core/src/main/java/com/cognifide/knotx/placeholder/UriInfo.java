@@ -14,64 +14,68 @@
  */
 package com.cognifide.knotx.placeholder;
 
-import java.util.Arrays;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 
 public class UriInfo {
 
     private static final Pattern URI_PATTERN = Pattern
             .compile("([^\\.\\?#]+)(\\.([^\\/\\?#]+)\\.)?(\\.?([^\\/\\?#]+))?([^\\?#]+)?((\\?|#).+)?");
 
-    private static final String PATH = "path";
+    private String path;
 
-    private static final String PATHPART = "pathpart";
+    private String[] pathparts;
 
-    private static final String SELECTORSTRING = "selectorstring";
+    private String selectorString;
 
-    private static final String SELECTOR = "selector";
+    private String[] selectors;
 
-    private static final String EXTENSION = "extension";
+    private String extension;
 
-    private static final String SUFFIX = "suffix";
-
-    private Map<String, String> values = Maps.newHashMap();
+    private String suffix;
 
     public UriInfo(String uri) {
-        Matcher matcher = URI_PATTERN.matcher(uri);
+        final Matcher matcher = URI_PATTERN.matcher(uri);
         if (matcher.matches()) {
-            final String path = matcher.group(1);
-            putValue(PATH, path);
-            putValues(PATHPART, path, "/", 0);
+            path = matcher.group(1);
+            if (StringUtils.length(path) > 1) {
+                pathparts = path.substring(1).split("/");
+            }
 
-            final String selectorString = matcher.group(3);
-            putValue(SELECTORSTRING, selectorString);
-            putValues(SELECTOR, selectorString, ".", 0);
+            selectorString = matcher.group(3);
+            if (selectorString != null) {
+                selectors = selectorString.split(".");
+            }
 
-            putValue(EXTENSION, matcher.group(5));
-            putValue(SUFFIX, matcher.group(6));
+            extension = matcher.group(5);
+            suffix = matcher.group(6);
         }
     }
 
-    private void putValues(String key, String valuesString, String separator, int skip) {
-        if (valuesString != null) {
-            final int index[] = { 0 };
-            Arrays.stream(valuesString.split(separator))
-                    .forEach(value -> putValue(String.format("%s[%d]", key, index[0]++), value));
-        }
+    public String getPath() {
+        return path;
     }
 
-    private void putValue(String key, String value) {
-        if (value != null) {
-            values.put(key, value);
-        }
+    public String getPathPart(int index) {
+        return pathparts != null && 0 <= index && index < pathparts.length ? pathparts[index] : null;
     }
 
-    public String getValue(String placeholder) {
-        return values.get(placeholder);
+    public String getSelectorString() {
+        return selectorString;
+    }
+
+    public String getSelector(int index) {
+        return selectors != null && 0 <= index && index < selectors.length ? selectors[index] : null;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public String getSuffix() {
+        return suffix;
     }
 
 }

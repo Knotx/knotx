@@ -5,7 +5,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
@@ -14,21 +14,10 @@
  */
 package com.cognifide.knotx.placeholder;
 
-import org.jsoup.nodes.Element;
-import org.springframework.util.PropertyPlaceholderHelper;
-
 import io.vertx.core.http.HttpServerRequest;
 
-public final class UriHelper {
+public interface Placeholder {
 
-    private UriHelper() {
-    }
-
-    public static String getServiceUrl(HttpServerRequest request, Element snippet,
-            UriPlaceholderResolver resolver) {
-        final PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}");
-        final String templateCallUri = snippet.attr("data-call-uri");
-        return helper.replacePlaceholders(templateCallUri, resolver);
-    }
+	String getValue(HttpServerRequest request, String placeholder);
 
 }

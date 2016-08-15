@@ -77,10 +77,10 @@ public class UriInfoTest {
     @Test
     public void test() {
         final UriInfo uriInfo = new UriInfo(uri);
-        boolean result = StringUtils.equals(uriInfo.getValue("path"), path);
-        result &= StringUtils.equals(uriInfo.getValue("selectorstring"), selectorString);
-        result &= StringUtils.equals(uriInfo.getValue("extension"), extension);
-        result &= StringUtils.equals(uriInfo.getValue("suffix"), suffix);
+        boolean result = StringUtils.equals(uriInfo.getPath(), path);
+        result &= StringUtils.equals(uriInfo.getSelectorString(), selectorString);
+        result &= StringUtils.equals(uriInfo.getExtension(), extension);
+        result &= StringUtils.equals(uriInfo.getSuffix(), suffix);
         Assert.assertTrue(result);
     }
 

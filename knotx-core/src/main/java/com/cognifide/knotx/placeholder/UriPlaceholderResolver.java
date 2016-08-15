@@ -14,37 +14,42 @@
  */
 package com.cognifide.knotx.placeholder;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.PropertyPlaceholderHelper;
 
 import com.google.common.collect.Maps;
 
 import io.vertx.core.http.HttpServerRequest;
 
+@Component
+@Scope("prototype")
 public class UriPlaceholderResolver implements PropertyPlaceholderHelper.PlaceholderResolver {
 
     private final HttpServerRequest request;
 
-    private final UriInfo uriInfo;
+    private final Map<String, String> cache = Maps.newHashMap();
 
-    private Map<String, String> placeholders = Maps.newHashMap();
+    @Autowired
+    private List<Placeholder> placeholders;
 
     public UriPlaceholderResolver(HttpServerRequest request) {
         this.request = request;
-        this.uriInfo = new UriInfo(request.uri());
     }
 
     @Override
     public String resolvePlaceholder(String placeholder) {
-        if (!placeholders.containsKey(placeholder)) {
-            String value = RequestPlaceholderHelper.getValue(request, placeholder);
-            if (value == null) {
-                value = uriInfo.getValue(placeholder);
-            }
-            placeholders.put(placeholder, value);
+        if (!cache.containsKey(placeholder)) {
+            final String value = placeholders.stream().map(x -> x.getValue(request, placeholder))
+                    .filter(Objects::nonNull).findFirst().orElse(null);
+            cache.put(placeholder, value);
         }
-        return placeholders.get(placeholder);
+        return cache.get(placeholder);
     }
 
 }
