@@ -19,8 +19,11 @@ package com.cognifide.knotx.template.engine;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
 
+import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public interface TemplateEngine {
     Observable<String> process(TemplateEngineRequest request);
+
+    void setHttpClient(HttpClient httpClient);
 }

@@ -24,6 +24,8 @@ import com.cognifide.knotx.template.engine.TemplateEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -41,8 +43,14 @@ public class TemplateEngineVerticle extends AbstractVerticle {
     private TemplateEngine templateEngine;
 
     @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+    }
+
+    @Override
     public void start() throws Exception {
         LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
+        templateEngine.setHttpClient(vertx.createHttpClient());
 
         EventBus eventBus = vertx.eventBus();
 

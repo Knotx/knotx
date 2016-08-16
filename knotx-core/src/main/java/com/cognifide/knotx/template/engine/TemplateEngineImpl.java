@@ -17,7 +17,8 @@
  */
 package com.cognifide.knotx.template.engine;
 
-import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.template.event.TrafficObserver;
@@ -34,9 +35,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
 @Component
@@ -56,6 +62,13 @@ public class TemplateEngineImpl implements TemplateEngine {
 
     private TrafficObserver trafficObserver = new TrafficObserver();
 
+    private HttpClient httpClient;
+
+    @Override
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
     @Override
     public Observable<String> process(TemplateEngineRequest request) {
         final Document htmlDocument = Jsoup.parse(request.getTemplate().toString());
@@ -65,13 +78,7 @@ public class TemplateEngineImpl implements TemplateEngine {
                                 Observable.from(document.select(SNIPPET_TAG))
                                         .map(TemplateSnippet::raw)
                                         .flatMap(this::compileSnippetTemplate)
-                                        .flatMap(snippet ->
-                                                snippet.getServices()
-                                                        .flatMap(this::doServiceCall,
-                                                                (service, serviceResult) ->
-                                                                        service.setResult(serviceResult))
-                                                        .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()))
-                                        ),
+                                        .flatMap(this::processSnippet),
                         (doc, results) -> doc.html()
                 );
     }
@@ -99,9 +106,27 @@ public class TemplateEngineImpl implements TemplateEngine {
 //                    finishIfLast(request);
 //                });
 
+    private Observable<Element> processSnippet(final TemplateSnippet snippet) {
+        return snippet.getServices()
+                .doOnNext(serviceEntry -> LOGGER.trace("Call to service:" + serviceEntry.getServiceUri()))
+                .flatMap(this::doServiceCall, (service, serviceResult) -> service.setResult(serviceResult))
+                .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
+    }
 
     private Observable<Map<String, Object>> doServiceCall(TemplateSnippet.ServiceEntry serviceEntry) {
-        return Observable.just(Maps.newHashMap());
+        Observable<HttpClientResponse> serviceResponse = RxHelper.get(httpClient, serviceEntry.getServiceUri());
+
+        return serviceResponse.flatMap(response ->
+                Observable.just(Buffer.buffer())
+                        .mergeWith(response.toObservable())
+                        .reduce(Buffer::appendBuffer))
+                .doOnNext(this::traceServiceCall)
+                .flatMap(buffer -> {
+                            Type mapType = new TypeToken<Map<String, Object>>() {
+                            }.getType();
+                            return Observable.<Map<String, Object>>just(new Gson().fromJson(buffer.toString(), mapType));
+                        }
+                );
     }
 
     private Observable<TemplateSnippet> compileSnippetTemplate(TemplateSnippet snippet) {
@@ -184,4 +209,10 @@ public class TemplateEngineImpl implements TemplateEngine {
 //                        httpClientRequest.putHeader(headerName, request.getHeader(headerName))
 //                );
 //    }
+
+    private void traceServiceCall(Buffer buffer) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace(String.format("Got message from service <%s>", buffer.toString()));
+        }
+    }
 }
