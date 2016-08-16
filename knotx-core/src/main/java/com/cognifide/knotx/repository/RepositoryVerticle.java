@@ -62,7 +62,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
+        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
 
         EventBus eventBus = vertx.eventBus();
 
@@ -97,7 +97,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(String.format("Got message from <%s> with value <%s>", message.replyAddress(), message.body()));
+            LOGGER.trace("Got message from <%s> with value <{0}>", message.replyAddress(), message.body());
         }
     }
 }

@@ -49,7 +49,7 @@ public class KnotxVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws IOException, URISyntaxException {
-        LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
+        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
         httpServer = vertx.createHttpServer();
         EventBus eventBus = vertx.eventBus();
 
@@ -86,7 +86,7 @@ public class KnotxVerticle extends AbstractVerticle {
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(String.format("Got message from <template-repository> with value <%s>", message.body()));
+            LOGGER.trace("Got message from <template-repository> with value <{0>", message.body());
         }
     }
 }

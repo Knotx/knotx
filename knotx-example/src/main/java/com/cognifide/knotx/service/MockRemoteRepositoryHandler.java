@@ -20,8 +20,6 @@ package com.cognifide.knotx.service;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +27,8 @@ import java.io.IOException;
 import java.net.URL;
 
 import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
 @Component

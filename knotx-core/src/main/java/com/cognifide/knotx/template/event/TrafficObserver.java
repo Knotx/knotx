@@ -17,11 +17,11 @@
  */
 package com.cognifide.knotx.template.event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Observable;
 import java.util.Observer;
+
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 public class TrafficObserver implements Observer {
 

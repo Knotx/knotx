@@ -49,7 +49,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        LOGGER.debug(String.format("Registered <%s>", this.getClass().getSimpleName()));
+        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
         templateEngine.setHttpClient(vertx.createHttpClient());
 
         EventBus eventBus = vertx.eventBus();
@@ -57,27 +57,27 @@ public class TemplateEngineVerticle extends AbstractVerticle {
         Observable<Message<io.vertx.core.buffer.Buffer>> messageObservable = eventBus.<io.vertx.core.buffer.Buffer>consumer(KnotxConst.TEMPLATE_ENGINE_ADDRESS).toObservable();
 
         messageObservable
-                .doOnNext(this::traceMessage)
-                .subscribe(
-                        msg -> {
-                            templateEngine.process(new TemplateEngineRequest(Buffer.newInstance(msg.body()), null))
-                                    .subscribe(
-                                            data -> msg.reply(data),
-                                            error -> {
-                                                LOGGER.error("Error happened", error);
-                                                msg.reply(Buffer.buffer("ERROR").getDelegate());
-                                            }
-                                    );
-                            LOGGER.info("Got message: " + msg.body());
-                        }
-                );
+            .doOnNext(this::traceMessage)
+            .subscribe(
+                msg -> {
+                    templateEngine.process(new TemplateEngineRequest(Buffer.newInstance(msg.body()), null))
+                        .subscribe(
+                            data -> msg.reply(data),
+                            error -> {
+                                LOGGER.error("Error happened", error);
+                                msg.reply(Buffer.buffer("ERROR").getDelegate());
+                            }
+                        );
+                    LOGGER.trace("Got message: {0}", msg.body());
+                }
+            );
 
 
     }
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(String.format("Got message from <%s> with value <%s>", message.replyAddress(), message.body()));
+            LOGGER.trace("Got message from <{0}> with value <{1}>", message.replyAddress(), message.body());
         }
     }
 }

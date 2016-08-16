@@ -27,8 +27,6 @@ import com.github.jknack.handlebars.Template;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -37,6 +35,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 

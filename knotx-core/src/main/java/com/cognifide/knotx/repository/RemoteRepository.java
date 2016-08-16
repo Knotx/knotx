@@ -19,10 +19,10 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.api.RepositoryResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
@@ -90,7 +90,7 @@ class RemoteRepository implements Repository {
 
     private void traceResponse(HttpClientResponse response) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace(String.format("Got response from remote repository %s", response.statusCode()));
+            LOGGER.trace("Got response from remote repository {0}", response.statusCode());
         }
     }
 
