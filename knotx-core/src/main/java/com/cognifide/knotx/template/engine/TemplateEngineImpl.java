@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.template.event.TrafficObserver;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.jsoup.Jsoup;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -52,15 +50,15 @@ public class TemplateEngineImpl implements TemplateEngine {
 
     private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
+    private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- START webservice `%s` call -->";
+
+    private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- END webservice call -->";
+
     @Autowired
     private Handlebars handlebars;
 
     @Value("${template.debug}")
     private boolean templateDebug;
-
-    private CountDownLatch templatesLatch;
-
-    private TrafficObserver trafficObserver = new TrafficObserver();
 
     private HttpClient httpClient;
 
@@ -74,37 +72,14 @@ public class TemplateEngineImpl implements TemplateEngine {
         final Document htmlDocument = Jsoup.parse(request.getTemplate().toString());
 
         return Observable.just(htmlDocument)
-                   .flatMap(
-                       document -> Observable.from(document.select(SNIPPET_TAG))
-                                       .map(TemplateSnippet::raw)
-                                       .flatMap(this::compileSnippetTemplate)
-                                       .flatMap(this::processSnippet),
+                   .flatMap(document -> Observable.from(document.select(SNIPPET_TAG))
+                                            .map(TemplateSnippet::raw)
+                                            .flatMap(this::compileSnippetTemplate)
+                                            .flatMap(this::processSnippet)
+                                            .defaultIfEmpty(htmlDocument),
                        (doc, results) -> doc.html()
                    );
     }
-
-//        io.vertx.rx.java.RxHelper
-//
-//        //Observable.create()
-//
-//        if (template != null) {
-//            if (noSnippetsToProcessLeft()) {
-//                finishRequest(request);
-//            }
-//        } else {
-//            request.response()
-//                    .putHeader(HttpHeaders.CONTENT_TYPE.toString(), HttpHeaders.TEXT_HTML.toString())
-//                    .setStatusCode(HttpStatus.NOT_FOUND.value())
-//                    .end();
-//            trafficObserver.onFinish();
-//        }
-//
-//        Observable.from(snippetGroups.entrySet()).subscribe(
-//                snippetGroup -> handleTemplate(snippetGroup, request),
-//                throwable -> {
-//                    LOGGER.error("Fatal error when requesting {}", request.absoluteURI(), throwable);
-//                    finishIfLast(request);
-//                });
 
     private Observable<Element> processSnippet(final TemplateSnippet snippet) {
         return snippet.getServices()
@@ -114,7 +89,7 @@ public class TemplateEngineImpl implements TemplateEngine {
     }
 
     private Observable<Map<String, Object>> doServiceCall(TemplateSnippet.ServiceEntry serviceEntry) {
-        Observable<HttpClientResponse> serviceResponse = RxHelper.get(httpClient, serviceEntry.getServiceUri());
+        Observable<HttpClientResponse> serviceResponse = RxHelper.get(httpClient, 3000, "localhost", serviceEntry.getServiceUri());
         LOGGER.debug("Calling {0}", serviceEntry.getServiceUri());
         return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
                                                        .mergeWith(response.toObservable())
@@ -144,70 +119,20 @@ public class TemplateEngineImpl implements TemplateEngine {
         });
     }
 
-    private Observable<Element> applyData(TemplateSnippet template, Map<String, Object> data) {
-        return Observable.just(new Element(Tag.valueOf("h1"), "test"));
+    private Observable<Element> applyData(TemplateSnippet snippet, Map<String, Object> data) {
+        try {
+            String compiledContent = snippet.getCompiledSnippet().apply(data);
+            LOGGER.debug("Applying: \n{0} to \n{1}\n and result is \n{2}", data, snippet.getSnippet(), compiledContent);
+            Element snippetParent = new Element(Tag.valueOf("div"), "");
+//            if (templateDebug) {
+//                snippetParent.prepend(String.format(START_WEBSERVICE_CALL_DEBUG_MARKER, serviceEntry.getServiceUri()));
+//            }
+            snippet.getSnippet().replaceWith(snippetParent.append(compiledContent));
+            return Observable.just(snippetParent);
+        } catch (IOException e) {
+            return Observable.error(e);
+        }
     }
-
-//    @Override
-//    public void finishIfLast(HttpServerRequest request) {
-//        templatesLatch.countDown();
-//        if (noSnippetsToProcessLeft()) {
-//            finishRequest(request);
-//        }
-//    }
-
-//    private boolean noSnippetsToProcessLeft() {
-//        return templatesLatch.getCount() == 0;
-//    }
-//
-//    private void finishRequest(HttpServerRequest request) {
-//        LOGGER.info("Finished: " + request.absoluteURI());
-//        request.response().putHeader(HttpHeaders.CONTENT_TYPE.toString(), HttpHeaders.TEXT_HTML.toString()).end(htmlDocument.html());
-//        trafficObserver.onFinish();
-//    }
-//
-//    private void handleTemplate(String dataCallUri, List<Element> snippetGroup, HttpServerRequest request) {
-//        ObservableRequest observableRequest = new ObservableRequest(dataCallUri);
-//        observableRequest.addObserver(trafficObserver);
-//        observableRequest.onStart();
-//
-//        RestServiceResponseHandler serviceResponseHandler =
-//                new RestServiceResponseHandler(request, snippetGroup, this, observableRequest, handlebars, templateDebug);
-//        callService(request, dataCallUri, serviceResponseHandler);
-//    }
-//
-//    private List<String> getServiceUrls(HttpServerRequest request, Element snippet) {
-//        final String templateCallUri = snippet.attr("data-call-uri");
-//        final StringBuilder urlSB = new StringBuilder(templateCallUri.contains("?") ? templateCallUri : templateCallUri + "?");
-//        request.params().names().forEach(
-//                paramName -> urlSB.append("&").append(paramName).append("=").append(request.getParam(paramName)));
-//        return urlSB.toString();
-//    }
-//
-//    public void callService(HttpServerRequest request, String dataCallUri,
-//                            Handler<HttpClientResponse> serviceResponseHandler) {
-//        HttpClient httpClient = vertx.createHttpClient();
-//        Optional<? extends ServiceEndpoint> optionalServiceEndpoint = serviceEndpointFacade
-//                .getServiceEndpoint(dataCallUri);
-//        if (optionalServiceEndpoint.isPresent()) {
-//            final ServiceEndpoint serviceEndpoint = optionalServiceEndpoint.get();
-//            HttpClientRequest httpClientRequest = httpClient.get(serviceEndpoint.getPort(),
-//                    serviceEndpoint.getDomain(), dataCallUri, serviceResponseHandler);
-//            rewriteHeaders(request, httpClientRequest);
-//            httpClientRequest.end();
-//        } else {
-//            LOGGER.error("No provider found! Request can't be processed.");
-//        }
-//    }
-//
-//    private void rewriteHeaders(HttpServerRequest request, HttpClientRequest httpClientRequest) {
-//        request.headers().names().stream()
-//                .filter(headerName ->
-//                        configuration.serviceCallHeaders().contains(headerName))
-//                .forEach(headerName ->
-//                        httpClientRequest.putHeader(headerName, request.getHeader(headerName))
-//                );
-//    }
 
     private void traceServiceCall(Buffer buffer) {
         if (LOGGER.isTraceEnabled()) {

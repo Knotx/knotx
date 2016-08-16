@@ -63,7 +63,11 @@ public class KnotxVerticle extends AbstractVerticle {
                                         if (repository.isSuccess()) {
                                             eventBus.sendObservable(KnotxConst.TEMPLATE_ENGINE_ADDRESS, repository.getData().getDelegate())
                                                     .subscribe(
-                                                            result -> request.response().end(repository.getData()),
+                                                            result -> {
+                                                                Object body = result.body();
+                                                                LOGGER.info("The final result is: {0}", body);
+                                                                request.response().end(body.toString());
+                                                            },
                                                             error -> {
                                                                 LOGGER.error("Error happened", error);
                                                                 request.response().setStatusCode(500).end(error.toString());
