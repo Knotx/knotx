@@ -132,7 +132,7 @@ public class TemplateEngineImpl implements TemplateEngine {
     }
 
     private Observable<Element> applyData(TemplateSnippet template, Map<String, Object> data) {
-        return Observable.just(new Element(Tag.valueOf("h1"), "dupa"));
+        return Observable.just(new Element(Tag.valueOf("h1"), "test"));
     }
 
 //    @Override
