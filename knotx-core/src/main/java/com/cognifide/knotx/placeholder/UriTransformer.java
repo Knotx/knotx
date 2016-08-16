@@ -15,13 +15,24 @@
 package com.cognifide.knotx.placeholder;
 
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PropertyPlaceholderHelper;
 
+import io.vertx.core.http.HttpServerRequest;
+
 @Component
+@Scope("prototype")
 public class UriTransformer {
 
-    public String getServiceUrl(Element snippet, UriPlaceholderResolver resolver) {
+    private final UriPlaceholderResolver resolver;
+
+    public UriTransformer(BeanFactory beanFactory, HttpServerRequest request) {
+        resolver = beanFactory.getBean(UriPlaceholderResolver.class, request);
+    }
+
+    public String getServiceUrl(Element snippet) {
         final PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}");
         final String templateCallUri = snippet.attr("data-call-uri");
         return helper.replacePlaceholders(templateCallUri, resolver);

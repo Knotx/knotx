@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.template;
 
-import com.cognifide.knotx.placeholder.UriPlaceholderResolver;
 import com.cognifide.knotx.placeholder.UriTransformer;
 import com.google.common.collect.Iterables;
 
@@ -60,14 +59,14 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
-	@Autowired
-	private Handlebars handlebars;
+    @Autowired
+    private Handlebars handlebars;
 
-	@Autowired
-	private KnotxVerticle verticle;
+    @Autowired
+    private KnotxVerticle verticle;
 
-	@Autowired
-	private BeanFactory beanFactory;
+    @Autowired
+    private BeanFactory beanFactory;
 
     @Value("${template.debug}")
     private boolean templateDebug;
@@ -84,11 +83,10 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
     public void handle(Template<String, URI> template, HttpServerRequest request) {
         if (template != null) {
             htmlDocument = Jsoup.parse(template.get());
-			final UriTransformer uriTransformer = beanFactory.getBean(UriTransformer.class);
-			final UriPlaceholderResolver resolver = beanFactory.getBean(UriPlaceholderResolver.class,
-					request);
+            final UriTransformer uriTransformer = beanFactory.getBean(UriTransformer.class, beanFactory,
+                    request);
             htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups
-					.add(uriTransformer.getServiceUrl(snippet, resolver), snippet));
+                    .add(uriTransformer.getServiceUrl(snippet), snippet));
             templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
             if (noSnippetsToProcessLeft()) {
