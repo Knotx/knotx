@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
+import io.vertx.core.http.HttpClientResponse;
+
 import java.io.Serializable;
 
 public interface Template<T, ID extends Serializable> {
@@ -25,4 +27,5 @@ public interface Template<T, ID extends Serializable> {
 
     T get();
 
+    void handle(HttpClientResponse response, Action onSuccess, Action onFailure);
 }

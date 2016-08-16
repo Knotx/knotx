@@ -55,15 +55,11 @@ class RemoteRepository implements Repository<String, URI> {
     public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
         HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(),
                 httpClientResponse -> {
-                    if (httpClientResponse.statusCode() == HttpStatus.OK.value()) {
-                        httpClientResponse.bodyHandler(buffer -> {
-                            String responseContent = buffer.getString(0, buffer.length());
-                            handler.handle(AsyncResultFactory.createSuccess(new BasicTemplate(uri,
-                                    responseContent)));
-                        });
-                    } else {
-                        handler.handle(AsyncResultFactory.createFailure());
-                    }
+                    new HttpTemplate(httpClientResponse).handle(httpClientResponse,
+                            template -> handler.handle(AsyncResultFactory.createSuccess(template)),
+                            template -> AsyncResultFactory.createSuccess(template)
+                    );
+
                 });
         httpClientRequest.end();
     }

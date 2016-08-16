@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
+import io.vertx.core.http.HttpServerResponse;
 import java.net.URI;
 
 class BasicTemplate implements Template<String, URI> {
@@ -27,6 +28,7 @@ class BasicTemplate implements Template<String, URI> {
     BasicTemplate(URI uri, String content) {
         this.uri = uri;
         this.content = content;
+
     }
 
     @Override
@@ -37,5 +39,11 @@ class BasicTemplate implements Template<String, URI> {
     @Override
     public String get() {
         return content;
+    }
+
+    @Override
+    public void handle(HttpServerResponse response, Action onSuccess, Action onFailure) {
+        //TODO: configuration which headers should not be copied
+
     }
 }
