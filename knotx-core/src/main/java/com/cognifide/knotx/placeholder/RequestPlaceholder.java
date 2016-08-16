@@ -26,8 +26,9 @@ public class RequestPlaceholder implements Placeholder {
 
     @Override
     public String getValue(final HttpServerRequest request, final String placeholder) {
-        return Arrays.stream(Strategy.values()).filter(x -> StringUtils.startsWith(placeholder, x.prefix))
-                .findFirst().map(x -> x.getValue(request, placeholder)).orElse(null);
+        return Arrays.stream(Strategy.values())
+                .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix)).findFirst()
+                .map(strategy -> strategy.getValue(request, placeholder)).orElse(null);
     }
 
     private enum Strategy {

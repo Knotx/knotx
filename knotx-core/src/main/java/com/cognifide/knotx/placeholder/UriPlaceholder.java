@@ -34,8 +34,9 @@ public class UriPlaceholder implements Placeholder {
         if (uriInfo == null) {
             uriInfo = new UriInfo(request.uri());
         }
-        return Arrays.stream(Strategy.values()).filter(x -> StringUtils.startsWith(placeholder, x.prefix))
-                .findFirst().map(x -> x.getValue(uriInfo, placeholder)).orElse(null);
+        return Arrays.stream(Strategy.values())
+                .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix)).findFirst()
+                .map(strategy -> strategy.getValue(uriInfo, placeholder)).orElse(null);
     }
 
     private enum Strategy {

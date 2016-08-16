@@ -45,7 +45,7 @@ public class UriPlaceholderResolver implements PropertyPlaceholderHelper.Placeho
     @Override
     public String resolvePlaceholder(String placeholder) {
         if (!cache.containsKey(placeholder)) {
-            final String value = placeholders.stream().map(x -> x.getValue(request, placeholder))
+            final String value = placeholders.stream().map(bean -> bean.getValue(request, placeholder))
                     .filter(Objects::nonNull).findFirst().orElse(null);
             cache.put(placeholder, value);
         }
