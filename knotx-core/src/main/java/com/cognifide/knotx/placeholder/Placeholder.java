@@ -18,6 +18,13 @@ import io.vertx.core.http.HttpServerRequest;
 
 public interface Placeholder {
 
-	String getValue(HttpServerRequest request, String placeholder);
+    /**
+     * Get the replacement value from the supplied request and placeholder name
+     * 
+     * @param request the supplied request
+     * @param placeholder the placeholder name
+     * @return the replacement value, or null if no replacement can be get
+     */
+    String getValue(HttpServerRequest request, String placeholder);
 
 }

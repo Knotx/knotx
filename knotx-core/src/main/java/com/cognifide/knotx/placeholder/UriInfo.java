@@ -21,6 +21,17 @@ import org.apache.commons.lang3.StringUtils;
 
 public class UriInfo {
 
+    /**
+     * This regular expression is used for decomposite uri into following parts:
+     * <p>
+     * <ul>
+     * <li>path</li>
+     * <li>selector string</li>
+     * <li>extension</li>
+     * <li>suffix</li>
+     * </ul>
+     * <p>
+     */
     private static final Pattern URI_PATTERN = Pattern
             .compile("([^\\.\\?#]+)(\\.([^\\/\\?#]+)\\.)?(\\.?([^\\/\\?#]+))?([^\\?#]+)?((\\?|#).+)?");
 
