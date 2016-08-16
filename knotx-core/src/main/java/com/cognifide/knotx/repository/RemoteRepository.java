@@ -61,7 +61,7 @@ class RemoteRepository implements Repository {
         return clientResponse
                 .doOnNext(this::traceResponse)
                 .filter(this::onlySuccess)
-                .flatMap(HttpClientResponse::toObservable)
+                .flatMap(this::reduceBuffers)
                 .flatMap(this::toRepositoryResponse)
                 .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", path))
                 .onErrorReturn(error -> {
@@ -71,10 +71,16 @@ class RemoteRepository implements Repository {
                 );
     }
 
+    private Observable<Buffer> reduceBuffers(HttpClientResponse response) {
+        return Observable.just(Buffer.buffer())
+                .mergeWith(response.toObservable())
+                .reduce(Buffer::appendBuffer);
+    }
+
     private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer) {
         Observable<RepositoryResponse> response;
         if (buffer.length() > 0) {
-            response = RepositoryResponse.success(buffer).toObservable();
+            response = RepositoryResponse.success(buffer.copy()).toObservable();
         } else {
             LOGGER.error("Remote repository returned empty template for path `{}`", path);
             response = RepositoryResponse.error("No Template found for path %s", path).toObservable();

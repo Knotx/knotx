@@ -33,9 +33,9 @@ public class RepositoryResponseCodec implements MessageCodec<RepositoryResponse,
         Buffer data = Buffer.buffer();
         data.appendByte((object.isSuccess() ? SUCCESS_FLAG : ERROR_FLAG)); //Success or error
         if (object.isSuccess()) {
-            data.appendString(object.getReason());
-        } else {
             data.appendBuffer((Buffer) object.getData().getDelegate());
+        } else {
+            data.appendString(object.getReason());
         }
         buffer.appendInt(data.length());
         buffer.appendBuffer(data);
