@@ -87,7 +87,7 @@ public class TemplateSnippet {
             return entry;
         }
 
-        public ServiceEntry serviceResult(Map<String, Object> serviceResult) {
+        public ServiceEntry setResult(Map<String, Object> serviceResult) {
             this.serviceResult = serviceResult;
             return this;
         }

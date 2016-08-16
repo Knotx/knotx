@@ -20,10 +20,7 @@ package com.cognifide.knotx.template.engine;
 import com.google.common.collect.Maps;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.template.event.ObservableRequest;
 import com.cognifide.knotx.template.event.TrafficObserver;
-import com.cognifide.knotx.template.handler.RestServiceResponseHandler;
-import com.cognifide.knotx.template.service.ServiceEndpoint;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.jsoup.Jsoup;
@@ -37,17 +34,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientRequest;
-import io.vertx.rxjava.core.http.HttpClientResponse;
-import io.vertx.rxjava.core.http.HttpServerRequest;
 import rx.Observable;
 
 @Component
@@ -80,7 +69,7 @@ public class TemplateEngineImpl implements TemplateEngine {
                                                 snippet.getServices()
                                                         .flatMap(this::doServiceCall,
                                                                 (service, serviceResult) ->
-                                                                        service.serviceResult(serviceResult))
+                                                                        service.setResult(serviceResult))
                                                         .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()))
                                         ),
                         (doc, results) -> doc.html()
