@@ -56,11 +56,10 @@ public class UriInfoTest {
     public void testExtractingValuesFromUri(String uri, String path, String selectorString, String extension,
             String suffix) {
         final UriInfo uriInfo = new UriInfo(uri);
-        boolean result = StringUtils.equals(uriInfo.getPath(), path);
-        result &= StringUtils.equals(uriInfo.getSelectorString(), selectorString);
-        result &= StringUtils.equals(uriInfo.getExtension(), extension);
-        result &= StringUtils.equals(uriInfo.getSuffix(), suffix);
-        Assert.assertTrue(result);
+        Assert.assertTrue(StringUtils.equals(uriInfo.getPath(), path));
+        Assert.assertTrue(StringUtils.equals(uriInfo.getSelectorString(), selectorString));
+        Assert.assertTrue(StringUtils.equals(uriInfo.getExtension(), extension));
+        Assert.assertTrue(StringUtils.equals(uriInfo.getSuffix(), suffix));
     }
 
 }
