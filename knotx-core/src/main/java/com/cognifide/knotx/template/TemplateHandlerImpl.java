@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.template;
 
+import com.cognifide.knotx.placeholder.UriPlaceholderResolver;
+import com.cognifide.knotx.placeholder.UriTransformer;
 import com.google.common.collect.Iterables;
 
 import com.cognifide.knotx.KnotxVerticle;
@@ -31,6 +33,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -57,9 +60,14 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
-    private final Handlebars handlebars;
+	@Autowired
+	private Handlebars handlebars;
 
-    private final KnotxVerticle verticle;
+	@Autowired
+	private KnotxVerticle verticle;
+
+	@Autowired
+	private BeanFactory beanFactory;
 
     @Value("${template.debug}")
     private boolean templateDebug;
@@ -72,17 +80,15 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
 
     private MultiValueMap<String, Element> snippetGroups = new LinkedMultiValueMap<>();
 
-    @Autowired
-    public TemplateHandlerImpl(KnotxVerticle verticle, Handlebars handlebars) {
-        this.verticle = verticle;
-        this.handlebars = handlebars;
-    }
-
     @Override
     public void handle(Template<String, URI> template, HttpServerRequest request) {
         if (template != null) {
             htmlDocument = Jsoup.parse(template.get());
-            htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(request, snippet), snippet));
+			final UriTransformer uriTransformer = beanFactory.getBean(UriTransformer.class);
+			final UriPlaceholderResolver resolver = beanFactory.getBean(UriPlaceholderResolver.class,
+					request);
+            htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups
+					.add(uriTransformer.getServiceUrl(snippet, resolver), snippet));
             templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
             if (noSnippetsToProcessLeft()) {
@@ -133,11 +139,4 @@ class TemplateHandlerImpl implements TemplateHandler<String, URI> {
         verticle.callService(request, dataCallUri, serviceResponseHandler);
     }
 
-    private String getServiceUrl(HttpServerRequest request, Element snippet) {
-        final String templateCallUri = snippet.attr("data-call-uri");
-        final StringBuilder urlSB = new StringBuilder(templateCallUri.contains("?") ? templateCallUri : templateCallUri + "?");
-        request.params().entries().forEach(
-                param -> urlSB.append("&").append(param.getKey()).append("=").append(param.getValue()));
-        return urlSB.toString();
-    }
 }
