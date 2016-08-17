@@ -15,17 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository;
+package com.cognifide.knotx.template;
 
-import io.vertx.core.http.HttpClientResponse;
+import com.cognifide.knotx.repository.Action;
+import io.vertx.core.http.HttpServerRequest;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
+@Component
+public class ActionFactory {
 
-public interface Template<T, ID extends Serializable> {
+    @Autowired
+    private BeanFactory beanFactory;
 
-    ID getId();
-
-    T get();
-
-    void handle(HttpClientResponse response, Action onSuccess, Action onFailure);
+    public Action newInstance(HttpServerRequest httpServerRequest) {
+        return beanFactory.getBean(Action.class, httpServerRequest);
+    }
 }

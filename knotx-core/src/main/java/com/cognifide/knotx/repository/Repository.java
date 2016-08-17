@@ -20,11 +20,13 @@ package com.cognifide.knotx.repository;
 import java.io.IOException;
 import java.io.Serializable;
 
+import com.cognifide.knotx.repository.template.Template;
 import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.MultiMap;
 
 public interface Repository<T, ID extends Serializable> {
 
-    void get(ID id, AsyncResultHandler<Template<T, ID>> handler) throws IOException;
+    void get(ID id, MultiMap requestHeaders, AsyncResultHandler<Template<T, ID>> handler) throws IOException;
 
     boolean support(ID id);
 

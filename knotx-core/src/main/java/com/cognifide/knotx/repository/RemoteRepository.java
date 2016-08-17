@@ -17,14 +17,15 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.result.AsyncResultFactory;
-
-import org.springframework.http.HttpStatus;
+import com.cognifide.knotx.repository.template.HttpTemplate;
 
 import java.io.IOException;
 import java.net.URI;
 
+import com.cognifide.knotx.repository.template.Template;
+import com.cognifide.knotx.result.AsyncResultFactory;
 import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 
@@ -52,15 +53,14 @@ class RemoteRepository implements Repository<String, URI> {
     }
 
     @Override
-    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+    public void get(URI uri, MultiMap requestHeaders, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
         HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(),
-                httpClientResponse -> {
-                    new HttpTemplate(httpClientResponse).handle(httpClientResponse,
-                            template -> handler.handle(AsyncResultFactory.createSuccess(template)),
-                            template -> AsyncResultFactory.createSuccess(template)
-                    );
-
-                });
+                httpClientResponse -> httpClientResponse.bodyHandler(buffer -> {
+                    String responseContent = buffer.getString(0, buffer.length());
+                    handler.handle(AsyncResultFactory.createSuccess(
+                            new HttpTemplate(uri, httpClientResponse.statusCode(),  httpClientResponse.headers() ,responseContent)));
+                }));
+        requestHeaders.forEach(stringStringEntry -> httpClientRequest.putHeader(stringStringEntry.getKey(), stringStringEntry.getValue()));
         httpClientRequest.end();
     }
 

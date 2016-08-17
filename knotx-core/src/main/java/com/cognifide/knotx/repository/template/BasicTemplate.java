@@ -15,20 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository;
+package com.cognifide.knotx.repository.template;
 
+import com.cognifide.knotx.repository.Action;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
+import org.springframework.http.HttpStatus;
+
 import java.net.URI;
 
-class BasicTemplate implements Template<String, URI> {
+public class BasicTemplate implements Template<String, URI> {
 
     private final URI uri;
-    private final String content;
+    private final AsyncResult<Buffer> event;
 
-    BasicTemplate(URI uri, String content) {
+    public BasicTemplate(URI uri, AsyncResult<Buffer> event) {
         this.uri = uri;
-        this.content = content;
-
+        this.event = event;
     }
 
     @Override
@@ -38,12 +42,18 @@ class BasicTemplate implements Template<String, URI> {
 
     @Override
     public String get() {
-        return content;
+        return event.result().toString();
     }
 
     @Override
-    public void handle(HttpServerResponse response, Action onSuccess, Action onFailure) {
-        //TODO: configuration which headers should not be copied
-
+    public void handle(HttpServerResponse httpServerResponse, Action process, Action done) {
+        if (event.succeeded()){
+            process.handle(this);
+        }else{
+            httpServerResponse.setStatusCode(HttpStatus.NOT_FOUND.value())
+                    .end();
+            done.handle(this);
+        }
     }
+
 }

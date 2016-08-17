@@ -19,6 +19,10 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.KnotxVerticle;
 
+import com.cognifide.knotx.repository.template.BasicTemplate;
+import com.cognifide.knotx.repository.template.Template;
+import com.cognifide.knotx.result.AsyncResultFactory;
+import io.vertx.core.MultiMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +30,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 
-import io.vertx.core.AsyncResult;
 import io.vertx.core.AsyncResultHandler;
 import io.vertx.core.buffer.Buffer;
 
-class LocalRepository implements Repository<String, URI> {
+public class LocalRepository implements Repository<String, URI> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
 
@@ -53,37 +56,13 @@ class LocalRepository implements Repository<String, URI> {
     }
 
     @Override
-    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+    public void get(URI uri, MultiMap headers, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
         final String localFile = catalogue + StringUtils.stripStart(uri.getPath(), "/");
         LOGGER.debug("Fetching file `{}` from local repository.", localFile);
-        verticle.getVertx().fileSystem().readFile(localFile, (AsyncResultHandler<Buffer>) event -> {
-            if (event.succeeded()) {
-                String templateContent = event.result().toString();
-                handler.handle(new AsyncResult<Template<String, URI>>() {
-                    @Override
-                    public Template<String, URI> result() {
-                        return new BasicTemplate(uri, templateContent);
-                    }
-
-                    @Override
-                    public Throwable cause() {
-                        return event.cause();
-                    }
-
-                    @Override
-                    public boolean succeeded() {
-                        return event.succeeded();
-                    }
-
-                    @Override
-                    public boolean failed() {
-                        return event.failed();
-                    }
-                });
-            } else {
-                throw new RuntimeException("Can't obtain template!", event.cause());
-            }
-        });
+        verticle.getVertx().fileSystem().readFile(localFile,
+                (AsyncResultHandler<Buffer>) event -> handler.handle(AsyncResultFactory.createSuccess(
+                        new BasicTemplate(uri, event)
+                )));
     }
 
     @Override

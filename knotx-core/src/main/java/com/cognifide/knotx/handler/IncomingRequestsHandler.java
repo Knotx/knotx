@@ -17,9 +17,10 @@
  */
 package com.cognifide.knotx.handler;
 
+import com.cognifide.knotx.repository.Action;
 import com.cognifide.knotx.repository.Repository;
-import com.cognifide.knotx.repository.Template;
-import com.cognifide.knotx.template.TemplateHandlerFactory;
+import com.cognifide.knotx.repository.template.Template;
+import com.cognifide.knotx.template.ActionFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +36,12 @@ public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IncomingRequestsHandler.class);
 
-    private final TemplateHandlerFactory templateHandlerFactory;
+    private final ActionFactory actionFactory;
 
     private final Repository<String, URI> repository;
 
-    public IncomingRequestsHandler(TemplateHandlerFactory templateHandlerFactory, Repository<String, URI> repository) {
-        this.templateHandlerFactory = templateHandlerFactory;
+    public IncomingRequestsHandler(ActionFactory actionFactory, Repository<String, URI> repository) {
+        this.actionFactory = actionFactory;
         this.repository = repository;
     }
 
@@ -50,12 +51,16 @@ public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
         try {
             final URI requestUri = new URI(request.path());
             if (repository.support(requestUri)) {
-                repository.get(requestUri, event -> {
+                repository.get(requestUri, request.headers(), event -> {
                     final Template<String, URI> result = event.result();
                     if (result != null) {
+
+                        Action process = actionFactory.newInstance(request);
+                        result.handle(request.response(), process, template -> {
+                            throw new RuntimeException("Can't obtain template!", event.cause());
+                        });
                         LOGGER.trace("Template content: {}", result.get());
                     }
-                    templateHandlerFactory.newInstance().handle(result, request);
                 });
             } else {
                 LOGGER.error("Can't handle request. No matching repository found for request `{}`!", request.absoluteURI());
