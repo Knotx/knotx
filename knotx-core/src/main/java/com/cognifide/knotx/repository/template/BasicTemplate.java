@@ -19,13 +19,13 @@ package com.cognifide.knotx.repository.template;
 
 import com.cognifide.knotx.repository.Action;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpServerResponse;
-
 import org.springframework.http.HttpStatus;
 
 import java.net.URI;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerResponse;
 
 public class BasicTemplate implements Template<String, URI> {
 
@@ -52,8 +52,7 @@ public class BasicTemplate implements Template<String, URI> {
         if (event.succeeded()) {
             process.handle(this);
         } else {
-            httpServerResponse.setStatusCode(HttpStatus.NOT_FOUND.value())
-                    .end();
+            httpServerResponse.setStatusCode(HttpStatus.NOT_FOUND.value()).end();
             done.handle(this);
         }
     }

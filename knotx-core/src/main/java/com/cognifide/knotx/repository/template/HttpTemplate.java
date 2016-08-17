@@ -19,12 +19,12 @@ package com.cognifide.knotx.repository.template;
 
 import com.cognifide.knotx.repository.Action;
 
-import io.vertx.core.MultiMap;
-import io.vertx.core.http.HttpServerResponse;
-
 import org.springframework.http.HttpStatus;
 
 import java.net.URI;
+
+import io.vertx.core.MultiMap;
+import io.vertx.core.http.HttpServerResponse;
 
 public class HttpTemplate implements Template<String, URI> {
 

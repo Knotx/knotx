@@ -29,5 +29,13 @@ public interface Template<T, ID extends Serializable> {
 
     T get();
 
+    /**
+     * Handles template processing. In case of successful template obtaining invokes
+     * <code>onSuccess</code> action , otherwise invokes <code>onFailure</code>.
+     *
+     * @param response  - response that will be handled by further processing.
+     * @param onSuccess - action invoked when successful template obtaining.
+     * @param onFailure - action invoked when template obtaining failed.
+     */
     void handle(HttpServerResponse response, Action onSuccess, Action onFailure);
 }
