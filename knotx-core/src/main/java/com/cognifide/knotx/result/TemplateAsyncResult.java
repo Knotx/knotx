@@ -19,31 +19,31 @@ package com.cognifide.knotx.result;
 
 import io.vertx.core.AsyncResult;
 
-class FailureAsyncResult<T> implements AsyncResult<T> {
+public class TemplateAsyncResult<T> implements AsyncResult<T> {
 
-    private final Throwable cause;
+    private final T result;
 
-    FailureAsyncResult(Throwable cause) {
-        this.cause = cause;
+    public TemplateAsyncResult(T result) {
+        this.result = result;
     }
 
     @Override
     public T result() {
-        return null;
+        return result;
     }
 
     @Override
     public Throwable cause() {
-        return cause;
+        return null;
     }
 
     @Override
     public boolean succeeded() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean failed() {
-        return true;
+        return false;
     }
 }

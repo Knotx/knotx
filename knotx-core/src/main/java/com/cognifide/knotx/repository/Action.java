@@ -15,35 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.result;
+package com.cognifide.knotx.repository;
 
-import io.vertx.core.AsyncResult;
+import com.cognifide.knotx.repository.template.Template;
 
-class SuccessAsyncResult<T> implements AsyncResult<T> {
+import java.io.Serializable;
 
-    private final T result;
-
-    SuccessAsyncResult(T result) {
-        this.result = result;
-    }
-
-    @Override
-    public T result() {
-        return result;
-    }
-
-    @Override
-    public Throwable cause() {
-        return null;
-    }
-
-    @Override
-    public boolean succeeded() {
-        return true;
-    }
-
-    @Override
-    public boolean failed() {
-        return false;
-    }
+public interface Action<T, ID extends Serializable> {
+    void handle(Template<T, ID> template);
 }
