@@ -24,6 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URI;
 import java.util.stream.Stream;
 
+import io.vertx.core.http.HttpClientOptions;
+
 enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
     LOCAL {
@@ -44,7 +46,7 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
         public Repository<String, URI> create(RepositoryConfiguration.RepositoryMetadata metadata,
                                               KnotxVerticle verticle) {
             return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), verticle
-                    .getVertx().createHttpClient());
+                    .getVertx().createHttpClient(new HttpClientOptions().setTryUseCompression(true)));
         }
 
         @Override
