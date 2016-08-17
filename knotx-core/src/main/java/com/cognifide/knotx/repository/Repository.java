@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.repository;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import com.cognifide.knotx.repository.template.Template;
@@ -27,8 +26,21 @@ import io.vertx.core.MultiMap;
 
 public interface Repository<T, ID extends Serializable> {
 
-    void get(ID id, MultiMap requestHeaders, AsyncResultHandler<Template<T, ID>> handler) throws IOException;
+    /**
+     * Method allow obtain a template from the repository.
+     *
+     * @param id template identifier
+     * @param requestHeaders headers that are going to be rewritten to template request call
+     * @param handler implementation of handler that will handle result of call for template
+     */
+    void get(ID id, MultiMap requestHeaders, AsyncResultHandler<Template<T, ID>> handler);
 
+    /**
+     * Method performs call to the repository and returns if ID is supported
+     *
+     * @param id template identifier
+     * @return true if given identifier is supported by the repository
+     */
     boolean support(ID id);
 
 }

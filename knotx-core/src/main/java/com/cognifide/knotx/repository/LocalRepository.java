@@ -21,7 +21,7 @@ import com.cognifide.knotx.KnotxVerticle;
 
 import com.cognifide.knotx.repository.template.BasicTemplate;
 import com.cognifide.knotx.repository.template.Template;
-import com.cognifide.knotx.result.AsyncResultFactory;
+import com.cognifide.knotx.result.TemplateAsyncResult;
 
 import io.vertx.core.MultiMap;
 
@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URI;
 
 import io.vertx.core.AsyncResultHandler;
@@ -58,13 +57,12 @@ public class LocalRepository implements Repository<String, URI> {
     }
 
     @Override
-    public void get(URI uri, MultiMap headers, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+    public void get(URI uri, MultiMap headers, AsyncResultHandler<Template<String, URI>> handler) {
         final String localFile = catalogue + StringUtils.stripStart(uri.getPath(), "/");
         LOGGER.debug("Fetching file `{}` from local repository.", localFile);
         verticle.getVertx().fileSystem().readFile(localFile,
-                (AsyncResultHandler<Buffer>) event -> handler.handle(AsyncResultFactory.createSuccess(
-                        new BasicTemplate(uri, event)
-                )));
+                (AsyncResultHandler<Buffer>) event -> handler.handle(
+                        new TemplateAsyncResult<>(new BasicTemplate(uri, event))));
     }
 
     @Override

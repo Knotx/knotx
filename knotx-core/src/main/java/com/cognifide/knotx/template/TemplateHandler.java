@@ -83,7 +83,9 @@ public class TemplateHandler implements Action<String, URI> {
 
     @Override
     public void handle(Template<String, URI> template) {
-        htmlDocument = Jsoup.parse(template.get());
+        String templateContent = template.get();
+        LOGGER.trace("Template content: {}", templateContent);
+        htmlDocument = Jsoup.parse(templateContent);
         htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(httpServerRequest, snippet), snippet));
         templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 

@@ -28,14 +28,13 @@ import java.net.URI;
 
 public class HttpTemplate implements Template<String, URI> {
 
+    private final int httpStatus;
 
-    private int httpStatus;
+    private final String content;
 
-    private String content;
+    private final MultiMap headers;
 
-    private MultiMap headers;
-
-    private URI uri;
+    private final URI uri;
 
     public HttpTemplate(URI uri, int httpStatus, MultiMap headers, String responseContent) {
         this.uri = uri;

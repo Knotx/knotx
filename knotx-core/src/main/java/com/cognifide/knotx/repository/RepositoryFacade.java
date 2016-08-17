@@ -36,7 +36,7 @@ public class RepositoryFacade implements Repository<String, URI> {
     private RepositoryConfiguration repositoryConfiguration;
 
     @Override
-    public void get(URI uri, MultiMap headers, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+    public void get(URI uri, MultiMap headers, AsyncResultHandler<Template<String, URI>> handler) {
         repositoryConfiguration.getRepositories().stream()
                 .map(this::getRepositoryByMetadata)
                 .filter(repository -> repository.support(uri))

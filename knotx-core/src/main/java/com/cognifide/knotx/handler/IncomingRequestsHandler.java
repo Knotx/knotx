@@ -54,12 +54,8 @@ public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
                 repository.get(requestUri, request.headers(), event -> {
                     final Template<String, URI> result = event.result();
                     if (result != null) {
-
                         Action process = actionFactory.newInstance(request);
-                        result.handle(request.response(), process, template -> {
-                            throw new RuntimeException("Can't obtain template!", event.cause());
-                        });
-                        LOGGER.trace("Template content: {}", result.get());
+                        result.handle(request.response(), process, template -> LOGGER.warn("Can't obtain template!", event.cause()));
                     }
                 });
             } else {
@@ -67,8 +63,6 @@ public class IncomingRequestsHandler implements Handler<HttpServerRequest> {
             }
         } catch (URISyntaxException e) {
             LOGGER.error("Failed to obtain repository", e);
-        } catch (IOException e) {
-            LOGGER.error("Can't get template file!", e);
         }
     }
 }
