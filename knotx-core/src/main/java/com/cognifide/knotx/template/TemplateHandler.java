@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
@@ -50,7 +51,7 @@ import rx.Observable;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TemplateHandler implements Action{
+public class TemplateHandler implements Action<String, URI>{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateHandler.class);
 
@@ -80,7 +81,7 @@ public class TemplateHandler implements Action{
     }
 
     @Override
-    public void handle(Template<String, ?> template) {
+    public void handle(Template<String, URI> template) {
             htmlDocument = Jsoup.parse(template.get());
             htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(httpServerRequest, snippet), snippet));
             templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
