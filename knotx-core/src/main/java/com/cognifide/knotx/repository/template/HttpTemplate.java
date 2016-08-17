@@ -24,9 +24,6 @@ import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 
-/**
- * Created by wojtek on 12.08.16.
- */
 public class HttpTemplate implements Template<String, URI> {
 
 
