@@ -22,7 +22,9 @@ import com.cognifide.knotx.KnotxVerticle;
 import com.cognifide.knotx.repository.template.BasicTemplate;
 import com.cognifide.knotx.repository.template.Template;
 import com.cognifide.knotx.result.AsyncResultFactory;
+
 import io.vertx.core.MultiMap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

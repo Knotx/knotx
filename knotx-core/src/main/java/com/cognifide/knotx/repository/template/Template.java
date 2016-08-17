@@ -18,6 +18,7 @@
 package com.cognifide.knotx.repository.template;
 
 import com.cognifide.knotx.repository.Action;
+
 import io.vertx.core.http.HttpServerResponse;
 
 import java.io.Serializable;

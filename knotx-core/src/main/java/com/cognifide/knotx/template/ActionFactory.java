@@ -18,7 +18,9 @@
 package com.cognifide.knotx.template;
 
 import com.cognifide.knotx.repository.Action;
+
 import io.vertx.core.http.HttpServerRequest;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

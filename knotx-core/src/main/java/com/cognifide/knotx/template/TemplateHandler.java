@@ -18,6 +18,7 @@
 package com.cognifide.knotx.template;
 
 import com.cognifide.knotx.repository.Action;
+
 import com.google.common.collect.Iterables;
 
 import com.cognifide.knotx.KnotxVerticle;
@@ -51,7 +52,7 @@ import rx.Observable;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class TemplateHandler implements Action<String, URI>{
+public class TemplateHandler implements Action<String, URI> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateHandler.class);
 
@@ -82,13 +83,13 @@ public class TemplateHandler implements Action<String, URI>{
 
     @Override
     public void handle(Template<String, URI> template) {
-            htmlDocument = Jsoup.parse(template.get());
-            htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(httpServerRequest, snippet), snippet));
-            templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
+        htmlDocument = Jsoup.parse(template.get());
+        htmlDocument.select(SNIPPET_TAG).forEach(snippet -> snippetGroups.add(getServiceUrl(httpServerRequest, snippet), snippet));
+        templatesLatch = new CountDownLatch(Iterables.size(snippetGroups.entrySet()));
 
-            if (noSnippetsToProcessLeft()) {
-                finishRequest(httpServerRequest);
-            }
+        if (noSnippetsToProcessLeft()) {
+            finishRequest(httpServerRequest);
+        }
 
 
         Observable.from(snippetGroups.entrySet()).subscribe(

@@ -21,6 +21,6 @@ import com.cognifide.knotx.repository.template.Template;
 
 import java.io.Serializable;
 
-public interface Action <T, ID extends Serializable> {
-	void handle(Template<T, ID> template);
+public interface Action<T, ID extends Serializable> {
+    void handle(Template<T, ID> template);
 }

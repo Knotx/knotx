@@ -24,6 +24,7 @@ import java.net.URI;
 
 import com.cognifide.knotx.repository.template.Template;
 import com.cognifide.knotx.result.AsyncResultFactory;
+
 import io.vertx.core.AsyncResultHandler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClient;
@@ -58,7 +59,7 @@ class RemoteRepository implements Repository<String, URI> {
                 httpClientResponse -> httpClientResponse.bodyHandler(buffer -> {
                     String responseContent = buffer.getString(0, buffer.length());
                     handler.handle(AsyncResultFactory.createSuccess(
-                            new HttpTemplate(uri, httpClientResponse.statusCode(),  httpClientResponse.headers() ,responseContent)));
+                            new HttpTemplate(uri, httpClientResponse.statusCode(), httpClientResponse.headers(), responseContent)));
                 }));
         requestHeaders.forEach(stringStringEntry -> httpClientRequest.putHeader(stringStringEntry.getKey(), stringStringEntry.getValue()));
         httpClientRequest.end();

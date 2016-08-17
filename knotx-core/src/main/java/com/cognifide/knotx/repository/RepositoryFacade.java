@@ -18,7 +18,9 @@
 package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.repository.template.Template;
+
 import io.vertx.core.MultiMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
