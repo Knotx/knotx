@@ -44,6 +44,8 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
 @Component
 public class TemplateEngineImpl implements TemplateEngine {
@@ -76,7 +78,8 @@ public class TemplateEngineImpl implements TemplateEngine {
         List<Observable<Element>> snippetsPipeline = htmlDocument.select(SNIPPET_TAG).stream()
                 .map(TemplateSnippet::raw)
                 .map(snippet ->
-                        Observable.just(snippet)
+                        Observable.just(snippet).subscribeOn(Schedulers.io())
+                                .doOnNext(this::traceSnippet)
                                 .flatMap(this::compileSnippetTemplate)
                                 .flatMap(this::processSnippet)
                 ).collect(Collectors.toList());
@@ -140,6 +143,12 @@ public class TemplateEngineImpl implements TemplateEngine {
     private void traceServiceCall(Buffer buffer) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Got message from service <{0}>", buffer.toString());
+        }
+    }
+
+    private void traceSnippet(TemplateSnippet templateSnippet) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Processing snippet <{0}>", templateSnippet.getSnippet().html());
         }
     }
 }
