@@ -29,10 +29,14 @@ import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
+import rx.plugins.RxJavaHooks;
+import rx.plugins.RxJavaPlugins;
+import rx.plugins.RxJavaSchedulersHook;
 
 @Component
 public class TemplateEngineVerticle extends AbstractVerticle {
@@ -45,6 +49,8 @@ public class TemplateEngineVerticle extends AbstractVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
+        RxJavaSchedulersHook rxJavaSchedulersHook = RxHelper.schedulerHook(this.vertx);
+        RxJavaPlugins.getInstance().registerSchedulersHook(rxJavaSchedulersHook);
     }
 
     @Override
