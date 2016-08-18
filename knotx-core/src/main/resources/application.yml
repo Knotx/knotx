@@ -20,7 +20,7 @@ requestHandler:
   port: 8092
 
 template:
-  debug: true
+  debug: false
 
 request:
   preserved:
