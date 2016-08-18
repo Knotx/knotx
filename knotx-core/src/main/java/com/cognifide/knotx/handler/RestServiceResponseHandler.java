@@ -59,8 +59,8 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
     private final boolean templateDebug;
 
     public RestServiceResponseHandler(HttpServerRequest request, Entry<String, List<Element>> snippetGroup,
-                                      TemplateHandler templateHandler, ObservableRequest observableRequest,
-                                      Handlebars handlebars, boolean templateDebug) {
+            TemplateHandler templateHandler, ObservableRequest observableRequest, Handlebars handlebars,
+            boolean templateDebug) {
         this.request = request;
         this.snippets = snippetGroup.getValue();
         this.templateHandler = templateHandler;
@@ -87,14 +87,19 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
     private void applyData(Map<String, Object> serviceData) {
         snippets.forEach(snippet -> {
             try {
-                Template template = compile(snippet.html());
-                String compiledContent = template.apply(serviceData);
-                Element snippetParent = new Element(Tag.valueOf("div"), "");
+                final Template template = compile(snippet.html());
+                final String compiledContent = template.apply(serviceData);
+
+                final StringBuilder html = new StringBuilder();
                 if (templateDebug) {
-                    String debugComment = "<!-- webservice `" + dataCallUri + "` call -->";
-                    snippetParent.prepend(debugComment);
+                    html.append("<!-- webservice `").append(dataCallUri).append("` call begin -->");
                 }
-                snippet.replaceWith(snippetParent.append(compiledContent));
+                html.append(compiledContent);
+                if (templateDebug) {
+                    html.append("<!-- webservice `").append(dataCallUri).append("` call end -->");
+                }
+                snippet.after(html.toString());
+                snippet.remove();
             } catch (IOException e) {
                 LOGGER.error("Cannot apply response to template!", e);
             }
