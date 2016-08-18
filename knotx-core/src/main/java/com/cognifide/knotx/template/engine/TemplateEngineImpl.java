@@ -33,7 +33,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -71,47 +73,48 @@ public class TemplateEngineImpl implements TemplateEngine {
     public Observable<String> process(TemplateEngineRequest request) {
         final Document htmlDocument = Jsoup.parse(request.getTemplate().toString());
 
-        return Observable.just(htmlDocument)
-                   .flatMap(document -> Observable.from(document.select(SNIPPET_TAG))
-                                            .map(TemplateSnippet::raw)
-                                            .flatMap(this::compileSnippetTemplate)
-                                            .flatMap(this::processSnippet)
-                                            .defaultIfEmpty(htmlDocument),
-                       (doc, results) -> doc.html()
-                   );
+        List<Observable<Element>> snippetsPipeline = htmlDocument.select(SNIPPET_TAG).stream()
+                .map(TemplateSnippet::raw)
+                .map(snippet ->
+                        Observable.just(snippet)
+                                .flatMap(this::compileSnippetTemplate)
+                                .flatMap(this::processSnippet)
+                ).collect(Collectors.toList());
+
+        return Observable.zip(snippetsPipeline, args -> htmlDocument.html());
     }
 
     private Observable<Element> processSnippet(final TemplateSnippet snippet) {
         return snippet.getServices()
-                   .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {0}", serviceEntry.getServiceUri()))
-                   .flatMap(this::doServiceCall, (service, serviceResult) -> service.setResult(serviceResult))
-                   .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
+                .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {0}", serviceEntry.getServiceUri()))
+                .flatMap(this::doServiceCall, (service, serviceResult) -> service.setResult(serviceResult))
+                .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
     }
 
     private Observable<Map<String, Object>> doServiceCall(TemplateSnippet.ServiceEntry serviceEntry) {
         Observable<HttpClientResponse> serviceResponse = RxHelper.get(httpClient, 3000, "localhost", serviceEntry.getServiceUri());
         LOGGER.debug("Calling {0}", serviceEntry.getServiceUri());
         return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
-                                                       .mergeWith(response.toObservable())
-                                                       .reduce(Buffer::appendBuffer))
-                   .doOnNext(this::traceServiceCall)
-                   .flatMap(buffer -> {
-                           Type mapType = new TypeToken<Map<String, Object>>() {
-                           }.getType();
-                           return Observable.<Map<String, Object>>just(new Gson().fromJson(buffer.toString(), mapType));
-                       }
-                   );
+                .mergeWith(response.toObservable())
+                .reduce(Buffer::appendBuffer))
+                .doOnNext(this::traceServiceCall)
+                .flatMap(buffer -> {
+                            Type mapType = new TypeToken<Map<String, Object>>() {
+                            }.getType();
+                            return Observable.<Map<String, Object>>just(new Gson().fromJson(buffer.toString(), mapType));
+                        }
+                );
     }
 
     private Observable<TemplateSnippet> compileSnippetTemplate(TemplateSnippet snippet) {
         return Observable.create(subscriber -> {
             try {
                 subscriber.onNext(
-                    snippet.setCompiledSnippet(
-                        handlebars.compileInline(
-                            snippet.getSnippet().html()
+                        snippet.setCompiledSnippet(
+                                handlebars.compileInline(
+                                        snippet.getSnippet().html()
+                                )
                         )
-                    )
                 );
             } catch (IOException e) {
                 subscriber.onError(e);
