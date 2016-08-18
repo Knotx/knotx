@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx.template.engine;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.github.jknack.handlebars.Handlebars;
 
@@ -32,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,7 +40,6 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
-import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
 @Component
@@ -101,12 +96,7 @@ public class TemplateEngineImpl implements TemplateEngine {
                 .mergeWith(response.toObservable())
                 .reduce(Buffer::appendBuffer))
                 .doOnNext(this::traceServiceCall)
-                .flatMap(buffer -> {
-                            Type mapType = new TypeToken<Map<String, Object>>() {
-                            }.getType();
-                            return Observable.<Map<String, Object>>just(new Gson().fromJson(buffer.toString(), mapType));
-                        }
-                );
+                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
     }
 
     private Observable<TemplateSnippet> compileSnippetTemplate(TemplateSnippet snippet) {
