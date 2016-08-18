@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template.handlebars;
+package com.cognifide.knotx.util;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -28,7 +28,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
-public enum Helpers implements Helper<Object> {
+public enum HandlebarsHelpers implements Helper<Object> {
 
     /**
      * Checks if current value and given parameter are equal as Strings.<br/>
@@ -78,7 +78,7 @@ public enum Helpers implements Helper<Object> {
 
     private final String name;
 
-    Helpers(String name) {
+    HandlebarsHelpers(String name) {
         this.name = name;
     }
 
