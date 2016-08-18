@@ -80,7 +80,7 @@ public class RestServiceResponseHandler implements Handler<HttpClientResponse> {
             Map<String, Object> serviceData = new Gson().fromJson(responseContent, mapType);
             applyData(serviceData);
             observableRequest.onFinish();
-            templateHandler.finishIfLast(request);
+            templateHandler.finishIfLast();
         });
     }
 

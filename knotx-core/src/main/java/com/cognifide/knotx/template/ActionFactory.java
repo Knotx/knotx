@@ -15,27 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository;
+package com.cognifide.knotx.template;
 
-import java.net.URI;
+import com.cognifide.knotx.repository.Action;
 
-class BasicTemplate implements Template<String, URI> {
+import io.vertx.core.http.HttpServerRequest;
 
-    private final URI uri;
-    private final String content;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-    BasicTemplate(URI uri, String content) {
-        this.uri = uri;
-        this.content = content;
-    }
+@Component
+public class ActionFactory {
 
-    @Override
-    public URI getId() {
-        return uri;
-    }
+    @Autowired
+    private BeanFactory beanFactory;
 
-    @Override
-    public String get() {
-        return content;
+    public Action newInstance(HttpServerRequest httpServerRequest) {
+        return beanFactory.getBean(Action.class, httpServerRequest);
     }
 }

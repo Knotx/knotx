@@ -17,6 +17,10 @@
  */
 package com.cognifide.knotx.repository;
 
+import com.cognifide.knotx.repository.template.Template;
+
+import io.vertx.core.MultiMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,13 +36,13 @@ public class RepositoryFacade implements Repository<String, URI> {
     private RepositoryConfiguration repositoryConfiguration;
 
     @Override
-    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+    public void get(URI uri, MultiMap headers, AsyncResultHandler<Template<String, URI>> handler) {
         repositoryConfiguration.getRepositories().stream()
                 .map(this::getRepositoryByMetadata)
                 .filter(repository -> repository.support(uri))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(String.format("Can't obtain repository for uri %s", uri)))
-                .get(uri, handler);
+                .get(uri, headers, handler);
     }
 
     @Override

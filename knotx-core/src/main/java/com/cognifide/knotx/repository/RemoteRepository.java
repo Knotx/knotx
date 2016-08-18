@@ -17,14 +17,15 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.result.AsyncResultFactory;
+import com.cognifide.knotx.repository.template.HttpTemplate;
 
-import org.springframework.http.HttpStatus;
-
-import java.io.IOException;
 import java.net.URI;
 
+import com.cognifide.knotx.repository.template.Template;
+import com.cognifide.knotx.result.TemplateAsyncResult;
+
 import io.vertx.core.AsyncResultHandler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 
@@ -52,19 +53,13 @@ class RemoteRepository implements Repository<String, URI> {
     }
 
     @Override
-    public void get(URI uri, AsyncResultHandler<Template<String, URI>> handler) throws IOException {
+    public void get(URI uri, MultiMap requestHeaders, AsyncResultHandler<Template<String, URI>> handler) {
         HttpClientRequest httpClientRequest = httpClient.get(port, domain, uri.toString(),
-                httpClientResponse -> {
-                    if (httpClientResponse.statusCode() == HttpStatus.OK.value()) {
-                        httpClientResponse.bodyHandler(buffer -> {
-                            String responseContent = buffer.getString(0, buffer.length());
-                            handler.handle(AsyncResultFactory.createSuccess(new BasicTemplate(uri,
-                                    responseContent)));
-                        });
-                    } else {
-                        handler.handle(AsyncResultFactory.createFailure());
-                    }
-                });
+                httpClientResponse -> httpClientResponse.bodyHandler(buffer -> {
+                    String responseContent = buffer.getString(0, buffer.length());
+                    handler.handle(new TemplateAsyncResult<>(new HttpTemplate(uri, httpClientResponse.statusCode(), httpClientResponse.headers(), responseContent)));
+                }));
+        requestHeaders.forEach(requestHeader -> httpClientRequest.putHeader(requestHeader.getKey(), requestHeader.getValue()));
         httpClientRequest.end();
     }
 
