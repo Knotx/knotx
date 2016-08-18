@@ -19,13 +19,12 @@ package com.cognifide.knotx.template.engine;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.template.service.ServiceEntry;
 import com.github.jknack.handlebars.Template;
 
-import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import rx.Observable;
@@ -54,11 +53,6 @@ public class TemplateSnippet {
         return snippet;
     }
 
-    public TemplateSnippet setCompiledSnippet(Template compiledSnippet) {
-        this.compiledSnippet = compiledSnippet;
-        return this;
-    }
-
     public Element getSnippet() {
         return snippet;
     }
@@ -67,57 +61,12 @@ public class TemplateSnippet {
         return compiledSnippet;
     }
 
-    public Observable<ServiceEntry> getServices() {
-        return Observable.from(services);
+    public TemplateSnippet setCompiledSnippet(Template compiledSnippet) {
+        this.compiledSnippet = compiledSnippet;
+        return this;
     }
 
-    public static class ServiceEntry {
-        private String relatedAttribute;
-        private String serviceUri;
-        private Map<String, Object> serviceResult;
-
-        private ServiceEntry() {
-            //Hidden constructors
-        }
-
-        public static ServiceEntry of(Attribute serviceAttribute) {
-            ServiceEntry entry = new ServiceEntry();
-            entry.relatedAttribute = serviceAttribute.getKey();
-            entry.serviceUri = serviceAttribute.getValue();
-            return entry;
-        }
-
-        public ServiceEntry setResult(Map<String, Object> serviceResult) {
-            this.serviceResult = serviceResult;
-            return this;
-        }
-
-        public String getRelatedAttribute() {
-            return relatedAttribute;
-        }
-
-        public String getServiceUri() {
-            return serviceUri;
-        }
-
-        public Map<String, Object> getServiceResult() {
-            return serviceResult;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            ServiceEntry that = (ServiceEntry) o;
-
-            return serviceUri.equals(that.serviceUri);
-
-        }
-
-        @Override
-        public int hashCode() {
-            return serviceUri.hashCode();
-        }
+    public Observable<ServiceEntry> getServices() {
+        return Observable.from(services);
     }
 }

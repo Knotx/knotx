@@ -18,7 +18,7 @@
 package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.TestApplication;
-import com.cognifide.knotx.template.service.ServiceConfiguration;
+import com.cognifide.knotx.template.ServiceConfiguration;
 
 import org.junit.Before;
 import org.junit.Test;

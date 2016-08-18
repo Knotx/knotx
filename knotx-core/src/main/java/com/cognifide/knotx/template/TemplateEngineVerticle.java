@@ -34,7 +34,6 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
-import rx.plugins.RxJavaHooks;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
 
@@ -63,20 +62,20 @@ public class TemplateEngineVerticle extends AbstractVerticle {
         Observable<Message<io.vertx.core.buffer.Buffer>> messageObservable = eventBus.<io.vertx.core.buffer.Buffer>consumer(KnotxConst.TEMPLATE_ENGINE_ADDRESS).toObservable();
 
         messageObservable
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                msg -> {
-                    templateEngine.process(new TemplateEngineRequest(Buffer.newInstance(msg.body()), null))
-                        .subscribe(
-                            data -> msg.reply(data),
-                            error -> {
-                                LOGGER.error("Error happened", error);
-                                msg.reply(Buffer.buffer("ERROR").getDelegate());
-                            }
-                        );
-                    LOGGER.trace("Got message: {0}", msg.body());
-                }
-            );
+                .doOnNext(this::traceMessage)
+                .subscribe(
+                        msg -> {
+                            templateEngine.process(new TemplateEngineRequest(Buffer.newInstance(msg.body()), null))
+                                    .subscribe(
+                                            data -> msg.reply(data),
+                                            error -> {
+                                                LOGGER.error("Error happened", error);
+                                                msg.reply(Buffer.buffer("ERROR").getDelegate());
+                                            }
+                                    );
+                            LOGGER.trace("Got message: {0}", msg.body());
+                        }
+                );
 
 
     }

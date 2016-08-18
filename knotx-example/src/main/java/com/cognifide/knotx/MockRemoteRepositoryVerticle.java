@@ -25,11 +25,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.http.HttpServer;
 
 @Component
 public class MockRemoteRepositoryVerticle extends AbstractVerticle {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryVerticle.class);
 
     @Autowired
     private MockServiceConfiguration configuration;
@@ -41,6 +45,7 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws IOException, URISyntaxException {
+        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
         httpServer = vertx.createHttpServer();
         httpServer.requestHandler(mockRemoteRepositoryHandler)
                 .listen(configuration.repositoryServicePort());

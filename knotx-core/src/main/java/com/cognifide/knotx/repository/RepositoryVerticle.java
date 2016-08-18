@@ -97,7 +97,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <%s> with value <{0}>", message.replyAddress(), message.body());
+            LOGGER.trace("Got message from <{0}> with value <{1}>", message.replyAddress(), message.body());
         }
     }
 }

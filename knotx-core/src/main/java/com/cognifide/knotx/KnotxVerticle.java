@@ -19,7 +19,6 @@ package com.cognifide.knotx;
 
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.template.service.ServiceEndpointFacade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,9 +41,6 @@ public class KnotxVerticle extends AbstractVerticle {
     @Autowired
     private KnotxConfiguration configuration;
 
-    @Autowired
-    private ServiceEndpointFacade serviceEndpointFacade;
-
     private HttpServer httpServer;
 
     @Override
@@ -65,7 +61,6 @@ public class KnotxVerticle extends AbstractVerticle {
                                                     .subscribe(
                                                             result -> {
                                                                 Object body = result.body();
-                                                                LOGGER.info("The final result is: {0}", body);
                                                                 request.response().end(body.toString());
                                                             },
                                                             error -> {
@@ -90,7 +85,7 @@ public class KnotxVerticle extends AbstractVerticle {
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <template-repository> with value <{0>", message.body());
+            LOGGER.trace("Got message from <template-repository> with value <{0}>", message.body());
         }
     }
 }
