@@ -24,7 +24,6 @@ import com.github.jknack.handlebars.Handlebars;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -107,16 +106,12 @@ public class TemplateEngine {
     private Observable<Element> applyData(TemplateSnippet snippet, Map<String, Object> data) {
         try {
             final String compiledContent = snippet.getCompiledSnippet().apply(data);
-            LOGGER.debug("Applying: \n{0} to \n{1}\n and result is \n{2}", data, snippet.getSnippet(), compiledContent);
+            LOGGER.trace("Applying: \n{0} to \n{1}\n and result is \n{2}", data, snippet.getSnippet(), compiledContent);
             final StringBuilder snippetFinalMarkup = new StringBuilder();
-            if (templateDebug) {
-                snippetFinalMarkup.append(String.format(START_WEBSERVICE_CALL_DEBUG_MARKER, snippet,
-                        snippet.getCalledServicesUri()));
-            }
+
+            snippetFinalMarkup.append(startComment(snippet));
             snippetFinalMarkup.append(compiledContent);
-            if (templateDebug) {
-                snippetFinalMarkup.append(String.format(END_WEBSERVICE_CALL_DEBUG_MARKER, snippet));
-            }
+            snippetFinalMarkup.append(endComment(snippet));
 
             final Element snippetFinalElement = snippet.getSnippet().after(snippetFinalMarkup.toString());
             snippet.getSnippet().remove();
@@ -124,6 +119,23 @@ public class TemplateEngine {
         } catch (IOException e) {
             return Observable.error(e);
         }
+    }
+
+    private StringBuilder startComment(TemplateSnippet snippet) {
+        return snippetComment(snippet, START_WEBSERVICE_CALL_DEBUG_MARKER);
+    }
+
+    private StringBuilder endComment(TemplateSnippet snippet) {
+        return snippetComment(snippet, END_WEBSERVICE_CALL_DEBUG_MARKER);
+    }
+
+    private StringBuilder snippetComment(TemplateSnippet snippet, String commentTemplate) {
+        StringBuilder debugLine = new StringBuilder();
+        if (templateDebug) {
+            debugLine.append(String.format(commentTemplate, snippet,
+                    snippet.getCalledServicesUri()));
+        }
+        return debugLine;
     }
 
     private void traceSnippet(TemplateSnippet templateSnippet) {
