@@ -65,7 +65,7 @@ class RemoteRepository implements Repository {
                 .flatMap(this::toRepositoryResponse)
                 .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", path))
                 .onErrorReturn(error -> {
-                            LOGGER.error("Unable to fetch template from remote repository for path `{}`", path, error);
+                            LOGGER.error("Unable to fetch template from remote repository for path `{0}`", path, error);
                             return RepositoryResponse.error("No Template found for path %s", path);
                         }
                 );
@@ -82,7 +82,7 @@ class RemoteRepository implements Repository {
         if (buffer.length() > 0) {
             response = RepositoryResponse.success(buffer.copy()).toObservable();
         } else {
-            LOGGER.error("Remote repository returned empty template for path `{}`", path);
+            LOGGER.error("Remote repository returned empty template for path `{0}`", path);
             response = RepositoryResponse.error("No Template found for path %s", path).toObservable();
         }
         return response;

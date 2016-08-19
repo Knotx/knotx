@@ -52,7 +52,7 @@ public class LocalRepository implements Repository {
     @Override
     public Observable<RepositoryResponse> get(String path) {
         final String localFile = catalogue + StringUtils.stripStart(path, "/");
-        LOGGER.trace("Fetching file `{}` from local repository.", localFile);
+        LOGGER.trace("Fetching file `{0}` from local repository.", localFile);
 
         return fileSystem.openObservable(localFile, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
