@@ -66,6 +66,10 @@ public class TemplateSnippet {
         return this;
     }
 
+    public List<String> getCalledServicesUri() {
+        return services.stream().map(ServiceEntry::getServiceUri).collect(Collectors.toList());
+    }
+
     public Observable<ServiceEntry> getServices() {
         return Observable.from(services);
     }

@@ -47,9 +47,9 @@ public class TemplateEngine {
 
     private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
 
-    private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- START webservice `%s` call -->";
+    private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start snippet `%s` calls: %s -->";
 
-    private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- END webservice call -->";
+    private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end snippet `%s` calls -->";
 
     @Autowired
     private ServiceEngine serviceEngine;
@@ -106,14 +106,21 @@ public class TemplateEngine {
 
     private Observable<Element> applyData(TemplateSnippet snippet, Map<String, Object> data) {
         try {
-            String compiledContent = snippet.getCompiledSnippet().apply(data);
+            final String compiledContent = snippet.getCompiledSnippet().apply(data);
             LOGGER.debug("Applying: \n{0} to \n{1}\n and result is \n{2}", data, snippet.getSnippet(), compiledContent);
-            Element snippetParent = new Element(Tag.valueOf("div"), "");
-//            if (templateDebug) {
-//                snippetParent.prepend(String.format(START_WEBSERVICE_CALL_DEBUG_MARKER, serviceEntry.getServiceUri()));
-//            }
-            snippet.getSnippet().replaceWith(snippetParent.append(compiledContent));
-            return Observable.just(snippetParent);
+            final StringBuilder snippetFinalMarkup = new StringBuilder();
+            if (templateDebug) {
+                snippetFinalMarkup.append(String.format(START_WEBSERVICE_CALL_DEBUG_MARKER, snippet,
+                        snippet.getCalledServicesUri()));
+            }
+            snippetFinalMarkup.append(compiledContent);
+            if (templateDebug) {
+                snippetFinalMarkup.append(String.format(END_WEBSERVICE_CALL_DEBUG_MARKER, snippet));
+            }
+
+            final Element snippetFinalElement = snippet.getSnippet().after(snippetFinalMarkup.toString());
+            snippet.getSnippet().remove();
+            return Observable.just(snippetFinalElement);
         } catch (IOException e) {
             return Observable.error(e);
         }
