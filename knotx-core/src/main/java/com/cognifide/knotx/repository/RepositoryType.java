@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.stream.Stream;
 
 import io.vertx.core.http.HttpClientOptions;
-import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
 
 enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
@@ -44,7 +43,7 @@ enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
         @Override
         public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
                                                  Vertx vertx) {
-            return RemoteRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(),
+            return HttpRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(),
                     vertx.createHttpClient(new HttpClientOptions().setLogActivity(true)));
         }
 

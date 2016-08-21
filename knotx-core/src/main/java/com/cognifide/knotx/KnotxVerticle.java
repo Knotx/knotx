@@ -19,6 +19,7 @@ package com.cognifide.knotx;
 
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.api.RepositoryRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,31 +51,29 @@ public class KnotxVerticle extends AbstractVerticle {
         EventBus eventBus = vertx.eventBus();
 
         httpServer.requestHandler(
-                request -> {
-                    eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, request.path())
-                            .doOnNext(this::traceMessage)
-                            .subscribe(
-                                    reply -> {
-                                        RepositoryResponse repository = reply.body();
-                                        if (repository.isSuccess()) {
-                                            eventBus.sendObservable(KnotxConst.TEMPLATE_ENGINE_ADDRESS, repository.getData().getDelegate())
-                                                    .subscribe(
-                                                            result -> {
-                                                                Object body = result.body();
-                                                                request.response().end(body.toString());
-                                                            },
-                                                            error -> {
-                                                                LOGGER.error("Error happened", error);
-                                                                request.response().setStatusCode(500).end(error.toString());
-                                                            }
-                                                    );
-                                        } else {
-                                            request.response().setStatusCode(404).end(repository.getReason());
-                                        }
-                                    },
-                                    error -> LOGGER.error("Error: ", error)
-                            );
-                }
+                request -> eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, new RepositoryRequest(request.path(), request.headers()))
+                        .doOnNext(this::traceMessage)
+                        .subscribe(
+                                reply -> {
+                                    RepositoryResponse repository = reply.body();
+                                    if (repository.isSuccess()) {
+                                        eventBus.sendObservable(KnotxConst.TEMPLATE_ENGINE_ADDRESS, repository.getData().getDelegate())
+                                                .subscribe(
+                                                        result -> {
+                                                            Object body = result.body();
+                                                            request.response().end(body.toString());
+                                                        },
+                                                        error -> {
+                                                            LOGGER.error("Error happened", error);
+                                                            request.response().setStatusCode(500).end(error.toString());
+                                                        }
+                                                );
+                                    } else {
+                                        request.response().setStatusCode(404).end(repository.getReason());
+                                    }
+                                },
+                                error -> LOGGER.error("Error: ", error)
+                        )
         ).listen(configuration.requestHandlerPort());
     }
 

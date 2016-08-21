@@ -17,12 +17,19 @@
  */
 package com.cognifide.knotx.api;
 
+import java.io.Serializable;
+
 import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 
-public class RepositoryResponse {
+public class RepositoryResponse implements Serializable {
+
+    private static final long serialVersionUID = -5892594714118271978L;
+
     private boolean success;
+
     private String reason;
+
     private Buffer data;
 
     public static RepositoryResponse success(Buffer data) {

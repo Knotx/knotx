@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
+import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ import io.vertx.rxjava.core.file.FileSystem;
 import rx.Observable;
 
 public class LocalRepository implements Repository {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
 
     private String path;
@@ -41,26 +43,26 @@ public class LocalRepository implements Repository {
         // Hidden constructor
     }
 
-    static LocalRepository of(String path, String catlogue, FileSystem fileSystem) {
+    static LocalRepository of(String path, String catalogue, FileSystem fileSystem) {
         LocalRepository repository = new LocalRepository();
         repository.path = path;
-        repository.catalogue = catlogue;
+        repository.catalogue = catalogue;
         repository.fileSystem = fileSystem;
         return repository;
     }
 
     @Override
-    public Observable<RepositoryResponse> get(String path) {
-        final String localFile = catalogue + StringUtils.stripStart(path, "/");
-        LOGGER.trace("Fetching file `{0}` from local repository.", localFile);
+    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
+        final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.getPath(), "/");
+        LOGGER.trace("Fetching file `{0}` from local repository.", localFilePath);
 
-        return fileSystem.openObservable(localFile, new OpenOptions())
+        return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
                 .flatMap(buffer -> RepositoryResponse.success(buffer).toObservable())
-                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", path))
+                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath()))
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);
-                    return RepositoryResponse.error("No Template found for path <%s>", path);
+                    return RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath());
                 });
     }
 

@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
+import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
 import org.springframework.http.HttpStatus;
@@ -29,9 +30,9 @@ import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
-class RemoteRepository implements Repository {
+class HttpRepository implements Repository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RemoteRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepository.class);
 
     private String path;
 
@@ -41,22 +42,23 @@ class RemoteRepository implements Repository {
 
     private HttpClient httpClient;
 
-    private RemoteRepository() {
+    private HttpRepository() {
         // hidden constructor
     }
 
-    static RemoteRepository of(String path, String domain, Integer port, HttpClient httpClient) {
-        RemoteRepository remoteRepository = new RemoteRepository();
-        remoteRepository.path = path;
-        remoteRepository.domain = domain;
-        remoteRepository.port = port;
-        remoteRepository.httpClient = httpClient;
-        return remoteRepository;
+    static HttpRepository of(String path, String domain, Integer port, HttpClient httpClient) {
+        HttpRepository httpRepository = new HttpRepository();
+        httpRepository.path = path;
+        httpRepository.domain = domain;
+        httpRepository.port = port;
+        httpRepository.httpClient = httpClient;
+        return httpRepository;
     }
 
     @Override
-    public Observable<RepositoryResponse> get(String path) {
-        Observable<HttpClientResponse> clientResponse = RxHelper.get(httpClient, port, domain, path);
+    public Observable<RepositoryResponse> get(RepositoryRequest request) {
+        Observable<HttpClientResponse> clientResponse =
+            RxHelper.get(httpClient, port, domain, request.getPath(), request.getHeaders());
 
         return clientResponse
                 .doOnNext(this::traceResponse)

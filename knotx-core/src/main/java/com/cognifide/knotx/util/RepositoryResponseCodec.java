@@ -24,9 +24,9 @@ import io.vertx.core.eventbus.MessageCodec;
 
 public class RepositoryResponseCodec implements MessageCodec<RepositoryResponse, RepositoryResponse> {
 
-    public static final int CONTENT_START_IDX = 4;
-    public static final byte SUCCESS_FLAG = 1;
-    public static final byte ERROR_FLAG = 0;
+    private static final int CONTENT_START_IDX = 4;
+    private static final byte SUCCESS_FLAG = 1;
+    private static final byte ERROR_FLAG = 0;
 
     @Override
     public void encodeToWire(Buffer buffer, RepositoryResponse object) {
