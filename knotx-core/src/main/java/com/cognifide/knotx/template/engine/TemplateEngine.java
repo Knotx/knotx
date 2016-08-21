@@ -21,6 +21,7 @@ import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.template.service.ServiceEngine;
 import com.github.jknack.handlebars.Handlebars;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -83,7 +84,7 @@ public class TemplateEngine {
         return snippet.getServices()
                 .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {0}", serviceEntry.getServiceUri()))
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceEngine::doServiceCall, (service, serviceResult) -> service.setResult(serviceResult))
+                .flatMap(serviceEngine::doServiceCall, (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
     }
 
@@ -91,11 +92,9 @@ public class TemplateEngine {
         return Observable.create(subscriber -> {
             try {
                 subscriber.onNext(
-                        snippet.setCompiledSnippet(
-                                handlebars.compileInline(
-                                        snippet.getSnippet().html()
-                                )
-                        )
+                    snippet.setCompiledSnippet(
+                        handlebars.compileInline(snippet.getSnippet().html())
+                    )
                 );
             } catch (IOException e) {
                 subscriber.onError(e);
@@ -103,37 +102,37 @@ public class TemplateEngine {
         });
     }
 
-    private Observable<Element> applyData(TemplateSnippet snippet, Map<String, Object> data) {
+    private Observable<Element> applyData(TemplateSnippet snippet, Map<String, Object> serviceResult) {
         try {
-            final String compiledContent = snippet.getCompiledSnippet().apply(data);
-            LOGGER.trace("Applying: \n{0} to \n{1}\n and result is \n{2}", data, snippet.getSnippet(), compiledContent);
+            final String compiledContent = snippet.getCompiledSnippet().apply(serviceResult);
+            final Element originalSnippet = snippet.getSnippet();
+            LOGGER.trace("Applying: \n{0} to \n{1}\n and result is \n{2}", serviceResult, originalSnippet, compiledContent);
             final StringBuilder snippetFinalMarkup = new StringBuilder();
 
             snippetFinalMarkup.append(startComment(snippet));
             snippetFinalMarkup.append(compiledContent);
             snippetFinalMarkup.append(endComment(snippet));
 
-            final Element snippetFinalElement = snippet.getSnippet().after(snippetFinalMarkup.toString());
-            snippet.getSnippet().remove();
+            final Element snippetFinalElement = originalSnippet.after(snippetFinalMarkup.toString());
+            originalSnippet.remove();
             return Observable.just(snippetFinalElement);
         } catch (IOException e) {
             return Observable.error(e);
         }
     }
 
-    private StringBuilder startComment(TemplateSnippet snippet) {
+    private String startComment(TemplateSnippet snippet) {
         return snippetComment(snippet, START_WEBSERVICE_CALL_DEBUG_MARKER);
     }
 
-    private StringBuilder endComment(TemplateSnippet snippet) {
+    private String endComment(TemplateSnippet snippet) {
         return snippetComment(snippet, END_WEBSERVICE_CALL_DEBUG_MARKER);
     }
 
-    private StringBuilder snippetComment(TemplateSnippet snippet, String commentTemplate) {
-        StringBuilder debugLine = new StringBuilder();
+    private String snippetComment(TemplateSnippet snippet, String commentTemplate) {
+        String debugLine = StringUtils.EMPTY;
         if (templateDebug) {
-            debugLine.append(String.format(commentTemplate, snippet,
-                    snippet.getCalledServicesUri()));
+            debugLine = String.format(commentTemplate, snippet, snippet.getCalledServicesUri());
         }
         return debugLine;
     }

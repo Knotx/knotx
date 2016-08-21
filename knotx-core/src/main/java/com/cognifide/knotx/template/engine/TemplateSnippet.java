@@ -73,4 +73,9 @@ public class TemplateSnippet {
     public Observable<ServiceEntry> getServices() {
         return Observable.from(services);
     }
+
+    @Override
+    public String toString() {
+        return "TemplateSnippet@" + Integer.toHexString(hashCode());
+    }
 }

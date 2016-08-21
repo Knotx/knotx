@@ -58,15 +58,15 @@ public class ServiceEngine {
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
     }
 
+    public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
+        return Observable.from(serviceConfiguration.getServices())
+                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).first()
+                .map(metadata -> serviceEntry.setServiceMetadata(metadata));
+    }
+    
     private void traceServiceCall(Buffer buffer) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Got message from service <{0}>", buffer.toString());
         }
-    }
-
-    public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
-        return Observable.from(serviceConfiguration.getServices())
-                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).take(1)
-                .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
 }
