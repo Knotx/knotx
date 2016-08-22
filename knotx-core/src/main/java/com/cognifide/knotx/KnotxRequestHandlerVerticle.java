@@ -40,9 +40,9 @@ import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
 @Component
-public class KnotxRequestHandler extends AbstractVerticle {
+public class KnotxRequestHandlerVerticle extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KnotxRequestHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnotxRequestHandlerVerticle.class);
 
     @Autowired
     private KnotxConfiguration configuration;

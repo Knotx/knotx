@@ -49,7 +49,7 @@ public class Knotx extends AbstractVerticle {
     private RepositoryVerticle repositoryVerticle;
 
     @Autowired
-    private KnotxRequestHandler requestHandlerVerticle;
+    private KnotxRequestHandlerVerticle requestHandlerVerticle;
 
     @Override
     public void init(Vertx vertx, Context context) {
