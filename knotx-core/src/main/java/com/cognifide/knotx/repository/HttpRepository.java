@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.repository;
 
+import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
 import org.springframework.http.HttpStatus;
@@ -55,19 +56,19 @@ class HttpRepository implements Repository {
     }
 
     @Override
-    public Observable<RepositoryResponse> get(String path) {
+    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
         Observable<HttpClientResponse> clientResponse =
-                RxHelper.get(vertx.createHttpClient(), port, domain, path);
+                RxHelper.get(vertx.createHttpClient(), port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
 
         return clientResponse
                 .doOnNext(this::traceResponse)
                 .filter(this::onlySuccess)
                 .flatMap(this::reduceBuffers)
                 .flatMap(this::toRepositoryResponse)
-                .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", path))
+                .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", repositoryRequest))
                 .onErrorReturn(error -> {
-                            LOGGER.error("Unable to fetch template from remote repository for path `{0}`", path, error);
-                            return RepositoryResponse.error("No Template found for path %s", path);
+                            LOGGER.error("Unable to fetch template from remote repository for path `{0}`", repositoryRequest.getPath(), error);
+                            return RepositoryResponse.error("No Template found for path %s", repositoryRequest.getPath());
                         }
                 );
     }

@@ -15,16 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository;
+package com.cognifide.knotx.api;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import java.io.Serializable;
 
-import rx.Observable;
+import io.vertx.rxjava.core.MultiMap;
 
-public interface Repository {
+public class RepositoryRequest implements Serializable {
 
-    Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest);
+    private static final long serialVersionUID = -4749993224323164630L;
 
-    boolean support(String path);
+    private final String path;
+
+    private final MultiMap headers;
+
+    public RepositoryRequest(String path, MultiMap headers) {
+        this.path = path;
+        this.headers = headers;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public MultiMap getHeaders() {
+        return headers;
+    }
 }
+

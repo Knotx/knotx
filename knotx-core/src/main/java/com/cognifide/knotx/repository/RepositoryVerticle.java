@@ -20,8 +20,10 @@ package com.cognifide.knotx.repository;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.api.KnotxConst;
+import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.util.RepositoryRequestCodec;
 import com.cognifide.knotx.util.RepositoryResponseCodec;
 import com.cognifide.knotx.util.TemplateEngineRequestCodec;
 
@@ -54,8 +56,6 @@ public class RepositoryVerticle extends AbstractVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
-        vertx.eventBus().registerDefaultCodec(RepositoryResponse.class, new RepositoryResponseCodec());
-        vertx.eventBus().registerDefaultCodec(TemplateEngineRequest.class, new TemplateEngineRequestCodec());
 
         repositories = repositoryConfiguration.getRepositories()
                 .stream()
@@ -69,7 +69,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
         EventBus eventBus = vertx.eventBus();
 
-        Observable<Message<String>> messageObservable = eventBus.<String>consumer(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS).toObservable();
+        Observable<Message<RepositoryRequest>> messageObservable = eventBus.<RepositoryRequest>consumer(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS).toObservable();
 
         messageObservable
                 .doOnNext(this::traceMessage)
@@ -80,11 +80,11 @@ public class RepositoryVerticle extends AbstractVerticle {
                 );
     }
 
-    private Observable<RepositoryResponse> getTemplateContent(final Message<String> repoMessage) {
-        final String path = repoMessage.body();
+    private Observable<RepositoryResponse> getTemplateContent(final Message<RepositoryRequest> repoMessage) {
+        final RepositoryRequest repoRequest = repoMessage.body();
 
-        return Observable.just(findRepository(path))
-                .flatMap(repo -> repo.get(path));
+        return Observable.just(findRepository(repoRequest.getPath()))
+                .flatMap(repo -> repo.get(repoRequest));
     }
 
     private Repository findRepository(final String path) {

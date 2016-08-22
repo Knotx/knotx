@@ -18,6 +18,7 @@
 package com.cognifide.knotx;
 
 import com.cognifide.knotx.api.KnotxConst;
+import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 
@@ -55,7 +56,7 @@ public class KnotxRequestHandler extends AbstractVerticle {
         EventBus eventBus = vertx.eventBus();
 
         httpServer.requestHandler(
-                request -> eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, request.path())
+                request -> eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, createRepositoryRequest(request))
                         .doOnNext(this::traceMessage)
                         .subscribe(
                                 reply -> {
@@ -94,6 +95,10 @@ public class KnotxRequestHandler extends AbstractVerticle {
     @Override
     public void stop() throws Exception {
         httpServer.close();
+    }
+
+    private RepositoryRequest createRepositoryRequest(HttpServerRequest request) {
+        return new RepositoryRequest(request.path(), request.headers());
     }
 
     private TemplateEngineRequest createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {

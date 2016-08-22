@@ -17,12 +17,20 @@
  */
 package com.cognifide.knotx;
 
+import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.repository.RepositoryVerticle;
 import com.cognifide.knotx.template.TemplateEngineVerticle;
+import com.cognifide.knotx.util.RepositoryRequestCodec;
+import com.cognifide.knotx.util.RepositoryResponseCodec;
+import com.cognifide.knotx.util.TemplateEngineRequestCodec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -43,6 +51,13 @@ public class Knotx extends AbstractVerticle {
     @Autowired
     private KnotxRequestHandler requestHandlerVerticle;
 
+    @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        vertx.eventBus().registerDefaultCodec(RepositoryResponse.class, new RepositoryResponseCodec());
+        vertx.eventBus().registerDefaultCodec(TemplateEngineRequest.class, new TemplateEngineRequestCodec());
+        vertx.eventBus().registerDefaultCodec(RepositoryRequest.class, new RepositoryRequestCodec());
+    }
 
     @Override
     public void start() throws Exception {
