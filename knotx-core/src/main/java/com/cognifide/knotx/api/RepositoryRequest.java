@@ -19,6 +19,7 @@ package com.cognifide.knotx.api;
 
 import java.io.Serializable;
 
+import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
 public class RepositoryRequest implements Serializable{

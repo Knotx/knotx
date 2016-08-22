@@ -22,12 +22,14 @@ import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.api.RepositoryRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import io.vertx.core.Future;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -66,11 +68,11 @@ public class KnotxRequestHandler extends AbstractVerticle {
                                                         },
                                                         error -> {
                                                             LOGGER.error("Error happened", error);
-                                                            request.response().setStatusCode(500).end(error.toString());
+                                                            request.response().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).end(error.toString());
                                                         }
                                                 );
                                     } else {
-                                        request.response().setStatusCode(404).end(repository.getReason());
+                                        request.response().setStatusCode(HttpStatus.NOT_FOUND.value()).end(repository.getReason());
                                     }
                                 },
                                 error -> LOGGER.error("Error: ", error)

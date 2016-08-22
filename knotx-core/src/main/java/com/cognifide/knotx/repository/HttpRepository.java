@@ -27,7 +27,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
@@ -47,8 +46,8 @@ class HttpRepository implements Repository {
         // hidden constructor
     }
 
-    static RemoteRepository of(String path, String domain, Integer port, Vertx vertx) {
-        RemoteRepository remoteRepository = new RemoteRepository();
+    static HttpRepository of(String path, String domain, Integer port, Vertx vertx) {
+        HttpRepository remoteRepository = new HttpRepository();
         remoteRepository.path = path;
         remoteRepository.domain = domain;
         remoteRepository.port = port;
@@ -57,8 +56,9 @@ class HttpRepository implements Repository {
     }
 
     @Override
-    public Observable<RepositoryResponse> get(String path) {
-        Observable<HttpClientResponse> clientResponse = RxHelper.get(vertx.createHttpClient(), port, domain, path);
+    public Observable<RepositoryResponse> get(RepositoryRequest request) {
+        Observable<HttpClientResponse> clientResponse =
+                RxHelper.get(vertx.createHttpClient(), port, domain, request.getPath(), request.getHeaders());
 
         return clientResponse
                 .doOnNext(this::traceResponse)

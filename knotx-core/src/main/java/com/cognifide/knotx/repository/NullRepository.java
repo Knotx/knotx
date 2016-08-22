@@ -25,8 +25,8 @@ import rx.Observable;
 public class NullRepository implements Repository {
 
     @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        return Observable.just(RepositoryResponse.error("No repository found for given path %s", repositoryRequest.getPath()));
+    public Observable<RepositoryResponse> get(RepositoryRequest request) {
+        return Observable.just(RepositoryResponse.error("No repository found for given path %s", request.getPath()));
     }
 
     @Override

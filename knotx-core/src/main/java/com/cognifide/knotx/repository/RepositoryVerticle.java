@@ -80,8 +80,8 @@ public class RepositoryVerticle extends AbstractVerticle {
                 );
     }
 
-    private Observable<RepositoryResponse> getTemplateContent(final Message<RepositoryRequest> pathMsg) {
-        final RepositoryRequest templateRequest = pathMsg.body();
+    private Observable<RepositoryResponse> getTemplateContent(final Message<RepositoryRequest> repoMessage) {
+        final RepositoryRequest templateRequest = repoMessage.body();
 
         return Observable.just(findRepository(templateRequest.getPath()))
                 .flatMap(repo -> repo.get(templateRequest));

@@ -52,17 +52,17 @@ public class LocalRepository implements Repository {
     }
 
     @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.getPath(), "/");
+    public Observable<RepositoryResponse> get(RepositoryRequest request) {
+        final String localFilePath = catalogue + StringUtils.stripStart(request.getPath(), "/");
         LOGGER.trace("Fetching file `{0}` from local repository.", localFilePath);
 
         return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
                 .flatMap(buffer -> RepositoryResponse.success(buffer).toObservable())
-                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath()))
+                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", request.getPath()))
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);
-                    return RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath());
+                    return RepositoryResponse.error("No Template found for path <%s>", request.getPath());
                 });
     }
 

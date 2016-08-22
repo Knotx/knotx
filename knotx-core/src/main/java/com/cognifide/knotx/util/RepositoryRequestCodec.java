@@ -17,30 +17,33 @@
  */
 package com.cognifide.knotx.util;
 
-import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 
 import com.cognifide.knotx.api.RepositoryRequest;
 
+import io.netty.util.CharsetUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
-import io.vertx.core.json.JsonObject;
 
 public class RepositoryRequestCodec implements MessageCodec<RepositoryRequest, RepositoryRequest> {
 
     @Override
     public void encodeToWire(Buffer buffer, RepositoryRequest object) {
-        String requestAsJson = new Gson().toJson(object);
-        buffer.appendString(requestAsJson, Charsets.UTF_8.name());
+        String strJson = new Gson().toJson(object);
+        byte[] encoded = strJson.getBytes(CharsetUtil.UTF_8);
+        buffer.appendInt(encoded.length);
+        Buffer buff = Buffer.buffer(encoded);
+        buffer.appendBuffer(buff);
     }
 
     @Override
     public RepositoryRequest decodeFromWire(int pos, Buffer buffer) {
-        JsonObject jsonObject = buffer.toJsonObject();
-        String path = jsonObject.getString("path");
+        int length = buffer.getInt(pos);
+        pos += 4;
+        byte[] encoded = buffer.getBytes(pos, pos + length);
+        String str = new String(encoded, CharsetUtil.UTF_8);
 
-        // TODO extract headers
-        return new RepositoryRequest(path, null);
+        return new Gson().fromJson(str, RepositoryRequest.class);
     }
 
     @Override
