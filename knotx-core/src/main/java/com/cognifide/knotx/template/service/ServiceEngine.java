@@ -24,6 +24,7 @@ import java.util.Map;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -43,8 +44,9 @@ public class ServiceEngine {
         this.serviceConfiguration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry) {
-        Observable<HttpClientResponse> serviceResponse = RxHelper.get(vertx.createHttpClient(), serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri());
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers) {
+        Observable<HttpClientResponse> serviceResponse =
+                RxHelper.get(vertx.createHttpClient(), serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(), headers);
 
         return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
                 .mergeWith(response.toObservable())

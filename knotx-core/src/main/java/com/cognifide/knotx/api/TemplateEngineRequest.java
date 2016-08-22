@@ -17,23 +17,43 @@
  */
 package com.cognifide.knotx.api;
 
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
 public class TemplateEngineRequest {
     private Buffer template;
 
-    private String params;
+    private MultiMap headers;
 
-    public TemplateEngineRequest(Buffer template, String params) {
+    public TemplateEngineRequest(Buffer template) {
         this.template = template;
-        this.params = params;
     }
 
     public Buffer getTemplate() {
         return template;
     }
 
-    public String getParams() {
-        return params;
+    public MultiMap getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(MultiMap headers) {
+        this.headers = headers;
+    }
+
+    @Override
+    public String toString() {
+        return "TemplateEngineRequest{" +
+                "template=" + template +
+                ", headers=[" + headersToString() +
+                "]}";
+    }
+
+    private String headersToString() {
+        StringBuilder result = new StringBuilder();
+        headers.names().stream()
+                .forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
+
+        return result.toString();
     }
 }

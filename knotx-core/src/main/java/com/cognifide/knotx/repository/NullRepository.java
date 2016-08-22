@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
 import rx.Observable;
@@ -25,8 +24,8 @@ import rx.Observable;
 public class NullRepository implements Repository {
 
     @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest request) {
-        return Observable.just(RepositoryResponse.error("No repository found for given path %s", request.getPath()));
+    public Observable<RepositoryResponse> get(String path) {
+        return Observable.just(RepositoryResponse.error("No repository found for given path %s", path));
     }
 
     @Override

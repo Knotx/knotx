@@ -78,17 +78,17 @@ public class TemplateEngine {
                         Observable.just(snippet).subscribeOn(Schedulers.io())
                                 .doOnNext(this::traceSnippet)
                                 .flatMap(this::compileSnippetTemplate)
-                                .flatMap(this::processSnippet)
+                                .flatMap(item -> processSnippet(item, request))
                 ).collect(Collectors.toList());
 
         return Observable.zip(snippetsPipeline, args -> htmlDocument.html());
     }
 
-    private Observable<Element> processSnippet(final TemplateSnippet snippet) {
+    private Observable<Element> processSnippet(final TemplateSnippet snippet, TemplateEngineRequest request) {
         return snippet.getServices()
                 .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {0}", serviceEntry.getServiceUri()))
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceEngine::doServiceCall, (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
     }
 

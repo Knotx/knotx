@@ -19,41 +19,54 @@ package com.cognifide.knotx.util;
 
 import com.google.gson.Gson;
 
-import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 
 import io.netty.util.CharsetUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
+import io.vertx.rxjava.core.MultiMap;
 
-public class RepositoryRequestCodec implements MessageCodec<RepositoryRequest, RepositoryRequest> {
+public class TemplateEngineRequestCodec implements MessageCodec<TemplateEngineRequest, TemplateEngineRequest> {
+
+    private static final int CONTENT_START_IDX = 4;
+    private static final byte SUCCESS_FLAG = 1;
+    private static final byte ERROR_FLAG = 0;
 
     @Override
-    public void encodeToWire(Buffer buffer, RepositoryRequest object) {
-        String strJson = new Gson().toJson(object);
-        byte[] encoded = strJson.getBytes(CharsetUtil.UTF_8);
+    public void encodeToWire(Buffer buffer, TemplateEngineRequest object) {
+        buffer.appendInt(object.getTemplate().length());
+        buffer.appendBuffer((Buffer) object.getTemplate().getDelegate());
+
+        byte[] encoded = new Gson().toJson(object.getHeaders()).getBytes(CharsetUtil.UTF_8);
         buffer.appendInt(encoded.length);
         Buffer buff = Buffer.buffer(encoded);
         buffer.appendBuffer(buff);
     }
 
     @Override
-    public RepositoryRequest decodeFromWire(int pos, Buffer buffer) {
+    public TemplateEngineRequest decodeFromWire(int pos, Buffer buffer) {
         int length = buffer.getInt(pos);
+        pos += 4;
+        TemplateEngineRequest request = new TemplateEngineRequest(new io.vertx.rxjava.core.buffer.Buffer(buffer.getBuffer(pos, pos + length)));
+
+        pos += length;
+        length = buffer.getInt(pos);
         pos += 4;
         byte[] encoded = buffer.getBytes(pos, pos + length);
         String str = new String(encoded, CharsetUtil.UTF_8);
+        request.setHeaders(new Gson().fromJson(str, MultiMap.class));
 
-        return new Gson().fromJson(str, RepositoryRequest.class);
+        return request;
     }
 
     @Override
-    public RepositoryRequest transform(RepositoryRequest message) {
+    public TemplateEngineRequest transform(TemplateEngineRequest message) {
         return message;
     }
 
     @Override
     public String name() {
-        return RepositoryRequest.class.getSimpleName();
+        return TemplateEngineRequest.class.getSimpleName();
     }
 
     @Override

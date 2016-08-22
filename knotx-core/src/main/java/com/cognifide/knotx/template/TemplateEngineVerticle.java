@@ -68,13 +68,13 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
         EventBus eventBus = vertx.eventBus();
 
-        Observable<Message<io.vertx.core.buffer.Buffer>> messageObservable = eventBus.<io.vertx.core.buffer.Buffer>consumer(KnotxConst.TEMPLATE_ENGINE_ADDRESS).toObservable();
+        Observable<Message<TemplateEngineRequest>> messageObservable = eventBus.<TemplateEngineRequest>consumer(KnotxConst.TEMPLATE_ENGINE_ADDRESS).toObservable();
 
         messageObservable
             .doOnNext(this::traceMessage)
             .subscribe(
                 msg -> {
-                    templateEngine.process(new TemplateEngineRequest(Buffer.newInstance(msg.body()), null))
+                    templateEngine.process(msg.body())
                         .subscribe(
                             data -> msg.reply(data),
                             error -> {

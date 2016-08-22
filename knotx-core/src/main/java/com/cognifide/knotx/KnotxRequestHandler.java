@@ -19,7 +19,7 @@ package com.cognifide.knotx;
 
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,13 +29,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import io.vertx.core.Future;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpServer;
+import io.vertx.rxjava.core.http.HttpServerRequest;
 
 @Component
 public class KnotxRequestHandler extends AbstractVerticle {
@@ -54,13 +55,13 @@ public class KnotxRequestHandler extends AbstractVerticle {
         EventBus eventBus = vertx.eventBus();
 
         httpServer.requestHandler(
-                request -> eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, new RepositoryRequest(request.path(), request.headers()))
+                request -> eventBus.<RepositoryResponse>sendObservable(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS, request.path())
                         .doOnNext(this::traceMessage)
                         .subscribe(
                                 reply -> {
                                     RepositoryResponse repository = reply.body();
                                     if (repository.isSuccess()) {
-                                        eventBus.sendObservable(KnotxConst.TEMPLATE_ENGINE_ADDRESS, repository.getData().getDelegate())
+                                        eventBus.sendObservable(KnotxConst.TEMPLATE_ENGINE_ADDRESS, createEngineRequest(repository, request))
                                                 .subscribe(
                                                         result -> {
                                                             Object body = result.body();
@@ -93,6 +94,19 @@ public class KnotxRequestHandler extends AbstractVerticle {
     @Override
     public void stop() throws Exception {
         httpServer.close();
+    }
+
+    private TemplateEngineRequest createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
+        TemplateEngineRequest templateEngineRequest = new TemplateEngineRequest(repositoryResponse.getData());
+
+        final MultiMap preservedHeaders = MultiMap.caseInsensitiveMultiMap();
+        request.headers().names().stream()
+                .filter(header -> configuration.serviceCallHeaders().contains(header))
+                .forEach(header -> preservedHeaders.add(header, request.headers().get(header)));
+
+        templateEngineRequest.setHeaders(preservedHeaders);
+
+        return templateEngineRequest;
     }
 
     private void traceMessage(Message<?> message) {

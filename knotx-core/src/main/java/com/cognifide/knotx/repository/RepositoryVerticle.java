@@ -20,10 +20,10 @@ package com.cognifide.knotx.repository;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.api.KnotxConst;
-import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.util.RepositoryRequestCodec;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.util.RepositoryResponseCodec;
+import com.cognifide.knotx.util.TemplateEngineRequestCodec;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class RepositoryVerticle extends AbstractVerticle {
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
         vertx.eventBus().registerDefaultCodec(RepositoryResponse.class, new RepositoryResponseCodec());
-        vertx.eventBus().registerDefaultCodec(RepositoryRequest.class, new RepositoryRequestCodec());
+        vertx.eventBus().registerDefaultCodec(TemplateEngineRequest.class, new TemplateEngineRequestCodec());
 
         repositories = repositoryConfiguration.getRepositories()
                 .stream()
@@ -69,7 +69,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
         EventBus eventBus = vertx.eventBus();
 
-        Observable<Message<RepositoryRequest>> messageObservable = eventBus.<RepositoryRequest>consumer(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS).toObservable();
+        Observable<Message<String>> messageObservable = eventBus.<String>consumer(KnotxConst.TEMPLATE_REPOSITORY_ADDRESS).toObservable();
 
         messageObservable
                 .doOnNext(this::traceMessage)
@@ -80,11 +80,11 @@ public class RepositoryVerticle extends AbstractVerticle {
                 );
     }
 
-    private Observable<RepositoryResponse> getTemplateContent(final Message<RepositoryRequest> repoMessage) {
-        final RepositoryRequest templateRequest = repoMessage.body();
+    private Observable<RepositoryResponse> getTemplateContent(final Message<String> repoMessage) {
+        final String path = repoMessage.body();
 
-        return Observable.just(findRepository(templateRequest.getPath()))
-                .flatMap(repo -> repo.get(templateRequest));
+        return Observable.just(findRepository(path))
+                .flatMap(repo -> repo.get(path));
     }
 
     private Repository findRepository(final String path) {

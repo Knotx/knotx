@@ -17,14 +17,13 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
 import rx.Observable;
 
 public interface Repository {
 
-    Observable<RepositoryResponse> get(RepositoryRequest request);
+    Observable<RepositoryResponse> get(String path);
 
     boolean support(String path);
 }

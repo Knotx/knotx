@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
 import org.springframework.http.HttpStatus;
@@ -56,9 +55,9 @@ class HttpRepository implements Repository {
     }
 
     @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest request) {
+    public Observable<RepositoryResponse> get(String path) {
         Observable<HttpClientResponse> clientResponse =
-                RxHelper.get(vertx.createHttpClient(), port, domain, request.getPath(), request.getHeaders());
+                RxHelper.get(vertx.createHttpClient(), port, domain, path);
 
         return clientResponse
                 .doOnNext(this::traceResponse)
