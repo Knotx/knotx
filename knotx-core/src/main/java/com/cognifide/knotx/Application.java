@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx;
 
-import com.cognifide.knotx.repository.RepositoryVerticle;
-import com.cognifide.knotx.template.TemplateEngineVerticle;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,13 +31,7 @@ import io.vertx.rxjava.core.Vertx;
 public class Application {
 
     @Autowired
-    private KnotxVerticle knotx;
-
-    @Autowired
-    private RepositoryVerticle repositoryVerticle;
-
-    @Autowired
-    private TemplateEngineVerticle templateEngineVerticle;
+    private Knotx knotx;
 
     @Autowired
     private ApplicationContext context;
@@ -51,8 +42,6 @@ public class Application {
 
     @PostConstruct
     public void deployVerticle() {
-        RxHelper.deployVerticle(Vertx.vertx(), repositoryVerticle);
         RxHelper.deployVerticle(Vertx.vertx(), knotx);
-        RxHelper.deployVerticle(Vertx.vertx(), templateEngineVerticle);
     }
 }

@@ -17,7 +17,9 @@
  */
 package com.cognifide.knotx.template.engine;
 
+import com.cognifide.knotx.KnotxConfiguration;
 import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.template.ServiceConfiguration;
 import com.cognifide.knotx.template.service.ServiceEngine;
 import com.github.jknack.handlebars.Handlebars;
 
@@ -25,9 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,11 +35,10 @@ import java.util.stream.Collectors;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.Vertx;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-@Component
 public class TemplateEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngine.class);
@@ -51,18 +49,24 @@ public class TemplateEngine {
 
     private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end snippet `%s` calls -->";
 
-    @Autowired
     private ServiceEngine serviceEngine;
 
-    @Autowired
     private Handlebars handlebars;
 
-    @Value("${template.debug}")
     private boolean templateDebug;
 
-    //FIXME: better way of passing http client is required - maybe nano service as verticle
-    public void setHttpClient(HttpClient httpClient) {
-        serviceEngine.setHttpClient(httpClient);
+    private Vertx vertx;
+
+    public TemplateEngine(Vertx vertx, ServiceConfiguration serviceConfiguration, KnotxConfiguration knotxConfiguration) {
+        this.vertx = vertx;
+        this.serviceEngine = new ServiceEngine(vertx, serviceConfiguration);
+        this.templateDebug = knotxConfiguration.templateDebug();
+        initHandlebars();
+    }
+
+    private void initHandlebars() {
+        handlebars = new Handlebars();
+        HandlebarsHelpers.register(handlebars);
     }
 
     public Observable<String> process(TemplateEngineRequest request) {

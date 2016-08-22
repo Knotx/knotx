@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.template;
 
+import com.cognifide.knotx.KnotxConfiguration;
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.template.engine.TemplateEngine;
@@ -42,20 +43,28 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngineVerticle.class);
 
-    @Autowired
     private TemplateEngine templateEngine;
+
+    @Autowired
+    private ServiceConfiguration serviceConfiguration;
+
+    @Autowired
+    private KnotxConfiguration knotxConfiguration;
+
+    @Autowired
+    private KnotxConfiguration configuration;
 
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
         RxJavaSchedulersHook rxJavaSchedulersHook = RxHelper.schedulerHook(this.vertx);
         RxJavaPlugins.getInstance().registerSchedulersHook(rxJavaSchedulersHook);
+        templateEngine = new TemplateEngine(this.vertx, serviceConfiguration, knotxConfiguration);
     }
 
     @Override
     public void start() throws Exception {
         LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
-        templateEngine.setHttpClient(vertx.createHttpClient());
 
         EventBus eventBus = vertx.eventBus();
 

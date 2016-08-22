@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.vertx.core.Future;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -35,9 +36,9 @@ import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpServer;
 
 @Component
-public class KnotxVerticle extends AbstractVerticle {
+public class KnotxRequestHandler extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KnotxVerticle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnotxRequestHandler.class);
 
     @Autowired
     private KnotxConfiguration configuration;
@@ -45,7 +46,7 @@ public class KnotxVerticle extends AbstractVerticle {
     private HttpServer httpServer;
 
     @Override
-    public void start() throws IOException, URISyntaxException {
+    public void start(Future<Void> fut) throws IOException, URISyntaxException {
         LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
         httpServer = vertx.createHttpServer();
         EventBus eventBus = vertx.eventBus();
@@ -74,7 +75,17 @@ public class KnotxVerticle extends AbstractVerticle {
                                 },
                                 error -> LOGGER.error("Error: ", error)
                         )
-        ).listen(configuration.requestHandlerPort());
+        ).listen(
+                configuration.requestHandlerPort(),
+                result -> {
+                    if (result.succeeded()) {
+                        LOGGER.info("Successfully Started");
+                        fut.complete();
+                    } else {
+                        LOGGER.error("Unable to start verticle, reason <{0}>", result.cause().getMessage());
+                        fut.fail(result.cause());
+                    }
+                });
     }
 
     @Override

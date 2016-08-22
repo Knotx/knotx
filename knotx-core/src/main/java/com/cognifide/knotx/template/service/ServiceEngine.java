@@ -20,42 +20,38 @@ package com.cognifide.knotx.template.service;
 import com.cognifide.knotx.template.ServiceConfiguration;
 import com.cognifide.knotx.template.engine.TemplateEngine;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.Map;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
-@Component
 public class ServiceEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngine.class);
 
-    private HttpClient httpClient;
-
-    @Autowired
     private ServiceConfiguration serviceConfiguration;
 
-    //FIXME: better way of passing http client is required - probably do a nano service as verticle
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
+    private Vertx vertx;
+
+    public ServiceEngine(Vertx vertx, ServiceConfiguration serviceConfiguration) {
+        this.vertx = vertx;
+        this.serviceConfiguration = serviceConfiguration;
     }
 
     public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry) {
-        Observable<HttpClientResponse> serviceResponse = RxHelper.get(httpClient, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri());
-        LOGGER.debug("Calling {0}", serviceEntry.getServiceUri());
+        Observable<HttpClientResponse> serviceResponse = RxHelper.get(vertx.createHttpClient(), serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri());
+
         return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
                 .mergeWith(response.toObservable())
                 .reduce(Buffer::appendBuffer))
                 .doOnNext(this::traceServiceCall)
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
+
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {

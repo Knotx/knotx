@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.RxHelper;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
@@ -40,25 +41,24 @@ class HttpRepository implements Repository {
 
     private Integer port;
 
-    private HttpClient httpClient;
+    private Vertx vertx;
 
     private HttpRepository() {
         // hidden constructor
     }
 
-    static HttpRepository of(String path, String domain, Integer port, HttpClient httpClient) {
-        HttpRepository httpRepository = new HttpRepository();
-        httpRepository.path = path;
-        httpRepository.domain = domain;
-        httpRepository.port = port;
-        httpRepository.httpClient = httpClient;
-        return httpRepository;
+    static RemoteRepository of(String path, String domain, Integer port, Vertx vertx) {
+        RemoteRepository remoteRepository = new RemoteRepository();
+        remoteRepository.path = path;
+        remoteRepository.domain = domain;
+        remoteRepository.port = port;
+        remoteRepository.vertx = vertx;
+        return remoteRepository;
     }
 
     @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest request) {
-        Observable<HttpClientResponse> clientResponse =
-            RxHelper.get(httpClient, port, domain, request.getPath(), request.getHeaders());
+    public Observable<RepositoryResponse> get(String path) {
+        Observable<HttpClientResponse> clientResponse = RxHelper.get(vertx.createHttpClient(), port, domain, path);
 
         return clientResponse
                 .doOnNext(this::traceResponse)

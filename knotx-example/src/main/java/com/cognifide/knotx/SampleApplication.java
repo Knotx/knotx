@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx;
 
-import com.cognifide.knotx.repository.RepositoryVerticle;
-import com.cognifide.knotx.template.TemplateEngineVerticle;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,19 +36,13 @@ public class SampleApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(SampleApplication.class);
 
     @Autowired
-    private KnotxVerticle knotxVerticle;
+    private Knotx knotxVerticle;
 
     @Autowired
     private MockServiceConfiguration configuration;
 
     @Autowired
     private MockServiceVerticle mockServiceVerticle;
-
-    @Autowired
-    private RepositoryVerticle repositoryVerticle;
-
-    @Autowired
-    private TemplateEngineVerticle engineVerticle;
 
     @Autowired
     private MockRemoteRepositoryVerticle mockRemoteRepositoryVerticle;
@@ -65,8 +56,6 @@ public class SampleApplication {
         Vertx vertx = Vertx.vertx();
 
         // Register codec for RepositoryResponse
-        vertx.deployVerticle(repositoryVerticle);
-        vertx.deployVerticle(engineVerticle);
         vertx.deployVerticle(mockServiceVerticle);
         vertx.deployVerticle(mockRemoteRepositoryVerticle);
         vertx.deployVerticle(knotxVerticle);
