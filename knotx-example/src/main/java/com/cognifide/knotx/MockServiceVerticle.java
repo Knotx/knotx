@@ -18,38 +18,37 @@
 package com.cognifide.knotx;
 
 import com.cognifide.knotx.service.MockServiceHandler;
-import com.cognifide.knotx.template.TemplateEngineVerticle;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.http.HttpServer;
 
-@Component
 public class MockServiceVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceVerticle.class);
 
-    @Autowired
-    private MockServiceConfiguration configuration;
-
-    @Autowired
     private MockServiceHandler mockServiceHandler;
 
     private HttpServer httpServer;
 
     @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        mockServiceHandler = new MockServiceHandler(config().getString("mock.data.root"));
+    }
+
+    @Override
     public void start() throws IOException, URISyntaxException {
-        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
         httpServer = vertx.createHttpServer();
         httpServer.requestHandler(mockServiceHandler)
-                .listen(configuration.mockServicePort());
+                .listen(config().getInteger("http.port"));
     }
 
     @Override

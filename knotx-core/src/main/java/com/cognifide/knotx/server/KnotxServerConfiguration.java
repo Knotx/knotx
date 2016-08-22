@@ -15,34 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+package com.cognifide.knotx.server;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Configuration
-public class KnotxConfiguration {
+import io.vertx.core.json.JsonObject;
 
-    @Value("#{'${request.preserved.headers}'.split(',')}")
+public class KnotxServerConfiguration {
+
     private List<String> serviceCallHeaders;
 
-    @Value("${requestHandler.port}")
-    private Integer requestHandlerPort;
+    private Integer httpPort;
 
-    @Value("${template.debug}")
-    private boolean templateDebug;
+    public KnotxServerConfiguration(JsonObject config) {
+        httpPort = config.getInteger("http.port");
 
-    Integer requestHandlerPort() {
-        return requestHandlerPort;
+        serviceCallHeaders = config.getJsonArray("preserved.headers").stream()
+                .map(item -> (String) item)
+                .collect(Collectors.toList());
+    }
+
+    Integer httpPort() {
+        return httpPort;
     }
 
     List<String> serviceCallHeaders() {
         return serviceCallHeaders;
-    }
-
-    public boolean templateDebug() {
-        return templateDebug;
     }
 }

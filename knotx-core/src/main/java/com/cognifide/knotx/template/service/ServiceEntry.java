@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.template.service;
 
-import com.cognifide.knotx.template.ServiceConfiguration;
+import com.cognifide.knotx.template.TemplateEngineConfiguration;
 
 import org.jsoup.nodes.Attribute;
 
@@ -26,7 +26,7 @@ import java.util.Map;
 public class ServiceEntry {
     private String relatedAttribute;
     private String serviceUri;
-    private ServiceConfiguration.ServiceMetadata serviceMetadata;
+    private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
     private Map<String, Object> serviceResult;
 
     private ServiceEntry() {
@@ -73,7 +73,7 @@ public class ServiceEntry {
         return serviceUri.hashCode();
     }
 
-    public ServiceEntry setServiceMetadata(ServiceConfiguration.ServiceMetadata serviceMetadata) {
+    public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {
         this.serviceMetadata = serviceMetadata;
         return this;
     }

@@ -22,14 +22,8 @@ import com.google.common.collect.Lists;
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.util.RepositoryRequestCodec;
-import com.cognifide.knotx.util.RepositoryResponseCodec;
-import com.cognifide.knotx.util.TemplateEngineRequestCodec;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,12 +37,10 @@ import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
-@Component
 public class RepositoryVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryVerticle.class);
 
-    @Autowired
     private RepositoryConfiguration repositoryConfiguration;
 
     private List<Repository> repositories = Lists.newArrayList();
@@ -56,6 +48,7 @@ public class RepositoryVerticle extends AbstractVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
+        repositoryConfiguration = new RepositoryConfiguration(config().getJsonObject("config"));
 
         repositories = repositoryConfiguration.getRepositories()
                 .stream()
@@ -65,7 +58,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
-        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
         EventBus eventBus = vertx.eventBus();
 
@@ -100,7 +93,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <{0}> with value <{1}>", message.replyAddress(), message.body());
+            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
         }
     }
 }

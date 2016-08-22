@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.template.service;
 
-import com.cognifide.knotx.template.ServiceConfiguration;
+import com.cognifide.knotx.template.TemplateEngineConfiguration;
 import com.cognifide.knotx.template.engine.TemplateEngine;
 
 import java.util.Map;
@@ -35,13 +35,13 @@ public class ServiceEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngine.class);
 
-    private ServiceConfiguration serviceConfiguration;
+    private TemplateEngineConfiguration configuration;
 
     private Vertx vertx;
 
-    public ServiceEngine(Vertx vertx, ServiceConfiguration serviceConfiguration) {
+    public ServiceEngine(Vertx vertx, TemplateEngineConfiguration serviceConfiguration) {
         this.vertx = vertx;
-        this.serviceConfiguration = serviceConfiguration;
+        this.configuration = serviceConfiguration;
     }
 
     public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers) {
@@ -57,14 +57,14 @@ public class ServiceEngine {
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
-        return Observable.from(serviceConfiguration.getServices())
+        return Observable.from(configuration.getServices())
                 .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).first()
                 .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
     
     private void traceServiceCall(Buffer buffer) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from service <{0}>", buffer.toString());
+            LOGGER.trace("Got message from service <{}>", buffer.toString());
         }
     }
 }

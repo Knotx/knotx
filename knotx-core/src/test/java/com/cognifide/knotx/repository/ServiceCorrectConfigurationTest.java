@@ -18,7 +18,7 @@
 package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.TestApplication;
-import com.cognifide.knotx.template.ServiceConfiguration;
+import com.cognifide.knotx.template.TemplateEngineConfiguration;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,10 +42,10 @@ import static org.hamcrest.core.Is.is;
 public class ServiceCorrectConfigurationTest {
 
     @Autowired
-    private ServiceConfiguration serviceConfiguration;
+    private TemplateEngineConfiguration serviceConfiguration;
 
-    private ServiceConfiguration.ServiceMetadata expectedServiceOne;
-    private ServiceConfiguration.ServiceMetadata expectedServiceTwo;
+    private TemplateEngineConfiguration.ServiceMetadata expectedServiceOne;
+    private TemplateEngineConfiguration.ServiceMetadata expectedServiceTwo;
 
 
     @Before
@@ -63,8 +63,8 @@ public class ServiceCorrectConfigurationTest {
 
     }
 
-    private ServiceConfiguration.ServiceMetadata createMockedService(String path, String domain, Integer port) {
-        ServiceConfiguration.ServiceMetadata newService = new ServiceConfiguration.ServiceMetadata();
+    private TemplateEngineConfiguration.ServiceMetadata createMockedService(String path, String domain, Integer port) {
+        TemplateEngineConfiguration.ServiceMetadata newService = new TemplateEngineConfiguration.ServiceMetadata();
         newService.setPath(path);
         newService.setDomain(domain);
         newService.setPort(port);

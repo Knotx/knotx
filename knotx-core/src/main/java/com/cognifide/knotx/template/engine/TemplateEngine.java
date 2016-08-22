@@ -17,9 +17,8 @@
  */
 package com.cognifide.knotx.template.engine;
 
-import com.cognifide.knotx.KnotxConfiguration;
 import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.template.ServiceConfiguration;
+import com.cognifide.knotx.template.TemplateEngineConfiguration;
 import com.cognifide.knotx.template.service.ServiceEngine;
 import com.github.jknack.handlebars.Handlebars;
 
@@ -57,10 +56,10 @@ public class TemplateEngine {
 
     private Vertx vertx;
 
-    public TemplateEngine(Vertx vertx, ServiceConfiguration serviceConfiguration, KnotxConfiguration knotxConfiguration) {
+    public TemplateEngine(Vertx vertx, TemplateEngineConfiguration configuration) {
         this.vertx = vertx;
-        this.serviceEngine = new ServiceEngine(vertx, serviceConfiguration);
-        this.templateDebug = knotxConfiguration.templateDebug();
+        this.serviceEngine = new ServiceEngine(vertx, configuration);
+        this.templateDebug = configuration.templateDebug();
         initHandlebars();
     }
 
@@ -86,7 +85,7 @@ public class TemplateEngine {
 
     private Observable<Element> processSnippet(final TemplateSnippet snippet, TemplateEngineRequest request) {
         return snippet.getServices()
-                .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {0}", serviceEntry.getServiceUri()))
+                .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {}", serviceEntry.getServiceUri()))
                 .flatMap(serviceEngine::findServiceLocation)
                 .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
@@ -110,7 +109,7 @@ public class TemplateEngine {
         try {
             final String compiledContent = snippet.getCompiledSnippet().apply(serviceResult);
             final Element originalSnippet = snippet.getSnippet();
-            LOGGER.trace("Applying: \n{0} to \n{1}\n and result is \n{2}", serviceResult, originalSnippet, compiledContent);
+            LOGGER.trace("Applying: \n{} to \n{}\n and result is \n{}", serviceResult, originalSnippet, compiledContent);
             final StringBuilder snippetFinalMarkup = new StringBuilder();
 
             snippetFinalMarkup.append(startComment(snippet));
@@ -143,7 +142,7 @@ public class TemplateEngine {
 
     private void traceSnippet(TemplateSnippet templateSnippet) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Processing snippet <{0}>", templateSnippet.getSnippet().html());
+            LOGGER.trace("Processing snippet <{}>", templateSnippet.getSnippet().html());
         }
     }
 }

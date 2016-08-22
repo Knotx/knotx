@@ -1,0 +1,12 @@
+{
+  "config": {
+    "template.debug": true,
+    "services": [
+      {
+        "path": "/service/mock/.*",
+        "domain": "localhost",
+        "port": 3000
+      }
+    ]
+  }
+}

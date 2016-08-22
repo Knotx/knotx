@@ -15,21 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -39,19 +38,23 @@ import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpServer;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
-@Component
-public class KnotxRequestHandlerVerticle extends AbstractVerticle {
+public class KnotxServerVerticle extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KnotxRequestHandlerVerticle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
 
-    @Autowired
-    private KnotxConfiguration configuration;
+    private KnotxServerConfiguration configuration;
 
     private HttpServer httpServer;
 
     @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        configuration = new KnotxServerConfiguration(config().getJsonObject("config"));
+    }
+
+    @Override
     public void start(Future<Void> fut) throws IOException, URISyntaxException {
-        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
         httpServer = vertx.createHttpServer();
         EventBus eventBus = vertx.eventBus();
 
@@ -70,23 +73,23 @@ public class KnotxRequestHandlerVerticle extends AbstractVerticle {
                                                         },
                                                         error -> {
                                                             LOGGER.error("Error happened", error);
-                                                            request.response().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value()).end(error.toString());
+                                                            request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
                                                         }
                                                 );
                                     } else {
-                                        request.response().setStatusCode(HttpStatus.NOT_FOUND.value()).end(repository.getReason());
+                                        request.response().setStatusCode(HttpResponseStatus.NOT_FOUND.code()).end(repository.getReason());
                                     }
                                 },
                                 error -> LOGGER.error("Error: ", error)
                         )
         ).listen(
-                configuration.requestHandlerPort(),
+                configuration.httpPort(),
                 result -> {
                     if (result.succeeded()) {
                         LOGGER.info("Successfully Started");
                         fut.complete();
                     } else {
-                        LOGGER.error("Unable to start verticle, reason <{0}>", result.cause().getMessage());
+                        LOGGER.error("Unable to start verticle, reason <{}>", result.cause().getMessage());
                         fut.fail(result.cause());
                     }
                 });
@@ -116,7 +119,7 @@ public class KnotxRequestHandlerVerticle extends AbstractVerticle {
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <template-repository> with value <{0}>", message.body());
+            LOGGER.trace("Got message from <template-repository> with value <{}>", message.body());
         }
     }
 }

@@ -1,0 +1,10 @@
+{
+  "config": {
+    "http.port": 8092,
+    "preserved.headers": [
+      "User-Agent",
+      "X-Solr-Core-Key",
+      "X-Language-Code"
+    ]
+  }
+}

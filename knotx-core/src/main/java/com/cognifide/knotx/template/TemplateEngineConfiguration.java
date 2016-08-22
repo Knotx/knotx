@@ -19,23 +19,39 @@ package com.cognifide.knotx.template;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Configuration
-@ConfigurationProperties(locations = {"${service.configuration}"})
-public class ServiceConfiguration {
+import io.vertx.core.json.JsonObject;
+
+public class TemplateEngineConfiguration {
 
     private List<ServiceMetadata> services;
+
+    private boolean templateDebug;
+
+    public TemplateEngineConfiguration(JsonObject config) {
+        services = config.getJsonArray("services").stream()
+                .map(item -> (JsonObject) item)
+                .map(item -> {
+                    ServiceMetadata metadata = new ServiceMetadata();
+                    metadata.path = item.getString("path");
+                    metadata.domain = item.getString("domain");
+                    metadata.port = item.getInteger("port");
+
+                    return metadata;
+                }).collect(Collectors.toList());
+
+        templateDebug = config.getBoolean("template.debug", false);
+    }
 
     public List<ServiceMetadata> getServices() {
         return services;
     }
 
-    public void setServices(List<ServiceMetadata> services) {
-        this.services = services;
+    public boolean templateDebug() {
+        return templateDebug;
     }
 
     public static class ServiceMetadata {

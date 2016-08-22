@@ -54,7 +54,7 @@ public class LocalRepository implements Repository {
     @Override
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
         final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.getPath(), "/");
-        LOGGER.trace("Fetching file `{0}` from local repository.", localFilePath);
+        LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
         return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)

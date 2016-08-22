@@ -17,13 +17,9 @@
  */
 package com.cognifide.knotx.template;
 
-import com.cognifide.knotx.KnotxConfiguration;
 import com.cognifide.knotx.api.KnotxConst;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.template.engine.TemplateEngine;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -38,33 +34,24 @@ import rx.Observable;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
 
-@Component
 public class TemplateEngineVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngineVerticle.class);
 
     private TemplateEngine templateEngine;
 
-    @Autowired
-    private ServiceConfiguration serviceConfiguration;
-
-    @Autowired
-    private KnotxConfiguration knotxConfiguration;
-
-    @Autowired
-    private KnotxConfiguration configuration;
+    private TemplateEngineConfiguration configuration;
 
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
-        RxJavaSchedulersHook rxJavaSchedulersHook = RxHelper.schedulerHook(this.vertx);
-        RxJavaPlugins.getInstance().registerSchedulersHook(rxJavaSchedulersHook);
-        templateEngine = new TemplateEngine(this.vertx, serviceConfiguration, knotxConfiguration);
+        configuration = new TemplateEngineConfiguration(config().getJsonObject("config"));
+        templateEngine = new TemplateEngine(this.vertx, configuration);
     }
 
     @Override
     public void start() throws Exception {
-        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
         EventBus eventBus = vertx.eventBus();
 
@@ -82,14 +69,14 @@ public class TemplateEngineVerticle extends AbstractVerticle {
                                 msg.reply(Buffer.buffer("ERROR").getDelegate());
                             }
                         );
-                    LOGGER.trace("Got message: {0}", msg.body());
+                    LOGGER.trace("Got message: {}", msg.body());
                 }
             );
     }
 
     private void traceMessage(Message<?> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <{0}> with value <{1}>", message.replyAddress(), message.body());
+            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
         }
     }
 }

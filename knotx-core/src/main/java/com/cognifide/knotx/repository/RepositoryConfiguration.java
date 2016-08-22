@@ -22,30 +22,43 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Configuration
-@ConfigurationProperties(locations = {"${repository.configuration}"})
-public class RepositoryConfiguration implements InitializingBean {
+import io.vertx.core.json.JsonObject;
+
+public class RepositoryConfiguration {
 
     private List<RepositoryMetadata> repositories;
+
+    public RepositoryConfiguration(JsonObject config) {
+        repositories = config.getJsonArray("repositories").stream()
+                .map(item -> (JsonObject) item)
+                .map(item -> {
+                    RepositoryMetadata repositoryMetadata = new RepositoryMetadata();
+                    repositoryMetadata.type = RepositoryType.valueOf(item.getString("type").toUpperCase());
+                    repositoryMetadata.path = item.getString("path");
+
+                    if (repositoryMetadata.type == RepositoryType.LOCAL) {
+                        repositoryMetadata.catalogue = item.getString("catalogue");
+                    } else {
+                        repositoryMetadata.domain = item.getString("domain");
+                        repositoryMetadata.port = item.getInteger("port");
+                    }
+
+                    return repositoryMetadata;
+                }).collect(Collectors.toList());
+
+        validate();
+    }
 
 
     public List<RepositoryMetadata> getRepositories() {
         return repositories;
     }
 
-    public void setRepositories(List<RepositoryMetadata> repositories) {
-        this.repositories = repositories;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    private void validate() {
         String invalidMetadata = repositories.stream()
                 .filter(metadata -> !metadata.getType().validate(metadata))
                 .map(RepositoryMetadata::toString)

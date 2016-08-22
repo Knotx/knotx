@@ -20,8 +20,7 @@ package com.cognifide.knotx.repository;
 import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 
-import org.springframework.http.HttpStatus;
-
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.RxHelper;
@@ -67,7 +66,7 @@ class HttpRepository implements Repository {
                 .flatMap(this::toRepositoryResponse)
                 .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", repositoryRequest))
                 .onErrorReturn(error -> {
-                            LOGGER.error("Unable to fetch template from remote repository for path `{0}`", repositoryRequest.getPath(), error);
+                            LOGGER.error("Unable to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
                             return RepositoryResponse.error("No Template found for path %s", repositoryRequest.getPath());
                         }
                 );
@@ -84,7 +83,7 @@ class HttpRepository implements Repository {
         if (buffer.length() > 0) {
             response = RepositoryResponse.success(buffer.copy()).toObservable();
         } else {
-            LOGGER.error("Remote repository returned empty template for path `{0}`", path);
+            LOGGER.error("Remote repository returned empty template for path `{}`", path);
             response = RepositoryResponse.error("No Template found for path %s", path).toObservable();
         }
         return response;
@@ -92,12 +91,12 @@ class HttpRepository implements Repository {
 
     private void traceResponse(HttpClientResponse response) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got response from remote repository {0}", response.statusCode());
+            LOGGER.trace("Got response from remote repository {}", response.statusCode());
         }
     }
 
     private boolean onlySuccess(HttpClientResponse response) {
-        return response.statusCode() == HttpStatus.OK.value();
+        return response.statusCode() == HttpResponseStatus.OK.code();
     }
 
     @Override

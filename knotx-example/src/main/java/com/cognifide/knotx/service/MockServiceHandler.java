@@ -21,8 +21,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,15 +30,15 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
-@Component
 public class MockServiceHandler implements Handler<HttpServerRequest> {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
-
     private static final String SEPARATOR = "/";
-
-    @Value("${mock.service.root}")
+    private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
     private String catalogue;
+
+    public MockServiceHandler(String catalogue) {
+        this.catalogue = catalogue;
+    }
 
     @Override
     public void handle(HttpServerRequest event) {
@@ -51,7 +49,7 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
             if (resourceUrl != null) {
                 URL url = Resources.getResource(resourcePath);
                 htmlContent = Resources.toString(url, Charsets.UTF_8);
-                LOGGER.info("Mocked request [{0}] fetch data from file [{1}]", event.path(), resourcePath);
+                LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
             }
         } catch (IOException e) {
             LOGGER.error("Could not read content!", e);

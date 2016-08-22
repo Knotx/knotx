@@ -19,36 +19,36 @@ package com.cognifide.knotx;
 
 import com.cognifide.knotx.service.MockRemoteRepositoryHandler;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.http.HttpServer;
 
-@Component
 public class MockRemoteRepositoryVerticle extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryVerticle.class);
 
-    @Autowired
-    private MockServiceConfiguration configuration;
-
-    @Autowired
     private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
 
     private HttpServer httpServer;
 
     @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        mockRemoteRepositoryHandler = new MockRemoteRepositoryHandler(config().getString("mock.data.root"));
+    }
+
+    @Override
     public void start() throws IOException, URISyntaxException {
-        LOGGER.debug("Registered <{0}>", this.getClass().getSimpleName());
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
         httpServer = vertx.createHttpServer();
         httpServer.requestHandler(mockRemoteRepositoryHandler)
-                .listen(configuration.repositoryServicePort());
+                .listen(config().getInteger("http.port"));
     }
 
     @Override

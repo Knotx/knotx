@@ -21,51 +21,48 @@ import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.repository.RepositoryVerticle;
+import com.cognifide.knotx.server.KnotxServerVerticle;
 import com.cognifide.knotx.template.TemplateEngineVerticle;
 import com.cognifide.knotx.util.RepositoryRequestCodec;
 import com.cognifide.knotx.util.RepositoryResponseCodec;
 import com.cognifide.knotx.util.TemplateEngineRequestCodec;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import io.vertx.core.Context;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.RxHelper;
 import rx.Observable;
+import rx.plugins.RxJavaPlugins;
+import rx.plugins.RxJavaSchedulersHook;
 
-@Component
 public class Knotx extends AbstractVerticle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Knotx.class);
 
-    @Autowired
-    private TemplateEngineVerticle templateEngineVerticle;
-
-    @Autowired
-    private RepositoryVerticle repositoryVerticle;
-
-    @Autowired
-    private KnotxRequestHandlerVerticle requestHandlerVerticle;
-
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
+        RxJavaSchedulersHook rxJavaSchedulersHook = RxHelper.schedulerHook(this.vertx);
+        RxJavaPlugins.getInstance().registerSchedulersHook(rxJavaSchedulersHook);
         vertx.eventBus().registerDefaultCodec(RepositoryResponse.class, new RepositoryResponseCodec());
         vertx.eventBus().registerDefaultCodec(TemplateEngineRequest.class, new TemplateEngineRequestCodec());
         vertx.eventBus().registerDefaultCodec(RepositoryRequest.class, new RepositoryRequestCodec());
+
     }
 
     @Override
     public void start() throws Exception {
         StringBuilder result = new StringBuilder();
+        DeploymentOptions respositoryOptions = new DeploymentOptions().setConfig(config().getJsonObject("repository"));
+        DeploymentOptions templateEngineOptions = new DeploymentOptions().setConfig(config().getJsonObject("templateEngine"));
+        DeploymentOptions knotxServerOptions = new DeploymentOptions().setConfig(config().getJsonObject("knotxServer"));
 
-        Observable.zip(RxHelper.deployVerticle(vertx, templateEngineVerticle),
-                RxHelper.deployVerticle(vertx, repositoryVerticle),
-                RxHelper.deployVerticle(vertx, requestHandlerVerticle),
+        Observable.zip(RxHelper.deployVerticle(vertx, new TemplateEngineVerticle(), templateEngineOptions),
+                RxHelper.deployVerticle(vertx, new RepositoryVerticle(), respositoryOptions),
+                RxHelper.deployVerticle(vertx, new KnotxServerVerticle(), knotxServerOptions),
                 (template, repo, request) -> result.append(template).append(repo).append(request).toString())
                 .subscribe(
                         success -> LOGGER.info("Knot.x Successfully Started"),
