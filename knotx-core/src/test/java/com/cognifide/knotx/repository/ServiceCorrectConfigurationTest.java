@@ -17,16 +17,10 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.TestApplication;
 import com.cognifide.knotx.template.TemplateEngineConfiguration;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -36,30 +30,29 @@ import static org.hamcrest.core.Is.is;
 /**
  * @author pawel.koper on 27.07.16.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = {"repository.configuration=classpath:repository-correct.yml", "service.configuration=classpath:service-correct.yml"})
-public class ServiceCorrectConfigurationTest {
+public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
 
-    @Autowired
-    private TemplateEngineConfiguration serviceConfiguration;
+    private String CORRECT_JSON = "service-correct.json";
+
+    private TemplateEngineConfiguration correctConfig;
 
     private TemplateEngineConfiguration.ServiceMetadata expectedServiceOne;
     private TemplateEngineConfiguration.ServiceMetadata expectedServiceTwo;
 
-
     @Before
     public void setUp() throws Exception {
+        correctConfig = new TemplateEngineConfiguration(readConfig(CORRECT_JSON));
+
         expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000);
         expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080);
     }
 
     @Test
     public void testConfigBeanInitializedProperly() {
-        assertThat(serviceConfiguration.getServices(), is(notNullValue()));
-        assertThat(serviceConfiguration.getServices().size(), is(2));
-        assertThat(serviceConfiguration.getServices(), hasItem(expectedServiceOne));
-        assertThat(serviceConfiguration.getServices(), hasItem(expectedServiceTwo));
+        assertThat(correctConfig.getServices(), is(notNullValue()));
+        assertThat(correctConfig.getServices().size(), is(2));
+        assertThat(correctConfig.getServices(), hasItem(expectedServiceOne));
+        assertThat(correctConfig.getServices(), hasItem(expectedServiceTwo));
 
     }
 

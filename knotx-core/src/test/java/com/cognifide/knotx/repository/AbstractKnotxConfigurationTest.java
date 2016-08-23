@@ -15,18 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.repository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
 
-@SpringBootApplication
-@Configuration
-public class TestApplication {
+import java.io.InputStreamReader;
 
-    public static void main(String[] args) {
-        SpringApplication.run(TestApplication.class, args);
+import io.vertx.core.json.JsonObject;
+
+public class AbstractKnotxConfigurationTest {
+
+    protected JsonObject readConfig(String path) throws Exception {
+        String config = CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+        return new JsonObject(config).getJsonObject("config");
     }
-
 }

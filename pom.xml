@@ -81,6 +81,8 @@
         <handlebars.version>4.0.5</handlebars.version>
         <vertx.version>3.3.2</vertx.version>
         <rxjava.version>1.1.8</rxjava.version>
+        <junit.version>4.12</junit.version>
+        <assertj.version>3.4.1</assertj.version>
     </properties>
 
     <dependencyManagement>
@@ -140,6 +142,26 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>19.0</version>
+            </dependency>
+
+            <!-- Tests -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-unit</artifactId>
+                <version>${vertx.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

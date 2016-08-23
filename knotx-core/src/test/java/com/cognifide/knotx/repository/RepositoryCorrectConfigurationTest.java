@@ -17,29 +17,20 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.TestApplication;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(TestApplication.class)
-@TestPropertySource(properties = {"repository.configuration=classpath:repository-correct.yml", "service.configuration=classpath:service-correct.yml"})
-public class RepositoryCorrectConfigurationTest {
+public class RepositoryCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
 
-    @Autowired
-    private RepositoryConfiguration configuration;
+    private String CORRECT_JSON = "repository-correct.json";
+
+    private RepositoryConfiguration correctConfig;
 
     private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
 
@@ -48,28 +39,28 @@ public class RepositoryCorrectConfigurationTest {
 
     @Before
     public void setUp() throws Exception {
+        correctConfig = new RepositoryConfiguration(readConfig(CORRECT_JSON));
+
         expectedLocalRepositoryMetadata = setupLocalRepositoryMetadata();
         expectedRemoteRepositoryMetadata = setupRemoteRepositoryMetadata();
     }
 
     @Test
     public void testConfigBeanInitializedProperly() {
-        assertThat(configuration.getRepositories(), is(notNullValue()));
-        assertThat(configuration.getRepositories().size(), is(2));
-        assertThat(configuration.getRepositories(), hasItem(expectedLocalRepositoryMetadata));
-        assertThat(configuration.getRepositories(), hasItem(expectedRemoteRepositoryMetadata));
+        assertThat(correctConfig.getRepositories(), is(notNullValue()));
+        assertThat(correctConfig.getRepositories().size(), is(2));
+        assertThat(correctConfig.getRepositories(), hasItem(expectedLocalRepositoryMetadata));
+        assertThat(correctConfig.getRepositories(), hasItem(expectedRemoteRepositoryMetadata));
 
     }
 
     @Test
     public void testValidation() {
-        assertThat(configuration.getRepositories(), is(notNullValue()));
-        assertThat(configuration.getRepositories().size(), is(2));
-        assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(0)), is(true));
-        assertThat(RepositoryType.LOCAL.validate(configuration.getRepositories().get(1)), is(true));
-
+        assertThat(correctConfig.getRepositories(), is(notNullValue()));
+        assertThat(correctConfig.getRepositories().size(), is(2));
+        assertThat(RepositoryType.LOCAL.validate(correctConfig.getRepositories().get(0)), is(true));
+        assertThat(RepositoryType.LOCAL.validate(correctConfig.getRepositories().get(1)), is(true));
     }
-
 
     private RepositoryConfiguration.RepositoryMetadata setupLocalRepositoryMetadata() {
         RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
@@ -87,6 +78,4 @@ public class RepositoryCorrectConfigurationTest {
         expectedLocalRepositoryMetadata.setPort(8080);
         return expectedLocalRepositoryMetadata;
     }
-
-
 }
