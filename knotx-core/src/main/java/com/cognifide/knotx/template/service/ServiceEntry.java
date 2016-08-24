@@ -45,17 +45,9 @@ public class ServiceEntry {
         return entry;
     }
 
-    public ServiceEntry setResultAndAddNamespace(Map<String, Object> serviceResult) {
-        if (StringUtils.isNotEmpty(placeholderNamespace)) {
-            this.serviceResult = addNamespaceToKey(serviceResult);
-        } else {
-            this.serviceResult = serviceResult;
-        }
+    public ServiceEntry setServiceResult(Map<String, Object> serviceResult) {
+        this.serviceResult = serviceResult;
         return this;
-    }
-
-    private Map<String, Object> addNamespaceToKey(Map<String, Object> serviceResult) {
-        return serviceResult.entrySet().stream().collect(Collectors.toMap(e -> placeholderNamespace + NAMESPACE_SEPARATOR + e.getKey(), Map.Entry::getValue));
     }
 
     public String getRelatedAttribute() {
@@ -68,6 +60,10 @@ public class ServiceEntry {
 
     public Map<String, Object> getServiceResult() {
         return serviceResult;
+    }
+
+    public String getPlaceholderNamespace() {
+        return placeholderNamespace;
     }
 
     @Override

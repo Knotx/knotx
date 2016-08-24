@@ -66,7 +66,7 @@ The following table describes all elements and attributes used in the template.
 | `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
 | `data-call-uri-dataservice`         |  path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section. Last attribute part ('dataservice') is an optional namespace. Only placeholders with matching namespace will be filled by data coming from that service|
 | `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
-| `{{dataservice_header}}` `{{dataservice_body.content}}`| Placeholders that will be filled by data taken from a JSON response provided by a microservice. Where 'dataservice' is an optional namespace(described above).|
+| `{{dataservice.header}}` `{{dataservice.body.content}}`| Placeholders that will be filled by data taken from a JSON response provided by a microservice. Where 'dataservice' is an optional namespace(described above).|
 
 In this case the microservice response could have the following format:
 

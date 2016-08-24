@@ -20,7 +20,6 @@ package com.cognifide.knotx.template.engine;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.template.TemplateEngineConfiguration;
 import com.cognifide.knotx.template.service.ServiceEngine;
-import com.cognifide.knotx.template.service.ServiceEntry;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.apache.commons.lang3.StringUtils;
@@ -90,9 +89,14 @@ public class TemplateEngine {
         return snippet.getServices()
                 .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {}", serviceEntry.getServiceUri()))
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setResultAndAddNamespace(serviceResult))
-                .map(ServiceEntry::getServiceResult)
-                .collect(() -> allServicesResults, (resultCollection, serviceResult) -> resultCollection.putAll(serviceResult))
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setServiceResult(serviceResult))
+                .collect(() -> allServicesResults, (resultCollection, serviceItem) -> {
+                    if (StringUtils.isNotEmpty(serviceItem.getPlaceholderNamespace())) {
+                        resultCollection.put(serviceItem.getPlaceholderNamespace(), serviceItem.getServiceResult());
+                    } else {
+                        resultCollection.putAll(serviceItem.getServiceResult());
+                    }
+                })
                 .flatMap(resultCollection -> applyData(snippet, resultCollection));
     }
 
@@ -100,9 +104,9 @@ public class TemplateEngine {
         return Observable.create(subscriber -> {
             try {
                 subscriber.onNext(
-                    snippet.setCompiledSnippet(
-                        handlebars.compileInline(snippet.getSnippet().html())
-                    )
+                        snippet.setCompiledSnippet(
+                                handlebars.compileInline(snippet.getSnippet().html())
+                        )
                 );
             } catch (IOException e) {
                 subscriber.onError(e);
