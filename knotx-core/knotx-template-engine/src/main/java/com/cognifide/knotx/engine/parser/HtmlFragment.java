@@ -19,14 +19,34 @@ package com.cognifide.knotx.engine.parser;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
-import java.io.IOException;
+import java.util.Map;
 
 import rx.Observable;
 
 public interface HtmlFragment {
-    String getContent(Object data) throws IOException;
+    /**
+     * Returns the Fragment content with applied context data. Only have effect if fragment
+     * is using templating language (e.g. Handlebars)
+     * @param context - Context data
+     * @return String - html fragment with applied cotext data
+     */
+    String getContentWithContext(Map<String, Object> context);
 
+    /**
+     * Gets the raw HTML content of the fragment
+     * @return
+     */
+    String getContent();
+
+    /**
+     * Checks if the fragment is Handlebars template or not
+     * @return
+     */
     boolean hasHandlebarsTemplate();
 
+    /**
+     * Gets Observable emitting Service Entries for given fragment
+     * @return
+     */
     Observable<ServiceEntry> getServices();
 }

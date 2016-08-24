@@ -19,7 +19,7 @@ package com.cognifide.knotx.engine.parser;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
-import java.io.IOException;
+import java.util.Map;
 
 import rx.Observable;
 
@@ -35,7 +35,12 @@ public class RawHtmlFragment implements HtmlFragment {
     }
 
     @Override
-    public String getContent(Object data) throws IOException {
+    public String getContentWithContext(Map<String, Object> context) {
+        return fragment;
+    }
+
+    @Override
+    public String getContent() {
         return fragment;
     }
 

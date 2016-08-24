@@ -20,41 +20,53 @@ package com.cognifide.knotx.engine.parser;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
+import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Node;
-import org.jsoup.parser.Parser;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import rx.Observable;
 
-public class HandlebarsHtmlFragment implements HtmlFragment {
+public class TemplateHtmlFragment implements HtmlFragment {
     private static final String DATA_CALL_URI = "data-call-uri";
+
+    private String content;
 
     private Template compiledFragment;
 
     private List<ServiceEntry> services = Lists.newArrayList();
 
-    public HandlebarsHtmlFragment(Template compiledFragment) {
-        this.compiledFragment = compiledFragment;
+    public TemplateHtmlFragment(String templateFragment) {
+        Document document = Jsoup.parseBodyFragment(templateFragment);
+        Element scriptTag = document.body().child(0);
 
-        Document document = Jsoup.parseBodyFragment(compiledFragment.text());
-
-        services = document.body().child(0).attributes().asList().stream()
+        services = scriptTag.attributes().asList().stream()
                 .filter(attribute -> attribute.getKey().startsWith(DATA_CALL_URI))
                 .map(ServiceEntry::of)
                 .collect(Collectors.toList());
+
+        this.content = scriptTag.unwrap().toString(); //remove outer script tag
     }
 
     @Override
-    public String getContent(Object data) throws IOException {
-        return compiledFragment.apply(data);
+    public String getContentWithContext(Map<String, Object> context) {
+        try {
+            return compiledFragment.apply(context);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String getContent() {
+        return compiledFragment.text();
     }
 
     @Override
@@ -65,5 +77,10 @@ public class HandlebarsHtmlFragment implements HtmlFragment {
     @Override
     public Observable<ServiceEntry> getServices() {
         return Observable.from(services);
+    }
+
+    public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
+        this.compiledFragment = handlebars.compileInline(content);
+        return this;
     }
 }

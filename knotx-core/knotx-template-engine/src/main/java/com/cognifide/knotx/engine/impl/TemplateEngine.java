@@ -19,7 +19,7 @@ package com.cognifide.knotx.engine.impl;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.parser.HandlebarsHtmlFragment;
+import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.github.jknack.handlebars.Handlebars;
@@ -50,16 +50,20 @@ public class TemplateEngine {
     }
 
     public Observable<String> process(TemplateEngineRequest request) {
-        return toFragmentsObservable(request)
+        return extractFragments(request.getTemplate())
                 .doOnNext(this::traceSnippet)
                 .flatMap(this::compileHtmlFragment)
-                .concatMapEager(item -> snippetProcessor.processSnippet(item, request)) //eager will buffer faster processing to emit items in proper order, keeping concurrency.
-                .reduce(new StringBuilder(), (builder, fragment) -> builder.append(fragment))
+                .concatMapEager(item ->
+                        snippetProcessor.processSnippet(item, request)
+                ) //eager will buffer faster processing to emit items in proper order, keeping concurrency.
+                .reduce(new StringBuilder(),
+                        (builder, fragment) -> builder.append(fragment)
+                )
                 .map(item -> item.toString());
     }
 
-    private Observable<HtmlFragment> toFragmentsObservable(TemplateEngineRequest request) {
-        return Observable.from(new HtmlParser(request.getTemplate()).getFragments());
+    private Observable<HtmlFragment> extractFragments(String template) {
+        return Observable.from(new HtmlParser(template).getFragments());
     }
 
     private Observable<HtmlFragment> compileHtmlFragment(HtmlFragment fragment) {
@@ -67,7 +71,7 @@ public class TemplateEngine {
             return Observable.create(subscriber -> {
                 try {
                     subscriber.onNext(
-                            new HandlebarsHtmlFragment(handlebars.compileInline(fragment.getContent(new Object())))
+                            new TemplateHtmlFragment(fragment.getContent()).compileWith(handlebars)
                     );
                     subscriber.onCompleted();
                 } catch (IOException e) {
@@ -81,11 +85,7 @@ public class TemplateEngine {
 
     private void traceSnippet(HtmlFragment fragment) {
         if (LOGGER.isTraceEnabled()) {
-            try {
-                LOGGER.trace("Processing snippet <{}>, <{}>", fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent(null));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            LOGGER.trace("Processing snippet <{}>, <{}>", fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent());
         }
     }
 }

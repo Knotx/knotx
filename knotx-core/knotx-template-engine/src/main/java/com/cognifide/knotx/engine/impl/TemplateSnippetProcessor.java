@@ -21,10 +21,10 @@ import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.service.ServiceEngine;
+import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.util.Map;
 
 import io.vertx.core.logging.Logger;
@@ -49,38 +49,24 @@ public class TemplateSnippetProcessor {
     }
 
     public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
-        return fragment.getServices()
-                .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {}", serviceEntry.getServiceUri()))
+        return fragment.getServices() //TODO: Handle emition of multiple services for current fragment - possible reduce is needed to combine all service results into one context map
+                .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
                 .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(serviceEntry -> applyData(fragment, serviceEntry.getServiceResult()))
-                .defaultIfEmpty(getContent(fragment));
+                .defaultIfEmpty(fragment.getContent());
     }
-
-    private String getContent(HtmlFragment fragment) {
-        try {
-            return fragment.getContent(null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return StringUtils.EMPTY;
-    }
-
 
     private String applyData(final HtmlFragment snippet, Map<String, Object> serviceResult) {
         LOGGER.trace("Applying data to snippet {}", snippet);
-        try {
-            final StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
 
-            result.append(startComment());
-            result.append(snippet.getContent(serviceResult));
-            result.append(endComment());
+        result.append(startComment());
+        result.append(snippet.getContentWithContext(serviceResult));
+        result.append(endComment());
 
-            return result.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return result.toString();
     }
 
 
@@ -98,5 +84,11 @@ public class TemplateSnippetProcessor {
             debugLine = commentTemplate;
         }
         return debugLine;
+    }
+
+    private void traceService(ServiceEntry serviceEntry) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Found service call definition: {}", serviceEntry.getServiceUri());
+        }
     }
 }

@@ -62,17 +62,19 @@ public class TemplateEngineVerticle extends AbstractVerticle {
         messageObservable
                 .doOnNext(this::traceMessage)
                 .subscribe(
-                        msg -> {
-                            templateEngine.process(new TemplateEngineRequest(msg.body()))
-                                    .subscribe(
-                                            data -> msg.reply(TemplateEngineResponse.success(data).toJsonObject()),
-                                            error -> {
-                                                LOGGER.error("Error happened", error);
-                                                msg.reply(TemplateEngineResponse.error(error.getMessage()).toJsonObject());
-                                            }
-                                    );
-                        }
+                        msg -> templateEngine.process(givenTemplate(msg))
+                                .subscribe(
+                                        result -> msg.reply(TemplateEngineResponse.success(result).toJsonObject()),
+                                        error -> {
+                                            LOGGER.error("Error happened", error);
+                                            msg.reply(TemplateEngineResponse.error(error.getMessage()).toJsonObject());
+                                        }
+                                )
                 );
+    }
+
+    private TemplateEngineRequest givenTemplate(Message<JsonObject> msg) {
+        return new TemplateEngineRequest(msg.body());
     }
 
     private void traceMessage(Message<JsonObject> message) {

@@ -21,6 +21,7 @@ import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.Map;
 
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -64,7 +65,7 @@ public class ServiceEngine {
 
     private void traceServiceCall(Buffer buffer) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from service <{}>", buffer.toString());
+            LOGGER.trace("Service call returned <{}>", buffer.toJsonObject().encodePrettily());
         }
     }
 }
