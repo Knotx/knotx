@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Repository Verticle
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,15 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.api;
+package com.cognifide.knotx.api;
 
-import java.io.Serializable;
-
+import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
-public class RepositoryRequest implements Serializable {
-
-    private static final long serialVersionUID = -4749993224323164630L;
+public class RepositoryRequest extends JsonObjectRequest {
 
     private final String path;
 
@@ -32,6 +29,23 @@ public class RepositoryRequest implements Serializable {
     public RepositoryRequest(String path, MultiMap headers) {
         this.path = path;
         this.headers = headers;
+    }
+
+    public RepositoryRequest(JsonObject repoMessage) {
+        this.path = repoMessage.getString("path");
+        this.headers = MultiMap.caseInsensitiveMultiMap();
+
+        repoMessage.getJsonArray("headers").stream()
+                .map(item -> (JsonObject) item)
+                .flatMap(item -> item.stream())
+                .forEach(entry -> headers.add(entry.getKey(), entry.getValue().toString()));
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+        return new JsonObject()
+                .put("path", path)
+                .put("headers", toJsonArray(headers));
     }
 
     public String getPath() {

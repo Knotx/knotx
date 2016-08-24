@@ -15,11 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.api;
+package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.repository.RepositoryConfiguration;
+import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.RepositoryResponse;
 
-public interface RepositoryMetadataValidator {
+import rx.Observable;
 
-    boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
+public interface Repository {
+
+    Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest);
+
+    boolean support(String path);
 }

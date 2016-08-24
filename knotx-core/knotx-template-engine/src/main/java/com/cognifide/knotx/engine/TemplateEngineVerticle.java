@@ -17,9 +17,9 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.engine.api.TemplateEngineRequest;
+import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.api.TemplateEngineResponse;
 import com.cognifide.knotx.engine.impl.TemplateEngine;
-import com.cognifide.knotx.engine.util.TemplateEngineRequestCodec;
 
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -27,7 +27,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
@@ -58,28 +57,27 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
         EventBus eventBus = vertx.eventBus();
 
-        Observable<Message<TemplateEngineRequest>> messageObservable = eventBus.<TemplateEngineRequest>consumer(serviceName).toObservable();
+        Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
 
         messageObservable
                 .doOnNext(this::traceMessage)
                 .subscribe(
                         msg -> {
-                            templateEngine.process(msg.body())
+                            templateEngine.process(new TemplateEngineRequest(msg.body()))
                                     .subscribe(
-                                            data -> msg.reply(data),
+                                            data -> msg.reply(TemplateEngineResponse.success(data).toJsonObject()),
                                             error -> {
                                                 LOGGER.error("Error happened", error);
-                                                msg.reply(Buffer.buffer("ERROR").getDelegate());
+                                                msg.reply(TemplateEngineResponse.error(error.getMessage()).toJsonObject());
                                             }
                                     );
-                            LOGGER.trace("Got message: {}", msg.body());
                         }
                 );
     }
 
-    private void traceMessage(Message<?> message) {
+    private void traceMessage(Message<JsonObject> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
+            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
         }
     }
 }

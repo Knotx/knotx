@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - HTTP Server
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,14 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.server.api;
+package com.cognifide.knotx.api;
 
-import java.io.Serializable;
-
-import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-public class RepositoryResponse implements Serializable {
+public class RepositoryResponse extends JsonObjectRequest {
 
     private static final long serialVersionUID = -5892594714118271978L;
 
@@ -30,9 +28,23 @@ public class RepositoryResponse implements Serializable {
 
     private String reason;
 
-    private Buffer data;
+    private String data;
 
-    public static RepositoryResponse success(Buffer data) {
+    private RepositoryResponse() {
+        //Empty default constructor
+    }
+
+    public RepositoryResponse(JsonObject object) {
+        success = object.getBoolean("success");
+
+        if (success) {
+            data = object.getString("data");
+        } else {
+            reason = object.getString("reason");
+        }
+    }
+
+    public static RepositoryResponse success(String data) {
         RepositoryResponse response = new RepositoryResponse();
         response.success = true;
         response.data = data;
@@ -54,12 +66,23 @@ public class RepositoryResponse implements Serializable {
         return success;
     }
 
-    public Buffer getData() {
+    public String getData() {
         return data;
     }
 
     public String getReason() {
         return reason;
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObject object = new JsonObject().put("success", success);
+        if (success) {
+            object.put("data", data);
+        } else {
+            object.put("reason", reason);
+        }
+        return object;
     }
 
     @Override
@@ -70,4 +93,5 @@ public class RepositoryResponse implements Serializable {
                 ", data=" + data +
                 '}';
     }
+
 }

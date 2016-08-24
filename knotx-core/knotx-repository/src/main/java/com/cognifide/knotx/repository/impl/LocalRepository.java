@@ -17,9 +17,9 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.repository.api.Repository;
-import com.cognifide.knotx.repository.api.RepositoryRequest;
-import com.cognifide.knotx.repository.api.RepositoryResponse;
+import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.repository.Repository;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,7 +59,7 @@ public class LocalRepository implements Repository {
 
         return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
-                .flatMap(buffer -> RepositoryResponse.success(buffer).toObservable())
+                .flatMap(buffer -> RepositoryResponse.success(buffer.toString()).toObservable())
                 .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath()))
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);

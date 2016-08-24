@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Repository Verticle
+ * Knot.x - Reactive microservice assembler - Templating Engine Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,16 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.api;
+package com.cognifide.knotx.engine.parser;
 
-import com.cognifide.knotx.repository.RepositoryConfiguration;
+import com.cognifide.knotx.engine.service.ServiceEntry;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-import io.vertx.rxjava.core.Vertx;
+import rx.Observable;
 
-public interface RepositoryBuilder extends Serializable {
+public interface HtmlFragment {
+    String getContent(Object data) throws IOException;
 
-    Repository create(RepositoryConfiguration.RepositoryMetadata metadata, Vertx vertx);
+    boolean hasHandlebarsTemplate();
 
+    Observable<ServiceEntry> getServices();
 }

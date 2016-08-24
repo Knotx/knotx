@@ -17,49 +17,30 @@
  */
 package com.cognifide.knotx.engine.impl;
 
+import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.api.TemplateEngineRequest;
-import com.cognifide.knotx.engine.service.ServiceEngine;
+import com.cognifide.knotx.engine.parser.HandlebarsHtmlFragment;
+import com.cognifide.knotx.engine.parser.HtmlFragment;
+import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.github.jknack.handlebars.Handlebars;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class TemplateEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngine.class);
 
-    private static final String SNIPPET_TAG = "script[data-api-type=\"templating\"]";
-
-    private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start snippet `%s` calls: %s -->";
-
-    private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end snippet `%s` calls -->";
-
-    private ServiceEngine serviceEngine;
-
     private Handlebars handlebars;
 
-    private boolean templateDebug;
-
-    private Vertx vertx;
+    private TemplateSnippetProcessor snippetProcessor;
 
     public TemplateEngine(Vertx vertx, TemplateEngineConfiguration configuration) {
-        this.vertx = vertx;
-        this.serviceEngine = new ServiceEngine(vertx, configuration);
-        this.templateDebug = configuration.templateDebug();
+        this.snippetProcessor = new TemplateSnippetProcessor(vertx, configuration);
         initHandlebars();
     }
 
@@ -69,80 +50,42 @@ public class TemplateEngine {
     }
 
     public Observable<String> process(TemplateEngineRequest request) {
-        final Document htmlDocument = Jsoup.parse(request.getTemplate().toString());
-
-        List<Observable<Element>> snippetsPipeline = htmlDocument.select(SNIPPET_TAG).stream()
-                .map(TemplateSnippet::raw)
-                .map(snippet ->
-                        Observable.just(snippet).subscribeOn(Schedulers.io())
-                                .doOnNext(this::traceSnippet)
-                                .flatMap(this::compileSnippetTemplate)
-                                .flatMap(item -> processSnippet(item, request))
-                ).collect(Collectors.toList());
-
-        return Observable.zip(snippetsPipeline, args -> htmlDocument.html());
+        return toFragmentsObservable(request)
+                .doOnNext(this::traceSnippet)
+                .flatMap(this::compileHtmlFragment)
+                .concatMapEager(item -> snippetProcessor.processSnippet(item, request)) //eager will buffer faster processing to emit items in proper order, keeping concurrency.
+                .reduce(new StringBuilder(), (builder, fragment) -> builder.append(fragment))
+                .map(item -> item.toString());
     }
 
-    private Observable<Element> processSnippet(final TemplateSnippet snippet, TemplateEngineRequest request) {
-        return snippet.getServices()
-                .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {}", serviceEntry.getServiceUri()))
-                .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
-                .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
+    private Observable<HtmlFragment> toFragmentsObservable(TemplateEngineRequest request) {
+        return Observable.from(new HtmlParser(request.getTemplate()).getFragments());
     }
 
-    private Observable<TemplateSnippet> compileSnippetTemplate(TemplateSnippet snippet) {
-        return Observable.create(subscriber -> {
-            try {
-                subscriber.onNext(
-                        snippet.setCompiledSnippet(
-                                handlebars.compileInline(snippet.getSnippet().html())
-                        )
-                );
-            } catch (IOException e) {
-                subscriber.onError(e);
-            }
-        });
-    }
-
-    private Observable<Element> applyData(TemplateSnippet snippet, Map<String, Object> serviceResult) {
-        try {
-            final String compiledContent = snippet.getCompiledSnippet().apply(serviceResult);
-            final Element originalSnippet = snippet.getSnippet();
-            LOGGER.trace("Applying: \n{} to \n{}\n and result is \n{}", serviceResult, originalSnippet, compiledContent);
-            final StringBuilder snippetFinalMarkup = new StringBuilder();
-
-            snippetFinalMarkup.append(startComment(snippet));
-            snippetFinalMarkup.append(compiledContent);
-            snippetFinalMarkup.append(endComment(snippet));
-
-            final Element snippetFinalElement = originalSnippet.after(snippetFinalMarkup.toString());
-            originalSnippet.remove();
-            return Observable.just(snippetFinalElement);
-        } catch (IOException e) {
-            return Observable.error(e);
+    private Observable<HtmlFragment> compileHtmlFragment(HtmlFragment fragment) {
+        if (fragment.hasHandlebarsTemplate()) {
+            return Observable.create(subscriber -> {
+                try {
+                    subscriber.onNext(
+                            new HandlebarsHtmlFragment(handlebars.compileInline(fragment.getContent(new Object())))
+                    );
+                    subscriber.onCompleted();
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                }
+            });
+        } else {
+            return Observable.just(fragment);
         }
     }
 
-    private String startComment(TemplateSnippet snippet) {
-        return snippetComment(snippet, START_WEBSERVICE_CALL_DEBUG_MARKER);
-    }
-
-    private String endComment(TemplateSnippet snippet) {
-        return snippetComment(snippet, END_WEBSERVICE_CALL_DEBUG_MARKER);
-    }
-
-    private String snippetComment(TemplateSnippet snippet, String commentTemplate) {
-        String debugLine = StringUtils.EMPTY;
-        if (templateDebug) {
-            debugLine = String.format(commentTemplate, snippet, snippet.getCalledServicesUri());
-        }
-        return debugLine;
-    }
-
-    private void traceSnippet(TemplateSnippet templateSnippet) {
+    private void traceSnippet(HtmlFragment fragment) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Processing snippet <{}>", templateSnippet.getSnippet().html());
+            try {
+                LOGGER.trace("Processing snippet <{}>, <{}>", fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent(null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

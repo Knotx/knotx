@@ -17,9 +17,9 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.repository.api.Repository;
-import com.cognifide.knotx.repository.api.RepositoryRequest;
-import com.cognifide.knotx.repository.api.RepositoryResponse;
+import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.repository.Repository;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
@@ -82,7 +82,7 @@ class HttpRepository implements Repository {
     private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer) {
         Observable<RepositoryResponse> response;
         if (buffer.length() > 0) {
-            response = RepositoryResponse.success(buffer.copy()).toObservable();
+            response = RepositoryResponse.success(buffer.toString()).toObservable();
         } else {
             LOGGER.error("Remote repository returned empty template for path `{}`", path);
             response = RepositoryResponse.error("No Template found for path %s", path).toObservable();

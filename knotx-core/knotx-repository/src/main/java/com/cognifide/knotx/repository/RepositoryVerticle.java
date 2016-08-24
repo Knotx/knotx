@@ -19,12 +19,9 @@ package com.cognifide.knotx.repository;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.repository.api.Repository;
-import com.cognifide.knotx.repository.api.RepositoryRequest;
-import com.cognifide.knotx.repository.api.RepositoryResponse;
+import com.cognifide.knotx.api.RepositoryRequest;
+import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.repository.impl.NullRepository;
-import com.cognifide.knotx.repository.util.RepositoryRequestCodec;
-import com.cognifide.knotx.repository.util.RepositoryResponseCodec;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -71,19 +68,19 @@ public class RepositoryVerticle extends AbstractVerticle {
 
         EventBus eventBus = vertx.eventBus();
 
-        Observable<Message<RepositoryRequest>> messageObservable = eventBus.<RepositoryRequest>consumer(serviceName).toObservable();
+        Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
 
         messageObservable
                 .doOnNext(this::traceMessage)
                 .flatMap(this::getTemplateContent, Pair::of)
                 .subscribe(
-                        response -> response.getLeft().reply(response.getRight()),
+                        response -> response.getLeft().reply(response.getRight().toJsonObject()),
                         error -> LOGGER.error("Unable to get template from the repository", error)
                 );
     }
 
-    private Observable<RepositoryResponse> getTemplateContent(final Message<RepositoryRequest> repoMessage) {
-        final RepositoryRequest repoRequest = repoMessage.body();
+    private Observable<RepositoryResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
+        final RepositoryRequest repoRequest = new RepositoryRequest(repoMessage.body());
 
         return Observable.just(findRepository(repoRequest.getPath()))
                 .flatMap(repo -> repo.get(repoRequest));
@@ -100,9 +97,9 @@ public class RepositoryVerticle extends AbstractVerticle {
         return metadata.getType().create(metadata, vertx);
     }
 
-    private void traceMessage(Message<?> message) {
+    private void traceMessage(Message<JsonObject> message) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
+            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
         }
     }
 }

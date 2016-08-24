@@ -15,23 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.impl;
+package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.repository.Repository;
+public interface RepositoryMetadataValidator {
 
-import rx.Observable;
-
-public class NullRepository implements Repository {
-
-    @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        return Observable.just(RepositoryResponse.error("No repository found for given path %s", repositoryRequest.getPath()));
-    }
-
-    @Override
-    public boolean support(String path) {
-        return false;
-    }
+    boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

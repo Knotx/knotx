@@ -18,9 +18,9 @@
 package com.cognifide.knotx.repository.impl;
 
 import com.cognifide.knotx.repository.RepositoryConfiguration;
-import com.cognifide.knotx.repository.api.Repository;
-import com.cognifide.knotx.repository.api.RepositoryBuilder;
-import com.cognifide.knotx.repository.api.RepositoryMetadataValidator;
+import com.cognifide.knotx.repository.Repository;
+import com.cognifide.knotx.repository.RepositoryBuilder;
+import com.cognifide.knotx.repository.RepositoryMetadataValidator;
 
 import org.apache.commons.lang3.StringUtils;
 

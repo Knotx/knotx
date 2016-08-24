@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.api;
+package com.cognifide.knotx.repository;
 
-import rx.Observable;
+import java.io.Serializable;
 
-public interface Repository {
+import io.vertx.rxjava.core.Vertx;
 
-    Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest);
+public interface RepositoryBuilder extends Serializable {
 
-    boolean support(String path);
+    Repository create(RepositoryConfiguration.RepositoryMetadata metadata, Vertx vertx);
+
 }

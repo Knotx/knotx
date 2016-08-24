@@ -47,17 +47,18 @@ public class ServiceEngine {
         Observable<HttpClientResponse> serviceResponse =
                 RxHelper.get(vertx.createHttpClient(), serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(), headers);
 
-        return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
-                .mergeWith(response.toObservable())
-                .reduce(Buffer::appendBuffer))
+        return serviceResponse.flatMap(response ->
+                    Observable.just(Buffer.buffer())
+                            .mergeWith(response.toObservable())
+                            .reduce(Buffer::appendBuffer))
                 .doOnNext(this::traceServiceCall)
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
-
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
         return Observable.from(configuration.getServices())
-                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).first()
+                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
+                .first()
                 .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
 

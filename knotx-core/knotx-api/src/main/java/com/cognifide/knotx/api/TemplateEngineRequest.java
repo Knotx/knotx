@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - HTTP Server
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,21 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.server.api;
+package com.cognifide.knotx.api;
 
+import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 
-public class TemplateEngineRequest {
-    private Buffer template;
+public class TemplateEngineRequest extends JsonObjectRequest {
+    private String template;
 
     private MultiMap headers;
 
-    public TemplateEngineRequest(Buffer template) {
+    public TemplateEngineRequest(String template, MultiMap headers) {
         this.template = template;
+        this.headers = headers;
     }
 
-    public Buffer getTemplate() {
+    public TemplateEngineRequest(JsonObject object) {
+        this.template = object.getString("template");
+        this.headers = fromJsonArray(object.getJsonArray("headers"));
+
+    }
+
+    public String getTemplate() {
         return template;
     }
 
@@ -55,5 +62,12 @@ public class TemplateEngineRequest {
                 .forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
 
         return result.toString();
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+        return new JsonObject()
+                .put("template", template)
+                .put("headers", toJsonArray(headers));
     }
 }
