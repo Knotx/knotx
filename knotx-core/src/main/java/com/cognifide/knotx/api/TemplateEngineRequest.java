@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.api;
 
+import io.vertx.core.http.HttpMethod;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
@@ -24,6 +25,8 @@ public class TemplateEngineRequest {
     private Buffer template;
 
     private MultiMap headers;
+
+    private HttpMethod httpMethod;
 
     public TemplateEngineRequest(Buffer template) {
         this.template = template;
@@ -41,12 +44,21 @@ public class TemplateEngineRequest {
         this.headers = headers;
     }
 
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
     @Override
     public String toString() {
         return "TemplateEngineRequest{" +
                 "template=" + template +
-                ", headers=[" + headersToString() +
-                "]}";
+                ", headers=" + headersToString() +
+                ", httpMethod=" + httpMethod +
+                '}';
     }
 
     private String headersToString() {

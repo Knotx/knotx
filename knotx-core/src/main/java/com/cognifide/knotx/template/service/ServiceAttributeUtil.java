@@ -27,23 +27,33 @@ final class ServiceAttributeUtil {
 
     private static final int NAMESPACE_GROUP_INDEX = 4;
 
-    private static final String ATTR_PATTERN = "data-call-uri(-(post|get|all))?(-(\\w*))?";
+    private static final int METHOD_TYPE_GROUP_INDEX = 2;
+
+    private static final String ATTR_REGEX = "data-call-uri(-(post|get|all))?(-(\\w*))?";
+
+    private static final Pattern ATTR_PATTERN = Pattern.compile(ATTR_REGEX);
 
     private ServiceAttributeUtil() {
         //Hidden constructors
     }
 
     public static String extractNamespace(String attributeName) {
+        return extract(attributeName, NAMESPACE_GROUP_INDEX);
+    }
+
+    public static String extractMethodType(String attributeName) {
+        return extract(attributeName, METHOD_TYPE_GROUP_INDEX);
+    }
+
+    private static String extract(String attributeName, int groupIndex) {
         Objects.requireNonNull(attributeName);
 
         String namespace = StringUtils.EMPTY;
 
-        Matcher matcher = Pattern.compile(ATTR_PATTERN).matcher(attributeName);
+        Matcher matcher = ATTR_PATTERN.matcher(attributeName);
         if (matcher.matches()) {
-            namespace = matcher.group(NAMESPACE_GROUP_INDEX);
+            namespace = matcher.group(groupIndex);
         }
         return StringUtils.defaultString(namespace);
     }
-
-
 }

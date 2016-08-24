@@ -24,6 +24,7 @@ import com.cognifide.knotx.api.TemplateEngineRequest;
 import io.netty.util.CharsetUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageCodec;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.rxjava.core.MultiMap;
 
 public class TemplateEngineRequestCodec implements MessageCodec<TemplateEngineRequest, TemplateEngineRequest> {
@@ -41,6 +42,10 @@ public class TemplateEngineRequestCodec implements MessageCodec<TemplateEngineRe
         buffer.appendInt(encoded.length);
         Buffer buff = Buffer.buffer(encoded);
         buffer.appendBuffer(buff);
+        String methodType = object.getHttpMethod().toString();
+        buffer.appendInt(methodType.getBytes().length);
+        buffer.appendString(methodType);
+
     }
 
     @Override
@@ -55,7 +60,11 @@ public class TemplateEngineRequestCodec implements MessageCodec<TemplateEngineRe
         byte[] encoded = buffer.getBytes(pos, pos + length);
         String str = new String(encoded, CharsetUtil.UTF_8);
         request.setHeaders(new Gson().fromJson(str, MultiMap.class));
-
+        pos += length;
+        length = buffer.getInt(pos);
+        pos += 4;
+        String methodType = buffer.getString(pos, pos + length);
+        request.setHttpMethod(HttpMethod.valueOf(methodType));
         return request;
     }
 

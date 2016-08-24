@@ -29,6 +29,7 @@ public class ServiceEntry {
     private static final String NAMESPACE_SEPARATOR = "_";
     private String relatedAttribute;
     private String placeholderNamespace;
+    private String methodType;
     private String serviceUri;
     private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
     private Map<String, Object> serviceResult;
@@ -41,6 +42,7 @@ public class ServiceEntry {
         ServiceEntry entry = new ServiceEntry();
         entry.relatedAttribute = serviceAttribute.getKey();
         entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(entry.relatedAttribute);
+        entry.methodType = ServiceAttributeUtil.extractMethodType(entry.relatedAttribute);
         entry.serviceUri = serviceAttribute.getValue();
         return entry;
     }
@@ -64,6 +66,10 @@ public class ServiceEntry {
 
     public String getPlaceholderNamespace() {
         return placeholderNamespace;
+    }
+
+    public String getMethodType() {
+        return methodType;
     }
 
     @Override

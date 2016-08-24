@@ -113,6 +113,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 .forEach(header -> preservedHeaders.add(header, request.headers().get(header)));
 
         templateEngineRequest.setHeaders(preservedHeaders);
+        templateEngineRequest.setHttpMethod(request.method());
 
         return templateEngineRequest;
     }

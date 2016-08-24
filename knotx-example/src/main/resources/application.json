@@ -4,6 +4,7 @@
       "http.port": 8092,
       "preserved.headers": [
         "User-Agent",
+        "Request Method",
         "X-Solr-Core-Key",
         "X-Language-Code"
       ]
