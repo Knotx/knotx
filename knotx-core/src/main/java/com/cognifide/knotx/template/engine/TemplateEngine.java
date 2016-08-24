@@ -20,6 +20,7 @@ package com.cognifide.knotx.template.engine;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.template.TemplateEngineConfiguration;
 import com.cognifide.knotx.template.service.ServiceEngine;
+import com.cognifide.knotx.template.service.ServiceEntry;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,11 +86,14 @@ public class TemplateEngine {
     }
 
     private Observable<Element> processSnippet(final TemplateSnippet snippet, TemplateEngineRequest request) {
+        Map<String, Object> allServicesResults = new HashMap<>();
         return snippet.getServices()
                 .doOnNext(serviceEntry -> LOGGER.trace("Call to service: {}", serviceEntry.getServiceUri()))
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
-                .flatMap(serviceEntry -> applyData(snippet, serviceEntry.getServiceResult()));
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()), (serviceEntry, serviceResult) -> serviceEntry.setResultAndAddNamespace(serviceResult))
+                .map(ServiceEntry::getServiceResult)
+                .collect(() -> allServicesResults, (resultCollection, serviceResult) -> resultCollection.putAll(serviceResult))
+                .flatMap(resultCollection -> applyData(snippet, resultCollection));
     }
 
     private Observable<TemplateSnippet> compileSnippetTemplate(TemplateSnippet snippet) {

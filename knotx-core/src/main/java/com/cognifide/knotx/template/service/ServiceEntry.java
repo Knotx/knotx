@@ -19,12 +19,16 @@ package com.cognifide.knotx.template.service;
 
 import com.cognifide.knotx.template.TemplateEngineConfiguration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Attribute;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ServiceEntry {
+    private static final String NAMESPACE_SEPARATOR = "_";
     private String relatedAttribute;
+    private String placeholderNamespace;
     private String serviceUri;
     private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
     private Map<String, Object> serviceResult;
@@ -36,13 +40,22 @@ public class ServiceEntry {
     public static ServiceEntry of(Attribute serviceAttribute) {
         ServiceEntry entry = new ServiceEntry();
         entry.relatedAttribute = serviceAttribute.getKey();
+        entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(entry.relatedAttribute);
         entry.serviceUri = serviceAttribute.getValue();
         return entry;
     }
 
-    public ServiceEntry setResult(Map<String, Object> serviceResult) {
-        this.serviceResult = serviceResult;
+    public ServiceEntry setResultAndAddNamespace(Map<String, Object> serviceResult) {
+        if (StringUtils.isNotEmpty(placeholderNamespace)) {
+            this.serviceResult = addNamespaceToKey(serviceResult);
+        } else {
+            this.serviceResult = serviceResult;
+        }
         return this;
+    }
+
+    private Map<String, Object> addNamespaceToKey(Map<String, Object> serviceResult) {
+        return serviceResult.entrySet().stream().collect(Collectors.toMap(e -> placeholderNamespace + NAMESPACE_SEPARATOR + e.getKey(), Map.Entry::getValue));
     }
 
     public String getRelatedAttribute() {
