@@ -302,11 +302,6 @@ Notice: The following `data-call-uri` attributes
 ```
 would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
 
-## Calling multiple services for one snippet
-
-
-
-
 # Production
 
 The example module is provided for testing purposes. Only the core module should be deployed in a production environment. (The Knot.x application runs as a single verticle without any dependencies).
