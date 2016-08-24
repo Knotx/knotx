@@ -53,9 +53,9 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 In order to separate static content and dynamic data we introduced a Templating Engine, which merges a template obtained from the content repository and dynamic data provided by microservices using [Handlebars.js](http://handlebarsjs.com/). Here is what a template looks like:
 
 ```html
-<script data-api-type="templating" data-call-uri="/path/to/service.json" type="text/x-handlebars-template">
-    <h2>{{header}}</h2>
-    <div>{{body.content}}</div>
+<script data-api-type="templating" data-call-uri-dataservice="/path/to/service.json" type="text/x-handlebars-template">
+    <h2>{{dataservice_header}}</h2>
+    <div>{{dataservice_body.content}}</div>
 </script>
 ```
 
@@ -64,9 +64,9 @@ The following table describes all elements and attributes used in the template.
 | Element                             | Description                                                              |
 | ----------------------------------- | ------------------------------------------------------------------------ |
 | `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
-| `data-call-uri`                     | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section |
+| `data-call-uri-dataservice`         |  path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section. Last attribute part ('dataservice') is an optional namespace. Only placeholders with matching namespace will be filled by data coming from that service|
 | `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
-| `{{header}}` `{{body.content}}`| all data in ***double curly braces*** is taken from a JSON response provided by a microservice |
+| `{{dataservice_header}}` `{{dataservice_body.content}}`| Placeholders that will be filled by data taken from a JSON response provided by a microservice. Where 'dataservice' is an optional namespace(described above).|
 
 In this case the microservice response could have the following format:
 
@@ -301,6 +301,11 @@ Notice: The following `data-call-uri` attributes
 /searchService?q=second
 ```
 would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
+
+## Calling multiple services for one snippet
+
+
+
 
 # Production
 
