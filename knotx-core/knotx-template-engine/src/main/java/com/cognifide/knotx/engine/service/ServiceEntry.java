@@ -21,10 +21,12 @@ package com.cognifide.knotx.engine.service;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ServiceEntry {
     private static final String NAMESPACE_SEPARATOR = "_";
@@ -86,18 +88,21 @@ public class ServiceEntry {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ServiceEntry that = (ServiceEntry) o;
-
-        return serviceUri.equals(that.serviceUri);
+        if (o instanceof ServiceEntry) {
+            final ServiceEntry other = (ServiceEntry) o;
+            return new EqualsBuilder()
+                    .append(serviceUri, other.getServiceUri())
+                    .append(placeholderNamespace, other.getPlaceholderNamespace())
+                    .isEquals();
+        } else {
+            return false;
+        }
 
     }
 
     @Override
     public int hashCode() {
-        return serviceUri.hashCode();
+        return Objects.hash(serviceUri, placeholderNamespace);
     }
 
     public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {
