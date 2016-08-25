@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ServiceEntry {
-    private static final String NAMESPACE_SEPARATOR = "_";
     private String relatedAttribute;
     private String placeholderNamespace;
     private String serviceUri;
