@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler
+ * Knot.x - Reactive microservice assembler - Templating Engine Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template.service;
+package com.cognifide.knotx.engine.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -24,9 +24,10 @@ import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 
 
+/**
+ * @author pawel.koper on 25.08.16.
+ */
 public class ServiceAttributeUtilTest {
-
-
     @Test
     public void testAttributeWithoutNamespace() throws Exception {
         String attributeInput = "data-call-uri";

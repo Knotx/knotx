@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler
+ * Knot.x - Reactive microservice assembler - Templating Engine Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.template.service;
+package com.cognifide.knotx.engine.service;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,7 +33,7 @@ final class ServiceAttributeUtil {
         //Hidden constructors
     }
 
-    public static String extractNamespace(String attributeName) {
+    static String extractNamespace(String attributeName) {
         Objects.requireNonNull(attributeName);
 
         String namespace = StringUtils.EMPTY;

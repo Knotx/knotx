@@ -23,8 +23,8 @@ import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Attribute;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ServiceEntry {
     private static final String NAMESPACE_SEPARATOR = "_";
@@ -46,7 +46,7 @@ public class ServiceEntry {
         return entry;
     }
 
-    public ServiceEntry setServiceResult(Map<String, Object> serviceResult) {
+    public ServiceEntry setResults(Map<String, Object> serviceResult) {
         this.serviceResult = serviceResult;
         return this;
     }
@@ -59,9 +59,20 @@ public class ServiceEntry {
         return serviceUri;
     }
 
-    public Map<String, Object> getServiceResult() {
+    public Map<String, Object> getResult() {
         return serviceResult;
     }
+
+    public Map<String, Object> getResultWithNamespaceAsKey() {
+        if (StringUtils.isNotEmpty(placeholderNamespace)) {
+            Map<String, Object> results = new HashMap<>();
+            results.put(placeholderNamespace, serviceResult);
+            return results;
+        } else {
+            return serviceResult;
+        }
+    }
+
 
     public String getPlaceholderNamespace() {
         return placeholderNamespace;
