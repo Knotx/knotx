@@ -54,5 +54,6 @@
 		<module>knotx-server</module>
 		<module>knotx-repository</module>
 		<module>knotx-template-engine</module>
+        <module>knotx-standalone</module>
 	</modules>
 </project>

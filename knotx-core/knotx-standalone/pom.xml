@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - Reactive microservice assembler - Repository Verticle
+    Knot.x - Reactive microservice assembler - Standalone Knot.x
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -27,27 +27,16 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>knotx-repository</artifactId>
+    <artifactId>knotx-standalone</artifactId>
 
-    <name>Knot.x - Reactive microservice assembler - Repository Verticle</name>
+    <name>Knot.x - Reactive microservice assembler - Standalone Knot.x</name>
 
     <properties>
         <!-- the main verticle class name -->
-        <main.verticle>com.cognifide.knotx.repository.RepositoryVerticle</main.verticle>
+        <main.verticle>com.cognifide.knotx.KnotxStandaloneStarterVerticle</main.verticle>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.cognifide.knotx</groupId>
-            <artifactId>knotx-launcher</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cognifide.knotx</groupId>
-            <artifactId>knotx-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -64,28 +53,30 @@
             <artifactId>vertx-rx-java</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-hazelcast</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
         </dependency>
 
-        <!-- COMMON -->
+        <!-- Knot.x -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-launcher</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-repository</artifactId>
+            <version>${project.version}</version>
         </dependency>
-
-        <!-- Tests -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-template-engine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-server</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
