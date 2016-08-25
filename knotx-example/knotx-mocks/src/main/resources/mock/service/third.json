@@ -1,5 +1,7 @@
 {
   "message": "this is webservice no. 3",
+  "welcomeMessage": "welcome from nr. 3",
+  "responseMessage": "message received",
   "body": {
     "a": "message - a",
     "b": "message - b",

@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - Sample App with Mock service
+    Knot.x - Mocked services for sample app
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -29,8 +29,9 @@
 <script data-api-type="templating"
         type="text/x-handlebars-template"
         data-call-uri-post-formresponse="/service/mock/first.json"
-        data-call-uri-all-userinfo="/service/mock/second.json">
-    <h1>{{userinfo.welcomeMessage}}</h1>
+        data-call-uri-get-userinfo="/service/mock/second.json"
+        data-call-uri-all-dataservice="/service/mock/third.json">
+    <h1>{{userinfo.message}}</h1>
     {{#if formresponse}}
     <p>{{formresponse.message}}</p>
     {{else}}

@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler
+ * Knot.x - Reactive microservice assembler - Templating Engine Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 package com.cognifide.knotx.engine.service;
+
+
+import com.cognifide.knotx.api.ServiceCallMethod;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,19 +44,25 @@ final class ServiceAttributeUtil {
         return extract(attributeName, NAMESPACE_GROUP_INDEX);
     }
 
-    public static String extractMethodType(String attributeName) {
-        return extract(attributeName, METHOD_TYPE_GROUP_INDEX);
+    public static ServiceCallMethod extractMethodType(String attributeName) {
+        String methodTypeName = extract(attributeName, METHOD_TYPE_GROUP_INDEX);
+        if (StringUtils.isEmpty(methodTypeName)) {
+            return ServiceCallMethod.ALL;
+        }
+
+        return ServiceCallMethod.valueOf(methodTypeName.toUpperCase());
     }
 
     private static String extract(String attributeName, int groupIndex) {
         Objects.requireNonNull(attributeName);
 
-        String namespace = StringUtils.EMPTY;
-
         Matcher matcher = ATTR_PATTERN.matcher(attributeName);
         if (matcher.matches()) {
-            namespace = matcher.group(groupIndex);
+            String namespace = matcher.group(groupIndex);
+            return StringUtils.defaultString(namespace);
+        } else {
+            throw new RuntimeException(String.format("Attribute %s is invalid", attributeName));
         }
-        return StringUtils.defaultString(namespace);
+
     }
 }

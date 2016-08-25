@@ -21,13 +21,13 @@ import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.Map;
 
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
@@ -44,14 +44,19 @@ public class ServiceEngine {
         this.configuration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers) {
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod) {
         Observable<HttpClientResponse> serviceResponse =
-                RxHelper.get(vertx.createHttpClient(), serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(), headers);
-
+                Observable.create((subscriber) -> {
+                    HttpClientRequest req = vertx.createHttpClient().request(httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri());
+                    req.headers().addAll(headers);
+                    Observable resp = req.toObservable();
+                    resp.subscribe(subscriber);
+                    req.end();
+                });
         return serviceResponse.flatMap(response ->
-                    Observable.just(Buffer.buffer())
-                            .mergeWith(response.toObservable())
-                            .reduce(Buffer::appendBuffer))
+                Observable.just(Buffer.buffer())
+                        .mergeWith(response.toObservable())
+                        .reduce(Buffer::appendBuffer))
                 .doOnNext(this::traceServiceCall)
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
     }

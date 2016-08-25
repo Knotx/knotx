@@ -17,43 +17,77 @@
  */
 package com.cognifide.knotx.engine.service;
 
+import com.cognifide.knotx.api.ServiceCallMethod;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 
-
-/**
- * @author pawel.koper on 25.08.16.
- */
 public class ServiceAttributeUtilTest {
+
     @Test
-    public void testAttributeWithoutNamespace() throws Exception {
+    public void testAttributeWithoutNamespaceAndMethodType() throws Exception {
         String attributeInput = "data-call-uri";
         String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
+        ServiceCallMethod serviceCallMethod = ServiceAttributeUtil.extractMethodType(attributeInput);
+
         Assert.assertThat(namespace, is(StringUtils.EMPTY));
+        Assert.assertThat(serviceCallMethod, is(ServiceCallMethod.ALL));
     }
 
     @Test
-    public void testAttributeWithNamespace() throws Exception {
+    public void testAttributeWithNamespaceAndWithoutMethodType() throws Exception {
         String attributeInput = "data-call-uri-label";
         String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
+        ServiceCallMethod serviceCallMethod = ServiceAttributeUtil.extractMethodType(attributeInput);
+
         Assert.assertThat(namespace, is("label"));
+        Assert.assertThat(serviceCallMethod, is(ServiceCallMethod.ALL));
+
     }
 
     @Test
+    public void testAttributeWithNamespaceAndMethodTypeAll() throws Exception {
+        String attributeInput = "data-call-uri-all-label";
+        String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
+        ServiceCallMethod serviceCallMethod = ServiceAttributeUtil.extractMethodType(attributeInput);
+        Assert.assertThat(namespace, is("label"));
+        Assert.assertThat(serviceCallMethod, is(ServiceCallMethod.ALL));
+    }
+
+    @Test
+    public void testAttributeWithNamespaceAndMethodTypePOST() throws Exception {
+        String attributeInput = "data-call-uri-post-label";
+        String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
+        ServiceCallMethod serviceCallMethod = ServiceAttributeUtil.extractMethodType(attributeInput);
+        Assert.assertThat(namespace, is("label"));
+        Assert.assertThat(serviceCallMethod, is(ServiceCallMethod.POST));
+    }
+
+
+    @Test(expected = RuntimeException.class)
     public void testAttributeWithTwoNamespaces() throws Exception {
         String attributeInput = "data-call-uri-message-label";
-        String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
-        Assert.assertThat(namespace, is(StringUtils.EMPTY));
+        ServiceAttributeUtil.extractNamespace(attributeInput);
     }
 
     @Test
+    public void testAttributeWithMethodTypeAndWithoutNamespace() throws Exception {
+        String attributeInput = "data-call-uri-get";
+
+        String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
+        ServiceCallMethod serviceCallMethod = ServiceAttributeUtil.extractMethodType(attributeInput);
+
+        Assert.assertThat(namespace, is(StringUtils.EMPTY));
+        Assert.assertThat(serviceCallMethod, is(ServiceCallMethod.GET));
+    }
+
+    @Test(expected = RuntimeException.class)
     public void testAttributeWithBrokenNamespace() throws Exception {
         String attributeInput = "data-call-uri--label";
-        String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
-        Assert.assertThat(namespace, is(StringUtils.EMPTY));
+        ServiceAttributeUtil.extractNamespace(attributeInput);
     }
 
 }
