@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - Reactive microservice assembler - API
+    Knot.x - Mocked services for sample app
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -23,19 +23,25 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.cognifide.knotx</groupId>
-        <artifactId>knotx-core</artifactId>
+        <artifactId>knotx-example</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>knotx-api</artifactId>
+    <artifactId>knotx-mocks</artifactId>
 
-    <name>Knot.x - Reactive microservice assembler - API</name>
+    <name>Knot.x - Mocked services for sample app</name>
+
+    <properties>
+        <!-- the main verticle class name -->
+        <main.verticle>com.cognifide.knotx.mocks.StarterVerticle</main.verticle>
+    </properties>
 
     <dependencies>
+        <!-- Knot.x -->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.3</version>
+            <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-launcher</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- CORE -->
@@ -60,44 +66,10 @@
             <artifactId>rxjava</artifactId>
         </dependency>
 
-        <!-- REPOSITORY -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-        </dependency>
-
-        <!-- HANDLEBARS -->
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars-jackson2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-
         <!-- COMMON -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-        </dependency>
-
-        <!-- Tests -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-unit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
         </dependency>
     </dependencies>
 
@@ -118,6 +90,14 @@
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

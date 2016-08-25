@@ -1,5 +1,5 @@
 /*
- * Knot.x - Sample App with Mock service
+ * Knot.x - Mocked services for sample app
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.server.service;
+package com.cognifide.knotx.mocks.service;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;

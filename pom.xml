@@ -47,6 +47,10 @@
             <name>Maciej Laskowski</name>
             <email>maciej.laskowski@cognifide.com</email>
         </developer>
+        <developer>
+            <name>Marcin Czeczko</name>
+            <email>marcin.czeczko@cognifide.com</email>
+        </developer>
     </developers>
 
     <modules>

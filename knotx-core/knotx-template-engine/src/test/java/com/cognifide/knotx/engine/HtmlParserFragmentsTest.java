@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-
 import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.junit.Before;
@@ -28,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -36,7 +32,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(value = Parameterized.class)
-public class HtmlParserFragmentsTest {
+public class HtmlParserFragmentsTest extends AbstractKnotxConfigurationTest {
 
     private String TEST_HTML = "test.html";
 
@@ -66,15 +62,11 @@ public class HtmlParserFragmentsTest {
 
     @Before
     public void setUp() throws Exception {
-        test = new HtmlParser(readHtml(TEST_HTML));
+        test = new HtmlParser(readText(TEST_HTML));
     }
 
     @Test
     public void testFragment() throws Exception {
-        //assertThat(test.getFragments().get(fragmentId).getFragment().trim(), equalTo(readHtml(fragmentFile).trim()));
-    }
-
-    private String readHtml(String path) throws Exception {
-        return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+        assertThat(test.getFragments().get(fragmentId).getContent().trim(), equalTo(readText(fragmentFile).trim()));
     }
 }

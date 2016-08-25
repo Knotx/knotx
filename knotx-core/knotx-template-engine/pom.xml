@@ -68,6 +68,10 @@
             <artifactId>vertx-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-hazelcast</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
         </dependency>
