@@ -7,11 +7,16 @@
         "Request Method",
         "X-Solr-Core-Key",
         "X-Language-Code"
-      ]
+      ],
+      "dependencies" : {
+        "repository.address" : "template-repository",
+        "engine.address": "template-engine"
+      }
     }
   },
   "repository": {
     "config": {
+      "service.name": "template-repository",
       "repositories": [
         {
           "type": "local",
@@ -29,6 +34,7 @@
   },
   "templateEngine": {
     "config": {
+      "service.name": "template-engine",
       "template.debug": true,
       "services": [
         {

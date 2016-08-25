@@ -1,6 +1,6 @@
 <!--
 
-    Knot.x - Reactive microservice assembler
+    Knot.x - Reactive microservice assembler - Core Root POM
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -28,79 +28,9 @@
     </parent>
 
     <artifactId>knotx-core</artifactId>
+	<packaging>pom</packaging>
 
-    <name>Knot.x - Reactive microservice assembler</name>
-
-    <properties>
-        <!-- the main verticle class name -->
-        <main.verticle>com.cognifide.knotx.Knotx</main.verticle>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.3</version>
-        </dependency>
-
-        <!-- CORE -->
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-rx-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-
-        <!-- REPOSITORY -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-        </dependency>
-
-        <!-- HANDLEBARS -->
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars-jackson2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-
-        <!-- COMMON -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <!-- Tests -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-unit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-        </dependency>
-    </dependencies>
+    <name>Knot.x - Reactive microservice assembler - Core Root POM</name>
 
     <build>
         <plugins>
@@ -115,19 +45,14 @@
                     </headerDefinitions>
                 </configuration>
             </plugin>
-            <!-- plugin for checking if licensing header is present in headers of defined files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
+
+	<modules>
+        <module>knotx-launcher</module>
+        <module>knotx-api</module>
+		<module>knotx-server</module>
+		<module>knotx-repository</module>
+		<module>knotx-template-engine</module>
+	</modules>
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Sample App with Mock service
+    Knot.x - Reactive microservice assembler - Templating Engine Verticle
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -28,17 +28,12 @@
         </layout>
     </appender>
 
-    <logger name="com.cognifide.knotx" level="DEBUG"
+    <logger name="com.cognifide" level="debug"
             additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="com.cognifide.knotx.engine" level="TRACE"
-            additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
-
-    <root level="ERROR">
+    <root level="error">
         <appender-ref ref="STDOUT" />
     </root>
 
