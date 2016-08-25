@@ -1,0 +1,18 @@
+{
+  "config": {
+    "service.name": "template-repository",
+    "repositories": [
+      {
+        "type": "local",
+        "path": "/content/local/.*",
+        "catalogue": ""
+      },
+      {
+        "type": "remote",
+        "path": "/content/.*",
+        "domain": "localhost",
+        "port": 3001
+      }
+    ]
+  }
+}
