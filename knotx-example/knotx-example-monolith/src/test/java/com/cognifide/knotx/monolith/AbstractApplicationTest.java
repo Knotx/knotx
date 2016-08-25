@@ -19,8 +19,8 @@ package com.cognifide.knotx.monolith;
 
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import com.cognifide.knotx.engine.TemplateEngineVerticle;
 import com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle;
@@ -36,14 +36,14 @@ import io.vertx.ext.unit.TestContext;
 
 public abstract class AbstractApplicationTest {
 
-    protected Vertx vertx;
+    protected static Vertx vertx;
 
-    protected int knotxPort;
+    protected static int knotxPort;
 
     protected String knotxDomain = "localhost";
 
-    @Before
-    public void setUp() throws IOException {
+    @BeforeClass
+    public static void setUp() throws IOException {
         vertx = Vertx.vertx();
 
         JsonObject configuration = new JsonObject(FileReader.readFile("knotx-example-monolith.json"));
@@ -66,8 +66,8 @@ public abstract class AbstractApplicationTest {
                         "knotxServer")));
     }
 
-    @After
-    public void tearDown(TestContext context) {
+    @AfterClass
+    public static void tearDown(TestContext context) {
         vertx.close(context.asyncAssertSuccess());
     }
 
