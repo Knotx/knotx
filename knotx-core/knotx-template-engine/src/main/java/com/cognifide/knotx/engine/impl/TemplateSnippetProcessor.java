@@ -25,6 +25,7 @@ import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.vertx.core.logging.Logger;
@@ -49,12 +50,17 @@ public class TemplateSnippetProcessor {
     }
 
     public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
-        return fragment.getServices() //TODO: Handle emition of multiple services for current fragment - possible reduce is needed to combine all service results into one context map
+        return fragment.getServices()
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
                 .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
-                .map(serviceEntry -> applyData(fragment, serviceEntry.getServiceResult()))
+                .map(ServiceEntry::getResultWithNamespaceAsKey)
+                .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {
+                    allResults.putAll(serviceResults);
+                    return allResults;
+                })
+                .map(results -> applyData(fragment, results))
                 .defaultIfEmpty(fragment.getContent());
     }
 

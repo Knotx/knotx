@@ -21,6 +21,7 @@ import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

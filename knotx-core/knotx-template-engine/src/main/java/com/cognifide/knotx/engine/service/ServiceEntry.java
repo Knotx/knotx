@@ -20,12 +20,17 @@ package com.cognifide.knotx.engine.service;
 
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ServiceEntry {
     private String relatedAttribute;
+    private String placeholderNamespace;
     private String serviceUri;
     private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
     private Map<String, Object> serviceResult;
@@ -37,6 +42,7 @@ public class ServiceEntry {
     public static ServiceEntry of(Attribute serviceAttribute) {
         ServiceEntry entry = new ServiceEntry();
         entry.relatedAttribute = serviceAttribute.getKey();
+        entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(entry.relatedAttribute);
         entry.serviceUri = serviceAttribute.getValue();
         return entry;
     }
@@ -54,24 +60,42 @@ public class ServiceEntry {
         return serviceUri;
     }
 
-    public Map<String, Object> getServiceResult() {
+    public Map<String, Object> getResult() {
         return serviceResult;
+    }
+
+    public Map<String, Object> getResultWithNamespaceAsKey() {
+        if (StringUtils.isNotEmpty(placeholderNamespace)) {
+            Map<String, Object> results = new HashMap<>();
+            results.put(placeholderNamespace, serviceResult);
+            return results;
+        } else {
+            return serviceResult;
+        }
+    }
+
+
+    public String getPlaceholderNamespace() {
+        return placeholderNamespace;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ServiceEntry that = (ServiceEntry) o;
-
-        return serviceUri.equals(that.serviceUri);
+        if (o instanceof ServiceEntry) {
+            final ServiceEntry other = (ServiceEntry) o;
+            return new EqualsBuilder()
+                    .append(serviceUri, other.getServiceUri())
+                    .append(placeholderNamespace, other.getPlaceholderNamespace())
+                    .isEquals();
+        } else {
+            return false;
+        }
 
     }
 
     @Override
     public int hashCode() {
-        return serviceUri.hashCode();
+        return Objects.hash(serviceUri, placeholderNamespace);
     }
 
     public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {
