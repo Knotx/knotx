@@ -46,7 +46,7 @@ public class ServiceEntry {
         return entry;
     }
 
-    public ServiceEntry setResults(Map<String, Object> serviceResult) {
+    public ServiceEntry setResult(Map<String, Object> serviceResult) {
         this.serviceResult = serviceResult;
         return this;
     }

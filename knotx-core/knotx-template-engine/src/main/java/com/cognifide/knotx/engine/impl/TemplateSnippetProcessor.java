@@ -53,7 +53,7 @@ public class TemplateSnippetProcessor {
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
                 .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()),
-                        (serviceEntry, serviceResult) -> serviceEntry.setResults(serviceResult))
+                        (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(ServiceEntry::getResultWithNamespaceAsKey)
                 .map(results -> applyData(fragment, results))
                 .defaultIfEmpty(fragment.getContent());
