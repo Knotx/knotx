@@ -25,6 +25,7 @@ import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.vertx.core.logging.Logger;
@@ -55,6 +56,10 @@ public class TemplateSnippetProcessor {
                 .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders()),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(ServiceEntry::getResultWithNamespaceAsKey)
+                .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {
+                    allResults.putAll(serviceResults);
+                    return allResults;
+                })
                 .map(results -> applyData(fragment, results))
                 .defaultIfEmpty(fragment.getContent());
     }
