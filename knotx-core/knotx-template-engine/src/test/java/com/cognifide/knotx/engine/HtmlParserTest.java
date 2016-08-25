@@ -55,7 +55,6 @@ public class HtmlParserTest extends AbstractKnotxConfigurationTest {
     }
 
     @Test
-    @Ignore
     public void testComposeFragmetns() throws Exception {
         StringBuilder result = new StringBuilder();
         IntStream.rangeClosed(0, 6).forEach(idx -> result.append(test.get(idx).getContent()));
@@ -64,7 +63,6 @@ public class HtmlParserTest extends AbstractKnotxConfigurationTest {
     }
 
     @Test
-    @Ignore
     public void testNoFragments() throws Exception {
         assertThat(testNoTemplates.size(), equalTo(1));
         assertThat(testNoTemplates.get(0).hasHandlebarsTemplate(), equalTo(false));
