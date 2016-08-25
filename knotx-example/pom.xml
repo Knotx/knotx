@@ -27,6 +27,8 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
+    <packaging>pom</packaging>
+
     <artifactId>knotx-example</artifactId>
 
     <name>Knot.x - Sample App with Mock service</name>
@@ -36,64 +38,7 @@
         <main.verticle>com.cognifide.knotx.repository.server.SampleApplication</main.verticle>
     </properties>
 
-    <dependencies>
-        <!-- Knot.x -->
-        <dependency>
-            <groupId>com.cognifide.knotx</groupId>
-            <artifactId>knotx-launcher</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cognifide.knotx</groupId>
-            <artifactId>knotx-repository</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cognifide.knotx</groupId>
-            <artifactId>knotx-template-engine</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cognifide.knotx</groupId>
-            <artifactId>knotx-server</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- CORE -->
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-rx-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-web</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.vertx</groupId>-->
-            <!--<artifactId>vertx-hazelcast</artifactId>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava-debug</artifactId>
-            <version>1.0.3</version>
-        </dependency>
-
-        <!-- COMMON -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
+     <build>
         <plugins>
             <!-- plugin for generating licensing header in headers of defined files -->
             <plugin>
@@ -111,14 +56,11 @@
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
+
+    <modules>
+        <module>knotx-mocks</module>
+        <module>knotx-example-monolith</module>
+    </modules>
 </project>

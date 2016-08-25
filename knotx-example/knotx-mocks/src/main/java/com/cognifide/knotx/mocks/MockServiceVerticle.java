@@ -1,5 +1,5 @@
 /*
- * Knot.x - Sample App with Mock service
+ * Knot.x - Mocked services for sample app
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.server;
+package com.cognifide.knotx.mocks;
 
-import com.cognifide.knotx.repository.server.service.MockServiceHandler;
+
+import com.cognifide.knotx.mocks.service.MockServiceHandler;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
