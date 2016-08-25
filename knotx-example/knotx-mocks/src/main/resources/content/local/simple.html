@@ -26,9 +26,9 @@
 <h1>Hello Knot.x - reactive microservice assembler world!</h1>
 <h2>This template is served from the local repository.</h2>
 
-<script data-api-type="templating" data-call-uri-get="/service/mock/first.json"
-        data-call-uri-get-second="/service/mock/second.json"
-        data-call-uri-get-third="/service/mock/third.json"
+<script data-api-type="templating" data-uri-get="/service/mock/first.json"
+        data-uri-get-second="/service/mock/second.json"
+        data-uri-get-third="/service/mock/third.json"
         type="text/x-handlebars-template">
 
     <h2>{{message}}</h2>
@@ -42,20 +42,20 @@
 
 </script>
 <hr>
-<script data-api-type="templating" data-call-uri-get="/service/mock/second.json"
+<script data-api-type="templating" data-uri-get="/service/mock/second.json"
         type="text/x-handlebars-template">
     <h2>{{message}}</h2>
     <div>{{body.b}}</div>
     {{#string_equals status "success"}}<div>Success!</div>{{/string_equals}}
 </script>
 <hr>
-<script data-api-type="templating" data-call-uri-get="/service/mock/third.json"
+<script data-api-type="templating" data-uri-get="/service/mock/third.json"
         type="text/x-handlebars-template">
     <h2>{{message}}</h2>
     <div>{{body.c}}</div>
 </script>
 <hr>
-<script data-api-type="templating" data-call-uri-get="/service/mock/third.json"
+<script data-api-type="templating" data-uri-get="/service/mock/third.json"
         type="text/x-handlebars-template">
     <h2>{{message}}</h2>
     {{#if url}}
@@ -67,9 +67,9 @@
 <hr>
 <script data-api-type="templating"
         type="text/x-handlebars-template"
-        data-call-uri-get-userinfo="/service/mock/first.json"
-        data-call-uri-post-formresponse="/service/mock/second.json"
-        data-call-uri-all-dataservice="/service/mock/third.json">
+        data-uri-get-userinfo="/service/mock/first.json"
+        data-uri-post-formresponse="/service/mock/second.json"
+        data-uri-all-dataservice="/service/mock/third.json">
     <h1>{{userinfo.welcomeMessage}}</h1>
     {{#if formresponse}}
     <p>{{formresponse.responseMessage}}</p>

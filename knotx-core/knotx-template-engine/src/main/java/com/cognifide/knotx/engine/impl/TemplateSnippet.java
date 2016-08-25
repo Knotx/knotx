@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import rx.Observable;
 
 public class TemplateSnippet {
-    private static final String DATA_CALL_URI = "data-call-uri";
+    private static final String DATA_URI = "data-uri";
 
     private Element snippet;
 
@@ -47,7 +47,7 @@ public class TemplateSnippet {
         snippet.snippet = element;
 
         snippet.services = element.attributes().asList().stream()
-                .filter(attribute -> attribute.getKey().startsWith(DATA_CALL_URI))
+                .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
                 .map(ServiceEntry::of)
                 .collect(Collectors.toList());
         return snippet;

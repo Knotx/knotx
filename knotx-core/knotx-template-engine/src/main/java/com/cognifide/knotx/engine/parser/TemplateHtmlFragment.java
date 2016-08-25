@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 import rx.Observable;
 
 public class TemplateHtmlFragment implements HtmlFragment {
-    private static final String DATA_CALL_URI = "data-call-uri";
+    private static final String DATA_URI = "data-uri";
 
     private String content;
 
@@ -48,7 +48,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
         Element scriptTag = document.body().child(0);
 
         services = scriptTag.attributes().asList().stream()
-                .filter(attribute -> attribute.getKey().startsWith(DATA_CALL_URI))
+                .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
                 .map(ServiceEntry::of)
                 .collect(Collectors.toList());
 

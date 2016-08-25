@@ -32,7 +32,7 @@ final class ServiceAttributeUtil {
 
     private static final int METHOD_TYPE_GROUP_INDEX = 2;
 
-    private static final String ATTR_REGEX = "data-call-uri(-(post|get|all))?(-(\\w*))?";
+    private static final String ATTR_REGEX = "data-uri(-(post|get|all))?(-(\\w*))?";
 
     private static final Pattern ATTR_PATTERN = Pattern.compile(ATTR_REGEX);
 
