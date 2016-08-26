@@ -18,19 +18,24 @@
 package com.cognifide.knotx.engine.service;
 
 
+import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
+import io.vertx.core.http.HttpMethod;
+
 public class ServiceEntry {
+
     private String relatedAttribute;
     private String placeholderNamespace;
+    private ServiceCallMethod methodType;
     private String serviceUri;
     private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
     private Map<String, Object> serviceResult;
@@ -43,6 +48,7 @@ public class ServiceEntry {
         ServiceEntry entry = new ServiceEntry();
         entry.relatedAttribute = serviceAttribute.getKey();
         entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(entry.relatedAttribute);
+        entry.methodType = ServiceAttributeUtil.extractMethodType(entry.relatedAttribute);
         entry.serviceUri = serviceAttribute.getValue();
         return entry;
     }
@@ -66,17 +72,25 @@ public class ServiceEntry {
 
     public Map<String, Object> getResultWithNamespaceAsKey() {
         if (StringUtils.isNotEmpty(placeholderNamespace)) {
-            Map<String, Object> results = new HashMap<>();
-            results.put(placeholderNamespace, serviceResult);
-            return results;
+            return Collections.singletonMap(placeholderNamespace, serviceResult);
         } else {
             return serviceResult;
         }
     }
 
+    public boolean canServeMethodType(HttpMethod requestMethodType) {
+        ServiceCallMethod methodType = ServiceCallMethod.from(requestMethodType);
+        return java.util.Objects.equals(this.methodType, methodType)
+                || java.util.Objects.equals(this.methodType, ServiceCallMethod.ALL);
+    }
+
 
     public String getPlaceholderNamespace() {
         return placeholderNamespace;
+    }
+
+    public ServiceCallMethod getMethodType() {
+        return methodType;
     }
 
     @Override
@@ -86,6 +100,7 @@ public class ServiceEntry {
             return new EqualsBuilder()
                     .append(serviceUri, other.getServiceUri())
                     .append(placeholderNamespace, other.getPlaceholderNamespace())
+                    .append(methodType, other.getMethodType())
                     .isEquals();
         } else {
             return false;
@@ -95,7 +110,7 @@ public class ServiceEntry {
 
     @Override
     public int hashCode() {
-        return Objects.hash(serviceUri, placeholderNamespace);
+        return Objects.hash(serviceUri, placeholderNamespace, methodType);
     }
 
     public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {

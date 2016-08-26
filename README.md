@@ -53,7 +53,7 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 In order to separate static content and dynamic data we introduced a Templating Engine, which merges a template obtained from the content repository and dynamic data provided by microservices using [Handlebars.js](http://handlebarsjs.com/). Here is what a template looks like:
 
 ```html
-<script data-api-type="templating" data-call-uri-dataservice="/path/to/service.json" type="text/x-handlebars-template">
+<script data-api-type="templating" data-uri-dataservice="/path/to/service.json" type="text/x-handlebars-template">
     <h2>{{dataservice.header}}</h2>
     <div>{{dataservice.body.content}}</div>
 </script>
@@ -64,7 +64,7 @@ The following table describes all elements and attributes used in the template.
 | Element                             | Description                                                              |
 | ----------------------------------- | ------------------------------------------------------------------------ |
 | `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
-| `data-call-uri-dataservice`         | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section. Last attribute part ('dataservice') is an optional namespace. Only placeholders with matching namespace will be filled by data coming from that service|
+| `data-uri-post-dataservice`    | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section. Name of the attribute consist of following parts:<ul><li>'data-uri' : required. </li><li>post : optional. call to  microsevicervice will be made only if request method is of that type. Can be: post, get, all. </li><li>dataservice : optional. Defines the namespace name. Only placeholders with matching namespace will be filled by data coming from that service</li></ul>|            
 | `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
 | `{{dataservice.header}}` `{{dataservice.body.content}}`| Placeholders that will be filled by data taken from a JSON response provided by a microservice. Where 'dataservice' is an optional namespace(described above).|
 
@@ -93,6 +93,26 @@ It's worth mentioning that this architecture scales very easily. Not only can yo
 The following diagram shows the asynchronous nature of **Knot.x**. After obtaining a template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
 
 ![Flow diagram](https://github.com/Cognifide/knotx/blob/master/icons/architecture/flow-diagram.png)
+
+Please notice, that order of data calls is not guaranteed. Please consider following snippet as an example:
+```html
+<script data-api-type="templating" data-uri-post-saveUser="/saveUserService" data-uri-get-getUser="/getUserService" type="text/x-handlebars-template">
+    <div>Hello {{getUser.name}}</div>
+    <form method="post">
+        <input type="input" name="name" />
+        <input type="submit" value="Submit" />
+    </form>
+</script>
+```
+
+The order of calling services may be:
+1. `/saveUserService`,
+2. `/getUserService` .
+or
+1. `/getUserService`,
+2. `/saveUserService`.
+
+Because of this, service `/getUserService` should not depend on operations from `/saveUserService`.
 
 # Getting started
 
@@ -269,20 +289,20 @@ Another way to provide a value for the password placeholder shown above is to se
 
 ## Requests grouping
 
-Template obtained from the repository may contain many snippets that will trigger microservice calls for data. There is a chance that some of the snippets will have the same `data-call-uri` attribute set, meaning they will request data from the same source.
-In such case only one call to microservice shall be made and data retrieved from service call should be applied to all snippets sharing the same `data-call-uri`.
+Template obtained from the repository may contain many snippets that will trigger microservice calls for data. There is a chance that some of the snippets will have the same `data-uri` attribute set, meaning they will request data from the same source.
+In such case only one call to microservice shall be made and data retrieved from service call should be applied to all snippets sharing the same `data-uri`.
 
 Example:
 Let's assume that we obtained the following template from repository:
 ```html
 <div>
-<script data-api-type="templating" data-call-uri="/searchService" type="text/x-handlebars-template">
+<script data-api-type="templating" data-uri="/searchService" type="text/x-handlebars-template">
     <div>{{search.term}}</div>
 </script>
 </div>
 ...
 <div>
-<script data-api-type="templating" data-call-uri="/searchService" type="text/x-handlebars-template">
+<script data-api-type="templating" data-uri="/searchService" type="text/x-handlebars-template">
     <ul>
     {{#each search.results}}
       <li>{{result}}<li>
@@ -291,9 +311,9 @@ Let's assume that we obtained the following template from repository:
 </script>
 </div>
 ```
-In this case only one call to microservice will be made, since both snippets share the same `data-call-uri`. Data retrived from `/searchService` will be applied to both snippets.
+In this case only one call to microservice will be made, since both snippets share the same `data-uri`. Data retrived from `/searchService` will be applied to both snippets.
 
-Notice: The following `data-call-uri` attributes
+Notice: The following `data-uri` attributes
 ```
 /searchService?q=first
 ```

@@ -119,7 +119,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     private JsonObject createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
         return new TemplateEngineRequest(
-                repositoryResponse.getData().toString(),
+                repositoryResponse.getData(),
+                request.method(),
                 getPreservedHeaders(request))
                 .toJsonObject();
     }

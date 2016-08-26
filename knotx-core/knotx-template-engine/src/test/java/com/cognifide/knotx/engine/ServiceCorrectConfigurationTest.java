@@ -25,9 +25,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-/**
- * @author pawel.koper on 27.07.16.
- */
 public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
 
     private String CORRECT_JSON = "service-correct.json";
