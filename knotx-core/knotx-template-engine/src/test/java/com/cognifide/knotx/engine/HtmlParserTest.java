@@ -40,7 +40,7 @@ public class HtmlParserTest extends AbstractKnotxConfigurationTest {
     private String TEST_NO_FRAGMENTS_HTML = "test-no-fragments.html";
     private String TEST_ONE_FRAGMENT_HTML = "test-one-fragment.html";
 
-    private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating\" data-uri=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
+    private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
 
 
     private List<HtmlFragment> test;
