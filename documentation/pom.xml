@@ -46,9 +46,11 @@
 						<configuration>
 							<excludes>
 								<!-- Node instance for frontend-maven-plugin -->
+								<exclude>README.md</exclude>
 								<excludes>src/main/node/**</excludes>
 								<exclude>src/main/node_modules/**</exclude>
 								<exclude>src/main/wiki/**</exclude>
+								<exclude>src/main/*.json</exclude>
 								<exclude>src/main/DocumentationTemplate.md</exclude>
 							</excludes>
 						</configuration>
