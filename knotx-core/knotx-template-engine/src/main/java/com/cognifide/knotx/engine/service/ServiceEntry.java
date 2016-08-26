@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -72,9 +72,7 @@ public class ServiceEntry {
 
     public Map<String, Object> getResultWithNamespaceAsKey() {
         if (StringUtils.isNotEmpty(placeholderNamespace)) {
-            Map<String, Object> results = new HashMap<>();
-            results.put(placeholderNamespace, serviceResult);
-            return results;
+            return Collections.singletonMap(placeholderNamespace, serviceResult);
         } else {
             return serviceResult;
         }
@@ -82,7 +80,8 @@ public class ServiceEntry {
 
     public boolean canServeMethodType(HttpMethod requestMethodType) {
         ServiceCallMethod methodType = ServiceCallMethod.from(requestMethodType);
-        return java.util.Objects.equals(this.methodType, methodType) || java.util.Objects.equals(this.methodType, ServiceCallMethod.ALL);
+        return java.util.Objects.equals(this.methodType, methodType)
+                || java.util.Objects.equals(this.methodType, ServiceCallMethod.ALL);
     }
 
 

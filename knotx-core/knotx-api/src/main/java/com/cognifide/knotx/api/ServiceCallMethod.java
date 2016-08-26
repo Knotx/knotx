@@ -23,10 +23,6 @@ public enum ServiceCallMethod {
     POST,
     ALL;
 
-    ServiceCallMethod() {
-        //hidden
-    }
-
     public static ServiceCallMethod from(io.vertx.core.http.HttpMethod vertxMethod) {
         return ServiceCallMethod.valueOf(vertxMethod.toString());
     }
