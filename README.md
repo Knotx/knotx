@@ -484,6 +484,12 @@ java -jar knotx-template-engine-XXX-fat.jar -conf <path-to-engine-configuration.
 java -jar knotx-server-XXX-fat.jar -conf <path-to-server-configuration.json>
 ```
 
+For production set up you might need to configure logger according to your needs. You can start each of the verticle specifying path to the logback logger configuration via system property.
+```
+java -Dlogback.configurationFile=<full-path-to-logback-configuration-file> -jar XXX
+```
+Please refer to [LOGBack manual](http://logback.qos.ch/manual/index.html) for a details how to configure logger.
+
 ### Remarks
 For clustering testing purposes you can start also a separate verticle with repository and services mocks. In order to do so, run the following commands:
 ```
