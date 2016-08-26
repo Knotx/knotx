@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.api;
 
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
@@ -25,14 +26,18 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     private MultiMap headers;
 
-    public TemplateEngineRequest(String template, MultiMap headers) {
+    private HttpMethod serverRequestMethod;
+
+    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers) {
         this.template = template;
+        this.serverRequestMethod = serverRequestMethod;
         this.headers = headers;
     }
 
     public TemplateEngineRequest(JsonObject object) {
         this.template = object.getString("template");
         this.headers = fromJsonArray(object.getJsonArray("headers"));
+        this.serverRequestMethod = HttpMethod.valueOf(object.getString("serverRequestMethod"));
 
     }
 
@@ -48,19 +53,26 @@ public class TemplateEngineRequest extends JsonObjectRequest {
         this.headers = headers;
     }
 
+    public HttpMethod getServerRequestMethod() {
+        return serverRequestMethod;
+    }
+
+    public void setServerRequestMethod(HttpMethod serverRequestMethod) {
+        this.serverRequestMethod = serverRequestMethod;
+    }
+
     @Override
     public String toString() {
         return "TemplateEngineRequest{" +
-                "template=" + template +
-                ", headers=[" + headersToString() +
-                "]}";
+                "template='" + template + '\'' +
+                ", headers=" + headersToString() +
+                ", serverRequestMethod=" + serverRequestMethod +
+                '}';
     }
 
     private String headersToString() {
         StringBuilder result = new StringBuilder();
-        headers.names().stream()
-                .forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
-
+        headers.names().forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
         return result.toString();
     }
 
@@ -68,6 +80,7 @@ public class TemplateEngineRequest extends JsonObjectRequest {
     public JsonObject toJsonObject() {
         return new JsonObject()
                 .put("template", template)
+                .put("serverRequestMethod", serverRequestMethod.toString())
                 .put("headers", toJsonArray(headers));
     }
 }
