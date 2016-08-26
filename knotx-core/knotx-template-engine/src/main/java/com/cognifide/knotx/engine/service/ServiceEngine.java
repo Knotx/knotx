@@ -17,6 +17,9 @@
  */
 package com.cognifide.knotx.engine.service;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.Map;
@@ -74,15 +77,8 @@ public class ServiceEngine {
 
     private Buffer createFormPostBody(MultiMap formAttributes) {
         Buffer buffer = Buffer.buffer();
-        // Make sure we have one param that needs url encoding
-        int i = 0;
-        for (String name : formAttributes.names()) {
-            if (i != 0) {
-                buffer.appendString("&");
-            }
-            buffer.appendString(name + "=" + formAttributes.get(name), "UTF-8");
-            i++;
-        }
+        String formPostContent = Joiner.on("&").withKeyValueSeparator("=").join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+        buffer.appendString(formPostContent, Charsets.UTF_8.toString());
         return buffer;
     }
 

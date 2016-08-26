@@ -43,11 +43,6 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
 
     @Override
     public void handle(HttpServerRequest event) {
-        event.setExpectMultipart(true);
-        event.endHandler(avoid -> {
-            MultiMap multiMap = event.formAttributes();
-            LOGGER.debug("mock service multimap : {}", multiMap);
-        });
         String resourcePath = getFilePath(event);
         String htmlContent = "";
         try {
