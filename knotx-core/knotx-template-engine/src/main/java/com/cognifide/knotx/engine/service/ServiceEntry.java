@@ -19,7 +19,9 @@ package com.cognifide.knotx.engine.service;
 
 
 import com.cognifide.knotx.api.ServiceCallMethod;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
+import com.cognifide.knotx.engine.parser.HtmlFragment;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -33,6 +35,7 @@ import io.vertx.core.http.HttpMethod;
 
 public class ServiceEntry {
 
+    public static final String FORM_ID_ATTRIBUTE = "_id";
     private String relatedAttribute;
     private String placeholderNamespace;
     private ServiceCallMethod methodType;
@@ -80,11 +83,33 @@ public class ServiceEntry {
         }
     }
 
-    public boolean canServeMethodType(HttpMethod requestMethodType) {
+    public boolean canServeRequest(HtmlFragment fragment, TemplateEngineRequest request) {
+        return canServeMethodType(request.getServerRequestMethod()) && canServeFormPostRequest(fragment, request);
+    }
+
+    private boolean canServeFormPostRequest(HtmlFragment fragment, TemplateEngineRequest request) {
+        return !isRequestAFormPost(request) || canServeFormPost(fragment, request);
+    }
+
+    private boolean canServeMethodType(HttpMethod requestMethodType) {
         ServiceCallMethod methodType = ServiceCallMethod.from(requestMethodType);
         return java.util.Objects.equals(this.methodType, methodType) || java.util.Objects.equals(this.methodType, ServiceCallMethod.ALL);
     }
 
+
+    private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
+        String htmlfragmentId = fragment.getDataId();
+        String requestFormId = request.getFormAttributes().get(FORM_ID_ATTRIBUTE);
+        return Objects.equals(requestFormId, htmlfragmentId);
+    }
+
+    private boolean isRequestAFormPost(TemplateEngineRequest request) {
+        if (request.getServerRequestMethod() != HttpMethod.POST) {
+            return false;
+        }
+        String requestFormId = request.getFormAttributes().get(FORM_ID_ATTRIBUTE);
+        return StringUtils.isNotEmpty(requestFormId);
+    }
 
     public String getPlaceholderNamespace() {
         return placeholderNamespace;

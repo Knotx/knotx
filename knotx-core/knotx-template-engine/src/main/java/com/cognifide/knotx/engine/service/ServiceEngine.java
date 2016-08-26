@@ -44,14 +44,20 @@ public class ServiceEngine {
         this.configuration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod) {
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod, MultiMap formAttributes) {
         Observable<HttpClientResponse> serviceResponse =
                 Observable.create((subscriber) -> {
                     HttpClientRequest req = vertx.createHttpClient().request(httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri());
                     req.headers().addAll(headers);
                     Observable resp = req.toObservable();
                     resp.subscribe(subscriber);
-                    req.end();
+                    if (!formAttributes.isEmpty()) {
+                        Buffer buffer = createFormPostBody(formAttributes);
+                        writeFormPostHeaders(req, buffer.length());
+                        req.end(buffer);
+                    } else {
+                        req.end();
+                    }
                 });
         return serviceResponse.flatMap(response ->
                 Observable.just(Buffer.buffer())
@@ -59,6 +65,25 @@ public class ServiceEngine {
                         .reduce(Buffer::appendBuffer))
                 .doOnNext(this::traceServiceCall)
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
+    }
+
+    private void writeFormPostHeaders(HttpClientRequest req, int bufferLength) {
+        req.headers().set("content-length", String.valueOf(bufferLength));
+        req.headers().set("content-type", "application/x-www-form-urlencoded");
+    }
+
+    private Buffer createFormPostBody(MultiMap formAttributes) {
+        Buffer buffer = Buffer.buffer();
+        // Make sure we have one param that needs url encoding
+        int i = 0;
+        for (String name : formAttributes.names()) {
+            if (i != 0) {
+                buffer.appendString("&");
+            }
+            buffer.appendString(name + "=" + formAttributes.get(name), "UTF-8");
+            i++;
+        }
+        return buffer;
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {

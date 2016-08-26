@@ -43,4 +43,10 @@ abstract public class JsonObjectRequest {
 
         return map;
     }
+
+    protected String multiMapToString(MultiMap map) {
+        StringBuilder result = new StringBuilder();
+        map.names().forEach(header -> result.append(header).append("=").append(map.get(header)).append("\n"));
+        return result.toString();
+    }
 }

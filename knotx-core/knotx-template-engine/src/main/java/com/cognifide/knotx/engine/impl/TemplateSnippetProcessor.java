@@ -51,10 +51,10 @@ public class TemplateSnippetProcessor {
 
     public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
         return fragment.getServices()
-                .filter(serviceEntry -> serviceEntry.canServeMethodType(request.getServerRequestMethod()))
+                .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders(), request.getServerRequestMethod()),
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders(), request.getServerRequestMethod(), request.getFormAttributes()),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(ServiceEntry::getResultWithNamespaceAsKey)
                 .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {

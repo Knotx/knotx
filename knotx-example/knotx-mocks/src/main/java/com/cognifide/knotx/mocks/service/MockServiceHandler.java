@@ -28,6 +28,7 @@ import java.net.URL;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class MockServiceHandler implements Handler<HttpServerRequest> {
@@ -42,6 +43,11 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
 
     @Override
     public void handle(HttpServerRequest event) {
+        event.setExpectMultipart(true);
+        event.endHandler(avoid -> {
+            MultiMap multiMap = event.formAttributes();
+            LOGGER.debug("mock service multimap : {}", multiMap);
+        });
         String resourcePath = getFilePath(event);
         String htmlContent = "";
         try {
