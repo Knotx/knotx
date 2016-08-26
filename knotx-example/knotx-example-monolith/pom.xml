@@ -55,6 +55,13 @@
         </dependency>
         <dependency>
             <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-template-engine</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.cognifide.knotx</groupId>
             <artifactId>knotx-server</artifactId>
             <version>${project.version}</version>
         </dependency>

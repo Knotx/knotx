@@ -19,8 +19,8 @@ package com.cognifide.knotx.monolith;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.cognifide.knotx.monolith.util.FileReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.core.http.HttpClient;
 import io.vertx.ext.unit.Async;
@@ -30,30 +30,42 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest extends AbstractApplicationTest {
 
-  @Test
-  public void localSimpleHtmlTest(TestContext context) {
-    HttpClient client = vertx.createHttpClient();
-    Async async = context.async();
-    client.getNow(knotxPort, knotxDomain, "/content/local/simple.html",
-        resp -> resp.bodyHandler(body -> {
-          context.assertEquals(resp.statusCode(), 200);
-          context.assertEquals(body.toString(), FileReader.readFile("localSimpleResult.html"));
-          client.close();
-          async.complete();
-        }));
-  }
+    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
 
-  @Test
-  public void remoteSimpleHtmlTest(TestContext context) {
-    HttpClient client = vertx.createHttpClient();
-    Async async = context.async();
-    client.getNow(knotxPort, knotxDomain, "/content/remote/simple.html",
-        resp -> resp.bodyHandler(body -> {
-          context.assertEquals(resp.statusCode(), 200);
-          context.assertEquals(body.toString(), FileReader.readFile("remoteSimpleResult.html"));
-          client.close();
-          async.complete();
-        }));
-  }
+    @Test
+    public void localSimpleHtmlTest(TestContext context) {
+        HttpClient client = vertx.createHttpClient();
+        Async async = context.async();
+        client.getNow(knotxPort, knotxDomain, "/content/local/simple.html",
+                resp -> resp.bodyHandler(body -> {
+                    context.assertEquals(resp.statusCode(), 200);
+                    String fileName = "localSimpleResult.html";
+                    try {
+                        context.assertEquals(body.toString(), readText(fileName));
+                    } catch (Exception e) {
+                        LOG.error("Cannot red file {}", fileName);
+                    }
+                    client.close();
+                    async.complete();
+                }));
+    }
+
+    @Test
+    public void remoteSimpleHtmlTest(TestContext context) {
+        HttpClient client = vertx.createHttpClient();
+        Async async = context.async();
+        client.getNow(knotxPort, knotxDomain, "/content/remote/simple.html",
+                resp -> resp.bodyHandler(body -> {
+                    context.assertEquals(resp.statusCode(), 200);
+                    String fileName = "remoteSimpleResult.html";
+                    try {
+                        context.assertEquals(body.toString(), readText(fileName));
+                    } catch (Exception e) {
+                        LOG.error("Cannot red file {}", fileName);
+                    }
+                    client.close();
+                    async.complete();
+                }));
+    }
 
 }
