@@ -28,7 +28,6 @@ import java.net.URL;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class MockServiceHandler implements Handler<HttpServerRequest> {
