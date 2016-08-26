@@ -17,50 +17,80 @@
     limitations under the License.
 
 -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
     <title>Knot.x</title>
-    <link rel="icon" href="data:;base64,=">
+    <link href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-<h1>Hello Knot.x - reactive microservice assembler world!</h1>
-<h2>This template is served from the local repository.</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h2>
+                    Hello Knot.x - reactive micro-service assembler world!
+                </h2>
+                <p>
+                    This template is served from the <strong>local</strong> repository.
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large"
+                       href="https://github.com/Cognifide/knotx">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <script data-api-type="templating" data-call-uri="/service/mock/first.json"
+                data-call-uri-second="/service/mock/second.json"
+                data-call-uri-third="/service/mock/third.json"
+                type="text/x-handlebars-template">
 
-<script data-api-type="templating" data-call-uri="/service/mock/first.json"
-        data-call-uri-second="/service/mock/second.json"
-        data-call-uri-third="/service/mock/third.json"
-        type="text/x-handlebars-template">
-
-    <h2>{{message}}</h2>
-    <div>{{body.a}}</div>
-
-    <h2>{{second.message}}</h2>
-    <div>{{second.body.a}}</div>
-
-    <h2>{{third.message}}</h2>
-    <div>{{third.body.a}}</div>
-
-</script>
-<hr>
-<script data-api-type="templating" data-call-uri="/service/mock/second.json"
-        type="text/x-handlebars-template">
-    <h2>{{message}}</h2>
-    <div>{{body.b}}</div>
-    {{#string_equals status "success"}}<div>Success!</div>{{/string_equals}}
-</script>
-<hr>
-<script data-api-type="templating" data-call-uri="/service/mock/third.json"
-        type="text/x-handlebars-template">
-    <h2>{{message}}</h2>
-    <div>{{body.c}}</div>
-</script>
-<hr>
-<script data-api-type="templating" data-call-uri="/service/mock/third.json"
-        type="text/x-handlebars-template">
-    <h2>{{message}}</h2>
-    <div>{{encode_uri url}}</div>
-</script>
-
+            <div class="col-md-4">
+                <h2>Snippet1 - {{message}}</h2>
+                <div>Snippet1 - {{body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet1 - {{second.message}}</h2>
+                <div>Snippet1 - {{second.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet1 - {{third.message}}</h2>
+                <div>Snippet1 - {{third.body.a}}</div>
+            </div>
+        </script>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <script data-api-type="templating" data-call-uri="/service/mock/second.json"
+                    type="text/x-handlebars-template">
+                <h2>Snippet2 - {{message}}</h2>
+                <p>Snippet2 - {{body.a}}</p>
+                {{#string_equals status "success"}}<p>Success!</p>{{/string_equals}}
+            </script>
+        </div>
+        <div class="col-md-4">
+            <script data-api-type="templating" data-call-uri="/service/mock/third.json"
+                    type="text/x-handlebars-template">
+                <h2>Snippet3 - {{message}}</h2>
+                <p>Snippet3 - {{body.a}}</p>
+            </script>
+        </div>
+        <div class="col-md-4">
+            <script data-api-type="templating" data-call-uri="/service/mock/third.json"
+                    type="text/x-handlebars-template">
+                <h2>Snippet4 - {{message}}</h2>
+                <p>Snippet4 - {{encode_uri url}}</p>
+            </script>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
-
