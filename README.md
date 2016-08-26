@@ -468,7 +468,7 @@ Configuration json contains three config sections, each for each Knot.x verticle
 
 ### Executing Knot.x core verticles as cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on separate JVM or host as cluster. Out of the box requirement to form cluster (driven by Hazelcast) is that network supports multicast.
-For other network configurations please consult Vert.x documentation TODOLINK
+For other network configurations please consult Vert.x documentation [Vert.x Hazelcast - Configuring cluster manager](http://vertx.io/docs/vertx-hazelcast/java/#_configuring_this_cluster_manager)
 
 To run it, execute the following command:
 **Host 1 - Repository Verticle**
