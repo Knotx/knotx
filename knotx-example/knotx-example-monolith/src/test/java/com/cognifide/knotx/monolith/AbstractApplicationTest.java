@@ -43,6 +43,7 @@ public abstract class AbstractApplicationTest extends AbstractKnotxConfiguration
 
     @Before
     public void setUp() throws Exception {
+        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
         vertx = Vertx.vertx();
 
         JsonObject configuration = readJson("knotx-example-monolith.json");
