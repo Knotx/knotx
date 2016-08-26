@@ -125,9 +125,38 @@ To build it you also need Maven at least version 3.3.1
 ## Modules
 The Knot.x project has two main Maven modules: **knotx-core** and **knotx-example**.
 
-The *core* module contains the Knot.x [verticles]((http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html)) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
+### Core
+The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
 
+#### knotx-api
+Module that contains communication model used to send events messages via Event Bus.
+
+#### knotx-launcher
+Module that sets proper system properties for Knot.x core. Currently only logger.
+
+#### knotx-repository
+Module that contains **repository** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Repository is responsible for fetching template.
+
+#### knotx-server
+Module that contains **server** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Server is responsible for communication between Knot.x and the World. It handles initial request, dispatches it to `repository` and `templating-engine` verticles using [Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html) and finally responses.
+
+#### knotx-standalone
+Module that contains **host** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) which starts `server`, `repository` and `template-engine` verticles. It enables to quickly setup standalone Knot.x core application.
+
+#### knotx-template-engine
+Module that contains **template-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Templating Engine is responsible for processing template snippets, calling external services for the dynamic data and producing final markup with injected data.
+
+### Example
 The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts five verticles (Knot.x Repository, Knot.x Template Engine, Knot.x Server, Services Mocks and Mocked Remote repository). This module is a perfect fit for those getting started with Knot.x. 
+
+#### knotx-example-monolith
+Module that can be used to setup Knot.x instance with mocked external services (from `knotx-mocks`) on a single Vert.x instance using one command. Please mind that this an example that depicts a valid setup of Sample monolith application is not fit for use in production environments.
+We recommend to start playing with Knot.x using this module. To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
+More information about setup can be found in [Getting started](#executing-fat-jar) section.
+
+#### knotx-mocks
+Module that contains simple mocks of `templates repository` and `micorservices endpoints` implemented as [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html). 
+When started *mock remote repository* listens on port `3001` and *mock service* listens on port `3000`.
 
 ## Building
 
