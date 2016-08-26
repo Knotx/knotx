@@ -94,6 +94,26 @@ The following diagram shows the asynchronous nature of **Knot.x**. After obtaini
 
 ![Flow diagram](https://github.com/Cognifide/knotx/blob/master/icons/architecture/flow-diagram.png)
 
+Please notice, that order of data calls is not guaranteed. Please consider following snippet as an example:
+```html
+<script data-api-type="templating" data-uri-post-saveUser="/saveUserService" data-uri-get-getUser="/getUserService" type="text/x-handlebars-template">
+    <div>Hello {{getUser.name}}</div>
+    <form method="post">
+        <input type="input" name="name" />
+        <input type="submit" value="Submit" />
+    </form>
+</script>
+```
+
+The order of calling services may be:
+1. `/saveUserService`,
+2. `/getUserService` .
+or
+1. `/getUserService`,
+2. `/saveUserService`.
+
+Because of this, service `/getUserService` should not depend on operations from `/saveUserService`.
+
 # Getting started
 
 ## Requirements
