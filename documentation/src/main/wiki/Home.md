@@ -53,4 +53,4 @@ It's worth mentioning that this architecture scales very easily. Not only can yo
 
 The following diagram shows the asynchronous nature of **Knot.x**. After obtaining a template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
 
-![Flow diagram][[assets/flow-diagram.png]]
+[[assets/flow-diagram.png|alt=Flow diagram]]
