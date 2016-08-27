@@ -17,6 +17,10 @@
  */
 package com.cognifide.knotx.api;
 
+import com.google.common.base.Joiner;
+
+import java.util.Map;
+
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
@@ -45,8 +49,6 @@ abstract public class JsonObjectRequest {
     }
 
     protected String multiMapToString(MultiMap map) {
-        StringBuilder result = new StringBuilder();
-        map.names().forEach(header -> result.append(header).append("=").append(map.get(header)).append("\n"));
-        return result.toString();
+        return Joiner.on("\n").withKeyValueSeparator("=").join((Iterable<Map.Entry<String, String>>) map.getDelegate());
     }
 }
