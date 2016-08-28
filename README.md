@@ -189,20 +189,20 @@ http://localhost:8092/content/remote/simple.html
 
 ### Executing fat jar
 
-To run sample app execute following commands
+To run sample app, execute the following commands:
 ```
 $cd knotx-example/knotx-example-monolith
 java -jar target/knotx-example-monolith-XXX.jar -conf src/main/resources/application.json
 ```
 
-This will run the server with sample data. You can supply your own configuration using -conf parameter.Sample pages are available at:
+This will run the server with sample data. You can supply your own configuration using the `-conf` parameter. Sample pages are available at:
 ```
 http://localhost:8092/content/local/simple.html
 http://localhost:8092/content/remote/simple.html
 ```
 ## Configuration
 
-The Knot.x Sample application consists of multiple verticles, each requiring dedicated configuration entry.
+The Knot.x Sample application consists of multiple verticles, each requiring a dedicated configuration entry.
 Here's how JSON configuration files look:
 **1. application.json**
 ```json
@@ -234,7 +234,7 @@ Here's how JSON configuration files look:
   }
 }
 ```
-This is the main configuration supplying config entries for each verticle started by Sample application.
+This is the main configuration supplying config entries for each verticle started by the Sample application.
 
 **1.1. repository** section
 ```json
@@ -260,9 +260,9 @@ This is the main configuration supplying config entries for each verticle starte
   ...
 }
 ```
-This section configures the Knot.x Repository Verticle listening for requests on Vert.x event bus. config node consists of:
-- **service.name** - name/address of the event bus to which Repository Verticle subscribes on.
-- **repositories** - Array consists of definitions of all repositories used providing HTML Templates
+This section configures the Knot.x Repository Verticle listening for requests on Vert.x event bus. The config node consists of:
+- **service.name** - the name/address of the event bus to which Repository Verticle subscribes on,
+- **repositories** - an array of definitions of all repositories used that provide HTML Templates.
 
 There are two sample repositories defined - `local` and `remote`. Each of them defines a `path` - a regular expression that indicates which resources will be taken from this repository. 
 The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
@@ -276,7 +276,7 @@ The first one matched will handle the request or, if no repository is matched, *
 }
 ```
 If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
-Second parameter to define is `catalogue` - it determines where to take the resources from. If left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
+The second parameter to define is `catalogue` - it determines where to take the resources from. If it's left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
 - **Remote repositories**
 This kind of repository connects with an external server to fetch templates. To specify where the remote instance is, please configure the `domain` and `port` parameters.
@@ -312,10 +312,10 @@ This kind of repository connects with an external server to fetch templates. To 
   },
   ...,
 ```
-This section configures the Knot.x Template Engine Verticle listening for requests on Vert.x event bus. config node consists of:
-- **service.name** - name/address of the event bus to which Repository Verticle subscribes on.
-- **template.debug** - bolean flag to enable/disable rendering HTML comment entities around dynamic snippets.
-- **services** - Array consists of definitions of all service endpoints used by dynamic snippets.
+This section configures the Knot.x Template Engine Verticle listening for requests on Vert.x event bus. The config node consists of:
+- **service.name** - name/address of the event bus to which the Repository Verticle subscribes,
+- **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
+- **services** - an array of definitions of all service endpoints used by dynamic snippets.
 
 There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
 - `/service/mock/.*` will by handled by `localhost:3000`
@@ -344,12 +344,12 @@ The first matched service will handle the request or, if there's no service matc
   ...
 }
 ```
-This section configures the Knot.x HTTP server. config node consists of:
-- **http.port** - And HTTP port on which server listens for requests
-- **preserved.headers** - Array of HTTP Headers that will be forwarded to service calls
-- **dependencies** - consists Vert.x Event Bus addresses to Knot.x verticles used by Knot.x
-    - **repository.address** - event bus address of Knot.x Repository verticle. This is the same value as **service.name** in the **repository** section of the application.json
-    - **engine.address** - event bus address of Knot.x Template Engine verticle. This is the same value as **service.name** in the **templateEngine** section of the application.json    
+This section configures the Knot.x HTTP server. The config node consists of:
+- **http.port** - an HTTP port on which the server listens for requests,
+- **preserved.headers** - an array of HTTP Headers that will be forwarded to service calls,
+- **dependencies** - Vert.x Event Bus addresses to Knot.x verticles used by Knot.x
+    - **repository.address** - event bus address of Knot.x Repository verticle. This is the same value as **service.name** in the **repository** section of the `application.json`
+    - **engine.address** - event bus address of Knot.x Template Engine verticle. This is the same value as **service.name** in the **templateEngine** section of the `application.json`    
 
 **mockRepo** section
 ```json
@@ -363,7 +363,7 @@ This section configures the Knot.x HTTP server. config node consists of:
 }
 ```
 This section configures the Remote repository mock used by the example application. It consists of:
-- **mock.data.root** - relative (to knotx-mocks/src/main/resources) path where mocked HTML responses are located on local storage
+- **mock.data.root** - a path (relative to `knotx-mocks/src/main/resources`) where mocked HTML responses are located on local storage,
 - **http.port** - HTTP Port the mock service is listening to.
 
 **mockService** section
@@ -381,7 +381,7 @@ This section configures the Services mock used by the example application. It co
 - **mock.data.root** - relative (to knotx-mocks/src/main/resources) path where mocked JSON responses are located on local storage
 - **http.port** - HTTP Port the mock service is listening to.
 
-Please mind that this an example that depicts a valid setup of Sample monolith application is not fit for use in production environments.
+Please mind that this an example that depicts a valid setup of the Sample monolith application and it is not fit for use in production environments.
 To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
 
 # Features
@@ -437,7 +437,7 @@ This will run the server with production settings. For more information see the 
 
 #### Configuration
 
-The *core* module contains 3 Knot.x verticle without any sample data. Here's how its configuration files look based on sample **standalone.json** available in knotx-standalone module:
+The *core* module contains 3 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
 **standalone.json**
 ```json
 {
@@ -493,10 +493,10 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
   }
 }
 ```
-Configuration json contains three config sections, each for each Knot.x verticle.
+Configuration json contains three config sections, one for each Knot.x verticle.
 
-### Executing Knot.x core verticles as cluster
-Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on separate JVM or host as cluster. Out of the box requirement to form cluster (driven by Hazelcast) is that network supports multicast.
+### Executing Knot.x core verticles as a cluster
+Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
 For other network configurations please consult Vert.x documentation [Vert.x Hazelcast - Configuring cluster manager](http://vertx.io/docs/vertx-hazelcast/java/#_configuring_this_cluster_manager)
 
 To run it, execute the following command:
@@ -513,14 +513,14 @@ java -jar knotx-template-engine-XXX-fat.jar -conf <path-to-engine-configuration.
 java -jar knotx-server-XXX-fat.jar -conf <path-to-server-configuration.json>
 ```
 
-For production set up you might need to configure logger according to your needs. You can start each of the verticle specifying path to the logback logger configuration via system property.
+For production setup you might need to configure a logger according to your needs. You can start each of the verticles specifying a path to the logback logger configuration via a system property.
 ```
 java -Dlogback.configurationFile=<full-path-to-logback-configuration-file> -jar XXX
 ```
-Please refer to [LOGBack manual](http://logback.qos.ch/manual/index.html) for a details how to configure logger.
+Please refer to [LOGBack manual](http://logback.qos.ch/manual/index.html) for details on how to configure the logger.
 
 ### Remarks
-For clustering testing purposes you can start also a separate verticle with repository and services mocks. In order to do so, run the following commands:
+For clustering testing purposes you can also start a separate verticle with repository and services mocks. In order to do so, run the following commands:
 ```
 $ cd knotx-example/knotx-mocks
 $ java -jar target/knotx-mocks-XXXX-far.jar -conf src/main/resources/knotx-mocks.json
@@ -530,8 +530,8 @@ The mocks verticle is configured as follows:
 - **mock service** listens on port **3000**
 
 ### Configuration
-Each verticle require JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
-For instance, a configuration JSON for *repository* verticle
+Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
+For instance, a configuration JSON for the *repository* verticle could look like this:
 ```json
 {
   "config": {
