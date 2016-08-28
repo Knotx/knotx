@@ -493,7 +493,7 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
   }
 }
 ```
-Configuration json contains three config sections, one for each Knot.x verticle.
+Configuration JSON contains three config sections, one for each Knot.x verticle.
 
 ### Executing Knot.x core verticles as a cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
