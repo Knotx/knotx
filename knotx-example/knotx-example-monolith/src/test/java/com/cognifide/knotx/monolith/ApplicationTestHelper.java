@@ -17,10 +17,6 @@
  */
 package com.cognifide.knotx.monolith;
 
-
-import org.junit.After;
-import org.junit.Before;
-
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineVerticle;
 import com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle;
@@ -33,16 +29,15 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
 
-public abstract class AbstractApplicationTest extends AbstractKnotxConfigurationTest {
+public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
 
-    protected static Vertx vertx;
+    public static Vertx vertx;
 
-    protected static int knotxPort;
+    public static int knotxPort;
 
-    protected String knotxDomain = "localhost";
+    public static String knotxDomain = "localhost";
 
-    @Before
-    public void setUp() throws Exception {
+    public static void startKnotx() throws Exception {
         System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
         vertx = Vertx.vertx();
 
@@ -66,8 +61,7 @@ public abstract class AbstractApplicationTest extends AbstractKnotxConfiguration
                         "knotxServer")));
     }
 
-    @After
-    public void tearDown(TestContext context) {
+    public static void tearDown(TestContext context) {
         vertx.close(context.asyncAssertSuccess());
     }
 

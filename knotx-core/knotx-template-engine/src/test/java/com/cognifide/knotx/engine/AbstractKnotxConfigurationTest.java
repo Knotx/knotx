@@ -30,11 +30,11 @@ public class AbstractKnotxConfigurationTest {
         return readJson(path).getJsonObject("config");
     }
 
-    protected String readText(String path) throws Exception {
+    public static String readText(String path) throws Exception {
         return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
     }
 
-    protected JsonObject readJson(String path) throws Exception {
+    protected static JsonObject readJson(String path) throws Exception {
         return new JsonObject(readText(path));
     }
 }
