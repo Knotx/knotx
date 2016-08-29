@@ -43,7 +43,7 @@ public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
 
         JsonObject configuration = readJson("knotx-example-monolith.json");
 
-        knotxPort = configuration.getJsonObject("knotxServer").getJsonObject("config").getInteger("http.port");
+        knotxPort = configuration.getJsonObject("server").getJsonObject("config").getInteger("http.port");
 
         vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(
                 configuration.getJsonObject("mockRepo")));
@@ -55,10 +55,10 @@ public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
                         "repository")));
         vertx.deployVerticle(new TemplateEngineVerticle(),
                 new DeploymentOptions().setConfig(configuration.getJsonObject(
-                        "templateEngine")));
+                        "engine")));
         vertx.deployVerticle(new KnotxServerVerticle(),
                 new DeploymentOptions().setConfig(configuration.getJsonObject(
-                        "knotxServer")));
+                        "server")));
     }
 
     public static void tearDown(TestContext context) {
