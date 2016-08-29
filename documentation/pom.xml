@@ -99,6 +99,28 @@
 							<workingDirectory>src/main</workingDirectory>
 						</configuration>
 					</plugin>
+					<plugin>
+						<groupId>org.apache.rat</groupId>
+						<artifactId>apache-rat-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<!-- Node instance for frontend-maven-plugin -->
+										<excludes>**/*.json</excludes>
+										<excludes>**/*.MD</excludes>
+
+										<exclude>src/main/node_modules/**</exclude>
+										<excludes>src/main/node/**</excludes>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>

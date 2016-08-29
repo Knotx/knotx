@@ -55,6 +55,7 @@
     </developers>
 
     <modules>
+        <module>documentation</module>
         <module>knotx-core</module>
         <module>knotx-example</module>
     </modules>
