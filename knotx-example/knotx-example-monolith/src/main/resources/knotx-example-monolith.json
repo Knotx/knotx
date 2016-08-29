@@ -1,5 +1,5 @@
 {
-  "knotxServer": {
+  "server": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -32,7 +32,7 @@
       ]
     }
   },
-  "templateEngine": {
+  "engine": {
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
