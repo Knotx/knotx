@@ -82,27 +82,29 @@ public class ServiceEntry {
     }
 
     public boolean canServeRequest(HtmlFragment fragment, TemplateEngineRequest request) {
-        return canServeMethodType(request.getServerRequestMethod()) && canServeFormPostRequest(fragment, request);
-    }
+        boolean canServeMethodType = canServeMethodType(request.getServerRequestMethod());
 
-    private boolean canServeFormPostRequest(HtmlFragment fragment, TemplateEngineRequest request) {
-        return !isRequestAFormPost(request) || canServeFormPost(fragment, request);
+        if (isRequestAFormPostWithId(request)) {
+            return canServeMethodType && canServeFormPost(fragment, request);
+        } else {
+            return canServeMethodType;
+        }
     }
 
     private boolean canServeMethodType(HttpMethod requestMethodType) {
-        ServiceCallMethod methodType = ServiceCallMethod.from(requestMethodType);
-        return java.util.Objects.equals(this.methodType, methodType)
+        ServiceCallMethod methodTypeFromRequest = ServiceCallMethod.from(requestMethodType);
+        return java.util.Objects.equals(this.methodType, methodTypeFromRequest)
                 || java.util.Objects.equals(this.methodType, ServiceCallMethod.ALL);
     }
 
 
     private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
-        String htmlfragmentId = fragment.getDataId();
+        String htmlFragmentId = fragment.getDataId();
         String requestFormId = request.getFormAttributes().get(FORM_ID_ATTRIBUTE);
-        return Objects.equals(requestFormId, htmlfragmentId) || ServiceCallMethod.POST != (methodType);
+        return Objects.equals(requestFormId, htmlFragmentId) || ServiceCallMethod.POST != (methodType);
     }
 
-    private boolean isRequestAFormPost(TemplateEngineRequest request) {
+    private boolean isRequestAFormPostWithId(TemplateEngineRequest request) {
         if (request.getServerRequestMethod() != HttpMethod.POST) {
             return false;
         }
