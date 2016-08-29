@@ -49,24 +49,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- plugin for generating licensing header in headers of defined files -->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <header>${project.parent.parent.basedir}/license-template</header>
-                    <headerDefinitions>
-                        <header>${project.parent.parent.basedir}/license-header-definition.xml</header>
-                    </headerDefinitions>
-                </configuration>
-            </plugin>
-            <!-- plugin for checking if licensing header is present in headers of defined files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>
