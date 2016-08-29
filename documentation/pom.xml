@@ -46,12 +46,9 @@
 						<configuration>
 							<excludes>
 								<!-- Node instance for frontend-maven-plugin -->
-								<exclude>README.md</exclude>
 								<excludes>src/main/node/**</excludes>
 								<exclude>src/main/node_modules/**</exclude>
 								<exclude>src/main/wiki/**</exclude>
-								<exclude>src/main/*.json</exclude>
-								<exclude>src/main/DocumentationTemplate.md</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -98,28 +95,6 @@
 						<configuration>
 							<workingDirectory>src/main</workingDirectory>
 						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.rat</groupId>
-						<artifactId>apache-rat-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>validate</phase>
-								<goals>
-									<goal>check</goal>
-								</goals>
-								<configuration>
-									<excludes>
-										<!-- Node instance for frontend-maven-plugin -->
-										<excludes>**/*.json</excludes>
-										<excludes>**/*.MD</excludes>
-
-										<exclude>src/main/node_modules/**</exclude>
-										<excludes>src/main/node/**</excludes>
-									</excludes>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>

@@ -208,6 +208,7 @@
                         </includes>
                         <excludes>
                             <exclude>**/*.json</exclude>
+                            <exclude>**/*.MD</exclude>
                         </excludes>
                     </configuration>
                     <executions>

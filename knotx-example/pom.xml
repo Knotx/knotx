@@ -38,16 +38,6 @@
         <main.verticle>com.cognifide.knotx.repository.server.SampleApplication</main.verticle>
     </properties>
 
-     <build>
-        <plugins>
-            <!-- plugin for checking if licensing header is present in headers of defined files -->
-            <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <modules>
         <module>knotx-mocks</module>
         <module>knotx-example-monolith</module>
