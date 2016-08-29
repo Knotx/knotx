@@ -27,10 +27,14 @@ import io.vertx.core.json.JsonObject;
 public class AbstractKnotxConfigurationTest {
 
     protected JsonObject readConfig(String path) throws Exception {
-        return new JsonObject(readText(path)).getJsonObject("config");
+        return readJson(path).getJsonObject("config");
     }
 
-    protected String readText(String path) throws Exception {
+    public static String readText(String path) throws Exception {
         return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+    }
+
+    protected static JsonObject readJson(String path) throws Exception {
+        return new JsonObject(readText(path));
     }
 }

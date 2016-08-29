@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.cognifide.knotx</groupId>
         <artifactId>knotx-example</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>knotx-example-monolith</artifactId>
@@ -55,6 +55,13 @@
         </dependency>
         <dependency>
             <groupId>com.cognifide.knotx</groupId>
+            <artifactId>knotx-template-engine</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.cognifide.knotx</groupId>
             <artifactId>knotx-server</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -78,6 +85,20 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-unit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
     </dependencies>
 

@@ -24,7 +24,7 @@
     <parent>
         <groupId>com.cognifide.knotx</groupId>
         <artifactId>knotx-core</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>knotx-template-engine</artifactId>
@@ -121,6 +121,17 @@
                         <header>${project.parent.parent.basedir}/license-header-definition.xml</header>
                     </headerDefinitions>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- plugin for checking if licensing header is present in headers of defined files -->
             <plugin>
