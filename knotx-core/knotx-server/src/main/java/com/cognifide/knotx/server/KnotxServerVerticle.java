@@ -77,7 +77,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                                         eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
                                                 .subscribe(
                                                         result -> {
-                                                             TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
+                                                            TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
                                                             if (engineResponse.isSuccess()) {
                                                                 rewriteHeaders(request, request.headers());
                                                                 request.response().end(engineResponse.getHtml());
@@ -95,7 +95,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                                         request.response().setStatusCode(repository.getStatusCode()).end();
                                     }
                                 },
-                                    error -> LOGGER.error("Error: ", error)
+                                error -> LOGGER.error("Error: ", error)
                         )
         ).listen(
                 configuration.httpPort(),
