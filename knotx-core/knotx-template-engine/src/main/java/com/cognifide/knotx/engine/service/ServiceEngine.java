@@ -49,7 +49,7 @@ public class ServiceEngine {
 
     public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod, MultiMap formAttributes) {
         Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
-                req -> buildRequestBody(req, headers, formAttributes));
+                req -> buildRequestBody(req, headers, formAttributes, httpMethod));
 
         return serviceResponse.flatMap(response ->
                 Observable.just(Buffer.buffer())
@@ -59,9 +59,9 @@ public class ServiceEngine {
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
     }
 
-    private void buildRequestBody(HttpClientRequest request, MultiMap headers, MultiMap formAttributes) {
+    private void buildRequestBody(HttpClientRequest request, MultiMap headers, MultiMap formAttributes, HttpMethod httpMethod) {
         request.headers().addAll(headers);
-        if (!formAttributes.isEmpty()) {
+        if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
             Buffer buffer = createFormPostBody(formAttributes);
             request.headers().set("content-length", String.valueOf(buffer.length()));
             request.headers().set("content-type", "application/x-www-form-urlencoded");
