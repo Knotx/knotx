@@ -99,7 +99,7 @@ public class ServiceEntry {
     private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
         String htmlfragmentId = fragment.getDataId();
         String requestFormId = request.getFormAttributes().get(FORM_ID_ATTRIBUTE);
-        return Objects.equals(requestFormId, htmlfragmentId);
+        return Objects.equals(requestFormId, htmlfragmentId) || ServiceCallMethod.POST != (methodType);
     }
 
     private boolean isRequestAFormPost(TemplateEngineRequest request) {
