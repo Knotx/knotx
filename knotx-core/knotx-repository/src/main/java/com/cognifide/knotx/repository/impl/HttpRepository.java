@@ -21,7 +21,6 @@ import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.repository.Repository;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.RxHelper;
@@ -62,9 +61,7 @@ class HttpRepository implements Repository {
 
         return clientResponse
                 .doOnNext(this::traceResponse)
-                .filter(this::onlySuccess)
-                .flatMap(this::reduceBuffers)
-                .flatMap(this::toRepositoryResponse)
+                .flatMap(this::processResponse)
                 .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", repositoryRequest))
                 .onErrorReturn(error -> {
                             LOGGER.error("Unable to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
@@ -73,19 +70,20 @@ class HttpRepository implements Repository {
                 );
     }
 
-    private Observable<Buffer> reduceBuffers(HttpClientResponse response) {
+    private Observable<RepositoryResponse> processResponse(final HttpClientResponse response) {
         return Observable.just(Buffer.buffer())
                 .mergeWith(response.toObservable())
-                .reduce(Buffer::appendBuffer);
+                .reduce(Buffer::appendBuffer)
+                .flatMap(buffer -> toRepositoryResponse(buffer,response));
     }
 
-    private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer) {
+    private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
         Observable<RepositoryResponse> response;
         if (buffer.length() > 0) {
             response = RepositoryResponse.success(buffer.toString()).toObservable();
         } else {
-            LOGGER.error("Remote repository returned empty template for path `{}`", path);
-            response = RepositoryResponse.error("No Template found for path %s", path).toObservable();
+            LOGGER.info("Remote repository returned empty template for path `{}` with status code {}", path, httpClientResponse.statusCode());
+            response = RepositoryResponse.error(httpClientResponse.statusCode(), httpClientResponse.headers()).toObservable();
         }
         return response;
     }
@@ -94,10 +92,6 @@ class HttpRepository implements Repository {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Got response from remote repository {}", response.statusCode());
         }
-    }
-
-    private boolean onlySuccess(HttpClientResponse response) {
-        return response.statusCode() == HttpResponseStatus.OK.code();
     }
 
     @Override

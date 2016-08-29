@@ -26,21 +26,25 @@ abstract public class JsonObjectRequest {
     public abstract JsonObject toJsonObject();
 
     protected JsonArray toJsonArray(final MultiMap multiMap) {
-        return multiMap.names().stream()
-                .map(name -> new JsonObject().put(name, multiMap.get(name)))
-                .reduce(new JsonArray(),
-                        (objects, item) -> objects.add(item),
-                        (u, u2) -> u.addAll(u2));
+        JsonArray jsonArray = new JsonArray();
+        if(multiMap!=null){
+            jsonArray = multiMap.names().stream()
+                    .map(name -> new JsonObject().put(name, multiMap.get(name)))
+                    .reduce(new JsonArray(),
+                            (objects, item) -> objects.add(item),
+                            (u, u2) -> u.addAll(u2));
+        }
+        return jsonArray;
     }
 
     protected MultiMap fromJsonArray(final JsonArray array) {
         MultiMap map = MultiMap.caseInsensitiveMultiMap();
-
-        array.stream()
-                .map(item -> (JsonObject) item)
-                .flatMap(item -> item.stream())
-                .forEach(entry -> map.add(entry.getKey(), entry.getValue().toString()));
-
+        if(array !=null){
+            array.stream()
+                    .map(item -> (JsonObject) item)
+                    .flatMap(item -> item.stream())
+                    .forEach(entry -> map.add(entry.getKey(), entry.getValue().toString()));
+        }
         return map;
     }
 }
