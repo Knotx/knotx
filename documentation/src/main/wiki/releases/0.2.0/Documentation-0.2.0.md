@@ -9,6 +9,7 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 
 # Contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
+
 - [How it works](#how-it-works)
   - [Templating](#templating)
   - [Architecture](#architecture)
@@ -37,6 +38,7 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
 - [Dependencies](#dependencies)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 # How it works
 
@@ -311,10 +313,10 @@ would trigger two calls for data because of the difference in query strings, eve
 
 ## Results
 * Reponse Time
-![Response Time][[assets/reponse.png]]
+![Response Time](assets/reponse.png)
 
 * Number of transactions
-![Number of transactions][[assets/transactions.png]]
+![Number of transactions](assets/transactions.png)
 # Production
 
 The example module is provided for testing purposes. Only the core module should be deployed in a production environment. (The Knot.x application runs as a single verticle without any dependencies).

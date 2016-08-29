@@ -6,4 +6,4 @@
   * [[Production usage|ProductionUsage]]
   * [[Dependencies|Dependencies]]
 ### Releases
-* [[0.2.0-SNAPSHOT|Documentation-0.2.0-SNAPSHOT]]
+* [[0.2.0|Documentation-0.2.0]]

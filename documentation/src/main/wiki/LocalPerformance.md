@@ -10,7 +10,7 @@
 
 ## Results
 * Reponse Time
-![Response Time][[assets/reponse.png]]
+![Response Time](assets/reponse.png)
 
 * Number of transactions
-![Number of transactions][[assets/transactions.png]]
+![Number of transactions](assets/transactions.png)
