@@ -183,6 +183,7 @@
                                 <exclude>LICENSE</exclude>
                                 <exclude>CONTRIBUTING.md</exclude>
                                 <exclude>.travis.yml</exclude>
+                                <exclude>src/main/resources/mock-service/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
