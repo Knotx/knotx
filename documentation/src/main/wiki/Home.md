@@ -43,14 +43,14 @@ In this case the microservice response could have the following format:
 ## Architecture
 The HTTP Request which comes to **Knot.x** causes a request for a template to be sent to one of the available Content Repositories. For each script with `data-api-type="templating"` there is a request to a microservice for the data. After both requests are completed, [Handlebars.js](http://handlebarsjs.com/) merges the static content and the dynamic data and returns a complete document.
 
-![Architecture without load balancer](assets/without-load-balancer.png)
+[[assets/without-load-balancer.png|alt=Architecture without load balancer]]
 
 It's worth mentioning that this architecture scales very easily. Not only can you add as many microservices and repositories as you want, but you can also use multiple Knot.x nodes set up behind a load balancer if you need to handle more traffic.
 
-![Architecture with load balancer](assets/with-load-balancer.png)
+[[assets/with-load-balancer.png|alt=Architecture with load balancer]]
 
 ## Flow diagram
 
 The following diagram shows the asynchronous nature of **Knot.x**. After obtaining a template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
 
-![Flow diagram](assets/flow-diagram.png)
+[[assets/flow-diagram.png|alt=Flow diagram]]
