@@ -57,9 +57,9 @@ public class TemplateEngine {
                         snippetProcessor.processSnippet(item, request)
                 ) //eager will buffer faster processing to emit items in proper order, keeping concurrency.
                 .reduce(new StringBuilder(),
-                        (builder, fragment) -> builder.append(fragment)
+                        StringBuilder::append
                 )
-                .map(item -> item.toString());
+                .map(StringBuilder::toString);
     }
 
     private Observable<HtmlFragment> extractFragments(String template) {
