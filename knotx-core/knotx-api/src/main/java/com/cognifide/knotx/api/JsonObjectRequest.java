@@ -27,7 +27,7 @@ abstract public class JsonObjectRequest {
 
     protected JsonArray toJsonArray(final MultiMap multiMap) {
         JsonArray jsonArray = new JsonArray();
-        if(multiMap!=null){
+        if (multiMap != null) {
             jsonArray = multiMap.names().stream()
                     .map(name -> new JsonObject().put(name, multiMap.get(name)))
                     .reduce(new JsonArray(),
@@ -39,7 +39,7 @@ abstract public class JsonObjectRequest {
 
     protected MultiMap fromJsonArray(final JsonArray array) {
         MultiMap map = MultiMap.caseInsensitiveMultiMap();
-        if(array !=null){
+        if (array != null) {
             array.stream()
                     .map(item -> (JsonObject) item)
                     .flatMap(item -> item.stream())

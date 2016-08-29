@@ -68,7 +68,6 @@ public class RepositoryResponse extends JsonObjectRequest {
         RepositoryResponse response = new RepositoryResponse();
         response.headers = headers;
         response.statusCode = statusCode;
-
         return response;
 
     }
