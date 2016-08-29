@@ -3,7 +3,6 @@
 # How to contribute to Knot.x
 Thank you for taking the time to contribute!
 We appreciate all commits and improvements, feel free to join Knot.x community and contribute.
-We use [ZenHub](https://www.zenhub.com/) to manage project.
 
 ## How to start
 Please refer to [Getting started](https://github.com/Cognifide/knotx#getting-started) section in the README file.
@@ -30,8 +29,8 @@ I hereby agree to the terms of the Knot.x Contributor License Agreement.
 ## Coding Conventions
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
 - Follow [Google Style Guide](https://github.com/google/styleguide) code formatting,
-- write tests and follow [Roy Osherove's naming strategy](http://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html),
+- write tests,
 - write javadoc, especially for interfaces and abstract methods,
-- update [documentation](https://github.com/Cognifide/knotx/blob/master/README.md) every time a new feature is added or an existing one changed,
+- update [documentation](https://github.com/Cognifide/knotx/blob/master/README.md),
 - when committing an improvement, try to show it in local demo example,
 - when logging use proper levels: `INFO` and `WARNING` should log only very important messages. 
