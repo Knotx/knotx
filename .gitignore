@@ -78,3 +78,4 @@ bin/
 
 # Project specific   #
 ######################
+.vertx
