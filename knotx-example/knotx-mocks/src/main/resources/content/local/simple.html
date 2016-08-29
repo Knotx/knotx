@@ -56,6 +56,9 @@
                 <div>Snippet1 - {{body.a}}</div>
             </div>
             <div class="col-md-4">
+                {{#string_equals second._response.statusCode "200"}}
+                    <p>Success! Status code : {{second._response.statusCode}}</p>
+                {{/string_equals}}
                 <h2>Snippet1 - {{second.message}}</h2>
                 <div>Snippet1 - {{second.body.a}}</div>
             </div>

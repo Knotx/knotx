@@ -37,6 +37,7 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
     - [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables)
 - [Features](#features)
   - [Requests grouping](#requests-grouping)
+  - [Service response status code](#service-response-status-code)
 - [Production](#production)
     - [Executing](#executing)
     - [Configuration](#configuration-1)
@@ -420,6 +421,25 @@ Notice: The following `data-uri` attributes
 /searchService?q=second
 ```
 would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
+
+## Service response status code
+Snippet author is able to see service response status code.
+
+Example:
+```html
+<script data-api-type="templating" 
+    type="text/x-handlebars-template" 
+    data-uri-post-formResponse="/service/formSubmit">
+  <h1>Welcome!</h1>
+
+  {{#if formResponse._response.statusCode == 200}}
+    <p>Form was submitted successfully.</p>
+  {{else}}
+    <p>Failed to save your request. Try again later.</p>
+  {{/if}}
+
+</script>
+```
 
 # Production
 
