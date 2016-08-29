@@ -21,6 +21,7 @@ package com.cognifide.knotx.engine.service;
 import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
+import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,6 @@ import io.vertx.core.http.HttpMethod;
 
 public class ServiceEntry {
 
-    public static final String FORM_ID_ATTRIBUTE = "_id";
     private String relatedAttribute;
     private String placeholderNamespace;
     private ServiceCallMethod methodType;
@@ -100,7 +100,7 @@ public class ServiceEntry {
 
     private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
         String htmlFragmentId = fragment.getDataId();
-        String requestFormId = request.getFormAttributes().get(FORM_ID_ATTRIBUTE);
+        String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
         return Objects.equals(requestFormId, htmlFragmentId) || ServiceCallMethod.POST != (methodType);
     }
 
@@ -108,7 +108,7 @@ public class ServiceEntry {
         if (request.getServerRequestMethod() != HttpMethod.POST) {
             return false;
         }
-        String requestFormId = request.getFormAttributes().get(FORM_ID_ATTRIBUTE);
+        String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
         return StringUtils.isNotEmpty(requestFormId);
     }
 
