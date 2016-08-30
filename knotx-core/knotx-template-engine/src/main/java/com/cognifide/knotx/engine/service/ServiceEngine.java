@@ -17,14 +17,12 @@
  */
 package com.cognifide.knotx.engine.service;
 
-import com.google.common.collect.Maps;
-
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
+import java.util.Collections;
 import java.util.Map;
 
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -59,15 +57,14 @@ public class ServiceEngine {
         return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
                 .mergeWith(response.toObservable())
                 .reduce(Buffer::appendBuffer)
-                .flatMap(buffer -> {
-                    JsonObject jsonObject = buffer.toJsonObject();
-                    Map<String, String> responseMap = Maps.newHashMap();
-                    responseMap.put("statusCode", String.valueOf(response.statusCode()));
-                    jsonObject.getMap().put("_response", responseMap);
-                    Observable<Map<String, Object>> result = Observable.just(jsonObject.getMap());
-                    traceServiceCall(jsonObject);
-                    return result;
-                }));
+                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()))
+                .map(results -> collectBuffers(results, response)));
+    }
+
+    private Map<String, Object> collectBuffers(Map<String, Object> results, HttpClientResponse response) {
+        results.put("_response", Collections.singletonMap("statusCode", response.statusCode()));
+        traceServiceCall(results);
+        return results;
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
@@ -77,9 +74,9 @@ public class ServiceEngine {
                 .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
 
-    private void traceServiceCall(JsonObject jsonObject) {
+    private void traceServiceCall(Map<String, Object> results) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Service call returned <{}>", jsonObject.encodePrettily());
+            LOGGER.trace("Service call returned <{}>", results.toString());
         }
     }
 }
