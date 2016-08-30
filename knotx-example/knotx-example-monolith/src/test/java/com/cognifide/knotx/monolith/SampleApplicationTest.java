@@ -21,8 +21,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
@@ -49,7 +47,7 @@ public class SampleApplicationTest {
                 resp -> resp.bodyHandler(body -> {
                     String fileName = "localSimpleResult.html";
                     context.assertEquals(resp.statusCode(), 200);
-                    assertResultsAreEqual(context, body, fileName);
+                    assertBodyIsEqualWitMockedFile(context, body, fileName);
                     client.close();
                     async.complete();
                 }));
@@ -63,7 +61,7 @@ public class SampleApplicationTest {
                 resp -> resp.bodyHandler(body -> {
                     String fileName = "remoteSimpleResult.html";
                     context.assertEquals(resp.statusCode(), 200);
-                    assertResultsAreEqual(context, body, fileName);
+                    assertBodyIsEqualWitMockedFile(context, body, fileName);
                     client.close();
                     async.complete();
                 }));
@@ -91,7 +89,7 @@ public class SampleApplicationTest {
         ApplicationTestHelper.tearDown(context);
     }
 
-    private void assertResultsAreEqual(TestContext context, Buffer body, String fileName) {
+    private void assertBodyIsEqualWitMockedFile(TestContext context, Buffer body, String fileName) {
         try {
             context.assertEquals(body.toString(), ApplicationTestHelper.readText(fileName));
         } catch (Exception e) {
