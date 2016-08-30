@@ -50,8 +50,9 @@ public class RepositoryResponse extends JsonObjectRequest {
         }
     }
 
-    public static RepositoryResponse success(String data) {
+    public static RepositoryResponse success(String data, MultiMap headers) {
         RepositoryResponse response = new RepositoryResponse();
+        response.headers = headers;
         response.success = true;
         response.data = data;
         return response;

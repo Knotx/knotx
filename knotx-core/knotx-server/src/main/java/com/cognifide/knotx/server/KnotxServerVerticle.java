@@ -128,10 +128,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
     }
 
     private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {
-        if (headers != null) {
             MultiMap preservedHeaders = getPreservedHeaders(headers);
             preservedHeaders.names().forEach(headerKey -> httpServerRequest.response().putHeader(headerKey, preservedHeaders.get(headerKey)));
-        }
     }
 
     private MultiMap getPreservedHeaders(MultiMap headers) {

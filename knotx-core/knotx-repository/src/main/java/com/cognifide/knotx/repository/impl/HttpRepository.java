@@ -80,7 +80,7 @@ class HttpRepository implements Repository {
     private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
         Observable<RepositoryResponse> response;
         if (buffer.length() > 0) {
-            response = RepositoryResponse.success(buffer.toString()).toObservable();
+            response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
         } else {
             LOGGER.info("Remote repository returned empty template for path `{}` with status code {}", path, httpClientResponse.statusCode());
             response = RepositoryResponse.error(httpClientResponse.statusCode(), httpClientResponse.headers()).toObservable();
