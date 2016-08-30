@@ -54,6 +54,7 @@
     </developers>
 
     <modules>
+        <module>documentation</module>
         <module>knotx-core</module>
         <module>knotx-example</module>
     </modules>
@@ -193,33 +194,6 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
-                <!-- plugin for generating licensing header in headers of defined files -->
-                <plugin>
-                    <groupId>com.mycila</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <version>2.11</version>
-                    <configuration>
-                        <skipExistingHeaders>false</skipExistingHeaders>
-                        <header>${basedir}/license-template</header>
-                        <headerDefinitions>
-                            <header>${basedir}/license-header-definition.xml</header>
-                        </headerDefinitions>
-                        <includes>
-                            <include>src/main/java/**</include>
-                            <include>src/test/java/**</include>
-                            <include>src/main/resources/**</include>
-                            <include>pom.xml</include>
-                        </includes>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>format</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
                 <!-- plugin for checking if licensing header is present in headers of defined files -->
                 <plugin>
                     <groupId>org.apache.rat</groupId>
@@ -234,6 +208,7 @@
                         </includes>
                         <excludes>
                             <exclude>**/*.json</exclude>
+                            <exclude>**/*.MD</exclude>
                         </excludes>
                     </configuration>
                     <executions>
@@ -318,11 +293,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- plugin for generating licensing header in headers of defined files -->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-            </plugin>
             <!-- plugin for checking if licensing header is present in headers of defined files -->
             <plugin>
                 <groupId>org.apache.rat</groupId>
