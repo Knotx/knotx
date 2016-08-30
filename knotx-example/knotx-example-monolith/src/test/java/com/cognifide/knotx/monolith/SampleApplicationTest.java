@@ -86,17 +86,17 @@ public class SampleApplicationTest {
         httpClientRequest.end();
     }
 
+    @AfterClass
+    public static void tearDown(TestContext context) {
+        ApplicationTestHelper.tearDown(context);
+    }
+
     private void assertResultsAreEqual(TestContext context, Buffer body, String fileName) {
         try {
             context.assertEquals(body.toString(), ApplicationTestHelper.readText(fileName));
         } catch (Exception e) {
             context.fail(e);
         }
-    }
-
-    @AfterClass
-    public static void tearDown(TestContext context) {
-        ApplicationTestHelper.tearDown(context);
     }
 
 }
