@@ -56,7 +56,7 @@ public class TemplateSnippetProcessor {
                 .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders(), computeServiceMethodType(request, serviceItem.getMethodType()), request.getFormAttributes()),
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(ServiceEntry::getResultWithNamespaceAsKey)
                 .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {
@@ -65,14 +65,6 @@ public class TemplateSnippetProcessor {
                 })
                 .map(results -> applyData(fragment, results))
                 .defaultIfEmpty(fragment.getContent());
-    }
-
-    private HttpMethod computeServiceMethodType(TemplateEngineRequest request, ServiceCallMethod serviceCallMethod) {
-        if (HttpMethod.POST.equals(request.getServerRequestMethod()) && ServiceCallMethod.POST.equals(serviceCallMethod)) {
-            return HttpMethod.POST;
-        } else {
-            return HttpMethod.GET;
-        }
     }
 
     private String applyData(final HtmlFragment snippet, Map<String, Object> serviceResult) {

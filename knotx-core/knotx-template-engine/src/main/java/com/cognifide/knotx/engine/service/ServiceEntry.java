@@ -84,32 +84,11 @@ public class ServiceEntry {
     public boolean canServeRequest(HtmlFragment fragment, TemplateEngineRequest request) {
         boolean canServeMethodType = canServeMethodType(request.getServerRequestMethod());
 
-        if (isRequestAFormPostWithId(request)) {
+        if (isRequestFormPostWithId(request)) {
             return canServeMethodType && canServeFormPost(fragment, request);
         } else {
             return canServeMethodType;
         }
-    }
-
-    private boolean canServeMethodType(HttpMethod requestMethodType) {
-        ServiceCallMethod methodTypeFromRequest = ServiceCallMethod.from(requestMethodType);
-        return java.util.Objects.equals(this.methodType, methodTypeFromRequest)
-                || java.util.Objects.equals(this.methodType, ServiceCallMethod.ALL);
-    }
-
-
-    private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
-        String htmlFragmentId = fragment.getDataId();
-        String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
-        return Objects.equals(requestFormId, htmlFragmentId) || ServiceCallMethod.POST != (methodType);
-    }
-
-    private boolean isRequestAFormPostWithId(TemplateEngineRequest request) {
-        if (request.getServerRequestMethod() != HttpMethod.POST) {
-            return false;
-        }
-        String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
-        return StringUtils.isNotEmpty(requestFormId);
     }
 
     public String getPlaceholderNamespace() {
@@ -151,5 +130,27 @@ public class ServiceEntry {
 
     public Integer getPort() {
         return serviceMetadata.getPort();
+    }
+
+
+    private boolean canServeMethodType(HttpMethod requestMethodType) {
+        ServiceCallMethod methodTypeFromRequest = ServiceCallMethod.from(requestMethodType);
+        return Objects.equals(this.methodType, methodTypeFromRequest)
+                || Objects.equals(this.methodType, ServiceCallMethod.ALL);
+    }
+
+
+    private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
+        String htmlFragmentId = fragment.getDataId();
+        String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
+        return Objects.equals(requestFormId, htmlFragmentId) || ServiceCallMethod.POST != (methodType);
+    }
+
+    private boolean isRequestFormPostWithId(TemplateEngineRequest request) {
+        if (request.getServerRequestMethod() != HttpMethod.POST) {
+            return false;
+        }
+        String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
+        return StringUtils.isNotEmpty(requestFormId);
     }
 }

@@ -20,6 +20,8 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
+import com.cognifide.knotx.api.ServiceCallMethod;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.Map;
@@ -47,10 +49,16 @@ public class ServiceEngine {
         this.configuration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod, MultiMap formAttributes) {
-        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
-                req -> buildRequestBody(req, headers, formAttributes, httpMethod));
 
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, TemplateEngineRequest request) {
+        HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
+        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
+                req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(), httpMethod));
+
+        return toResultMap(serviceResponse);
+    }
+
+    private Observable<Map<String, Object>> toResultMap(Observable<HttpClientResponse> serviceResponse) {
         return serviceResponse.flatMap(response ->
                 Observable.just(Buffer.buffer())
                         .mergeWith(response.toObservable())
@@ -66,6 +74,15 @@ public class ServiceEngine {
             request.headers().set("content-length", String.valueOf(buffer.length()));
             request.headers().set("content-type", "application/x-www-form-urlencoded");
             request.write(buffer);
+        }
+    }
+
+
+    private HttpMethod computeServiceMethodType(TemplateEngineRequest request, ServiceCallMethod serviceCallMethod) {
+        if (HttpMethod.POST.equals(request.getServerRequestMethod()) && ServiceCallMethod.POST.equals(serviceCallMethod)) {
+            return HttpMethod.POST;
+        } else {
+            return HttpMethod.GET;
         }
     }
 
