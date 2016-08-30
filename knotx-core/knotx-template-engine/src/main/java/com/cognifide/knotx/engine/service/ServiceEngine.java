@@ -54,17 +54,19 @@ public class ServiceEngine {
                     resp.subscribe(subscriber);
                     req.end();
                 });
-        return serviceResponse.flatMap(response -> Observable.just(Buffer.buffer())
+        return serviceResponse.flatMap(this::collectBuffers);
+    }
+
+    private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
+        return Observable.just(Buffer.buffer())
                 .mergeWith(response.toObservable())
                 .reduce(Buffer::appendBuffer)
                 .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()))
-                .map(results -> collectBuffers(results, response)));
-    }
-
-    private Map<String, Object> collectBuffers(Map<String, Object> results, HttpClientResponse response) {
-        results.put("_response", Collections.singletonMap("statusCode", response.statusCode()));
-        traceServiceCall(results);
-        return results;
+                .map(results -> {
+                    results.put("_response", Collections.singletonMap("statusCode", response.statusCode()));
+                    traceServiceCall(results);
+                    return results;
+                });
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
