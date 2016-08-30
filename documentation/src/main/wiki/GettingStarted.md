@@ -58,19 +58,6 @@ And in example application:
 - Mocks verticles in `knotx-example/knotx-mocks/target`
 - Sample app in `knotx-example/knotx-example-monolith/target`
 
-### Executing from Maven
-
-To run Knot.x from Maven, execute the following command from the project's root directory:
-```
-mvn spring-boot:run
-```
-This will run the sample server with mock services and sample repositories. Sample pages are available at:
-
-```
-http://localhost:8092/content/local/simple.html
-http://localhost:8092/content/remote/simple.html
-```
-
 ### Executing fat jar
 
 To run sample app, execute the following commands:
