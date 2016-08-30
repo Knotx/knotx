@@ -74,7 +74,7 @@ public class SampleApplicationTest {
         HttpClientRequest httpClientRequest = client.get(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
                 resp -> {
                     context.assertEquals("Pl", resp.headers().get("X-Language-Code"));
-                    context.assertEquals(null, resp.getHeader("Location"));
+                    context.assertNull(resp.getHeader("Location"));
                     client.close();
                     async.complete();
                 }
