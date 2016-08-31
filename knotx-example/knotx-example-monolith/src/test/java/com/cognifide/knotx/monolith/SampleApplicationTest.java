@@ -71,7 +71,6 @@ public class SampleApplicationTest {
     }
 
     @Test
-    @Ignore
     public void localMultipleFormWithAjaxPostTest(TestContext context) {
         tesPostRequest(context, "/content/local/multiple-forms.html", "multipleFormWithAjaxPostResult.html", true);
     }
@@ -95,7 +94,7 @@ public class SampleApplicationTest {
         request.subscribe(resp -> resp.bodyHandler(body -> {
             context.assertEquals(resp.statusCode(), 200);
             try {
-                context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+                context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).body().html());
             } catch (Exception e) {
                 LOG.error("Cannot read file {}", expectedResponseFile, e);
                 context.fail();
