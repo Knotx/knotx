@@ -68,9 +68,9 @@ public class LocalRepository implements Repository {
                     /**
                      * TODO check for type of exception and put proper status code to RepositoryResponse
                      *
-					 * If local repo failed due FileNotFoundException - return 404
-					 * If local repo failed due other error - return 500
-					 */
+                     * If local repo failed due FileNotFoundException - return 404
+                     * If local repo failed due other error - return 500
+                     */
                     int statusCode = 404;
                     return RepositoryResponse
                             .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());

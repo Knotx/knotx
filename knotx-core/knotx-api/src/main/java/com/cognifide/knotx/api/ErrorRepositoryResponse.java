@@ -20,15 +20,15 @@ package com.cognifide.knotx.api;
 import io.vertx.rxjava.core.MultiMap;
 
 public class ErrorRepositoryResponse extends RepositoryResponse {
-	public ErrorRepositoryResponse(int statusCode, String reason, MultiMap headers) {
-		super.statusCode = statusCode;
-		super.reason = reason;
-		super.headers = headers;
-		super.success = false;
-	}
+    public ErrorRepositoryResponse(int statusCode, String reason, MultiMap headers) {
+        super.statusCode = statusCode;
+        super.reason = reason;
+        super.headers = headers;
+    }
 
-	@Override public boolean shouldProcess() {
-		return false;
-	}
+    @Override
+    public boolean shouldProcess() {
+        return false;
+    }
 
 }

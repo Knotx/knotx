@@ -20,93 +20,87 @@ import rx.Observable;
 
 public abstract class RepositoryResponse extends JsonObjectRequest {
 
-	private static final long serialVersionUID = -5892594714118271978L;
+    private static final long serialVersionUID = -5892594714118271978L;
 
-	protected String reason;
+    protected String reason;
 
-	protected String data;
+    protected String data;
 
-	protected int statusCode;
+    protected int statusCode;
 
-	protected MultiMap headers;
+    protected MultiMap headers;
 
-	protected boolean success;
+    public static RepositoryResponse fromJson(JsonObject object) {
+        RepositoryResponse repositoryResponse;
 
-	public static RepositoryResponse fromJson(JsonObject object) {
-		RepositoryResponse repositoryResponse;
-		Boolean success = object.getBoolean("success");
-		Boolean shouldProcess = object.getBoolean("shouldProcess");
-		MultiMap  headers = fromJsonArray(object.getJsonArray("headers"));
-		String  data = object.getString("data");
+        MultiMap headers = fromJsonArray(object.getJsonArray("headers"));
+        Boolean shouldProcess = object.getBoolean("shouldProcess");
+        int statusCode = object.getInteger("statusCode");
 
-		if (success && shouldProcess) {
-			repositoryResponse = success(data, headers);
-		} else if (success) {
-			repositoryResponse = empty(headers);
-		} else {
-			int statusCode = object.getInteger("statusCode");
-			String reason = object.getString("reason");
-			repositoryResponse = error(statusCode, reason, headers);
-		}
-		return repositoryResponse;
-	}
+        if (statusCode == 200 && shouldProcess) {
+            String data = object.getString("data");
+            repositoryResponse = success(data, headers);
+        } else if (statusCode == 200) {
+            repositoryResponse = empty(headers);
+        } else {
+            String reason = object.getString("reason");
+            repositoryResponse = error(statusCode, reason, headers);
+        }
+        return repositoryResponse;
+    }
 
-	public static RepositoryResponse success(String data, MultiMap headers) {
-		return new SuccessRepositoryResponse(data, headers);
-	}
+    public static RepositoryResponse success(String data, MultiMap headers) {
+        return new SuccessRepositoryResponse(data, headers);
+    }
 
-	public static RepositoryResponse empty(MultiMap headers) {
-		return new EmptyRepositoryResponse(headers);
-	}
+    public static RepositoryResponse empty(MultiMap headers) {
+        return new EmptyRepositoryResponse(headers);
+    }
 
-	public static RepositoryResponse error(int statusCode, String reason, MultiMap headers) {
-		return new ErrorRepositoryResponse(statusCode, reason, headers);
-	}
+    public static RepositoryResponse error(int statusCode, String reason, MultiMap headers) {
+        return new ErrorRepositoryResponse(statusCode, reason, headers);
+    }
 
-	public abstract boolean shouldProcess();
+    public abstract boolean shouldProcess();
 
-	public Observable<RepositoryResponse> toObservable() {
-		return Observable.just(this);
-	}
+    public Observable<RepositoryResponse> toObservable() {
+        return Observable.just(this);
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public String getData() {
-		return data;
-	}
+    public String getReason() {
+        return reason;
+    }
 
-	public String getReason() {
-		return reason;
-	}
+    public int getStatusCode() {
+        return statusCode;
+    }
 
-	public int getStatusCode() {
-		return statusCode;
-	}
+    public MultiMap getHeaders() {
+        return headers;
+    }
 
-	public MultiMap getHeaders() {
-		return headers;
-	}
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObject object = new JsonObject();
+        object.put("shouldProcess", shouldProcess());
+        object.put("headers", toJsonArray(headers));
+        object.put("statusCode", statusCode);
+        if (shouldProcess()) {
+            object.put("data", data);
+        } else if (statusCode != 200) {
+            object.put("reason", reason);
+        }
+        return object;
+    }
 
-	@Override
-	public JsonObject toJsonObject() {
-		JsonObject object = new JsonObject().put("success", success);
-		object.put("shouldProcess", shouldProcess());
-		object.put("headers", toJsonArray(headers));
-		if (success && shouldProcess()) {
-			object.put("data", data);
-		} else {
-			object.put("reason", reason);
-			object.put("statusCode", statusCode);
-		}
-		return object;
-	}
-
-	@Override
-	public String toString() {
-		return "RepositoryResponse{" +"shouldProcess="+shouldProcess()+ ", success=" + success + ", reason='" + reason + '\'' + ", data='" + data
-				+ '\'' + ", statusCode=" + statusCode + ", headers=" + headers + '}';
-	}
+    @Override
+    public String toString() {
+        return "RepositoryResponse{" + "shouldProcess=" + shouldProcess() + ", reason='" + reason + '\''
+                + ", data='" + data + '\'' + ", statusCode=" + statusCode + ", headers=" + headers + '}';
+    }
 
 }

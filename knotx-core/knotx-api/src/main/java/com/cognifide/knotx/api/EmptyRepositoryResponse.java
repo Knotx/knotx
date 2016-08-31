@@ -20,14 +20,13 @@ package com.cognifide.knotx.api;
 import io.vertx.rxjava.core.MultiMap;
 
 public class EmptyRepositoryResponse extends RepositoryResponse {
-	public EmptyRepositoryResponse(MultiMap headers) {
-		super.headers = headers;
-		super.statusCode = 200;
-		super.success = true;
-	}
+    public EmptyRepositoryResponse(MultiMap headers) {
+        super.headers = headers;
+        super.statusCode = 200;
+    }
 
-	@Override
-	public boolean shouldProcess() {
-		return false;
-	}
+    @Override
+    public boolean shouldProcess() {
+        return false;
+    }
 }

@@ -71,34 +71,34 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 request -> {
                     request.setExpectMultipart(true);
                     request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
-                        .doOnNext(this::traceMessage)
-                        .subscribe(
-                                reply -> {
-                                    RepositoryResponse repository = RepositoryResponse.fromJson(reply.body());
-                                    if (repository.shouldProcess()) {
-                                        eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
-                                                .subscribe(
-                                                        result -> {
-                                                            TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
-                                                            if (engineResponse.isSuccess()) {
-                                                                rewriteHeaders(request, request.headers());
-                                                                request.response().end(engineResponse.getHtml());
-                                                            } else {
-                                                                request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                            .doOnNext(this::traceMessage)
+                            .subscribe(
+                                    reply -> {
+                                        RepositoryResponse repository = RepositoryResponse.fromJson(reply.body());
+                                        if (repository.shouldProcess()) {
+                                            eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
+                                                    .subscribe(
+                                                            result -> {
+                                                                TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
+                                                                if (engineResponse.isSuccess()) {
+                                                                    rewriteHeaders(request, request.headers());
+                                                                    request.response().end(engineResponse.getHtml());
+                                                                } else {
+                                                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                                                                }
+                                                            },
+                                                            error -> {
+                                                                LOGGER.error("Error happened", error);
+                                                                request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
                                                             }
-                                                        },
-                                                        error -> {
-                                                            LOGGER.error("Error happened", error);
-                                                            request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
-                                                        }
-                                                );
-                                    } else {
-                                        rewriteHeaders(request, repository.getHeaders());
-                                        request.response().setStatusCode(repository.getStatusCode()).end();
-                                    }
-                                },
-                                error -> LOGGER.error("Error: ", error)
-                        ));
+                                                    );
+                                        } else {
+                                            rewriteHeaders(request, repository.getHeaders());
+                                            request.response().setStatusCode(repository.getStatusCode()).end();
+                                        }
+                                    },
+                                    error -> LOGGER.error("Error: ", error)
+                            ));
                 }
         ).listen(
                 configuration.httpPort(),
@@ -122,7 +122,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
         return new RepositoryRequest(request.path(), request.headers()).toJsonObject();
     }
 
-    private JsonObject  createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
+    private JsonObject createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
         return new TemplateEngineRequest(
                 repositoryResponse.getData(),
                 request.method(),

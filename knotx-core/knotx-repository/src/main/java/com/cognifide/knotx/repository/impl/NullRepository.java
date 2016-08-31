@@ -29,7 +29,7 @@ public class NullRepository implements Repository {
     @Override
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
         String reason = String.format("No repository found for given path %s", repositoryRequest.getPath());
-        //gitTODO and what status code should be used here?
+        //TODO and what status code should be used here?
         return Observable.just(
                 RepositoryResponse.error(404, reason, MultiMap.caseInsensitiveMultiMap()));
     }

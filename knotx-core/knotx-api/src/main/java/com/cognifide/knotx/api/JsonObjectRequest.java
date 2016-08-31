@@ -27,6 +27,17 @@ import io.vertx.rxjava.core.MultiMap;
 
 abstract public class JsonObjectRequest {
 
+    protected static MultiMap fromJsonArray(final JsonArray array) {
+        MultiMap map = MultiMap.caseInsensitiveMultiMap();
+        if (array != null) {
+            array.stream()
+                    .map(item -> (JsonObject) item)
+                    .flatMap(item -> item.stream())
+                    .forEach(entry -> map.add(entry.getKey(), entry.getValue().toString()));
+        }
+        return map;
+    }
+
     public abstract JsonObject toJsonObject();
 
     protected JsonArray toJsonArray(final MultiMap multiMap) {
@@ -39,17 +50,6 @@ abstract public class JsonObjectRequest {
                             (u, u2) -> u.addAll(u2));
         }
         return jsonArray;
-    }
-
-    protected static MultiMap fromJsonArray(final JsonArray array) {
-        MultiMap map = MultiMap.caseInsensitiveMultiMap();
-        if (array != null) {
-            array.stream()
-                    .map(item -> (JsonObject) item)
-                    .flatMap(item -> item.stream())
-                    .forEach(entry -> map.add(entry.getKey(), entry.getValue().toString()));
-        }
-        return map;
     }
 
     protected String multiMapToString(MultiMap map) {
