@@ -68,7 +68,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
         EventBus eventBus = vertx.eventBus();
 
         httpServer.requestHandler(
-                request -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
+                request -> {
+                    request.setExpectMultipart(true);
+                    request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
                         .doOnNext(this::traceMessage)
                         .subscribe(
                                 reply -> {
@@ -96,7 +98,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
                                     }
                                 },
                                 error -> LOGGER.error("Error: ", error)
-                        )
+                        ));
+                }
         ).listen(
                 configuration.httpPort(),
                 result -> {
@@ -123,13 +126,14 @@ public class KnotxServerVerticle extends AbstractVerticle {
         return new TemplateEngineRequest(
                 repositoryResponse.getData(),
                 request.method(),
-                getPreservedHeaders(request.headers()))
+                getPreservedHeaders(request.headers()),
+                request.formAttributes())
                 .toJsonObject();
     }
 
     private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {
-            MultiMap preservedHeaders = getPreservedHeaders(headers);
-            preservedHeaders.names().forEach(headerKey -> httpServerRequest.response().putHeader(headerKey, preservedHeaders.get(headerKey)));
+        MultiMap preservedHeaders = getPreservedHeaders(headers);
+        preservedHeaders.names().forEach(headerKey -> httpServerRequest.response().putHeader(headerKey, preservedHeaders.get(headerKey)));
     }
 
     private MultiMap getPreservedHeaders(MultiMap headers) {

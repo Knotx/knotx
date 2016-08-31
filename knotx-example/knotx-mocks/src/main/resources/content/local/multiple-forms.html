@@ -1,0 +1,108 @@
+<!--
+
+    Knot.x - Mocked services for sample app
+
+    Copyright (C) 2016 Cognifide Limited
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
+    <title>Knot.x</title>
+    <link href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h2>
+                    Hello Knot.x - reactive micro-service assembler world!
+                </h2>
+                <p>
+                    This template is served from the <strong>local</strong> repository.
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large"
+                       href="https://github.com/Cognifide/knotx">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <script data-api-type="templating"
+                    type="text/x-handlebars-template"
+                    data-uri-post-formresponse="/service/mock/subscribeToCompetition.json"
+                    data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
+                    data-id="competition-form">
+                <h1>{{labelsrepository.welcomeInCompetition}}</h1>
+                {{#if formresponse}}
+                <p>{{labelsrepository.thankYouForSubscribingToCompetition}}</p>
+                {{else}}
+                <p>Please subscribe to our new competition:</p>
+                <form method="post" class="form-inline">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="name" name="name" id="name"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email"/>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                    <input type="hidden" name="_id" value="competition-form"/>
+                </form>
+                {{/if}}
+            </script>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <script data-api-type="templating"
+                    type="text/x-handlebars-template"
+                    data-uri-post-formresponse="/service/mock/subscribeToNewsletter.json"
+                    data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
+                    data-id="newsletter-form">
+                <h1>{{labelsrepository.subscribeToNewsletter}}</h1>
+                {{#if formresponse}}
+                <p>{{labelsrepository.thankYouForSubscribingToNewsletter}}</p>
+                {{else}}
+                <p>Please subscribe to our newsletter:</p>
+                <form method="post" class="form-inline">
+                    <div class="form-group">
+                        <label for="email2">Email</label>
+                        <input type="email" name="email" id="email2"/>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                    <input type="hidden" name="_id" value="newsletter-form"/>
+                </form>
+                {{/if}}
+            </script>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+</div>
+</body>
+</html>

@@ -19,9 +19,9 @@ package com.cognifide.knotx.engine.impl;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
+import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.github.jknack.handlebars.Handlebars;
 
 import java.io.IOException;

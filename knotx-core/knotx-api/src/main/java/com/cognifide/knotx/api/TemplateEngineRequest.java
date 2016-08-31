@@ -28,16 +28,20 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     private HttpMethod serverRequestMethod;
 
-    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers) {
+    private final MultiMap formAttributes;
+
+    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers, MultiMap formAttributes) {
         this.template = template;
         this.serverRequestMethod = serverRequestMethod;
         this.headers = headers;
+        this.formAttributes = formAttributes;
     }
 
     public TemplateEngineRequest(JsonObject object) {
         this.template = object.getString("template");
         this.headers = fromJsonArray(object.getJsonArray("headers"));
         this.serverRequestMethod = HttpMethod.valueOf(object.getString("serverRequestMethod"));
+        this.formAttributes = fromJsonArray(object.getJsonArray("formAttributes"));
 
     }
 
@@ -61,26 +65,31 @@ public class TemplateEngineRequest extends JsonObjectRequest {
         this.serverRequestMethod = serverRequestMethod;
     }
 
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    public MultiMap getFormAttributes() {
+        return formAttributes;
+    }
+
     @Override
     public String toString() {
         return "TemplateEngineRequest{" +
                 "template='" + template + '\'' +
-                ", headers=" + headersToString() +
+                ", headers=" + multiMapToString(headers) +
+                ", formAttributes=" + multiMapToString(formAttributes) +
                 ", serverRequestMethod=" + serverRequestMethod +
                 '}';
     }
 
-    private String headersToString() {
-        StringBuilder result = new StringBuilder();
-        headers.names().forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
-        return result.toString();
-    }
 
     @Override
     public JsonObject toJsonObject() {
         return new JsonObject()
                 .put("template", template)
                 .put("serverRequestMethod", serverRequestMethod.toString())
-                .put("headers", toJsonArray(headers));
+                .put("headers", toJsonArray(headers))
+                .put("formAttributes", toJsonArray(formAttributes));
     }
 }
