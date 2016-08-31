@@ -21,13 +21,17 @@ import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.repository.Repository;
 
+import io.vertx.rxjava.core.MultiMap;
 import rx.Observable;
 
 public class NullRepository implements Repository {
 
     @Override
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        return Observable.just(RepositoryResponse.error("No repository found for given path %s", repositoryRequest.getPath()));
+        String reason = String.format("No repository found for given path %s", repositoryRequest.getPath());
+        //gitTODO and what status code should be used here?
+        return Observable.just(
+                RepositoryResponse.error(404, reason, MultiMap.caseInsensitiveMultiMap()));
     }
 
     @Override

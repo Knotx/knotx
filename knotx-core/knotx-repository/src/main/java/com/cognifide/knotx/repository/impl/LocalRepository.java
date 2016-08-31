@@ -61,10 +61,19 @@ public class LocalRepository implements Repository {
         return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
                 .flatMap(buffer -> RepositoryResponse.success(buffer.toString(), MultiMap.caseInsensitiveMultiMap()).toObservable())
-                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath()))
+                .defaultIfEmpty(RepositoryResponse.empty(MultiMap.caseInsensitiveMultiMap()))
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);
-                    return RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath());
+
+                    /**
+                     * TODO check for type of exception and put proper status code to RepositoryResponse
+                     *
+					 * If local repo failed due FileNotFoundException - return 404
+					 * If local repo failed due other error - return 500
+					 */
+                    int statusCode = 404;
+                    return RepositoryResponse
+                            .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                 });
     }
 

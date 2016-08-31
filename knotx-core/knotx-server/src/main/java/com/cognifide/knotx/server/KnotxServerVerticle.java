@@ -74,8 +74,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
                         .doOnNext(this::traceMessage)
                         .subscribe(
                                 reply -> {
-                                    RepositoryResponse repository = new RepositoryResponse(reply.body());
-                                    if (repository.isSuccess()) {
+                                    RepositoryResponse repository = RepositoryResponse.fromJson(reply.body());
+                                    if (repository.shouldProcess()) {
                                         eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
                                                 .subscribe(
                                                         result -> {
@@ -122,7 +122,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
         return new RepositoryRequest(request.path(), request.headers()).toJsonObject();
     }
 
-    private JsonObject createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
+    private JsonObject  createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
         return new TemplateEngineRequest(
                 repositoryResponse.getData(),
                 request.method(),

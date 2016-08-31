@@ -23,6 +23,7 @@ import com.cognifide.knotx.repository.Repository;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -62,10 +63,13 @@ class HttpRepository implements Repository {
         return clientResponse
                 .doOnNext(this::traceResponse)
                 .flatMap(this::processResponse)
-                .defaultIfEmpty(RepositoryResponse.error("No Template found for <%s>", repositoryRequest))
                 .onErrorReturn(error -> {
-                            LOGGER.error("Unable to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
-                            return RepositoryResponse.error("No Template found for path %s", repositoryRequest.getPath());
+                    //TODO isnt it example of internal error?
+                    LOGGER.error("Unable to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
+                    String reason = String
+                            .format("No Template found for path %s", repositoryRequest.getPath());
+                            return RepositoryResponse
+                                    .error(500, reason, MultiMap.caseInsensitiveMultiMap());
                         }
                 );
     }
@@ -79,11 +83,16 @@ class HttpRepository implements Repository {
 
     private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
         Observable<RepositoryResponse> response;
-        if (buffer.length() > 0) {
+        if (httpClientResponse.statusCode() == 200 && buffer.length() > 0) {
             response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
+        } else if (httpClientResponse.statusCode() == 200) {
+            response = RepositoryResponse.empty(httpClientResponse.headers()).toObservable();
         } else {
-            LOGGER.info("Remote repository returned empty template for path `{}` with status code {}", path, httpClientResponse.statusCode());
-            response = RepositoryResponse.error(httpClientResponse.statusCode(), httpClientResponse.headers()).toObservable();
+            LOGGER.info("Remote repository returned empty template for path `{}` with status code {}", path,
+                    httpClientResponse.statusCode());
+            String reason = "Template not found."; //TODO what message should be used?
+            response = RepositoryResponse.error(httpClientResponse.statusCode(), reason, httpClientResponse.headers())
+                    .toObservable();
         }
         return response;
     }

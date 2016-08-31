@@ -41,7 +41,7 @@ abstract public class JsonObjectRequest {
         return jsonArray;
     }
 
-    protected MultiMap fromJsonArray(final JsonArray array) {
+    protected static MultiMap fromJsonArray(final JsonArray array) {
         MultiMap map = MultiMap.caseInsensitiveMultiMap();
         if (array != null) {
             array.stream()
