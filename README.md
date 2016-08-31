@@ -56,7 +56,7 @@ You will see output similar to the following:
 
 This example app simulates Vert.x based application running Knot.x core verticles:
  - Knot.x Server
- - Knot.x Repostiory
+ - Knot.x Repository
  - Knot.x Template Engine
  
 Besides Knot.x two mock verticles are started:
@@ -68,7 +68,7 @@ You can access example Knot.x application from the following URLs
 http://localhost:8092/content/remote/simple.html
 http://localhost:8092/content/local/simple.html
 ```
-First servs HTML template from Remote Http Repository, second serves HTML template from local storage.
+First serves HTML template from Remote Http Repository, second serves HTML template from local storage.
 
 ## Bugs and Feedback
 
