@@ -21,15 +21,10 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.5.RELEASE</version>
-    </parent>
 
     <groupId>com.cognifide.knotx</groupId>
     <artifactId>knotx-root</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Knot.x</name>
@@ -52,9 +47,14 @@
             <name>Maciej Laskowski</name>
             <email>maciej.laskowski@cognifide.com</email>
         </developer>
+        <developer>
+            <name>Marcin Czeczko</name>
+            <email>marcin.czeczko@cognifide.com</email>
+        </developer>
     </developers>
 
     <modules>
+        <module>documentation</module>
         <module>knotx-core</module>
         <module>knotx-example</module>
     </modules>
@@ -84,7 +84,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <handlebars.version>4.0.5</handlebars.version>
-        <vertx.version>3.3.0</vertx.version>
+        <vertx.version>3.3.2</vertx.version>
+        <rxjava.version>1.1.8</rxjava.version>
+        <junit.version>4.12</junit.version>
+        <assertj.version>3.4.1</assertj.version>
+        <commons-io.version>2.5</commons-io.version>
     </properties>
 
     <dependencyManagement>
@@ -97,20 +101,25 @@
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
+                <artifactId>vertx-rx-java</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
                 <artifactId>vertx-web</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-hazelcast</artifactId>
                 <version>${vertx.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.reactivex</groupId>
                 <artifactId>rxjava</artifactId>
-                <version>1.1.5</version>
+                <version>${rxjava.version}</version>
             </dependency>
             <!-- REPOSITORY -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-oxm</artifactId>
-                <version>4.3.0.RELEASE</version>
-            </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
@@ -140,6 +149,37 @@
                 <artifactId>guava</artifactId>
                 <version>19.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.3.2</version>
+            </dependency>
+
+            <!-- Tests -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-unit</artifactId>
+                <version>${vertx.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -147,47 +187,136 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
                 </plugin>
                 <!-- plugin for checking if licensing header is present in headers of defined files -->
                 <plugin>
                     <groupId>org.apache.rat</groupId>
                     <artifactId>apache-rat-plugin</artifactId>
                     <version>0.12</version>
+                    <configuration>
+                        <includes>
+                            <include>src/main/java/**</include>
+                            <include>src/test/java/**</include>
+                            <include>src/main/resources/**</include>
+                            <include>pom.xml</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/*.json</exclude>
+                            <exclude>**/*.MD</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.3</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                <transformers>
+                                    <transformer
+                                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        <manifestEntries>
+                                            <Main-Class>com.cognifide.knotx.LogbackLauncher</Main-Class>
+                                            <Main-Verticle>${main.verticle}</Main-Verticle>
+                                        </manifestEntries>
+                                    </transformer>
+                                    <transformer
+                                            implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                        <resource>META-INF/services/io.vertx.core.spi.VerticleFactory
+                                        </resource>
+                                    </transformer>
+                                </transformers>
+                                <artifactSet>
+                                </artifactSet>
+                                <outputFile>
+                                    ${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
+                                </outputFile>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                    <executions>
+                        <execution>
+                            <id>run</id>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                            <configuration>
+                                <mainClass>LogbackLauncher</mainClass>
+                                <arguments>
+                                    <argument>run</argument>
+                                    <argument>${main.verticle}</argument>
+                                    <argument>-conf</argument>
+                                    <argumant>${project.basedir}/src/main/resources/application.json</argumant>
+                                </arguments>
+                            </configuration>
+                        </execution>
+
+                        <execution>
+                            <id>run-app</id>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>java</executable>
+                                <arguments>
+                                    <argument>-jar</argument>
+                                    <argument>target/${project.artifactId}-${project.version}-fat.jar</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <!-- plugin for checking if licensing header is present in headers of defined files -->
             <plugin>
                 <groupId>org.apache.rat</groupId>
                 <artifactId>apache-rat-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>README.md</exclude>
-                                <exclude>LICENSE</exclude>
-                                <exclude>CONTRIBUTING.md</exclude>
-                                <exclude>.travis.yml</exclude>
-                                <exclude>src/main/resources/mock-service/**</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>skip-integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*SampleApplicationTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

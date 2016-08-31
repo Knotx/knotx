@@ -1,0 +1,16 @@
+{
+  "config": {
+    "services": [
+      {
+        "path": "/service/mock/.*",
+        "domain": "localhost",
+        "port": 3000
+      },
+      {
+        "path": "/service/.*",
+        "domain": "localhost",
+        "port": 8080
+      }
+    ]
+  }
+}

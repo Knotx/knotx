@@ -1,6 +1,7 @@
 # Generated files #
 ###################
 node_modules
+node
 target-grunt
 .sass-cache
 .grunt
@@ -77,3 +78,4 @@ bin/
 
 # Project specific   #
 ######################
+.vertx
