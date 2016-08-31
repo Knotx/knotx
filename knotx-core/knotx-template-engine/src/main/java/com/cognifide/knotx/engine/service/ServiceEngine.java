@@ -19,6 +19,7 @@ package com.cognifide.knotx.engine.service;
 
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
+import java.util.Collections;
 import java.util.Map;
 
 import io.vertx.core.http.HttpMethod;
@@ -53,12 +54,19 @@ public class ServiceEngine {
                     resp.subscribe(subscriber);
                     req.end();
                 });
-        return serviceResponse.flatMap(response ->
-                Observable.just(Buffer.buffer())
-                        .mergeWith(response.toObservable())
-                        .reduce(Buffer::appendBuffer))
-                .doOnNext(this::traceServiceCall)
-                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
+        return serviceResponse.flatMap(this::collectBuffers);
+    }
+
+    private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
+        return Observable.just(Buffer.buffer())
+                .mergeWith(response.toObservable())
+                .reduce(Buffer::appendBuffer)
+                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()))
+                .map(results -> {
+                    results.put("_response", Collections.singletonMap("statusCode", response.statusCode()));
+                    traceServiceCall(results);
+                    return results;
+                });
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
@@ -68,9 +76,9 @@ public class ServiceEngine {
                 .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
 
-    private void traceServiceCall(Buffer buffer) {
+    private void traceServiceCall(Map<String, Object> results) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Service call returned <{}>", buffer.toJsonObject().encodePrettily());
+            LOGGER.trace("Service call returned <{}>", results.toString());
         }
     }
 }
