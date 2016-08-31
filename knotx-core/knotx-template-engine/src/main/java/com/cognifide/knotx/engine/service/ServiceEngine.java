@@ -17,6 +17,9 @@
  */
 package com.cognifide.knotx.engine.service;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.Collections;
@@ -45,15 +48,10 @@ public class ServiceEngine {
         this.configuration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod) {
-        Observable<HttpClientResponse> serviceResponse =
-                Observable.create((subscriber) -> {
-                    HttpClientRequest req = vertx.createHttpClient().request(httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri());
-                    req.headers().addAll(headers);
-                    Observable resp = req.toObservable();
-                    resp.subscribe(subscriber);
-                    req.end();
-                });
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod, MultiMap formAttributes) {
+        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
+                req -> buildRequestBody(req, headers, formAttributes, httpMethod));
+
         return serviceResponse.flatMap(this::collectBuffers);
     }
 
@@ -67,6 +65,24 @@ public class ServiceEngine {
                     traceServiceCall(results);
                     return results;
                 });
+    }
+
+    private void buildRequestBody(HttpClientRequest request, MultiMap headers, MultiMap formAttributes, HttpMethod httpMethod) {
+        request.headers().addAll(headers);
+        if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
+            Buffer buffer = createFormPostBody(formAttributes);
+            request.headers().set("content-length", String.valueOf(buffer.length()));
+            request.headers().set("content-type", "application/x-www-form-urlencoded");
+            request.write(buffer);
+        }
+    }
+
+
+    private Buffer createFormPostBody(MultiMap formAttributes) {
+        Buffer buffer = Buffer.buffer();
+        String formPostContent = Joiner.on("&").withKeyValueSeparator("=").join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+        buffer.appendString(formPostContent, Charsets.UTF_8.toString());
+        return buffer;
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {

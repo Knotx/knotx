@@ -21,10 +21,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientRequest;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -32,7 +32,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
+    private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -45,13 +45,9 @@ public class SampleApplicationTest {
         Async async = context.async();
         client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, "/content/local/simple.html",
                 resp -> resp.bodyHandler(body -> {
-                    context.assertEquals(resp.statusCode(), 200);
                     String fileName = "localSimpleResult.html";
-                    try {
-                        context.assertEquals(body.toString(), ApplicationTestHelper.readText(fileName));
-                    } catch (Exception e) {
-                        LOG.error("Cannot read file {}", fileName, e);
-                    }
+                    context.assertEquals(resp.statusCode(), 200);
+                    assertBodyIsEqualWitMockedFile(context, body, fileName);
                     client.close();
                     async.complete();
                 }));
@@ -61,23 +57,44 @@ public class SampleApplicationTest {
     public void remoteSimpleHtmlTest(TestContext context) {
         HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
         Async async = context.async();
-        client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, "/content/remote/simple.html",
+        client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
                 resp -> resp.bodyHandler(body -> {
-                    context.assertEquals(resp.statusCode(), 200);
                     String fileName = "remoteSimpleResult.html";
-                    try {
-                        context.assertEquals(body.toString(), ApplicationTestHelper.readText(fileName));
-                    } catch (Exception e) {
-                        LOG.error("Cannot read file {}", fileName, e);
-                    }
+                    context.assertEquals(resp.statusCode(), 200);
+                    assertBodyIsEqualWitMockedFile(context, body, fileName);
                     client.close();
                     async.complete();
                 }));
     }
 
+    @Test
+    public void rewritePreservedHeadersTest(TestContext context) {
+        HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
+        Async async = context.async();
+        HttpClientRequest httpClientRequest = client.get(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
+                resp -> {
+                    context.assertEquals("Pl", resp.headers().get("X-Language-Code"));
+                    context.assertNull(resp.getHeader("Location"));
+                    client.close();
+                    async.complete();
+                }
+        );
+        httpClientRequest.putHeader("X-Language-Code", "Pl");
+        httpClientRequest.putHeader("Location", "http://localhost/content/remote/simple.html");
+        httpClientRequest.end();
+    }
+
     @AfterClass
     public static void tearDown(TestContext context) {
         ApplicationTestHelper.tearDown(context);
+    }
+
+    private void assertBodyIsEqualWitMockedFile(TestContext context, Buffer body, String fileName) {
+        try {
+            context.assertEquals(body.toString(), ApplicationTestHelper.readText(fileName));
+        } catch (Exception e) {
+            context.fail(e);
+        }
     }
 
 }

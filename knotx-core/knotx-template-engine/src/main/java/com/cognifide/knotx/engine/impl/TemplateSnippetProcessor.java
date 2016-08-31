@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.engine.impl;
 
+import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
@@ -51,10 +53,10 @@ public class TemplateSnippetProcessor {
 
     public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
         return fragment.getServices()
-                .filter(serviceEntry -> serviceEntry.canServeMethodType(request.getServerRequestMethod()))
+                .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders(), request.getServerRequestMethod()),
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders(), computeServiceMethodType(request, serviceItem.getMethodType()), request.getFormAttributes()),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(ServiceEntry::getResultWithNamespaceAsKey)
                 .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {
@@ -63,6 +65,14 @@ public class TemplateSnippetProcessor {
                 })
                 .map(results -> applyData(fragment, results))
                 .defaultIfEmpty(fragment.getContent());
+    }
+
+    private HttpMethod computeServiceMethodType(TemplateEngineRequest request, ServiceCallMethod serviceCallMethod) {
+        if (HttpMethod.POST.equals(request.getServerRequestMethod()) && ServiceCallMethod.POST.equals(serviceCallMethod)) {
+            return HttpMethod.POST;
+        } else {
+            return HttpMethod.GET;
+        }
     }
 
     private String applyData(final HtmlFragment snippet, Map<String, Object> serviceResult) {

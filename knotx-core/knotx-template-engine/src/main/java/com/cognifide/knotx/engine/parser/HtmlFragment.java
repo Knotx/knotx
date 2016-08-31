@@ -49,4 +49,9 @@ public interface HtmlFragment {
      * @return
      */
     Observable<ServiceEntry> getServices();
+
+    /**
+     * Gets 'data id' attribute
+     */
+    String getDataId();
 }
