@@ -17,22 +17,34 @@
  */
 package com.cognifide.knotx.monolith;
 
+import com.cognifide.knotx.engine.service.KnotxRxHelper;
+
+import org.jsoup.Jsoup;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientRequest;
+import io.vertx.rxjava.core.http.HttpClientResponse;
+import rx.Observable;
+
 
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
-    private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
+    public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+    public static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
+    public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -41,30 +53,30 @@ public class SampleApplicationTest {
 
     @Test
     public void localSimpleHtmlTest(TestContext context) {
-        HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
-        Async async = context.async();
-        client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, "/content/local/simple.html",
-                resp -> resp.bodyHandler(body -> {
-                    String fileName = "localSimpleResult.html";
-                    context.assertEquals(resp.statusCode(), 200);
-                    assertBodyIsEqualWitMockedFile(context, body, fileName);
-                    client.close();
-                    async.complete();
-                }));
+        testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
+
     }
 
     @Test
     public void remoteSimpleHtmlTest(TestContext context) {
-        HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
-        Async async = context.async();
-        client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
-                resp -> resp.bodyHandler(body -> {
-                    String fileName = "remoteSimpleResult.html";
-                    context.assertEquals(resp.statusCode(), 200);
-                    assertBodyIsEqualWitMockedFile(context, body, fileName);
-                    client.close();
-                    async.complete();
-                }));
+        testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
+
+    }
+
+    @Test
+    public void localMultipleFormWithGetTest(TestContext context) {
+        testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
+    }
+
+
+    @Test
+    public void localMultipleFormWithPostTest(TestContext context) {
+        tesPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithPostResult.html", false);
+    }
+
+    @Test
+    public void localMultipleFormWithAjaxPostTest(TestContext context) {
+        tesPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
     }
 
     @Test
@@ -84,17 +96,55 @@ public class SampleApplicationTest {
         httpClientRequest.end();
     }
 
+    private void tesPostRequest(TestContext context, String url, String expectedResponseFile, boolean ajaxCall) {
+        HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
+
+        Async async = context.async();
+        Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
+            String bodyForm = "email=email@com.pl&name=John&_id=competition-form";
+            req.headers().set("content-length", String.valueOf(bodyForm.length()));
+            req.headers().set("content-type", "application/x-www-form-urlencoded");
+            if (ajaxCall) {
+                req.headers().set("X-Requested-With", "XMLHttpRequest");
+            }
+            req.write(bodyForm);
+        });
+
+
+        request.subscribe(resp -> resp.bodyHandler(body -> {
+            context.assertEquals(resp.statusCode(), 200);
+            try {
+                context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).body().html());
+            } catch (Exception e) {
+                LOG.error("Cannot read file {}", expectedResponseFile, e);
+                context.fail();
+            }
+
+            client.close();
+            async.complete();
+        }));
+    }
+
+    private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
+        HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
+        Async async = context.async();
+        client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
+                resp -> resp.bodyHandler(body -> {
+                    context.assertEquals(resp.statusCode(), 200);
+                    try {
+                        context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+                    } catch (Exception e) {
+                        LOG.error("Cannot read file {}", expectedResponseFile, e);
+                        context.fail();
+                    }
+                    client.close();
+                    async.complete();
+                }));
+    }
+
     @AfterClass
     public static void tearDown(TestContext context) {
         ApplicationTestHelper.tearDown(context);
-    }
-
-    private void assertBodyIsEqualWitMockedFile(TestContext context, Buffer body, String fileName) {
-        try {
-            context.assertEquals(body.toString(), ApplicationTestHelper.readText(fileName));
-        } catch (Exception e) {
-            context.fail(e);
-        }
     }
 
 }

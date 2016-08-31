@@ -102,6 +102,6 @@ public class TemplateHtmlFragment implements HtmlFragment {
 
     private String getDataIdAttr(List<Attribute> attributes) {
         Optional<Attribute> dataIdAttribute = attributes.stream().filter(attribute -> attribute.getKey().equals(DATA_ID)).findFirst();
-        return dataIdAttribute.isPresent() ? dataIdAttribute.get().getValue() : StringUtils.EMPTY;
+        return dataIdAttribute.map(Attribute::getValue).orElse(StringUtils.EMPTY);
     }
 }

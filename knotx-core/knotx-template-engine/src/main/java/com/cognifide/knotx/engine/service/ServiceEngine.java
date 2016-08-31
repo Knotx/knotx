@@ -20,6 +20,8 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
+import com.cognifide.knotx.api.ServiceCallMethod;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.Collections;
@@ -48,9 +50,10 @@ public class ServiceEngine {
         this.configuration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, MultiMap headers, HttpMethod httpMethod, MultiMap formAttributes) {
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, TemplateEngineRequest request) {
+        HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
         Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
-                req -> buildRequestBody(req, headers, formAttributes, httpMethod));
+                req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(), httpMethod));
 
         return serviceResponse.flatMap(this::collectBuffers);
     }
@@ -90,6 +93,14 @@ public class ServiceEngine {
                 .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
                 .first()
                 .map(metadata -> serviceEntry.setServiceMetadata(metadata));
+    }
+
+    private HttpMethod computeServiceMethodType(TemplateEngineRequest request, ServiceCallMethod serviceCallMethod) {
+        if (HttpMethod.POST.equals(request.getServerRequestMethod()) && ServiceCallMethod.POST.equals(serviceCallMethod)) {
+            return HttpMethod.POST;
+        } else {
+            return HttpMethod.GET;
+        }
     }
 
     private void traceServiceCall(Map<String, Object> results) {
