@@ -18,6 +18,7 @@
 package com.cognifide.knotx.api;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.MultiMap;
 import rx.Observable;
 
 public class RepositoryResponse extends JsonObjectRequest {
@@ -30,22 +31,28 @@ public class RepositoryResponse extends JsonObjectRequest {
 
     private String data;
 
+    private int statusCode;
+
+    private MultiMap headers;
+
     private RepositoryResponse() {
         //Empty default constructor
     }
 
     public RepositoryResponse(JsonObject object) {
         success = object.getBoolean("success");
-
+        headers = fromJsonArray(object.getJsonArray("headers"));
         if (success) {
             data = object.getString("data");
         } else {
+            statusCode = object.getInteger("statusCode");
             reason = object.getString("reason");
         }
     }
 
-    public static RepositoryResponse success(String data) {
+    public static RepositoryResponse success(String data, MultiMap headers) {
         RepositoryResponse response = new RepositoryResponse();
+        response.headers = headers;
         response.success = true;
         response.data = data;
         return response;
@@ -56,6 +63,14 @@ public class RepositoryResponse extends JsonObjectRequest {
         response.success = false;
         response.reason = String.format(message, args);
         return response;
+    }
+
+    public static RepositoryResponse error(int statusCode, MultiMap headers) {
+        RepositoryResponse response = new RepositoryResponse();
+        response.headers = headers;
+        response.statusCode = statusCode;
+        return response;
+
     }
 
     public Observable<RepositoryResponse> toObservable() {
@@ -74,6 +89,14 @@ public class RepositoryResponse extends JsonObjectRequest {
         return reason;
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public MultiMap getHeaders() {
+        return headers;
+    }
+
     @Override
     public JsonObject toJsonObject() {
         JsonObject object = new JsonObject().put("success", success);
@@ -81,6 +104,8 @@ public class RepositoryResponse extends JsonObjectRequest {
             object.put("data", data);
         } else {
             object.put("reason", reason);
+            object.put("headers", toJsonArray(headers));
+            object.put("statusCode", statusCode);
         }
         return object;
     }
@@ -90,7 +115,9 @@ public class RepositoryResponse extends JsonObjectRequest {
         return "RepositoryResponse{" +
                 "success=" + success +
                 ", reason='" + reason + '\'' +
-                ", data=" + data +
+                ", data='" + data + '\'' +
+                ", statusCode=" + statusCode +
+                ", headers=" + headers +
                 '}';
     }
 
