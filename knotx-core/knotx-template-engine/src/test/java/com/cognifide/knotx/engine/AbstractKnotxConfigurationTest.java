@@ -26,7 +26,7 @@ import io.vertx.core.json.JsonObject;
 
 public class AbstractKnotxConfigurationTest {
 
-    protected JsonObject readConfig(String path) throws Exception {
+    protected static JsonObject readConfig(String path) throws Exception {
         return readJson(path).getJsonObject("config");
     }
 
