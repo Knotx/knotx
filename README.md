@@ -37,7 +37,6 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
     - [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables)
 - [Features](#features)
   - [Requests grouping](#requests-grouping)
-  - [Service response status code](#service-response-status-code)
 - [Production](#production)
     - [Executing](#executing)
     - [Configuration](#configuration-1)
@@ -421,25 +420,6 @@ Notice: The following `data-uri` attributes
 /searchService?q=second
 ```
 would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
-
-## Service response status code
-Service response status code can be used in snippets e.g. as condition to display messages if response is not success.
-
-Example:
-```html
-<script data-api-type="templating" 
-    type="text/x-handlebars-template" 
-    data-uri-post-formResponse="/service/formSubmit">
-  <h1>Welcome!</h1>
-
-  {{#if formResponse._response.statusCode == 503
-    <p>Failed. Service was unavailable.</p>
-  {{else}}
-    <p>Success.</p>
-  {{/if}}
-
-</script>
-```
 
 # Production
 
