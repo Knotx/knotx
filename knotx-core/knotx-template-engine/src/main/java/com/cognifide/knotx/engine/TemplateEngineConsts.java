@@ -21,6 +21,4 @@ public class TemplateEngineConsts {
     public static final String FORM_ID_ATTRIBUTE = "_id";
     public static final String XMLHTTP_REQUEST = "XMLHttpRequest";
     public static final String X_REQUESTED_WITH = "X-Requested-With";
-
-
 }
