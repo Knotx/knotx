@@ -33,6 +33,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
@@ -41,6 +42,9 @@ import rx.Observable;
 public class SampleApplicationTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
+    public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+    public static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
+    public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -49,30 +53,30 @@ public class SampleApplicationTest {
 
     @Test
     public void localSimpleHtmlTest(TestContext context) {
-        testGetRequest(context, "/content/local/simple.html", "localSimpleResult.html");
+        testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
 
     }
 
     @Test
     public void remoteSimpleHtmlTest(TestContext context) {
-        testGetRequest(context, "/content/remote/simple.html", "remoteSimpleResult.html");
+        testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
 
     }
 
     @Test
     public void localMultipleFormWithGetTest(TestContext context) {
-        testGetRequest(context, "/content/local/multiple-forms.html", "multipleFormWithGetResult.html");
+        testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
     }
 
 
     @Test
     public void localMultipleFormWithPostTest(TestContext context) {
-        tesPostRequest(context, "/content/local/multiple-forms.html", "multipleFormWithPostResult.html", false);
+        tesPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithPostResult.html", false);
     }
 
     @Test
     public void localMultipleFormWithAjaxPostTest(TestContext context) {
-        tesPostRequest(context, "/content/local/multiple-forms.html", "multipleFormWithAjaxPostResult.html", true);
+        tesPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
     }
 
 
