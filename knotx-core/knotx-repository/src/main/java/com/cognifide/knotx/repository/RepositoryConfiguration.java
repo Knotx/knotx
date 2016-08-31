@@ -41,7 +41,7 @@ public class RepositoryConfiguration {
                     RepositoryMetadata repositoryMetadata = new RepositoryMetadata();
                     repositoryMetadata.type = RepositoryType.valueOf(item.getString("type").toUpperCase());
                     repositoryMetadata.path = item.getString("path");
-                    repositoryMetadata.clientOptions = item.getJsonObject("client.options");
+                    repositoryMetadata.clientOptions = item.getJsonObject("client.options", new JsonObject());
 
                     if (repositoryMetadata.type == RepositoryType.LOCAL) {
                         repositoryMetadata.catalogue = item.getString("catalogue");
