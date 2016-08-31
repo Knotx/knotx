@@ -7,10 +7,10 @@
 ## Documentation Module
 Contains Knot.x documentation.
 
-### Writing documentation
+### How to contribute to documentation
 Below are basic rules how to write documentation.
 
-* The `wiki` directory contains the documentation, that should be uploaded to the project's wiki repository.
+* The `wiki` directory contains the documentation, that should be uploaded to the project's wiki repository after changes are merged to `master` branch.
 * GitHub wiki does not handle hierarchy of pages and directories. This means, that each markdown file's name has to be unique, even if pages are placed in different directories. Pages are being referenced by file name without extension or path.
 * All assets (images etc.) should be placed in `wiki/assets` directory and referenced as `assets/<fileName>`. Here relative path to directory is required.
 * `_Sidebar.md` file defines the structure of navigation sidebar placed on the right side on GitHub wiki. It contains links to documentation pages. All pages should be linked in this file. 
@@ -18,7 +18,7 @@ Below are basic rules how to write documentation.
 * Use only `#` style headings. TOC in generated released version documentation is based on headings and alternative heading styles are not supported.
 * Use different heading levels. Hierarchy in TOC of released version documentation is based on heading levels.
 
-### Generating released version documentation
+### Generating released version documentation [only during release]
 Below are instructions how to prepare documentation of a new released application version and how to upload it to GitHub wiki.
 
 #### Prerequisites
