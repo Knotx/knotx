@@ -26,7 +26,6 @@ We care a lot about speed and that is why we built it on [Vert.x](http://vertx.i
   - [Requirements](#requirements)
   - [Modules](#modules)
   - [Building](#building)
-    - [Executing from Maven](#executing-from-maven)
     - [Executing fat jar](#executing-fat-jar)
   - [Configuration](#configuration)
     - [Services](#services)
@@ -173,19 +172,6 @@ This will create executable fat JAR files for each Knot.x:
 And in example application:
 - Mocks verticles in `knotx-example/knotx-mocks/target`
 - Sample app in `knotx-example/knotx-example-monolith/target`
-
-### Executing from Maven
-
-To run Knot.x from Maven, execute the following command from the project's root directory:
-```
-mvn spring-boot:run
-```
-This will run the sample server with mock services and sample repositories. Sample pages are available at:
-
-```
-http://localhost:8092/content/local/simple.html
-http://localhost:8092/content/remote/simple.html
-```
 
 ### Executing fat jar
 
