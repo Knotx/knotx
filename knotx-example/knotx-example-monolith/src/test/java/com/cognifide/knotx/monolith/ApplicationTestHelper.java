@@ -25,7 +25,7 @@ import com.cognifide.knotx.repository.RepositoryVerticle;
 import com.cognifide.knotx.server.KnotxServerVerticle;
 
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
 
@@ -45,18 +45,18 @@ public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
 
         knotxPort = configuration.getJsonObject("server").getJsonObject("config").getInteger("http.port");
 
-        vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(
+        vertx.deployVerticle(MockRemoteRepositoryVerticle.class.getName(), new DeploymentOptions().setConfig(
                 configuration.getJsonObject("mockRepo")));
-        vertx.deployVerticle(new MockServiceVerticle(),
+        vertx.deployVerticle(MockServiceVerticle.class.getName(),
                 new DeploymentOptions().setConfig(configuration.getJsonObject(
                         "mockService")));
-        vertx.deployVerticle(new RepositoryVerticle(),
+        vertx.deployVerticle(RepositoryVerticle.class.getName(),
                 new DeploymentOptions().setConfig(configuration.getJsonObject(
                         "repository")));
-        vertx.deployVerticle(new TemplateEngineVerticle(),
+        vertx.deployVerticle(TemplateEngineVerticle.class.getName(),
                 new DeploymentOptions().setConfig(configuration.getJsonObject(
                         "engine")));
-        vertx.deployVerticle(new KnotxServerVerticle(),
+        vertx.deployVerticle(KnotxServerVerticle.class.getName(),
                 new DeploymentOptions().setConfig(configuration.getJsonObject(
                         "server")));
     }

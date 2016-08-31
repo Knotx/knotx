@@ -24,9 +24,6 @@ import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 import rx.functions.Action1;
 
-/**
- * @author pawel.koper on 27.08.16.
- */
 public final class KnotxRxHelper {
 
     private KnotxRxHelper() {

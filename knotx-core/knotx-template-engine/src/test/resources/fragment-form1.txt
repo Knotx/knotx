@@ -1,0 +1,22 @@
+<script data-api-type="templating"
+        type="text/x-handlebars-template"
+            data-uri-post-formresponse="`"
+        data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
+        data-id="newsletter-form">
+        <div id="newsletter-form-wrapper">
+            <h1>{{labelsrepository.subscribeToNewsletter}}</h1>
+            {{#if formresponse}}
+                <p>{{labelsrepository.thankYouForSubscribingToNewsletter}}</p>
+            {{else}}
+                <p>Please subscribe to our newsletter:</p>
+                <form method="post" class="form-inline" id="newsletter">
+                    <div class="form-group">
+                        <label for="email2">Email</label>
+                        <input type="email" name="email" id="email2"/>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                    <input type="hidden" name="_id" value="newsletter-form"/>
+                 </form>
+            {{/if}}
+        </div>
+</script>
