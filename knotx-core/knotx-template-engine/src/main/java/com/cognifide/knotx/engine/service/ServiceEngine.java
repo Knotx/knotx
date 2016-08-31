@@ -94,7 +94,7 @@ public class ServiceEngine {
 
     private void traceServiceCall(Map<String, Object> results) {
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Service call returned <{}>", buffer.toJsonObject().encodePrettily());
+            LOGGER.trace("Service call returned <{}>", results.toString());
         }
     }
 }
