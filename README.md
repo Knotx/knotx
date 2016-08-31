@@ -1,119 +1,20 @@
 ![Cognifide logo](http://cognifide.github.io/images/cognifide-logo.png)
+![Knot.x](https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true)
 
-[![Build Status](https://travis-ci.org/Cognifide/knotx.svg?branch=master)](https://travis-ci.org/Cognifide/knotx)
-
-# Knot.x
-
-<p align="center">
-  <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
-</p>
+# Knot.x - reactive microservice assembler
+[![][travis img]][travis]
+[![][license img]][license]
 
 Knot.x is a lightweight and high-performance **reactive microservice assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
 
 We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
-# Contents
+## Full Documentation
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+See the [Wiki](https://github.com/Cognifide/knotx/wiki) for full documentation, examples and other information.
 
-
-- [How it works](#how-it-works)
-  - [Templating](#templating)
-  - [Architecture](#architecture)
-  - [Flow diagram](#flow-diagram)
-- [Getting started](#getting-started)
-  - [Requirements](#requirements)
-  - [Modules](#modules)
-  - [Building](#building)
-    - [Executing fat jar](#executing-fat-jar)
-  - [Configuration](#configuration)
-    - [Services](#services)
-    - [Repositories](#repositories)
-      - [Local repositories](#local-repositories)
-      - [Remote repositories](#remote-repositories)
-    - [Application](#application)
-    - [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables)
-- [Features](#features)
-  - [Requests grouping](#requests-grouping)
-- [Production](#production)
-    - [Executing](#executing)
-    - [Configuration](#configuration-1)
-- [Licence](#licence)
-- [Dependencies](#dependencies)
-- [Roadmap](#roadmap)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-# How it works
-
-## Templating
-
-In order to separate static content and dynamic data we introduced a Templating Engine, which merges a template obtained from the content repository and dynamic data provided by microservices using [Handlebars.js](http://handlebarsjs.com/). Here is what a template looks like:
-
-```html
-<script data-api-type="templating" data-uri-dataservice="/path/to/service.json" type="text/x-handlebars-template">
-    <h2>{{dataservice.header}}</h2>
-    <div>{{dataservice.body.content}}</div>
-</script>
-```
-
-The following table describes all elements and attributes used in the template.
-
-| Element                             | Description                                                              |
-| ----------------------------------- | ------------------------------------------------------------------------ |
-| `data-api-type="templating"`        | required for **Knot.x** to recognize the script as a template to process |
-| `data-uri-post-dataservice`    | path to a microsevice that provides the data - it will be handled by a service, as described in the [Configuration](#configuration) section. Name of the attribute consist of following parts:<ul><li>'data-uri' : required. </li><li>post : optional. call to  microsevicervice will be made only if request method is of that type. Can be: post, get, all. </li><li>dataservice : optional. Defines the namespace name. Only placeholders with matching namespace will be filled by data coming from that service</li></ul>|            
-| `type="text/x-handlebars-template"` | required by [Handlebars.js](http://handlebarsjs.com/) tool, which is used for templating |
-| `{{dataservice.header}}` `{{dataservice.body.content}}`| Placeholders that will be filled by data taken from a JSON response provided by a microservice. Where 'dataservice' is an optional namespace(described above).|
-
-In this case the microservice response could have the following format:
-
-```json
-{
-    "header" : "Hello",
-    "body" : {
-        "content": "World"
-    }
-}
-```
-
-## Architecture
-The HTTP Request which comes to **Knot.x** causes a request for a template to be sent to one of the available Content Repositories. For each script with `data-api-type="templating"` there is a request to a microservice for the data. After both requests are completed, [Handlebars.js](http://handlebarsjs.com/) merges the static content and the dynamic data and returns a complete document.
-
-![Architecture without load balancer](https://github.com/Cognifide/knotx/blob/master/icons/architecture/without-load-balancer.png)
-
-It's worth mentioning that this architecture scales very easily. Not only can you add as many microservices and repositories as you want, but you can also use multiple Knot.x nodes set up behind a load balancer if you need to handle more traffic.
-
-![Architecture with load balancer](https://github.com/Cognifide/knotx/blob/master/icons/architecture/with-load-balancer.png)
-
-## Flow diagram
-
-The following diagram shows the asynchronous nature of **Knot.x**. After obtaining a template from a repository, we request all the necessary data from microservies, which reduces the time needed for building the whole document.
-
-![Flow diagram](https://github.com/Cognifide/knotx/blob/master/icons/architecture/flow-diagram.png)
-
-Please notice, that order of data calls is not guaranteed. Please consider following snippet as an example:
-```html
-<script data-api-type="templating" data-uri-post-saveUser="/saveUserService" data-uri-get-getUser="/getUserService" type="text/x-handlebars-template">
-    <div>Hello {{getUser.name}}</div>
-    <form method="post">
-        <input type="input" name="name" />
-        <input type="submit" value="Submit" />
-    </form>
-</script>
-```
-
-The order of calling services may be:
-1. `/saveUserService`,
-2. `/getUserService` .
-or
-1. `/getUserService`,
-2. `/saveUserService`.
-
-Because of this, service `/getUserService` should not depend on operations from `/saveUserService`.
-
-# Getting started
+## Communication
+- [GitHub Issues](https://github.com/Cognifide/knotx/issues)
 
 ## Requirements
 
@@ -121,418 +22,57 @@ To run Knot.x you only need Java 8.
 
 To build it you also need Maven (version 3.3.1 or higher).
 
-## Modules
-The Knot.x project has two main Maven modules: **knotx-core** and **knotx-example**.
+## Run Demo
 
-### Core
-The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
+To run a [Example monolith app](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-monolith) do the following:
 
-#### knotx-api
-A module that defines the communication model used to send event-related messages via the Event Bus.
-
-#### knotx-launcher
-A module that initialises system properties for Knot.x core. Currently only logger.
-
-#### knotx-repository
-A module that contains the **repository** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. The repository is responsible for fetching templates.
-
-#### knotx-server
-A module that contains the **server** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Server is responsible for communication between Knot.x and the World. It handles initial request, dispatches them to `repository` and `templating-engine` verticles using [Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html) and finally sends responses to the client.
-
-#### knotx-standalone
-A module that contains the **host** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) which starts `server`, `repository` and `template-engine` verticles. It enables one to quickly set up a standalone Knot.x core application.
-
-#### knotx-template-engine
-A module that contains the **template-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Templating Engine is responsible for processing template snippets, calling external services for dynamic data and producing final markup with injected data.
-
-### Example
-The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts five verticles (Knot.x Repository, Knot.x Template Engine, Knot.x Server, Services Mocks and Mocked Remote repository). This module is a perfect fit for those getting started with Knot.x. 
-
-#### knotx-example-monolith
-A module that can be used to set up a Knot.x instance with mocked external services (from `knotx-mocks`) on a single Vert.x instance using one command. Please mind that this an example that depicts a valid setup of Sample monolith application and is not fit for use in production environments.
-We recommend to start playing with Knot.x using this module. To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
-More information about setup can be found in [Getting started](#executing-fat-jar) section.
-
-#### knotx-mocks
-A module that contains simple mocks of `templates repository` and `micorservices endpoints` implemented as [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html). 
-When started, *mock remote repository* listens on port `3001` and *mock service* listens on port `3000`.
-
-## Building
-
-To build it, simply checkout the project, navigate to the project root and run the following command:
+Build Knot.x with Example app:
 
 ```
-mvn clean install
-```
-This will create executable fat JAR files for each Knot.x:
-- Knot.x Repository in `knotx-core/knotx-repository/target`
-- Knot.x Template Engine in `knotx-core/knotx-engine/target`
-- Knot.x Http Server in `knotx-core/knotx-server/target`
-
-And in example application:
-- Mocks verticles in `knotx-example/knotx-mocks/target`
-- Sample app in `knotx-example/knotx-example-monolith/target`
-
-### Executing fat jar
-
-To run sample app, execute the following commands:
-```
-$cd knotx-example/knotx-example-monolith
-java -jar target/knotx-example-monolith-XXX.jar -conf src/main/resources/application.json
+$ git clone https://github.com/Cognifide/knotx.git
+$ cd knotx
+$ mvn clean install
 ```
 
-This will run the server with sample data. You can supply your own configuration using the `-conf` parameter. Sample pages are available at:
+Run example app:
 ```
-http://localhost:8092/content/local/simple.html
-http://localhost:8092/content/remote/simple.html
-```
-## Configuration
-
-The Knot.x Sample application consists of multiple verticles, each requiring a dedicated configuration entry.
-Here's how JSON configuration files look:
-**1. application.json**
-```json
-{
-  "repository": {
-    "config" : {
-        ...
-    }
-  },
-  "templateEngine": {
-    "config" : {
-        ...
-    }
-  },
-  "knotxServer": {
-    "config" : {
-        ...
-    }
-  },  
-  "mockRepo": {
-    "config" : {
-        ...
-    }
-  },
-  "mockService": {
-    "config" : {
-        ...
-    }
-  }
-}
-```
-This is the main configuration supplying config entries for each verticle started by the Sample application.
-
-**1.1. repository** section
-```json
-{
-  "repository": {
-    "config": {
-      "service.name": "template-repository",
-      "repositories": [
-        {
-          "type": "local",
-          "path": "/content/local/.*",
-          "catalogue": ""
-        },
-        {
-          "type": "remote",
-          "path": "/content/.*",
-          "domain": "localhost",
-          "port": 3001
-        }
-      ]
-    }
-  },
-  ...
-}
-```
-This section configures the Knot.x Repository Verticle listening for requests on Vert.x event bus. The config node consists of:
-- **service.name** - the name/address of the event bus to which Repository Verticle subscribes on,
-- **repositories** - an array of definitions of all repositories used that provide HTML Templates.
-
-There are two sample repositories defined - `local` and `remote`. Each of them defines a `path` - a regular expression that indicates which resources will be taken from this repository. 
-The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
-
-- **Local repositories**
-```json
-{
-    "type": "local",
-    "path": "/content/local/.*",
-    "catalogue": ""    
-}
-```
-If you need to take files from a local machine, this is the kind of repository you want to use. It's perfect for mocking data. 
-The second parameter to define is `catalogue` - it determines where to take the resources from. If it's left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
-
-- **Remote repositories**
-This kind of repository connects with an external server to fetch templates. To specify where the remote instance is, please configure the `domain` and `port` parameters.
-```json
-{
-    "type": "remote",
-    "path": "/content/.*",
-    "domain": "localhost",
-    "port": 3001   
-}
+$ cd knotx-example/knotx-example-monolith
+$ java -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/resources/knotx-example-monolith.json
 ```
 
-**1.2. templateEngine** section
-```json
-  ...
-  "templateEngine": {
-    "config": {
-      "service.name": "template-engine",
-      "template.debug": true,
-      "services": [
-        {
-          "path": "/service/mock/.*",
-          "domain": "localhost",
-          "port": 3000
-        },
-        {
-          "path": "/service/.*",
-          "domain": "localhost",
-          "port": 8080
-        }
-      ]
-    }
-  },
-  ...,
+You will see output similar to the following:
 ```
-This section configures the Knot.x Template Engine Verticle listening for requests on Vert.x event bus. The config node consists of:
-- **service.name** - name/address of the event bus to which the Repository Verticle subscribes,
-- **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
-- **services** - an array of definitions of all service endpoints used by dynamic snippets.
-
-There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
-- `/service/mock/.*` will by handled by `localhost:3000`
-- `/service/.*` will be handled by `localhost:8080`
-
-The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
-
-**1.3. knotxServer** section
-```json
-{
-  ...
-  "knotxServer": {
-    "config": {
-      "http.port": 8092,
-      "preserved.headers": [
-        "User-Agent",
-        "X-Solr-Core-Key",
-        "X-Language-Code"
-      ],
-      "dependencies" : {
-        "repository.address" : "template-repository",
-        "engine.address": "template-engine"
-      }
-    }
-  },
-  ...
-}
-```
-This section configures the Knot.x HTTP server. The config node consists of:
-- **http.port** - an HTTP port on which the server listens for requests,
-- **preserved.headers** - an array of HTTP Headers that will be forwarded to service calls,
-- **dependencies** - Vert.x Event Bus addresses to Knot.x verticles used by Knot.x
-    - **repository.address** - event bus address of Knot.x Repository verticle. This is the same value as **service.name** in the **repository** section of the `application.json`
-    - **engine.address** - event bus address of Knot.x Template Engine verticle. This is the same value as **service.name** in the **templateEngine** section of the `application.json`    
-
-**mockRepo** section
-```json
-{
-    ... 
-    "mockRepo": {
-        "mock.data.root": "mock/repository",
-        "http.port": 3001
-    },     
-    ...
-}
-```
-This section configures the Remote repository mock used by the example application. It consists of:
-- **mock.data.root** - a path (relative to `knotx-mocks/src/main/resources`) where mocked HTML responses are located on local storage,
-- **http.port** - HTTP Port the mock service is listening to.
-
-**mockService** section
-```json
-{
-    ... 
-    "mockService": {
-        "mock.data.root": "mock/service",
-        "http.port": 3000
-    },   
-    ...
-}
-```
-This section configures the Services mock used by the example application. It consists of:
-- **mock.data.root** - relative (to knotx-mocks/src/main/resources) path where mocked JSON responses are located on local storage
-- **http.port** - HTTP Port the mock service is listening to.
-
-Please mind that this an example that depicts a valid setup of the Sample monolith application and it is not fit for use in production environments.
-To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
-
-# Features
-
-## Requests grouping
-
-Template obtained from the repository may contain many snippets that will trigger microservice calls for data. There is a chance that some of the snippets will have the same `data-uri` attribute set, meaning they will request data from the same source.
-In such case only one call to microservice shall be made and data retrieved from service call should be applied to all snippets sharing the same `data-uri`.
-
-Example:
-Let's assume that we obtained the following template from repository:
-```html
-<div>
-<script data-api-type="templating" data-uri="/searchService" type="text/x-handlebars-template">
-    <div>{{search.term}}</div>
-</script>
-</div>
 ...
-<div>
-<script data-api-type="templating" data-uri="/searchService" type="text/x-handlebars-template">
-    <ul>
-    {{#each search.results}}
-      <li>{{result}}<li>
-    {{/each}}
-    </ul>
-</script>
-</div>
-```
-In this case only one call to microservice will be made, since both snippets share the same `data-uri`. Data retrived from `/searchService` will be applied to both snippets.
+16:16:07,030 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@737996a0 - Registering current configuration as safe fallback point
 
-Notice: The following `data-uri` attributes
-```
-/searchService?q=first
-```
-```
-/searchService?q=second
-```
-would trigger two calls for data because of the difference in query strings, even though the path to service is the same in both.
+2016-08-30 16:16:07 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.mocks.MockServiceVerticle - Registered <MockServiceVerticle>
+2016-08-30 16:16:07 [vert.x-eventloop-thread-0] DEBUG c.c.k.m.MockRemoteRepositoryVerticle - Registered <MockRemoteRepositoryVerticle>
+2016-08-30 16:16:07 [vert.x-eventloop-thread-2] DEBUG c.c.k.repository.RepositoryVerticle - Registered <RepositoryVerticle>
+2016-08-30 16:16:07 [vert.x-eventloop-thread-3] DEBUG c.c.k.engine.TemplateEngineVerticle - Registered <TemplateEngineVerticle>
+2016-08-30 16:16:08 [vert.x-eventloop-thread-0] DEBUG c.c.knotx.server.KnotxServerVerticle - Registered <KnotxServerVerticle>
+2016-08-30 16:16:08 [vert.x-eventloop-thread-0] INFO  c.c.knotx.server.KnotxServerVerticle - Successfully Started
 
-# Production
-
-The example module is provided for testing purposes. Only the core verticles should be deployed in a production environment. (The Knot.x application consists of 3 verticles).
-
-### Executing Knot.x core verticles as standalone fat jar
-
-To run it, execute the following command:
-```
-$cd knotx-core/knotx-standalone
-java -jar target/knotx-standalone-XXX-fat.jar -conf <path-to-your-configuration.json>
 ```
 
-This will run the server with production settings. For more information see the [Configuration](#configuration-1) section.
+This example app simulates Vert.x based application running Knot.x core verticles:
+ - Knot.x Server
+ - Knot.x Repository
+ - Knot.x Template Engine
+ 
+Besides Knot.x two mock verticles are started:
+ - Mock Service  -> simulates services used by Template Engine feeding the Handlebars snippets
+ - Mock Remote Repository -> simulates HTTP Remote repository serving HTML templates
 
-#### Configuration
+You can access example Knot.x application from the following URLs
+```
+http://localhost:8092/content/remote/simple.html
+http://localhost:8092/content/local/simple.html
+```
+First serves HTML template from Remote Http Repository, second serves HTML template from local storage.
 
-The *core* module contains 3 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
-**standalone.json**
-```json
-{
-  "server": {
-    "config": {
-      "http.port": 8092,
-      "preserved.headers": [
-        "User-Agent",
-        "X-Solr-Core-Key",
-        "X-Language-Code"
-      ],
-      "dependencies" : {
-        "repository.address" : "template-repository",
-        "engine.address": "template-engine"
-      }
-    }
-  },
-  "repository": {
-    "config": {
-      "service.name": "template-repository",
-      "repositories": [
-        {
-          "type": "local",
-          "path": "/content/local/.*",
-          "catalogue": ""
-        },
-        {
-          "type": "remote",
-          "path": "/content/.*",
-          "domain": "localhost",
-          "port": 3001
-        }
-      ]
-    }
-  },
-  "engine": {
-    "config": {
-      "service.name": "template-engine",
-      "template.debug": true,
-      "services": [
-        {
-          "path": "/service/mock/.*",
-          "domain": "localhost",
-          "port": 3000
-        },
-        {
-          "path": "/service/.*",
-          "domain": "localhost",
-          "port": 8080
-        }
-      ]
-    }
-  }
-}
-```
-Configuration JSON contains three config sections, one for each Knot.x verticle.
+## Bugs and Feedback
 
-### Executing Knot.x core verticles as a cluster
-Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
-For other network configurations please consult Vert.x documentation [Vert.x Hazelcast - Configuring cluster manager](http://vertx.io/docs/vertx-hazelcast/java/#_configuring_this_cluster_manager)
-
-To run it, execute the following command:
-**Host 1 - Repository Verticle**
-```
-java -jar knotx-repository-XXX-fat.jar -conf <path-to-repository-configuration.json>
-```
-**Host 2 - Template Engine Verticle**
-```
-java -jar knotx-template-engine-XXX-fat.jar -conf <path-to-engine-configuration.json>
-```
-**Host 3 - Knot.x Server Verticle**
-```
-java -jar knotx-server-XXX-fat.jar -conf <path-to-server-configuration.json>
-```
-
-For production setup you might need to configure a logger according to your needs. You can start each of the verticles specifying a path to the logback logger configuration via a system property.
-```
-java -Dlogback.configurationFile=<full-path-to-logback-configuration-file> -jar XXX
-```
-Please refer to [LOGBack manual](http://logback.qos.ch/manual/index.html) for details on how to configure the logger.
-
-### Remarks
-For clustering testing purposes you can also start a separate verticle with repository and services mocks. In order to do so, run the following commands:
-```
-$ cd knotx-example/knotx-mocks
-$ java -jar target/knotx-mocks-XXXX-far.jar -conf src/main/resources/knotx-mocks.json
-```
-The mocks verticle is configured as follows:
-- **mock remote repository** listens on port **3001**
-- **mock service** listens on port **3000**
-
-### Configuration
-Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
-For instance, a configuration JSON for the *repository* verticle could look like this:
-```json
-{
-  "config": {
-    "service.name": "template-repository",
-    "repositories": [
-      {
-        "type": "remote",
-        "path": "/content/.*",
-        "domain": "localhost",
-        "port": 3001
-      }
-    ]
-  }
-}
-```
+For bugs, questions and discussions please use the [Github Issues](https://github.com/Cognifide/knotx/issues).
 
 # Licence
 
@@ -549,16 +89,9 @@ For instance, a configuration JSON for the *repository* verticle could look like
 - commons-lang3
 - junit
 
-# Roadmap
 
-- Extend ‘templateDebug’ mode,
-- Extend service exception handling (templates should provide information how to behave when a service is not available or returns an error)
-- Remote template repository support (for remote repositories like Apache, Redis, AEM Dispatcher)
-- Support for POST requests to services (forms)
-- Authentication and authorization solution based on JWT Tokens
-- Placeholders in service-url for dynamic parameters (e.g. GET/POST/HEADER parameters rewritten to service request). https://github.com/Cognifide/knotx/issues/8
-- Multidomain support, single Knot.x cluster can support whole platform with multiple sites. Each domian restricted to set of services to call.
-- Docker + Cookbook for easy production setup.
-- Kitchen integration tests.
-- More Service Repositories implementations, e.g. for Redis.
-- More template engines support (e.g. FreeMarker).
+[travis]:https://travis-ci.org/Cognifide/knotx
+[travis img]:https://travis-ci.org/Cognifide/knotx.svg?branch=master
+
+[license]:LICENSE
+[license img]:https://img.shields.io/badge/License-Apache%202-blue.svg
