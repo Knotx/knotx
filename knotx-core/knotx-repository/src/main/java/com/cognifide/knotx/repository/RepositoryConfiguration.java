@@ -110,6 +110,7 @@ public class RepositoryConfiguration {
                     .append(port)
                     .append(catalogue)
                     .append(type)
+                    .append(clientOptions)
                     .toHashCode();
         }
 
