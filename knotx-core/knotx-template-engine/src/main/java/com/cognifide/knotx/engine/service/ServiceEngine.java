@@ -22,6 +22,7 @@ import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
+import java.util.Collections;
 import java.util.Map;
 
 import io.vertx.core.http.HttpMethod;
@@ -51,12 +52,19 @@ public class ServiceEngine {
         Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
                 req -> buildRequestBody(req, headers, formAttributes, httpMethod));
 
-        return serviceResponse.flatMap(response ->
-                Observable.just(Buffer.buffer())
-                        .mergeWith(response.toObservable())
-                        .reduce(Buffer::appendBuffer))
-                .doOnNext(this::traceServiceCall)
-                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()));
+        return serviceResponse.flatMap(this::collectBuffers);
+    }
+
+    private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
+        return Observable.just(Buffer.buffer())
+                .mergeWith(response.toObservable())
+                .reduce(Buffer::appendBuffer)
+                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()))
+                .map(results -> {
+                    results.put("_response", Collections.singletonMap("statusCode", response.statusCode()));
+                    traceServiceCall(results);
+                    return results;
+                });
     }
 
     private void buildRequestBody(HttpClientRequest request, MultiMap headers, MultiMap formAttributes, HttpMethod httpMethod) {
@@ -81,10 +89,10 @@ public class ServiceEngine {
         return Observable.from(configuration.getServices())
                 .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
                 .first()
-                .map(serviceEntry::setServiceMetadata);
+                .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
 
-    private void traceServiceCall(Buffer buffer) {
+    private void traceServiceCall(Map<String, Object> results) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Service call returned <{}>", buffer.toJsonObject().encodePrettily());
         }
