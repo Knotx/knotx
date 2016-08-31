@@ -24,6 +24,9 @@
           "catalogue": ""
         },
         {
+          "client.options": {
+            "tryUseCompression" : true
+          },
           "type": "remote",
           "path": "/content/.*",
           "domain": "localhost",
