@@ -56,8 +56,8 @@ import static org.mockito.Mockito.when;
 public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
 
 
-    private static final String MOCK_SERVICE_RESPONSE_JSON = "{\"welcomeInCompetition\":\"welcome in competition\",\"thankYouForSubscribingToCompetition\":\"thank you for subscribing to competition\",\"subscribeToNewsletter\":\"subscribe to newsletter\",\"thankYouForSubscribingToNewsletter\":\"thank you for subscribing to newsletter\"}";
-    private static final String FORM_RESPONSE_JSON = "{\"status\":\"success\"}";
+    private static final String MOCK_SERVICE_RESPONSE_JSON = "{\"welcomeInCompetition\":\"welcome in competition\",\"thankYouForSubscribingToCompetition\":\"thank you for subscribing to competition\",\"subscribeToNewsletter\":\"subscribe to newsletter\",\"thankYouForSubscribingToNewsletter\":\"thank you for subscribing to newsletter\",\"_response\":{\"statusCode\":200}}";
+    private static final String FORM_RESPONSE_JSON = "{\"status\":\"success\",\"_response\":{\"statusCode\":200}}";
 
     private ServiceEngine serviceEngine;
 
@@ -88,7 +88,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
         Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
         mapObservable.subscribe(map -> {
-            assertThat(map.size(), equalTo(4));
+            assertThat(map.size(), equalTo(5));
             assertThat(new JsonObject(map).toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
         });
     }
@@ -104,7 +104,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
         Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
         mapObservable.subscribe(map -> {
-            assertThat(map.size(), equalTo(1));
+            assertThat(map.size(), equalTo(2));
             assertThat(new JsonObject(map).toString(), equalTo(FORM_RESPONSE_JSON));
         });
     }
@@ -134,6 +134,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     private void mockServiceResponse(String responseJson) {
         HttpClientResponse httpClientResponse = Mockito.mock(HttpClientResponse.class);
         when(httpClientResponse.toObservable()).thenReturn(Observable.from(Lists.newArrayList(Buffer.buffer(responseJson))));
+        when(httpClientResponse.statusCode()).thenReturn(200);
 
         PowerMockito.mockStatic(KnotxRxHelper.class);
         PowerMockito.when(KnotxRxHelper.request(anyObject(), anyObject(), anyInt(), anyString(), anyString(), anyObject())).thenReturn(Observable.just(httpClientResponse));
