@@ -284,7 +284,7 @@
                                 <goal>java</goal>
                             </goals>
                             <configuration>
-                                <mainClass>LogbackLauncher</mainClass>
+                                <mainClass>com.cognifide.knotx.LogbackLauncher</mainClass>
                                 <arguments>
                                     <argument>run</argument>
                                     <argument>${main.verticle}</argument>
