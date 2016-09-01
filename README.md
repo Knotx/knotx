@@ -67,8 +67,13 @@ You can access example Knot.x application from the following URLs
 ```
 http://localhost:8092/content/remote/simple.html
 http://localhost:8092/content/local/simple.html
+http://localhost:8092/content/local/multiple-forms.html
+http://localhost:8092/content/remote/multiple-forms.html
 ```
-First serves HTML template from Remote Http Repository, second serves HTML template from local storage.
+- first serves HTML template from Remote Http Repository
+- second serves HTML template from local storage
+- third one serves HTML template with multiple forms on the page, one is AJAX based - served from local storage
+- last one serves HTML template with multiple forms on the page, one is AJAX based - served from remote repository
 
 ## Bugs and Feedback
 
