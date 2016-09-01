@@ -64,7 +64,7 @@ class HttpRepository implements Repository {
                 .doOnNext(this::traceResponse)
                 .flatMap(this::processResponse)
                 .onErrorReturn(error -> {
-                            LOGGER.error("Unable to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
+                            LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
                             return RepositoryResponse
                                     .error(500, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                         }
@@ -85,11 +85,10 @@ class HttpRepository implements Repository {
         } else if (httpClientResponse.statusCode() == 200) {
             response = RepositoryResponse.empty(httpClientResponse.headers()).toObservable();
         } else {
-            LOGGER.info("Remote repository returned empty template for path `{}` with status code {}", path,
-                    httpClientResponse.statusCode());
-            String reason = "Template not found."; //TODO what message should be used?
-            response = RepositoryResponse.error(httpClientResponse.statusCode(), reason, httpClientResponse.headers())
-                    .toObservable();
+            LOGGER.info("Remote repository returned with status code {} for path `{}`",
+                    httpClientResponse.statusCode(), path);
+            response = RepositoryResponse.error(httpClientResponse.statusCode(), buffer.toString(),
+                    httpClientResponse.headers()).toObservable();
         }
         return response;
     }

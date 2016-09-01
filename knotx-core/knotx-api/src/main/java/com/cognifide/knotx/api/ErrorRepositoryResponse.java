@@ -20,9 +20,9 @@ package com.cognifide.knotx.api;
 import io.vertx.rxjava.core.MultiMap;
 
 public class ErrorRepositoryResponse extends RepositoryResponse {
-    public ErrorRepositoryResponse(int statusCode, String reason, MultiMap headers) {
+    public ErrorRepositoryResponse(int statusCode, String data, MultiMap headers) {
         super.statusCode = statusCode;
-        super.reason = reason;
+        super.data = data;
         super.headers = headers;
     }
 

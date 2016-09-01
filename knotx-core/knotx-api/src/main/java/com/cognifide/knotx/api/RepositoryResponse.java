@@ -22,8 +22,6 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
 
     private static final long serialVersionUID = -5892594714118271978L;
 
-    protected String reason;
-
     protected String data;
 
     protected int statusCode;
@@ -36,15 +34,14 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
         MultiMap headers = fromJsonArray(object.getJsonArray("headers"));
         Boolean shouldProcess = object.getBoolean("shouldProcess");
         int statusCode = object.getInteger("statusCode");
+        String data = object.getString("data");
 
-        if (statusCode == 200 && shouldProcess) {
-            String data = object.getString("data");
+        if (shouldProcess) {
             repositoryResponse = success(data, headers);
         } else if (statusCode == 200) {
             repositoryResponse = empty(headers);
         } else {
-            String reason = object.getString("reason");
-            repositoryResponse = error(statusCode, reason, headers);
+            repositoryResponse = error(statusCode, data, headers);
         }
         return repositoryResponse;
     }
@@ -57,8 +54,8 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
         return new EmptyRepositoryResponse(headers);
     }
 
-    public static RepositoryResponse error(int statusCode, String reason, MultiMap headers) {
-        return new ErrorRepositoryResponse(statusCode, reason, headers);
+    public static RepositoryResponse error(int statusCode, String data, MultiMap headers) {
+        return new ErrorRepositoryResponse(statusCode, data, headers);
     }
 
     public abstract boolean shouldProcess();
@@ -69,10 +66,6 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
 
     public String getData() {
         return data;
-    }
-
-    public String getReason() {
-        return reason;
     }
 
     public int getStatusCode() {
@@ -89,18 +82,14 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
         object.put("shouldProcess", shouldProcess());
         object.put("headers", toJsonArray(headers));
         object.put("statusCode", statusCode);
-        if (shouldProcess()) {
-            object.put("data", data);
-        } else if (statusCode != 200) {
-            object.put("reason", reason);
-        }
+        object.put("data", data);
         return object;
     }
 
     @Override
     public String toString() {
-        return "RepositoryResponse{" + "shouldProcess=" + shouldProcess() + ", reason='" + reason + '\''
-                + ", data='" + data + '\'' + ", statusCode=" + statusCode + ", headers=" + headers + '}';
+        return "RepositoryResponse{" + "shouldProcess=" + shouldProcess() + ", data='" + data + '\''
+                + ", statusCode=" + statusCode + ", headers=" + headers + '}';
     }
 
 }
