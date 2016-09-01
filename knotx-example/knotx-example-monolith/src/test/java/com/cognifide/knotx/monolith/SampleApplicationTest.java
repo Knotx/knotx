@@ -22,7 +22,6 @@ import com.cognifide.knotx.engine.service.KnotxRxHelper;
 import org.jsoup.Jsoup;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -59,7 +58,7 @@ public class SampleApplicationTest {
 
     @Test
     public void remoteSimpleHtmlTest(TestContext context) {
-        testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
+        testGetRequest(context, "/content/remote/simdasdaple.html", "remoteSimpleResult.html");
 
     }
 

@@ -64,12 +64,9 @@ class HttpRepository implements Repository {
                 .doOnNext(this::traceResponse)
                 .flatMap(this::processResponse)
                 .onErrorReturn(error -> {
-                            //TODO isnt it example of internal error?
                             LOGGER.error("Unable to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
-                            String reason = String
-                                    .format("No Template found for path %s", repositoryRequest.getPath());
                             return RepositoryResponse
-                                    .error(500, reason, MultiMap.caseInsensitiveMultiMap());
+                                    .error(500, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                         }
                 );
     }

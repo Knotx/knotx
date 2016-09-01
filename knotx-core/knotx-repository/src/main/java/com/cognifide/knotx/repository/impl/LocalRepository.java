@@ -23,6 +23,8 @@ import com.cognifide.knotx.repository.Repository;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.nio.file.NoSuchFileException;
+
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -65,13 +67,12 @@ public class LocalRepository implements Repository {
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);
 
-                    /**
-                     * TODO check for type of exception and put proper status code to RepositoryResponse
-                     *
-                     * If local repo failed due FileNotFoundException - return 404
-                     * If local repo failed due other error - return 500
-                     */
-                    int statusCode = 404;
+                    int statusCode;
+                    if (error.getCause().getClass().equals(NoSuchFileException.class)) {
+                        statusCode = 404;
+                    } else {
+                        statusCode = 500;
+                    }
                     return RepositoryResponse
                             .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                 });
