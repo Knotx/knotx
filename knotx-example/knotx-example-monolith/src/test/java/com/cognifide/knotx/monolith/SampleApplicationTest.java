@@ -40,33 +40,35 @@ import rx.Observable;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
     public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
     public static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
     public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
+    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
 
     @BeforeClass
     public static void setUp() throws Exception {
         ApplicationTestHelper.startKnotx();
     }
 
+    @AfterClass
+    public static void tearDown(TestContext context) {
+        ApplicationTestHelper.tearDown(context);
+    }
+
     @Test
     public void localSimpleHtmlTest(TestContext context) {
         testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
-
     }
 
     @Test
     public void remoteSimpleHtmlTest(TestContext context) {
-        testGetRequest(context, "/content/remote/simdasdaple.html", "remoteSimpleResult.html");
-
+        testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
     }
 
     @Test
     public void localMultipleFormWithGetTest(TestContext context) {
         testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
     }
-
 
     @Test
     public void localMultipleFormWithPostTest(TestContext context) {
@@ -139,11 +141,6 @@ public class SampleApplicationTest {
                     client.close();
                     async.complete();
                 }));
-    }
-
-    @AfterClass
-    public static void tearDown(TestContext context) {
-        ApplicationTestHelper.tearDown(context);
     }
 
 }
