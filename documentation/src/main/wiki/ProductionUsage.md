@@ -107,6 +107,23 @@ The mocks verticle is configured as follows:
 - **mock service** listens on port **3000**
 
 ### Configuration
+####Server configuration
+Knot.x server requires JSON configuration with *config* object. **Config** section allows to define:
+- **http.port** property to set http port which will be used to start Knot.x server
+- **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
+```json
+{
+  "server": {
+    "config": {
+      "http.port": 8092,
+      "preserved.headers": [
+        "User-Agent",
+        "X-Solr-Core-Key",
+        "X-Language-Code"
+      ],
+     ...
+ ``` 
+####Verticle configuration
 Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
 For instance, a configuration JSON for the *repository* verticle could look like this:
 ```json
