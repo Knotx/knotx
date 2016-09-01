@@ -58,7 +58,7 @@ public class SampleApplicationTest {
 
     @Test
     public void remoteSimpleHtmlTest(TestContext context) {
-        testGetRequest(context, "/content/remote/simdasdaple.html", "remoteSimpleResult.html");
+        testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
 
     }
 
