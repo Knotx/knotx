@@ -47,7 +47,7 @@ public enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValid
         @Override
         public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
                                  Vertx vertx) {
-            return HttpRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(),
+            return HttpRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), metadata.getClientOptions(),
                     vertx);
         }
 
