@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -113,7 +114,7 @@ public class SampleApplicationTest {
 
 
         request.subscribe(resp -> resp.bodyHandler(body -> {
-            context.assertEquals(resp.statusCode(), 200);
+            context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
             try {
                 context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).body().html());
             } catch (Exception e) {
@@ -131,7 +132,7 @@ public class SampleApplicationTest {
         Async async = context.async();
         client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
                 resp -> resp.bodyHandler(body -> {
-                    context.assertEquals(resp.statusCode(), 200);
+                    context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
                     try {
                         context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
                     } catch (Exception e) {

@@ -21,6 +21,7 @@ import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.repository.Repository;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.rxjava.core.MultiMap;
 import rx.Observable;
 
@@ -30,7 +31,7 @@ public class NullRepository implements Repository {
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
         String reason = String.format("No repository found for given path %s", repositoryRequest.getPath());
         return Observable.just(
-                RepositoryResponse.error(404, reason, MultiMap.caseInsensitiveMultiMap()));
+                RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), reason, MultiMap.caseInsensitiveMultiMap()));
     }
 
     @Override

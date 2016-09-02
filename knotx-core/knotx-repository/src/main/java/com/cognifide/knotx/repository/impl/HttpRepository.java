@@ -21,6 +21,7 @@ import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.repository.Repository;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -66,7 +67,7 @@ class HttpRepository implements Repository {
                 .onErrorReturn(error -> {
                             LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
                             return RepositoryResponse
-                                    .error(500, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
+                                    .error(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                         }
                 );
     }
@@ -80,7 +81,7 @@ class HttpRepository implements Repository {
 
     private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
         Observable<RepositoryResponse> response;
-        if (httpClientResponse.statusCode() == 200) {
+        if (httpClientResponse.statusCode() == HttpResponseStatus.OK.code()) {
             response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
         } else {
             LOGGER.info("Remote repository returned with status code {} for path `{}`",

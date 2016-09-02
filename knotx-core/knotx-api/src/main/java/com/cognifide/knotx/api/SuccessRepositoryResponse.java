@@ -17,11 +17,12 @@
  */
 package com.cognifide.knotx.api;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.rxjava.core.MultiMap;
 
 public class SuccessRepositoryResponse extends RepositoryResponse {
     public SuccessRepositoryResponse(String data, MultiMap headers) {
-        super.statusCode = 200;
+        super.statusCode = HttpResponseStatus.OK.code();
         super.data = data;
         super.headers = headers;
     }
