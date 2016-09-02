@@ -3,12 +3,12 @@
 In order to fetch the data for snippet different services can be called. Decision which services to call is made depends on service path data attribute and incoming request method.
 
 ###GET services calls
-When service path is marked as data-uri-**get**, call will be executed only if http method of incoming request is GET   
+When service path is marked as data-uri-**get**, call will be executed only if http method of incoming request is GET.  
 ```html
 <script data-api-type="templating" type="text/x-handlebars-template" 
     data-uri-get="/service/sample">
         <h1>Welcome</h1>
-        <h2>{{welcomeMessage}}</h2>                                                                                 +
+        <h2>{{welcomeMessage}}</h2>
 </script>
 ```
 
@@ -77,13 +77,15 @@ Consider below scenario: user visits page with form for the first time and then 
 ```
 
 [[assets/knot.x-form-get.png|alt=Form get request]]
+
 1. User makes GET request.
 2. Template is fetched using GET request.
 3. GET request is made  to "Info Service"
 4. GET request is made  to "Labels Repository"
 5. User receives built html with form(See above) 
 
-[[assets/knot.x-form-get.png|alt=Form post request]]
+[[assets/knot.x-form-post.png|alt=Form post request]]
+
 1. User submits the **competition-form** form. Following form attributes are sent: 
 
     - name : "john smith"
