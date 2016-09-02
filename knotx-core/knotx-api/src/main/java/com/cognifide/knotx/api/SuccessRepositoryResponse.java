@@ -28,6 +28,6 @@ public class SuccessRepositoryResponse extends RepositoryResponse {
 
     @Override
     public boolean shouldProcess() {
-        return true;
+        return !data.isEmpty();
     }
 }

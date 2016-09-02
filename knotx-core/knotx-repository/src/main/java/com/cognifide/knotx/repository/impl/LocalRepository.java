@@ -63,7 +63,7 @@ public class LocalRepository implements Repository {
         return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
                 .flatMap(buffer -> RepositoryResponse.success(buffer.toString(), MultiMap.caseInsensitiveMultiMap()).toObservable())
-                .defaultIfEmpty(RepositoryResponse.empty(MultiMap.caseInsensitiveMultiMap()))
+                .defaultIfEmpty(RepositoryResponse.success("", MultiMap.caseInsensitiveMultiMap()))
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);
 

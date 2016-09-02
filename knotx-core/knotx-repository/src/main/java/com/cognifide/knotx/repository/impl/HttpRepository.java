@@ -80,10 +80,8 @@ class HttpRepository implements Repository {
 
     private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
         Observable<RepositoryResponse> response;
-        if (httpClientResponse.statusCode() == 200 && buffer.length() > 0) {
+        if (httpClientResponse.statusCode() == 200) {
             response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
-        } else if (httpClientResponse.statusCode() == 200) {
-            response = RepositoryResponse.empty(httpClientResponse.headers()).toObservable();
         } else {
             LOGGER.info("Remote repository returned with status code {} for path `{}`",
                     httpClientResponse.statusCode(), path);

@@ -36,10 +36,8 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
         int statusCode = object.getInteger("statusCode");
         String data = object.getString("data");
 
-        if (shouldProcess) {
+        if (statusCode == 200) {
             repositoryResponse = success(data, headers);
-        } else if (statusCode == 200) {
-            repositoryResponse = empty(headers);
         } else {
             repositoryResponse = error(statusCode, data, headers);
         }
@@ -48,10 +46,6 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
 
     public static RepositoryResponse success(String data, MultiMap headers) {
         return new SuccessRepositoryResponse(data, headers);
-    }
-
-    public static RepositoryResponse empty(MultiMap headers) {
-        return new EmptyRepositoryResponse(headers);
     }
 
     public static RepositoryResponse error(int statusCode, String data, MultiMap headers) {
