@@ -1,6 +1,6 @@
 #Snippet processing
 ##Overview
-Different services can be called by snippet, depending on service path data attribute and incoming request method.
+In order to fetch the data for snippet different services can be called. Decision which services to call is made depends on service path data attribute and incoming request method.
 
 ###GET services calls
 When service path is marked as data-uri-**get**, call will be executed only if http method of incoming request is GET   
@@ -8,7 +8,7 @@ When service path is marked as data-uri-**get**, call will be executed only if h
 <script data-api-type="templating" type="text/x-handlebars-template" 
     data-uri-get="/service/sample">
         <h1>Welcome</h1>
-        <h2>{{welcomeMessage}}</h2>   
+        <h2>{{welcomeMessage}}</h2>                                                                                 +
 </script>
 ```
 
@@ -27,7 +27,7 @@ When service path is marked as data-uri-**post**, call will be executed only if 
 ```
 
 ###Any method services calls
-When service path is marked as data-uri-**all**, call will be executed with http method of incoming request.
+When service path is marked as data-uri-**all**, GET call will be execute regardless of incoming request method type.
 ```html
 <script data-api-type="templating" type="text/x-handlebars-template" 
     data-uri-all="/service/formSubmit">
@@ -40,14 +40,77 @@ When service path is marked as data-uri-**all**, call will be executed with http
 </script>
 ```
 
-### Multiple forms processing
-Snippet can contain an **data-id** attribute. This attribute allows template engine to process multiple forms in one template. Value of **data-id** defines which snippet should be processed by combining it with **_id** parameter sent with POST method.
+### Forms processing
+When form request is sent to Knot.x it will handle that by resending all of the form attributes to data service that is marked as data-uri-**post**.
+ 
+Consider below scenario: user visits page with form for the first time and then submits that form using POST method. 
+
+> template for the form user will receive
+```html
+...
+<script data-api-type="templating"
+        type="text/x-handlebars-template"
+        data-uri-post-formresponse="/service/mock/subscribeToCompetition.json"
+        data-uri-get-infoservice="/service/mock/infoService.json"
+        data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
+        data-id="competition-form">
+    <h1>{{labelsrepository.welcomeInCompetition}}</h1>
+    {{#if formresponse}}
+    <p>{{labelsrepository.thankYouForSubscribingToCompetition}}</p>
+    {{else}}
+    <p>{{labelsrepository.generalInfo}}</p>
+    <form method="post" class="form-inline">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="name" name="name" id="name"/>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email"/>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+        <input type="hidden" name="_id" value="competition-form"/>
+    </form>
+    {{/if}}
+</script>
+...
+```
+
+[[assets/knot.x-form-get.png|alt=Form get request]]
+1. User makes GET request.
+2. Template is fetched using GET request.
+3. GET request is made  to "Info Service"
+4. GET request is made  to "Labels Repository"
+5. User receives built html with form(See above) 
+
+[[assets/knot.x-form-get.png|alt=Form post request]]
+1. User submits the **competition-form** form. Following form attributes are sent: 
+
+    - name : "john smith"
+    - email : "john.smith@mail.com"
+    - _id : "competition-form"
+    
+2. Template is fetched using GET request.
+3. Because **_id** attribute from request matches the **data-id** attribute in template POST request is sent "Subscribe To Competition" service.  All form attributes that was submitted are sent to that service.
+4. GET request is made  to "Labels Repository"
+5. User receives built html with form response:
+```html
+...
+<h1>Welcome user/h1>
+<p>Thank you for registering to newsletter.</p>
+...
+```
+
+
+
+#### Multiple forms processing
+Templates can contain many snippets with forms. Knot.x provides mechanism to distinguish which snippet should make call when **POST** request is done. 
+Snippet can contain an **data-id** attribute. Its value defines which snippet should be processed by comparing it with **_id** parameter sent with POST method.
 
 **Example:**
 
-Snippet in template below will call /service/subscribeToCompetition only when request method is POST and **_id** parameter value is competition-form.
+Snippet in example below will call /service/subscribeToCompetition only when request method is POST and **_id** parameter value is competition-form.
 /service/subscribeToNewsletter will be called only when request method is POST and **_id** parameter value is newsletter-form.
-Notice that example below uses Enable calling more than one service for snippet data feature.
 
 **Snippet:**
 ```html
@@ -88,6 +151,24 @@ Notice that example below uses Enable calling more than one service for snippet 
   {{/if}}
 </script>
 ```
+
+##### Routing request basing on request type
+Knot.x provides a mechanism that causes different approach to HTTP request and XmlHttpRequest. When Knot.x is requested with HTTP default processing path is started and flow works as usually. When Knot.x is requested with XHR only requested part of a template is processed and returned.
+
+**Example:**
+
+When user sends below XHR only snippet that contains **data-id** attribute equals to **newsletter-form** will be processed and returned to the user. 
+```
+POST /content/examplePage.html?_id=newsletter-form&email=JohnDoe@example.com
+Host: www.example.com
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36
+Accept: */*
+Content-Type: text/html
+```
+               
+
+
 
 ###Service response status code
 Service response status code can be used in snippets e.g. as condition to display messages if response is not success.
