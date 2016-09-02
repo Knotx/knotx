@@ -26,11 +26,17 @@ Please add the following lines to your pull request description:
 I hereby agree to the terms of the Knot.x Contributor License Agreement.
 ```
 
+## Documentation
+All Knot.x documentation is in the same repository as codebase in [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) module.
+This documentation after update is ported to [Knot.x wiki](https://github.com/Cognifide/knotx/wiki).
+When updating documentation please update proper markdown pages in [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) module following [instructions](https://github.com/Cognifide/knotx/blob/master/documentation/README.md) and include it with your pull request.
+After your pull request is merged, wiki pages will be updated. **Please do not update wiki pages directly because your changes will be lost.**
+
 ## Coding Conventions
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
 - Follow [Google Style Guide](https://github.com/google/styleguide) code formatting,
 - write tests,
 - write javadoc, especially for interfaces and abstract methods,
-- update [documentation](https://github.com/Cognifide/knotx/blob/master/README.md),
+- update [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) and include changes in the same pull request which modifies the code,
 - when committing an improvement, try to show it in local demo example,
 - when logging use proper levels: `INFO` and `WARNING` should log only very important messages. 
