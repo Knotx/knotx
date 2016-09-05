@@ -21,72 +21,46 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import rx.Observable;
 
-public class RepositoryResponse extends JsonObjectRequest {
+public abstract class RepositoryResponse extends JsonObjectRequest {
 
-    private static final long serialVersionUID = -5892594714118271978L;
+    protected String data;
 
-    private boolean success;
+    protected int statusCode;
 
-    private String reason;
+    protected MultiMap headers;
 
-    private String data;
+    public static RepositoryResponse fromJson(JsonObject object) {
+        RepositoryResponse repositoryResponse;
 
-    private int statusCode;
+        MultiMap headers = fromJsonArray(object.getJsonArray("headers"));
+        Boolean shouldProcess = object.getBoolean("shouldProcess");
+        String data = object.getString("data");
 
-    private MultiMap headers;
-
-    private RepositoryResponse() {
-        //Empty default constructor
-    }
-
-    public RepositoryResponse(JsonObject object) {
-        success = object.getBoolean("success");
-        headers = fromJsonArray(object.getJsonArray("headers"));
-        if (success) {
-            data = object.getString("data");
+        if (shouldProcess) {
+            repositoryResponse = success(data, headers);
         } else {
-            statusCode = object.getInteger("statusCode");
-            reason = object.getString("reason");
+            int statusCode = object.getInteger("statusCode");
+            repositoryResponse = error(statusCode, data, headers);
         }
+        return repositoryResponse;
     }
 
     public static RepositoryResponse success(String data, MultiMap headers) {
-        RepositoryResponse response = new RepositoryResponse();
-        response.headers = headers;
-        response.success = true;
-        response.data = data;
-        return response;
+        return new SuccessRepositoryResponse(data, headers);
     }
 
-    public static RepositoryResponse error(String message, Object... args) {
-        RepositoryResponse response = new RepositoryResponse();
-        response.success = false;
-        response.reason = String.format(message, args);
-        return response;
+    public static RepositoryResponse error(int statusCode, String data, MultiMap headers) {
+        return new ErrorRepositoryResponse(statusCode, data, headers);
     }
 
-    public static RepositoryResponse error(int statusCode, MultiMap headers) {
-        RepositoryResponse response = new RepositoryResponse();
-        response.headers = headers;
-        response.statusCode = statusCode;
-        return response;
-
-    }
+    public abstract boolean shouldProcess();
 
     public Observable<RepositoryResponse> toObservable() {
         return Observable.just(this);
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
     public String getData() {
         return data;
-    }
-
-    public String getReason() {
-        return reason;
     }
 
     public int getStatusCode() {
@@ -99,26 +73,18 @@ public class RepositoryResponse extends JsonObjectRequest {
 
     @Override
     public JsonObject toJsonObject() {
-        JsonObject object = new JsonObject().put("success", success);
-        if (success) {
-            object.put("data", data);
-        } else {
-            object.put("reason", reason);
-            object.put("headers", toJsonArray(headers));
-            object.put("statusCode", statusCode);
-        }
+        JsonObject object = new JsonObject();
+        object.put("shouldProcess", shouldProcess());
+        object.put("headers", toJsonArray(headers));
+        object.put("statusCode", statusCode);
+        object.put("data", data);
         return object;
     }
 
     @Override
     public String toString() {
-        return "RepositoryResponse{" +
-                "success=" + success +
-                ", reason='" + reason + '\'' +
-                ", data='" + data + '\'' +
-                ", statusCode=" + statusCode +
-                ", headers=" + headers +
-                '}';
+        return "RepositoryResponse{" + "shouldProcess=" + shouldProcess() + ", data='" + data + '\''
+                + ", statusCode=" + statusCode + ", headers=" + headers + '}';
     }
 
 }
