@@ -34,6 +34,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Map;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.CaseInsensitiveHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -134,7 +135,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     private void mockServiceResponse(String responseJson) {
         HttpClientResponse httpClientResponse = Mockito.mock(HttpClientResponse.class);
         when(httpClientResponse.toObservable()).thenReturn(Observable.from(Lists.newArrayList(Buffer.buffer(responseJson))));
-        when(httpClientResponse.statusCode()).thenReturn(200);
+        when(httpClientResponse.statusCode()).thenReturn(HttpResponseStatus.OK.code());
 
         PowerMockito.mockStatic(KnotxRxHelper.class);
         PowerMockito.when(KnotxRxHelper.request(anyObject(), anyObject(), anyInt(), anyString(), anyString(), anyObject())).thenReturn(Observable.just(httpClientResponse));

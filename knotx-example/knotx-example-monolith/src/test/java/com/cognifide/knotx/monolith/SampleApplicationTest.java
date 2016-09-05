@@ -22,12 +22,12 @@ import com.cognifide.knotx.engine.service.KnotxRxHelper;
 import org.jsoup.Jsoup;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -41,33 +41,35 @@ import rx.Observable;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
     public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
     public static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
     public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
+    private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
 
     @BeforeClass
     public static void setUp() throws Exception {
         ApplicationTestHelper.startKnotx();
     }
 
+    @AfterClass
+    public static void tearDown(TestContext context) {
+        ApplicationTestHelper.tearDown(context);
+    }
+
     @Test
     public void localSimpleHtmlTest(TestContext context) {
         testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
-
     }
 
     @Test
     public void remoteSimpleHtmlTest(TestContext context) {
         testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
-
     }
 
     @Test
     public void localMultipleFormWithGetTest(TestContext context) {
         testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
     }
-
 
     @Test
     public void localMultipleFormWithPostTest(TestContext context) {
@@ -112,7 +114,7 @@ public class SampleApplicationTest {
 
 
         request.subscribe(resp -> resp.bodyHandler(body -> {
-            context.assertEquals(resp.statusCode(), 200);
+            context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
             try {
                 context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).body().html());
             } catch (Exception e) {
@@ -130,7 +132,7 @@ public class SampleApplicationTest {
         Async async = context.async();
         client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
                 resp -> resp.bodyHandler(body -> {
-                    context.assertEquals(resp.statusCode(), 200);
+                    context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
                     try {
                         context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
                     } catch (Exception e) {
@@ -140,11 +142,6 @@ public class SampleApplicationTest {
                     client.close();
                     async.complete();
                 }));
-    }
-
-    @AfterClass
-    public static void tearDown(TestContext context) {
-        ApplicationTestHelper.tearDown(context);
     }
 
 }
