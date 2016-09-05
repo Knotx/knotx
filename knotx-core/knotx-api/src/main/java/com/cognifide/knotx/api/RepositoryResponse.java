@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - HTTP Server
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -34,12 +34,12 @@ public abstract class RepositoryResponse extends JsonObjectRequest {
 
         MultiMap headers = fromJsonArray(object.getJsonArray("headers"));
         Boolean shouldProcess = object.getBoolean("shouldProcess");
-        int statusCode = object.getInteger("statusCode");
         String data = object.getString("data");
 
         if (shouldProcess) {
             repositoryResponse = success(data, headers);
         } else {
+            int statusCode = object.getInteger("statusCode");
             repositoryResponse = error(statusCode, data, headers);
         }
         return repositoryResponse;

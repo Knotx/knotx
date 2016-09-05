@@ -29,7 +29,7 @@ public class NullRepository implements Repository {
 
     @Override
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        String reason = String.format("No repository found for given path %s", repositoryRequest.getPath());
+        String reason = String.format("No repository found for given path `%s`", repositoryRequest.getPath());
         return Observable.just(
                 RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), reason, MultiMap.caseInsensitiveMultiMap()));
     }
