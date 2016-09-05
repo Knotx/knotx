@@ -1,0 +1,15 @@
+{
+  "config": {
+    "http.port": 8092,
+    "preserved.headers": [
+      "User-Agent",
+      "X-Solr-Core-Key",
+      "X-Language-Code",
+      "X-Requested-With"
+    ],
+    "dependencies" : {
+      "repository.address" : "template-repository",
+      "engine.address": "template-engine"
+    }
+  }
+}

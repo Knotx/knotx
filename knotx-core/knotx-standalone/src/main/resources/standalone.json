@@ -1,0 +1,53 @@
+{
+  "server": {
+    "config": {
+      "http.port": 8092,
+      "preserved.headers": [
+        "User-Agent",
+        "X-Solr-Core-Key",
+        "X-Language-Code",
+        "X-Requested-With"
+      ],
+      "dependencies" : {
+        "repository.address" : "template-repository",
+        "engine.address": "template-engine"
+      }
+    }
+  },
+  "repository": {
+    "config": {
+      "service.name": "template-repository",
+      "repositories": [
+        {
+          "type": "local",
+          "path": "/content/local/.*",
+          "catalogue": ""
+        },
+        {
+          "type": "remote",
+          "path": "/content/.*",
+          "domain": "localhost",
+          "port": 3001
+        }
+      ]
+    }
+  },
+  "engine": {
+    "config": {
+      "service.name": "template-engine",
+      "template.debug": true,
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 3000
+        },
+        {
+          "path": "/service/.*",
+          "domain": "localhost",
+          "port": 8080
+        }
+      ]
+    }
+  }
+}
