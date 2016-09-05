@@ -2,6 +2,7 @@
 * [[Home|Home]]
   * [[Getting started|GettingStarted]]
   * [[Features|Features]]
+  * [[Snippet processing|Snippet processing]]
   * [[Performance tests|PerformanceTests]]
   * [[Production usage|ProductionUsage]]
   * [[Dependencies|Dependencies]]
