@@ -1,0 +1,124 @@
+<!--
+
+    Knot.x - Mocked services for sample app
+
+    Copyright (C) 2016 Cognifide Limited
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
+    <title>Knot.x</title>
+    <link href="https://bootswatch.com/superhero/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h2>
+                    Hello Knot.x - reactive micro-service assembler world!
+                </h2>
+                <p>
+                    This template is served from the <strong>remote</strong> repository.
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large"
+                       href="https://github.com/Cognifide/knotx">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <script data-api-type="templating"
+                data-uri-get-service1="/service/mock/first.json"
+                data-uri-get-service2="/service/mock/second.json"
+                data-uri-get-service3="/service/mock/third.json"
+                data-uri-get-service4="/service/mock/fourth.json"
+                data-uri-get-service5="/service/mock/fifth.json"
+                data-uri-get-service6="/service/mock/sixth.json"
+                data-uri-get-service7="/service/mock/seventh.json"
+                data-uri-get-service8="/service/mock/eighth.json"
+                data-uri-get-service9="/service/mock/ninth.json"
+                data-uri-get-service10="/service/mock/tenth.json"
+                type="text/x-handlebars-template">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Service1</h2>
+                    <div>message - {{service1.message}}</div>
+                    <div>message - {{service1.body.a}}</div>
+                </div>
+            </div>
+            <div>
+                <h2>Service2</h2>
+                <div>message - {{service2.message}}</div>
+                <div>message - {{service2.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service3</h2>
+                <div>message - {{service3.message}}</div>
+                <div>message - {{service3.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service4</h2>
+                <div>message - {{service4.message}}</div>
+                <div>message - {{service4.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service5</h2>
+                <div>message - {{service5.message}}</div>
+                <div>message - {{service5.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service6</h2>
+                <div>message - {{service6.message}}</div>
+                <div>message - {{service6.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service7</h2>
+                <div>message - {{service7.message}}</div>
+                <div>message - {{service7.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service8</h2>
+                <div>message - {{service8.message}}</div>
+                <div>message - {{service8.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service9</h2>
+                <div>message - {{service9.message}}</div>
+                <div>message - {{service9.body.a}}</div>
+            </div>
+            <div>
+                <h2>Service10</h2>
+                <div>message - {{service10.message}}</div>
+                <div>message - {{service10.body.a}}</div>
+            </div>
+        </script>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
