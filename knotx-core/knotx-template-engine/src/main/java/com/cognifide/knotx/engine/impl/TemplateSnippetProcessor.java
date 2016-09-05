@@ -54,7 +54,7 @@ public class TemplateSnippetProcessor {
                 .filter(serviceEntry -> serviceEntry.canServeMethodType(request.getServerRequestMethod()))
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
-                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request.getHeaders(), request.getServerRequestMethod()),
+                .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request),
                         (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
                 .map(ServiceEntry::getResultWithNamespaceAsKey)
                 .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {

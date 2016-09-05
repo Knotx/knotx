@@ -24,21 +24,30 @@ import io.vertx.rxjava.core.MultiMap;
 public class TemplateEngineRequest extends JsonObjectRequest {
     private String template;
 
-    private MultiMap headers;
-
     private HttpMethod serverRequestMethod;
 
-    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers) {
+    private MultiMap headers;
+
+    private MultiMap params;
+
+    private UriInfo uriInfo;
+
+    private String uri;
+
+    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers, MultiMap params, String uri) {
         this.template = template;
         this.serverRequestMethod = serverRequestMethod;
         this.headers = headers;
+        this.params = params;
+        this.uri = uri;
     }
 
     public TemplateEngineRequest(JsonObject object) {
         this.template = object.getString("template");
         this.headers = fromJsonArray(object.getJsonArray("headers"));
+        this.params = fromJsonArray(object.getJsonArray("params"));
+        this.uri = object.getString("uri");
         this.serverRequestMethod = HttpMethod.valueOf(object.getString("serverRequestMethod"));
-
     }
 
     public String getTemplate() {
@@ -47,6 +56,22 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     public MultiMap getHeaders() {
         return headers;
+    }
+
+    public MultiMap getParams() {
+      return params;
+    }
+
+    public UriInfo getUriInfo() {
+        return uriInfo;
+    }
+    
+    public void setUriInfo(UriInfo uriInfo) {
+        this.uriInfo = uriInfo; 
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     public void setHeaders(MultiMap headers) {
@@ -65,14 +90,16 @@ public class TemplateEngineRequest extends JsonObjectRequest {
     public String toString() {
         return "TemplateEngineRequest{" +
                 "template='" + template + '\'' +
-                ", headers=" + headersToString() +
+                ", headers=" + multimapToSting(headers) +
+                ", params=" + multimapToSting(params) +
+                ", uri=" + uri +
                 ", serverRequestMethod=" + serverRequestMethod +
                 '}';
     }
 
-    private String headersToString() {
+    private String multimapToSting(MultiMap map) {
         StringBuilder result = new StringBuilder();
-        headers.names().forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
+        map.names().forEach(header -> result.append(header).append("=").append(headers.get(header)).append("\n"));
         return result.toString();
     }
 
@@ -81,6 +108,8 @@ public class TemplateEngineRequest extends JsonObjectRequest {
         return new JsonObject()
                 .put("template", template)
                 .put("serverRequestMethod", serverRequestMethod.toString())
-                .put("headers", toJsonArray(headers));
+                .put("headers", toJsonArray(headers))
+                .put("params", toJsonArray(params))
+                .put("uri", uri);
     }
 }
