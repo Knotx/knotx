@@ -33,7 +33,7 @@ When updating documentation please update proper markdown pages in [documentatio
 After your pull request is merged, wiki pages will be updated. **Please do not update wiki pages directly because your changes will be lost.**
 
 ## Tests naming convention
-Tests written in Knot.x should be named with `methodName_StateUnderTest_ExpectedBehavior` convention proposed as the first example in [7 Popular Unit Test Naming Conventions](https://dzone.com/articles/7-popular-unit-test-naming).
+Tests written in Knot.x should be named with `methodName_whenStateUnderTest_expectBehavior` convention proposed as the first example in [7 Popular Unit Test Naming Conventions](https://dzone.com/articles/7-popular-unit-test-naming).
 
 ### Examples:
 **Unit tests**
