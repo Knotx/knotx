@@ -40,6 +40,8 @@ When service path is marked as data-uri-**all**, GET call will be execute regard
 </script>
 ```
 
+Note: it is possible to call service using `data-uri` without method postfix (e.g. `data-uri="/service/formSubmit"`. Such construction will be treated as an alias for `data-uri-all`.
+
 ### Forms processing
 When form request is sent to Knot.x it will handle that by resending all of the form attributes to data service that is marked as data-uri-**post**.
  
