@@ -56,6 +56,9 @@
                 <div>Snippet1 - {{body.a}}</div>
             </div>
             <div class="col-md-4">
+                {{#string_equals second._response.statusCode "200"}}
+                <p>Success! Status code : {{second._response.statusCode}}</p>
+                {{/string_equals}}
                 <h2>Snippet1 - {{second.message}}</h2>
                 <div>Snippet1 - {{second.body.a}}</div>
             </div>
@@ -67,7 +70,7 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <script data-api-type="templating" data-uri-get="/service/mock/second.json"
+            <script data-api-type="templating" data-uri="/service/mock/second.json"
                     type="text/x-handlebars-template">
                 <h2>Snippet2 - {{message}}</h2>
                 <p>Snippet2 - {{body.a}}</p>
@@ -75,37 +78,17 @@
             </script>
         </div>
         <div class="col-md-4">
-            <script data-api-type="templating" data-uri-get="/service/mock/third.json"
+            <script data-api-type="templating" data-uri="/service/mock/third.json"
                     type="text/x-handlebars-template">
                 <h2>Snippet3 - {{message}}</h2>
                 <p>Snippet3 - {{body.a}}</p>
             </script>
         </div>
         <div class="col-md-4">
-            <script data-api-type="templating" data-uri-get="/service/mock/third.json"
+            <script data-api-type="templating" data-uri="/service/mock/third.json"
                     type="text/x-handlebars-template">
                 <h2>Snippet4 - {{message}}</h2>
                 <p>Snippet4 - {{encode_uri url}}</p>
-            </script>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <script data-api-type="templating"
-                    type="text/x-handlebars-template"
-                    data-uri-get-userinfo="/service/mock/first.json"
-                    data-uri-post-formresponse="/service/mock/second.json"
-                    data-uri-all-dataservice="/service/mock/third.json">
-                <h1>{{userinfo.welcomeMessage}}</h1>
-                {{#if formresponse}}
-                <p>{{formresponse.responseMessage}}</p>
-                {{else}}
-                <p>Please subscribe to the newsletter:</p>
-                <form method="post">
-                    <input type="email" name="email"/>
-                    <input type="submit" value="Submit"/>
-                </form>
-                {{/if}}
             </script>
         </div>
     </div>
