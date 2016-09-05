@@ -45,7 +45,10 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
           "type": "remote",
           "path": "/content/.*",
           "domain": "localhost",
-          "port": 3001
+          "port": 3001,
+          "client.options": {
+            "tryUseCompression" : true
+          }
         }
       ]
     }
@@ -135,7 +138,10 @@ For instance, a configuration JSON for the *repository* verticle could look like
         "type": "remote",
         "path": "/content/.*",
         "domain": "localhost",
-        "port": 3001
+        "port": 3001,
+        "client.options": {
+          "tryUseCompression" : true
+        }
       }
     ]
   }
