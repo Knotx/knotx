@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.engine.impl;
 
-import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
@@ -29,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
