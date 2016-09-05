@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="2.9" jmeter="3.0 r1743807">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Snippet with ten calls" enabled="true">
-      <stringProp name="TestPlan.comments"></stringProp>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Four snippets. Five service calls each" enabled="true">
+      <stringProp name="TestPlan.comments">Twenty different service calls alltogether</stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
       <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -97,7 +97,7 @@
           <boolProp name="CookieManager.clearEachIteration">true</boolProp>
         </CookieManager>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request - get snippet with ten calls" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Request - get template with four snippets" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="Zmienne zdefiniowane przez użytkownika" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
@@ -107,7 +107,7 @@
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/content/remote/performance/snippet-with-ten-service-calls.html</stringProp>
+          <stringProp name="HTTPSampler.path">/content/remote/performance/four-snippets-five-service-calls-each.html</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -125,7 +125,7 @@
           <hashTree/>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="1467059939">&lt;!-- start compiled snippet --&gt;&lt;!--
+              <stringProp name="1160914049">&lt;!-- start compiled snippet --&gt;&lt;!--
 
     Knot.x - Mocked services for sample app
 
@@ -152,7 +152,7 @@
     &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
     &lt;link rel=&quot;shortcut icon&quot; href=&quot;http://cognifide.com/favicon.ico?v=2&quot;/&gt;
     &lt;title&gt;Knot.x&lt;/title&gt;
-    &lt;link href=&quot;https://bootswatch.com/superhero/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;/&gt;
+    &lt;link href=&quot;https://bootswatch.com/superhero/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; /&gt;
 &lt;/head&gt;
 &lt;body&gt;
 &lt;div class=&quot;container-fluid&quot;&gt;
@@ -174,69 +174,126 @@
     &lt;/div&gt;
     &lt;div class=&quot;row&quot;&gt;
         &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
-
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service1&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 1&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 1&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service2&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 2&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 2&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service3&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 3&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 3&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service4&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 4&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 4&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service5&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 5&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 5&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
+        &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service6&lt;/h2&gt;
+                &lt;h2&gt;Snippet 2 service call 6&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 6&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service7&lt;/h2&gt;
+                &lt;h2&gt;Snippet 2 service call 7&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 7&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service8&lt;/h2&gt;
+                &lt;h2&gt;Snippet 2 service call 8&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 8&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service9&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 9&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 9&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
             &lt;div class=&quot;col-md-4&quot;&gt;
-                &lt;h2&gt;Service10&lt;/h2&gt;
+                &lt;h2&gt;Snippet 1 service call 10&lt;/h2&gt;
                 &lt;div&gt;message - this is webservice no. 10&lt;/div&gt;
-                &lt;div&gt;message - message - a&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 3 service call 11&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 11&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 3 service call 12&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 12&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 3 service call 13&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 13&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 3 service call 14&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 14&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 3 service call 15&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 15&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 4 service call 16&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 16&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 4 service call 17&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 17&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 4 service call 18&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 18&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 4 service call 19&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 19&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col-md-4&quot;&gt;
+                &lt;h2&gt;Snippet 4 service call 20&lt;/h2&gt;
+                &lt;div&gt;message - this is webservice no. 20&lt;/div&gt;
+                &lt;div&gt;body - message - a&lt;/div&gt;
             &lt;/div&gt;
         &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-&lt;script src=&quot;https://code.jquery.com/jquery-2.2.4.min.js&quot;
-        integrity=&quot;sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=&quot;
-        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;
-        integrity=&quot;sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa&quot;
-        crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://code.jquery.com/jquery-2.2.4.min.js&quot; integrity=&quot;sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot; integrity=&quot;sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-&lt;!-- end compiled snippet --&gt;</stringProp>
+&lt;!-- end compiled snippet --</stringProp>
             </collectionProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
             <boolProp name="Assertion.assume_success">false</boolProp>

@@ -1,0 +1,192 @@
+<!--
+
+    Knot.x - Mocked services for sample app
+
+    Copyright (C) 2016 Cognifide Limited
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
+    <title>Knot.x</title>
+    <link href="https://bootswatch.com/superhero/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+                <h2>
+                    Hello Knot.x - reactive micro-service assembler world!
+                </h2>
+                <p>
+                    This template is served from the <strong>remote</strong> repository.
+                </p>
+                <p>
+                    <a class="btn btn-primary btn-large"
+                       href="https://github.com/Cognifide/knotx">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <script data-api-type="templating" data-uri-get-service1="/service/mock/first.json"
+                data-uri-get-service2="/service/mock/second.json"
+                data-uri-get-service3="/service/mock/third.json"
+                data-uri-get-service4="/service/mock/fourth.json"
+                data-uri-get-service5="/service/mock/fifth.json"
+                type="text/x-handlebars-template">
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 1</h2>
+                <div>message - {{service1.message}}</div>
+                <div>body - {{service1.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 2</h2>
+                <div>message - {{service2.message}}</div>
+                <div>body - {{service2.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 3</h2>
+                <div>message - {{service3.message}}</div>
+                <div>body - {{service3.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 4</h2>
+                <div>message - {{service4.message}}</div>
+                <div>body - {{service4.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 5</h2>
+                <div>message - {{service5.message}}</div>
+                <div>body - {{service5.body.a}}</div>
+            </div>
+        </script>
+    </div>
+    <div class="row">
+        <script data-api-type="templating" data-uri-get-service6="/service/mock/sixth.json"
+                data-uri-get-service7="/service/mock/seventh.json"
+                data-uri-get-service8="/service/mock/eight.json"
+                data-uri-get-service9="/service/mock/ninth.json"
+                data-uri-get-service10="/service/mock/tenth.json"
+                type="text/x-handlebars-template">
+            <div class="col-md-4">
+                <h2>Snippet 2 service call 6</h2>
+                <div>message - {{service6.message}}</div>
+                <div>body - {{service6.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 2 service call 7</h2>
+                <div>message - {{service7.message}}</div>
+                <div>body - {{service7.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 2 service call 8</h2>
+                <div>message - {{service8.message}}</div>
+                <div>body - {{service8.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 9</h2>
+                <div>message - {{service9.message}}</div>
+                <div>body - {{service9.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 1 service call 10</h2>
+                <div>message - {{service10.message}}</div>
+                <div>body - {{service10.body.a}}</div>
+            </div>
+        </script>
+    </div>
+    <div class="row">
+        <script data-api-type="templating" data-uri-get-service11="/service/mock/eleventh.json"
+                data-uri-get-service12="/service/mock/twelfth.json"
+                data-uri-get-service13="/service/mock/thirteenth.json"
+                data-uri-get-service14="/service/mock/fourteenth.json"
+                data-uri-get-service15="/service/mock/fifteenth.json"
+                type="text/x-handlebars-template">
+            <div class="col-md-4">
+                <h2>Snippet 3 service call 11</h2>
+                <div>message - {{service11.message}}</div>
+                <div>body - {{service11.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 3 service call 12</h2>
+                <div>message - {{service12.message}}</div>
+                <div>body - {{service12.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 3 service call 13</h2>
+                <div>message - {{service13.message}}</div>
+                <div>body - {{service13.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 3 service call 14</h2>
+                <div>message - {{service14.message}}</div>
+                <div>body - {{service14.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 3 service call 15</h2>
+                <div>message - {{service15.message}}</div>
+                <div>body - {{service15.body.a}}</div>
+            </div>
+        </script>
+    </div>
+    <div class="row">
+        <script data-api-type="templating" data-uri-get-service16="/service/mock/sixteenth.json"
+                data-uri-get-service17="/service/mock/seventeenth.json"
+                data-uri-get-service18="/service/mock/eighteenth.json"
+                data-uri-get-service19="/service/mock/nineteenth.json"
+                data-uri-get-service20="/service/mock/twenty.json"
+                type="text/x-handlebars-template">
+            <div class="col-md-4">
+                <h2>Snippet 4 service call 16</h2>
+                <div>message - {{service16.message}}</div>
+                <div>body - {{service16.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 4 service call 17</h2>
+                <div>message - {{service17.message}}</div>
+                <div>body - {{service17.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 4 service call 18</h2>
+                <div>message - {{service18.message}}</div>
+                <div>body - {{service18.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 4 service call 19</h2>
+                <div>message - {{service19.message}}</div>
+                <div>body - {{service19.body.a}}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Snippet 4 service call 20</h2>
+                <div>message - {{service20.message}}</div>
+                <div>body - {{service20.body.a}}</div>
+            </div>
+        </script>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
