@@ -59,74 +59,74 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
     }
 
     @Test
-    public void canServeRequest_PostWithFormIdAndAllAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenPostWithFormIdAndAllAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryAll.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, true));
         assertThat(result, equalTo(true));
     }
 
     @Test
-    public void canServeRequest_PostWithoutFormIdAndAllAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenPostWithoutFormIdAndAllAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryAll.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, false));
         assertThat(result, equalTo(true));
     }
 
     @Test
-    public void canServeRequest_GetWithFormIdAndAllAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenGetWithFormIdAndAllAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryAll.canServeRequest(htmlFragment, createRequest(HttpMethod.GET, true));
         assertThat(result, equalTo(true));
     }
 
     @Test
-    public void canServeRequest_GetWithoutFormIdAndAllAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenGetWithoutFormIdAndAllAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryAll.canServeRequest(htmlFragment, createRequest(HttpMethod.GET, false));
         assertThat(result, equalTo(true));
     }
 
     @Test
-    public void canServeRequest_PostWithFormIdAndGetAttribute_DoNotServeRequest() throws Exception {
+    public void canServeRequest_whenPostWithFormIdAndGetAttribute_expectRequestNotServed() throws Exception {
         boolean result = serviceEntryGet.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, true));
         assertThat(result, equalTo(false));
     }
 
     @Test
-    public void canServeRequest_PostWithoutFormIdAndGetAttribute_DoNotServeRequest() throws Exception {
+    public void canServeRequest_whenPostWithoutFormIdAndGetAttribute_expectRequestNotServed() throws Exception {
         boolean result = serviceEntryGet.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, false));
         assertThat(result, equalTo(false));
     }
 
     @Test
-    public void canServeRequest_GetWithFormIdAndGetAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenGetWithFormIdAndGetAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryGet.canServeRequest(htmlFragment, createRequest(HttpMethod.GET, true));
         assertThat(result, equalTo(true));
     }
 
     @Test
-    public void canServeRequest_GetWithoutFormIdAndGetAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenGetWithoutFormIdAndGetAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryGet.canServeRequest(htmlFragment, createRequest(HttpMethod.GET, false));
         assertThat(result, equalTo(true));
     }
 
 
     @Test
-    public void canServeRequest_PostWithFormIdAndPostAttribute_DoNotServeRequest() throws Exception {
+    public void canServeRequest_whenPostWithFormIdAndPostAttribute_expectRequestNotServed() throws Exception {
         boolean result = serviceEntryPost.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, true));
         assertThat(result, equalTo(false));
     }
 
     @Test
-    public void canServeRequest_PostWithoutFormIdAndPostAttribute_ServeRequest() throws Exception {
+    public void canServeRequest_whenPostWithoutFormIdAndPostAttribute_expectRequestServed() throws Exception {
         boolean result = serviceEntryPost.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, false));
         assertThat(result, equalTo(true));
     }
 
     @Test
-    public void canServeRequest_GetWithFormIdAndPostAttribute_DoNotServeRequest() throws Exception {
+    public void canServeRequest_whenGetWithFormIdAndPostAttribute_expectRequestNotServed() throws Exception {
         boolean result = serviceEntryPost.canServeRequest(htmlFragment, createRequest(HttpMethod.GET, true));
         assertThat(result, equalTo(false));
     }
 
     @Test
-    public void canServeRequest_WithoutFormIdAndPostAttribute_DoNotServeRequest() throws Exception {
+    public void canServeRequest_whenWithoutFormIdAndPostAttribute_expectRequestNotServed() throws Exception {
         boolean result = serviceEntryPost.canServeRequest(htmlFragment, createRequest(HttpMethod.GET, false));
         assertThat(result, equalTo(false));
     }
