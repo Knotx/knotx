@@ -1,0 +1,11 @@
+{
+  "message": "this is webservice no. 18",
+  "welcomeMessage": "welcome from nr. 18",
+  "responseMessage": "message received",
+  "body": {
+    "a": "message - a",
+    "b": "message - b",
+    "c": "message - c"
+  },
+  "statistics": 20
+}
