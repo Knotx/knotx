@@ -23,13 +23,16 @@ import com.cognifide.knotx.engine.service.ServiceEntry;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import rx.Observable;
@@ -37,7 +40,11 @@ import rx.Observable;
 public class TemplateHtmlFragment implements HtmlFragment {
     private static final String DATA_URI = "data-uri";
 
+    private static final String DATA_ID = "data-id";
+
     private String content;
+
+    private String dataId = StringUtils.EMPTY;
 
     private Template compiledFragment;
 
@@ -47,10 +54,14 @@ public class TemplateHtmlFragment implements HtmlFragment {
         Document document = Jsoup.parseBodyFragment(templateFragment);
         Element scriptTag = document.body().child(0);
 
-        services = scriptTag.attributes().asList().stream()
+        List<Attribute> attributes = scriptTag.attributes().asList();
+
+        services = attributes.stream()
                 .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
                 .map(ServiceEntry::of)
                 .collect(Collectors.toList());
+
+        dataId = getDataIdAttr(attributes);
 
         this.content = scriptTag.unwrap().toString(); //remove outer script tag
     }
@@ -79,8 +90,18 @@ public class TemplateHtmlFragment implements HtmlFragment {
         return Observable.from(services);
     }
 
+    @Override
+    public String getDataId() {
+        return dataId;
+    }
+
     public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
         this.compiledFragment = handlebars.compileInline(content);
         return this;
+    }
+
+    private String getDataIdAttr(List<Attribute> attributes) {
+        Optional<Attribute> dataIdAttribute = attributes.stream().filter(attribute -> attribute.getKey().equals(DATA_ID)).findFirst();
+        return dataIdAttribute.map(Attribute::getValue).orElse(StringUtils.EMPTY);
     }
 }

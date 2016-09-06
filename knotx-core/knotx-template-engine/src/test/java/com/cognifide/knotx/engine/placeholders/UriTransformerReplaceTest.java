@@ -80,7 +80,7 @@ public class UriTransformerReplaceTest {
     @Test
     public void testReplace() {
         TemplateEngineRequest request = new TemplateEngineRequest(null, null, getHeadersMultiMap(),
-                getParamsMultiMap(), requestedUri);
+                getParamsMultiMap(), new MultiMap(null), requestedUri);
         ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-uri", uri));
 
         String finalUri = UriTransformer.getServiceUri(request, serviceEntry);

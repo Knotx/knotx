@@ -68,33 +68,38 @@ public class KnotxServerVerticle extends AbstractVerticle {
         EventBus eventBus = vertx.eventBus();
 
         httpServer.requestHandler(
-                request -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
-                        .doOnNext(this::traceMessage)
-                        .subscribe(
-                                reply -> {
-                                    RepositoryResponse repository = new RepositoryResponse(reply.body());
-                                    if (repository.isSuccess()) {
-                                        eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
-                                                .subscribe(
-                                                        result -> {
-                                                            TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
-                                                            if (engineResponse.isSuccess()) {
-                                                                request.response().end(engineResponse.getHtml());
-                                                            } else {
-                                                                request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                request -> {
+                    request.setExpectMultipart(true);
+                    request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
+                            .doOnNext(this::traceMessage)
+                            .subscribe(
+                                    reply -> {
+                                        RepositoryResponse repository = RepositoryResponse.fromJson(reply.body());
+                                        if (repository.shouldProcess()) {
+                                            eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
+                                                    .subscribe(
+                                                            result -> {
+                                                                TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
+                                                                if (engineResponse.isSuccess()) {
+                                                                    rewriteHeaders(request, request.headers());
+                                                                    request.response().end(engineResponse.getHtml());
+                                                                } else {
+                                                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                                                                }
+                                                            },
+                                                            error -> {
+                                                                LOGGER.error("Error happened", error);
+                                                                request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
                                                             }
-                                                        },
-                                                        error -> {
-                                                            LOGGER.error("Error happened", error);
-                                                            request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
-                                                        }
-                                                );
-                                    } else {
-                                        request.response().setStatusCode(HttpResponseStatus.NOT_FOUND.code()).end(repository.getReason());
-                                    }
-                                },
-                                error -> LOGGER.error("Error: ", error)
-                        )
+                                                    );
+                                        } else {
+                                            rewriteHeaders(request, repository.getHeaders());
+                                            request.response().setStatusCode(repository.getStatusCode()).end();
+                                        }
+                                    },
+                                    error -> LOGGER.error("Error: ", error)
+                            ));
+                }
         ).listen(
                 configuration.httpPort(),
                 result -> {
@@ -121,17 +126,23 @@ public class KnotxServerVerticle extends AbstractVerticle {
         return new TemplateEngineRequest(
                 repositoryResponse.getData(),
                 request.method(),
-                getPreservedHeaders(request),
+                getPreservedHeaders(request.headers()),
                 request.params(),
+                request.formAttributes(),
                 request.uri())
                 .toJsonObject();
     }
 
-    private MultiMap getPreservedHeaders(HttpServerRequest request) {
+    private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {
+        MultiMap preservedHeaders = getPreservedHeaders(headers);
+        preservedHeaders.names().forEach(headerKey -> httpServerRequest.response().putHeader(headerKey, preservedHeaders.get(headerKey)));
+    }
+
+    private MultiMap getPreservedHeaders(MultiMap headers) {
         final MultiMap preservedHeaders = MultiMap.caseInsensitiveMultiMap();
-        request.headers().names().stream()
+        headers.names().stream()
                 .filter(header -> configuration.serviceCallHeaders().contains(header))
-                .forEach(header -> preservedHeaders.add(header, request.headers().get(header)));
+                .forEach(header -> preservedHeaders.add(header, headers.get(header)));
 
         return preservedHeaders;
     }

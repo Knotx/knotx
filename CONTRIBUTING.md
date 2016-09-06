@@ -26,11 +26,28 @@ Please add the following lines to your pull request description:
 I hereby agree to the terms of the Knot.x Contributor License Agreement.
 ```
 
+## Documentation
+All Knot.x documentation is in the same repository as codebase in [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) module.
+This documentation after update is ported to [Knot.x wiki](https://github.com/Cognifide/knotx/wiki).
+When updating documentation please update proper markdown pages in [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) module following [instructions](https://github.com/Cognifide/knotx/blob/master/documentation/README.md) and include it with your pull request.
+After your pull request is merged, wiki pages will be updated. **Please do not update wiki pages directly because your changes will be lost.**
+
+## Tests naming convention
+Tests written in Knot.x should be named with `methodName_whenStateUnderTest_expectBehavior` convention proposed as the first example in [7 Popular Unit Test Naming Conventions](https://dzone.com/articles/7-popular-unit-test-naming).
+
+### Examples:
+**Unit tests**
+`canServeRequest_whenNoFormIdAndPostAttribute_expectRequestNotServed`
+
+**Integration tests**
+In integration tests method name is omitted, and test class name should suggest what part of system we test:
+`whenRepositoryDidNotReturnTemplateBody_expectNoSnippetsProcessing`
+
 ## Coding Conventions
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
 - Follow [Google Style Guide](https://github.com/google/styleguide) code formatting,
-- write tests,
+- write tests (integration and Unit Tests) following defined convention,
 - write javadoc, especially for interfaces and abstract methods,
-- update [documentation](https://github.com/Cognifide/knotx/blob/master/README.md),
+- update [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) and include changes in the same pull request which modifies the code,
 - when committing an improvement, try to show it in local demo example,
 - when logging use proper levels: `INFO` and `WARNING` should log only very important messages. 

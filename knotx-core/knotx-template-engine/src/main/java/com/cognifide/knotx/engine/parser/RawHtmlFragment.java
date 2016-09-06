@@ -19,6 +19,8 @@ package com.cognifide.knotx.engine.parser;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
 
 import rx.Observable;
@@ -52,5 +54,10 @@ public class RawHtmlFragment implements HtmlFragment {
     @Override
     public Observable<ServiceEntry> getServices() {
         return Observable.empty();
+    }
+
+    @Override
+    public String getDataId() {
+        return StringUtils.EMPTY;
     }
 }

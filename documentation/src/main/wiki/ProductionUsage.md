@@ -1,42 +1,149 @@
 # Production
 
-The example module is provided for testing purposes. Only the core module should be deployed in a production environment. (The Knot.x application runs as a single verticle without any dependencies).
+The example module is provided for testing purposes. Only the core verticles should be deployed in a production environment. (The Knot.x application consists of 3 verticles).
 
-### Executing
+### Executing Knot.x core verticles as standalone fat jar
 
 To run it, execute the following command:
-
 ```
-java -jar knotx-core-XXX.jar -Dservice.configuration=<path to your service.yml> -Drepository.configuration=<path to your repository.yml>
+$cd knotx-core/knotx-standalone
+java -jar target/knotx-standalone-XXX-fat.jar -conf <path-to-your-configuration.json>
 ```
 
-This will run the server with production settings. For more information see the Configuration section below.
+This will run the server with production settings. For more information see the [Configuration](#configuration-1) section.
+
+#### Configuration
+
+The *core* module contains 3 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
+**standalone.json**
+```json
+{
+  "server": {
+    "config": {
+      "http.port": 8092,
+      "preserved.headers": [
+        "User-Agent",
+        "X-Solr-Core-Key",
+        "X-Language-Code"
+      ],
+      "dependencies" : {
+        "repository.address" : "template-repository",
+        "engine.address": "template-engine"
+      }
+    }
+  },
+  "repository": {
+    "config": {
+      "service.name": "template-repository",
+      "repositories": [
+        {
+          "type": "local",
+          "path": "/content/local/.*",
+          "catalogue": ""
+        },
+        {
+          "type": "remote",
+          "path": "/content/.*",
+          "domain": "localhost",
+          "port": 3001,
+          "client.options": {
+            "tryUseCompression" : true
+          }
+        }
+      ]
+    }
+  },
+  "engine": {
+    "config": {
+      "service.name": "template-engine",
+      "template.debug": true,
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 3000
+        },
+        {
+          "path": "/service/.*",
+          "domain": "localhost",
+          "port": 8080
+        }
+      ]
+    }
+  }
+}
+```
+Configuration JSON contains three config sections, one for each Knot.x verticle.
+
+### Executing Knot.x core verticles as a cluster
+Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
+For other network configurations please consult Vert.x documentation [Vert.x Hazelcast - Configuring cluster manager](http://vertx.io/docs/vertx-hazelcast/java/#_configuring_this_cluster_manager)
+
+To run it, execute the following command:
+**Host 1 - Repository Verticle**
+```
+java -jar knotx-repository-XXX-fat.jar -conf <path-to-repository-configuration.json>
+```
+**Host 2 - Template Engine Verticle**
+```
+java -jar knotx-template-engine-XXX-fat.jar -conf <path-to-engine-configuration.json>
+```
+**Host 3 - Knot.x Server Verticle**
+```
+java -jar knotx-server-XXX-fat.jar -conf <path-to-server-configuration.json>
+```
+
+For production setup you might need to configure a logger according to your needs. You can start each of the verticles specifying a path to the logback logger configuration via a system property.
+```
+java -Dlogback.configurationFile=<full-path-to-logback-configuration-file> -jar XXX
+```
+Please refer to [LOGBack manual](http://logback.qos.ch/manual/index.html) for details on how to configure the logger.
+
+### Remarks
+For clustering testing purposes you can also start a separate verticle with repository and services mocks. In order to do so, run the following commands:
+```
+$ cd knotx-example/knotx-mocks
+$ java -jar target/knotx-mocks-XXXX-far.jar -conf src/main/resources/knotx-mocks.json
+```
+The mocks verticle is configured as follows:
+- **mock remote repository** listens on port **3001**
+- **mock service** listens on port **3000**
 
 ### Configuration
-
-The *core* module contains a Knot.x verticle without any sample data. Here's how its configuration files look:
-
-**service.yml**
-```yaml
-services:
-
-  - path: ${service.path}
-    domain: ${service.domain}
-    port: ${service.port}
+####Server configuration
+Knot.x server requires JSON configuration with *config* object. **Config** section allows to define:
+- **http.port** property to set http port which will be used to start Knot.x server
+- **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
+```json
+{
+  "server": {
+    "config": {
+      "http.port": 8092,
+      "preserved.headers": [
+        "User-Agent",
+        "X-Solr-Core-Key",
+        "X-Language-Code"
+      ],
+     ...
+ ``` 
+####Verticle configuration
+Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
+For instance, a configuration JSON for the *repository* verticle could look like this:
+```json
+{
+  "config": {
+    "service.name": "template-repository",
+    "repositories": [
+      {
+        "type": "remote",
+        "path": "/content/.*",
+        "domain": "localhost",
+        "port": 3001,
+        "client.options": {
+          "tryUseCompression" : true
+        }
+      }
+    ]
+  }
+}
 ```
-
-**repository.yml**
-```yaml
-repositories:
-
-  - type: local
-    path: ${local.repository.path}
-    catalogue: ${local.repository.catalogue}
-
-  - type: remote
-    path: ${remote.repository.path}
-    domain: ${remote.repository.domain}
-    port: ${remote.repository.port}
-```
-
-All placeholders can be replaced with command line arguments and environment variables. See [Using command line arguments and environment variables](#using-command-line-arguments-and-environment-variables) section.

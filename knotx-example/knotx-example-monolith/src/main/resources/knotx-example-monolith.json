@@ -4,9 +4,9 @@
       "http.port": 8092,
       "preserved.headers": [
         "User-Agent",
-        "Request Method",
         "X-Solr-Core-Key",
-        "X-Language-Code"
+        "X-Language-Code",
+        "X-Requested-With"
       ],
       "dependencies" : {
         "repository.address" : "template-repository",
@@ -27,7 +27,10 @@
           "type": "remote",
           "path": "/content/.*",
           "domain": "localhost",
-          "port": 3001
+          "port": 3001,
+          "client.options": {
+            "tryUseCompression" : true
+          }
         }
       ]
     }

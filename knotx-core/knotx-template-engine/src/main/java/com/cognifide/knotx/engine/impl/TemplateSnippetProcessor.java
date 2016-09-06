@@ -51,7 +51,7 @@ public class TemplateSnippetProcessor {
 
     public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
         return fragment.getServices()
-                .filter(serviceEntry -> serviceEntry.canServeMethodType(request.getServerRequestMethod()))
+                .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
                 .doOnNext(this::traceService)
                 .flatMap(serviceEngine::findServiceLocation)
                 .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request),

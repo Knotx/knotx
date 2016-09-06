@@ -24,6 +24,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.vertx.core.json.JsonObject;
+
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -69,6 +71,7 @@ public class RepositoryCorrectConfigurationTest extends AbstractKnotxConfigurati
         expectedLocalRepositoryMetadata.setPath("/content/local/.*");
         expectedLocalRepositoryMetadata.setType(RepositoryType.LOCAL);
         expectedLocalRepositoryMetadata.setCatalogue(StringUtils.EMPTY);
+        expectedLocalRepositoryMetadata.setClientOptions(new JsonObject());
         return expectedLocalRepositoryMetadata;
     }
 
@@ -78,6 +81,7 @@ public class RepositoryCorrectConfigurationTest extends AbstractKnotxConfigurati
         expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
         expectedLocalRepositoryMetadata.setDomain("localhost");
         expectedLocalRepositoryMetadata.setPort(8080);
+        expectedLocalRepositoryMetadata.setClientOptions(new JsonObject("{\"tryUseCompression\" : true}"));
         return expectedLocalRepositoryMetadata;
     }
 }

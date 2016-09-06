@@ -19,10 +19,13 @@ package com.cognifide.knotx.engine.impl;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
+import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
+import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.github.jknack.handlebars.Handlebars;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
@@ -53,13 +56,21 @@ public class TemplateEngine {
         return extractFragments(request.getTemplate())
                 .doOnNext(this::traceSnippet)
                 .flatMap(this::compileHtmlFragment)
-                .concatMapEager(item ->
-                        snippetProcessor.processSnippet(item, request)
+                .filter(htmlFragment -> shouldProcessRequest(htmlFragment, request))
+                .concatMapEager(htmlFragment ->
+                        snippetProcessor.processSnippet(htmlFragment, request)
                 ) //eager will buffer faster processing to emit items in proper order, keeping concurrency.
                 .reduce(new StringBuilder(),
                         StringBuilder::append
                 )
                 .map(StringBuilder::toString);
+    }
+
+    private Boolean shouldProcessRequest(HtmlFragment htmlFragment, TemplateEngineRequest request) {
+        String requestedWith = StringUtils.defaultString(request.getHeaders().get(TemplateEngineConsts.X_REQUESTED_WITH));
+        String formId = StringUtils.defaultString(request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
+        boolean isRequestByXHR = TemplateEngineConsts.XMLHTTP_REQUEST.equals(requestedWith);
+        return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId()) && formId.equals(htmlFragment.getDataId());
     }
 
     private Observable<HtmlFragment> extractFragments(String template) {

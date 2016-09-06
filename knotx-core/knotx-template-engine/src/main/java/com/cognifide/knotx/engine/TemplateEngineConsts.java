@@ -17,24 +17,8 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-
-import java.io.InputStreamReader;
-
-import io.vertx.core.json.JsonObject;
-
-public class AbstractKnotxConfigurationTest {
-
-    protected static JsonObject readConfig(String path) throws Exception {
-        return readJson(path).getJsonObject("config");
-    }
-
-    public static String readText(String path) throws Exception {
-        return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
-    }
-
-    protected static JsonObject readJson(String path) throws Exception {
-        return new JsonObject(readText(path));
-    }
+public class TemplateEngineConsts {
+    public static final String FORM_ID_ATTRIBUTE = "_id";
+    public static final String XMLHTTP_REQUEST = "XMLHttpRequest";
+    public static final String X_REQUESTED_WITH = "X-Requested-With";
 }

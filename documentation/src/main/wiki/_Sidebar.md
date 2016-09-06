@@ -1,10 +1,11 @@
 ### Wiki
 * [[Home|Home]]
   * [[Getting started|GettingStarted]]
-  * [[Features|Features]]
-  * [[Performance Tests|LocalPerformance]]
+  * [[Snippet processing|SnippetProcessing]]
+  * [[Performance tests|PerformanceTests]]
   * [[Production usage|ProductionUsage]]
   * [[Dependencies|Dependencies]]
+  * [[What's new|WhatsNew]]
 
-### Releases
+### Released
 * [[0.2.0|Documentation-0.2.0]]

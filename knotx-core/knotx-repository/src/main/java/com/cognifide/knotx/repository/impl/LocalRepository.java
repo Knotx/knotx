@@ -23,9 +23,13 @@ import com.cognifide.knotx.repository.Repository;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.nio.file.NoSuchFileException;
+
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
 import rx.Observable;
@@ -59,11 +63,19 @@ public class LocalRepository implements Repository {
 
         return fileSystem.openObservable(localFilePath, new OpenOptions())
                 .flatMap(AsyncFile::toObservable)
-                .flatMap(buffer -> RepositoryResponse.success(buffer.toString()).toObservable())
-                .defaultIfEmpty(RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath()))
+                .flatMap(buffer -> RepositoryResponse.success(buffer.toString(), MultiMap.caseInsensitiveMultiMap()).toObservable())
+                .defaultIfEmpty(RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), "Page not found", MultiMap.caseInsensitiveMultiMap()))
                 .onErrorReturn(error -> {
                     LOGGER.error("Error reading template file from file system", error);
-                    return RepositoryResponse.error("No Template found for path <%s>", repositoryRequest.getPath());
+
+                    int statusCode;
+                    if (error.getCause().getClass().equals(NoSuchFileException.class)) {
+                        statusCode = HttpResponseStatus.NOT_FOUND.code();
+                    } else {
+                        statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+                    }
+                    return RepositoryResponse
+                            .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                 });
     }
 

@@ -41,6 +41,7 @@ public class RepositoryConfiguration {
                     RepositoryMetadata repositoryMetadata = new RepositoryMetadata();
                     repositoryMetadata.type = RepositoryType.valueOf(item.getString("type").toUpperCase());
                     repositoryMetadata.path = item.getString("path");
+                    repositoryMetadata.clientOptions = item.getJsonObject("client.options", new JsonObject());
 
                     if (repositoryMetadata.type == RepositoryType.LOCAL) {
                         repositoryMetadata.catalogue = item.getString("catalogue");
@@ -82,6 +83,8 @@ public class RepositoryConfiguration {
 
         private RepositoryType type;
 
+        private JsonObject clientOptions;
+
         @Override
         public boolean equals(Object obj) {
             if (obj != null && obj instanceof RepositoryMetadata) {
@@ -91,7 +94,8 @@ public class RepositoryConfiguration {
                         .append(domain, other.getDomain())
                         .append(port, other.getPort())
                         .append(catalogue, other.getCatalogue())
-                        .append(type, other.getType()).isEquals();
+                        .append(type, other.getType())
+                        .append(clientOptions, other.getClientOptions()).isEquals();
             } else {
                 return false;
             }
@@ -106,6 +110,7 @@ public class RepositoryConfiguration {
                     .append(port)
                     .append(catalogue)
                     .append(type)
+                    .append(clientOptions)
                     .toHashCode();
         }
 
@@ -147,6 +152,14 @@ public class RepositoryConfiguration {
 
         public void setType(RepositoryType type) {
             this.type = type;
+        }
+
+        public JsonObject getClientOptions() {
+            return clientOptions;
+        }
+
+        public void setClientOptions(JsonObject clientOptions) {
+            this.clientOptions = clientOptions;
         }
 
         @Override
