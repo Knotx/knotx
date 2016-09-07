@@ -30,7 +30,7 @@ import java.util.Map;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public class TemplateSnippetProcessor {
@@ -40,12 +40,12 @@ public class TemplateSnippetProcessor {
 
     private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end compiled snippet -->";
 
-    private ServiceEngine serviceEngine;
+    private final ServiceEngine serviceEngine;
 
-    private boolean templateDebug;
+    private final boolean templateDebug;
 
-    public TemplateSnippetProcessor(Vertx vertx, TemplateEngineConfiguration configuration) {
-        this.serviceEngine = new ServiceEngine(vertx, configuration);
+    public TemplateSnippetProcessor(HttpClient httpClient, TemplateEngineConfiguration configuration) {
+        this.serviceEngine = new ServiceEngine(httpClient, configuration);
         this.templateDebug = configuration.templateDebug();
     }
 

@@ -31,7 +31,7 @@ import java.io.IOException;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public class TemplateEngine {
@@ -42,8 +42,8 @@ public class TemplateEngine {
 
     private TemplateSnippetProcessor snippetProcessor;
 
-    public TemplateEngine(Vertx vertx, TemplateEngineConfiguration configuration) {
-        this.snippetProcessor = new TemplateSnippetProcessor(vertx, configuration);
+    public TemplateEngine(HttpClient httpClient, TemplateEngineConfiguration configuration) {
+        this.snippetProcessor = new TemplateSnippetProcessor(httpClient, configuration);
         initHandlebars();
     }
 

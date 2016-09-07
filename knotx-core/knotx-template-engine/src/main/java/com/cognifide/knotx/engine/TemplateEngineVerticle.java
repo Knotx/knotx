@@ -23,12 +23,14 @@ import com.cognifide.knotx.engine.impl.TemplateEngine;
 
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public class TemplateEngineVerticle extends AbstractVerticle {
@@ -41,6 +43,8 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
     private String serviceName;
 
+    private HttpClient httpClient;
+
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
@@ -48,7 +52,10 @@ public class TemplateEngineVerticle extends AbstractVerticle {
         this.serviceName = config.getString("service.name");
 
         configuration = new TemplateEngineConfiguration(config);
-        templateEngine = new TemplateEngine(this.vertx, configuration);
+        final HttpClientOptions httpClientOptions = new HttpClientOptions().setMaxPoolSize(1000);
+        httpClient = this.vertx.createHttpClient(httpClientOptions);
+        templateEngine = new TemplateEngine(httpClient, configuration);
+
     }
 
     @Override
@@ -56,7 +63,6 @@ public class TemplateEngineVerticle extends AbstractVerticle {
         LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
         EventBus eventBus = vertx.eventBus();
-
         Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
 
         messageObservable
@@ -71,6 +77,12 @@ public class TemplateEngineVerticle extends AbstractVerticle {
                                         }
                                 )
                 );
+    }
+
+    @Override
+    public void stop() throws Exception {
+        LOGGER.debug("Stopping TemplateEngineVerticle and stopping http client");
+        httpClient.close();
     }
 
     private TemplateEngineRequest givenTemplate(Message<JsonObject> msg) {
