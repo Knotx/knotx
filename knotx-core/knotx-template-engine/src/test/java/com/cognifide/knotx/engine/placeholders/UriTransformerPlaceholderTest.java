@@ -25,7 +25,7 @@ import org.junit.Test;
 public class UriTransformerPlaceholderTest {
 
     @Test
-    public void testGetPlaceholders() {
+    public void getPlaceholders_whenGivenUrlWithPlaceholders_expectPlaceholdersExtractedInArray() {
         List<String> placeholders =
                 UriTransformer.getPlaceholders("/dssds/{first.aa}/dsu/{second}");
         Assert.assertArrayEquals(placeholders.toArray(), new String[] {"first.aa", "second"});

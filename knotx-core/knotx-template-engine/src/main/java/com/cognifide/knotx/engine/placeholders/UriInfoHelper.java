@@ -1,17 +1,19 @@
 /*
- * Knot.x - Reactive microservice assembler
+ * Knot.x - Reactive microservice assembler - Templating Engine Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.cognifide.knotx.engine.placeholders;
 
@@ -24,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.cognifide.knotx.api.UriInfo;
 
-public class UriInfoHelper {
+public final class UriInfoHelper {
 
     /**
      * This regular expression is used for decomposite uri into following parts:
@@ -42,6 +44,10 @@ public class UriInfoHelper {
 
     private static final Map<String, UriInfo> cache = new HashMap<String, UriInfo>();
 
+    private UriInfoHelper() {
+        // util
+    }
+
     public static UriInfo getUriInfo(String uri) {
         if (!cache.containsKey(uri)) {
             cache.put(uri, generateUriInfo(uri));
@@ -54,13 +60,13 @@ public class UriInfoHelper {
         UriInfo uriInfo = null;
         if (matcher.matches()) {
             String path = matcher.group(1);
-            String[] pathParts = StringUtils.length(path) > 1 //
-                    ? path.substring(1).split("/") //
+            String[] pathParts = StringUtils.length(path) > 1
+                    ? path.substring(1).split("/")
                     : new String[] {path};
 
             String selectorString = matcher.group(3);
-            String[] selectors = selectorString != null //
-                    ? selectorString.split("\\.") //
+            String[] selectors = selectorString != null
+                    ? selectorString.split("\\.")
                     : new String[0];
 
             String extension = matcher.group(5);

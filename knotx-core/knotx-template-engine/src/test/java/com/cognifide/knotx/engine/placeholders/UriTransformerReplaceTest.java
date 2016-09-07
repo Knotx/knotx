@@ -78,7 +78,7 @@ public class UriTransformerReplaceTest {
     public String expectedUri;
 
     @Test
-    public void testReplace() {
+    public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
         TemplateEngineRequest request = new TemplateEngineRequest(null, null, getHeadersMultiMap(),
                 getParamsMultiMap(), new MultiMap(null), requestedUri);
         ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-uri", uri));

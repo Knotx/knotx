@@ -26,7 +26,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
-public abstract class UriTransformer {
+public final class UriTransformer {
+
+    private UriTransformer() {
+        // util
+    }
 
     private static List<PlaceholderSubstitutor> placeholderSubstitutors =
             Arrays.asList(new PlaceholderSubstitutor[] {new RequestPlaceholderSubstitutor(),
@@ -45,17 +49,18 @@ public abstract class UriTransformer {
     }
 
     protected static List<String> getPlaceholders(String serviceUri) {
-        return Arrays.asList(serviceUri.split("\\{")).stream() //
-                .filter(str -> str.contains("}")) //
-                .map(str -> StringUtils.substringBefore(str, "}")) //
+        return Arrays.asList(serviceUri.split("\\{")).stream()
+                .filter(str -> str.contains("}"))
+                .map(str -> StringUtils.substringBefore(str, "}"))
                 .collect(Collectors.toList());
     }
 
     private static String getPlaceholderValue(TemplateEngineRequest request, String placeholder) {
-        String result = placeholderSubstitutors.stream() //
-                .map(substitutor -> substitutor.getValue(request, placeholder)) //
-                .filter(str -> str != null) //
-                .findFirst().orElse("");
+        String result = placeholderSubstitutors.stream()
+                .map(substitutor -> substitutor.getValue(request, placeholder))
+                .filter(str -> str != null)
+                .findFirst()
+                .orElse("");
         return result;
     }
 }
