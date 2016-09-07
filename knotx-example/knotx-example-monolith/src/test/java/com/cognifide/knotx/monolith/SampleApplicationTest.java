@@ -134,7 +134,7 @@ public class SampleApplicationTest {
                 resp -> resp.bodyHandler(body -> {
                     context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
                     try {
-                        context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+                        context.assertEquals(removeSpaces(Jsoup.parse(body.toString()).html()), removeSpaces(Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html()));
                     } catch (Exception e) {
                         LOG.error("Cannot read file {}", expectedResponseFile, e);
                         context.fail();
@@ -142,6 +142,10 @@ public class SampleApplicationTest {
                     client.close();
                     async.complete();
                 }));
+    }
+
+    private String removeSpaces(String stringWithSpaces){
+        return stringWithSpaces.replaceAll("\\s+","");
     }
 
 }
