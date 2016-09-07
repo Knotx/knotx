@@ -27,12 +27,14 @@ import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import java.util.Collections;
 import java.util.Map;
 
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
@@ -41,18 +43,20 @@ public class ServiceEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
 
+    private static final int HTTPCLIENT_MAX_POOL_SIZE = 1200;
+
     private TemplateEngineConfiguration configuration;
 
-    private Vertx vertx;
+    private HttpClient httpClient;
 
     public ServiceEngine(Vertx vertx, TemplateEngineConfiguration serviceConfiguration) {
-        this.vertx = vertx;
         this.configuration = serviceConfiguration;
+        this.httpClient = vertx.createHttpClient(new HttpClientOptions().setKeepAlive(false).setMaxPoolSize(HTTPCLIENT_MAX_POOL_SIZE));
     }
 
     public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, TemplateEngineRequest request) {
         HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
-        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(vertx.createHttpClient(), httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
+        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
                 req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(), httpMethod));
 
         return serviceResponse.flatMap(this::collectBuffers);
