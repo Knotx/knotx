@@ -38,34 +38,36 @@ public class UriTransformerReplaceTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 // path
-                {"/path.html?path={path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
+                {"/path.html?path={uri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
                         "/path.html?path=/a/b/c/d"},
-                {"/path.html?path={path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
+                {"/path.html?path={uri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
                         "/path.html?path=/a/b/c/d"},
                 // pathparts
-                {"/path/{pathpart[2]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f", "/path/c.html"},
-                {"/path/{pathpart[7]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f", "/path/.html"},
+                {"/path/{uri.pathpart[2]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                        "/path/c.html"},
+                {"/path/{uri.pathpart[7]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                        "/path/.html"},
                 // extension
-                {"/path/second.html/a.{extension}", "/a/b/c/d/e.s1.s2.html",
+                {"/path/second.html/a.{uri.extension}", "/a/b/c/d/e.s1.s2.html",
                         "/path/second.html/a.html"},
                 // selectors
-                {"/selectors.{selectorstring}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
+                {"/selectors.{uri.selectorstring}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
                         "/selectors.s1.s2.html"},
-                {"/selectors.{selector[0]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
+                {"/selectors.{uri.selector[0]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
                         "/selectors.s1.html"},
-                {"/selectors.{selector[2]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
+                {"/selectors.{uri.selector[2]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
                         "/selectors..html"},
                 // suffix
-                {"/suffix.html{suffix}", "/a/b/dsds.dd.html/my/nice/suffix.html",
+                {"/suffix.html{uri.suffix}", "/a/b/dsds.dd.html/my/nice/suffix.html",
                         "/suffix.html/my/nice/suffix.html"},
-                // invalid
-                {"/selectors.{invalid}.html", "/a/b.s1.s2.html/c/d.s.txt#f", "/selectors..html"},
                 // param
                 {"/solr/search/{param.q}", "/c/d/s?q=my search is fetched from static getParams()",
                         "/solr/search/knot.x"},
                 // headers
                 {"/solr/{header.authorizationId}/", "/c/d/s?q=my action from headers",
-                        "/solr/486434684345/"}});
+                        "/solr/486434684345/"},
+                // invalid
+                {"/selectors.{invalid}.html", "/a/b.s1.s2.html/c/d.s.txt#f", "/selectors..html"}});
     }
 
     @Parameterized.Parameter

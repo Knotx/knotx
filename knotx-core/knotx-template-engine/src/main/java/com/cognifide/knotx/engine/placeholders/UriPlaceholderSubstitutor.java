@@ -34,7 +34,7 @@ public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
     }
 
     private enum Strategy {
-        PATHPART("pathpart[") {
+        PATHPART("uri.pathpart[") {
             @Override
             String getValue(UriInfo uriInfo, String placeholder) {
                 final int index =
@@ -42,19 +42,19 @@ public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
                 return uriInfo.getPathPart(index);
             }
         },
-        PATH("path") {
+        PATH("uri.path") {
             @Override
             String getValue(UriInfo uriInfo, String placeholder) {
                 return uriInfo.getPath();
             }
         },
-        SELECTORSTRING("selectorstring") {
+        SELECTORSTRING("uri.selectorstring") {
             @Override
             String getValue(UriInfo uriInfo, String placeholder) {
                 return uriInfo.getSelectorString();
             }
         },
-        SELECTOR("selector[") {
+        SELECTOR("uri.selector[") {
             @Override
             String getValue(UriInfo uriInfo, String placeholder) {
                 final int index =
@@ -62,13 +62,13 @@ public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
                 return uriInfo.getSelector(index);
             }
         },
-        EXTENSION("extension") {
+        EXTENSION("uri.extension") {
             @Override
             String getValue(UriInfo uriInfo, String placeholder) {
                 return uriInfo.getExtension();
             }
         },
-        SUFFIX("suffix") {
+        SUFFIX("uri.suffix") {
             @Override
             String getValue(UriInfo uriInfo, String placeholder) {
                 return uriInfo.getSuffix();
