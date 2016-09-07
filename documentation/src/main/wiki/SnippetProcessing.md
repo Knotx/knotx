@@ -42,6 +42,29 @@ When service path is marked as data-uri-**all**, GET call will be execute regard
 
 Note: it is possible to call service using `data-uri` without method postfix (e.g. `data-uri="/service/formSubmit"`. Such construction will be treated as an alias for `data-uri-all`.
 
+###Parametrized services calls
+When found a placeholder within the data-uri-**-get** call it will be replaced with a dynamic value based on the current http request.
+Available placeholders are:
+* `{header.x}` - is the original requests header value where `x` is the header name
+* `{param.x}` - is the original requests query parameter value. For `x` = q from `/a/b/c.html?q=knot` it will produce `knot` 
+* `{uri.path}` - is the original requests path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c`
+* `{uri.pathpart[x]}` - is the original requests `x`th path part. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `b`
+* `{uri.selectorstring}` - is the original requests selector string. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `sel.it`
+* `{uri.selector[x]}` - is the original requests `x`th selector. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `it`
+* `{uri.extension}` - is the original requests extension. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `html`
+* `{uri.suffix}` - is the original requests suffix. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/suffix.html`
+
+How would you use a placeholder within your script:
+```html
+<script data-api-type="templating" type="text/x-handlebars-template" 
+    data-uri-get-search="/service/sample/search?q={param.q}"
+    data-uri-get-twitter="/service/twitter/{uri.pathpart[2]}">
+        <h1>Welcome</h1>
+        <h2>{{search.numberOfResults}}</h2>
+        <h2>{{twitter.firstTweetTitle}}</h2>
+</script>
+```
+
 ### Forms processing
 When form request is sent to Knot.x it will handle that by resending all of the form attributes to data service that is marked as data-uri-**post**.
  
