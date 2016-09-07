@@ -1,6 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Templating Engine Verticle
- *
+ * Knot.x - Reactive microservice assembler - API
  * Copyright (C) 2016 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
