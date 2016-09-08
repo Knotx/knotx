@@ -44,7 +44,9 @@ class HttpRepository implements Repository {
 
     private Integer port;
 
-    private HttpClient httpClient;
+    private Vertx vertx;
+
+    private JsonObject clientOptions;
 
     private HttpRepository() {
         // hidden constructor
@@ -55,13 +57,14 @@ class HttpRepository implements Repository {
         remoteRepository.path = path;
         remoteRepository.domain = domain;
         remoteRepository.port = port;
-        remoteRepository.httpClient = vertx.createHttpClient(new HttpClientOptions(clientOptions));
+        remoteRepository.vertx = vertx;
+        remoteRepository.clientOptions = clientOptions;
         return remoteRepository;
     }
 
-
     @Override
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
+        final HttpClient httpClient = createHttpClient();
         Observable<HttpClientResponse> clientResponse =
                 RxHelper.get(httpClient, port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
 
@@ -73,7 +76,11 @@ class HttpRepository implements Repository {
                             return RepositoryResponse
                                     .error(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                         }
-                );
+                ).doAfterTerminate(httpClient::close);
+    }
+
+    private HttpClient createHttpClient() {
+        return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
     }
 
     private Observable<RepositoryResponse> processResponse(final HttpClientResponse response) {
