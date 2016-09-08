@@ -141,9 +141,8 @@ For instance, a configuration JSON for the *repository* verticle could look like
         "domain": "localhost",
         "port": 3001,
         "client.options": {
-          "tryUseCompression" : true,
-          "maxPoolSize": 1000
-        }
+          "tryUseCompression" : true
+       }
       }
     ]
   }

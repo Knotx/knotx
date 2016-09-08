@@ -13,7 +13,6 @@
         "port": 8080,
         "client.options": {
           "tryUseCompression": true,
-          "maxPoolSize": "1000",
           "keepAlive": false
 
         }
