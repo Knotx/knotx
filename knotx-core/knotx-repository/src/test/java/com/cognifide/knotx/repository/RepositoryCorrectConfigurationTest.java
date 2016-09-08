@@ -81,7 +81,7 @@ public class RepositoryCorrectConfigurationTest extends AbstractKnotxConfigurati
         expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
         expectedLocalRepositoryMetadata.setDomain("localhost");
         expectedLocalRepositoryMetadata.setPort(8080);
-        expectedLocalRepositoryMetadata.setClientOptions(new JsonObject("{\"tryUseCompression\" : true}"));
+        expectedLocalRepositoryMetadata.setClientOptions(new JsonObject("{\"tryUseCompression\" : true, \"maxPoolSize\" : \"1000\", \"keepAlive\": false}"));
         return expectedLocalRepositoryMetadata;
     }
 }

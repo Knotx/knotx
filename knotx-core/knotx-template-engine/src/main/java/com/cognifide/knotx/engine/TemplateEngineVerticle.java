@@ -52,7 +52,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
         this.serviceName = config.getString("service.name");
 
         configuration = new TemplateEngineConfiguration(config);
-        final HttpClientOptions httpClientOptions = new HttpClientOptions().setMaxPoolSize(1000);
+        final HttpClientOptions httpClientOptions = new HttpClientOptions().setMaxPoolSize(1000).setKeepAlive(false);
         httpClient = this.vertx.createHttpClient(httpClientOptions);
         templateEngine = new TemplateEngine(httpClient, configuration);
 

@@ -12,7 +12,10 @@
         "domain": "localhost",
         "port": 8080,
         "client.options": {
-          "tryUseCompression" : true
+          "tryUseCompression": true,
+          "maxPoolSize": "1000",
+          "keepAlive": false
+
         }
       }
     ]

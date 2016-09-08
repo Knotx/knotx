@@ -29,7 +29,9 @@
           "domain": "localhost",
           "port": 3001,
           "client.options": {
-            "tryUseCompression" : true
+            "tryUseCompression": true,
+            "maxPoolSize": "1000",
+            "keepAlive": false
           }
         }
       ]
