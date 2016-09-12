@@ -48,17 +48,13 @@ public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
         vertx.deployVerticle(MockRemoteRepositoryVerticle.class.getName(), new DeploymentOptions().setConfig(
                 configuration.getJsonObject("mockRepo")));
         vertx.deployVerticle(MockServiceVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject(
-                        "mockService")));
+                new DeploymentOptions().setConfig(configuration.getJsonObject("mockService")));
         vertx.deployVerticle(RepositoryVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject(
-                        "repository")));
+                new DeploymentOptions().setConfig(configuration.getJsonObject("repository")));
         vertx.deployVerticle(TemplateEngineVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject(
-                        "engine")));
+                new DeploymentOptions().setConfig(configuration.getJsonObject("engine")));
         vertx.deployVerticle(KnotxServerVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject(
-                        "server")));
+                new DeploymentOptions().setConfig(configuration.getJsonObject("server")));
     }
 
     public static void tearDown(TestContext context) {

@@ -29,7 +29,8 @@
           "domain": "localhost",
           "port": 3001,
           "client.options": {
-            "tryUseCompression" : true
+            "tryUseCompression": true,
+            "keepAlive": false
           }
         }
       ]
@@ -39,6 +40,10 @@
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
+      "client.options": {
+        "maxPoolSize" : 1000,
+        "keepAlive": false
+      },
       "services": [
         {
           "path": "/service/mock/.*",
