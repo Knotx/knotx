@@ -73,12 +73,12 @@ public class SampleApplicationTest {
 
     @Test
     public void localMultipleFormWithPostTest(TestContext context) {
-        tesPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithPostResult.html", false);
+        testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithPostResult.html", false);
     }
 
     @Test
     public void localMultipleFormWithAjaxPostTest(TestContext context) {
-        tesPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
+        testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class SampleApplicationTest {
         httpClientRequest.end();
     }
 
-    private void tesPostRequest(TestContext context, String url, String expectedResponseFile, boolean ajaxCall) {
+    private void testPostRequest(TestContext context, String url, String expectedResponseFile, boolean ajaxCall) {
         HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
 
         Async async = context.async();
