@@ -167,6 +167,10 @@ This kind of repository connects with an external server to fetch templates. To 
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
+      "client.options": {
+        "maxPoolSize" : 1000,
+        "keepAlive": false
+      },
       "services": [
         {
           "path": "/service/mock/.*",
@@ -186,6 +190,7 @@ This kind of repository connects with an external server to fetch templates. To 
 This section configures the Knot.x Template Engine Verticle listening for requests on Vert.x event bus. The config node consists of:
 - **service.name** - name/address of the event bus to which the Repository Verticle subscribes,
 - **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
+- **client.options** - contains json representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html), 
 - **services** - an array of definitions of all service endpoints used by dynamic snippets.
 
 There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:

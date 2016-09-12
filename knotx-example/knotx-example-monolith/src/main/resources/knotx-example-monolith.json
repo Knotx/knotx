@@ -40,6 +40,10 @@
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
+      "client.options": {
+        "maxPoolSize" : 1000,
+        "keepAlive": false
+      },
       "services": [
         {
           "path": "/service/mock/.*",

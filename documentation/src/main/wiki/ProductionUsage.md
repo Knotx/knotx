@@ -58,6 +58,10 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
+      "client.options": {
+        "maxPoolSize" : 1000,
+        "keepAlive": false
+      },
       "services": [
         {
           "path": "/service/mock/.*",
