@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Knot.x
@@ -218,6 +219,14 @@
                     <groupId>org.apache.rat</groupId>
                     <artifactId>apache-rat-plugin</artifactId>
                     <version>0.12</version>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                     <configuration>
                         <includes>
                             <include>src/main/java/**</include>
@@ -230,14 +239,6 @@
                             <exclude>**/*.MD</exclude>
                         </excludes>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -260,12 +261,10 @@
                                     </transformer>
                                     <transformer
                                             implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                        <resource>META-INF/services/io.vertx.core.spi.VerticleFactory
-                                        </resource>
+                                        <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
                                     </transformer>
                                 </transformers>
-                                <artifactSet>
-                                </artifactSet>
+                                <artifactSet />
                                 <outputFile>
                                     ${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
                                 </outputFile>
