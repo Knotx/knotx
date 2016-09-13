@@ -64,8 +64,9 @@ class HttpRepository implements Repository {
 
     @Override
     public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
+        final HttpClient httpClient = createHttpClient();
         Observable<HttpClientResponse> clientResponse =
-                RxHelper.get(createHttpClient(), port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
+                RxHelper.get(httpClient, port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
 
         return clientResponse
                 .doOnNext(this::traceResponse)
@@ -75,7 +76,7 @@ class HttpRepository implements Repository {
                             return RepositoryResponse
                                     .error(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), error.getMessage(), MultiMap.caseInsensitiveMultiMap());
                         }
-                );
+                ).doAfterTerminate(httpClient::close);
     }
 
     private HttpClient createHttpClient() {

@@ -31,6 +31,8 @@ public class TemplateEngineConfiguration {
 
     private boolean templateDebug;
 
+    private JsonObject clientOptions;
+
     public TemplateEngineConfiguration(JsonObject config) {
         services = config.getJsonArray("services").stream()
                 .map(item -> (JsonObject) item)
@@ -44,6 +46,7 @@ public class TemplateEngineConfiguration {
                 }).collect(Collectors.toList());
 
         templateDebug = config.getBoolean("template.debug", false);
+        clientOptions = config.getJsonObject("client.options", new JsonObject());
     }
 
     public List<ServiceMetadata> getServices() {
@@ -52,6 +55,10 @@ public class TemplateEngineConfiguration {
 
     public boolean templateDebug() {
         return templateDebug;
+    }
+
+    public JsonObject getClientOptions() {
+        return clientOptions;
     }
 
     public static class ServiceMetadata {

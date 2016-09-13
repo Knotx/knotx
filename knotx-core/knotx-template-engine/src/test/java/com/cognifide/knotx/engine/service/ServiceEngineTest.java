@@ -69,7 +69,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     public void setUp() throws Exception {
         Vertx vertx = Vertx.vertx();
         TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
-        serviceEngine = new ServiceEngine(vertx, configuration);
+        serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
     }
 
 

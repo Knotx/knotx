@@ -31,8 +31,8 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
@@ -41,12 +41,12 @@ public class ServiceEngine {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
 
-    private TemplateEngineConfiguration configuration;
+    private final TemplateEngineConfiguration configuration;
 
-    private Vertx vertx;
+    private final HttpClient httpClient;
 
-    public ServiceEngine(Vertx vertx, TemplateEngineConfiguration serviceConfiguration) {
-        this.vertx = vertx;
+    public ServiceEngine(HttpClient httpClient, TemplateEngineConfiguration serviceConfiguration) {
+        this.httpClient = httpClient;
         this.configuration = serviceConfiguration;
     }
 
@@ -54,11 +54,10 @@ public class ServiceEngine {
             TemplateEngineRequest request) {
         HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
         Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-                vertx.createHttpClient(), httpMethod, serviceEntry.getPort(),
+                httpClient, httpMethod, serviceEntry.getPort(),
                 serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
                 req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
                         httpMethod));
-
         return serviceResponse.flatMap(this::collectBuffers);
     }
 

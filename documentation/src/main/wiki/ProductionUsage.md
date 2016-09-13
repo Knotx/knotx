@@ -47,7 +47,8 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
           "domain": "localhost",
           "port": 3001,
           "client.options": {
-            "tryUseCompression" : true
+            "tryUseCompression" : true,
+            "maxPoolSize": 1000
           }
         }
       ]
@@ -57,6 +58,10 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
+      "client.options": {
+        "maxPoolSize" : 1000,
+        "keepAlive": false
+      },
       "services": [
         {
           "path": "/service/mock/.*",
@@ -141,7 +146,7 @@ For instance, a configuration JSON for the *repository* verticle could look like
         "port": 3001,
         "client.options": {
           "tryUseCompression" : true
-        }
+       }
       }
     ]
   }
