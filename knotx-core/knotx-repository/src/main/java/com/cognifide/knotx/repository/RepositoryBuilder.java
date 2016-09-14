@@ -23,6 +23,6 @@ import io.vertx.rxjava.core.Vertx;
 
 public interface RepositoryBuilder extends Serializable {
 
-    Repository create(RepositoryConfiguration.RepositoryMetadata metadata, Vertx vertx);
+  Repository create(RepositoryConfiguration.RepositoryMetadata metadata, Vertx vertx);
 
 }

@@ -24,12 +24,12 @@ import io.vertx.core.Vertx;
 
 public class StarterVerticle extends AbstractVerticle {
 
-    @Override
-    public void start() {
-        Vertx vertx = Vertx.vertx();
+  @Override
+  public void start() {
+    Vertx vertx = Vertx.vertx();
 
-        vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
-        vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
-    }
+    vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
+    vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
+  }
 
 }

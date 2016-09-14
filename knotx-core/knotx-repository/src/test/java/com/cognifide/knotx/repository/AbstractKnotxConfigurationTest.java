@@ -26,8 +26,8 @@ import io.vertx.core.json.JsonObject;
 
 public class AbstractKnotxConfigurationTest {
 
-    protected JsonObject readConfig(String path) throws Exception {
-        String config = CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
-        return new JsonObject(config).getJsonObject("config");
-    }
+  protected JsonObject readConfig(String path) throws Exception {
+    String config = CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+    return new JsonObject(config).getJsonObject("config");
+  }
 }

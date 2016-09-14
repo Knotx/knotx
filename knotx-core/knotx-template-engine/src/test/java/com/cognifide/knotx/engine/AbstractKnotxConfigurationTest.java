@@ -26,15 +26,15 @@ import io.vertx.core.json.JsonObject;
 
 public class AbstractKnotxConfigurationTest {
 
-    protected static JsonObject readConfig(String path) throws Exception {
-        return readJson(path).getJsonObject("config");
-    }
+  protected static JsonObject readConfig(String path) throws Exception {
+    return readJson(path).getJsonObject("config");
+  }
 
-    public static String readText(String path) throws Exception {
-        return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
-    }
+  public static String readText(String path) throws Exception {
+    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+  }
 
-    protected static JsonObject readJson(String path) throws Exception {
-        return new JsonObject(readText(path));
-    }
+  protected static JsonObject readJson(String path) throws Exception {
+    return new JsonObject(readText(path));
+  }
 }

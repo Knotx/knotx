@@ -25,39 +25,39 @@ import com.cognifide.knotx.api.TemplateEngineRequest;
 
 public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
 
-    @Override
-    public String getValue(final TemplateEngineRequest request, final String placeholder) {
-        return Arrays.stream(Strategy.values())
-                .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix))
-                .findFirst().map(strategy -> strategy.getValue(request, placeholder)).orElse(null);
+  @Override
+  public String getValue(final TemplateEngineRequest request, final String placeholder) {
+    return Arrays.stream(Strategy.values())
+        .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix))
+        .findFirst().map(strategy -> strategy.getValue(request, placeholder)).orElse(null);
+  }
+
+  private enum Strategy {
+
+    HEADER("header.") {
+      @Override
+      String getValue(TemplateEngineRequest request, String placeholder) {
+        return request.getHeaders().get(getName(placeholder));
+      }
+    },
+    PARAM("param.") {
+      @Override
+      String getValue(TemplateEngineRequest request, String placeholder) {
+        return request.getParams().get(getName(placeholder));
+      }
+    };
+
+    final String prefix;
+
+    Strategy(String prefix) {
+      this.prefix = prefix;
     }
 
-    private enum Strategy {
-
-        HEADER("header.") {
-            @Override
-            String getValue(TemplateEngineRequest request, String placeholder) {
-                return request.getHeaders().get(getName(placeholder));
-            }
-        },
-        PARAM("param.") {
-            @Override
-            String getValue(TemplateEngineRequest request, String placeholder) {
-                return request.getParams().get(getName(placeholder));
-            }
-        };
-
-        final String prefix;
-
-        Strategy(String prefix) {
-            this.prefix = prefix;
-        }
-
-        String getName(String placeholder) {
-            return StringUtils.substringAfter(placeholder, ".");
-        }
-
-        abstract String getValue(TemplateEngineRequest request, String placeholder);
+    String getName(String placeholder) {
+      return StringUtils.substringAfter(placeholder, ".");
     }
+
+    abstract String getValue(TemplateEngineRequest request, String placeholder);
+  }
 
 }

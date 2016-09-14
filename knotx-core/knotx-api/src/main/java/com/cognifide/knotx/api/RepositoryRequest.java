@@ -22,38 +22,38 @@ import io.vertx.rxjava.core.MultiMap;
 
 public class RepositoryRequest extends JsonObjectRequest {
 
-    private final String path;
+  private final String path;
 
-    private final MultiMap headers;
+  private final MultiMap headers;
 
-    public RepositoryRequest(String path, MultiMap headers) {
-        this.path = path;
-        this.headers = headers;
-    }
+  public RepositoryRequest(String path, MultiMap headers) {
+    this.path = path;
+    this.headers = headers;
+  }
 
-    public RepositoryRequest(JsonObject repoMessage) {
-        this.path = repoMessage.getString("path");
-        this.headers = MultiMap.caseInsensitiveMultiMap();
+  public RepositoryRequest(JsonObject repoMessage) {
+    this.path = repoMessage.getString("path");
+    this.headers = MultiMap.caseInsensitiveMultiMap();
 
-        repoMessage.getJsonArray("headers").stream()
-                .map(item -> (JsonObject) item)
-                .flatMap(item -> item.stream())
-                .forEach(entry -> headers.add(entry.getKey(), entry.getValue().toString()));
-    }
+    repoMessage.getJsonArray("headers").stream()
+        .map(item -> (JsonObject) item)
+        .flatMap(item -> item.stream())
+        .forEach(entry -> headers.add(entry.getKey(), entry.getValue().toString()));
+  }
 
-    @Override
-    public JsonObject toJsonObject() {
-        return new JsonObject()
-                .put("path", path)
-                .put("headers", toJsonArray(headers));
-    }
+  @Override
+  public JsonObject toJsonObject() {
+    return new JsonObject()
+        .put("path", path)
+        .put("headers", toJsonArray(headers));
+  }
 
-    public String getPath() {
-        return path;
-    }
+  public String getPath() {
+    return path;
+  }
 
-    public MultiMap getHeaders() {
-        return headers;
-    }
+  public MultiMap getHeaders() {
+    return headers;
+  }
 }
 

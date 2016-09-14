@@ -36,81 +36,81 @@ import rx.Observable;
 
 class HttpRepository implements Repository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepository.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepository.class);
 
-    private String path;
+  private String path;
 
-    private String domain;
+  private String domain;
 
-    private Integer port;
+  private Integer port;
 
-    private Vertx vertx;
+  private Vertx vertx;
 
-    private JsonObject clientOptions;
+  private JsonObject clientOptions;
 
-    private HttpRepository() {
-        // hidden constructor
+  private HttpRepository() {
+    // hidden constructor
+  }
+
+  static HttpRepository of(String path, String domain, Integer port, JsonObject clientOptions, Vertx vertx) {
+    HttpRepository remoteRepository = new HttpRepository();
+    remoteRepository.path = path;
+    remoteRepository.domain = domain;
+    remoteRepository.port = port;
+    remoteRepository.vertx = vertx;
+    remoteRepository.clientOptions = clientOptions;
+    return remoteRepository;
+  }
+
+  @Override
+  public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
+    final HttpClient httpClient = createHttpClient();
+    Observable<HttpClientResponse> clientResponse =
+        RxHelper.get(httpClient, port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
+
+    return clientResponse
+        .doOnNext(this::traceResponse)
+        .flatMap(this::processResponse)
+        .onErrorReturn(error -> {
+              LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
+              return RepositoryResponse
+                  .error(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), error.getMessage(), MultiMap.caseInsensitiveMultiMap());
+            }
+        ).doAfterTerminate(httpClient::close);
+  }
+
+  private HttpClient createHttpClient() {
+    return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
+  }
+
+  private Observable<RepositoryResponse> processResponse(final HttpClientResponse response) {
+    return Observable.just(Buffer.buffer())
+        .mergeWith(response.toObservable())
+        .reduce(Buffer::appendBuffer)
+        .flatMap(buffer -> toRepositoryResponse(buffer, response));
+  }
+
+  private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
+    Observable<RepositoryResponse> response;
+    if (httpClientResponse.statusCode() == HttpResponseStatus.OK.code()) {
+      response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
+    } else {
+      LOGGER.info("Remote repository returned with status code {} for path `{}`",
+          httpClientResponse.statusCode(), path);
+      response = RepositoryResponse.error(httpClientResponse.statusCode(), buffer.toString(),
+          httpClientResponse.headers()).toObservable();
     }
+    return response;
+  }
 
-    static HttpRepository of(String path, String domain, Integer port, JsonObject clientOptions, Vertx vertx) {
-        HttpRepository remoteRepository = new HttpRepository();
-        remoteRepository.path = path;
-        remoteRepository.domain = domain;
-        remoteRepository.port = port;
-        remoteRepository.vertx = vertx;
-        remoteRepository.clientOptions = clientOptions;
-        return remoteRepository;
+  private void traceResponse(HttpClientResponse response) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Got response from remote repository {}", response.statusCode());
     }
+  }
 
-    @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        final HttpClient httpClient = createHttpClient();
-        Observable<HttpClientResponse> clientResponse =
-                RxHelper.get(httpClient, port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
-
-        return clientResponse
-                .doOnNext(this::traceResponse)
-                .flatMap(this::processResponse)
-                .onErrorReturn(error -> {
-                            LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
-                            return RepositoryResponse
-                                    .error(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), error.getMessage(), MultiMap.caseInsensitiveMultiMap());
-                        }
-                ).doAfterTerminate(httpClient::close);
-    }
-
-    private HttpClient createHttpClient() {
-        return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-    }
-
-    private Observable<RepositoryResponse> processResponse(final HttpClientResponse response) {
-        return Observable.just(Buffer.buffer())
-                .mergeWith(response.toObservable())
-                .reduce(Buffer::appendBuffer)
-                .flatMap(buffer -> toRepositoryResponse(buffer, response));
-    }
-
-    private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
-        Observable<RepositoryResponse> response;
-        if (httpClientResponse.statusCode() == HttpResponseStatus.OK.code()) {
-            response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
-        } else {
-            LOGGER.info("Remote repository returned with status code {} for path `{}`",
-                    httpClientResponse.statusCode(), path);
-            response = RepositoryResponse.error(httpClientResponse.statusCode(), buffer.toString(),
-                    httpClientResponse.headers()).toObservable();
-        }
-        return response;
-    }
-
-    private void traceResponse(HttpClientResponse response) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got response from remote repository {}", response.statusCode());
-        }
-    }
-
-    @Override
-    public boolean support(String path) {
-        return path.matches(this.path);
-    }
+  @Override
+  public boolean support(String path) {
+    return path.matches(this.path);
+  }
 }

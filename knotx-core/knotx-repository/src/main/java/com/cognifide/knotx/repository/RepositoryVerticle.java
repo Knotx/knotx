@@ -40,66 +40,66 @@ import rx.Observable;
 
 public class RepositoryVerticle extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryVerticle.class);
 
-    private RepositoryConfiguration repositoryConfiguration;
+  private RepositoryConfiguration repositoryConfiguration;
 
-    private List<Repository> repositories = Lists.newArrayList();
+  private List<Repository> repositories = Lists.newArrayList();
 
-    private String serviceName;
+  private String serviceName;
 
-    @Override
-    public void init(Vertx vertx, Context context) {
-        super.init(vertx, context);
-        JsonObject config = config().getJsonObject("config");
+  @Override
+  public void init(Vertx vertx, Context context) {
+    super.init(vertx, context);
+    JsonObject config = config().getJsonObject("config");
 
-        this.serviceName = config.getString("service.name");
-        this.repositoryConfiguration = new RepositoryConfiguration(config);
+    this.serviceName = config.getString("service.name");
+    this.repositoryConfiguration = new RepositoryConfiguration(config);
 
-        repositories = repositoryConfiguration.getRepositories()
-                .stream()
-                .map(this::getRepositoryByMetadata)
-                .collect(Collectors.toList());
+    repositories = repositoryConfiguration.getRepositories()
+        .stream()
+        .map(this::getRepositoryByMetadata)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public void start() throws Exception {
+    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+
+    EventBus eventBus = vertx.eventBus();
+
+    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
+
+    messageObservable
+        .doOnNext(this::traceMessage)
+        .flatMap(this::getTemplateContent, Pair::of)
+        .subscribe(
+            response -> response.getLeft().reply(response.getRight().toJsonObject()),
+            error -> LOGGER.error("Unable to get template from the repository", error)
+        );
+  }
+
+  private Observable<RepositoryResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
+    final RepositoryRequest repoRequest = new RepositoryRequest(repoMessage.body());
+
+    return Observable.just(findRepository(repoRequest.getPath()))
+        .flatMap(repo -> repo.get(repoRequest));
+  }
+
+  private Repository findRepository(final String path) {
+    return repositories.stream()
+        .filter(repo -> repo.support(path))
+        .findFirst()
+        .orElse(new NullRepository());
+  }
+
+  private Repository getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
+    return metadata.getType().create(metadata, vertx);
+  }
+
+  private void traceMessage(Message<JsonObject> message) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
     }
-
-    @Override
-    public void start() throws Exception {
-        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
-
-        EventBus eventBus = vertx.eventBus();
-
-        Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
-
-        messageObservable
-                .doOnNext(this::traceMessage)
-                .flatMap(this::getTemplateContent, Pair::of)
-                .subscribe(
-                        response -> response.getLeft().reply(response.getRight().toJsonObject()),
-                        error -> LOGGER.error("Unable to get template from the repository", error)
-                );
-    }
-
-    private Observable<RepositoryResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
-        final RepositoryRequest repoRequest = new RepositoryRequest(repoMessage.body());
-
-        return Observable.just(findRepository(repoRequest.getPath()))
-                .flatMap(repo -> repo.get(repoRequest));
-    }
-
-    private Repository findRepository(final String path) {
-        return repositories.stream()
-                .filter(repo -> repo.support(path))
-                .findFirst()
-                .orElse(new NullRepository());
-    }
-
-    private Repository getRepositoryByMetadata(RepositoryConfiguration.RepositoryMetadata metadata) {
-        return metadata.getType().create(metadata, vertx);
-    }
-
-    private void traceMessage(Message<JsonObject> message) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
-        }
-    }
+  }
 }

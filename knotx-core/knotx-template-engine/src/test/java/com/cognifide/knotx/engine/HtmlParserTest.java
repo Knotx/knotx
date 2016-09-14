@@ -34,47 +34,47 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class HtmlParserTest extends AbstractKnotxConfigurationTest {
 
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
-    private String TEST_HTML = "test.html";
-    private String TEST_NO_FRAGMENTS_HTML = "test-no-fragments.html";
-    private String TEST_ONE_FRAGMENT_HTML = "test-one-fragment.html";
+  @Rule
+  public final ExpectedException expectedException = ExpectedException.none();
+  private String TEST_HTML = "test.html";
+  private String TEST_NO_FRAGMENTS_HTML = "test-no-fragments.html";
+  private String TEST_ONE_FRAGMENT_HTML = "test-one-fragment.html";
 
-    private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
+  private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
 
 
-    private List<HtmlFragment> test;
-    private List<HtmlFragment> testNoTemplates;
-    private List<HtmlFragment> testOneTemplates;
+  private List<HtmlFragment> test;
+  private List<HtmlFragment> testNoTemplates;
+  private List<HtmlFragment> testOneTemplates;
 
-    @Before
-    public void setUp() throws Exception {
-        test = new HtmlParser(readText(TEST_HTML)).getFragments();
-        testNoTemplates = new HtmlParser(readText(TEST_NO_FRAGMENTS_HTML)).getFragments();
-        testOneTemplates = new HtmlParser(readText(TEST_ONE_FRAGMENT_HTML)).getFragments();
-    }
+  @Before
+  public void setUp() throws Exception {
+    test = new HtmlParser(readText(TEST_HTML)).getFragments();
+    testNoTemplates = new HtmlParser(readText(TEST_NO_FRAGMENTS_HTML)).getFragments();
+    testOneTemplates = new HtmlParser(readText(TEST_ONE_FRAGMENT_HTML)).getFragments();
+  }
 
-    @Test
-    public void testComposeFragmetns() throws Exception {
-        StringBuilder result = new StringBuilder();
-        IntStream.rangeClosed(0, 6).forEach(idx -> result.append(test.get(idx).getContent()));
+  @Test
+  public void testComposeFragmetns() throws Exception {
+    StringBuilder result = new StringBuilder();
+    IntStream.rangeClosed(0, 6).forEach(idx -> result.append(test.get(idx).getContent()));
 
-        assertThat(result.toString().trim(), equalTo(readText(TEST_HTML).trim()));
-    }
+    assertThat(result.toString().trim(), equalTo(readText(TEST_HTML).trim()));
+  }
 
-    @Test
-    public void testNoFragments() throws Exception {
-        assertThat(testNoTemplates.size(), equalTo(1));
-        assertThat(testNoTemplates.get(0).hasHandlebarsTemplate(), equalTo(false));
-        assertThat(testNoTemplates.get(0).getContent(), equalTo(readText(TEST_NO_FRAGMENTS_HTML)));
-    }
+  @Test
+  public void testNoFragments() throws Exception {
+    assertThat(testNoTemplates.size(), equalTo(1));
+    assertThat(testNoTemplates.get(0).hasHandlebarsTemplate(), equalTo(false));
+    assertThat(testNoTemplates.get(0).getContent(), equalTo(readText(TEST_NO_FRAGMENTS_HTML)));
+  }
 
-    @Test
-    public void testOneFragment() throws Exception {
-        assertThat(testOneTemplates.size(), equalTo(3));
-        assertThat(testOneTemplates.get(0).hasHandlebarsTemplate(), equalTo(false));
-        assertThat(testOneTemplates.get(1).hasHandlebarsTemplate(), equalTo(true));
-        assertThat(testOneTemplates.get(1).getContent(), equalTo(EXPECTED_ONE_FRAGMENT));
-        assertThat(testOneTemplates.get(2).hasHandlebarsTemplate(), equalTo(false));
-    }
+  @Test
+  public void testOneFragment() throws Exception {
+    assertThat(testOneTemplates.size(), equalTo(3));
+    assertThat(testOneTemplates.get(0).hasHandlebarsTemplate(), equalTo(false));
+    assertThat(testOneTemplates.get(1).hasHandlebarsTemplate(), equalTo(true));
+    assertThat(testOneTemplates.get(1).getContent(), equalTo(EXPECTED_ONE_FRAGMENT));
+    assertThat(testOneTemplates.get(2).hasHandlebarsTemplate(), equalTo(false));
+  }
 }

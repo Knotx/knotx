@@ -57,89 +57,89 @@ import static org.mockito.Mockito.when;
 public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
 
 
-    private static final String MOCK_SERVICE_RESPONSE_JSON = "{\"welcomeInCompetition\":\"welcome in competition\",\"thankYouForSubscribingToCompetition\":\"thank you for subscribing to competition\",\"subscribeToNewsletter\":\"subscribe to newsletter\",\"thankYouForSubscribingToNewsletter\":\"thank you for subscribing to newsletter\",\"_response\":{\"statusCode\":200}}";
-    private static final String FORM_RESPONSE_JSON = "{\"status\":\"success\",\"_response\":{\"statusCode\":200}}";
+  private static final String MOCK_SERVICE_RESPONSE_JSON = "{\"welcomeInCompetition\":\"welcome in competition\",\"thankYouForSubscribingToCompetition\":\"thank you for subscribing to competition\",\"subscribeToNewsletter\":\"subscribe to newsletter\",\"thankYouForSubscribingToNewsletter\":\"thank you for subscribing to newsletter\",\"_response\":{\"statusCode\":200}}";
+  private static final String FORM_RESPONSE_JSON = "{\"status\":\"success\",\"_response\":{\"statusCode\":200}}";
 
-    private ServiceEngine serviceEngine;
+  private ServiceEngine serviceEngine;
 
-    private String SERVICE_CONFIGURATION = "service-correct.json";
-
-
-    @Before
-    public void setUp() throws Exception {
-        Vertx vertx = Vertx.vertx();
-        TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
-        serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
-    }
+  private String SERVICE_CONFIGURATION = "service-correct.json";
 
 
-    @Test
-    public void findServiceLocation() throws Exception {
-
-    }
-
-
-    @Test
-    public void test_ALL_ServiceCallWithFormPostRequest() throws Exception {
-
-        ServiceEntry serviceEntry = createServiceEntry("data-uri-all-labelsrepository", "/service/mock/labelsRepository.json", MOCK_SERVICE_RESPONSE_JSON);
-
-        TemplateEngineRequest templateEngineRequest = createFormPostRequest();
-
-        Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
-
-        mapObservable.subscribe(map -> {
-            assertThat(map.size(), equalTo(5));
-            assertThat(new JsonObject(map).toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
-        });
-    }
+  @Before
+  public void setUp() throws Exception {
+    Vertx vertx = Vertx.vertx();
+    TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
+    serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
+  }
 
 
-    @Test
-    public void test_POST_ServiceCallWithGetRequest() throws Exception {
+  @Test
+  public void findServiceLocation() throws Exception {
 
-        ServiceEntry serviceEntry = createServiceEntry("data-uri-post-formresponse", "/service/mock/subscribeToNewsletter.json", FORM_RESPONSE_JSON);
-
-        TemplateEngineRequest templateEngineRequest = createFormPostRequest();
-
-        Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
-
-        mapObservable.subscribe(map -> {
-            assertThat(map.size(), equalTo(2));
-            assertThat(new JsonObject(map).toString(), equalTo(FORM_RESPONSE_JSON));
-        });
-    }
+  }
 
 
-    private ServiceEntry createServiceEntry(String attrName, String serviceUrl, String serviceResponse) throws Exception {
-        mockServiceResponse(serviceResponse);
+  @Test
+  public void test_ALL_ServiceCallWithFormPostRequest() throws Exception {
 
-        Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
-        ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-        TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
+    ServiceEntry serviceEntry = createServiceEntry("data-uri-all-labelsrepository", "/service/mock/labelsRepository.json", MOCK_SERVICE_RESPONSE_JSON);
 
-        serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
-        return serviceEntry;
-    }
+    TemplateEngineRequest templateEngineRequest = createFormPostRequest();
 
-    private TemplateEngineRequest createFormPostRequest() throws Exception {
-        MultiMap headers = MultiMap.newInstance(new CaseInsensitiveHeaders());
+    Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
-        MultiMap formsAttributes = MultiMap.newInstance(new CaseInsensitiveHeaders());
-        formsAttributes.add("_id", "newsletter");
-        formsAttributes.add("email", "email@dom.com");
+    mapObservable.subscribe(map -> {
+      assertThat(map.size(), equalTo(5));
+      assertThat(new JsonObject(map).toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
+    });
+  }
 
-        return new TemplateEngineRequest(readText("fragment-form1.txt"), HttpMethod.POST, headers, new MultiMap(null), formsAttributes, "");
-    }
 
-    private void mockServiceResponse(String responseJson) {
-        HttpClientResponse httpClientResponse = Mockito.mock(HttpClientResponse.class);
-        when(httpClientResponse.toObservable()).thenReturn(Observable.from(Lists.newArrayList(Buffer.buffer(responseJson))));
-        when(httpClientResponse.statusCode()).thenReturn(HttpResponseStatus.OK.code());
+  @Test
+  public void test_POST_ServiceCallWithGetRequest() throws Exception {
 
-        PowerMockito.mockStatic(KnotxRxHelper.class);
-        PowerMockito.when(KnotxRxHelper.request(anyObject(), anyObject(), anyInt(), anyString(), anyString(), anyObject())).thenReturn(Observable.just(httpClientResponse));
-    }
+    ServiceEntry serviceEntry = createServiceEntry("data-uri-post-formresponse", "/service/mock/subscribeToNewsletter.json", FORM_RESPONSE_JSON);
+
+    TemplateEngineRequest templateEngineRequest = createFormPostRequest();
+
+    Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
+
+    mapObservable.subscribe(map -> {
+      assertThat(map.size(), equalTo(2));
+      assertThat(new JsonObject(map).toString(), equalTo(FORM_RESPONSE_JSON));
+    });
+  }
+
+
+  private ServiceEntry createServiceEntry(String attrName, String serviceUrl, String serviceResponse) throws Exception {
+    mockServiceResponse(serviceResponse);
+
+    Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
+    ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
+
+    serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
+    return serviceEntry;
+  }
+
+  private TemplateEngineRequest createFormPostRequest() throws Exception {
+    MultiMap headers = MultiMap.newInstance(new CaseInsensitiveHeaders());
+
+    MultiMap formsAttributes = MultiMap.newInstance(new CaseInsensitiveHeaders());
+    formsAttributes.add("_id", "newsletter");
+    formsAttributes.add("email", "email@dom.com");
+
+    return new TemplateEngineRequest(readText("fragment-form1.txt"), HttpMethod.POST, headers, new MultiMap(null), formsAttributes, "");
+  }
+
+  private void mockServiceResponse(String responseJson) {
+    HttpClientResponse httpClientResponse = Mockito.mock(HttpClientResponse.class);
+    when(httpClientResponse.toObservable()).thenReturn(Observable.from(Lists.newArrayList(Buffer.buffer(responseJson))));
+    when(httpClientResponse.statusCode()).thenReturn(HttpResponseStatus.OK.code());
+
+    PowerMockito.mockStatic(KnotxRxHelper.class);
+    PowerMockito.when(KnotxRxHelper.request(anyObject(), anyObject(), anyInt(), anyString(), anyString(), anyObject())).thenReturn(Observable.just(httpClientResponse));
+  }
 
 
 }

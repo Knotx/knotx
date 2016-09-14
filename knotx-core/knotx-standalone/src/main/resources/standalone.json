@@ -8,8 +8,8 @@
         "X-Language-Code",
         "X-Requested-With"
       ],
-      "dependencies" : {
-        "repository.address" : "template-repository",
+      "dependencies": {
+        "repository.address": "template-repository",
         "engine.address": "template-engine"
       }
     }
@@ -29,7 +29,7 @@
           "domain": "localhost",
           "port": 3001,
           "client.options": {
-            "tryUseCompression" : true,
+            "tryUseCompression": true,
             "keepAlive": false
           }
         }
@@ -41,7 +41,7 @@
       "service.name": "template-engine",
       "template.debug": true,
       "client.options": {
-        "maxPoolSize" : 1000,
+        "maxPoolSize": 1000,
         "keepAlive": false
       },
       "services": [

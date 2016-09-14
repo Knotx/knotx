@@ -26,16 +26,16 @@ import rx.functions.Action1;
 
 public final class KnotxRxHelper {
 
-    private KnotxRxHelper() {
-    }
+  private KnotxRxHelper() {
+  }
 
-    public static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
-        return Observable.create(subscriber -> {
-            HttpClientRequest req = client.request(method, port, domain, uri);
-            Observable<HttpClientResponse> resp = req.toObservable();
-            resp.subscribe(subscriber);
-            requestBuilder.call(req);
-            req.end();
-        });
-    }
+  public static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
+  }
 }

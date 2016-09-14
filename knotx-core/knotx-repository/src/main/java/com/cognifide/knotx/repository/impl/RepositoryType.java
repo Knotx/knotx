@@ -30,41 +30,41 @@ import io.vertx.rxjava.core.Vertx;
 
 public enum RepositoryType implements RepositoryBuilder, RepositoryMetadataValidator {
 
-    LOCAL {
-        @Override
-        public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                 Vertx vertx) {
-            return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), vertx.fileSystem());
-        }
-
-        @Override
-        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
-            return isNotEmpty(metadata.getPath());
-        }
-    },
-
-    REMOTE {
-        @Override
-        public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                 Vertx vertx) {
-            return HttpRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), metadata.getClientOptions(),
-                    vertx);
-        }
-
-        @Override
-        public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
-            return isNotEmpty(metadata.getPath(), metadata.getDomain()) && metadata.getPort() != null;
-        }
-    };
-
-    private static boolean isNotEmpty(String... values) {
-        return !Stream.of(values).anyMatch(StringUtils::isBlank);
+  LOCAL {
+    @Override
+    public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
+                             Vertx vertx) {
+      return LocalRepository.of(metadata.getPath(), metadata.getCatalogue(), vertx.fileSystem());
     }
 
+    @Override
+    public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+      return isNotEmpty(metadata.getPath());
+    }
+  },
 
-    public abstract Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
-                                      Vertx vertx);
+  REMOTE {
+    @Override
+    public Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
+                             Vertx vertx) {
+      return HttpRepository.of(metadata.getPath(), metadata.getDomain(), metadata.getPort(), metadata.getClientOptions(),
+          vertx);
+    }
 
     @Override
-    public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
+    public boolean validate(RepositoryConfiguration.RepositoryMetadata metadata) {
+      return isNotEmpty(metadata.getPath(), metadata.getDomain()) && metadata.getPort() != null;
+    }
+  };
+
+  private static boolean isNotEmpty(String... values) {
+    return !Stream.of(values).anyMatch(StringUtils::isBlank);
+  }
+
+
+  public abstract Repository create(RepositoryConfiguration.RepositoryMetadata metadata,
+                                    Vertx vertx);
+
+  @Override
+  public abstract boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

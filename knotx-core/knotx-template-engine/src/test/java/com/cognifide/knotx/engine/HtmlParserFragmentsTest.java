@@ -34,39 +34,39 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(value = Parameterized.class)
 public class HtmlParserFragmentsTest extends AbstractKnotxConfigurationTest {
 
-    private String TEST_HTML = "test.html";
+  private String TEST_HTML = "test.html";
 
-    private HtmlParser test;
+  private HtmlParser test;
 
-    private int fragmentId;
+  private int fragmentId;
 
-    private String fragmentFile;
+  private String fragmentFile;
 
-    public HtmlParserFragmentsTest(int fragmentId, String fragmentFile) {
-        this.fragmentId = fragmentId;
-        this.fragmentFile = fragmentFile;
-    }
+  public HtmlParserFragmentsTest(int fragmentId, String fragmentFile) {
+    this.fragmentId = fragmentId;
+    this.fragmentFile = fragmentFile;
+  }
 
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
-                {0, "fragment1.txt"},
-                {1, "fragment2.txt"},
-                {2, "fragment3.txt"},
-                {3, "fragment4.txt"},
-                {4, "fragment5.txt"},
-                {5, "fragment6.txt"},
-                {6, "fragment7.txt"}
-        });
-    }
+  @Parameters
+  public static Collection<Object[]> data() {
+    return Arrays.asList(new Object[][]{
+        {0, "fragment1.txt"},
+        {1, "fragment2.txt"},
+        {2, "fragment3.txt"},
+        {3, "fragment4.txt"},
+        {4, "fragment5.txt"},
+        {5, "fragment6.txt"},
+        {6, "fragment7.txt"}
+    });
+  }
 
-    @Before
-    public void setUp() throws Exception {
-        test = new HtmlParser(readText(TEST_HTML));
-    }
+  @Before
+  public void setUp() throws Exception {
+    test = new HtmlParser(readText(TEST_HTML));
+  }
 
-    @Test
-    public void testFragment() throws Exception {
-        assertThat(test.getFragments().get(fragmentId).getContent().trim(), equalTo(readText(fragmentFile).trim()));
-    }
+  @Test
+  public void testFragment() throws Exception {
+    assertThat(test.getFragments().get(fragmentId).getContent().trim(), equalTo(readText(fragmentFile).trim()));
+  }
 }

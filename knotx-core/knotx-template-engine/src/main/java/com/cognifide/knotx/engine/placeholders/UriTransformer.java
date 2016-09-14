@@ -28,39 +28,39 @@ import com.cognifide.knotx.engine.service.ServiceEntry;
 
 public final class UriTransformer {
 
-    private UriTransformer() {
-        // util
+  private UriTransformer() {
+    // util
+  }
+
+  private static List<PlaceholderSubstitutor> placeholderSubstitutors =
+      Arrays.asList(new PlaceholderSubstitutor[]{new RequestPlaceholderSubstitutor(),
+          new UriPlaceholderSubstitutor()});
+
+  public static String getServiceUri(TemplateEngineRequest request, ServiceEntry serviceEntry) {
+    String serviceUri = serviceEntry.getServiceUri();
+    List<String> placeholders = getPlaceholders(serviceUri);
+
+    for (String placeholder : placeholders) {
+      serviceUri = serviceUri.replace("{" + placeholder + "}",
+          getPlaceholderValue(request, placeholder));
     }
 
-    private static List<PlaceholderSubstitutor> placeholderSubstitutors =
-            Arrays.asList(new PlaceholderSubstitutor[] {new RequestPlaceholderSubstitutor(),
-                    new UriPlaceholderSubstitutor()});
+    return serviceUri;
+  }
 
-    public static String getServiceUri(TemplateEngineRequest request, ServiceEntry serviceEntry) {
-        String serviceUri = serviceEntry.getServiceUri();
-        List<String> placeholders = getPlaceholders(serviceUri);
+  protected static List<String> getPlaceholders(String serviceUri) {
+    return Arrays.asList(serviceUri.split("\\{")).stream()
+        .filter(str -> str.contains("}"))
+        .map(str -> StringUtils.substringBefore(str, "}"))
+        .collect(Collectors.toList());
+  }
 
-        for (String placeholder : placeholders) {
-            serviceUri = serviceUri.replace("{" + placeholder + "}",
-                    getPlaceholderValue(request, placeholder));
-        }
-
-        return serviceUri;
-    }
-
-    protected static List<String> getPlaceholders(String serviceUri) {
-        return Arrays.asList(serviceUri.split("\\{")).stream()
-                .filter(str -> str.contains("}"))
-                .map(str -> StringUtils.substringBefore(str, "}"))
-                .collect(Collectors.toList());
-    }
-
-    private static String getPlaceholderValue(TemplateEngineRequest request, String placeholder) {
-        String result = placeholderSubstitutors.stream()
-                .map(substitutor -> substitutor.getValue(request, placeholder))
-                .filter(str -> str != null)
-                .findFirst()
-                .orElse("");
-        return result;
-    }
+  private static String getPlaceholderValue(TemplateEngineRequest request, String placeholder) {
+    String result = placeholderSubstitutors.stream()
+        .map(substitutor -> substitutor.getValue(request, placeholder))
+        .filter(str -> str != null)
+        .findFirst()
+        .orElse("");
+    return result;
+  }
 }

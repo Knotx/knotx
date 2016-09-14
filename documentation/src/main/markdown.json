@@ -1,6 +1,6 @@
 {
-    "build": "wiki/releases/0.3.0/Documentation-0.3.0.md",
-    "files": [
-        "DocumentationTemplate.md"
-    ]
+  "build": "wiki/releases/0.3.0/Documentation-0.3.0.md",
+  "files": [
+    "DocumentationTemplate.md"
+  ]
 }

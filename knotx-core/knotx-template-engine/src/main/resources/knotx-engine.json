@@ -3,7 +3,7 @@
     "service.name": "template-engine",
     "template.debug": true,
     "client.options": {
-      "maxPoolSize" : 1000,
+      "maxPoolSize": 1000,
       "keepAlive": false
     },
     "services": [

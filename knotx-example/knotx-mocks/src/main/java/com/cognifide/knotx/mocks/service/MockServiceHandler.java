@@ -32,35 +32,35 @@ import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class MockServiceHandler implements Handler<HttpServerRequest> {
 
-    private static final String SEPARATOR = "/";
-    private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
-    private String catalogue;
+  private static final String SEPARATOR = "/";
+  private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
+  private String catalogue;
 
-    public MockServiceHandler(String catalogue) {
-        this.catalogue = catalogue;
-    }
+  public MockServiceHandler(String catalogue) {
+    this.catalogue = catalogue;
+  }
 
-    @Override
-    public void handle(HttpServerRequest event) {
-        String resourcePath = getFilePath(event);
-        String htmlContent = "";
-        try {
-            URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-            if (resourceUrl != null) {
-                URL url = Resources.getResource(resourcePath);
-                htmlContent = Resources.toString(url, Charsets.UTF_8);
-                LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
-            }
-        } catch (IOException e) {
-            LOGGER.error("Could not read content!", e);
-        } finally {
-            event.response().end(htmlContent);
-            event.connection().close();
-        }
+  @Override
+  public void handle(HttpServerRequest event) {
+    String resourcePath = getFilePath(event);
+    String htmlContent = "";
+    try {
+      URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
+      if (resourceUrl != null) {
+        URL url = Resources.getResource(resourcePath);
+        htmlContent = Resources.toString(url, Charsets.UTF_8);
+        LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
+      }
+    } catch (IOException e) {
+      LOGGER.error("Could not read content!", e);
+    } finally {
+      event.response().end(htmlContent);
+      event.connection().close();
     }
+  }
 
-    private String getFilePath(HttpServerRequest event) {
-        return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
-    }
+  private String getFilePath(HttpServerRequest event) {
+    return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
+  }
 
 }

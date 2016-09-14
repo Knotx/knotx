@@ -24,23 +24,23 @@ import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
 
-    private List<String> serviceCallHeaders;
+  private List<String> serviceCallHeaders;
 
-    private Integer httpPort;
+  private Integer httpPort;
 
-    public KnotxServerConfiguration(JsonObject config) {
-        httpPort = config.getInteger("http.port");
+  public KnotxServerConfiguration(JsonObject config) {
+    httpPort = config.getInteger("http.port");
 
-        serviceCallHeaders = config.getJsonArray("preserved.headers").stream()
-                .map(item -> (String) item)
-                .collect(Collectors.toList());
-    }
+    serviceCallHeaders = config.getJsonArray("preserved.headers").stream()
+        .map(item -> (String) item)
+        .collect(Collectors.toList());
+  }
 
-    Integer httpPort() {
-        return httpPort;
-    }
+  Integer httpPort() {
+    return httpPort;
+  }
 
-    List<String> serviceCallHeaders() {
-        return serviceCallHeaders;
-    }
+  List<String> serviceCallHeaders() {
+    return serviceCallHeaders;
+  }
 }

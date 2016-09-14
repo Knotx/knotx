@@ -32,139 +32,139 @@ import io.vertx.core.json.JsonObject;
 
 public class RepositoryConfiguration {
 
-    private List<RepositoryMetadata> repositories;
+  private List<RepositoryMetadata> repositories;
 
-    public RepositoryConfiguration(JsonObject config) {
-        repositories = config.getJsonArray("repositories").stream()
-                .map(item -> (JsonObject) item)
-                .map(item -> {
-                    RepositoryMetadata repositoryMetadata = new RepositoryMetadata();
-                    repositoryMetadata.type = RepositoryType.valueOf(item.getString("type").toUpperCase());
-                    repositoryMetadata.path = item.getString("path");
-                    repositoryMetadata.clientOptions = item.getJsonObject("client.options", new JsonObject());
+  public RepositoryConfiguration(JsonObject config) {
+    repositories = config.getJsonArray("repositories").stream()
+        .map(item -> (JsonObject) item)
+        .map(item -> {
+          RepositoryMetadata repositoryMetadata = new RepositoryMetadata();
+          repositoryMetadata.type = RepositoryType.valueOf(item.getString("type").toUpperCase());
+          repositoryMetadata.path = item.getString("path");
+          repositoryMetadata.clientOptions = item.getJsonObject("client.options", new JsonObject());
 
-                    if (repositoryMetadata.type == RepositoryType.LOCAL) {
-                        repositoryMetadata.catalogue = item.getString("catalogue");
-                    } else {
-                        repositoryMetadata.domain = item.getString("domain");
-                        repositoryMetadata.port = item.getInteger("port");
-                    }
+          if (repositoryMetadata.type == RepositoryType.LOCAL) {
+            repositoryMetadata.catalogue = item.getString("catalogue");
+          } else {
+            repositoryMetadata.domain = item.getString("domain");
+            repositoryMetadata.port = item.getInteger("port");
+          }
 
-                    return repositoryMetadata;
-                }).collect(Collectors.toList());
+          return repositoryMetadata;
+        }).collect(Collectors.toList());
 
-        validate();
+    validate();
+  }
+
+
+  public List<RepositoryMetadata> getRepositories() {
+    return repositories;
+  }
+
+  private void validate() {
+    String invalidMetadata = repositories.stream()
+        .filter(metadata -> !metadata.getType().validate(metadata))
+        .map(RepositoryMetadata::toString)
+        .collect(Collectors.joining(", "));
+    if (StringUtils.isNotEmpty(invalidMetadata)) {
+      throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
+    }
+  }
+
+  public static class RepositoryMetadata {
+
+    private String path;
+
+    private String domain;
+
+    private Integer port;
+
+    private String catalogue;
+
+    private RepositoryType type;
+
+    private JsonObject clientOptions;
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj != null && obj instanceof RepositoryMetadata) {
+        final RepositoryMetadata other = (RepositoryMetadata) obj;
+        return new EqualsBuilder()
+            .append(path, other.getPath())
+            .append(domain, other.getDomain())
+            .append(port, other.getPort())
+            .append(catalogue, other.getCatalogue())
+            .append(type, other.getType())
+            .append(clientOptions, other.getClientOptions()).isEquals();
+      } else {
+        return false;
+      }
+
     }
 
-
-    public List<RepositoryMetadata> getRepositories() {
-        return repositories;
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder()
+          .append(path)
+          .append(domain)
+          .append(port)
+          .append(catalogue)
+          .append(type)
+          .append(clientOptions)
+          .toHashCode();
     }
 
-    private void validate() {
-        String invalidMetadata = repositories.stream()
-                .filter(metadata -> !metadata.getType().validate(metadata))
-                .map(RepositoryMetadata::toString)
-                .collect(Collectors.joining(", "));
-        if (StringUtils.isNotEmpty(invalidMetadata)) {
-            throw new RuntimeException("Invalid repositories configuration " + invalidMetadata);
-        }
+    public String getPath() {
+      return path;
     }
 
-    public static class RepositoryMetadata {
-
-        private String path;
-
-        private String domain;
-
-        private Integer port;
-
-        private String catalogue;
-
-        private RepositoryType type;
-
-        private JsonObject clientOptions;
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj != null && obj instanceof RepositoryMetadata) {
-                final RepositoryMetadata other = (RepositoryMetadata) obj;
-                return new EqualsBuilder()
-                        .append(path, other.getPath())
-                        .append(domain, other.getDomain())
-                        .append(port, other.getPort())
-                        .append(catalogue, other.getCatalogue())
-                        .append(type, other.getType())
-                        .append(clientOptions, other.getClientOptions()).isEquals();
-            } else {
-                return false;
-            }
-
-        }
-
-        @Override
-        public int hashCode() {
-            return new HashCodeBuilder()
-                    .append(path)
-                    .append(domain)
-                    .append(port)
-                    .append(catalogue)
-                    .append(type)
-                    .append(clientOptions)
-                    .toHashCode();
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public String getDomain() {
-            return domain;
-        }
-
-        public void setDomain(String domain) {
-            this.domain = domain;
-        }
-
-        public Integer getPort() {
-            return port;
-        }
-
-        public void setPort(Integer port) {
-            this.port = port;
-        }
-
-        public String getCatalogue() {
-            return catalogue;
-        }
-
-        public void setCatalogue(String catalogue) {
-            this.catalogue = catalogue;
-        }
-
-        public RepositoryType getType() {
-            return type;
-        }
-
-        public void setType(RepositoryType type) {
-            this.type = type;
-        }
-
-        public JsonObject getClientOptions() {
-            return clientOptions;
-        }
-
-        public void setClientOptions(JsonObject clientOptions) {
-            this.clientOptions = clientOptions;
-        }
-
-        @Override
-        public String toString() {
-            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-        }
+    public void setPath(String path) {
+      this.path = path;
     }
+
+    public String getDomain() {
+      return domain;
+    }
+
+    public void setDomain(String domain) {
+      this.domain = domain;
+    }
+
+    public Integer getPort() {
+      return port;
+    }
+
+    public void setPort(Integer port) {
+      this.port = port;
+    }
+
+    public String getCatalogue() {
+      return catalogue;
+    }
+
+    public void setCatalogue(String catalogue) {
+      this.catalogue = catalogue;
+    }
+
+    public RepositoryType getType() {
+      return type;
+    }
+
+    public void setType(RepositoryType type) {
+      this.type = type;
+    }
+
+    public JsonObject getClientOptions() {
+      return clientOptions;
+    }
+
+    public void setClientOptions(JsonObject clientOptions) {
+      this.clientOptions = clientOptions;
+    }
+
+    @Override
+    public String toString() {
+      return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+  }
 }

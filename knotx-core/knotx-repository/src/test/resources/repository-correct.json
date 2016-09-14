@@ -14,7 +14,6 @@
         "client.options": {
           "tryUseCompression": true,
           "keepAlive": false
-
         }
       }
     ]

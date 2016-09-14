@@ -32,56 +32,56 @@ import static org.hamcrest.core.Is.is;
 
 public class RepositoryCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
 
-    private String CORRECT_JSON = "repository-correct.json";
+  private String CORRECT_JSON = "repository-correct.json";
 
-    private RepositoryConfiguration correctConfig;
+  private RepositoryConfiguration correctConfig;
 
-    private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
+  private RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata;
 
-    private RepositoryConfiguration.RepositoryMetadata expectedRemoteRepositoryMetadata;
+  private RepositoryConfiguration.RepositoryMetadata expectedRemoteRepositoryMetadata;
 
 
-    @Before
-    public void setUp() throws Exception {
-        correctConfig = new RepositoryConfiguration(readConfig(CORRECT_JSON));
+  @Before
+  public void setUp() throws Exception {
+    correctConfig = new RepositoryConfiguration(readConfig(CORRECT_JSON));
 
-        expectedLocalRepositoryMetadata = setupLocalRepositoryMetadata();
-        expectedRemoteRepositoryMetadata = setupRemoteRepositoryMetadata();
-    }
+    expectedLocalRepositoryMetadata = setupLocalRepositoryMetadata();
+    expectedRemoteRepositoryMetadata = setupRemoteRepositoryMetadata();
+  }
 
-    @Test
-    public void testConfigBeanInitializedProperly() {
-        assertThat(correctConfig.getRepositories(), is(notNullValue()));
-        assertThat(correctConfig.getRepositories().size(), is(2));
-        assertThat(correctConfig.getRepositories(), CoreMatchers.hasItem(expectedLocalRepositoryMetadata));
-        assertThat(correctConfig.getRepositories(), CoreMatchers.hasItem(expectedRemoteRepositoryMetadata));
+  @Test
+  public void testConfigBeanInitializedProperly() {
+    assertThat(correctConfig.getRepositories(), is(notNullValue()));
+    assertThat(correctConfig.getRepositories().size(), is(2));
+    assertThat(correctConfig.getRepositories(), CoreMatchers.hasItem(expectedLocalRepositoryMetadata));
+    assertThat(correctConfig.getRepositories(), CoreMatchers.hasItem(expectedRemoteRepositoryMetadata));
 
-    }
+  }
 
-    @Test
-    public void testValidation() {
-        assertThat(correctConfig.getRepositories(), is(notNullValue()));
-        assertThat(correctConfig.getRepositories().size(), is(2));
-        assertThat(RepositoryType.LOCAL.validate(correctConfig.getRepositories().get(0)), is(true));
-        assertThat(RepositoryType.LOCAL.validate(correctConfig.getRepositories().get(1)), is(true));
-    }
+  @Test
+  public void testValidation() {
+    assertThat(correctConfig.getRepositories(), is(notNullValue()));
+    assertThat(correctConfig.getRepositories().size(), is(2));
+    assertThat(RepositoryType.LOCAL.validate(correctConfig.getRepositories().get(0)), is(true));
+    assertThat(RepositoryType.LOCAL.validate(correctConfig.getRepositories().get(1)), is(true));
+  }
 
-    private RepositoryConfiguration.RepositoryMetadata setupLocalRepositoryMetadata() {
-        RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
-        expectedLocalRepositoryMetadata.setPath("/content/local/.*");
-        expectedLocalRepositoryMetadata.setType(RepositoryType.LOCAL);
-        expectedLocalRepositoryMetadata.setCatalogue(StringUtils.EMPTY);
-        expectedLocalRepositoryMetadata.setClientOptions(new JsonObject());
-        return expectedLocalRepositoryMetadata;
-    }
+  private RepositoryConfiguration.RepositoryMetadata setupLocalRepositoryMetadata() {
+    RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
+    expectedLocalRepositoryMetadata.setPath("/content/local/.*");
+    expectedLocalRepositoryMetadata.setType(RepositoryType.LOCAL);
+    expectedLocalRepositoryMetadata.setCatalogue(StringUtils.EMPTY);
+    expectedLocalRepositoryMetadata.setClientOptions(new JsonObject());
+    return expectedLocalRepositoryMetadata;
+  }
 
-    private RepositoryConfiguration.RepositoryMetadata setupRemoteRepositoryMetadata() {
-        RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
-        expectedLocalRepositoryMetadata.setPath("/content/.*");
-        expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
-        expectedLocalRepositoryMetadata.setDomain("localhost");
-        expectedLocalRepositoryMetadata.setPort(8080);
-        expectedLocalRepositoryMetadata.setClientOptions(new JsonObject("{\"tryUseCompression\" : true, \"keepAlive\": false}"));
-        return expectedLocalRepositoryMetadata;
-    }
+  private RepositoryConfiguration.RepositoryMetadata setupRemoteRepositoryMetadata() {
+    RepositoryConfiguration.RepositoryMetadata expectedLocalRepositoryMetadata = new RepositoryConfiguration.RepositoryMetadata();
+    expectedLocalRepositoryMetadata.setPath("/content/.*");
+    expectedLocalRepositoryMetadata.setType(RepositoryType.REMOTE);
+    expectedLocalRepositoryMetadata.setDomain("localhost");
+    expectedLocalRepositoryMetadata.setPort(8080);
+    expectedLocalRepositoryMetadata.setClientOptions(new JsonObject("{\"tryUseCompression\" : true, \"keepAlive\": false}"));
+    return expectedLocalRepositoryMetadata;
+  }
 }
