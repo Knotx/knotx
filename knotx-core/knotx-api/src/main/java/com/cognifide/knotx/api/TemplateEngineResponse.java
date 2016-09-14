@@ -21,62 +21,62 @@ import io.vertx.core.json.JsonObject;
 
 public class TemplateEngineResponse extends JsonObjectRequest {
 
-    private String html;
+  private String html;
 
-    private boolean success;
+  private boolean success;
 
-    private String reason;
+  private String reason;
 
-    public TemplateEngineResponse() {
-        // No default constructor
+  public TemplateEngineResponse() {
+    // No default constructor
+  }
+
+  public TemplateEngineResponse(JsonObject body) {
+    this.success = body.getBoolean("success");
+    if (success) {
+      this.html = body.getString("html");
+    } else {
+      this.reason = body.getString("reason");
     }
+  }
 
-    public TemplateEngineResponse(JsonObject body) {
-        this.success = body.getBoolean("success");
-        if (success) {
-            this.html = body.getString("html");
-        } else {
-            this.reason = body.getString("reason");
-        }
+  public static TemplateEngineResponse success(String html) {
+    TemplateEngineResponse response = new TemplateEngineResponse();
+    response.success = true;
+    response.html = html;
+
+    return response;
+  }
+
+  public static TemplateEngineResponse error(String reason) {
+    TemplateEngineResponse response = new TemplateEngineResponse();
+    response.success = false;
+    response.reason = reason;
+
+    return response;
+  }
+
+  @Override
+  public JsonObject toJsonObject() {
+    JsonObject object = new JsonObject()
+        .put("success", success);
+    if (success) {
+      object.put("html", html);
+    } else {
+      object.put("reason", reason);
     }
+    return object;
+  }
 
-    public static TemplateEngineResponse success(String html) {
-        TemplateEngineResponse response = new TemplateEngineResponse();
-        response.success = true;
-        response.html = html;
+  public String getHtml() {
+    return html;
+  }
 
-        return response;
-    }
+  public boolean isSuccess() {
+    return success;
+  }
 
-    public static TemplateEngineResponse error(String reason) {
-        TemplateEngineResponse response = new TemplateEngineResponse();
-        response.success = false;
-        response.reason = reason;
-
-        return response;
-    }
-
-    @Override
-    public JsonObject toJsonObject() {
-        JsonObject object = new JsonObject()
-                .put("success", success);
-        if (success) {
-            object.put("html", html);
-        } else {
-            object.put("reason", reason);
-        }
-        return object;
-    }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public String getReason() {
-        return reason;
-    }
+  public String getReason() {
+    return reason;
+  }
 }

@@ -24,7 +24,7 @@ import rx.Observable;
 
 public interface Repository {
 
-    Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest);
+  Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest);
 
-    boolean support(String path);
+  boolean support(String path);
 }

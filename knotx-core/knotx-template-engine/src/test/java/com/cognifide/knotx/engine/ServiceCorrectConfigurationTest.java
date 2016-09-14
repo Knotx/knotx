@@ -27,37 +27,37 @@ import static org.hamcrest.core.Is.is;
 
 public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
 
-    private String CORRECT_JSON = "service-correct.json";
+  private String CORRECT_JSON = "service-correct.json";
 
-    private TemplateEngineConfiguration correctConfig;
+  private TemplateEngineConfiguration correctConfig;
 
-    private TemplateEngineConfiguration.ServiceMetadata expectedServiceOne;
-    private TemplateEngineConfiguration.ServiceMetadata expectedServiceTwo;
+  private TemplateEngineConfiguration.ServiceMetadata expectedServiceOne;
+  private TemplateEngineConfiguration.ServiceMetadata expectedServiceTwo;
 
-    @Before
-    public void setUp() throws Exception {
-        correctConfig = new TemplateEngineConfiguration(readConfig(CORRECT_JSON));
+  @Before
+  public void setUp() throws Exception {
+    correctConfig = new TemplateEngineConfiguration(readConfig(CORRECT_JSON));
 
-        expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000);
-        expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080);
-    }
+    expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000);
+    expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080);
+  }
 
-    @Test
-    public void testConfigBeanInitializedProperly() {
-        assertThat(correctConfig.getServices(), is(notNullValue()));
-        assertThat(correctConfig.getServices().size(), is(2));
-        assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceOne));
-        assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceTwo));
+  @Test
+  public void testConfigBeanInitializedProperly() {
+    assertThat(correctConfig.getServices(), is(notNullValue()));
+    assertThat(correctConfig.getServices().size(), is(2));
+    assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceOne));
+    assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceTwo));
 
-    }
+  }
 
-    private TemplateEngineConfiguration.ServiceMetadata createMockedService(String path, String domain, Integer port) {
-        TemplateEngineConfiguration.ServiceMetadata newService = new TemplateEngineConfiguration.ServiceMetadata();
-        newService.setPath(path);
-        newService.setDomain(domain);
-        newService.setPort(port);
-        return newService;
-    }
+  private TemplateEngineConfiguration.ServiceMetadata createMockedService(String path, String domain, Integer port) {
+    TemplateEngineConfiguration.ServiceMetadata newService = new TemplateEngineConfiguration.ServiceMetadata();
+    newService.setPath(path);
+    newService.setDomain(domain);
+    newService.setPort(port);
+    return newService;
+  }
 
 
 }

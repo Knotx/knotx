@@ -31,34 +31,34 @@ import io.vertx.ext.unit.TestContext;
 
 public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
 
-    public static Vertx vertx;
+  public static Vertx vertx;
 
-    public static int knotxPort;
+  public static int knotxPort;
 
-    public static String knotxDomain = "localhost";
+  public static String knotxDomain = "localhost";
 
-    public static void startKnotx() throws Exception {
-        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
-        vertx = Vertx.vertx();
+  public static void startKnotx() throws Exception {
+    System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+    vertx = Vertx.vertx();
 
-        JsonObject configuration = readJson("knotx-example-monolith.json");
+    JsonObject configuration = readJson("knotx-example-monolith.json");
 
-        knotxPort = configuration.getJsonObject("server").getJsonObject("config").getInteger("http.port");
+    knotxPort = configuration.getJsonObject("server").getJsonObject("config").getInteger("http.port");
 
-        vertx.deployVerticle(MockRemoteRepositoryVerticle.class.getName(), new DeploymentOptions().setConfig(
-                configuration.getJsonObject("mockRepo")));
-        vertx.deployVerticle(MockServiceVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject("mockService")));
-        vertx.deployVerticle(RepositoryVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject("repository")));
-        vertx.deployVerticle(TemplateEngineVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject("engine")));
-        vertx.deployVerticle(KnotxServerVerticle.class.getName(),
-                new DeploymentOptions().setConfig(configuration.getJsonObject("server")));
-    }
+    vertx.deployVerticle(MockRemoteRepositoryVerticle.class.getName(), new DeploymentOptions().setConfig(
+        configuration.getJsonObject("mockRepo")));
+    vertx.deployVerticle(MockServiceVerticle.class.getName(),
+        new DeploymentOptions().setConfig(configuration.getJsonObject("mockService")));
+    vertx.deployVerticle(RepositoryVerticle.class.getName(),
+        new DeploymentOptions().setConfig(configuration.getJsonObject("repository")));
+    vertx.deployVerticle(TemplateEngineVerticle.class.getName(),
+        new DeploymentOptions().setConfig(configuration.getJsonObject("engine")));
+    vertx.deployVerticle(KnotxServerVerticle.class.getName(),
+        new DeploymentOptions().setConfig(configuration.getJsonObject("server")));
+  }
 
-    public static void tearDown(TestContext context) {
-        vertx.close(context.asyncAssertSuccess());
-    }
+  public static void tearDown(TestContext context) {
+    vertx.close(context.asyncAssertSuccess());
+  }
 
 }

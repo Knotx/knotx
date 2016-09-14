@@ -21,13 +21,13 @@ import com.cognifide.knotx.api.TemplateEngineRequest;
 
 public interface PlaceholderSubstitutor {
 
-    /**
-     * Get the replacement value from the supplied request and placeholder name
-     * 
-     * @param request the supplied template engine request
-     * @param placeholder the placeholder name
-     * @return the replacement value, or null if no replacement can be get
-     */
-    String getValue(TemplateEngineRequest request, String placeholder);
+  /**
+   * Get the replacement value from the supplied request and placeholder name
+   *
+   * @param request     the supplied template engine request
+   * @param placeholder the placeholder name
+   * @return the replacement value, or null if no replacement can be get
+   */
+  String getValue(TemplateEngineRequest request, String placeholder);
 
 }

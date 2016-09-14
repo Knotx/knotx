@@ -36,51 +36,51 @@ import rx.Observable;
 
 public class LocalRepository implements Repository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
 
-    private String path;
+  private String path;
 
-    private String catalogue;
+  private String catalogue;
 
-    private FileSystem fileSystem;
+  private FileSystem fileSystem;
 
-    private LocalRepository() {
-        // Hidden constructor
-    }
+  private LocalRepository() {
+    // Hidden constructor
+  }
 
-    static LocalRepository of(String path, String catalogue, FileSystem fileSystem) {
-        LocalRepository repository = new LocalRepository();
-        repository.path = path;
-        repository.catalogue = catalogue;
-        repository.fileSystem = fileSystem;
-        return repository;
-    }
+  static LocalRepository of(String path, String catalogue, FileSystem fileSystem) {
+    LocalRepository repository = new LocalRepository();
+    repository.path = path;
+    repository.catalogue = catalogue;
+    repository.fileSystem = fileSystem;
+    return repository;
+  }
 
-    @Override
-    public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-        final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.getPath(), "/");
-        LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
+  @Override
+  public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
+    final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.getPath(), "/");
+    LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
-        return fileSystem.openObservable(localFilePath, new OpenOptions())
-                .flatMap(AsyncFile::toObservable)
-                .flatMap(buffer -> RepositoryResponse.success(buffer.toString(), MultiMap.caseInsensitiveMultiMap()).toObservable())
-                .defaultIfEmpty(RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), "Page not found", MultiMap.caseInsensitiveMultiMap()))
-                .onErrorReturn(error -> {
-                    LOGGER.error("Error reading template file from file system", error);
+    return fileSystem.openObservable(localFilePath, new OpenOptions())
+        .flatMap(AsyncFile::toObservable)
+        .flatMap(buffer -> RepositoryResponse.success(buffer.toString(), MultiMap.caseInsensitiveMultiMap()).toObservable())
+        .defaultIfEmpty(RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), "Page not found", MultiMap.caseInsensitiveMultiMap()))
+        .onErrorReturn(error -> {
+          LOGGER.error("Error reading template file from file system", error);
 
-                    int statusCode;
-                    if (error.getCause().getClass().equals(NoSuchFileException.class)) {
-                        statusCode = HttpResponseStatus.NOT_FOUND.code();
-                    } else {
-                        statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
-                    }
-                    return RepositoryResponse
-                            .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
-                });
-    }
+          int statusCode;
+          if (error.getCause().getClass().equals(NoSuchFileException.class)) {
+            statusCode = HttpResponseStatus.NOT_FOUND.code();
+          } else {
+            statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+          }
+          return RepositoryResponse
+              .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
+        });
+  }
 
-    @Override
-    public boolean support(String path) {
-        return path.matches(this.path);
-    }
+  @Override
+  public boolean support(String path) {
+    return path.matches(this.path);
+  }
 }

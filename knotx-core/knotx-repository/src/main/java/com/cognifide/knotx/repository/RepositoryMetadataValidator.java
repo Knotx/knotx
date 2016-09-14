@@ -19,5 +19,5 @@ package com.cognifide.knotx.repository;
 
 public interface RepositoryMetadataValidator {
 
-    boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
+  boolean validate(RepositoryConfiguration.RepositoryMetadata metadata);
 }

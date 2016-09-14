@@ -7,8 +7,8 @@
       "X-Language-Code",
       "X-Requested-With"
     ],
-    "dependencies" : {
-      "repository.address" : "template-repository",
+    "dependencies": {
+      "repository.address": "template-repository",
       "engine.address": "template-engine"
     }
   }
