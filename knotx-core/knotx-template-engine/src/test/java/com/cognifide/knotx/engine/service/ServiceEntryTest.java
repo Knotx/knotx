@@ -149,7 +149,7 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
             formsAttributes.add("email", "email@dom.com");
         }
 
-        return new TemplateEngineRequest(readText("fragment-form1.txt"), method, headers, formsAttributes);
+        return new TemplateEngineRequest(readText("fragment-form1.txt"), method, headers, new MultiMap(null), formsAttributes, "");
     }
 
 }

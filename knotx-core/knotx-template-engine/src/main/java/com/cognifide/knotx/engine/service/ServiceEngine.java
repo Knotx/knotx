@@ -17,15 +17,15 @@
  */
 package com.cognifide.knotx.engine.service;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
+import java.util.Collections;
+import java.util.Map;
 
 import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-
-import java.util.Collections;
-import java.util.Map;
+import com.cognifide.knotx.engine.placeholders.UriTransformer;
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
@@ -50,27 +50,30 @@ public class ServiceEngine {
         this.configuration = serviceConfiguration;
     }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry, TemplateEngineRequest request) {
+    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
+            TemplateEngineRequest request) {
         HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
-        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), serviceEntry.getServiceUri(),
-                req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(), httpMethod));
-
+        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
+                httpClient, httpMethod, serviceEntry.getPort(),
+                serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
+                req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+                        httpMethod));
         return serviceResponse.flatMap(this::collectBuffers);
     }
 
     private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
-        return Observable.just(Buffer.buffer())
-                .mergeWith(response.toObservable())
+        return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
                 .reduce(Buffer::appendBuffer)
-                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap()))
-                .map(results -> {
-                    results.put("_response", Collections.singletonMap("statusCode", response.statusCode()));
+                .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap())).map(results -> {
+                    results.put("_response",
+                            Collections.singletonMap("statusCode", response.statusCode()));
                     traceServiceCall(results);
                     return results;
                 });
     }
 
-    private void buildRequestBody(HttpClientRequest request, MultiMap headers, MultiMap formAttributes, HttpMethod httpMethod) {
+    private void buildRequestBody(HttpClientRequest request, MultiMap headers,
+            MultiMap formAttributes, HttpMethod httpMethod) {
         request.headers().addAll(headers);
         if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
             Buffer buffer = createFormPostBody(formAttributes);
@@ -83,20 +86,22 @@ public class ServiceEngine {
 
     private Buffer createFormPostBody(MultiMap formAttributes) {
         Buffer buffer = Buffer.buffer();
-        String formPostContent = Joiner.on("&").withKeyValueSeparator("=").join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+        String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
+                .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
         buffer.appendString(formPostContent, Charsets.UTF_8.toString());
         return buffer;
     }
 
     public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
         return Observable.from(configuration.getServices())
-                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
-                .first()
+                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).first()
                 .map(metadata -> serviceEntry.setServiceMetadata(metadata));
     }
 
-    private HttpMethod computeServiceMethodType(TemplateEngineRequest request, ServiceCallMethod serviceCallMethod) {
-        if (HttpMethod.POST.equals(request.getServerRequestMethod()) && ServiceCallMethod.POST.equals(serviceCallMethod)) {
+    private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
+            ServiceCallMethod serviceCallMethod) {
+        if (HttpMethod.POST.equals(request.getServerRequestMethod())
+                && ServiceCallMethod.POST.equals(serviceCallMethod)) {
             return HttpMethod.POST;
         } else {
             return HttpMethod.GET;

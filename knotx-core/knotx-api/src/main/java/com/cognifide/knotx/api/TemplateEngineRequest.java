@@ -1,6 +1,5 @@
 /*
  * Knot.x - Reactive microservice assembler - API
- *
  * Copyright (C) 2016 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,25 +23,33 @@ import io.vertx.rxjava.core.MultiMap;
 public class TemplateEngineRequest extends JsonObjectRequest {
     private String template;
 
+    private HttpMethod serverRequestMethod;
+
     private MultiMap headers;
 
-    private HttpMethod serverRequestMethod;
+    private MultiMap params;
 
     private final MultiMap formAttributes;
 
-    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers, MultiMap formAttributes) {
+    private String uri;
+
+    public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers,
+            MultiMap params, MultiMap formAttributes, String uri) {
         this.template = template;
         this.serverRequestMethod = serverRequestMethod;
         this.headers = headers;
+        this.params = params;
         this.formAttributes = formAttributes;
+        this.uri = uri;
     }
 
     public TemplateEngineRequest(JsonObject object) {
         this.template = object.getString("template");
-        this.headers = fromJsonArray(object.getJsonArray("headers"));
         this.serverRequestMethod = HttpMethod.valueOf(object.getString("serverRequestMethod"));
+        this.headers = fromJsonArray(object.getJsonArray("headers"));
+        this.params = fromJsonArray(object.getJsonArray("params"));
         this.formAttributes = fromJsonArray(object.getJsonArray("formAttributes"));
-
+        this.uri = object.getString("uri");
     }
 
     public String getTemplate() {
@@ -51,6 +58,14 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     public MultiMap getHeaders() {
         return headers;
+    }
+
+    public MultiMap getParams() {
+        return params;
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     public void setHeaders(MultiMap headers) {
@@ -75,21 +90,28 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     @Override
     public String toString() {
-        return "TemplateEngineRequest{" +
-                "template='" + template + '\'' +
-                ", headers=" + multiMapToString(headers) +
-                ", formAttributes=" + multiMapToString(formAttributes) +
-                ", serverRequestMethod=" + serverRequestMethod +
-                '}';
+        return "TemplateEngineRequest{" + "template='" + template + '\'' //
+                + ", headers=" + multimapToSting(headers) //
+                + ", params=" + multimapToSting(params) //
+                + ", formAttributes=" + multimapToSting(formAttributes) //
+                + ", uri=" + uri //
+                + ", serverRequestMethod=" + serverRequestMethod + '}';
     }
-
 
     @Override
     public JsonObject toJsonObject() {
-        return new JsonObject()
-                .put("template", template)
-                .put("serverRequestMethod", serverRequestMethod.toString())
-                .put("headers", toJsonArray(headers))
-                .put("formAttributes", toJsonArray(formAttributes));
+        return new JsonObject().put("template", template)
+                .put("serverRequestMethod", serverRequestMethod.toString()) //
+                .put("headers", toJsonArray(headers)) //
+                .put("params", toJsonArray(params)) //
+                .put("formAttributes", toJsonArray(formAttributes)) //
+                .put("uri", uri);
+    }
+
+    private String multimapToSting(MultiMap map) {
+        StringBuilder result = new StringBuilder();
+        map.names().forEach(header -> result.append(header).append("=").append(headers.get(header))
+                .append("\n"));
+        return result.toString();
     }
 }

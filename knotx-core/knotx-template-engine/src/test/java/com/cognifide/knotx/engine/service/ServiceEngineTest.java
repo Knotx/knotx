@@ -129,7 +129,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
         formsAttributes.add("_id", "newsletter");
         formsAttributes.add("email", "email@dom.com");
 
-        return new TemplateEngineRequest(readText("fragment-form1.txt"), HttpMethod.POST, headers, formsAttributes);
+        return new TemplateEngineRequest(readText("fragment-form1.txt"), HttpMethod.POST, headers, new MultiMap(null), formsAttributes, "");
     }
 
     private void mockServiceResponse(String responseJson) {

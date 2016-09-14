@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.server;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import com.cognifide.knotx.api.RepositoryRequest;
 import com.cognifide.knotx.api.RepositoryResponse;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.api.TemplateEngineResponse;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -127,7 +127,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 repositoryResponse.getData(),
                 request.method(),
                 getPreservedHeaders(request.headers()),
-                request.formAttributes())
+                request.params(),
+                request.formAttributes(),
+                request.uri())
                 .toJsonObject();
     }
 
