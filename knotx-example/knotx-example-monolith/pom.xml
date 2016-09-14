@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Knot.x - Sample App with Mock service
@@ -57,8 +58,8 @@
             <groupId>com.cognifide.knotx</groupId>
             <artifactId>knotx-template-engine</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.cognifide.knotx</groupId>

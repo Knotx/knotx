@@ -21,6 +21,7 @@ When writing a commit message, please follow the guidelines in [How to Write a G
 Please add the following lines to your pull request description:
 
 ```
+
 ---
 
 I hereby agree to the terms of the Knot.x Contributor License Agreement.
