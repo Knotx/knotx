@@ -17,63 +17,89 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
+import java.net.URI;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.UriInfo;
 
 public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
 
+    private static final String URI_PREFIX = "uri.";
+
+    private static final String SLING_URI_PREFIX = "slingUri.";
+
     @Override
     public String getValue(TemplateEngineRequest request, String placeholder) {
-        UriInfo uriInfo = UriInfoHelper.getUriInfo(request.getUri());
         return Arrays.stream(Strategy.values())
                 .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix))
-                .findFirst().map(strategy -> strategy.getValue(uriInfo, placeholder)).orElse(null);
+                .findFirst()
+                .map(strategy -> strategy.getValue(request.getUri(), placeholder))
+                .orElse(null);
     }
 
     private enum Strategy {
-        PATHPART("uri.pathpart[") {
+        PATHPART(URI_PREFIX + "pathpart[") {
             @Override
-            String getValue(UriInfo uriInfo, String placeholder) {
+            String getValue(String uri, String placeholder) {
                 final int index =
                         NumberUtils.toInt(StringUtils.substringBetween(placeholder, "[", "]"), -1);
-                return uriInfo.getPathPart(index);
+                String[] parts = URI.create(uri).getPath().split("/");
+                return parts.length > index ? parts[index] : "";
             }
         },
-        PATH("uri.path") {
+        PATH(URI_PREFIX + "path") {
             @Override
-            String getValue(UriInfo uriInfo, String placeholder) {
-                return uriInfo.getPath();
+            String getValue(String uri, String placeholder) {
+                return URI.create(uri).getPath();
             }
         },
-        SELECTORSTRING("uri.selectorstring") {
+        EXTENSION(URI_PREFIX + "extension") {
             @Override
-            String getValue(UriInfo uriInfo, String placeholder) {
-                return uriInfo.getSelectorString();
+            String getValue(String uri, String placeholder) {
+                return StringUtils.substringAfterLast(URI.create(uri).getPath(), ".");
             }
         },
-        SELECTOR("uri.selector[") {
+        SLING_PATHPART(SLING_URI_PREFIX + "pathpart[") {
             @Override
-            String getValue(UriInfo uriInfo, String placeholder) {
+            String getValue(String uri, String placeholder) {
                 final int index =
                         NumberUtils.toInt(StringUtils.substringBetween(placeholder, "[", "]"), -1);
-                return uriInfo.getSelector(index);
+                return SlingUriInfoHelper.getUriInfo(uri).getPathPart(index);
             }
         },
-        EXTENSION("uri.extension") {
+        SLING_PATH(SLING_URI_PREFIX + "path") {
             @Override
-            String getValue(UriInfo uriInfo, String placeholder) {
-                return uriInfo.getExtension();
+            String getValue(String uri, String placeholder) {
+                return SlingUriInfoHelper.getUriInfo(uri).getPath();
             }
         },
-        SUFFIX("uri.suffix") {
+        SLING_SELECTORSTRING(SLING_URI_PREFIX + "selectorstring") {
             @Override
-            String getValue(UriInfo uriInfo, String placeholder) {
-                return uriInfo.getSuffix();
+            String getValue(String uri, String placeholder) {
+                return SlingUriInfoHelper.getUriInfo(uri).getSelectorString();
+            }
+        },
+        SLING_SELECTOR(SLING_URI_PREFIX + "selector[") {
+            @Override
+            String getValue(String uri, String placeholder) {
+                final int index =
+                        NumberUtils.toInt(StringUtils.substringBetween(placeholder, "[", "]"), -1);
+                return SlingUriInfoHelper.getUriInfo(uri).getSelector(index);
+            }
+        },
+        SLING_EXTENSION(SLING_URI_PREFIX + "extension") {
+            @Override
+            String getValue(String uri, String placeholder) {
+                return SlingUriInfoHelper.getUriInfo(uri).getExtension();
+            }
+        },
+        SLING_SUFFIX(SLING_URI_PREFIX + "suffix") {
+            @Override
+            String getValue(String uri, String placeholder) {
+                return SlingUriInfoHelper.getUriInfo(uri).getSuffix();
             }
         };
 
@@ -83,7 +109,7 @@ public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
             this.prefix = prefix;
         }
 
-        abstract String getValue(UriInfo uriInfo, String placeholder);
+        abstract String getValue(String uri, String placeholder);
 
     }
 

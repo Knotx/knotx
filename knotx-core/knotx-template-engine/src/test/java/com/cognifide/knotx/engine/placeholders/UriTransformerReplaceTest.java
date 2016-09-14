@@ -37,29 +37,49 @@ public class UriTransformerReplaceTest {
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
+                // SLING URI DECOMPOSITION
                 // path
-                {"/path.html?path={uri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
+                {"/path.html?path={slingUri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
                         "/path.html?path=/a/b/c/d"},
-                {"/path.html?path={uri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
+                {"/path.html?path={slingUri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
                         "/path.html?path=/a/b/c/d"},
                 // pathparts
-                {"/path/{uri.pathpart[2]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                {"/path/{slingUri.pathpart[2]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
                         "/path/c.html"},
-                {"/path/{uri.pathpart[7]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                {"/path/{slingUri.pathpart[7]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
                         "/path/.html"},
                 // extension
-                {"/path/second.html/a.{uri.extension}", "/a/b/c/d/e.s1.s2.html",
+                {"/path/second.html/a.{slingUri.extension}", "/a/b/c/d/e.s1.s2.html/suffix.xml",
                         "/path/second.html/a.html"},
                 // selectors
-                {"/selectors.{uri.selectorstring}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
+                {"/selectors.{slingUri.selectorstring}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
                         "/selectors.s1.s2.html"},
-                {"/selectors.{uri.selector[0]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
+                {"/selectors.{slingUri.selector[0]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
                         "/selectors.s1.html"},
-                {"/selectors.{uri.selector[2]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
+                {"/selectors.{slingUri.selector[2]}.html", "/a/b.s1.s2.html/c/d.s.txt#f",
                         "/selectors..html"},
                 // suffix
-                {"/suffix.html{uri.suffix}", "/a/b/dsds.dd.html/my/nice/suffix.html",
+                {"/suffix.html{slingUri.suffix}", "/a/b/dsds.dd.html/my/nice/suffix.html",
                         "/suffix.html/my/nice/suffix.html"},
+                // REGULAR URI DECOMPOSITION
+                // path
+                {"/path.html?path={uri.path}", "/a/b/c/d.s1.s2.html/c/d.s.txt#f",
+                        "/path.html?path=/a/b/c/d.s1.s2.html/c/d.s.txt"},
+                // pathpart
+                {"/path/{uri.pathpart[5]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                        "/path/e.s1.s2.html.html"},
+                // pathpart
+                {"/path/{uri.pathpart[7]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                        "/path/d.s.txt.html"},
+                // pathpart
+                {"/path/{uri.pathpart[8]}.html", "/a/b/c/d/e.s1.s2.html/c/d.s.txt#f",
+                        "/path/.html"},
+                // extension
+                {"/path/second.html/a.{uri.extension}", "/a/b.s1.s2.html/c/d.xml",
+                        "/path/second.html/a.xml"},
+                // extension
+                {"/path/second.html/a.{uri.extension}", "/a/b",
+                        "/path/second.html/a."},
                 // param
                 {"/solr/search/{param.q}", "/c/d/s?q=my search is fetched from static getParams()",
                         "/solr/search/knot.x"},

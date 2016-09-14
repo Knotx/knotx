@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.api;
+package com.cognifide.knotx.engine.placeholders;
 
-public class UriInfo {
+public class SlingUriInfo {
 
     private String path;
 
@@ -31,7 +31,7 @@ public class UriInfo {
 
     private String suffix;
 
-    public UriInfo(String path, String[] pathParts, String selectorString, String[] selectors,
+    public SlingUriInfo(String path, String[] pathParts, String selectorString, String[] selectors,
             String extension, String suffix) {
         this.path = path;
         this.pathParts = pathParts;

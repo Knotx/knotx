@@ -26,8 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.cognifide.knotx.api.UriInfo;
-
 @RunWith(Parameterized.class)
 public class UriInfoHelperTest {
 
@@ -78,7 +76,7 @@ public class UriInfoHelperTest {
 
     @Test
     public void getUriInfo_whenGivenUrl_expectProperlyDecomposedUrl() {
-        final UriInfo uriInfo = UriInfoHelper.getUriInfo(uri);
+        final SlingUriInfo uriInfo = SlingUriInfoHelper.getUriInfo(uri);
         boolean result = StringUtils.equals(uriInfo.getPath(), path);
         result &= StringUtils.equals(uriInfo.getSelectorString(), selectorString);
         result &= StringUtils.equals(uriInfo.getExtension(), extension);

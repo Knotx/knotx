@@ -29,8 +29,6 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     private MultiMap params;
 
-    private UriInfo uriInfo;
-
     private final MultiMap formAttributes;
 
     private String uri;
@@ -64,14 +62,6 @@ public class TemplateEngineRequest extends JsonObjectRequest {
 
     public MultiMap getParams() {
         return params;
-    }
-
-    public UriInfo getUriInfo() {
-        return uriInfo;
-    }
-
-    public void setUriInfo(UriInfo uriInfo) {
-        this.uriInfo = uriInfo;
     }
 
     public String getUri() {

@@ -24,12 +24,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.cognifide.knotx.api.UriInfo;
-
-public final class UriInfoHelper {
+public final class SlingUriInfoHelper {
 
     /**
-     * This regular expression is used for decomposite uri into following parts:
+     * This regular expression is used to decompose a sling format uri into following parts:
      * <p>
      * <ul>
      * <li>path</li>
@@ -42,22 +40,22 @@ public final class UriInfoHelper {
     private static final Pattern URI_PATTERN = Pattern.compile(
             "([^\\.\\?#]+)(\\.([^\\/\\?#]+)\\.)?(\\.?([^\\/\\?#]+))?([^\\?#]+)?((\\?|#).+)?");
 
-    private static final Map<String, UriInfo> cache = new HashMap<String, UriInfo>();
+    private static final Map<String, SlingUriInfo> cache = new HashMap<String, SlingUriInfo>();
 
-    private UriInfoHelper() {
+    private SlingUriInfoHelper() {
         // util
     }
 
-    public static UriInfo getUriInfo(String uri) {
+    public static SlingUriInfo getUriInfo(String uri) {
         if (!cache.containsKey(uri)) {
-            cache.put(uri, generateUriInfo(uri));
+            cache.put(uri, generateSlingUriInfo(uri));
         }
         return cache.get(uri);
     }
 
-    private static UriInfo generateUriInfo(String uri) {
+    private static SlingUriInfo generateSlingUriInfo(String uri) {
         final Matcher matcher = URI_PATTERN.matcher(uri);
-        UriInfo uriInfo = null;
+        SlingUriInfo uriInfo = null;
         if (matcher.matches()) {
             String path = matcher.group(1);
             String[] pathParts = StringUtils.length(path) > 1
@@ -72,7 +70,7 @@ public final class UriInfoHelper {
             String extension = matcher.group(5);
             String suffix = matcher.group(6);
 
-            uriInfo = new UriInfo(path, pathParts, selectorString, selectors, extension, suffix);
+            uriInfo = new SlingUriInfo(path, pathParts, selectorString, selectors, extension, suffix);
         }
         return uriInfo;
     }
