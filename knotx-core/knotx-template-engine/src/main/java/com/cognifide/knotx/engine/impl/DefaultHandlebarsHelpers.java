@@ -28,7 +28,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
-public enum HandlebarsHelpers implements Helper<Object> {
+public enum DefaultHandlebarsHelpers implements Helper<Object> {
 
   /**
    * Checks if current value and given parameter are equal as Strings.<br/>
@@ -78,11 +78,11 @@ public enum HandlebarsHelpers implements Helper<Object> {
 
   private final String name;
 
-  HandlebarsHelpers(String name) {
+  DefaultHandlebarsHelpers(String name) {
     this.name = name;
   }
 
-  public static void register(Handlebars handlebars) {
+  public static void registerFor(Handlebars handlebars) {
     Stream.of(values()).forEach(helper -> handlebars.registerHelper(helper.name, helper));
   }
 
