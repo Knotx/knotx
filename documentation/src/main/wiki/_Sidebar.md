@@ -2,7 +2,7 @@
 * [[Home|Home]]
   * [[Getting started|GettingStarted]]
   * [[Snippet processing|SnippetProcessing]]
-  * [[Performance tests|PerformanceTests]]
+  * [[Templating Engine|TemplatingEngine]]
   * [[Production usage|ProductionUsage]]
   * [[Dependencies|Dependencies]]
   * [[What's new|WhatsNew]]

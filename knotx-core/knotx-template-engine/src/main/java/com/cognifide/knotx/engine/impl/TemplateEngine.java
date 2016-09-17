@@ -17,6 +17,12 @@
  */
 package com.cognifide.knotx.engine.impl;
 
+import java.io.IOException;
+import java.util.ServiceLoader;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.cognifide.knotx.api.CustomHandlebarsHelper;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.TemplateEngineConsts;
@@ -24,10 +30,6 @@ import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.github.jknack.handlebars.Handlebars;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -47,30 +49,37 @@ public class TemplateEngine {
     initHandlebars();
   }
 
-  private void initHandlebars() {
-    handlebars = new Handlebars();
-    HandlebarsHelpers.register(handlebars);
-  }
-
   public Observable<String> process(TemplateEngineRequest request) {
     return extractFragments(request.getTemplate())
         .doOnNext(this::traceSnippet)
         .flatMap(this::compileHtmlFragment)
         .filter(htmlFragment -> shouldProcessRequest(htmlFragment, request))
-        .concatMapEager(htmlFragment ->
-            snippetProcessor.processSnippet(htmlFragment, request)
-        ) //eager will buffer faster processing to emit items in proper order, keeping concurrency.
-        .reduce(new StringBuilder(),
-            StringBuilder::append
-        )
+        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, request))
+        // eager will buffer faster processing to emit items in proper order, keeping concurrency.
+        .reduce(new StringBuilder(), StringBuilder::append)
         .map(StringBuilder::toString);
   }
 
+  @SuppressWarnings({"unchecked"})
+  private void initHandlebars() {
+    handlebars = new Handlebars();
+    DefaultHandlebarsHelpers.registerFor(handlebars);
+
+    ServiceLoader.load(CustomHandlebarsHelper.class)
+        .iterator().forEachRemaining(helper -> {
+          handlebars.registerHelper(helper.getName(), helper);
+          LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
+        });
+  }
+
   private Boolean shouldProcessRequest(HtmlFragment htmlFragment, TemplateEngineRequest request) {
-    String requestedWith = StringUtils.defaultString(request.getHeaders().get(TemplateEngineConsts.X_REQUESTED_WITH));
-    String formId = StringUtils.defaultString(request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
+    String requestedWith =
+        StringUtils.defaultString(request.getHeaders().get(TemplateEngineConsts.X_REQUESTED_WITH));
+    String formId = StringUtils
+        .defaultString(request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
     boolean isRequestByXHR = TemplateEngineConsts.XMLHTTP_REQUEST.equals(requestedWith);
-    return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId()) && formId.equals(htmlFragment.getDataId());
+    return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId())
+        && formId.equals(htmlFragment.getDataId());
   }
 
   private Observable<HtmlFragment> extractFragments(String template) {
@@ -82,8 +91,7 @@ public class TemplateEngine {
       return Observable.create(subscriber -> {
         try {
           subscriber.onNext(
-              new TemplateHtmlFragment(fragment.getContent()).compileWith(handlebars)
-          );
+              new TemplateHtmlFragment(fragment.getContent()).compileWith(handlebars));
           subscriber.onCompleted();
         } catch (IOException e) {
           subscriber.onError(e);
@@ -96,7 +104,8 @@ public class TemplateEngine {
 
   private void traceSnippet(HtmlFragment fragment) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Processing snippet <{}>, <{}>", fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent());
+      LOGGER.trace("Processing snippet <{}>, <{}>",
+          fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent());
     }
   }
 }
