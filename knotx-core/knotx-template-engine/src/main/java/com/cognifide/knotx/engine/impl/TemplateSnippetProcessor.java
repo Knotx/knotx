@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -44,25 +45,36 @@ public class TemplateSnippetProcessor {
 
   private final boolean templateDebug;
 
+
   public TemplateSnippetProcessor(HttpClient httpClient, TemplateEngineConfiguration configuration) {
     this.serviceEngine = new ServiceEngine(httpClient, configuration);
     this.templateDebug = configuration.templateDebug();
   }
 
   public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
-    return fragment.getServices()
-        .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
-        .doOnNext(this::traceService)
-        .flatMap(serviceEngine::findServiceLocation)
-        .flatMap(serviceItem -> serviceEngine.doServiceCall(serviceItem, request),
-            (serviceEntry, serviceResult) -> serviceEntry.setResult(serviceResult))
-        .map(ServiceEntry::getResultWithNamespaceAsKey)
-        .reduce(new HashMap<String, Object>(), (allResults, serviceResults) -> {
-          allResults.putAll(serviceResults);
-          return allResults;
-        })
-        .map(results -> applyData(fragment, results))
-        .defaultIfEmpty(fragment.getContent());
+    return Observable.just(fragment)
+            .flatMap(HtmlFragment::getServices)
+            .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
+            .doOnNext(this::traceService)
+            .map(serviceEngine::findServiceLocation)
+            .flatMap(serviceEntry ->
+                    getServiceData(serviceEntry, request)
+                            .map(serviceEntry::getResultWithNamespaceAsKey))
+            .reduce(new HashMap<String, Object>(), (allResults, result) -> {
+              allResults.putAll(result);
+              return allResults;
+            })
+            .map(results -> applyData(fragment, results))
+            .defaultIfEmpty(fragment.getContent());
+  }
+
+  public Observable<Map<String, Object>> getServiceData(ServiceEntry service, TemplateEngineRequest request) {
+    try {
+      return request.getCache().get(service.getServiceUri(), () -> serviceEngine.doServiceCall(service, request).cache());
+    } catch (ExecutionException e) {
+      LOGGER.fatal("Unable to get service data {}", e);
+      return Observable.error(e);
+    }
   }
 
   private String applyData(final HtmlFragment snippet, Map<String, Object> serviceResult) {

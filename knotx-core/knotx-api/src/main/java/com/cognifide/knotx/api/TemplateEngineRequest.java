@@ -16,22 +16,27 @@
  */
 package com.cognifide.knotx.api;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.Map;
+
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
+import rx.Observable;
 
 public class TemplateEngineRequest extends JsonObjectRequest {
-  private String template;
-
-  private HttpMethod serverRequestMethod;
-
-  private MultiMap headers;
-
-  private MultiMap params;
-
   private final MultiMap formAttributes;
-
+  private String template;
+  private HttpMethod serverRequestMethod;
+  private MultiMap headers;
+  private MultiMap params;
   private String uri;
+
+  private Cache<String, Observable<Map<String, Object>>> cache = CacheBuilder.newBuilder().build();
 
   public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers,
                                MultiMap params, MultiMap formAttributes, String uri) {
@@ -68,50 +73,42 @@ public class TemplateEngineRequest extends JsonObjectRequest {
     return uri;
   }
 
-  public void setHeaders(MultiMap headers) {
-    this.headers = headers;
-  }
-
   public HttpMethod getServerRequestMethod() {
     return serverRequestMethod;
-  }
-
-  public void setServerRequestMethod(HttpMethod serverRequestMethod) {
-    this.serverRequestMethod = serverRequestMethod;
-  }
-
-  public void setTemplate(String template) {
-    this.template = template;
   }
 
   public MultiMap getFormAttributes() {
     return formAttributes;
   }
 
+  public Cache<String, Observable<Map<String, Object>>> getCache() {
+    return cache;
+  }
+
   @Override
   public String toString() {
     return "TemplateEngineRequest{" + "template='" + template + '\'' //
-        + ", headers=" + multimapToSting(headers) //
-        + ", params=" + multimapToSting(params) //
-        + ", formAttributes=" + multimapToSting(formAttributes) //
-        + ", uri=" + uri //
-        + ", serverRequestMethod=" + serverRequestMethod + '}';
+            + ", headers=" + multimapToSting(headers) //
+            + ", params=" + multimapToSting(params) //
+            + ", formAttributes=" + multimapToSting(formAttributes) //
+            + ", uri=" + uri //
+            + ", serverRequestMethod=" + serverRequestMethod + '}';
   }
 
   @Override
   public JsonObject toJsonObject() {
     return new JsonObject().put("template", template)
-        .put("serverRequestMethod", serverRequestMethod.toString()) //
-        .put("headers", toJsonArray(headers)) //
-        .put("params", toJsonArray(params)) //
-        .put("formAttributes", toJsonArray(formAttributes)) //
-        .put("uri", uri);
+            .put("serverRequestMethod", serverRequestMethod.toString()) //
+            .put("headers", toJsonArray(headers)) //
+            .put("params", toJsonArray(params)) //
+            .put("formAttributes", toJsonArray(formAttributes)) //
+            .put("uri", uri);
   }
 
   private String multimapToSting(MultiMap map) {
     StringBuilder result = new StringBuilder();
     map.names().forEach(header -> result.append(header).append("=").append(headers.get(header))
-        .append("\n"));
+            .append("\n"));
     return result.toString();
   }
 }

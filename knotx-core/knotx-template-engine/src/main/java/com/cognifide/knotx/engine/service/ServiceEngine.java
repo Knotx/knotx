@@ -17,16 +17,16 @@
  */
 package com.cognifide.knotx.engine.service;
 
-import java.util.Collections;
-import java.util.Map;
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
+import java.util.Collections;
+import java.util.Map;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
@@ -93,10 +93,11 @@ public class ServiceEngine {
     return buffer;
   }
 
-  public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
-    return Observable.from(configuration.getServices())
-        .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).first()
-        .map(metadata -> serviceEntry.setServiceMetadata(metadata));
+  public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
+    return configuration.getServices().stream()
+            .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
+            .findFirst().map(metadata -> serviceEntry.setServiceMetadata(metadata))
+            .get();
   }
 
   private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
