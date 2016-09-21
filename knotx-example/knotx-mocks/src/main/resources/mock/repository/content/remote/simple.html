@@ -54,8 +54,14 @@
       <div class="col-md-4">
         <h2>Snippet1 - {{message}}</h2>
         <div>Snippet1 - {{body.a}}</div>
+        <div>{{#bold}}Custom Handlebars helper{{/bold}}</div>
       </div>
       <div class="col-md-4">
+        <h2>Snippet1 - {{second.message}}</h2>
+        <div>Snippet1 - {{second.body.a}}</div>
+        {{#string_equals second._response.statusCode "200"}}
+        <div>Success! Status code : {{second._response.statusCode}}</div>
+        {{/string_equals}}
         <h2>Snippet1 - {{second.message}}</h2>
         <div>Snippet1 - {{second.body.a}}</div>
       </div>
