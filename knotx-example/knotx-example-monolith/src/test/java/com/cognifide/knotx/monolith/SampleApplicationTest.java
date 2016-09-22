@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.monolith;
 
+import com.google.common.collect.Maps;
+
 import com.cognifide.knotx.engine.service.KnotxRxHelper;
 
 import org.jsoup.Jsoup;
@@ -26,6 +28,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
@@ -73,12 +77,18 @@ public class SampleApplicationTest {
 
   @Test
   public void localMultipleFormWithPostTest(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithPostResult.html", false);
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
+  }
+
+  @Test
+  public void localMultipleFormWithMultiplePostTest(TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
   }
 
   @Test
   public void localMultipleFormWithAjaxPostTest(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithAjaxPostResult.html", true);
   }
 
   @Test
@@ -86,24 +96,26 @@ public class SampleApplicationTest {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
     Async async = context.async();
     HttpClientRequest httpClientRequest = client.get(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
-        resp -> {
-          context.assertEquals("Pl", resp.headers().get("X-Language-Code"));
-          context.assertNull(resp.getHeader("Location"));
-          client.close();
-          async.complete();
-        }
+            resp -> {
+              context.assertEquals("Pl", resp.headers().get("X-Language-Code"));
+              context.assertNull(resp.getHeader("Location"));
+              client.close();
+              async.complete();
+            }
     );
     httpClientRequest.putHeader("X-Language-Code", "Pl");
     httpClientRequest.putHeader("Location", "http://localhost/content/remote/simple.html");
     httpClientRequest.end();
   }
 
-  private void testPostRequest(TestContext context, String url, String expectedResponseFile, boolean ajaxCall) {
+  private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
 
     Async async = context.async();
     Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
-      String bodyForm = "email=email@com.pl&name=John&_id=competition-form";
+      String bodyForm = formData.entrySet().stream()
+              .map(entry -> entry.getKey() + "=" + entry.getValue())
+              .reduce((p1, p2) -> p1 + "&" + p2).get();
       req.headers().set("content-length", String.valueOf(bodyForm.length()));
       req.headers().set("content-type", "application/x-www-form-urlencoded");
       if (ajaxCall) {
@@ -111,7 +123,6 @@ public class SampleApplicationTest {
       }
       req.write(bodyForm);
     });
-
 
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
@@ -131,17 +142,35 @@ public class SampleApplicationTest {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
     Async async = context.async();
     client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
-        resp -> resp.bodyHandler(body -> {
-          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
-          try {
-            context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
-          } catch (Exception e) {
-            LOG.error("Cannot read file {}", expectedResponseFile, e);
-            context.fail();
-          }
-          client.close();
-          async.complete();
-        }));
+            resp -> resp.bodyHandler(body -> {
+              context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+              try {
+                context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+              } catch (Exception e) {
+                LOG.error("Cannot read file {}", expectedResponseFile, e);
+                context.fail();
+              }
+              client.close();
+              async.complete();
+            }));
+  }
+
+  private Map<String, String> getFirstTestFormData() {
+    Map<String, String> data = Maps.newHashMap();
+    data.put("name", "John");
+    data.put("email", "email@com.pl");
+    data.put("_id", "competition-form");
+
+    return data;
+  }
+
+  private Map<String, String> getSecondTestFormData() {
+    Map<String, String> data = Maps.newHashMap();
+    data.put("name", "Andrew");
+    data.put("email", "other@example.com");
+    data.put("_id", "competition-form");
+
+    return data;
   }
 
 }

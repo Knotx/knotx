@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -55,22 +56,21 @@ public class ServiceEngine {
                                                        TemplateEngineRequest request) {
     HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
     Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-        httpClient, httpMethod, serviceEntry.getPort(),
-        serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-        req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
-            httpMethod));
-    return serviceResponse.flatMap(this::collectBuffers);
+            httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
+            req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+                    httpMethod));
+    return serviceResponse.flatMap(this::transformResponse);
   }
 
-  private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
+  private Observable<Map<String, Object>> transformResponse(HttpClientResponse response) {
     return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
-        .reduce(Buffer::appendBuffer)
-        .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap())).map(results -> {
-          results.put("_response",
-              Collections.singletonMap("statusCode", response.statusCode()));
-          traceServiceCall(results);
-          return results;
-        });
+            .reduce(Buffer::appendBuffer)
+            .map(buffer -> buffer.toJsonObject().getMap())
+            .map(results -> {
+              results.put("_response",
+                      Collections.singletonMap("statusCode", response.statusCode()));
+              return results;
+            });
   }
 
   private void buildRequestBody(HttpClientRequest request, MultiMap headers,
@@ -88,7 +88,7 @@ public class ServiceEngine {
   private Buffer createFormPostBody(MultiMap formAttributes) {
     Buffer buffer = Buffer.buffer();
     String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+            .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
     buffer.appendString(formPostContent, Charsets.UTF_8.toString());
     return buffer;
   }
@@ -103,16 +103,16 @@ public class ServiceEngine {
   private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
                                               ServiceCallMethod serviceCallMethod) {
     if (HttpMethod.POST.equals(request.getServerRequestMethod())
-        && ServiceCallMethod.POST.equals(serviceCallMethod)) {
+            && ServiceCallMethod.POST.equals(serviceCallMethod)) {
       return HttpMethod.POST;
     } else {
       return HttpMethod.GET;
     }
   }
 
-  private void traceServiceCall(Map<String, Object> results) {
+  private void traceServiceCall(JsonObject results) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}>", results.toString());
+      LOGGER.trace("Service call returned <{}>", results.encodePrettily());
     }
   }
 }
