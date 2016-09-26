@@ -84,6 +84,7 @@ http://localhost:8092/content/remote/multiple-forms.html
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/Cognifide/knotx/issues).
+Please notice we use [ZenHub](https://www.zenhub.com/) extension to manage issues.
 
 # Licence
 
