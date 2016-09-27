@@ -32,28 +32,28 @@ import io.vertx.rxjava.core.http.HttpServer;
 
 public class MockServiceVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceVerticle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceVerticle.class);
 
-  private MockServiceHandler mockServiceHandler;
+    private MockServiceHandler mockServiceHandler;
 
-  private HttpServer httpServer;
+    private HttpServer httpServer;
 
-  @Override
-  public void init(Vertx vertx, Context context) {
-    super.init(vertx, context);
-    mockServiceHandler = new MockServiceHandler(config().getString("mock.data.root"));
-  }
+    @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        mockServiceHandler = new MockServiceHandler(config().getString("mock.data.root"));
+    }
 
-  @Override
-  public void start() throws IOException, URISyntaxException {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
-    httpServer = vertx.createHttpServer();
-    httpServer.requestHandler(mockServiceHandler)
-        .listen(config().getInteger("http.port"));
-  }
+    @Override
+    public void start() throws IOException, URISyntaxException {
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+        httpServer = vertx.createHttpServer();
+        httpServer.requestHandler(mockServiceHandler)
+                .listen(config().getInteger("http.port"));
+    }
 
-  @Override
-  public void stop() throws Exception {
-    httpServer.close();
-  }
+    @Override
+    public void stop() throws Exception {
+        httpServer.close();
+    }
 }

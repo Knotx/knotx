@@ -35,57 +35,57 @@ import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class MockServiceHandler implements Handler<HttpServerRequest> {
 
-  private static final String SEPARATOR = "/";
-  private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
-  private String catalogue;
+    private static final String SEPARATOR = "/";
+    private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
+    private String catalogue;
 
-  public MockServiceHandler(String catalogue) {
-    this.catalogue = catalogue;
-  }
+    public MockServiceHandler(String catalogue) {
+        this.catalogue = catalogue;
+    }
 
-  @Override
-  public void handle(HttpServerRequest request) {
-    URL mockDataFileUrl = this.getClass().getClassLoader().getResource(getFilePath(request));
-    JsonObject responseBody = getMockContent(request);
+    @Override
+    public void handle(HttpServerRequest request) {
+        URL mockDataFileUrl = this.getClass().getClassLoader().getResource(getFilePath(request));
+        JsonObject responseBody = getMockContent(request);
 
-    if (mockDataFileUrl != null) {
-      request.setExpectMultipart(true);
-      request.endHandler(v -> {
-        if (request.method() == HttpMethod.POST) {
-          MultiMap formParams = request.formAttributes();
+        if (mockDataFileUrl != null) {
+            request.setExpectMultipart(true);
+            request.endHandler(v -> {
+                if (request.method() == HttpMethod.POST) {
+                    MultiMap formParams = request.formAttributes();
 
-          formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
+                    formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
+                }
+                request.response().end(responseBody.encodePrettily());
+                request.connection().close();
+            });
+        } else {
+            request.response().setStatusCode(500);
+            request.connection().close();
         }
-        request.response().end(responseBody.encodePrettily());
-        request.connection().close();
-      });
-    } else {
-      request.response().setStatusCode(500);
-      request.connection().close();
-    }
-  }
-
-  private JsonObject getMockContent(HttpServerRequest event) {
-    String resourcePath = getFilePath(event);
-    URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-    JsonObject content = new JsonObject();
-
-    if (resourceUrl != null) {
-      URL url = Resources.getResource(resourcePath);
-
-      try {
-        content = new JsonObject(Resources.toString(url, Charsets.UTF_8));
-      } catch (IOException e) {
-        LOGGER.error("Could not read content!", e);
-      }
-      LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
     }
 
-    return content;
-  }
+    private JsonObject getMockContent(HttpServerRequest event) {
+        String resourcePath = getFilePath(event);
+        URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
+        JsonObject content = new JsonObject();
 
-  private String getFilePath(HttpServerRequest event) {
-    return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
-  }
+        if (resourceUrl != null) {
+            URL url = Resources.getResource(resourcePath);
+
+            try {
+                content = new JsonObject(Resources.toString(url, Charsets.UTF_8));
+            } catch (IOException e) {
+                LOGGER.error("Could not read content!", e);
+            }
+            LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
+        }
+
+        return content;
+    }
+
+    private String getFilePath(HttpServerRequest event) {
+        return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
+    }
 
 }

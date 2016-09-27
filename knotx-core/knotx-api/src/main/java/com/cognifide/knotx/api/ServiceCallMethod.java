@@ -19,11 +19,11 @@ package com.cognifide.knotx.api;
 
 
 public enum ServiceCallMethod {
-  GET,
-  POST,
-  ALL;
+    GET,
+    POST,
+    ALL;
 
-  public static ServiceCallMethod from(io.vertx.core.http.HttpMethod vertxMethod) {
-    return ServiceCallMethod.valueOf(vertxMethod.toString());
-  }
+    public static ServiceCallMethod from(io.vertx.core.http.HttpMethod vertxMethod) {
+        return ServiceCallMethod.valueOf(vertxMethod.toString());
+    }
 }

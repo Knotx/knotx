@@ -24,32 +24,32 @@ import java.util.Map;
 import rx.Observable;
 
 public interface HtmlFragment {
-  /**
-   * Returns the Fragment content with applied context data. Only have effect if fragment
-   * is using templating language (e.g. Handlebars)
-   *
-   * @param context - Context data
-   * @return String - html fragment with applied cotext data
-   */
-  String getContentWithContext(Map<String, Object> context);
+    /**
+     * Returns the Fragment content with applied context data. Only have effect if fragment
+     * is using templating language (e.g. Handlebars)
+     *
+     * @param context - Context data
+     * @return String - html fragment with applied cotext data
+     */
+    String getContentWithContext(Map<String, Object> context);
 
-  /**
-   * Gets the raw HTML content of the fragment
-   */
-  String getContent();
+    /**
+     * Gets the raw HTML content of the fragment
+     */
+    String getContent();
 
-  /**
-   * Checks if the fragment is Handlebars template or not
-   */
-  boolean hasHandlebarsTemplate();
+    /**
+     * Checks if the fragment is Handlebars template or not
+     */
+    boolean hasHandlebarsTemplate();
 
-  /**
-   * Gets Observable emitting Service Entries for given fragment
-   */
-  Observable<ServiceEntry> getServices();
+    /**
+     * Gets Observable emitting Service Entries for given fragment
+     */
+    Observable<ServiceEntry> getServices();
 
-  /**
-   * Gets 'data id' attribute
-   */
-  String getDataId();
+    /**
+     * Gets 'data id' attribute
+     */
+    String getDataId();
 }

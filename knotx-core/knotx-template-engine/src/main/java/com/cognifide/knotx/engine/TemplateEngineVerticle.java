@@ -35,65 +35,65 @@ import rx.Observable;
 
 public class TemplateEngineVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngineVerticle.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngineVerticle.class);
 
-  private TemplateEngine templateEngine;
+    private TemplateEngine templateEngine;
 
-  private TemplateEngineConfiguration configuration;
+    private TemplateEngineConfiguration configuration;
 
-  private String serviceName;
+    private String serviceName;
 
-  private HttpClient httpClient;
+    private HttpClient httpClient;
 
-  @Override
-  public void init(Vertx vertx, Context context) {
-    super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
-    this.serviceName = config.getString("service.name");
+    @Override
+    public void init(Vertx vertx, Context context) {
+        super.init(vertx, context);
+        JsonObject config = config().getJsonObject("config");
+        this.serviceName = config.getString("service.name");
 
-    configuration = new TemplateEngineConfiguration(config);
+        configuration = new TemplateEngineConfiguration(config);
 
-    final JsonObject clientOptions = configuration.getClientOptions();
-    httpClient = clientOptions.isEmpty() ?
-        this.vertx.createHttpClient() : this.vertx.createHttpClient(new HttpClientOptions(clientOptions));
-    templateEngine = new TemplateEngine(httpClient, configuration);
+        final JsonObject clientOptions = configuration.getClientOptions();
+        httpClient = clientOptions.isEmpty() ?
+                this.vertx.createHttpClient() : this.vertx.createHttpClient(new HttpClientOptions(clientOptions));
+        templateEngine = new TemplateEngine(httpClient, configuration);
 
-  }
-
-  @Override
-  public void start() throws Exception {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
-
-    EventBus eventBus = vertx.eventBus();
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
-
-    messageObservable
-        .doOnNext(this::traceMessage)
-        .subscribe(
-            msg -> templateEngine.process(givenTemplate(msg))
-                .subscribe(
-                    result -> msg.reply(TemplateEngineResponse.success(result).toJsonObject()),
-                    error -> {
-                      LOGGER.error("Error happened", error);
-                      msg.reply(TemplateEngineResponse.error(error.getMessage()).toJsonObject());
-                    }
-                )
-        );
-  }
-
-  @Override
-  public void stop() throws Exception {
-    LOGGER.debug("Stopping TemplateEngineVerticle and stopping http client");
-    httpClient.close();
-  }
-
-  private TemplateEngineRequest givenTemplate(Message<JsonObject> msg) {
-    return new TemplateEngineRequest(msg.body());
-  }
-
-  private void traceMessage(Message<JsonObject> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
     }
-  }
+
+    @Override
+    public void start() throws Exception {
+        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+
+        EventBus eventBus = vertx.eventBus();
+        Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
+
+        messageObservable
+                .doOnNext(this::traceMessage)
+                .subscribe(
+                        msg -> templateEngine.process(givenTemplate(msg))
+                                .subscribe(
+                                        result -> msg.reply(TemplateEngineResponse.success(result).toJsonObject()),
+                                        error -> {
+                                            LOGGER.error("Error happened", error);
+                                            msg.reply(TemplateEngineResponse.error(error.getMessage()).toJsonObject());
+                                        }
+                                )
+                );
+    }
+
+    @Override
+    public void stop() throws Exception {
+        LOGGER.debug("Stopping TemplateEngineVerticle and stopping http client");
+        httpClient.close();
+    }
+
+    private TemplateEngineRequest givenTemplate(Message<JsonObject> msg) {
+        return new TemplateEngineRequest(msg.body());
+    }
+
+    private void traceMessage(Message<JsonObject> message) {
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+        }
+    }
 }

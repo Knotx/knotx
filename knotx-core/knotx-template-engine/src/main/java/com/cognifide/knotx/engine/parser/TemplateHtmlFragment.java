@@ -38,70 +38,70 @@ import java.util.stream.Collectors;
 import rx.Observable;
 
 public class TemplateHtmlFragment implements HtmlFragment {
-  private static final String DATA_URI = "data-uri";
+    private static final String DATA_URI = "data-uri";
 
-  private static final String DATA_ID = "data-id";
+    private static final String DATA_ID = "data-id";
 
-  private String content;
+    private String content;
 
-  private String dataId = StringUtils.EMPTY;
+    private String dataId = StringUtils.EMPTY;
 
-  private Template compiledFragment;
+    private Template compiledFragment;
 
-  private List<ServiceEntry> services = Lists.newArrayList();
+    private List<ServiceEntry> services = Lists.newArrayList();
 
-  public TemplateHtmlFragment(String templateFragment) {
-    Document document = Jsoup.parseBodyFragment(templateFragment);
-    Element scriptTag = document.body().child(0);
+    public TemplateHtmlFragment(String templateFragment) {
+        Document document = Jsoup.parseBodyFragment(templateFragment);
+        Element scriptTag = document.body().child(0);
 
-    List<Attribute> attributes = scriptTag.attributes().asList();
+        List<Attribute> attributes = scriptTag.attributes().asList();
 
-    services = attributes.stream()
-        .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
-        .map(ServiceEntry::of)
-        .collect(Collectors.toList());
+        services = attributes.stream()
+                .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
+                .map(ServiceEntry::of)
+                .collect(Collectors.toList());
 
-    dataId = getDataIdAttr(attributes);
+        dataId = getDataIdAttr(attributes);
 
-    this.content = scriptTag.unwrap().toString(); //remove outer script tag
-  }
-
-  @Override
-  public String getContentWithContext(Map<String, Object> context) {
-    try {
-      return compiledFragment.apply(context);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+        this.content = scriptTag.unwrap().toString(); //remove outer script tag
     }
-  }
 
-  @Override
-  public String getContent() {
-    return compiledFragment.text();
-  }
+    @Override
+    public String getContentWithContext(Map<String, Object> context) {
+        try {
+            return compiledFragment.apply(context);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-  @Override
-  public boolean hasHandlebarsTemplate() {
-    return true;
-  }
+    @Override
+    public String getContent() {
+        return compiledFragment.text();
+    }
 
-  @Override
-  public Observable<ServiceEntry> getServices() {
-    return Observable.from(services);
-  }
+    @Override
+    public boolean hasHandlebarsTemplate() {
+        return true;
+    }
 
-  @Override
-  public String getDataId() {
-    return dataId;
-  }
+    @Override
+    public Observable<ServiceEntry> getServices() {
+        return Observable.from(services);
+    }
 
-  public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
-    this.compiledFragment = handlebars.compileInline(content);
-    return this;
-  }
+    @Override
+    public String getDataId() {
+        return dataId;
+    }
 
-  private String getDataIdAttr(List<Attribute> attributes) {
-    Optional<Attribute> dataIdAttribute = attributes.stream().filter(attribute -> attribute.getKey().equals(DATA_ID)).findFirst();
-    return dataIdAttribute.map(Attribute::getValue).orElse(StringUtils.EMPTY);
-  }
+    public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
+        this.compiledFragment = handlebars.compileInline(content);
+        return this;
+    }
+
+    private String getDataIdAttr(List<Attribute> attributes) {
+        Optional<Attribute> dataIdAttribute = attributes.stream().filter(attribute -> attribute.getKey().equals(DATA_ID)).findFirst();
+        return dataIdAttribute.map(Attribute::getValue).orElse(StringUtils.EMPTY);
+    }
 }

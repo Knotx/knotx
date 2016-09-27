@@ -21,14 +21,14 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.rxjava.core.MultiMap;
 
 public class SuccessRepositoryResponse extends RepositoryResponse {
-  public SuccessRepositoryResponse(String data, MultiMap headers) {
-    super.statusCode = HttpResponseStatus.OK.code();
-    super.data = data;
-    super.headers = headers;
-  }
+    public SuccessRepositoryResponse(String data, MultiMap headers) {
+        super.statusCode = HttpResponseStatus.OK.code();
+        super.data = data;
+        super.headers = headers;
+    }
 
-  @Override
-  public boolean shouldProcess() {
-    return !data.isEmpty();
-  }
+    @Override
+    public boolean shouldProcess() {
+        return !data.isEmpty();
+    }
 }

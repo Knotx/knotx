@@ -27,92 +27,92 @@ import io.vertx.core.json.JsonObject;
 
 public class TemplateEngineConfiguration {
 
-  private List<ServiceMetadata> services;
+    private List<ServiceMetadata> services;
 
-  private boolean templateDebug;
+    private boolean templateDebug;
 
-  private JsonObject clientOptions;
+    private JsonObject clientOptions;
 
-  public TemplateEngineConfiguration(JsonObject config) {
-    services = config.getJsonArray("services").stream()
-        .map(item -> (JsonObject) item)
-        .map(item -> {
-          ServiceMetadata metadata = new ServiceMetadata();
-          metadata.path = item.getString("path");
-          metadata.domain = item.getString("domain");
-          metadata.port = item.getInteger("port");
+    public TemplateEngineConfiguration(JsonObject config) {
+        services = config.getJsonArray("services").stream()
+                .map(item -> (JsonObject) item)
+                .map(item -> {
+                    ServiceMetadata metadata = new ServiceMetadata();
+                    metadata.path = item.getString("path");
+                    metadata.domain = item.getString("domain");
+                    metadata.port = item.getInteger("port");
 
-          return metadata;
-        }).collect(Collectors.toList());
+                    return metadata;
+                }).collect(Collectors.toList());
 
-    templateDebug = config.getBoolean("template.debug", false);
-    clientOptions = config.getJsonObject("client.options", new JsonObject());
-  }
-
-  public List<ServiceMetadata> getServices() {
-    return services;
-  }
-
-  public boolean templateDebug() {
-    return templateDebug;
-  }
-
-  public JsonObject getClientOptions() {
-    return clientOptions;
-  }
-
-  public static class ServiceMetadata {
-
-    private String path;
-
-    private String domain;
-
-    private Integer port;
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj != null && obj instanceof ServiceMetadata) {
-        final ServiceMetadata other = (ServiceMetadata) obj;
-        return new EqualsBuilder()
-            .append(path, other.getPath())
-            .append(domain, other.getDomain())
-            .append(port, other.getPort()).isEquals();
-      } else {
-        return false;
-      }
+        templateDebug = config.getBoolean("template.debug", false);
+        clientOptions = config.getJsonObject("client.options", new JsonObject());
     }
 
-    @Override
-    public int hashCode() {
-      return new HashCodeBuilder()
-          .append(path)
-          .append(domain)
-          .append(port)
-          .toHashCode();
+    public List<ServiceMetadata> getServices() {
+        return services;
     }
 
-    public String getPath() {
-      return path;
+    public boolean templateDebug() {
+        return templateDebug;
     }
 
-    public void setPath(String path) {
-      this.path = path;
+    public JsonObject getClientOptions() {
+        return clientOptions;
     }
 
-    public String getDomain() {
-      return domain;
-    }
+    public static class ServiceMetadata {
 
-    public void setDomain(String domain) {
-      this.domain = domain;
-    }
+        private String path;
 
-    public Integer getPort() {
-      return port;
-    }
+        private String domain;
 
-    public void setPort(Integer port) {
-      this.port = port;
+        private Integer port;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj != null && obj instanceof ServiceMetadata) {
+                final ServiceMetadata other = (ServiceMetadata) obj;
+                return new EqualsBuilder()
+                        .append(path, other.getPath())
+                        .append(domain, other.getDomain())
+                        .append(port, other.getPort()).isEquals();
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(path)
+                    .append(domain)
+                    .append(port)
+                    .toHashCode();
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public String getDomain() {
+            return domain;
+        }
+
+        public void setDomain(String domain) {
+            this.domain = domain;
+        }
+
+        public Integer getPort() {
+            return port;
+        }
+
+        public void setPort(Integer port) {
+            this.port = port;
+        }
     }
-  }
 }

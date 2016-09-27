@@ -28,41 +28,41 @@ import java.util.regex.Pattern;
 
 final class ServiceAttributeUtil {
 
-  private static final int NAMESPACE_GROUP_INDEX = 4;
+    private static final int NAMESPACE_GROUP_INDEX = 4;
 
-  private static final int METHOD_TYPE_GROUP_INDEX = 2;
+    private static final int METHOD_TYPE_GROUP_INDEX = 2;
 
-  private static final String ATTR_REGEX = "data-uri(-(post|get|all))?(-(\\w*))?";
+    private static final String ATTR_REGEX = "data-uri(-(post|get|all))?(-(\\w*))?";
 
-  private static final Pattern ATTR_PATTERN = Pattern.compile(ATTR_REGEX);
+    private static final Pattern ATTR_PATTERN = Pattern.compile(ATTR_REGEX);
 
-  private ServiceAttributeUtil() {
-    //Hidden constructors
-  }
-
-  public static String extractNamespace(String attributeName) {
-    return extract(attributeName, NAMESPACE_GROUP_INDEX);
-  }
-
-  public static ServiceCallMethod extractMethodType(String attributeName) {
-    String methodTypeName = extract(attributeName, METHOD_TYPE_GROUP_INDEX);
-    if (StringUtils.isEmpty(methodTypeName)) {
-      return ServiceCallMethod.ALL;
+    private ServiceAttributeUtil() {
+        //Hidden constructors
     }
 
-    return ServiceCallMethod.valueOf(methodTypeName.toUpperCase());
-  }
-
-  private static String extract(String attributeName, int groupIndex) {
-    Objects.requireNonNull(attributeName);
-
-    Matcher matcher = ATTR_PATTERN.matcher(attributeName);
-    if (matcher.matches()) {
-      String namespace = matcher.group(groupIndex);
-      return StringUtils.defaultString(namespace);
-    } else {
-      throw new RuntimeException(String.format("Attribute %s is invalid", attributeName));
+    public static String extractNamespace(String attributeName) {
+        return extract(attributeName, NAMESPACE_GROUP_INDEX);
     }
 
-  }
+    public static ServiceCallMethod extractMethodType(String attributeName) {
+        String methodTypeName = extract(attributeName, METHOD_TYPE_GROUP_INDEX);
+        if (StringUtils.isEmpty(methodTypeName)) {
+            return ServiceCallMethod.ALL;
+        }
+
+        return ServiceCallMethod.valueOf(methodTypeName.toUpperCase());
+    }
+
+    private static String extract(String attributeName, int groupIndex) {
+        Objects.requireNonNull(attributeName);
+
+        Matcher matcher = ATTR_PATTERN.matcher(attributeName);
+        if (matcher.matches()) {
+            String namespace = matcher.group(groupIndex);
+            return StringUtils.defaultString(namespace);
+        } else {
+            throw new RuntimeException(String.format("Attribute %s is invalid", attributeName));
+        }
+
+    }
 }

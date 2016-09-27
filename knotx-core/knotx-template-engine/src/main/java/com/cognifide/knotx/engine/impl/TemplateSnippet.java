@@ -30,52 +30,52 @@ import java.util.stream.Collectors;
 import rx.Observable;
 
 public class TemplateSnippet {
-  private static final String DATA_URI = "data-uri";
+    private static final String DATA_URI = "data-uri";
 
-  private Element snippet;
+    private Element snippet;
 
-  private Template compiledSnippet;
+    private Template compiledSnippet;
 
-  private List<ServiceEntry> services = Lists.newArrayList();
+    private List<ServiceEntry> services = Lists.newArrayList();
 
-  private TemplateSnippet() {
-    // No constructor
-  }
+    private TemplateSnippet() {
+        // No constructor
+    }
 
-  public static TemplateSnippet raw(Element element) {
-    TemplateSnippet snippet = new TemplateSnippet();
-    snippet.snippet = element;
+    public static TemplateSnippet raw(Element element) {
+        TemplateSnippet snippet = new TemplateSnippet();
+        snippet.snippet = element;
 
-    snippet.services = element.attributes().asList().stream()
-        .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
-        .map(ServiceEntry::of)
-        .collect(Collectors.toList());
-    return snippet;
-  }
+        snippet.services = element.attributes().asList().stream()
+                .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
+                .map(ServiceEntry::of)
+                .collect(Collectors.toList());
+        return snippet;
+    }
 
-  public Element getSnippet() {
-    return snippet;
-  }
+    public Element getSnippet() {
+        return snippet;
+    }
 
-  public Template getCompiledSnippet() {
-    return compiledSnippet;
-  }
+    public Template getCompiledSnippet() {
+        return compiledSnippet;
+    }
 
-  public TemplateSnippet setCompiledSnippet(Template compiledSnippet) {
-    this.compiledSnippet = compiledSnippet;
-    return this;
-  }
+    public TemplateSnippet setCompiledSnippet(Template compiledSnippet) {
+        this.compiledSnippet = compiledSnippet;
+        return this;
+    }
 
-  public List<String> getCalledServicesUri() {
-    return services.stream().map(ServiceEntry::getServiceUri).collect(Collectors.toList());
-  }
+    public List<String> getCalledServicesUri() {
+        return services.stream().map(ServiceEntry::getServiceUri).collect(Collectors.toList());
+    }
 
-  public Observable<ServiceEntry> getServices() {
-    return Observable.from(services);
-  }
+    public Observable<ServiceEntry> getServices() {
+        return Observable.from(services);
+    }
 
-  @Override
-  public String toString() {
-    return "TemplateSnippet@" + Integer.toHexString(hashCode());
-  }
+    @Override
+    public String toString() {
+        return "TemplateSnippet@" + Integer.toHexString(hashCode());
+    }
 }

@@ -27,37 +27,37 @@ import rx.Observable;
 
 public class RawHtmlFragment implements HtmlFragment {
 
-  private String fragment;
+    private String fragment;
 
-  private boolean isHandlebarsTemplate;
+    private boolean isHandlebarsTemplate;
 
-  public RawHtmlFragment(String fragment, boolean isHandlebarsTemplate) {
-    this.fragment = fragment;
-    this.isHandlebarsTemplate = isHandlebarsTemplate;
-  }
+    public RawHtmlFragment(String fragment, boolean isHandlebarsTemplate) {
+        this.fragment = fragment;
+        this.isHandlebarsTemplate = isHandlebarsTemplate;
+    }
 
-  @Override
-  public String getContentWithContext(Map<String, Object> context) {
-    return fragment;
-  }
+    @Override
+    public String getContentWithContext(Map<String, Object> context) {
+        return fragment;
+    }
 
-  @Override
-  public String getContent() {
-    return fragment;
-  }
+    @Override
+    public String getContent() {
+        return fragment;
+    }
 
-  @Override
-  public boolean hasHandlebarsTemplate() {
-    return isHandlebarsTemplate;
-  }
+    @Override
+    public boolean hasHandlebarsTemplate() {
+        return isHandlebarsTemplate;
+    }
 
-  @Override
-  public Observable<ServiceEntry> getServices() {
-    return Observable.empty();
-  }
+    @Override
+    public Observable<ServiceEntry> getServices() {
+        return Observable.empty();
+    }
 
-  @Override
-  public String getDataId() {
-    return StringUtils.EMPTY;
-  }
+    @Override
+    public String getDataId() {
+        return StringUtils.EMPTY;
+    }
 }
