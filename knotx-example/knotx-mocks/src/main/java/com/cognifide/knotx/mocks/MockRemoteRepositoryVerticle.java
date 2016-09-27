@@ -32,29 +32,29 @@ import io.vertx.rxjava.core.http.HttpServer;
 
 public class MockRemoteRepositoryVerticle extends AbstractVerticle {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryVerticle.class);
 
-    private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
+  private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
 
-    private HttpServer httpServer;
+  private HttpServer httpServer;
 
-    @Override
-    public void init(Vertx vertx, Context context) {
-        super.init(vertx, context);
-        mockRemoteRepositoryHandler = new MockRemoteRepositoryHandler(config().getString("mock.data.root"));
-    }
+  @Override
+  public void init(Vertx vertx, Context context) {
+    super.init(vertx, context);
+    mockRemoteRepositoryHandler = new MockRemoteRepositoryHandler(config().getString("mock.data.root"));
+  }
 
-    @Override
-    public void start() throws IOException, URISyntaxException {
-        LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
-        httpServer = vertx.createHttpServer();
-        httpServer.requestHandler(mockRemoteRepositoryHandler)
-                .listen(config().getInteger("http.port"));
-    }
+  @Override
+  public void start() throws IOException, URISyntaxException {
+    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    httpServer = vertx.createHttpServer();
+    httpServer.requestHandler(mockRemoteRepositoryHandler)
+        .listen(config().getInteger("http.port"));
+  }
 
-    @Override
-    public void stop() throws Exception {
-        httpServer.close();
-    }
+  @Override
+  public void stop() throws Exception {
+    httpServer.close();
+  }
 }
 

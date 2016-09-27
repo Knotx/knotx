@@ -40,9 +40,9 @@ import com.github.jknack.handlebars.Helper;
  */
 public interface CustomHandlebarsHelper<T> extends Helper<T> {
 
-    /**
-     * @return name of the helper under which it's going to be registered in Handlebars
-     */
-    String getName();
+  /**
+   * @return name of the helper under which it's going to be registered in Handlebars
+   */
+  String getName();
 
 }

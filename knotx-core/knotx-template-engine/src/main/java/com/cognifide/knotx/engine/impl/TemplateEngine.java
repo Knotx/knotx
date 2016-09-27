@@ -38,74 +38,74 @@ import rx.Observable;
 
 public class TemplateEngine {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngine.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TemplateEngine.class);
 
-    private Handlebars handlebars;
+  private Handlebars handlebars;
 
-    private TemplateSnippetProcessor snippetProcessor;
+  private TemplateSnippetProcessor snippetProcessor;
 
-    public TemplateEngine(HttpClient httpClient, TemplateEngineConfiguration configuration) {
-        this.snippetProcessor = new TemplateSnippetProcessor(httpClient, configuration);
-        initHandlebars();
-    }
+  public TemplateEngine(HttpClient httpClient, TemplateEngineConfiguration configuration) {
+    this.snippetProcessor = new TemplateSnippetProcessor(httpClient, configuration);
+    initHandlebars();
+  }
 
-    public Observable<String> process(TemplateEngineRequest request) {
-        return extractFragments(request.getTemplate())
-                .doOnNext(this::traceSnippet)
-                .flatMap(this::compileHtmlFragment)
-                .filter(htmlFragment -> shouldProcessRequest(htmlFragment, request))
-                .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, request))
-                // eager will buffer faster processing to emit items in proper order, keeping concurrency.
-                .reduce(new StringBuilder(), StringBuilder::append)
-                .map(StringBuilder::toString);
-    }
+  public Observable<String> process(TemplateEngineRequest request) {
+    return extractFragments(request.getTemplate())
+        .doOnNext(this::traceSnippet)
+        .flatMap(this::compileHtmlFragment)
+        .filter(htmlFragment -> shouldProcessRequest(htmlFragment, request))
+        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, request))
+        // eager will buffer faster processing to emit items in proper order, keeping concurrency.
+        .reduce(new StringBuilder(), StringBuilder::append)
+        .map(StringBuilder::toString);
+  }
 
-    @SuppressWarnings({"unchecked"})
-    private void initHandlebars() {
-        handlebars = new Handlebars();
-        DefaultHandlebarsHelpers.registerFor(handlebars);
+  @SuppressWarnings({"unchecked"})
+  private void initHandlebars() {
+    handlebars = new Handlebars();
+    DefaultHandlebarsHelpers.registerFor(handlebars);
 
-        ServiceLoader.load(CustomHandlebarsHelper.class)
-                .iterator().forEachRemaining(helper -> {
-            handlebars.registerHelper(helper.getName(), helper);
-            LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
-        });
-    }
+    ServiceLoader.load(CustomHandlebarsHelper.class)
+        .iterator().forEachRemaining(helper -> {
+      handlebars.registerHelper(helper.getName(), helper);
+      LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
+    });
+  }
 
-    private Boolean shouldProcessRequest(HtmlFragment htmlFragment, TemplateEngineRequest request) {
-        String requestedWith =
-                StringUtils.defaultString(request.getHeaders().get(TemplateEngineConsts.X_REQUESTED_WITH));
-        String formId = StringUtils
-                .defaultString(request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
-        boolean isRequestByXHR = TemplateEngineConsts.XMLHTTP_REQUEST.equals(requestedWith);
-        return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId())
-                && formId.equals(htmlFragment.getDataId());
-    }
+  private Boolean shouldProcessRequest(HtmlFragment htmlFragment, TemplateEngineRequest request) {
+    String requestedWith =
+        StringUtils.defaultString(request.getHeaders().get(TemplateEngineConsts.X_REQUESTED_WITH));
+    String formId = StringUtils
+        .defaultString(request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
+    boolean isRequestByXHR = TemplateEngineConsts.XMLHTTP_REQUEST.equals(requestedWith);
+    return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId())
+        && formId.equals(htmlFragment.getDataId());
+  }
 
-    private Observable<HtmlFragment> extractFragments(String template) {
-        return Observable.from(new HtmlParser(template).getFragments());
-    }
+  private Observable<HtmlFragment> extractFragments(String template) {
+    return Observable.from(new HtmlParser(template).getFragments());
+  }
 
-    private Observable<HtmlFragment> compileHtmlFragment(HtmlFragment fragment) {
-        if (fragment.hasHandlebarsTemplate()) {
-            return Observable.create(subscriber -> {
-                try {
-                    subscriber.onNext(
-                            new TemplateHtmlFragment(fragment.getContent()).compileWith(handlebars));
-                    subscriber.onCompleted();
-                } catch (IOException e) {
-                    subscriber.onError(e);
-                }
-            });
-        } else {
-            return Observable.just(fragment);
+  private Observable<HtmlFragment> compileHtmlFragment(HtmlFragment fragment) {
+    if (fragment.hasHandlebarsTemplate()) {
+      return Observable.create(subscriber -> {
+        try {
+          subscriber.onNext(
+              new TemplateHtmlFragment(fragment.getContent()).compileWith(handlebars));
+          subscriber.onCompleted();
+        } catch (IOException e) {
+          subscriber.onError(e);
         }
+      });
+    } else {
+      return Observable.just(fragment);
     }
+  }
 
-    private void traceSnippet(HtmlFragment fragment) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Processing snippet <{}>, <{}>",
-                    fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent());
-        }
+  private void traceSnippet(HtmlFragment fragment) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Processing snippet <{}>, <{}>",
+          fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent());
     }
+  }
 }

@@ -40,80 +40,80 @@ import rx.Observable;
 
 public class ServiceEngine {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
 
-    private final TemplateEngineConfiguration configuration;
+  private final TemplateEngineConfiguration configuration;
 
-    private final HttpClient httpClient;
+  private final HttpClient httpClient;
 
-    public ServiceEngine(HttpClient httpClient, TemplateEngineConfiguration serviceConfiguration) {
-        this.httpClient = httpClient;
-        this.configuration = serviceConfiguration;
+  public ServiceEngine(HttpClient httpClient, TemplateEngineConfiguration serviceConfiguration) {
+    this.httpClient = httpClient;
+    this.configuration = serviceConfiguration;
+  }
+
+  public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
+                                                       TemplateEngineRequest request) {
+    HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
+    Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
+        httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
+        req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+            httpMethod));
+    return serviceResponse.flatMap(this::transformResponse);
+  }
+
+  private Observable<Map<String, Object>> transformResponse(HttpClientResponse response) {
+    return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
+        .reduce(Buffer::appendBuffer)
+        .doOnNext(this::traceServiceCall)
+        .map(buffer -> buffer.toJsonObject().getMap())
+        .map(results -> {
+          results.put("_response",
+              Collections.singletonMap("statusCode", response.statusCode()));
+          return results;
+        });
+  }
+
+  private void buildRequestBody(HttpClientRequest request, MultiMap headers,
+                                MultiMap formAttributes, HttpMethod httpMethod) {
+    request.headers().addAll(headers);
+    if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
+      Buffer buffer = createFormPostBody(formAttributes);
+      request.headers().set("content-length", String.valueOf(buffer.length()));
+      request.headers().set("content-type", "application/x-www-form-urlencoded");
+      request.write(buffer);
     }
+  }
 
-    public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
-                                                         TemplateEngineRequest request) {
-        HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
-        Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-                httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-                req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
-                        httpMethod));
-        return serviceResponse.flatMap(this::transformResponse);
+
+  private Buffer createFormPostBody(MultiMap formAttributes) {
+    Buffer buffer = Buffer.buffer();
+
+    String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
+        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+    buffer.appendString(formPostContent, Charsets.UTF_8.toString());
+    return buffer;
+  }
+
+  public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
+    return configuration.getServices().stream()
+        .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
+        .findFirst().map(metadata -> serviceEntry.setServiceMetadata(metadata))
+        .get();
+  }
+
+  private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
+                                              ServiceCallMethod serviceCallMethod) {
+    if (HttpMethod.POST.equals(request.getServerRequestMethod())
+        && ServiceCallMethod.POST.equals(serviceCallMethod)) {
+      return HttpMethod.POST;
+    } else {
+      return HttpMethod.GET;
     }
+  }
 
-    private Observable<Map<String, Object>> transformResponse(HttpClientResponse response) {
-        return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
-                .reduce(Buffer::appendBuffer)
-                .doOnNext(this::traceServiceCall)
-                .map(buffer -> buffer.toJsonObject().getMap())
-                .map(results -> {
-                    results.put("_response",
-                            Collections.singletonMap("statusCode", response.statusCode()));
-                    return results;
-                });
+  private void traceServiceCall(Buffer results) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
     }
-
-    private void buildRequestBody(HttpClientRequest request, MultiMap headers,
-                                  MultiMap formAttributes, HttpMethod httpMethod) {
-        request.headers().addAll(headers);
-        if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
-            Buffer buffer = createFormPostBody(formAttributes);
-            request.headers().set("content-length", String.valueOf(buffer.length()));
-            request.headers().set("content-type", "application/x-www-form-urlencoded");
-            request.write(buffer);
-        }
-    }
-
-
-    private Buffer createFormPostBody(MultiMap formAttributes) {
-        Buffer buffer = Buffer.buffer();
-
-        String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-                .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
-        buffer.appendString(formPostContent, Charsets.UTF_8.toString());
-        return buffer;
-    }
-
-    public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
-        return configuration.getServices().stream()
-                .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
-                .findFirst().map(metadata -> serviceEntry.setServiceMetadata(metadata))
-                .get();
-    }
-
-    private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
-                                                ServiceCallMethod serviceCallMethod) {
-        if (HttpMethod.POST.equals(request.getServerRequestMethod())
-                && ServiceCallMethod.POST.equals(serviceCallMethod)) {
-            return HttpMethod.POST;
-        } else {
-            return HttpMethod.GET;
-        }
-    }
-
-    private void traceServiceCall(Buffer results) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
-        }
-    }
+  }
 }

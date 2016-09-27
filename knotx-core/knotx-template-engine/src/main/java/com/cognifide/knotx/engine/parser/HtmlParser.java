@@ -26,39 +26,39 @@ import java.util.regex.Pattern;
 
 public class HtmlParser {
 
-    private static String ANY_TEMPLATE_PATTERN = "(?is).*<script\\s+data-api-type\\s*=\\s*\"templating\".*";
-    private static Pattern TEMPLATE_PATTERN =
-            Pattern.compile("<script\\s+data-api-type\\s*=\\s*\"templating\".+?</script>", Pattern.DOTALL);
-    private boolean RAW_HTML = false;
-    private boolean RAW_HANDLEBARS_HTML = true;
-    private List<HtmlFragment> fragments;
+  private static String ANY_TEMPLATE_PATTERN = "(?is).*<script\\s+data-api-type\\s*=\\s*\"templating\".*";
+  private static Pattern TEMPLATE_PATTERN =
+      Pattern.compile("<script\\s+data-api-type\\s*=\\s*\"templating\".+?</script>", Pattern.DOTALL);
+  private boolean RAW_HTML = false;
+  private boolean RAW_HANDLEBARS_HTML = true;
+  private List<HtmlFragment> fragments;
 
-    public HtmlParser(String html) {
-        fragments = Lists.newLinkedList();
-        if (html.matches(ANY_TEMPLATE_PATTERN)) {
-            Matcher matcher = TEMPLATE_PATTERN.matcher(html);
-            int idx = 0;
-            while (matcher.find()) {
-                MatchResult matchResult = matcher.toMatchResult();
-                fragments.add(toRaw(html, idx, matchResult.start()));
-                fragments.add(toHandlebars(html, matchResult.start(), matchResult.end()));
-                idx = matchResult.end();
-            }
-            fragments.add(toRaw(html, idx, html.length()));
-        } else {
-            fragments.add(toRaw(html, 0, html.length()));
-        }
+  public HtmlParser(String html) {
+    fragments = Lists.newLinkedList();
+    if (html.matches(ANY_TEMPLATE_PATTERN)) {
+      Matcher matcher = TEMPLATE_PATTERN.matcher(html);
+      int idx = 0;
+      while (matcher.find()) {
+        MatchResult matchResult = matcher.toMatchResult();
+        fragments.add(toRaw(html, idx, matchResult.start()));
+        fragments.add(toHandlebars(html, matchResult.start(), matchResult.end()));
+        idx = matchResult.end();
+      }
+      fragments.add(toRaw(html, idx, html.length()));
+    } else {
+      fragments.add(toRaw(html, 0, html.length()));
     }
+  }
 
-    public List<HtmlFragment> getFragments() {
-        return fragments;
-    }
+  public List<HtmlFragment> getFragments() {
+    return fragments;
+  }
 
-    private HtmlFragment toRaw(String html, int startIdx, int endIdx) {
-        return new RawHtmlFragment(html.substring(startIdx, endIdx), RAW_HTML);
-    }
+  private HtmlFragment toRaw(String html, int startIdx, int endIdx) {
+    return new RawHtmlFragment(html.substring(startIdx, endIdx), RAW_HTML);
+  }
 
-    private HtmlFragment toHandlebars(String html, int startIdx, int endIdx) {
-        return new RawHtmlFragment(html.substring(startIdx, endIdx), RAW_HANDLEBARS_HTML);
-    }
+  private HtmlFragment toHandlebars(String html, int startIdx, int endIdx) {
+    return new RawHtmlFragment(html.substring(startIdx, endIdx), RAW_HANDLEBARS_HTML);
+  }
 }

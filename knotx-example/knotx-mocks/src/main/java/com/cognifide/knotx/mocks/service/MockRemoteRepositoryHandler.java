@@ -30,40 +30,40 @@ import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
 
-    private static final String SEPARATOR = "/";
-    private final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
-    private String catalogue;
+  private static final String SEPARATOR = "/";
+  private final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
+  private String catalogue;
 
-    public MockRemoteRepositoryHandler(String catalogue) {
-        this.catalogue = catalogue;
+  public MockRemoteRepositoryHandler(String catalogue) {
+    this.catalogue = catalogue;
+  }
+
+  @Override
+  public void handle(HttpServerRequest event) {
+
+    String resourcePath = catalogue + SEPARATOR + getContentPath(event.path());
+    String htmlContent = "";
+    try {
+      URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
+      if (resourceUrl != null) {
+        URL url = Resources.getResource(resourcePath);
+        htmlContent = Resources.toString(url, Charsets.UTF_8);
+        LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
+      }
+    } catch (IOException e) {
+      LOGGER.error("Could not read content!", e);
+    } finally {
+      event.response().end(htmlContent);
+      event.connection().close();
     }
+  }
 
-    @Override
-    public void handle(HttpServerRequest event) {
-
-        String resourcePath = catalogue + SEPARATOR + getContentPath(event.path());
-        String htmlContent = "";
-        try {
-            URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-            if (resourceUrl != null) {
-                URL url = Resources.getResource(resourcePath);
-                htmlContent = Resources.toString(url, Charsets.UTF_8);
-                LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
-            }
-        } catch (IOException e) {
-            LOGGER.error("Could not read content!", e);
-        } finally {
-            event.response().end(htmlContent);
-            event.connection().close();
-        }
+  private String getContentPath(String path) {
+    if (path.startsWith("/")) {
+      return path.replaceFirst("/", "");
+    } else {
+      return path;
     }
-
-    private String getContentPath(String path) {
-        if (path.startsWith("/")) {
-            return path.replaceFirst("/", "");
-        } else {
-            return path;
-        }
-    }
+  }
 
 }

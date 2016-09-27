@@ -23,28 +23,28 @@ import io.vertx.rxjava.core.MultiMap;
 
 abstract public class JsonObjectRequest {
 
-    protected static MultiMap fromJsonArray(final JsonArray array) {
-        MultiMap map = MultiMap.caseInsensitiveMultiMap();
-        if (array != null) {
-            array.stream()
-                    .map(item -> (JsonObject) item)
-                    .flatMap(item -> item.stream())
-                    .forEach(entry -> map.add(entry.getKey(), entry.getValue().toString()));
-        }
-        return map;
+  protected static MultiMap fromJsonArray(final JsonArray array) {
+    MultiMap map = MultiMap.caseInsensitiveMultiMap();
+    if (array != null) {
+      array.stream()
+          .map(item -> (JsonObject) item)
+          .flatMap(item -> item.stream())
+          .forEach(entry -> map.add(entry.getKey(), entry.getValue().toString()));
     }
+    return map;
+  }
 
-    public abstract JsonObject toJsonObject();
+  public abstract JsonObject toJsonObject();
 
-    protected JsonArray toJsonArray(final MultiMap multiMap) {
-        JsonArray jsonArray = new JsonArray();
-        if (multiMap != null) {
-            jsonArray = multiMap.names().stream()
-                    .map(name -> new JsonObject().put(name, multiMap.get(name)))
-                    .reduce(new JsonArray(),
-                            (objects, item) -> objects.add(item),
-                            (u, u2) -> u.addAll(u2));
-        }
-        return jsonArray;
+  protected JsonArray toJsonArray(final MultiMap multiMap) {
+    JsonArray jsonArray = new JsonArray();
+    if (multiMap != null) {
+      jsonArray = multiMap.names().stream()
+          .map(name -> new JsonObject().put(name, multiMap.get(name)))
+          .reduce(new JsonArray(),
+              (objects, item) -> objects.add(item),
+              (u, u2) -> u.addAll(u2));
     }
+    return jsonArray;
+  }
 }

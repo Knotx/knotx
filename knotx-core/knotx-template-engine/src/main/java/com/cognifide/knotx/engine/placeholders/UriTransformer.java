@@ -28,38 +28,38 @@ import java.util.stream.Collectors;
 
 public final class UriTransformer {
 
-    private static List<PlaceholderSubstitutor> placeholderSubstitutors =
-            Arrays.asList(new PlaceholderSubstitutor[]{new RequestPlaceholderSubstitutor(),
-                    new UriPlaceholderSubstitutor()});
+  private static List<PlaceholderSubstitutor> placeholderSubstitutors =
+      Arrays.asList(new PlaceholderSubstitutor[]{new RequestPlaceholderSubstitutor(),
+          new UriPlaceholderSubstitutor()});
 
-    private UriTransformer() {
-        // util
+  private UriTransformer() {
+    // util
+  }
+
+  public static String getServiceUri(TemplateEngineRequest request, ServiceEntry serviceEntry) {
+    String serviceUri = serviceEntry.getServiceUri();
+    List<String> placeholders = getPlaceholders(serviceUri);
+
+    for (String placeholder : placeholders) {
+      serviceUri = serviceUri.replace("{" + placeholder + "}",
+          getPlaceholderValue(request, placeholder));
     }
 
-    public static String getServiceUri(TemplateEngineRequest request, ServiceEntry serviceEntry) {
-        String serviceUri = serviceEntry.getServiceUri();
-        List<String> placeholders = getPlaceholders(serviceUri);
+    return serviceUri;
+  }
 
-        for (String placeholder : placeholders) {
-            serviceUri = serviceUri.replace("{" + placeholder + "}",
-                    getPlaceholderValue(request, placeholder));
-        }
+  protected static List<String> getPlaceholders(String serviceUri) {
+    return Arrays.asList(serviceUri.split("\\{")).stream()
+        .filter(str -> str.contains("}"))
+        .map(str -> StringUtils.substringBefore(str, "}"))
+        .collect(Collectors.toList());
+  }
 
-        return serviceUri;
-    }
-
-    protected static List<String> getPlaceholders(String serviceUri) {
-        return Arrays.asList(serviceUri.split("\\{")).stream()
-                .filter(str -> str.contains("}"))
-                .map(str -> StringUtils.substringBefore(str, "}"))
-                .collect(Collectors.toList());
-    }
-
-    private static String getPlaceholderValue(TemplateEngineRequest request, String placeholder) {
-        return placeholderSubstitutors.stream()
-                .map(substitutor -> substitutor.getValue(request, placeholder))
-                .filter(str -> str != null)
-                .findFirst()
-                .orElse("");
-    }
+  private static String getPlaceholderValue(TemplateEngineRequest request, String placeholder) {
+    return placeholderSubstitutors.stream()
+        .map(substitutor -> substitutor.getValue(request, placeholder))
+        .filter(str -> str != null)
+        .findFirst()
+        .orElse("");
+  }
 }

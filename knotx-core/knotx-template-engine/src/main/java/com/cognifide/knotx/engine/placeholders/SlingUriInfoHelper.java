@@ -26,53 +26,53 @@ import java.util.regex.Pattern;
 
 public final class SlingUriInfoHelper {
 
-    /**
-     * This regular expression is used to decompose a sling format uri into following parts:
-     * <p>
-     * <ul>
-     * <li>path</li>
-     * <li>selector string</li>
-     * <li>extension</li>
-     * <li>suffix</li>
-     * </ul>
-     * <p>
-     */
-    private static final Pattern URI_PATTERN = Pattern.compile(
-            "([^\\.\\?#]+)(\\.([^\\/\\?#]+)\\.)?(\\.?([^\\/\\?#]+))?([^\\?#]+)?((\\?|#).+)?");
+  /**
+   * This regular expression is used to decompose a sling format uri into following parts:
+   * <p>
+   * <ul>
+   * <li>path</li>
+   * <li>selector string</li>
+   * <li>extension</li>
+   * <li>suffix</li>
+   * </ul>
+   * <p>
+   */
+  private static final Pattern URI_PATTERN = Pattern.compile(
+      "([^\\.\\?#]+)(\\.([^\\/\\?#]+)\\.)?(\\.?([^\\/\\?#]+))?([^\\?#]+)?((\\?|#).+)?");
 
-    private static final Map<String, SlingUriInfo> cache = new HashMap<String, SlingUriInfo>();
+  private static final Map<String, SlingUriInfo> cache = new HashMap<String, SlingUriInfo>();
 
-    private SlingUriInfoHelper() {
-        // util
+  private SlingUriInfoHelper() {
+    // util
+  }
+
+  public static SlingUriInfo getUriInfo(String uri) {
+    if (!cache.containsKey(uri)) {
+      cache.put(uri, generateSlingUriInfo(uri));
     }
+    return cache.get(uri);
+  }
 
-    public static SlingUriInfo getUriInfo(String uri) {
-        if (!cache.containsKey(uri)) {
-            cache.put(uri, generateSlingUriInfo(uri));
-        }
-        return cache.get(uri);
+  private static SlingUriInfo generateSlingUriInfo(String uri) {
+    final Matcher matcher = URI_PATTERN.matcher(uri);
+    SlingUriInfo uriInfo = null;
+    if (matcher.matches()) {
+      String path = matcher.group(1);
+      String[] pathParts = StringUtils.length(path) > 1
+          ? path.substring(1).split("/")
+          : new String[]{path};
+
+      String selectorString = matcher.group(3);
+      String[] selectors = selectorString != null
+          ? selectorString.split("\\.")
+          : new String[0];
+
+      String extension = matcher.group(5);
+      String suffix = matcher.group(6);
+
+      uriInfo = new SlingUriInfo(path, pathParts, selectorString, selectors, extension, suffix);
     }
-
-    private static SlingUriInfo generateSlingUriInfo(String uri) {
-        final Matcher matcher = URI_PATTERN.matcher(uri);
-        SlingUriInfo uriInfo = null;
-        if (matcher.matches()) {
-            String path = matcher.group(1);
-            String[] pathParts = StringUtils.length(path) > 1
-                    ? path.substring(1).split("/")
-                    : new String[]{path};
-
-            String selectorString = matcher.group(3);
-            String[] selectors = selectorString != null
-                    ? selectorString.split("\\.")
-                    : new String[0];
-
-            String extension = matcher.group(5);
-            String suffix = matcher.group(6);
-
-            uriInfo = new SlingUriInfo(path, pathParts, selectorString, selectors, extension, suffix);
-        }
-        return uriInfo;
-    }
+    return uriInfo;
+  }
 
 }
