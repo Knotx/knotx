@@ -23,6 +23,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class TemplateEngineConfiguration {
@@ -41,7 +42,7 @@ public class TemplateEngineConfiguration {
           metadata.path = item.getString("path");
           metadata.domain = item.getString("domain");
           metadata.port = item.getInteger("port");
-
+          metadata.allowedHeaders = item.getJsonArray("allowed.headers", new JsonArray()).getList();
           return metadata;
         }).collect(Collectors.toList());
 
@@ -68,6 +69,8 @@ public class TemplateEngineConfiguration {
     private String domain;
 
     private Integer port;
+
+    private List <String> allowedHeaders;
 
     @Override
     public boolean equals(Object obj) {
@@ -113,6 +116,14 @@ public class TemplateEngineConfiguration {
 
     public void setPort(Integer port) {
       this.port = port;
+    }
+
+    public List<String> getAllowedHeaders() {
+      return allowedHeaders;
+    }
+
+    public void setAllowedHeaders(List<String> allowedHeaders) {
+      this.allowedHeaders = allowedHeaders;
     }
   }
 }

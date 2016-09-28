@@ -17,29 +17,35 @@
  */
 package com.cognifide.knotx.engine;
 
+import com.google.common.collect.Lists;
+
+import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 
 public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
 
-  private String CORRECT_JSON = "service-correct.json";
+  private static final String CORRECT_JSON = "service-correct.json";
 
   private TemplateEngineConfiguration correctConfig;
 
-  private TemplateEngineConfiguration.ServiceMetadata expectedServiceOne;
-  private TemplateEngineConfiguration.ServiceMetadata expectedServiceTwo;
+  private ServiceMetadata expectedServiceOne;
+  private ServiceMetadata expectedServiceTwo;
 
   @Before
   public void setUp() throws Exception {
     correctConfig = new TemplateEngineConfiguration(readConfig(CORRECT_JSON));
-
-    expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000);
-    expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080);
+    expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, Lists.newArrayList("Accept-*", "Location"));
+    expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, Lists.newArrayList());
   }
 
   @Test
@@ -48,16 +54,18 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
     assertThat(correctConfig.getServices().size(), is(2));
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceOne));
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceTwo));
+    assertEquals(correctConfig.getServices().get(0).getAllowedHeaders(), expectedServiceOne.getAllowedHeaders());
+    assertEquals(correctConfig.getServices().get(1).getAllowedHeaders(), expectedServiceTwo.getAllowedHeaders());
 
   }
 
-  private TemplateEngineConfiguration.ServiceMetadata createMockedService(String path, String domain, Integer port) {
-    TemplateEngineConfiguration.ServiceMetadata newService = new TemplateEngineConfiguration.ServiceMetadata();
+  private ServiceMetadata createMockedService(String path, String domain, Integer port, List<String> allowedHeaders) {
+    ServiceMetadata newService = new ServiceMetadata();
     newService.setPath(path);
     newService.setDomain(domain);
     newService.setPort(port);
+    newService.setAllowedHeaders(allowedHeaders);
     return newService;
   }
-
 
 }

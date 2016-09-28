@@ -18,10 +18,12 @@
 package com.cognifide.knotx.engine.service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.engine.HeadersPredicate;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
@@ -57,10 +59,19 @@ public class ServiceEngine {
     Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
         httpClient, httpMethod, serviceEntry.getPort(),
         serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-        req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+        req -> buildRequestBody(req, getFilteredHeaders(request.getHeaders(), serviceEntry.getAllowedHeaders()), request.getFormAttributes(),
             httpMethod));
     return serviceResponse.flatMap(this::collectBuffers);
   }
+
+  private MultiMap getFilteredHeaders(MultiMap headers, List<String> allowedHeaders) {
+    final MultiMap filteredHeaders = MultiMap.caseInsensitiveMultiMap();
+    headers.names().stream()
+        .filter(header -> allowedHeaders.stream().anyMatch(HeadersPredicate.shouldBePreserved(header)))
+        .forEach(header -> filteredHeaders.add(header, headers.get(header)));
+    return filteredHeaders;
+  }
+
 
   private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
     return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())

@@ -33,7 +33,6 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
@@ -81,37 +80,19 @@ public class SampleApplicationTest {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
   }
 
-  @Test
-  public void rewritePreservedHeadersTest(TestContext context) {
-    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
-    Async async = context.async();
-    HttpClientRequest httpClientRequest = client.get(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
-        resp -> {
-          context.assertEquals("Pl", resp.headers().get("X-Language-Code"));
-          context.assertNull(resp.getHeader("Location"));
-          client.close();
-          async.complete();
-        }
-    );
-    httpClientRequest.putHeader("X-Language-Code", "Pl");
-    httpClientRequest.putHeader("Location", "http://localhost/content/remote/simple.html");
-    httpClientRequest.end();
-  }
-
   private void testPostRequest(TestContext context, String url, String expectedResponseFile, boolean ajaxCall) {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
 
     Async async = context.async();
     Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
       String bodyForm = "email=email@com.pl&name=John&_id=competition-form";
-      req.headers().set("content-length", String.valueOf(bodyForm.length()));
       req.headers().set("content-type", "application/x-www-form-urlencoded");
+      req.headers().set("content-length", String.valueOf(bodyForm.length()));
       if (ajaxCall) {
         req.headers().set("X-Requested-With", "XMLHttpRequest");
       }
       req.write(bodyForm);
     });
-
 
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());

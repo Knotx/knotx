@@ -207,11 +207,6 @@ The first matched service will handle the request or, if there's no service matc
   "knotxServer": {
     "config": {
       "http.port": 8092,
-      "preserved.headers": [
-        "User-Agent",
-        "X-Solr-Core-Key",
-        "X-Language-Code"
-      ],
       "dependencies" : {
         "repository.address" : "template-repository",
         "engine.address": "template-engine"
@@ -223,7 +218,6 @@ The first matched service will handle the request or, if there's no service matc
 ```
 This section configures the Knot.x HTTP server. The config node consists of:
 - **http.port** - an HTTP port on which the server listens for requests,
-- **preserved.headers** - an array of HTTP Headers that will be forwarded to service calls,
 - **dependencies** - Vert.x Event Bus addresses to Knot.x verticles used by Knot.x
     - **repository.address** - event bus address of Knot.x Repository verticle. This is the same value as **service.name** in the **repository** section of the `application.json`
     - **engine.address** - event bus address of Knot.x Template Engine verticle. This is the same value as **service.name** in the **templateEngine** section of the `application.json`    

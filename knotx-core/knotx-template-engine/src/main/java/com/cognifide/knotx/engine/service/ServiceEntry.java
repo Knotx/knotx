@@ -29,6 +29,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -130,6 +131,10 @@ public class ServiceEntry {
 
   public Integer getPort() {
     return serviceMetadata.getPort();
+  }
+
+  public List<String> getAllowedHeaders(){
+    return serviceMetadata.getAllowedHeaders();
   }
 
 
