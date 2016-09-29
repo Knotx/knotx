@@ -29,8 +29,8 @@ public class HtmlParser {
   private static String ANY_TEMPLATE_PATTERN = "(?is).*<script\\s+data-api-type\\s*=\\s*\"templating\".*";
   private static Pattern TEMPLATE_PATTERN =
       Pattern.compile("<script\\s+data-api-type\\s*=\\s*\"templating\".+?</script>", Pattern.DOTALL);
-  private boolean RAW_HTML = false;
-  private boolean RAW_HANDLEBARS_HTML = true;
+  private static boolean RAW_HTML = false;
+  private static boolean RAW_HANDLEBARS_HTML = true;
   private List<HtmlFragment> fragments;
 
   public HtmlParser(String html) {

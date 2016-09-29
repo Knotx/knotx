@@ -99,6 +99,26 @@ public class ServiceEntry {
     }
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof ServiceEntry) {
+      final ServiceEntry other = (ServiceEntry) o;
+      return new EqualsBuilder()
+          .append(serviceUri, other.getServiceUri())
+          .append(placeholderNamespace, other.getPlaceholderNamespace())
+          .append(methodType, other.getMethodType())
+          .isEquals();
+    } else {
+      return false;
+    }
+
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(serviceUri, placeholderNamespace, methodType);
+  }
+
   private boolean canServeMethodType(HttpMethod requestMethodType) {
     ServiceCallMethod methodTypeFromRequest = ServiceCallMethod.from(requestMethodType);
     return Objects.equals(this.methodType, methodTypeFromRequest)
@@ -119,25 +139,5 @@ public class ServiceEntry {
         .map(attr -> attr.get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
 
     return fragmentId.equals(formId) || ServiceCallMethod.POST != methodType;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (o instanceof ServiceEntry) {
-      final ServiceEntry other = (ServiceEntry) o;
-      return new EqualsBuilder()
-          .append(serviceUri, other.getServiceUri())
-          .append(placeholderNamespace, other.getPlaceholderNamespace())
-          .append(methodType, other.getMethodType())
-          .isEquals();
-    } else {
-      return false;
-    }
-
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(serviceUri, placeholderNamespace, methodType);
   }
 }

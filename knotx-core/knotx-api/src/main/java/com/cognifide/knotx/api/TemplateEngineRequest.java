@@ -28,11 +28,11 @@ import rx.Observable;
 
 public class TemplateEngineRequest extends JsonObjectRequest {
   private final MultiMap formAttributes;
-  private String template;
-  private HttpMethod serverRequestMethod;
-  private MultiMap headers;
-  private MultiMap params;
-  private String uri;
+  private final String template;
+  private final HttpMethod serverRequestMethod;
+  private final MultiMap headers;
+  private final MultiMap params;
+  private final String uri;
 
   private Cache<String, Observable<Map<String, Object>>> cache = CacheBuilder.newBuilder().build();
 
