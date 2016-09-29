@@ -44,17 +44,17 @@ public class HeadersHelperTest {
 
     private static final MultiMap HEADERS = MultiMap.caseInsensitiveMultiMap()
         .add("Accept", "text/plain").add("Accept-Charset", "text/plain")
-        .add("Accept-Language","en-US").add("X-Request-ID", "requestId")
-        .add("X-Correlation-ID", "correlationId").add("If-Match","match")
-        .add("If-None-Match","noneMatch").add("Content-Type","application/x-www-form-urlencoded")
+        .add("Accept-Language", "en-US").add("X-Request-ID", "requestId")
+        .add("X-Correlation-ID", "correlationId").add("If-Match", "match")
+        .add("If-None-Match", "noneMatch").add("Content-Type", "application/x-www-form-urlencoded")
         .add("User-Agent", "userAgent");
     private static final MultiMap EXPECTED_HEADERS_ONE = MultiMap.caseInsensitiveMultiMap()
-        .add("Accept-Charset", "text/plain").add("Accept-Language","en-US")
+        .add("Accept-Charset", "text/plain").add("Accept-Language", "en-US")
         .add("X-Request-ID", "requestId").add("X-Correlation-ID", "correlationId");
     private static final MultiMap EXPECTED_HEADERS_TWO = MultiMap.caseInsensitiveMultiMap()
-        .add("If-Match","match").add("If-None-Match","noneMatch");
+        .add("If-Match", "match").add("If-None-Match", "noneMatch");
     private static final MultiMap EXPECTED_HEADERS_THREE = MultiMap.caseInsensitiveMultiMap()
-        .add("Content-Type","application/x-www-form-urlencoded").add("User-Agent", "userAgent");
+        .add("Content-Type", "application/x-www-form-urlencoded").add("User-Agent", "userAgent");
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -92,28 +92,29 @@ public class HeadersHelperTest {
     }
 
     @Test
-    public void getFilteredHeaders_whenAllowedPatternsListIsEmpty_expectNoHeadersPreserved(){
+    public void getFilteredHeaders_whenAllowedPatternsListIsEmpty_expectNoHeadersPreserved() {
         assertThat(HeadersHelper.getFilteredHeaders(HEADERS, HeadersHelper.getPatternsFromHeadersConfig(RULES_SET_ONE)).size(), is(0));
     }
 
     @Test
-    public void getFilteredHeaders_whenAllHeadersAllowed_expectAllHeadersPreserved(){
+    public void getFilteredHeaders_whenAllHeadersAllowed_expectAllHeadersPreserved() {
         assertThat(HeadersHelper.getFilteredHeaders(HEADERS, HeadersHelper.getPatternsFromHeadersConfig(RULES_SET_TWO)).size(), is(9));
     }
 
     @Test
-    public void getFilteredHeaders_whenWildcardAtEndOrBeginning_expectCorrectHeadersPreserved(){
+    public void getFilteredHeaders_whenWildcardAtEndOrBeginning_expectCorrectHeadersPreserved() {
         MultiMap filteredHeaders = HeadersHelper.getFilteredHeaders(HEADERS, HeadersHelper.getPatternsFromHeadersConfig(RULES_SET_SIX));
         assertHeadersMapAreEqual(filteredHeaders, EXPECTED_HEADERS_ONE, 4);
     }
 
     @Test
-    public void getFilteredHeaders_whenWildcardInTheMiddle_expectCorrectHeadersPreserved(){
+    public void getFilteredHeaders_whenWildcardInTheMiddle_expectCorrectHeadersPreserved() {
         MultiMap filteredHeaders = HeadersHelper.getFilteredHeaders(HEADERS, HeadersHelper.getPatternsFromHeadersConfig(RULES_SET_SEVEN));
         assertHeadersMapAreEqual(filteredHeaders, EXPECTED_HEADERS_TWO, 2);
     }
+
     @Test
-    public void getFilteredHeaders_whenNoWildcardExpression_expectCorrectHeadersPreserved(){
+    public void getFilteredHeaders_whenNoWildcardExpression_expectCorrectHeadersPreserved() {
         MultiMap filteredHeaders = HeadersHelper.getFilteredHeaders(HEADERS, HeadersHelper.getPatternsFromHeadersConfig(RULES_SET_FOUR));
         assertHeadersMapAreEqual(filteredHeaders, EXPECTED_HEADERS_THREE, 2);
     }

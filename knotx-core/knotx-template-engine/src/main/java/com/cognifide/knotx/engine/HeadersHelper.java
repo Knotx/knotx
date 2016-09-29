@@ -33,12 +33,12 @@ public final class HeadersHelper {
 
     private static final String WILDCARD = "*";
 
-    private HeadersHelper(){
+    private HeadersHelper() {
         //to prevent initialization
     }
 
     public static List<Pattern> getPatternsFromHeadersConfig(JsonArray headersConfiguration) {
-        List <String> allowedHeaders = headersConfiguration.getList();
+        List<String> allowedHeaders = headersConfiguration.getList();
         return allowedHeaders.stream().map(allowedHeader -> {
             String pattern = "^" + allowedHeader.replace(WILDCARD, "(.+)") + "$";
             Pattern compiledPattern;

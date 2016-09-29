@@ -61,6 +61,7 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
     exception.expect(RuntimeException.class);
     createMockedService("/service/.*", "localhost", 8080, new JsonArray().add("Accept("));
   }
+
   private ServiceMetadata createMockedService(String path, String domain, Integer port, JsonArray allowedHeaders) {
     ServiceMetadata newService = new ServiceMetadata();
     newService.setPath(path);
