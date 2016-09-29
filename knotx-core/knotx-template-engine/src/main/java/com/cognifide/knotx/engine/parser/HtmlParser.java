@@ -26,14 +26,11 @@ import java.util.regex.Pattern;
 
 public class HtmlParser {
 
-  private boolean RAW_HTML = false;
-  private boolean RAW_HANDLEBARS_HTML = true;
-
-  private static String ANY_TEMPLATE_PATTERN = "(?is).*<script\\s+data-api-type\\s*=\\s*\"templating\".*";
-
-  private static Pattern TEMPLATE_PATTERN =
+  private final static String ANY_TEMPLATE_PATTERN = "(?is).*<script\\s+data-api-type\\s*=\\s*\"templating\".*";
+  private final static Pattern TEMPLATE_PATTERN =
       Pattern.compile("<script\\s+data-api-type\\s*=\\s*\"templating\".+?</script>", Pattern.DOTALL);
-
+  private final static boolean RAW_HTML = false;
+  private final static boolean RAW_HANDLEBARS_HTML = true;
   private List<HtmlFragment> fragments;
 
   public HtmlParser(String html) {

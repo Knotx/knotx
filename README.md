@@ -1,11 +1,17 @@
 ![Cognifide logo](http://cognifide.github.io/images/cognifide-logo.png)
-![Knot.x](https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true)
 
-# Knot.x - reactive microservice assembler
 [![][travis img]][travis]
 [![][license img]][license]
 
-Knot.x is a lightweight and high-performance **reactive microservice assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
+# Knot.x - reactive template assembler
+<p align="center">
+  <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true"
+         alt="Knot.x"/>
+</p>
+
+Knot.x is a lightweight and high-performance **reactive template assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
+
+![Flow diagram](icons/architecture/flow-diagram.png)
 
 We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
@@ -78,6 +84,7 @@ http://localhost:8092/content/remote/multiple-forms.html
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/Cognifide/knotx/issues).
+Please notice we use [ZenHub](https://www.zenhub.com/) extension to manage issues.
 
 # Licence
 

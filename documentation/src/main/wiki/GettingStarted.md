@@ -29,6 +29,7 @@ A module that contains the **host** [verticle](http://vertx.io/docs/apidocs/io/v
 
 #### knotx-template-engine
 A module that contains the **template-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Templating Engine is responsible for processing template snippets, calling external services for dynamic data and producing final markup with injected data.
+See [[Templating Engine|TemplatingEngine]] to learn more.
 
 ### Example
 The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts five verticles (Knot.x Repository, Knot.x Template Engine, Knot.x Server, Services Mocks and Mocked Remote repository). This module is a perfect fit for those getting started with Knot.x. 
