@@ -61,33 +61,33 @@ public class SampleApplicationTest {
   }
 
   @Test
-  public void localSimpleHtmlTest(TestContext context) {
+  public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
   }
 
   @Test
-  public void remoteSimpleHtmlTest(TestContext context) {
+  public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
   }
 
   @Test
-  public void localMultipleFormWithGetTest(TestContext context) {
+  public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
   @Test
-  public void localMultipleFormWithPostTest(TestContext context) {
+  public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
   @Test
-  public void localMultipleFormWithMultiplePostTest(TestContext context) {
+  public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
   }
 
   @Test
-  public void localMultipleFormWithAjaxPostTest(TestContext context) {
+  public void whenRequestingWithXhrAndPostAForm_expectOnlyRenderedSnippetWithFormReturned(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithAjaxPostResult.html", true);
   }
 
