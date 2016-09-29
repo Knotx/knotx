@@ -17,24 +17,24 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
+import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.engine.service.ServiceEntry;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.engine.service.ServiceEntry;
-
 public final class UriTransformer {
-
-  private UriTransformer() {
-    // util
-  }
 
   private static List<PlaceholderSubstitutor> placeholderSubstitutors =
       Arrays.asList(new PlaceholderSubstitutor[]{new RequestPlaceholderSubstitutor(),
           new UriPlaceholderSubstitutor()});
+
+  private UriTransformer() {
+    // util
+  }
 
   public static String getServiceUri(TemplateEngineRequest request, ServiceEntry serviceEntry) {
     String serviceUri = serviceEntry.getServiceUri();
@@ -56,11 +56,10 @@ public final class UriTransformer {
   }
 
   private static String getPlaceholderValue(TemplateEngineRequest request, String placeholder) {
-    String result = placeholderSubstitutors.stream()
+    return placeholderSubstitutors.stream()
         .map(substitutor -> substitutor.getValue(request, placeholder))
         .filter(str -> str != null)
         .findFirst()
         .orElse("");
-    return result;
   }
 }

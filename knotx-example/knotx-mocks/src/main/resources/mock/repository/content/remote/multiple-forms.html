@@ -55,6 +55,8 @@
         <h1>{{labelsrepository.welcomeInCompetition}}</h1>
         {{#if formresponse}}
         <p>{{labelsrepository.thankYouForSubscribingToCompetition}}</p>
+        <p>Submitted: {{formresponse.email}}</p>
+        <p>Submitted: {{formresponse.name}}</p>
         {{else}}
         <p>Please subscribe to our new competition:</p>
         <form method="post" class="form-inline">
@@ -84,6 +86,7 @@
           <h1>{{labelsrepository.subscribeToNewsletter}}</h1>
           {{#if formresponse}}
           <p>{{labelsrepository.thankYouForSubscribingToNewsletter}}</p>
+          <p>Submitted: {{formresponse.email}}</p>
           {{else}}
           <p>Please subscribe to our newsletter:</p>
           <form method="post" class="form-inline" id="newsletter">

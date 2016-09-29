@@ -16,22 +16,25 @@
  */
 package com.cognifide.knotx.api;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
+import java.util.Map;
+
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
+import rx.Observable;
 
 public class TemplateEngineRequest extends JsonObjectRequest {
-  private String template;
-
-  private HttpMethod serverRequestMethod;
-
-  private MultiMap headers;
-
-  private MultiMap params;
-
   private final MultiMap formAttributes;
+  private final String template;
+  private final HttpMethod serverRequestMethod;
+  private final MultiMap headers;
+  private final MultiMap params;
+  private final String uri;
 
-  private String uri;
+  private Cache<String, Observable<Map<String, Object>>> cache = CacheBuilder.newBuilder().build();
 
   public TemplateEngineRequest(String template, HttpMethod serverRequestMethod, MultiMap headers,
                                MultiMap params, MultiMap formAttributes, String uri) {
@@ -68,24 +71,16 @@ public class TemplateEngineRequest extends JsonObjectRequest {
     return uri;
   }
 
-  public void setHeaders(MultiMap headers) {
-    this.headers = headers;
-  }
-
   public HttpMethod getServerRequestMethod() {
     return serverRequestMethod;
   }
 
-  public void setServerRequestMethod(HttpMethod serverRequestMethod) {
-    this.serverRequestMethod = serverRequestMethod;
-  }
-
-  public void setTemplate(String template) {
-    this.template = template;
-  }
-
   public MultiMap getFormAttributes() {
     return formAttributes;
+  }
+
+  public Cache<String, Observable<Map<String, Object>>> getCache() {
+    return cache;
   }
 
   @Override

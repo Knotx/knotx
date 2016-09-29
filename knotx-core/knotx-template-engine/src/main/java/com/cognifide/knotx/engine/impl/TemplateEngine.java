@@ -17,11 +17,6 @@
  */
 package com.cognifide.knotx.engine.impl;
 
-import java.io.IOException;
-import java.util.ServiceLoader;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.cognifide.knotx.api.CustomHandlebarsHelper;
 import com.cognifide.knotx.api.TemplateEngineRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
@@ -30,6 +25,11 @@ import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.github.jknack.handlebars.Handlebars;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
+import java.util.ServiceLoader;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -67,9 +67,9 @@ public class TemplateEngine {
 
     ServiceLoader.load(CustomHandlebarsHelper.class)
         .iterator().forEachRemaining(helper -> {
-          handlebars.registerHelper(helper.getName(), helper);
-          LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
-        });
+      handlebars.registerHelper(helper.getName(), helper);
+      LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
+    });
   }
 
   private Boolean shouldProcessRequest(HtmlFragment htmlFragment, TemplateEngineRequest request) {

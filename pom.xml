@@ -288,7 +288,7 @@
                   <argument>run</argument>
                   <argument>${main.verticle}</argument>
                   <argument>-conf</argument>
-                  <argumant>${project.basedir}/src/main/resources/application.json</argumant>
+                  <argument>${project.basedir}/src/main/resources/${exec.config}</argument>
                 </arguments>
               </configuration>
             </execution>
