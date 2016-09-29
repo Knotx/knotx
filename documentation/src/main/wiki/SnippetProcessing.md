@@ -94,7 +94,7 @@ Consider below scenario: user visits page with form for the first time and then 
     <form method="post" class="form-inline">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="name" name="name" id="name"/>
+            <input type="text" name="name" id="name"/>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
@@ -158,7 +158,7 @@ Snippet in example below will call /service/subscribeToCompetition only when req
   {{else}}
       <p>Please subscribe to our new competition:</p>
       <form method="post">
-        <input type="name" name="name" />
+        <input type="text" name="name" />
         <input type="email" name="email" />
         <input type="submit" value="Submit" />
         <input type="hidden" name="_id" value="competition-form" />
