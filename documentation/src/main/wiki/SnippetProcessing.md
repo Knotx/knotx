@@ -42,6 +42,10 @@ When service path is marked as data-uri-**all**, GET call will be execute regard
 
 Note: it is possible to call service using `data-uri` without method postfix (e.g. `data-uri="/service/formSubmit"`. Such construction will be treated as an alias for `data-uri-all`.
 
+###Caching service calls
+Snippet might consists of more than one service call. It's also possible that there are multiple snippets on the page, each using same services. Knot.x does caching results of service calls to avoid multiple calls for the same data. 
+Caching is performed within one request only. It means second request will not get cached data. 
+
 ###Parametrized services calls
 When found a placeholder within the data-uri-**-get** call it will be replaced with a dynamic value based on the current http request.
 Available placeholders are:
@@ -132,7 +136,6 @@ Consider below scenario: user visits page with form for the first time and then 
 ```
 
 
-
 #### Multiple forms processing
 Templates can contain many snippets with forms. Knot.x provides mechanism to distinguish which snippet should make call when **POST** request is done. 
 Snippet can contain an **data-id** attribute. Its value defines which snippet should be processed by comparing it with **_id** parameter sent with POST method.
@@ -197,7 +200,6 @@ Accept: */*
 Content-Type: text/html
 ```
                
-
 
 
 ###Service response status code

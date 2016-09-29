@@ -42,6 +42,8 @@ In this case the microservice response could have the following format:
 }
 ```
 
+Additionally, Knot.x does caching of services calls results within one request, to avoid multiple calls to the same services when rendering a page.
+
 ## Architecture
 The HTTP Request which comes to **Knot.x** causes a request for a template to be sent to one of the available Content Repositories. For each script with `data-api-type="templating"` there is a request to a microservice for the data. After both requests are completed, [Handlebars.js](http://handlebarsjs.com/) merges the static content and the dynamic data and returns a complete document.
 
