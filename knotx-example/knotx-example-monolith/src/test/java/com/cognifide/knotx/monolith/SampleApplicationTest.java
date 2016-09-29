@@ -91,23 +91,6 @@ public class SampleApplicationTest {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithAjaxPostResult.html", true);
   }
 
-  @Test
-  public void rewritePreservedHeadersTest(TestContext context) {
-    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
-    Async async = context.async();
-    HttpClientRequest httpClientRequest = client.get(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, REMOTE_REQUEST_URI,
-            resp -> {
-              context.assertEquals("Pl", resp.headers().get("X-Language-Code"));
-              context.assertNull(resp.getHeader("Location"));
-              client.close();
-              async.complete();
-            }
-    );
-    httpClientRequest.putHeader("X-Language-Code", "Pl");
-    httpClientRequest.putHeader("Location", "http://localhost/content/remote/simple.html");
-    httpClientRequest.end();
-  }
-
   private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
 
