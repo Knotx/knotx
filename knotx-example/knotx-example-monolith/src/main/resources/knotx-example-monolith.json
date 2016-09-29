@@ -44,7 +44,8 @@
           "domain": "localhost",
           "port": 3000,
           "allowed.headers": [
-            "Accept*"
+            "Content-Type",
+            "X-*"
           ]
         },
         {
@@ -52,8 +53,8 @@
           "domain": "localhost",
           "port": 8080,
           "allowed.headers": [
-            "*-Agent",
-            "Accept*"
+            "Content-Type",
+            "X-*"
           ]
         }
       ]

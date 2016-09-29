@@ -61,12 +61,20 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         {
           "path": "/service/mock/.*",
           "domain": "localhost",
-          "port": 3000
+          "port": 3000,
+          "allowed.headers": [
+            "Content-Type",
+            "X-*"
+          ]
         },
         {
           "path": "/service/.*",
           "domain": "localhost",
-          "port": 8080
+          "port": 8080,
+          "allowed.headers": [
+            "Content-Type",
+            "X-*"
+          ]
         }
       ]
     }
@@ -140,4 +148,31 @@ For instance, a configuration JSON for the *repository* verticle could look like
     ]
   }
 }
+```
+#####Preserving headers passed to microservices
+Single service configuration allows to define which headers should be passed to microservices. 
+If **allowed.headers** section is not present, all headers will be filtered out. It is possible to use wildcard character (*) e.g.
+```json
+"services": [
+{
+  "path": "/service/mock/.*",
+  "domain": "localhost",
+  "port": 3000,
+  "allowed.headers": [
+    "Content-Type",
+    "X-*"
+  ]
+},
+```
+
+```json
+"services": [
+{
+  "path": "/service/mock/.*",
+  "domain": "localhost",
+  "port": 3000,
+  "allowed.headers": [
+    "*"
+  ]
+},
 ```
