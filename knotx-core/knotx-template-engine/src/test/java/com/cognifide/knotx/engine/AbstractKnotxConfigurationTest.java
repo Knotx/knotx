@@ -20,11 +20,17 @@ package com.cognifide.knotx.engine;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Resources;
 
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
+
 import java.io.InputStreamReader;
 
 import io.vertx.core.json.JsonObject;
 
 public class AbstractKnotxConfigurationTest {
+
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
 
   protected static JsonObject readConfig(String path) throws Exception {
     return readJson(path).getJsonObject("config");

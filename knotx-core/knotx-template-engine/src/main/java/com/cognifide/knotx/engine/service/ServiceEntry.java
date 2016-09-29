@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
 
@@ -133,8 +134,8 @@ public class ServiceEntry {
     return serviceMetadata.getPort();
   }
 
-  public List<String> getAllowedHeaders(){
-    return serviceMetadata.getAllowedHeaders();
+  public List<Pattern> getAllowedHeaders(){
+    return serviceMetadata.getHeadersPatterns();
   }
 
 

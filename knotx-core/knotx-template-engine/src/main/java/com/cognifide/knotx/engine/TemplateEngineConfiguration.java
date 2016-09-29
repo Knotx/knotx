@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import io.vertx.core.json.JsonArray;
@@ -42,10 +43,9 @@ public class TemplateEngineConfiguration {
           metadata.path = item.getString("path");
           metadata.domain = item.getString("domain");
           metadata.port = item.getInteger("port");
-          metadata.allowedHeaders = item.getJsonArray("allowed.headers", new JsonArray()).getList();
+          metadata.headersPatterns = HeadersHelper.getPatternsFromHeadersConfig(item.getJsonArray("allowed.headers", new JsonArray()));
           return metadata;
         }).collect(Collectors.toList());
-
     templateDebug = config.getBoolean("template.debug", false);
     clientOptions = config.getJsonObject("client.options", new JsonObject());
   }
@@ -70,7 +70,7 @@ public class TemplateEngineConfiguration {
 
     private Integer port;
 
-    private List <String> allowedHeaders;
+    private List <Pattern> headersPatterns;
 
     @Override
     public boolean equals(Object obj) {
@@ -118,12 +118,12 @@ public class TemplateEngineConfiguration {
       this.port = port;
     }
 
-    public List<String> getAllowedHeaders() {
-      return allowedHeaders;
+    public List<Pattern> getHeadersPatterns() {
+      return headersPatterns;
     }
 
-    public void setAllowedHeaders(List<String> allowedHeaders) {
-      this.allowedHeaders = allowedHeaders;
+    public void setHeadersPatterns(List<Pattern> headersPatterns) {
+      this.headersPatterns = headersPatterns;
     }
   }
 }

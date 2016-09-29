@@ -17,15 +17,13 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.google.common.collect.Lists;
-
 import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import io.vertx.core.json.JsonArray;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,27 +42,31 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
   @Before
   public void setUp() throws Exception {
     correctConfig = new TemplateEngineConfiguration(readConfig(CORRECT_JSON));
-    expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, Lists.newArrayList("Accept-*", "Location"));
-    expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, Lists.newArrayList());
+    expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, new JsonArray().add("Accept-*").add("Location"));
+    expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, new JsonArray());
   }
 
   @Test
-  public void testConfigBeanInitializedProperly() {
+  public void whenCorrectConfigIsProvided_expectConfigIsProperlyParsed() {
     assertThat(correctConfig.getServices(), is(notNullValue()));
     assertThat(correctConfig.getServices().size(), is(2));
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceOne));
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceTwo));
-    assertEquals(correctConfig.getServices().get(0).getAllowedHeaders(), expectedServiceOne.getAllowedHeaders());
-    assertEquals(correctConfig.getServices().get(1).getAllowedHeaders(), expectedServiceTwo.getAllowedHeaders());
-
+    assertEquals(correctConfig.getServices().get(0).getHeadersPatterns().toString(), expectedServiceOne.getHeadersPatterns().toString());
+    assertEquals(correctConfig.getServices().get(1).getHeadersPatterns().toString(), expectedServiceTwo.getHeadersPatterns().toString());
   }
 
-  private ServiceMetadata createMockedService(String path, String domain, Integer port, List<String> allowedHeaders) {
+  @Test
+  public void whenAllowedHeaderSyntaxIsIncorrect_expectException() {
+    exception.expect(RuntimeException.class);
+    createMockedService("/service/.*", "localhost", 8080, new JsonArray().add("Accept("));
+  }
+  private ServiceMetadata createMockedService(String path, String domain, Integer port, JsonArray allowedHeaders) {
     ServiceMetadata newService = new ServiceMetadata();
     newService.setPath(path);
     newService.setDomain(domain);
     newService.setPort(port);
-    newService.setAllowedHeaders(allowedHeaders);
+    newService.setHeadersPatterns(HeadersHelper.getPatternsFromHeadersConfig(allowedHeaders));
     return newService;
   }
 
