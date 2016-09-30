@@ -12,7 +12,8 @@
         "repository.address": "template-repository",
         "engine.address": "template-engine"
       }
-    }
+    },
+    "number.of.instances": 2
   },
   "repository": {
     "config": {
@@ -34,7 +35,8 @@
           }
         }
       ]
-    }
+    },
+    "number.of.instances": 2
   },
   "engine": {
     "config": {
@@ -56,6 +58,7 @@
           "port": 8080
         }
       ]
-    }
+    },
+    "number.of.instances": 2
   }
 }

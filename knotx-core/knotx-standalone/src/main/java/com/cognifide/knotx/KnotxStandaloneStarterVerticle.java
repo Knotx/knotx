@@ -17,11 +17,6 @@
  */
 package com.cognifide.knotx;
 
-import com.cognifide.knotx.engine.TemplateEngineVerticle;
-import com.cognifide.knotx.repository.RepositoryVerticle;
-import com.cognifide.knotx.server.KnotxServerVerticle;
-
-import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.rxjava.core.AbstractVerticle;
 
@@ -31,8 +26,8 @@ public class KnotxStandaloneStarterVerticle extends AbstractVerticle {
   public void start() throws Exception {
     Vertx vertx = Vertx.vertx();
 
-    vertx.deployVerticle(new RepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("repository")));
-    vertx.deployVerticle(new TemplateEngineVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("engine")));
-    vertx.deployVerticle(new KnotxServerVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("server")));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.repository.RepositoryVerticle", config().getJsonObject("repository"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.engine.TemplateEngineVerticle", config().getJsonObject("engine"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.server.KnotxServerVerticle", config().getJsonObject("server"));
   }
 }

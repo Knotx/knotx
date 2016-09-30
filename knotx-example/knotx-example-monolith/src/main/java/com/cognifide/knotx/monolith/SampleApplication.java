@@ -17,13 +17,8 @@
  */
 package com.cognifide.knotx.monolith;
 
-import com.cognifide.knotx.engine.TemplateEngineVerticle;
-import com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle;
-import com.cognifide.knotx.mocks.MockServiceVerticle;
-import com.cognifide.knotx.repository.RepositoryVerticle;
-import com.cognifide.knotx.server.KnotxServerVerticle;
+import com.cognifide.knotx.DeploymentHelper;
 
-import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.rxjava.core.AbstractVerticle;
 
@@ -33,11 +28,11 @@ public class SampleApplication extends AbstractVerticle {
   public void start() {
     Vertx vertx = Vertx.vertx();
 
-    vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
-    vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
-    vertx.deployVerticle(new RepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("repository")));
-    vertx.deployVerticle(new TemplateEngineVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("engine")));
-    vertx.deployVerticle(new KnotxServerVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("server")));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle", config().getJsonObject("mockRepo"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.mocks.MockServiceVerticle", config().getJsonObject("mockService"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.repository.RepositoryVerticle", config().getJsonObject("repository"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.engine.TemplateEngineVerticle", config().getJsonObject("engine"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.server.KnotxServerVerticle", config().getJsonObject("server"));
   }
 
 }

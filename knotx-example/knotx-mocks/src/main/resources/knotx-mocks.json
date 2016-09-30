@@ -1,10 +1,12 @@
 {
   "mockRepo": {
     "mock.data.root": "mock/repository",
-    "http.port": 3001
+    "http.port": 3001,
+    "number.of.instances": 2
   },
   "mockService": {
     "mock.data.root": "mock/service",
-    "http.port": 3000
+    "http.port": 3000,
+    "number.of.instances": 2
   }
 }

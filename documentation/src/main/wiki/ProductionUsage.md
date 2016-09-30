@@ -24,13 +24,15 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
       "preserved.headers": [
         "User-Agent",
         "X-Solr-Core-Key",
-        "X-Language-Code"
+        "X-Language-Code",
+        "X-Requested-With"
       ],
-      "dependencies" : {
-        "repository.address" : "template-repository",
+      "dependencies": {
+        "repository.address": "template-repository",
         "engine.address": "template-engine"
       }
-    }
+    },
+    "number.of.instances": 2
   },
   "repository": {
     "config": {
@@ -47,19 +49,20 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
           "domain": "localhost",
           "port": 3001,
           "client.options": {
-            "tryUseCompression" : true,
-            "maxPoolSize": 1000
+            "tryUseCompression": true,
+            "keepAlive": false
           }
         }
       ]
-    }
+    },
+    "number.of.instances": 2
   },
   "engine": {
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
       "client.options": {
-        "maxPoolSize" : 1000,
+        "maxPoolSize": 1000,
         "keepAlive": false
       },
       "services": [
@@ -74,7 +77,8 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
           "port": 8080
         }
       ]
-    }
+    },
+    "number.of.instances": 2
   }
 }
 ```

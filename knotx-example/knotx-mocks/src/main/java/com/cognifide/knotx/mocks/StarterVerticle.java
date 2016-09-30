@@ -17,9 +17,9 @@
  */
 package com.cognifide.knotx.mocks;
 
+import com.cognifide.knotx.DeploymentHelper;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 
 public class StarterVerticle extends AbstractVerticle {
@@ -28,8 +28,8 @@ public class StarterVerticle extends AbstractVerticle {
   public void start() {
     Vertx vertx = Vertx.vertx();
 
-    vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
-    vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle", config().getJsonObject("mockRepo"));
+    DeploymentHelper.deployVerticle(vertx, "com.cognifide.knotx.mocks.MockServiceVerticle", config().getJsonObject("mockService"));
   }
 
 }
