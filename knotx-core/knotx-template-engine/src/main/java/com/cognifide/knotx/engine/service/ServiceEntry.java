@@ -79,6 +79,10 @@ public class ServiceEntry {
     return serviceMetadata.getPort();
   }
 
+  public List<Pattern> getHeadersPatterns(){
+    return serviceMetadata.getHeadersPatterns();
+  }
+
   public String getServiceUri() {
     return serviceUri;
   }

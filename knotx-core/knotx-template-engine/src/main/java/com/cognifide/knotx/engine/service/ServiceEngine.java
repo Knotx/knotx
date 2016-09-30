@@ -60,7 +60,7 @@ public class ServiceEngine {
     HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
     Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
         httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-        req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+        req -> buildRequestBody(req, getFilteredHeaders(request.getHeaders(), serviceEntry.getHeadersPatterns()), request.getFormAttributes(),
             httpMethod));
     return serviceResponse.flatMap(this::transformResponse);
   }
