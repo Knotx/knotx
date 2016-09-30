@@ -43,7 +43,10 @@ public class TemplateEngineConfiguration {
           metadata.path = item.getString("path");
           metadata.domain = item.getString("domain");
           metadata.port = item.getInteger("port");
-          metadata.headersPatterns = HeadersHelper.getPatternsFromHeadersConfig(item.getJsonArray("allowed.headers", new JsonArray()));
+          metadata.headersPatterns = item.getJsonArray("allowed.headers", new JsonArray()).stream()
+            .map(o -> (String) o)
+            .map(new StringToPatternMap())
+            .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
     templateDebug = config.getBoolean("template.debug", false);

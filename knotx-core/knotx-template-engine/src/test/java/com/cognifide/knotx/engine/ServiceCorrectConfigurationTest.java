@@ -23,6 +23,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.stream.Collectors;
+
 import io.vertx.core.json.JsonArray;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -67,7 +69,10 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
     newService.setPath(path);
     newService.setDomain(domain);
     newService.setPort(port);
-    newService.setHeadersPatterns(HeadersHelper.getPatternsFromHeadersConfig(allowedHeaders));
+    newService.setHeadersPatterns(allowedHeaders.stream()
+      .map(o -> (String) o)
+      .map(new StringToPatternMap())
+      .collect(Collectors.toList()));
     return newService;
   }
 

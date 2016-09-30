@@ -6,9 +6,9 @@
         "domain": "localhost",
         "port": 3000,
         "allowed.headers": [
-        "Accept-*",
-        "Location"
-      ]
+          "Accept-*",
+          "Location"
+        ]
       },
       {
         "path": "/service/.*",

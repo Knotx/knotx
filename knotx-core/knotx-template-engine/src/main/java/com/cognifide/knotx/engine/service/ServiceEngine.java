@@ -18,11 +18,14 @@
 package com.cognifide.knotx.engine.service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.engine.HeadersHelper;
+import com.cognifide.knotx.engine.AllowedHeadersFilter;
+import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
@@ -56,10 +59,10 @@ public class ServiceEngine {
                                                        TemplateEngineRequest request) {
     HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
     Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-        httpClient, httpMethod, serviceEntry.getPort(),
-        serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-        req -> buildRequestBody(req, HeadersHelper.getFilteredHeaders(request.getHeaders(), serviceEntry.getAllowedHeaders()), request.getFormAttributes(),
-            httpMethod));
+      httpClient, httpMethod, serviceEntry.getPort(),
+      serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
+      req -> buildRequestBody(req, getFilteredHeaders(request.getHeaders(), serviceEntry.getAllowedHeaders()),
+        request.getFormAttributes(), httpMethod));
     return serviceResponse.flatMap(this::collectBuffers);
   }
 
@@ -85,11 +88,16 @@ public class ServiceEngine {
     }
   }
 
+  private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
+    return headers.names().stream().filter(new AllowedHeadersFilter(allowedHeaders))
+      .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+  }
+
 
   private Buffer createFormPostBody(MultiMap formAttributes) {
     Buffer buffer = Buffer.buffer();
     String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+      .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
     buffer.appendString(formPostContent, Charsets.UTF_8.toString());
     return buffer;
   }

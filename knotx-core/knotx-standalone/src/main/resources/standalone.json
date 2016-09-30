@@ -43,6 +43,10 @@
           "path": "/service/mock/.*",
           "domain": "localhost",
           "port": 3000,
+          "allowed.headers": [
+            "Content-Type",
+            "X-*"
+          ]
         },
         {
           "path": "/service/.*",
