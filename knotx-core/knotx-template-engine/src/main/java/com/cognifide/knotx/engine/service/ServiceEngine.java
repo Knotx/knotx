@@ -17,10 +17,8 @@
  */
 package com.cognifide.knotx.engine.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.api.ServiceCallMethod;
 import com.cognifide.knotx.api.TemplateEngineRequest;
@@ -29,8 +27,10 @@ import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
@@ -59,20 +59,20 @@ public class ServiceEngine {
                                                        TemplateEngineRequest request) {
     HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
     Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-      httpClient, httpMethod, serviceEntry.getPort(),
-      serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-      req -> buildRequestBody(req, getFilteredHeaders(request.getHeaders(), serviceEntry.getAllowedHeaders()),
-        request.getFormAttributes(), httpMethod));
-    return serviceResponse.flatMap(this::collectBuffers);
+        httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
+        req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+            httpMethod));
+    return serviceResponse.flatMap(this::transformResponse);
   }
 
-  private Observable<Map<String, Object>> collectBuffers(HttpClientResponse response) {
+  private Observable<Map<String, Object>> transformResponse(HttpClientResponse response) {
     return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
-        .flatMap(buffer -> Observable.just(buffer.toJsonObject().getMap())).map(results -> {
+        .doOnNext(this::traceServiceCall)
+        .map(buffer -> buffer.toJsonObject().getMap())
+        .map(results -> {
           results.put("_response",
               Collections.singletonMap("statusCode", response.statusCode()));
-          traceServiceCall(results);
           return results;
         });
   }
@@ -96,16 +96,18 @@ public class ServiceEngine {
 
   private Buffer createFormPostBody(MultiMap formAttributes) {
     Buffer buffer = Buffer.buffer();
+
     String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
       .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
     buffer.appendString(formPostContent, Charsets.UTF_8.toString());
     return buffer;
   }
 
-  public Observable<ServiceEntry> findServiceLocation(final ServiceEntry serviceEntry) {
-    return Observable.from(configuration.getServices())
-        .filter(service -> serviceEntry.getServiceUri().matches(service.getPath())).first()
-        .map(metadata -> serviceEntry.setServiceMetadata(metadata));
+  public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
+    return configuration.getServices().stream()
+        .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
+        .findFirst().map(metadata -> serviceEntry.setServiceMetadata(metadata))
+        .get();
   }
 
   private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
@@ -118,9 +120,9 @@ public class ServiceEngine {
     }
   }
 
-  private void traceServiceCall(Map<String, Object> results) {
+  private void traceServiceCall(Buffer results) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}>", results.toString());
+      LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
     }
   }
 }

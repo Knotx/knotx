@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.monolith;
 
+import com.google.common.collect.Maps;
+
 import com.cognifide.knotx.engine.service.KnotxRxHelper;
 
 import org.jsoup.Jsoup;
@@ -27,12 +29,15 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
@@ -56,38 +61,46 @@ public class SampleApplicationTest {
   }
 
   @Test
-  public void localSimpleHtmlTest(TestContext context) {
+  public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
   }
 
   @Test
-  public void remoteSimpleHtmlTest(TestContext context) {
+  public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
   }
 
   @Test
-  public void localMultipleFormWithGetTest(TestContext context) {
+  public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
   @Test
-  public void localMultipleFormWithPostTest(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithPostResult.html", false);
+  public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
   @Test
-  public void localMultipleFormWithAjaxPostTest(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithAjaxPostResult.html", true);
+  public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
   }
 
-  private void testPostRequest(TestContext context, String url, String expectedResponseFile, boolean ajaxCall) {
+  @Test
+  public void whenRequestingWithXhrAndPostAForm_expectOnlyRenderedSnippetWithFormReturned(TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithAjaxPostResult.html", true);
+  }
+
+  private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
 
     Async async = context.async();
     Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
-      String bodyForm = "email=email@com.pl&name=John&_id=competition-form";
-      req.headers().set("content-type", "application/x-www-form-urlencoded");
+      String bodyForm = formData.entrySet().stream()
+              .map(entry -> entry.getKey() + "=" + entry.getValue())
+              .reduce((p1, p2) -> p1 + "&" + p2).get();
       req.headers().set("content-length", String.valueOf(bodyForm.length()));
+      req.headers().set("content-type", "application/x-www-form-urlencoded");
       if (ajaxCall) {
         req.headers().set("X-Requested-With", "XMLHttpRequest");
       }
@@ -112,17 +125,35 @@ public class SampleApplicationTest {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
     Async async = context.async();
     client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
-        resp -> resp.bodyHandler(body -> {
-          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
-          try {
-            context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
-          } catch (Exception e) {
-            LOG.error("Cannot read file {}", expectedResponseFile, e);
-            context.fail();
-          }
-          client.close();
-          async.complete();
-        }));
+            resp -> resp.bodyHandler(body -> {
+              context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+              try {
+                context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+              } catch (Exception e) {
+                LOG.error("Cannot read file {}", expectedResponseFile, e);
+                context.fail();
+              }
+              client.close();
+              async.complete();
+            }));
+  }
+
+  private Map<String, String> getFirstTestFormData() {
+    Map<String, String> data = Maps.newHashMap();
+    data.put("name", "John");
+    data.put("email", "email@com.pl");
+    data.put("_id", "competition-form");
+
+    return data;
+  }
+
+  private Map<String, String> getSecondTestFormData() {
+    Map<String, String> data = Maps.newHashMap();
+    data.put("name", "Andrew");
+    data.put("email", "other@example.com");
+    data.put("_id", "competition-form");
+
+    return data;
   }
 
 }

@@ -17,11 +17,11 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import java.util.Arrays;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
+import java.util.Arrays;
 
 public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
 

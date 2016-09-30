@@ -46,7 +46,8 @@ In integration tests method name is omitted, and test class name should suggest 
 
 ## Coding Conventions
 Below is short list of things that will help us keep Knot.x quality and accept pull requests:
-- Follow [Google Style Guide](https://github.com/google/styleguide) code formatting,
+- Follow [Google Style Guide](https://github.com/google/styleguide) code formatting, 
+particularly set your IDE `tab size`/`ident` to 2 spaces and `continuation ident` to 4 spaces. 
 - write tests (integration and Unit Tests) following defined convention,
 - write javadoc, especially for interfaces and abstract methods,
 - update [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) and include changes in the same pull request which modifies the code,
