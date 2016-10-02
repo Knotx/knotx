@@ -17,8 +17,9 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import java.util.Arrays;
-import java.util.Collection;
+import com.cognifide.knotx.api.HttpRequestWrapper;
+import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.jsoup.nodes.Attribute;
 import org.junit.Assert;
@@ -26,13 +27,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.engine.service.ServiceEntry;
+import java.util.Arrays;
+import java.util.Collection;
 
 import io.vertx.rxjava.core.MultiMap;
 
 @RunWith(Parameterized.class)
 public class UriTransformerReplaceTest {
+
+  @Parameterized.Parameter
+  public String uri;
+  @Parameterized.Parameter(value = 1)
+  public String requestedUri;
+  @Parameterized.Parameter(value = 2)
+  public String expectedUri;
 
   @Parameterized.Parameters(name = "{index}: {0}")
   public static Collection<Object[]> data() {
@@ -90,26 +98,6 @@ public class UriTransformerReplaceTest {
         {"/selectors.{invalid}.html", "/a/b.s1.s2.html/c/d.s.txt#f", "/selectors..html"}});
   }
 
-  @Parameterized.Parameter
-  public String uri;
-
-  @Parameterized.Parameter(value = 1)
-  public String requestedUri;
-
-  @Parameterized.Parameter(value = 2)
-  public String expectedUri;
-
-  @Test
-  public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
-    TemplateEngineRequest request = new TemplateEngineRequest(null, null, getHeadersMultiMap(),
-        getParamsMultiMap(), new MultiMap(null), requestedUri);
-    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-uri", uri));
-
-    String finalUri = UriTransformer.getServiceUri(request, serviceEntry);
-
-    Assert.assertEquals(expectedUri, finalUri);
-  }
-
   private static MultiMap getHeadersMultiMap() {
     MultiMap map = MultiMap.caseInsensitiveMultiMap();
     map.add("authorizationId", "486434684345");
@@ -121,5 +109,16 @@ public class UriTransformerReplaceTest {
     map.add("q", "knot.x");
     map.add("action", "/some/action/path");
     return map;
+  }
+
+  @Test
+  public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
+    HttpRequestWrapper httpRequest = new HttpRequestWrapper().setHeaders(getHeadersMultiMap()).setParams(getParamsMultiMap()).setPath(requestedUri);
+    RenderRequest request = new RenderRequest().setRequest(httpRequest);
+    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-uri", uri));
+
+    String finalUri = UriTransformer.getServiceUri(request, serviceEntry);
+
+    Assert.assertEquals(expectedUri, finalUri);
   }
 }

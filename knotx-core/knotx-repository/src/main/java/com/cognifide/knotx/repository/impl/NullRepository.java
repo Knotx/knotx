@@ -17,21 +17,24 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.api.HttpRequestWrapper;
+import com.cognifide.knotx.api.HttpResponseWrapper;
 import com.cognifide.knotx.repository.Repository;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import rx.Observable;
 
 public class NullRepository implements Repository {
 
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepository.class);
+
   @Override
-  public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-    String reason = String.format("No repository found for given path `%s`", repositoryRequest.getPath());
-    return Observable.just(
-        RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), reason, MultiMap.caseInsensitiveMultiMap()));
+  public Observable<HttpResponseWrapper> get(HttpRequestWrapper repositoryRequest) {
+    LOGGER.error("No repository found for given path `{}`", repositoryRequest.path());
+    return Observable.just(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND));
   }
 
   @Override

@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.api.HttpRequestWrapper;
+import com.cognifide.knotx.api.HttpResponseWrapper;
 import com.cognifide.knotx.repository.Repository;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
 import rx.Observable;
@@ -57,25 +56,24 @@ public class LocalRepository implements Repository {
   }
 
   @Override
-  public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
-    final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.getPath(), "/");
+  public Observable<HttpResponseWrapper> get(HttpRequestWrapper repositoryRequest) {
+    final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.path(), "/");
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
     return fileSystem.openObservable(localFilePath, new OpenOptions())
         .flatMap(AsyncFile::toObservable)
-        .flatMap(buffer -> RepositoryResponse.success(buffer.toString(), MultiMap.caseInsensitiveMultiMap()).toObservable())
-        .defaultIfEmpty(RepositoryResponse.error(HttpResponseStatus.NOT_FOUND.code(), "Page not found", MultiMap.caseInsensitiveMultiMap()))
+        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setBody(buffer))
+        .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
         .onErrorReturn(error -> {
           LOGGER.error("Error reading template file from file system", error);
 
-          int statusCode;
+          HttpResponseStatus statusCode;
           if (error.getCause().getClass().equals(NoSuchFileException.class)) {
-            statusCode = HttpResponseStatus.NOT_FOUND.code();
+            statusCode = HttpResponseStatus.NOT_FOUND;
           } else {
-            statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+            statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
           }
-          return RepositoryResponse
-              .error(statusCode, error.getMessage(), MultiMap.caseInsensitiveMultiMap());
+          return new HttpResponseWrapper().setStatusCode(statusCode);
         });
   }
 

@@ -49,16 +49,21 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
     JsonObject responseBody = getMockContent(request);
 
     if (mockDataFileUrl != null) {
-      request.setExpectMultipart(true);
-      request.endHandler(v -> {
-        if (request.method() == HttpMethod.POST) {
+      if (request.method() == HttpMethod.POST) {
+        request.setExpectMultipart(true);
+        request.endHandler(v -> {
           MultiMap formParams = request.formAttributes();
-
           formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
-        }
+
+          request.response().end(responseBody.encodePrettily());
+          request.response().setStatusCode(200);
+          request.connection().close();
+        });
+      } else {
         request.response().end(responseBody.encodePrettily());
+        request.response().setStatusCode(200);
         request.connection().close();
-      });
+      }
     } else {
       request.response().setStatusCode(500);
       request.connection().close();

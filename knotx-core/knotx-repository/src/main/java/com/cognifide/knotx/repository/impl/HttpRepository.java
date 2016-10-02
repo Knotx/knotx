@@ -17,16 +17,15 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.api.HttpRequestWrapper;
+import com.cognifide.knotx.api.HttpResponseWrapper;
 import com.cognifide.knotx.repository.Repository;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -63,18 +62,17 @@ class HttpRepository implements Repository {
   }
 
   @Override
-  public Observable<RepositoryResponse> get(RepositoryRequest repositoryRequest) {
+  public Observable<HttpResponseWrapper> get(HttpRequestWrapper repositoryRequest) {
     final HttpClient httpClient = createHttpClient();
     Observable<HttpClientResponse> clientResponse =
-        RxHelper.get(httpClient, port, domain, repositoryRequest.getPath(), repositoryRequest.getHeaders());
+        RxHelper.get(httpClient, port, domain, repositoryRequest.path(), repositoryRequest.headers());
 
     return clientResponse
         .doOnNext(this::traceResponse)
         .flatMap(this::processResponse)
         .onErrorReturn(error -> {
-              LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repositoryRequest.getPath(), error);
-              return RepositoryResponse
-                  .error(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), error.getMessage(), MultiMap.caseInsensitiveMultiMap());
+              LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repositoryRequest.path(), error);
+              return new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             }
         ).doAfterTerminate(httpClient::close);
   }
@@ -83,24 +81,18 @@ class HttpRepository implements Repository {
     return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
-  private Observable<RepositoryResponse> processResponse(final HttpClientResponse response) {
+  private Observable<HttpResponseWrapper> processResponse(final HttpClientResponse response) {
     return Observable.just(Buffer.buffer())
         .mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
-        .flatMap(buffer -> toRepositoryResponse(buffer, response));
+        .map(buffer -> toRepositoryResponse(buffer, response));
   }
 
-  private Observable<RepositoryResponse> toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
-    Observable<RepositoryResponse> response;
-    if (httpClientResponse.statusCode() == HttpResponseStatus.OK.code()) {
-      response = RepositoryResponse.success(buffer.toString(), httpClientResponse.headers()).toObservable();
-    } else {
-      LOGGER.info("Remote repository returned with status code {} for path `{}`",
-          httpClientResponse.statusCode(), path);
-      response = RepositoryResponse.error(httpClientResponse.statusCode(), buffer.toString(),
-          httpClientResponse.headers()).toObservable();
-    }
-    return response;
+  private HttpResponseWrapper toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
+    return new HttpResponseWrapper()
+        .setStatusCode(HttpResponseStatus.valueOf(httpClientResponse.statusCode()))
+        .setHeaders(httpClientResponse.headers())
+        .setBody(buffer);
   }
 
   private void traceResponse(HttpClientResponse response) {

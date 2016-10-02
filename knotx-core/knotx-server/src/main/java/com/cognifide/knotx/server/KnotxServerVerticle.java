@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.server;
 
+import com.cognifide.knotx.api.HttpRequestWrapper;
+import com.cognifide.knotx.api.HttpResponseWrapper;
+import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.api.RenderResponse;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.TemplateEngineResponse;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -70,16 +70,16 @@ public class KnotxServerVerticle extends AbstractVerticle {
     httpServer.requestHandler(
         request -> {
           request.setExpectMultipart(true);
-          request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
+          request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, new HttpRequestWrapper(request).toJson())
               .doOnNext(this::traceMessage)
               .subscribe(
                   reply -> {
-                    RepositoryResponse repository = RepositoryResponse.fromJson(reply.body());
-                    if (repository.shouldProcess()) {
-                      eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
+                    HttpResponseWrapper repository = new HttpResponseWrapper(reply.body());
+                    if (repository.statusCode() == HttpResponseStatus.OK) {
+                      eventBus.<JsonObject>sendObservable(engineAddress, requestRendering(repository, request))
                           .subscribe(
                               result -> {
-                                TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
+                                RenderResponse engineResponse = new RenderResponse(result.body());
                                 if (engineResponse.isSuccess()) {
                                   rewriteHeaders(request, request.headers());
                                   request.response().end(engineResponse.getHtml());
@@ -93,8 +93,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
                               }
                           );
                     } else {
-                      rewriteHeaders(request, repository.getHeaders());
-                      request.response().setStatusCode(repository.getStatusCode()).end();
+                      rewriteHeaders(request, repository.headers());
+                      request.response().setStatusCode(repository.statusCode().code()).end();
                     }
                   },
                   error -> LOGGER.error("Error: ", error)
@@ -118,19 +118,17 @@ public class KnotxServerVerticle extends AbstractVerticle {
     httpServer.close();
   }
 
-  private JsonObject createRepositoryRequest(HttpServerRequest request) {
-    return new RepositoryRequest(request.path(), request.headers()).toJsonObject();
-  }
-
-  private JsonObject createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
-    return new TemplateEngineRequest(
-        repositoryResponse.getData(),
-        request.method(),
-        getPreservedHeaders(request.headers()),
-        request.params(),
-        request.formAttributes(),
-        request.uri())
-        .toJsonObject();
+  private JsonObject requestRendering(HttpResponseWrapper repositoryResponse, HttpServerRequest originalRequest) {
+    return new RenderRequest().setRequest(new HttpRequestWrapper(originalRequest)).setTemplate(repositoryResponse.body().toString()).toJson();
+//
+//    return new RenderRequest(
+//        repositoryResponse.body().toString(),
+//        originalRequest.method(),
+//        getPreservedHeaders(originalRequest.headers()),
+//        originalRequest.params(),
+//        originalRequest.formAttributes(),
+//        originalRequest.uri())
+//        .toJsonObject();
   }
 
   private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {

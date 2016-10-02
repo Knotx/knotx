@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.TemplateEngineResponse;
+import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.api.RenderResponse;
 import com.cognifide.knotx.engine.impl.TemplateEngine;
 
 import io.vertx.core.Context;
@@ -70,12 +70,12 @@ public class TemplateEngineVerticle extends AbstractVerticle {
     messageObservable
         .doOnNext(this::traceMessage)
         .subscribe(
-            msg -> templateEngine.process(givenTemplate(msg))
+            msg -> templateEngine.process(new RenderRequest(msg.body()))
                 .subscribe(
-                    result -> msg.reply(TemplateEngineResponse.success(result).toJsonObject()),
+                    result -> msg.reply(RenderResponse.success(result).toJsonObject()),
                     error -> {
                       LOGGER.error("Error happened", error);
-                      msg.reply(TemplateEngineResponse.error(error.getMessage()).toJsonObject());
+                      msg.reply(RenderResponse.error(error.getMessage()).toJsonObject());
                     }
                 )
         );
@@ -85,10 +85,6 @@ public class TemplateEngineVerticle extends AbstractVerticle {
   public void stop() throws Exception {
     LOGGER.debug("Stopping TemplateEngineVerticle and stopping http client");
     httpClient.close();
-  }
-
-  private TemplateEngineRequest givenTemplate(Message<JsonObject> msg) {
-    return new TemplateEngineRequest(msg.body());
   }
 
   private void traceMessage(Message<JsonObject> message) {

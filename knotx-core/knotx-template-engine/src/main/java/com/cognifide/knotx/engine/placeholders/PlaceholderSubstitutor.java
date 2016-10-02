@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.api.RenderRequest;
 
 public interface PlaceholderSubstitutor {
 
@@ -28,6 +28,6 @@ public interface PlaceholderSubstitutor {
    * @param placeholder the placeholder name
    * @return the replacement value, or null if no replacement can be get
    */
-  String getValue(TemplateEngineRequest request, String placeholder);
+  String getValue(RenderRequest request, String placeholder);
 
 }

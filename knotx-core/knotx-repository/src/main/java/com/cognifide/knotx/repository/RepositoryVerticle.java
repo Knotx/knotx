@@ -19,8 +19,8 @@ package com.cognifide.knotx.repository;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.api.HttpRequestWrapper;
+import com.cognifide.knotx.api.HttpResponseWrapper;
 import com.cognifide.knotx.repository.impl.NullRepository;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,15 +74,15 @@ public class RepositoryVerticle extends AbstractVerticle {
         .doOnNext(this::traceMessage)
         .flatMap(this::getTemplateContent, Pair::of)
         .subscribe(
-            response -> response.getLeft().reply(response.getRight().toJsonObject()),
+            response -> response.getLeft().reply(response.getRight().toJson()),
             error -> LOGGER.error("Unable to get template from the repository", error)
         );
   }
 
-  private Observable<RepositoryResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
-    final RepositoryRequest repoRequest = new RepositoryRequest(repoMessage.body());
+  private Observable<HttpResponseWrapper> getTemplateContent(final Message<JsonObject> repoMessage) {
+    final HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
 
-    return Observable.just(findRepository(repoRequest.getPath()))
+    return Observable.just(findRepository(repoRequest.path()))
         .flatMap(repo -> repo.get(repoRequest));
   }
 
