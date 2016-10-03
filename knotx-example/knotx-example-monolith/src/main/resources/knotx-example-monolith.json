@@ -12,14 +12,7 @@
         "repository.address": "template-repository",
         "engine.address": "template-engine"
       }
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },
   "repository": {
     "config": {
@@ -41,14 +34,7 @@
           }
         }
       ]
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },
   "engine": {
     "config": {
@@ -70,39 +56,18 @@
           "port": 8080
         }
       ]
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },
   "mockRepo": {
     "config": {
       "mock.data.root": "mock/repository",
       "http.port": 3001
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },
   "mockService": {
     "config": {
       "mock.data.root": "mock/service",
       "http.port": 3000
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   }
 }
