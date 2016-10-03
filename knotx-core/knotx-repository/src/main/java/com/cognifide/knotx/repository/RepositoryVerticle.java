@@ -51,10 +51,9 @@ public class RepositoryVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
 
-    this.serviceName = config.getString("service.name");
-    this.repositoryConfiguration = new RepositoryConfiguration(config);
+    this.serviceName = config().getString("service.name");
+    this.repositoryConfiguration = new RepositoryConfiguration(config());
 
     repositories = repositoryConfiguration.getRepositories()
         .stream()

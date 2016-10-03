@@ -32,7 +32,13 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         "engine.address": "template-engine"
       }
     },
-    "number.of.instances": 2
+    "worker" : false,
+    "multiThreaded": false,
+    "isolationGroup": "null",
+    "ha": false,
+    "extraClasspath": [],
+    "instances": 2,
+    "isolatedClasses": []
   },
   "repository": {
     "config": {
@@ -55,7 +61,13 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         }
       ]
     },
-    "number.of.instances": 2
+    "worker" : false,
+    "multiThreaded": false,
+    "isolationGroup": "null",
+    "ha": false,
+    "extraClasspath": [],
+    "instances": 2,
+    "isolatedClasses": []
   },
   "engine": {
     "config": {
@@ -78,7 +90,13 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         }
       ]
     },
-    "number.of.instances": 2
+    "worker" : false,
+    "multiThreaded": false,
+    "isolationGroup": "null",
+    "ha": false,
+    "extraClasspath": [],
+    "instances": 2,
+    "isolatedClasses": []
   }
 }
 ```

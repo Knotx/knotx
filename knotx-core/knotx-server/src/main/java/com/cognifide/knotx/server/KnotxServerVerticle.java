@@ -54,11 +54,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
 
-    this.repositoryAddress = config.getJsonObject("dependencies").getString("repository.address");
-    this.engineAddress = config.getJsonObject("dependencies").getString("engine.address");
-    configuration = new KnotxServerConfiguration(config);
+    this.repositoryAddress = config().getJsonObject("dependencies").getString("repository.address");
+    this.engineAddress = config().getJsonObject("dependencies").getString("engine.address");
+    configuration = new KnotxServerConfiguration(config());
   }
 
   @Override

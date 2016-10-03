@@ -1,12 +1,28 @@
 {
   "mockRepo": {
-    "mock.data.root": "mock/repository",
-    "http.port": 3001,
-    "number.of.instances": 2
+    "config": {
+      "mock.data.root": "mock/repository",
+      "http.port": 3001
+    },
+    "worker" : false,
+    "multiThreaded": false,
+    "isolationGroup": "null",
+    "ha": false,
+    "extraClasspath": [],
+    "instances": 2,
+    "isolatedClasses": []
   },
   "mockService": {
-    "mock.data.root": "mock/service",
-    "http.port": 3000,
-    "number.of.instances": 2
+    "config": {
+      "mock.data.root": "mock/service",
+      "http.port": 3000
+    },
+    "worker" : false,
+    "multiThreaded": false,
+    "isolationGroup": "null",
+    "ha": false,
+    "extraClasspath": [],
+    "instances": 2,
+    "isolatedClasses": []
   }
 }

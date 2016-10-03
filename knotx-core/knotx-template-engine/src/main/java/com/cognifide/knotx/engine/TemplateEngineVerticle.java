@@ -48,10 +48,9 @@ public class TemplateEngineVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
-    this.serviceName = config.getString("service.name");
+    this.serviceName = config().getString("service.name");
 
-    configuration = new TemplateEngineConfiguration(config);
+    configuration = new TemplateEngineConfiguration(config());
 
     final JsonObject clientOptions = configuration.getClientOptions();
     httpClient = clientOptions.isEmpty() ?
