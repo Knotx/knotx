@@ -128,7 +128,7 @@ This is the main configuration supplying config entries for each verticle starte
         }
       ]
     }
-  }
+  },
   ...
 }
 ```
@@ -185,7 +185,7 @@ This kind of repository connects with an external server to fetch templates. To 
         }
       ]
     }
-  }
+  },
   ...,
 ```
 This section configures the Knot.x Template Engine Verticle listening for requests on Vert.x event bus. The config node consists of:
@@ -217,7 +217,7 @@ The first matched service will handle the request or, if there's no service matc
         "engine.address": "template-engine"
       }
     }
-  }
+  },
   ...
 }
 ```
