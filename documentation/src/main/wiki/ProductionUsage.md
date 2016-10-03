@@ -14,7 +14,7 @@ This will run the server with production settings. For more information see the 
 
 #### Configuration
 
-The *core* module contains 3 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
+The *core* module contains 4 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
 **standalone.json**
 ```json
 {
@@ -24,42 +24,53 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
       "preserved.headers": [
         "User-Agent",
         "X-Solr-Core-Key",
-        "X-Language-Code"
+        "X-Language-Code",
+        "X-Requested-With"
       ],
-      "dependencies" : {
-        "repository.address" : "template-repository",
-        "engine.address": "template-engine"
+      "repositories": [
+        {
+          "path" : "/content/local/.*",
+          "address" : "knotx.core.repository.filesystem"
+        },
+        {
+          "path" : "/content/.*",
+          "address" : "knotx.core.repository.http"
+        }
+      ],
+      "engine" : {
+        "address": "knotx.core.engine"
       }
     }
   },
-  "repository": {
+  "httpRepository": {
     "config": {
-      "service.name": "template-repository",
-      "repositories": [
-        {
-          "type": "local",
-          "path": "/content/local/.*",
-          "catalogue": ""
+      "address": "knotx.core.repository.http",
+      "configuration": {
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
         },
-        {
-          "type": "remote",
-          "path": "/content/.*",
+        "client.destination" : {
           "domain": "localhost",
-          "port": 3001,
-          "client.options": {
-            "tryUseCompression" : true,
-            "maxPoolSize": 1000
-          }
+          "port": 3001
         }
-      ]
+      }
+    }
+  },
+  "localRepository": {
+    "config": {
+      "address": "knotx.core.repository.filesystem",
+      "configuration": {
+        "catalogue": ""
+      }
     }
   },
   "engine": {
     "config": {
-      "service.name": "template-engine",
+      "address": "knotx.core.engine",
       "template.debug": true,
       "client.options": {
-        "maxPoolSize" : 1000,
+        "maxPoolSize": 1000,
         "keepAlive": false
       },
       "services": [
@@ -78,16 +89,20 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
   }
 }
 ```
-Configuration JSON contains three config sections, one for each Knot.x verticle.
+Configuration JSON contains four config sections, one for each Knot.x verticle.
 
 ### Executing Knot.x core verticles as a cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
 For other network configurations please consult Vert.x documentation [Vert.x Hazelcast - Configuring cluster manager](http://vertx.io/docs/vertx-hazelcast/java/#_configuring_this_cluster_manager)
 
 To run it, execute the following command:
-**Host 1 - Repository Verticle**
+**Host 1 - Http Repository Verticle**
 ```
-java -jar knotx-repository-XXX-fat.jar -conf <path-to-repository-configuration.json>
+java -jar knotx-repository-http-XXX-fat.jar -conf <path-to-http-repository-configuration.json>
+```
+**Host 2 - Filesystem Repository Verticle**
+```
+java -jar knotx-repository-filesystem-XXX-fat.jar -conf <path-to-filesystem-repository-configuration.json>
 ```
 **Host 2 - Template Engine Verticle**
 ```
@@ -129,26 +144,26 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         "X-Solr-Core-Key",
         "X-Language-Code"
       ],
+     }
      ...
  ``` 
 ####Verticle configuration
 Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
-For instance, a configuration JSON for the *repository* verticle could look like this:
+For instance, a configuration JSON for the *HTTP repository* verticle could look like this:
 ```json
 {
-  "config": {
-    "service.name": "template-repository",
-    "repositories": [
-      {
-        "type": "remote",
-        "path": "/content/.*",
-        "domain": "localhost",
-        "port": 3001,
+    "config": {
+      "address": "knotx.core.repository.http",
+      "configuration": {
         "client.options": {
-          "tryUseCompression" : true
-       }
+          "maxPoolSize": 1000,
+          "keepAlive": false
+        },
+        "client.destination" : {
+          "domain": "localhost",
+          "port": 3001
+        }
       }
-    ]
-  }
+    }
 }
 ```
