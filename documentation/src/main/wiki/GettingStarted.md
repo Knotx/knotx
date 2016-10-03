@@ -128,27 +128,13 @@ This is the main configuration supplying config entries for each verticle starte
         }
       ]
     }
-  },
-  "worker" : false,
-  "multiThreaded": false,
-  "isolationGroup": "null",
-  "ha": false,
-  "extraClasspath": [],
-  "instances": 2,
-  "isolatedClasses": []
+  }
   ...
 }
 ```
 This section configures the Knot.x Repository Verticle listening for requests on Vert.x event bus. The config node consists of:
 - **service.name** - the name/address of the event bus to which Repository Verticle subscribes on,
 - **repositories** - an array of definitions of all repositories used that provide HTML Templates.
-- **worker** - deploy verticle as a worker, default false.
-- **multiThreaded** - deploy verticle as a multi-threaded worker, default false.
-- **isolationGroup** - array of isolation group.
-- **ha** - deploy verticle as highly available, default false.
-- **extraClasspath** - extra classpath to be used when deploying the verticle.
-- **instances** - number of verticle instances.
-- **isolatedClasses** - array of isolated classes.
 
 There are two sample repositories defined - `local` and `remote`. Each of them defines a `path` - a regular expression that indicates which resources will be taken from this repository. 
 The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
@@ -199,14 +185,7 @@ This kind of repository connects with an external server to fetch templates. To 
         }
       ]
     }
-  },
-  "worker" : false,
-  "multiThreaded": false,
-  "isolationGroup": "null",
-  "ha": false,
-  "extraClasspath": [],
-  "instances": 2,
-  "isolatedClasses": []
+  }
   ...,
 ```
 This section configures the Knot.x Template Engine Verticle listening for requests on Vert.x event bus. The config node consists of:
@@ -214,13 +193,6 @@ This section configures the Knot.x Template Engine Verticle listening for reques
 - **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
 - **client.options** - contains json representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html), 
 - **services** - an array of definitions of all service endpoints used by dynamic snippets.
-- **worker** - deploy verticle as a worker, default false.
-- **multiThreaded** - deploy verticle as a multi-threaded worker, default false.
-- **isolationGroup** - array of isolation group.
-- **ha** - deploy verticle as highly available, default false.
-- **extraClasspath** - extra classpath to be used when deploying the verticle.
-- **instances** - number of verticle instances.
-- **isolatedClasses** - array of isolated classes.
 
 There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
 - `/service/mock/.*` will by handled by `localhost:3000`
@@ -245,14 +217,7 @@ The first matched service will handle the request or, if there's no service matc
         "engine.address": "template-engine"
       }
     }
-  },
-  "worker" : false,
-  "multiThreaded": false,
-  "isolationGroup": "null",
-  "ha": false,
-  "extraClasspath": [],
-  "instances": 2,
-  "isolatedClasses": []
+  }
   ...
 }
 ```
@@ -262,13 +227,7 @@ This section configures the Knot.x HTTP server. The config node consists of:
 - **dependencies** - Vert.x Event Bus addresses to Knot.x verticles used by Knot.x
     - **repository.address** - event bus address of Knot.x Repository verticle. This is the same value as **service.name** in the **repository** section of the `application.json`
     - **engine.address** - event bus address of Knot.x Template Engine verticle. This is the same value as **service.name** in the **templateEngine** section of the `application.json`    
-- **worker** - deploy verticle as a worker, default false.
-- **multiThreaded** - deploy verticle as a multi-threaded worker, default false.
-- **isolationGroup** - array of isolation group.
-- **ha** - deploy verticle as highly available, default false.
-- **extraClasspath** - extra classpath to be used when deploying the verticle.
-- **instances** - number of verticle instances.
-- **isolatedClasses** - array of isolated classes.
+
 **mockRepo** section
 ```json
 {
@@ -277,14 +236,7 @@ This section configures the Knot.x HTTP server. The config node consists of:
     "config": {
       "mock.data.root": "mock/repository",
       "http.port": 3001
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },   
     ...
 }
@@ -292,15 +244,29 @@ This section configures the Knot.x HTTP server. The config node consists of:
 This section configures the Remote repository mock used by the example application. It consists of:
 - **mock.data.root** - a path (relative to `knotx-mocks/src/main/resources`) where mocked HTML responses are located on local storage,
 - **http.port** - HTTP Port the mock service is listening to.
-- **worker** - deploy verticle as a worker, default false.
-- **multiThreaded** - deploy verticle as a multi-threaded worker, default false.
-- **isolationGroup** - array of isolation group.
-- **ha** - deploy verticle as highly available, default false.
-- **extraClasspath** - extra classpath to be used when deploying the verticle.
-- **instances** - number of verticle instances.
-- **isolatedClasses** - array of isolated classes.
 
 **mockService** section
+```json
+{
+    ... 
+  "mockService": {
+    "config": {
+      "mock.data.root": "mock/service",
+      "http.port": 3000
+    }
+  }
+    ...
+}
+```
+This section configures the Services mock used by the example application. It consists of:
+- **mock.data.root** - relative (to knotx-mocks/src/main/resources) path where mocked JSON responses are located on local storage
+- **http.port** - HTTP Port the mock service is listening to.
+
+Please mind that this an example that depicts a valid setup of the Sample monolith application and it is not fit for use in production environments.
+To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
+
+## Deployment options
+To deploy verticle with advanced options use following properties:
 ```json
 {
     ... 
@@ -320,9 +286,6 @@ This section configures the Remote repository mock used by the example applicati
     ...
 }
 ```
-This section configures the Services mock used by the example application. It consists of:
-- **mock.data.root** - relative (to knotx-mocks/src/main/resources) path where mocked JSON responses are located on local storage
-- **http.port** - HTTP Port the mock service is listening to.
 - **worker** - deploy verticle as a worker, default false.
 - **multiThreaded** - deploy verticle as a multi-threaded worker, default false.
 - **isolationGroup** - array of isolation group.
@@ -330,6 +293,3 @@ This section configures the Services mock used by the example application. It co
 - **extraClasspath** - extra classpath to be used when deploying the verticle.
 - **instances** - number of verticle instances.
 - **isolatedClasses** - array of isolated classes.
-
-Please mind that this an example that depicts a valid setup of the Sample monolith application and it is not fit for use in production environments.
-To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
