@@ -15,49 +15,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.repository.impl;
+package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.api.HttpRequestWrapper;
 import com.cognifide.knotx.api.HttpResponseWrapper;
-import com.cognifide.knotx.repository.Repository;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.NoSuchFileException;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.Context;
+import io.vertx.core.Vertx;
 import io.vertx.core.file.OpenOptions;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
 import rx.Observable;
 
-public class LocalRepository implements Repository {
+public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LocalRepository.class);
-
-  private String path;
+  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryVerticle.class);
 
   private String catalogue;
 
-  private FileSystem fileSystem;
+  private String address;
 
-  private LocalRepository() {
-    // Hidden constructor
-  }
+  @Override
+  public void init(Vertx vertx, Context context) {
+    super.init(vertx, context);
+    JsonObject config = config().getJsonObject("config");
 
-  static LocalRepository of(String path, String catalogue, FileSystem fileSystem) {
-    LocalRepository repository = new LocalRepository();
-    repository.path = path;
-    repository.catalogue = catalogue;
-    repository.fileSystem = fileSystem;
-    return repository;
+    this.address = config.getString("address");
+    this.catalogue = config.getJsonObject("configuration").getString("catalogue");
   }
 
   @Override
-  public Observable<HttpResponseWrapper> get(HttpRequestWrapper repositoryRequest) {
-    final String localFilePath = catalogue + StringUtils.stripStart(repositoryRequest.path(), "/");
+  public void start() throws Exception {
+    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+
+    EventBus eventBus = vertx.eventBus();
+
+
+    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
+
+    messageObservable
+        .doOnNext(this::traceMessage)
+        .flatMap(this::getTemplateContent, Pair::of)
+        .subscribe(
+            response -> response.getLeft().reply(response.getRight().toJson()),
+            error -> LOGGER.error("Unable to get template from the repository", error)
+        );
+  }
+
+  private Observable<HttpResponseWrapper> getTemplateContent(final Message<JsonObject> repoMessage) {
+    FileSystem fileSystem = vertx.fileSystem();
+    HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
+
+    final String localFilePath = catalogue + StringUtils.stripStart(repoRequest.path(), "/");
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
     return fileSystem.openObservable(localFilePath, new OpenOptions())
@@ -77,8 +98,9 @@ public class LocalRepository implements Repository {
         });
   }
 
-  @Override
-  public boolean support(String path) {
-    return path.matches(this.path);
+  private void traceMessage(Message<JsonObject> message) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+    }
   }
 }

@@ -1,0 +1,8 @@
+{
+  "config": {
+    "address": "knotx.core.repository.filesystem",
+    "configuration": {
+      "catalogue": ""
+    }
+  }
+}

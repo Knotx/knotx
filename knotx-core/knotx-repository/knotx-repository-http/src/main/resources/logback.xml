@@ -18,23 +18,23 @@
     limitations under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knotx-core</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
-  </parent>
+<configuration>
 
-  <artifactId>knotx-repository</artifactId>
-  <packaging>pom</packaging>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>
+        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+      </Pattern>
+    </layout>
+  </appender>
 
-  <name>Knot.x - Reactive microservice assembler - Repository Verticle</name>
+  <logger name="com.cognifide" level="debug"
+          additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
 
-  <modules>
-	<module>knotx-repository-filesystem</module>
-	<module>knotx-repository-http</module>
-  </modules>
-</project>
+  <root level="error">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>

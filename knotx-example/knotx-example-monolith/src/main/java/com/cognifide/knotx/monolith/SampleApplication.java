@@ -20,7 +20,8 @@ package com.cognifide.knotx.monolith;
 import com.cognifide.knotx.engine.TemplateEngineVerticle;
 import com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle;
 import com.cognifide.knotx.mocks.MockServiceVerticle;
-import com.cognifide.knotx.repository.RepositoryVerticle;
+import com.cognifide.knotx.repository.FilesystemRepositoryVerticle;
+import com.cognifide.knotx.repository.HttpRepositoryVerticle;
 import com.cognifide.knotx.server.KnotxServerVerticle;
 
 import io.vertx.core.DeploymentOptions;
@@ -35,7 +36,8 @@ public class SampleApplication extends AbstractVerticle {
 
     vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
     vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
-    vertx.deployVerticle(new RepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("repository")));
+    vertx.deployVerticle(new HttpRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("httRepository")));
+    vertx.deployVerticle(new FilesystemRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("localRepository")));
     vertx.deployVerticle(new TemplateEngineVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("engine")));
     vertx.deployVerticle(new KnotxServerVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("server")));
   }

@@ -41,7 +41,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
   private TemplateEngineConfiguration configuration;
 
-  private String serviceName;
+  private String address;
 
   private HttpClient httpClient;
 
@@ -49,7 +49,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     JsonObject config = config().getJsonObject("config");
-    this.serviceName = config.getString("service.name");
+    this.address = config.getString("address");
 
     configuration = new TemplateEngineConfiguration(config);
 
@@ -65,7 +65,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
     LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
     EventBus eventBus = vertx.eventBus();
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();
+    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
 
     messageObservable
         .doOnNext(this::traceMessage)

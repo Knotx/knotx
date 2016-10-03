@@ -8,37 +8,47 @@
         "X-Language-Code",
         "X-Requested-With"
       ],
-      "dependencies": {
-        "repository.address": "template-repository",
-        "engine.address": "template-engine"
+      "repositories": [
+        {
+          "path" : "/content/local/.*",
+          "address" : "knotx.core.repository.filesystem"
+        },
+        {
+          "path" : "/content/.*",
+          "address" : "knotx.core.repository.http"
+        }
+      ],
+      "engine" : {
+        "address": "knotx.core.engine"
       }
     }
   },
-  "repository": {
+  "httpRepository": {
     "config": {
-      "service.name": "template-repository",
-      "repositories": [
-        {
-          "type": "local",
-          "path": "/content/local/.*",
-          "catalogue": ""
+      "address": "knotx.core.repository.http",
+      "configuration": {
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
         },
-        {
-          "type": "remote",
-          "path": "/content/.*",
+        "client.destination" : {
           "domain": "localhost",
-          "port": 3001,
-          "client.options": {
-            "tryUseCompression": true,
-            "keepAlive": false
-          }
+          "port": 3001
         }
-      ]
+      }
+    }
+  },
+  "localRepository": {
+    "config": {
+      "address": "knotx.core.repository.filesystem",
+      "configuration": {
+        "catalogue": ""
+      }
     }
   },
   "engine": {
     "config": {
-      "service.name": "template-engine",
+      "address": "knotx.core.engine",
       "template.debug": true,
       "client.options": {
         "maxPoolSize": 1000,

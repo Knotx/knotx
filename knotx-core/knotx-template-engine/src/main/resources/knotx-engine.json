@@ -1,6 +1,6 @@
 {
   "config": {
-    "service.name": "template-engine",
+    "address": "knotx.core.engine",
     "template.debug": true,
     "client.options": {
       "maxPoolSize": 1000,

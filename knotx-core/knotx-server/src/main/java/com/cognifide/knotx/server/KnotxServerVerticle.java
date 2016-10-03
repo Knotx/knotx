@@ -24,6 +24,7 @@ import com.cognifide.knotx.api.RenderResponse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -47,17 +48,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private HttpServer httpServer;
 
-  private String repositoryAddress;
-
-  private String engineAddress;
-
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     JsonObject config = config().getJsonObject("config");
-
-    this.repositoryAddress = config.getJsonObject("dependencies").getString("repository.address");
-    this.engineAddress = config.getJsonObject("dependencies").getString("engine.address");
     configuration = new KnotxServerConfiguration(config);
   }
 
@@ -69,36 +63,42 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     httpServer.requestHandler(
         request -> {
-          request.setExpectMultipart(true);
-          request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, new HttpRequestWrapper(request).toJson())
-              .doOnNext(this::traceMessage)
-              .subscribe(
-                  reply -> {
-                    HttpResponseWrapper repository = new HttpResponseWrapper(reply.body());
-                    if (repository.statusCode() == HttpResponseStatus.OK) {
-                      eventBus.<JsonObject>sendObservable(engineAddress, requestRendering(repository, request))
-                          .subscribe(
-                              result -> {
-                                RenderResponse engineResponse = new RenderResponse(result.body());
-                                if (engineResponse.isSuccess()) {
-                                  rewriteHeaders(request, request.headers());
-                                  request.response().end(engineResponse.getHtml());
-                                } else {
-                                  request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+          Optional<String> repositoryAddress = configuration.repositoryForPath(request.path());
+
+          if (repositoryAddress.isPresent()) {
+            request.setExpectMultipart(true);
+            request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress.get(), new HttpRequestWrapper(request).toJson())
+                .doOnNext(this::traceMessage)
+                .subscribe(
+                    reply -> {
+                      HttpResponseWrapper repository = new HttpResponseWrapper(reply.body());
+                      if (repository.statusCode() == HttpResponseStatus.OK) {
+                        eventBus.<JsonObject>sendObservable(configuration.engineAddress(), requestRendering(repository, request))
+                            .subscribe(
+                                result -> {
+                                  RenderResponse engineResponse = new RenderResponse(result.body());
+                                  if (engineResponse.isSuccess()) {
+                                    rewriteHeaders(request, request.headers());
+                                    request.response().end(engineResponse.getHtml());
+                                  } else {
+                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                                  }
+                                },
+                                error -> {
+                                  LOGGER.error("Error happened", error);
+                                  request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                                 }
-                              },
-                              error -> {
-                                LOGGER.error("Error happened", error);
-                                request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
-                              }
-                          );
-                    } else {
-                      rewriteHeaders(request, repository.headers());
-                      request.response().setStatusCode(repository.statusCode().code()).end();
-                    }
-                  },
-                  error -> LOGGER.error("Error: ", error)
-              ));
+                            );
+                      } else {
+                        rewriteHeaders(request, repository.headers());
+                        request.response().setStatusCode(repository.statusCode().code()).end();
+                      }
+                    },
+                    error -> LOGGER.error("Error: ", error)
+                ));
+          } else {
+            request.response().setStatusCode(HttpResponseStatus.NOT_FOUND.code()).end();
+          }
         }
     ).listen(
         configuration.httpPort(),

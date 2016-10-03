@@ -7,9 +7,18 @@
       "X-Language-Code",
       "X-Requested-With"
     ],
-    "dependencies": {
-      "repository.address": "template-repository",
-      "engine.address": "template-engine"
+    "repositories": [
+      {
+        "path" : "/content/local/.*",
+        "address" : "knotx.core.repository.filesystem"
+      },
+      {
+        "path" : "/content/.*",
+        "address" : "knotx.core.repository.http"
+      }
+    ],
+    "engine" : {
+      "address": "knotx.core.engine"
     }
   }
 }
