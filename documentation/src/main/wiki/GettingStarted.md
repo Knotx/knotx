@@ -286,10 +286,12 @@ To deploy verticle with advanced options use following properties:
     ...
 }
 ```
-- **worker** - deploy verticle as a worker, default false.
-- **multiThreaded** - deploy verticle as a multi-threaded worker, default false.
+- **worker** - deploy verticle as a worker.
+- **multiThreaded** - deploy verticle as a multi-threaded worker.
 - **isolationGroup** - array of isolation group.
-- **ha** - deploy verticle as highly available, default false.
+- **ha** - deploy verticle as highly available.
 - **extraClasspath** - extra classpath to be used when deploying the verticle.
 - **instances** - number of verticle instances.
 - **isolatedClasses** - array of isolated classes.
+
+Read more about [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html)

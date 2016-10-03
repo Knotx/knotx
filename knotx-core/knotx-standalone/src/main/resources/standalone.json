@@ -12,14 +12,7 @@
         "repository.address": "template-repository",
         "engine.address": "template-engine"
       }
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },
   "repository": {
     "config": {
@@ -41,14 +34,7 @@
           }
         }
       ]
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   },
   "engine": {
     "config": {
@@ -70,13 +56,6 @@
           "port": 8080
         }
       ]
-    },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
+    }
   }
 }

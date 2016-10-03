@@ -32,13 +32,6 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         "engine.address": "template-engine"
       }
     },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
   },
   "repository": {
     "config": {
@@ -61,13 +54,6 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         }
       ]
     },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
   },
   "engine": {
     "config": {
@@ -90,17 +76,11 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
         }
       ]
     },
-    "worker" : false,
-    "multiThreaded": false,
-    "isolationGroup": "null",
-    "ha": false,
-    "extraClasspath": [],
-    "instances": 2,
-    "isolatedClasses": []
   }
 }
 ```
 Configuration JSON contains three config sections, one for each Knot.x verticle.
+Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options) 
 
 ### Executing Knot.x core verticles as a cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
