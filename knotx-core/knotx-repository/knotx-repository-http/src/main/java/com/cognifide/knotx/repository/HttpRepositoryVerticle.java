@@ -80,11 +80,7 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     final HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
     final HttpClient httpClient = createHttpClient();
 
-    Observable<HttpClientResponse> clientResponse =
-        RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
-            repoRequest.path(), repoRequest.headers());
-
-    return clientResponse
+    return requestForTemplate(httpClient, repoRequest)
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
         .onErrorReturn(error -> {
@@ -96,6 +92,11 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
 
   private HttpClient createHttpClient() {
     return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
+  }
+
+  private Observable<HttpClientResponse> requestForTemplate(HttpClient httpClient, HttpRequestWrapper repoRequest) {
+    return RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
+        repoRequest.path(), repoRequest.headers());
   }
 
   private Observable<HttpResponseWrapper> processResponse(final HttpClientResponse response) {

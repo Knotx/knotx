@@ -36,8 +36,8 @@ public class SampleApplication extends AbstractVerticle {
 
     vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
     vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
-    vertx.deployVerticle(new HttpRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("httRepository")));
     vertx.deployVerticle(new FilesystemRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("localRepository")));
+    vertx.deployVerticle(new HttpRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("httpRepository")));
     vertx.deployVerticle(new TemplateEngineVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("engine")));
     vertx.deployVerticle(new KnotxServerVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("server")));
   }

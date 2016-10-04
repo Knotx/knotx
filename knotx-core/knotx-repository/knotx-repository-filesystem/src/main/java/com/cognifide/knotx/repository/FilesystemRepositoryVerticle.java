@@ -24,20 +24,32 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.NoSuchFileException;
+import java.util.concurrent.CompletableFuture;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.OpenOptions;
+import io.vertx.core.impl.Action;
+import io.vertx.core.impl.ContextTask;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rx.java.ObservableFuture;
+import io.vertx.rx.java.ObservableHandler;
+import io.vertx.rx.java.RxHelper;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
+import rx.Completable;
 import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func0;
 
 public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
@@ -61,8 +73,6 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
     EventBus eventBus = vertx.eventBus();
-
-
     Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
 
     messageObservable
@@ -85,17 +95,18 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
         .flatMap(AsyncFile::toObservable)
         .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setBody(buffer))
         .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
-        .onErrorReturn(error -> {
-          LOGGER.error("Error reading template file from file system", error);
+        .onErrorReturn(this::processError);
+  }
 
-          HttpResponseStatus statusCode;
-          if (error.getCause().getClass().equals(NoSuchFileException.class)) {
-            statusCode = HttpResponseStatus.NOT_FOUND;
-          } else {
-            statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-          }
-          return new HttpResponseWrapper().setStatusCode(statusCode);
-        });
+  private HttpResponseWrapper processError(Throwable error) {
+    LOGGER.error("Error reading template file from file system", error);
+    HttpResponseStatus statusCode;
+    if (error.getCause().getClass().equals(NoSuchFileException.class)) {
+      statusCode = HttpResponseStatus.NOT_FOUND;
+    } else {
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    return new HttpResponseWrapper().setStatusCode(statusCode);
   }
 
   private void traceMessage(Message<JsonObject> message) {
