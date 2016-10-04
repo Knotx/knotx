@@ -17,12 +17,12 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 public final class SlingUriInfoHelper {
 

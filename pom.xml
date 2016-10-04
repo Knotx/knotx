@@ -214,6 +214,11 @@
             <target>1.8</target>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
         <!-- plugin for checking if licensing header is present in headers of defined files -->
         <plugin>
           <groupId>org.apache.rat</groupId>
@@ -288,7 +293,7 @@
                   <argument>run</argument>
                   <argument>${main.verticle}</argument>
                   <argument>-conf</argument>
-                  <argumant>${project.basedir}/src/main/resources/application.json</argumant>
+                  <argument>${project.basedir}/src/main/resources/${exec.config}</argument>
                 </arguments>
               </configuration>
             </execution>

@@ -35,7 +35,7 @@ import com.github.jknack.handlebars.Helper;
  * class(es)</li>
  * <li>run Knot.x with the JAR file in the classpath.
  * </ul>
- * 
+ *
  * @see Helper
  */
 public interface CustomHandlebarsHelper<T> extends Helper<T> {
@@ -43,6 +43,6 @@ public interface CustomHandlebarsHelper<T> extends Helper<T> {
   /**
    * @return name of the helper under which it's going to be registered in Handlebars
    */
-  public String getName();
+  String getName();
 
 }

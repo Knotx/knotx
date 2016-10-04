@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import java.net.URI;
-import java.util.Arrays;
+import com.cognifide.knotx.api.TemplateEngineRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
+import java.net.URI;
+import java.util.Arrays;
 
 public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
 

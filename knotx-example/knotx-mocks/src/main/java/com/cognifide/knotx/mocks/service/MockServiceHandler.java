@@ -26,8 +26,11 @@ import java.io.IOException;
 import java.net.URL;
 
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
 public class MockServiceHandler implements Handler<HttpServerRequest> {
@@ -41,22 +44,44 @@ public class MockServiceHandler implements Handler<HttpServerRequest> {
   }
 
   @Override
-  public void handle(HttpServerRequest event) {
-    String resourcePath = getFilePath(event);
-    String htmlContent = "";
-    try {
-      URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-      if (resourceUrl != null) {
-        URL url = Resources.getResource(resourcePath);
-        htmlContent = Resources.toString(url, Charsets.UTF_8);
-        LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
-      }
-    } catch (IOException e) {
-      LOGGER.error("Could not read content!", e);
-    } finally {
-      event.response().end(htmlContent);
-      event.connection().close();
+  public void handle(HttpServerRequest request) {
+    URL mockDataFileUrl = this.getClass().getClassLoader().getResource(getFilePath(request));
+    JsonObject responseBody = getMockContent(request);
+
+    if (mockDataFileUrl != null) {
+      request.setExpectMultipart(true);
+      request.endHandler(v -> {
+        if (request.method() == HttpMethod.POST) {
+          MultiMap formParams = request.formAttributes();
+
+          formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
+        }
+        request.response().end(responseBody.encodePrettily());
+        request.connection().close();
+      });
+    } else {
+      request.response().setStatusCode(500);
+      request.connection().close();
     }
+  }
+
+  private JsonObject getMockContent(HttpServerRequest event) {
+    String resourcePath = getFilePath(event);
+    URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
+    JsonObject content = new JsonObject();
+
+    if (resourceUrl != null) {
+      URL url = Resources.getResource(resourcePath);
+
+      try {
+        content = new JsonObject(Resources.toString(url, Charsets.UTF_8));
+      } catch (IOException e) {
+        LOGGER.error("Could not read content!", e);
+      }
+      LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
+    }
+
+    return content;
   }
 
   private String getFilePath(HttpServerRequest event) {

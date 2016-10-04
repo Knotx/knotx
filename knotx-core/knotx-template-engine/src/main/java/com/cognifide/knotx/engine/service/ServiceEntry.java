@@ -31,17 +31,16 @@ import org.jsoup.nodes.Attribute;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import io.vertx.core.http.HttpMethod;
 
 public class ServiceEntry {
 
-  private String relatedAttribute;
   private String placeholderNamespace;
   private ServiceCallMethod methodType;
   private String serviceUri;
   private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
-  private Map<String, Object> serviceResult;
 
   private ServiceEntry() {
     //Hidden constructors
@@ -49,35 +48,44 @@ public class ServiceEntry {
 
   public static ServiceEntry of(Attribute serviceAttribute) {
     ServiceEntry entry = new ServiceEntry();
-    entry.relatedAttribute = serviceAttribute.getKey();
-    entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(entry.relatedAttribute);
-    entry.methodType = ServiceAttributeUtil.extractMethodType(entry.relatedAttribute);
+
+    String relatedAttribute = serviceAttribute.getKey();
+    entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(relatedAttribute);
+    entry.methodType = ServiceAttributeUtil.extractMethodType(relatedAttribute);
     entry.serviceUri = serviceAttribute.getValue();
     return entry;
   }
 
-  public ServiceEntry setResult(Map<String, Object> serviceResult) {
-    this.serviceResult = serviceResult;
+  public String getPlaceholderNamespace() {
+    return placeholderNamespace;
+  }
+
+  public ServiceCallMethod getMethodType() {
+    return methodType;
+  }
+
+  public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {
+    this.serviceMetadata = serviceMetadata;
     return this;
   }
 
-  public String getRelatedAttribute() {
-    return relatedAttribute;
+  public String getDomain() {
+    return serviceMetadata.getDomain();
+  }
+
+  public Integer getPort() {
+    return serviceMetadata.getPort();
   }
 
   public String getServiceUri() {
     return serviceUri;
   }
 
-  public Map<String, Object> getResult() {
-    return serviceResult;
-  }
-
-  public Map<String, Object> getResultWithNamespaceAsKey() {
+  public Map<String, Object> getResultWithNamespaceAsKey(Map<String, Object> result) {
     if (StringUtils.isNotEmpty(placeholderNamespace)) {
-      return Collections.singletonMap(placeholderNamespace, serviceResult);
+      return Collections.singletonMap(placeholderNamespace, result);
     } else {
-      return serviceResult;
+      return result;
     }
   }
 
@@ -89,14 +97,6 @@ public class ServiceEntry {
     } else {
       return canServeMethodType;
     }
-  }
-
-  public String getPlaceholderNamespace() {
-    return placeholderNamespace;
-  }
-
-  public ServiceCallMethod getMethodType() {
-    return methodType;
   }
 
   @Override
@@ -119,31 +119,10 @@ public class ServiceEntry {
     return Objects.hash(serviceUri, placeholderNamespace, methodType);
   }
 
-  public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {
-    this.serviceMetadata = serviceMetadata;
-    return this;
-  }
-
-  public String getDomain() {
-    return serviceMetadata.getDomain();
-  }
-
-  public Integer getPort() {
-    return serviceMetadata.getPort();
-  }
-
-
   private boolean canServeMethodType(HttpMethod requestMethodType) {
     ServiceCallMethod methodTypeFromRequest = ServiceCallMethod.from(requestMethodType);
     return Objects.equals(this.methodType, methodTypeFromRequest)
         || Objects.equals(this.methodType, ServiceCallMethod.ALL);
-  }
-
-
-  private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
-    String htmlFragmentId = fragment.getDataId();
-    String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
-    return Objects.equals(requestFormId, htmlFragmentId) || ServiceCallMethod.POST != (methodType);
   }
 
   private boolean isRequestFormPostWithId(TemplateEngineRequest request) {
@@ -152,5 +131,13 @@ public class ServiceEntry {
     }
     String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
     return StringUtils.isNotEmpty(requestFormId);
+  }
+
+  private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
+    Optional<String> fragmentId = Optional.ofNullable(fragment.getDataId());
+    Optional<String> formId = Optional.ofNullable(request.getFormAttributes())
+        .map(attr -> attr.get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
+
+    return fragmentId.equals(formId) || ServiceCallMethod.POST != methodType;
   }
 }
