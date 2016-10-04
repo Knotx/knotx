@@ -48,6 +48,8 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
 
   private JsonObject clientDestination;
 
+  private HttpClient httpClient;
+
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
@@ -61,7 +63,8 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
+    httpClient = createHttpClient();
 
     EventBus eventBus = vertx.eventBus();
 
@@ -76,25 +79,24 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
         );
   }
 
+  private HttpClient createHttpClient() {
+    return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
+  }
+
   private Observable<HttpResponseWrapper> getTemplateContent(final Message<JsonObject> repoMessage) {
     final HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
-    final HttpClient httpClient = createHttpClient();
 
-    return requestForTemplate(httpClient, repoRequest)
+    return requestForTemplate(repoRequest)
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
         .onErrorReturn(error -> {
               LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repoRequest.path(), error);
               return new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             }
-        ).doAfterTerminate(httpClient::close);
+        );
   }
 
-  private HttpClient createHttpClient() {
-    return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-  }
-
-  private Observable<HttpClientResponse> requestForTemplate(HttpClient httpClient, HttpRequestWrapper repoRequest) {
+  private Observable<HttpClientResponse> requestForTemplate(HttpRequestWrapper repoRequest) {
     return RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
         repoRequest.path(), repoRequest.headers());
   }
