@@ -1,13 +1,11 @@
 {
-  "config": {
-    "service.name": "template-repository",
-    "repositories": [
-      {
-        "type": "remote",
-        "path": "/content/.*",
-        "domain": "localhost",
-        "port": 3001
-      }
-    ]
-  }
+  "service.name": "template-repository",
+  "repositories": [
+    {
+      "type": "remote",
+      "path": "/content/.*",
+      "domain": "localhost",
+      "port": 3001
+    }
+  ]
 }

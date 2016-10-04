@@ -34,7 +34,7 @@
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.mocks.StarterVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.KnotxStarterVerticle</main.verticle>
   </properties>
 
   <dependencies>
