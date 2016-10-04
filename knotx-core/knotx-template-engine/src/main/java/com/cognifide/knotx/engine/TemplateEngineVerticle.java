@@ -61,7 +61,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
 
     EventBus eventBus = vertx.eventBus();
     Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();

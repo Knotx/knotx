@@ -34,7 +34,7 @@
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.monolith.SampleApplication</main.verticle>
+    <main.verticle>com.cognifide.knotx.KnotxStarterVerticle</main.verticle>
     <exec.config>knotx-example-monolith.json</exec.config>
   </properties>
 

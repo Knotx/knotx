@@ -63,7 +63,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
 
     EventBus eventBus = vertx.eventBus();
 
