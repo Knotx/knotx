@@ -36,14 +36,27 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   public void start() throws Exception {
     Observable.from(config().getJsonObject("verticles"))
         .flatMap(this::deployVerticle)
+        .compose(joinDeployments())
         .subscribe(
-            deploymentId -> LOGGER.info("Verticle <{}> successfully deployed. Deployment ID <{}>", deploymentId.getLeft(), deploymentId.getRight()),
+            message -> LOGGER.info("Knot.x STARTED {}", message),
             error -> LOGGER.error("Verticle could not be deployed {}", error)
         );
   }
 
   private Observable<Pair<String, String>> deployVerticle(Map.Entry<String, Object> verticleConf) {
     return vertx.deployVerticleObservable(verticleConf.getKey(), new DeploymentOptions((JsonObject) verticleConf.getValue()))
-        .map(deploymentID -> Pair.of(verticleConf.getKey(),deploymentID));
+        .map(deploymentID -> Pair.of(verticleConf.getKey(), deploymentID));
+  }
+
+  private Observable.Transformer<Pair<String, String>, String> joinDeployments() {
+    return observable ->
+        observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()), this::collectDeployment)
+            .map(StringBuilder::toString);
+  }
+
+  private StringBuilder collectDeployment(StringBuilder accumulator, Pair<String, String> deploymentId) {
+    return accumulator
+        .append(String.format("\t\tDeployed %s [%s]", deploymentId.getRight(), deploymentId.getLeft()))
+        .append(System.lineSeparator());
   }
 }

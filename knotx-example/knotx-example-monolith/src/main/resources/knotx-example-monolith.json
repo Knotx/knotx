@@ -13,7 +13,8 @@
           "repository.address": "template-repository",
           "engine.address": "template-engine"
         }
-      }
+      },
+      "instances" : 2
     },
     "com.cognifide.knotx.repository.RepositoryVerticle": {
       "config": {
