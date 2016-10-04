@@ -16,7 +16,7 @@ The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/i
 A module that defines the communication model used to send event-related messages via the Event Bus.
 
 #### knotx-launcher
-A module that initialises system properties for Knot.x core. Currently only logger.
+A module consists of Knotx Starter Verticle, that supports starting verticles defined in the given configuration json.
 
 #### knotx-repository
 A module that contains the **repository** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. The repository is responsible for fetching templates.
@@ -25,7 +25,7 @@ A module that contains the **repository** [verticle](http://vertx.io/docs/apidoc
 A module that contains the **server** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Server is responsible for communication between Knot.x and the World. It handles initial request, dispatches them to `repository` and `templating-engine` verticles using [Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html) and finally sends responses to the client.
 
 #### knotx-standalone
-A module that contains the **host** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) which starts `server`, `repository` and `template-engine` verticles. It enables one to quickly set up a standalone Knot.x core application.
+A module that contains JSON configuration to start Knot.x as standalone system. It means only following verticles to be started: `server`, `repository` and `template-engine`. It enables one to quickly set up a standalone Knot.x core application.
 
 #### knotx-template-engine
 A module that contains the **template-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Templating Engine is responsible for processing template snippets, calling external services for dynamic data and producing final markup with injected data.
@@ -76,42 +76,44 @@ http://localhost:8092/content/remote/simple.html
 
 The Knot.x Sample application consists of multiple verticles, each requiring a dedicated configuration entry.
 Here's how JSON configuration files look:
-**1. application.json**
+**1. knotx-example-monolith.json**
 ```json
 {
-  "repository": {
-    "config" : {
-        ...
-    }
-  },
-  "templateEngine": {
-    "config" : {
-        ...
-    }
-  },
-  "knotxServer": {
-    "config" : {
-        ...
-    }
-  },  
-  "mockRepo": {
-    "config" : {
-        ...
-    }
-  },
-  "mockService": {
-    "config" : {
-        ...
-    }
+  "verticles" : {  
+      "com.cognifide.knotx.repository.RepositoryVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.server.KnotxServerVerticle": {
+        "config" : {
+            ...
+        }
+      },  
+      "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.mocks.MockServiceVerticle": {
+        "config" : {
+            ...
+        }
+      }
   }
 }
 ```
-This is the main configuration supplying config entries for each verticle started by the Sample application.
+The configuration consists of **verticles** object containing set of configurations for verticles that are going to be deployed(started). Each object in a set should have name of class name of the **Verticle** that are going to be deployed.
 
-**1.1. repository** section
+**1.1. Repository verticle ** section
 ```json
 {
-  "repository": {
+  "com.cognifide.knotx.repository.RepositoryVerticle": {
     "config": {
       "service.name": "template-repository",
       "repositories": [
@@ -164,7 +166,7 @@ This kind of repository connects with an external server to fetch templates. To 
 **1.2. templateEngine** section
 ```json
   ...
-  "templateEngine": {
+  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
@@ -204,7 +206,7 @@ The first matched service will handle the request or, if there's no service matc
 ```json
 {
   ...
-  "knotxServer": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -232,7 +234,7 @@ This section configures the Knot.x HTTP server. The config node consists of:
 ```json
 {
     ... 
-  "mockRepo": {
+  "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
     "config": {
       "mock.data.root": "mock/repository",
       "http.port": 3001
@@ -248,8 +250,8 @@ This section configures the Remote repository mock used by the example applicati
 **mockService** section
 ```json
 {
-    ... 
-  "mockService": {
+  ..., 
+  "com.cognifide.knotx.mocks.MockServiceVerticle": {
     "config": {
       "mock.data.root": "mock/service",
       "http.port": 3000
@@ -270,7 +272,7 @@ To deploy verticle with advanced options use following properties:
 ```json
 {
     ... 
-  "mockService": {
+  "com.cognifide.knotx.mocks.MockServiceVerticle": {
     "config": {
       "mock.data.root": "mock/service",
       "http.port": 3000

@@ -18,7 +18,7 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
 **standalone.json**
 ```json
 {
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -33,7 +33,7 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
       }
     },
   },
-  "repository": {
+  "com.cognifide.knotx.repository.RepositoryVerticle": {
     "config": {
       "service.name": "template-repository",
       "repositories": [
@@ -55,7 +55,7 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
       ]
     },
   },
-  "engine": {
+  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
@@ -123,7 +123,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
 - **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
 ```json
 {
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -134,11 +134,10 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
      ...
  ``` 
 ####Verticle configuration
-Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
+Each verticle requires JSON configuration of **config** object. The configuration consists of the same parameters as previous examples.
 For instance, a configuration JSON for the *repository* verticle could look like this:
 ```json
 {
-  "config": {
     "service.name": "template-repository",
     "repositories": [
       {
@@ -151,6 +150,5 @@ For instance, a configuration JSON for the *repository* verticle could look like
        }
       }
     ]
-  }
 }
 ```
