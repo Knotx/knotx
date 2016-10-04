@@ -66,19 +66,16 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
     EventBus eventBus = vertx.eventBus();
     Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
-
     messageObservable
         .doOnNext(this::traceMessage)
-        .subscribe(
-            msg -> templateEngine.process(new RenderRequest(msg.body()))
-                .subscribe(
-                    result -> msg.reply(RenderResponse.success(result).toJsonObject()),
-                    error -> {
-                      LOGGER.error("Error happened", error);
-                      msg.reply(RenderResponse.error(error.getMessage()).toJsonObject());
-                    }
-                )
-        );
+        .flatMap(msg -> templateEngine.process(new RenderRequest(msg.body()))
+            .doOnNext(result -> msg.reply(RenderResponse.success(result).toJsonObject()))
+            .doOnError(error -> {
+              LOGGER.error("Error happened", error);
+              msg.reply(RenderResponse.error(error.getMessage()).toJsonObject());
+            })
+        )
+        .subscribe();
   }
 
   @Override
