@@ -34,7 +34,7 @@
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.KnotxStandaloneStarterVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</main.verticle>
   </properties>
 
   <dependencies>
@@ -57,11 +57,15 @@
       <groupId>io.reactivex</groupId>
       <artifactId>rxjava</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
     <!-- Knot.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

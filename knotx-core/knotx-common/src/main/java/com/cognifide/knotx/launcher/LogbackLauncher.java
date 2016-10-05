@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Templating Engine Verticle
+ * Knot.x - Reactive microservice assembler - Launcher
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,10 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.engine;
+package com.cognifide.knotx.launcher;
 
-public interface TemplateEngineConsts {
-  public static final String FORM_ID_ATTRIBUTE = "_id";
-  public static final String XMLHTTP_REQUEST = "XMLHttpRequest";
-  public static final String X_REQUESTED_WITH = "X-Requested-With";
+import io.vertx.core.Launcher;
+
+public class LogbackLauncher extends Launcher {
+
+  public static void main(String[] args) {
+    System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+    new LogbackLauncher().dispatch(args);
+  }
 }

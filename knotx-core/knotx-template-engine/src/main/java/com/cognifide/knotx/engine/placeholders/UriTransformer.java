@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.apache.commons.lang3.StringUtils;

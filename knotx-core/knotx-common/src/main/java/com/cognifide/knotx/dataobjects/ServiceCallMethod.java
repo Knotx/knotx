@@ -1,5 +1,5 @@
 /*
- * Knot.x - Mocked services for sample app
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,21 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.mocks;
+package com.cognifide.knotx.dataobjects;
 
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
+public enum ServiceCallMethod {
+  GET,
+  POST,
+  ALL;
 
-public class StarterVerticle extends AbstractVerticle {
-
-  @Override
-  public void start() {
-    Vertx vertx = Vertx.vertx();
-
-    vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
-    vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
+  public static ServiceCallMethod from(io.vertx.core.http.HttpMethod vertxMethod) {
+    return ServiceCallMethod.valueOf(vertxMethod.toString());
   }
-
 }

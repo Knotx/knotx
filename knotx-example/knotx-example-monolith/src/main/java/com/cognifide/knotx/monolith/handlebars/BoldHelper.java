@@ -19,7 +19,7 @@ package com.cognifide.knotx.monolith.handlebars;
 
 import java.io.IOException;
 
-import com.cognifide.knotx.api.CustomHandlebarsHelper;
+import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Options;
 
 public class BoldHelper implements CustomHandlebarsHelper<Object> {

@@ -23,8 +23,15 @@
       }
     }
   },
+  "repository": {
+    },
+    "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+      "config": {
+        "service.name": "template-engine",
+        "template.debug": true,
+    }
+  },
   "httpRepository": {
-    "config": {
       "address": "knotx.core.repository.http",
       "configuration": {
         "client.options": {
@@ -35,6 +42,9 @@
           "domain": "localhost",
           "port": 3001
         }
+      ]
+        ]
+        }
       }
     }
   },
@@ -43,6 +53,34 @@
       "address": "knotx.core.repository.filesystem",
       "configuration": {
         "catalogue": ""
+      }
+    }
+  },
+  "engine": {
+    "config": {
+      "service.name": "template-engine",
+      "template.debug": true,
+      "client.options": {
+        "maxPoolSize": 1000,
+        "keepAlive": false
+      },
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 3000
+        },
+        {
+          "path": "/service/.*",
+          "domain": "localhost",
+          "port": 8080
+        }
+      ]
+    },
+    "com.cognifide.knotx.mocks.MockServiceVerticle": {
+      "config": {
+        "mock.data.root": "mock/service",
+        "http.port": 3000
       }
     }
   },
@@ -67,13 +105,5 @@
         }
       ]
     }
-  },
-  "mockRepo": {
-    "mock.data.root": "mock/repository",
-    "http.port": 3001
-  },
-  "mockService": {
-    "mock.data.root": "mock/service",
-    "http.port": 3000
   }
 }

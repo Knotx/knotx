@@ -260,7 +260,7 @@
                   <transformer
                       implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                     <manifestEntries>
-                      <Main-Class>com.cognifide.knotx.LogbackLauncher</Main-Class>
+                      <Main-Class>com.cognifide.knotx.launcher.LogbackLauncher</Main-Class>
                       <Main-Verticle>${main.verticle}</Main-Verticle>
                     </manifestEntries>
                   </transformer>
@@ -288,7 +288,7 @@
                 <goal>java</goal>
               </goals>
               <configuration>
-                <mainClass>com.cognifide.knotx.LogbackLauncher</mainClass>
+                <mainClass>com.cognifide.knotx.launcher.LogbackLauncher</mainClass>
                 <arguments>
                   <argument>run</argument>
                   <argument>${main.verticle}</argument>

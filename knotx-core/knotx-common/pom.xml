@@ -28,9 +28,9 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-api</artifactId>
+  <artifactId>knotx-common</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - API</name>
+  <name>Knot.x - Reactive microservice assembler - Common</name>
 
   <dependencies>
     <dependency>

@@ -18,8 +18,7 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.api.HttpRequestWrapper;
-import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;

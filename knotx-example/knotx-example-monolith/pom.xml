@@ -34,7 +34,7 @@
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.monolith.SampleApplication</main.verticle>
+    <main.verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</main.verticle>
     <exec.config>knotx-example-monolith.json</exec.config>
   </properties>
 
@@ -42,7 +42,7 @@
     <!-- Knot.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -59,13 +59,6 @@
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-template-engine</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-template-engine</artifactId>
-      <version>${project.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
@@ -106,6 +99,13 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-template-engine</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -12,11 +12,11 @@ The Knot.x project has two main Maven modules: **knotx-core** and **knotx-exampl
 ### Core
 The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
 
-#### knotx-api
-A module that defines the communication model used to send event-related messages via the Event Bus.
+#### knotx-common
+A module that defines:
 
-#### knotx-launcher
-A module that initialises system properties for Knot.x core. Currently only logger.
+- the communication model used to send event-related messages via the Event Bus.
+- Knotx Starter Verticle supporting verticles definition in the given configuration JSON and corresponding Vert.x launcher
 
 #### knotx-repository
 A module that contains submodules for specialized repository [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) imlementations. 
@@ -28,7 +28,7 @@ A module that contains submodules for specialized repository [verticles](http://
 A module that contains the **server** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Server is responsible for communication between Knot.x and the World. It handles initial request, dispatches them to `repository` and `templating-engine` verticles using [Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html) and finally sends responses to the client.
 
 #### knotx-standalone
-A module that contains the **host** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) which starts `server`, `repository` and `template-engine` verticles. It enables one to quickly set up a standalone Knot.x core application.
+A module that contains JSON configuration to start Knot.x as standalone system. It means only following verticles to be started: `server`, `repository` and `template-engine`. It enables one to quickly set up a standalone Knot.x core application.
 
 #### knotx-template-engine
 A module that contains the **template-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Templating Engine is responsible for processing template snippets, calling external services for dynamic data and producing final markup with injected data.
@@ -85,44 +85,41 @@ Here's how JSON configuration files look:
 ### 1. knotx-example-monolith.json
 ```json
 {
-  "httpRepository": {
-    "config" : {
-        ...
-    }
-  },
-  "localRepository": {
-    "config" : {
-        ...
-    }
-  },
-  "engine": {
-    "config" : {
-        ...
-    }
-  },  
-  "server": {
-    "config" : {
-        ...
-    }
-  }, 
-  "mockRepo": {
-    "config" : {
-        ...
-    }
-  },
-  "mockService": {
-    "config" : {
-        ...
-    }
+  "verticles" : {  
+      "com.cognifide.knotx.repository.RepositoryVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.server.KnotxServerVerticle": {
+        "config" : {
+            ...
+        }
+      },  
+      "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.mocks.MockServiceVerticle": {
+        "config" : {
+            ...
+        }
+      }
   }
 }
 ```
-This is the main configuration supplying config entries for each verticle started by the Sample application.
+The configuration consists of **verticles** object containing set of configurations for verticles that are going to be deployed(started). Each object in a set should have name of class name of the **Verticle** that are going to be deployed.
 
 #### 1.1. httpRepository section
 ```json
 {
-  "httpRepository": {
+  "com.cognifide.knotx.repository.RepositoryVerticle": {
     "config": {
       "address": "knotx.core.repository.http",
       "configuration": {
@@ -172,7 +169,7 @@ The config node consists of:
 #### 1.3. engine section
 ```json
   ...
-  "engine": {
+  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
     "config": {
       "address": "knotx.core.engine",
       "template.debug": true,
@@ -212,7 +209,7 @@ The first matched service will handle the request or, if there's no service matc
 ```json
 {
   ...
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -250,10 +247,12 @@ This section configures the Knot.x HTTP server. The config node consists of:
 ```json
 {
     ... 
-    "mockRepo": {
-        "mock.data.root": "mock/repository",
-        "http.port": 3001
-    },     
+  "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
+    "config": {
+      "mock.data.root": "mock/repository",
+      "http.port": 3001
+    }
+  },   
     ...
 }
 ```
@@ -264,11 +263,13 @@ This section configures the Remote repository mock used by the example applicati
 #### 1.6 mockService section
 ```json
 {
-    ... 
-    "mockService": {
-        "mock.data.root": "mock/service",
-        "http.port": 3000
-    },   
+  ..., 
+  "com.cognifide.knotx.mocks.MockServiceVerticle": {
+    "config": {
+      "mock.data.root": "mock/service",
+      "http.port": 3000
+    }
+  }
     ...
 }
 ```
@@ -278,3 +279,34 @@ This section configures the Services mock used by the example application. It co
 
 Please mind that this an example that depicts a valid setup of the Sample monolith application and it is not fit for use in production environments.
 To learn how to configure Knot.x for use in production, see the [Production](#configuration-1) section.
+
+## Deployment options
+To deploy verticle with advanced options use following properties:
+```json
+{
+    ... 
+  "com.cognifide.knotx.mocks.MockServiceVerticle": {
+    "config": {
+      "mock.data.root": "mock/service",
+      "http.port": 3000
+    },
+    "worker" : false,
+    "multiThreaded": false,
+    "isolationGroup": "null",
+    "ha": false,
+    "extraClasspath": [],
+    "instances": 2,
+    "isolatedClasses": []
+  }
+    ...
+}
+```
+- **worker** - deploy verticle as a worker.
+- **multiThreaded** - deploy verticle as a multi-threaded worker.
+- **isolationGroup** - array of isolation group.
+- **ha** - deploy verticle as highly available.
+- **extraClasspath** - extra classpath to be used when deploying the verticle.
+- **instances** - number of verticle instances.
+- **isolatedClasses** - array of isolated classes.
+
+Read more about [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html)

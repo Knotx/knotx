@@ -25,7 +25,6 @@ import com.cognifide.knotx.api.RenderResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -51,13 +50,12 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
     configuration = new KnotxServerConfiguration(config);
   }
 
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
     httpServer = vertx.createHttpServer();
     EventBus eventBus = vertx.eventBus();
 
@@ -104,10 +102,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
         configuration.httpPort(),
         result -> {
           if (result.succeeded()) {
-            LOGGER.info("Successfully Started");
+            LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
             fut.complete();
           } else {
-            LOGGER.error("Unable to start verticle, reason <{}>", result.cause().getMessage());
+            LOGGER.error("Unable to start Knot.x HTTP Server.", result.cause());
             fut.fail(result.cause());
           }
         });

@@ -15,15 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.api;
+package com.cognifide.knotx.dataobjects;
 
+import io.vertx.rxjava.core.MultiMap;
 
-public enum ServiceCallMethod {
-  GET,
-  POST,
-  ALL;
-
-  public static ServiceCallMethod from(io.vertx.core.http.HttpMethod vertxMethod) {
-    return ServiceCallMethod.valueOf(vertxMethod.toString());
+public class ErrorRepositoryResponse extends RepositoryResponse {
+  public ErrorRepositoryResponse(int statusCode, String data, MultiMap headers) {
+    super.statusCode = statusCode;
+    super.data = data;
+    super.headers = headers;
   }
+
+  @Override
+  public boolean shouldProcess() {
+    return false;
+  }
+
 }

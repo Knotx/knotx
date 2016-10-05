@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Launcher
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,14 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.dataobjects;
 
-import io.vertx.core.Launcher;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.rxjava.core.MultiMap;
 
-public class LogbackLauncher extends Launcher {
+public class SuccessRepositoryResponse extends RepositoryResponse {
+  public SuccessRepositoryResponse(String data, MultiMap headers) {
+    super.statusCode = HttpResponseStatus.OK.code();
+    super.data = data;
+    super.headers = headers;
+  }
 
-  public static void main(String[] args) {
-    System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
-    new LogbackLauncher().dispatch(args);
+  @Override
+  public boolean shouldProcess() {
+    return !data.isEmpty();
   }
 }

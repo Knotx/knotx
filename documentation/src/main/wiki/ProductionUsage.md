@@ -18,7 +18,7 @@ The *core* module contains 4 Knot.x verticle without any sample data. Here's how
 **standalone.json**
 ```json
 {
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -40,7 +40,7 @@ The *core* module contains 4 Knot.x verticle without any sample data. Here's how
       "engine" : {
         "address": "knotx.core.engine"
       }
-    }
+    },
   },
   "httpRepository": {
     "config": {
@@ -63,9 +63,9 @@ The *core* module contains 4 Knot.x verticle without any sample data. Here's how
       "configuration": {
         "catalogue": ""
       }
-    }
+    },
   },
-  "engine": {
+  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
     "config": {
       "address": "knotx.core.engine",
       "template.debug": true,
@@ -85,11 +85,12 @@ The *core* module contains 4 Knot.x verticle without any sample data. Here's how
           "port": 8080
         }
       ]
-    }
+    },
   }
 }
 ```
 Configuration JSON contains four config sections, one for each Knot.x verticle.
+Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options) 
 
 ### Executing Knot.x core verticles as a cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
@@ -136,7 +137,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
 - **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
 ```json
 {
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
       "preserved.headers": [
@@ -148,7 +149,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
      ...
  ``` 
 ####Verticle configuration
-Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
+Each verticle requires JSON configuration of **config** object. The configuration consists of the same parameters as previous examples.
 For instance, a configuration JSON for the *HTTP repository* verticle could look like this:
 ```json
 {
@@ -164,6 +165,9 @@ For instance, a configuration JSON for the *HTTP repository* verticle could look
           "port": 3001
         }
       }
+    ]
+  }
+    ]
     }
 }
 ```

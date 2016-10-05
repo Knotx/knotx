@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.api;
+package com.cognifide.knotx.dataobjects;
 
 import io.vertx.core.json.JsonObject;
 
-public class RenderResponse extends JsonObjectRequest {
+public class TemplateEngineResponse extends JsonObjectRequest {
 
   private String html;
 
@@ -27,11 +27,11 @@ public class RenderResponse extends JsonObjectRequest {
 
   private String reason;
 
-  public RenderResponse() {
+  public TemplateEngineResponse() {
     // No default constructor
   }
 
-  public RenderResponse(JsonObject body) {
+  public TemplateEngineResponse(JsonObject body) {
     this.success = body.getBoolean("success");
     if (success) {
       this.html = body.getString("html");
@@ -40,16 +40,16 @@ public class RenderResponse extends JsonObjectRequest {
     }
   }
 
-  public static RenderResponse success(String html) {
-    RenderResponse response = new RenderResponse();
+  public static TemplateEngineResponse success(String html) {
+    TemplateEngineResponse response = new TemplateEngineResponse();
     response.success = true;
     response.html = html;
 
     return response;
   }
 
-  public static RenderResponse error(String reason) {
-    RenderResponse response = new RenderResponse();
+  public static TemplateEngineResponse error(String reason) {
+    TemplateEngineResponse response = new TemplateEngineResponse();
     response.success = false;
     response.reason = reason;
 
