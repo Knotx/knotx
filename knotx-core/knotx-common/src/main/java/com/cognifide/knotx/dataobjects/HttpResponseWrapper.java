@@ -47,8 +47,11 @@ public class HttpResponseWrapper {
    */
   public HttpResponseWrapper(JsonObject json) {
     this.statusCode = HttpResponseStatus.valueOf(json.getInteger("statusCode"));
-    this.body = Buffer.buffer(json.getString("body"));
     this.headers = MultiMap.caseInsensitiveMultiMap();
+
+    if (json.containsKey("body")) {
+      this.body = Buffer.buffer(json.getString("body"));
+    }
 
     json.getJsonArray("headers").stream()
         .map(item -> (JsonObject) item)
