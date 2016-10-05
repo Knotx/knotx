@@ -17,14 +17,8 @@
  */
 package com.cognifide.knotx.monolith;
 
-import com.cognifide.knotx.launcher.KnotxStarterVerticle;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
-import com.cognifide.knotx.engine.TemplateEngineVerticle;
-import com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle;
-import com.cognifide.knotx.mocks.MockServiceVerticle;
-import com.cognifide.knotx.repository.FilesystemRepositoryVerticle;
-import com.cognifide.knotx.repository.HttpRepositoryVerticle;
-import com.cognifide.knotx.server.KnotxServerVerticle;
+import com.cognifide.knotx.launcher.KnotxStarterVerticle;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
