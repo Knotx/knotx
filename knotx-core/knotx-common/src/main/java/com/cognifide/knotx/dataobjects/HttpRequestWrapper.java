@@ -135,27 +135,6 @@ public class HttpRequestWrapper {
     return json;
   }
 
-//  @Override
-//  public boolean equals(Object o) {
-//    if (this == o) return true;
-//    if (!(o instanceof HttpRequestWrapper)) return false;
-//    HttpRequestWrapper that = (HttpRequestWrapper) o;
-//    return Objects.equal(path, that.path) &&
-//        method == that.method &&
-//        Objects.equal(headers, that.headers) &&
-//        Objects.equal(params, that.params) &&
-//        Objects.equal(formAttributes, that.formAttributes);
-//  }
-//
-//  @Override
-//  public int hashCode() {
-//    return headers.names().stream()
-//        .mapToInt(name -> Optional.ofNullable(headers.get(name))
-//            .map(String::hashCode)
-//            .orElse(0))
-//        .reduce(Objects.hashCode(path, method, body), (sum, hash) -> 31 * sum + hash);
-//  }
-
   private JsonArray toJsonArray(MultiMap multiMap) {
     return multiMap.names().stream()
         .map(name -> new JsonObject().put(name, multiMap.get(name)))

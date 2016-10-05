@@ -19,7 +19,7 @@ package com.cognifide.knotx.dataobjects;
 
 import io.vertx.core.json.JsonObject;
 
-public class RenderResponse extends JsonObjectRequest {
+public class RenderResponse {
 
   private String html;
 
@@ -56,7 +56,6 @@ public class RenderResponse extends JsonObjectRequest {
     return response;
   }
 
-  @Override
   public JsonObject toJsonObject() {
     JsonObject object = new JsonObject()
         .put("success", success);

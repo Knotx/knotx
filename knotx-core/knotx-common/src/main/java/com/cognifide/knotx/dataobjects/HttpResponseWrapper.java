@@ -37,7 +37,6 @@ public class HttpResponseWrapper {
 
   public HttpResponseWrapper() {
     this.headers = MultiMap.caseInsensitiveMultiMap();
-    //Nothing set by default
   }
 
   /**
