@@ -18,16 +18,22 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
 **standalone.json**
 ```json
 {
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
-      "dependencies" : {
-        "repository.address" : "template-repository",
+      "preserved.headers": [
+        "User-Agent",
+        "X-Solr-Core-Key",
+        "X-Language-Code",
+        "X-Requested-With"
+      ],
+      "dependencies": {
+        "repository.address": "template-repository",
         "engine.address": "template-engine"
       }
-    }
+    },
   },
-  "repository": {
+  "com.cognifide.knotx.repository.RepositoryVerticle": {
     "config": {
       "service.name": "template-repository",
       "repositories": [
@@ -43,18 +49,19 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
           "port": 3001,
           "client.options": {
             "tryUseCompression" : true,
-            "maxPoolSize": 1000
+            "maxPoolSize": 1000,
+			"keepAlive": false
           }
         }
       ]
-    }
+    },
   },
-  "engine": {
+  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
     "config": {
       "service.name": "template-engine",
       "template.debug": true,
       "client.options": {
-        "maxPoolSize" : 1000,
+        "maxPoolSize": 1000,
         "keepAlive": false
       },
       "services": [
@@ -77,11 +84,12 @@ The *core* module contains 3 Knot.x verticle without any sample data. Here's how
           ]
         }
       ]
-    }
+    },
   }
 }
 ```
 Configuration JSON contains three config sections, one for each Knot.x verticle.
+Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options) 
 
 ### Executing Knot.x core verticles as a cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
@@ -123,17 +131,16 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
 - **http.port** property to set http port which will be used to start Knot.x server
 ```json
 {
-  "server": {
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
      ...
  ``` 
 ####Verticle configuration
-Each verticle requires JSON configuration with *config* object. The configuration consists of the same parameters as previous examples.
+Each verticle requires JSON configuration of **config** object. The configuration consists of the same parameters as previous examples.
 For instance, a configuration JSON for the *repository* verticle could look like this:
 ```json
 {
-  "config": {
     "service.name": "template-repository",
     "repositories": [
       {
@@ -146,7 +153,6 @@ For instance, a configuration JSON for the *repository* verticle could look like
        }
       }
     ]
-  }
 }
 ```
 #####Preserving headers passed to microservices

@@ -1,17 +1,15 @@
 {
-  "config": {
-    "service.name": "template-engine",
-    "template.debug": true,
-    "client.options": {
-      "maxPoolSize": 1000,
-      "keepAlive": false
-    },
-    "services": [
-      {
-        "path": "/service/mock/.*",
-        "domain": "localhost",
-        "port": 3000
-      }
-    ]
-  }
+  "service.name": "template-engine",
+  "template.debug": true,
+  "client.options": {
+    "maxPoolSize": 1000,
+    "keepAlive": false
+  },
+  "services": [
+    {
+      "path": "/service/mock/.*",
+      "domain": "localhost",
+      "port": 3000
+    }
+  ]
 }

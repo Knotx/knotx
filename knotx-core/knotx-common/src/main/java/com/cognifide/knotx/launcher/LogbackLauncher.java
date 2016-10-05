@@ -1,5 +1,5 @@
 /*
- * Knot.x - Mocked services for sample app
+ * Knot.x - Reactive microservice assembler - Launcher
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,21 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.mocks;
+package com.cognifide.knotx.launcher;
 
+import io.vertx.core.Launcher;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
+public class LogbackLauncher extends Launcher {
 
-public class StarterVerticle extends AbstractVerticle {
-
-  @Override
-  public void start() {
-    Vertx vertx = Vertx.vertx();
-
-    vertx.deployVerticle(new MockRemoteRepositoryVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockRepo")));
-    vertx.deployVerticle(new MockServiceVerticle(), new DeploymentOptions().setConfig(config().getJsonObject("mockService")));
+  public static void main(String[] args) {
+    System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+    new LogbackLauncher().dispatch(args);
   }
-
 }

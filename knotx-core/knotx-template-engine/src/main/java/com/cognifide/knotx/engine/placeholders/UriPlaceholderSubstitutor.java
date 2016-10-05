@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;

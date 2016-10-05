@@ -1,5 +1,5 @@
 {
-  "verticles" : {
+  "verticles": {
     "com.cognifide.knotx.server.KnotxServerVerticle": {
       "config": {
         "http.port": 8092,
@@ -13,8 +13,7 @@
           "repository.address": "template-repository",
           "engine.address": "template-engine"
         }
-      },
-      "instances" : 2
+      }
     },
     "com.cognifide.knotx.repository.RepositoryVerticle": {
       "config": {
@@ -50,34 +49,14 @@
           {
             "path": "/service/mock/.*",
             "domain": "localhost",
-            "port": 3000,
-            "allowed.headers": [
-              "Content-Type",
-              "X-*"
-            ]
+            "port": 3000
           },
           {
             "path": "/service/.*",
             "domain": "localhost",
-            "port": 8080,
-            "allowed.headers": [
-              "Content-Type",
-              "X-*"
-            ]
+            "port": 8080
           }
         ]
-      }
-    },
-    "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
-      "config": {
-        "mock.data.root": "mock/repository",
-        "http.port": 3001
-      }
-    },
-    "com.cognifide.knotx.mocks.MockServiceVerticle": {
-      "config": {
-        "mock.data.root": "mock/service",
-        "http.port": 3000
       }
     }
   }

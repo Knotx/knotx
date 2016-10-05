@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.TemplateEngineResponse;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineResponse;
 import com.cognifide.knotx.engine.impl.TemplateEngine;
 
 import io.vertx.core.Context;
@@ -48,10 +48,9 @@ public class TemplateEngineVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
-    this.serviceName = config.getString("service.name");
+    this.serviceName = config().getString("service.name");
 
-    configuration = new TemplateEngineConfiguration(config);
+    configuration = new TemplateEngineConfiguration(config());
 
     final JsonObject clientOptions = configuration.getClientOptions();
     httpClient = clientOptions.isEmpty() ?
@@ -62,7 +61,7 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
 
     EventBus eventBus = vertx.eventBus();
     Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(serviceName).toObservable();

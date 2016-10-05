@@ -17,8 +17,9 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+
+import com.cognifide.knotx.dataobjects.RepositoryRequest;
+import com.cognifide.knotx.dataobjects.RepositoryResponse;
 
 import rx.Observable;
 

@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.server;
 
+import com.cognifide.knotx.dataobjects.RepositoryRequest;
+import com.cognifide.knotx.dataobjects.RepositoryResponse;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineResponse;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.TemplateEngineResponse;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -54,16 +54,15 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
 
-    this.repositoryAddress = config.getJsonObject("dependencies").getString("repository.address");
-    this.engineAddress = config.getJsonObject("dependencies").getString("engine.address");
-    configuration = new KnotxServerConfiguration(config);
+    this.repositoryAddress = config().getJsonObject("dependencies").getString("repository.address");
+    this.engineAddress = config().getJsonObject("dependencies").getString("engine.address");
+    configuration = new KnotxServerConfiguration(config());
   }
 
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
     httpServer = vertx.createHttpServer();
     EventBus eventBus = vertx.eventBus();
 
@@ -106,10 +105,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
         configuration.httpPort(),
         result -> {
           if (result.succeeded()) {
-            LOGGER.info("Successfully Started");
+            LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
             fut.complete();
           } else {
-            LOGGER.error("Unable to start verticle, reason <{}>", result.cause().getMessage());
+            LOGGER.error("Unable to start Knot.x HTTP Server.", result.cause());
             fut.fail(result.cause());
           }
         });
