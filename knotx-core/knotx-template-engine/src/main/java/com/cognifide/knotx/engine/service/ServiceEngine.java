@@ -20,8 +20,8 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
-import com.cognifide.knotx.api.ServiceCallMethod;
-import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.ServiceCallMethod;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
 import com.cognifide.knotx.engine.AllowedHeadersFilter;
 import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
