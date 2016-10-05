@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.dataobjects.RepositoryRequest;
+import com.cognifide.knotx.dataobjects.RepositoryResponse;
 import com.cognifide.knotx.repository.Repository;
 
 import org.apache.commons.lang3.StringUtils;

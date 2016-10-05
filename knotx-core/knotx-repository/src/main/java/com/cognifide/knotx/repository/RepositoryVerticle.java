@@ -19,8 +19,8 @@ package com.cognifide.knotx.repository;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.dataobjects.RepositoryRequest;
+import com.cognifide.knotx.dataobjects.RepositoryResponse;
 import com.cognifide.knotx.repository.impl.NullRepository;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,10 +51,9 @@ public class RepositoryVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
 
-    this.serviceName = config.getString("service.name");
-    this.repositoryConfiguration = new RepositoryConfiguration(config);
+    this.serviceName = config().getString("service.name");
+    this.repositoryConfiguration = new RepositoryConfiguration(config());
 
     repositories = repositoryConfiguration.getRepositories()
         .stream()
@@ -64,7 +63,7 @@ public class RepositoryVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
 
     EventBus eventBus = vertx.eventBus();
 

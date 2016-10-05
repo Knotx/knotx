@@ -40,12 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-api</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 

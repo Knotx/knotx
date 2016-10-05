@@ -34,14 +34,14 @@
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.mocks.StarterVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</main.verticle>
   </properties>
 
   <dependencies>
     <!-- Knot.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 

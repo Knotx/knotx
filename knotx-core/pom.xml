@@ -34,8 +34,7 @@
   <name>Knot.x - Reactive microservice assembler - Core Root POM</name>
 
   <modules>
-    <module>knotx-launcher</module>
-    <module>knotx-api</module>
+    <module>knotx-common</module>
     <module>knotx-server</module>
     <module>knotx-repository</module>
     <module>knotx-template-engine</module>

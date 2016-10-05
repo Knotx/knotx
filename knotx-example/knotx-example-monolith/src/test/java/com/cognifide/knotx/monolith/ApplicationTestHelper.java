@@ -17,17 +17,13 @@
  */
 package com.cognifide.knotx.monolith;
 
+import com.cognifide.knotx.launcher.KnotxStarterVerticle;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
-import com.cognifide.knotx.engine.TemplateEngineVerticle;
-import com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle;
-import com.cognifide.knotx.mocks.MockServiceVerticle;
-import com.cognifide.knotx.repository.RepositoryVerticle;
-import com.cognifide.knotx.server.KnotxServerVerticle;
 
 import io.vertx.core.DeploymentOptions;
-import io.vertx.rxjava.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
+import io.vertx.rxjava.core.Vertx;
 
 public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
 
@@ -42,19 +38,9 @@ public class ApplicationTestHelper extends AbstractKnotxConfigurationTest {
     vertx = Vertx.vertx();
 
     JsonObject configuration = readJson("knotx-example-monolith.json");
+    knotxPort = configuration.getJsonObject("verticles").getJsonObject("com.cognifide.knotx.server.KnotxServerVerticle").getJsonObject("config").getInteger("http.port");
 
-    knotxPort = configuration.getJsonObject("server").getJsonObject("config").getInteger("http.port");
-
-    vertx.deployVerticle(MockRemoteRepositoryVerticle.class.getName(), new DeploymentOptions().setConfig(
-        configuration.getJsonObject("mockRepo")));
-    vertx.deployVerticle(MockServiceVerticle.class.getName(),
-        new DeploymentOptions().setConfig(configuration.getJsonObject("mockService")));
-    vertx.deployVerticle(RepositoryVerticle.class.getName(),
-        new DeploymentOptions().setConfig(configuration.getJsonObject("repository")));
-    vertx.deployVerticle(TemplateEngineVerticle.class.getName(),
-        new DeploymentOptions().setConfig(configuration.getJsonObject("engine")));
-    vertx.deployVerticle(KnotxServerVerticle.class.getName(),
-        new DeploymentOptions().setConfig(configuration.getJsonObject("server")));
+    vertx.deployVerticle(KnotxStarterVerticle.class.getName(), new DeploymentOptions().setConfig(configuration));
   }
 
   public static void tearDown(TestContext context) {

@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import io.vertx.rxjava.core.MultiMap;

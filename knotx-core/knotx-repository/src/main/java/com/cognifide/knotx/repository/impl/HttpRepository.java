@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.repository.impl;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
+import com.cognifide.knotx.dataobjects.RepositoryRequest;
+import com.cognifide.knotx.dataobjects.RepositoryResponse;
 import com.cognifide.knotx.repository.Repository;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;

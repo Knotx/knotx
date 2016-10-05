@@ -46,7 +46,7 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws IOException, URISyntaxException {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+    LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();
     httpServer.requestHandler(mockRemoteRepositoryHandler)
         .listen(config().getInteger("http.port"));

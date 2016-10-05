@@ -1,10 +1,16 @@
 {
-  "mockRepo": {
-    "mock.data.root": "mock/repository",
-    "http.port": 3001
-  },
-  "mockService": {
-    "mock.data.root": "mock/service",
-    "http.port": 3000
+  "verticles": {
+    "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
+      "config": {
+        "mock.data.root": "mock/repository",
+        "http.port": 3001
+      }
+    },
+    "com.cognifide.knotx.mocks.MockServiceVerticle": {
+      "config": {
+        "mock.data.root": "mock/service",
+        "http.port": 3000
+      }
+    }
   }
 }
