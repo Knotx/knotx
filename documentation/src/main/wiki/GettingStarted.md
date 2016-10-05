@@ -12,11 +12,11 @@ The Knot.x project has two main Maven modules: **knotx-core** and **knotx-exampl
 ### Core
 The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
 
-#### knotx-api
-A module that defines the communication model used to send event-related messages via the Event Bus.
+#### knotx-common
+A module that defines:
 
-#### knotx-launcher
-A module consists of Knotx Starter Verticle, that supports starting verticles defined in the given configuration json.
+- the communication model used to send event-related messages via the Event Bus.
+- Knotx Starter Verticle supporting verticles definition in the given configuration JSON and corresponding Vert.x launcher
 
 #### knotx-repository
 A module that contains the **repository** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. The repository is responsible for fetching templates.
