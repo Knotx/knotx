@@ -14,7 +14,7 @@ This will run the server with production settings. For more information see the 
 
 #### Configuration
 
-The *core* module contains 4 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
+The *core* module contains four Knot.x verticles without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
 **standalone.json**
 ```json
 {
