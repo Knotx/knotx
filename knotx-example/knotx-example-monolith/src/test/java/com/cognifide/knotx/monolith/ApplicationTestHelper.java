@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.monolith;
 
-import com.cognifide.knotx.KnotxStarterVerticle;
+import com.cognifide.knotx.launcher.KnotxStarterVerticle;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 
 import io.vertx.core.DeploymentOptions;

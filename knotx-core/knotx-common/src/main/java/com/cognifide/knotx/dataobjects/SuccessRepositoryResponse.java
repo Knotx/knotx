@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.api;
+package com.cognifide.knotx.dataobjects;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.rxjava.core.MultiMap;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.launcher;
 
 import org.apache.commons.lang3.tuple.Pair;
 

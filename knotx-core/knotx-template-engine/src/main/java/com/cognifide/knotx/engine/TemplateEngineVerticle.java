@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.TemplateEngineResponse;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineResponse;
 import com.cognifide.knotx.engine.impl.TemplateEngine;
 
 import io.vertx.core.Context;

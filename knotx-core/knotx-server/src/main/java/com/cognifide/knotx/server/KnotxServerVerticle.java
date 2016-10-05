@@ -17,10 +17,10 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.api.RepositoryRequest;
-import com.cognifide.knotx.api.RepositoryResponse;
-import com.cognifide.knotx.api.TemplateEngineRequest;
-import com.cognifide.knotx.api.TemplateEngineResponse;
+import com.cognifide.knotx.dataobjects.RepositoryRequest;
+import com.cognifide.knotx.dataobjects.RepositoryResponse;
+import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.TemplateEngineResponse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

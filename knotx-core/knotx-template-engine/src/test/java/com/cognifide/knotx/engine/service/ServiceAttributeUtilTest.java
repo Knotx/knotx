@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.service;
 
-import com.cognifide.knotx.api.ServiceCallMethod;
+import com.cognifide.knotx.dataobjects.ServiceCallMethod;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
