@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.api;
+package com.cognifide.knotx.dataobjects;
 
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
@@ -22,11 +22,7 @@ import com.google.common.cache.CacheBuilder;
 
 import java.util.Map;
 
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 
 public class RenderRequest {
@@ -63,7 +59,9 @@ public class RenderRequest {
     return this;
   }
 
-  public HttpRequestWrapper request() { return request;}
+  public HttpRequestWrapper request() {
+    return request;
+  }
 
   public String template() {
     return template;

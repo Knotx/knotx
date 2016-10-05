@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 
 public interface PlaceholderSubstitutor {
 

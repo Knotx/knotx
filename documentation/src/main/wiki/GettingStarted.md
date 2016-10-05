@@ -86,11 +86,16 @@ Here's how JSON configuration files look:
 ```json
 {
   "verticles" : {  
-      "com.cognifide.knotx.repository.RepositoryVerticle": {
+      "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
         "config" : {
             ...
         }
       },
+      "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
+        "config" : {
+            ...
+        }
+      },      
       "com.cognifide.knotx.engine.TemplateEngineVerticle": {
         "config" : {
             ...
@@ -116,10 +121,10 @@ Here's how JSON configuration files look:
 ```
 The configuration consists of **verticles** object containing set of configurations for verticles that are going to be deployed(started). Each object in a set should have name of class name of the **Verticle** that are going to be deployed.
 
-#### 1.1. httpRepository section
+#### 1.1. HTTP Repository section
 ```json
 {
-  "com.cognifide.knotx.repository.RepositoryVerticle": {
+  "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
     "config": {
       "address": "knotx.core.repository.http",
       "configuration": {
@@ -145,10 +150,10 @@ The config node consists of:
 -- **client.options** - HTTP Client options used when communicating with the destination repository. See [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) to get all options supported.
 -- **client.destination** - Allows to specify **domain** and **port** of the HTTP repository endpoint.
 
-#### 1.2. localRepository section
+#### 1.2. Filesystem Repository section
 ```json
 {
-  "localRepository": {
+  "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
     "config": {
       "address": "knotx.core.repository.filesystem",
       "configuration": {
@@ -166,7 +171,7 @@ The config node consists of:
 - **configuration** - it's a configuration section specific to the file system.
 -- **catalogue** - it determines where to take the resources from. If it's left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
-#### 1.3. engine section
+#### 1.3. Engine section
 ```json
   ...
   "com.cognifide.knotx.engine.TemplateEngineVerticle": {
@@ -205,7 +210,7 @@ There are two groups of services defined. Each one will be handled by a differen
 
 The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
 
-#### 1.4. server section
+#### 1.4. HTTP Server section
 ```json
 {
   ...
@@ -243,7 +248,7 @@ This section configures the Knot.x HTTP server. The config node consists of:
 - **repositories** - configuration of repositories. It's a array of mappings what paths are supported by what repository verticles (by specifing its event bus addresses). The order of mappings is important as they are evaluated from top to down on each request. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 - **engine** - configuration about templating engine dependency. You can configure event bus **address** of engine verticle here.
 
-#### 1.5 mockRepo section
+#### 1.5 MockRepo section
 ```json
 {
     ... 
@@ -260,7 +265,7 @@ This section configures the Remote repository mock used by the example applicati
 - **mock.data.root** - a path (relative to `knotx-mocks/src/main/resources`) where mocked HTML responses are located on local storage,
 - **http.port** - HTTP Port the mock service is listening to.
 
-#### 1.6 mockService section
+#### 1.6 MockService section
 ```json
 {
   ..., 
@@ -285,28 +290,26 @@ To deploy verticle with advanced options use following properties:
 ```json
 {
     ... 
-  "com.cognifide.knotx.mocks.MockServiceVerticle": {
-    "config": {
-      "mock.data.root": "mock/service",
-      "http.port": 3000
-    },
+  "com.cognifide.knotx.server.KnotxServerVerticle": {
+    "config": {...},
+    
+    "instances": 2,
     "worker" : false,
     "multiThreaded": false,
     "isolationGroup": "null",
     "ha": false,
     "extraClasspath": [],
-    "instances": 2,
     "isolatedClasses": []
   }
     ...
 }
 ```
+- **instances** - number of verticle instances.
 - **worker** - deploy verticle as a worker.
 - **multiThreaded** - deploy verticle as a multi-threaded worker.
 - **isolationGroup** - array of isolation group.
 - **ha** - deploy verticle as highly available.
 - **extraClasspath** - extra classpath to be used when deploying the verticle.
-- **instances** - number of verticle instances.
 - **isolatedClasses** - array of isolated classes.
 
 Read more about [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html)

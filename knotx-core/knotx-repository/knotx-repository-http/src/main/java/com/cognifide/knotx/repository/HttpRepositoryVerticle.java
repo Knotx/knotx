@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.HttpRequestWrapper;
-import com.cognifide.knotx.api.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -53,10 +53,9 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
-    this.address = config.getString("address");
+    this.address = config().getString("address");
 
-    JsonObject configuration = config.getJsonObject("configuration");
+    JsonObject configuration = config().getJsonObject("configuration");
     clientOptions = configuration.getJsonObject("client.options", new JsonObject());
     clientDestination = configuration.getJsonObject("client.destination");
   }

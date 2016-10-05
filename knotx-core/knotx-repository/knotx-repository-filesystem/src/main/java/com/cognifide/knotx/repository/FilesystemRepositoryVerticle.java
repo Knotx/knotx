@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.api.HttpRequestWrapper;
-import com.cognifide.knotx.api.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -50,10 +50,8 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    JsonObject config = config().getJsonObject("config");
-
-    this.address = config.getString("address");
-    this.catalogue = config.getJsonObject("configuration").getString("catalogue");
+    this.address = config().getString("address");
+    this.catalogue = config().getJsonObject("configuration").getString("catalogue");
   }
 
   @Override

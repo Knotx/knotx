@@ -21,7 +21,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 

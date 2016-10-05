@@ -18,74 +18,71 @@ The *core* module contains 4 Knot.x verticle without any sample data. Here's how
 **standalone.json**
 ```json
 {
-  "com.cognifide.knotx.server.KnotxServerVerticle": {
-    "config": {
-      "http.port": 8092,
-      "preserved.headers": [
-        "User-Agent",
-        "X-Solr-Core-Key",
-        "X-Language-Code",
-        "X-Requested-With"
-      ],
-      "repositories": [
-        {
-          "path" : "/content/local/.*",
-          "address" : "knotx.core.repository.filesystem"
-        },
-        {
-          "path" : "/content/.*",
-          "address" : "knotx.core.repository.http"
+  "verticles": {
+    "com.cognifide.knotx.server.KnotxServerVerticle": {
+      "config": {
+        "http.port": 8092,
+        "preserved.headers": [
+          "User-Agent",
+          "X-Solr-Core-Key",
+          "X-Language-Code",
+          "X-Requested-With"
+        ],
+        "repositories": [
+          {
+            "path": "/content/local/.*",
+            "address": "knotx.core.repository.filesystem"
+          },
+          {
+            "path": "/content/.*",
+            "address": "knotx.core.repository.http"
+          }
+        ],
+        "engine": {
+          "address": "knotx.core.engine"
         }
-      ],
-      "engine" : {
-        "address": "knotx.core.engine"
       }
     },
-  },
-  "httpRepository": {
-    "config": {
-      "address": "knotx.core.repository.http",
-      "configuration": {
+    "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
+      "config": {
+        "address": "knotx.core.repository.http",
+        "configuration": {
+          "client.options": {
+            "maxPoolSize": 1000,
+            "keepAlive": false
+          },
+          "client.destination": {
+            "domain": "localhost",
+            "port": 3001
+          }
+        }
+      }
+    },
+    "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
+      "config": {
+        "address": "knotx.core.repository.filesystem",
+        "configuration": {
+          "catalogue": ""
+        }
+      }
+    },
+    "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+      "config": {
+        "address": "knotx.core.engine",
+        "template.debug": true,
         "client.options": {
           "maxPoolSize": 1000,
           "keepAlive": false
         },
-        "client.destination" : {
-          "domain": "localhost",
-          "port": 3001
-        }
+        "services": [
+          {
+            "path": "/service/mock/.*",
+            "domain": "localhost",
+            "port": 3000
+          }
+        ]
       }
     }
-  },
-  "localRepository": {
-    "config": {
-      "address": "knotx.core.repository.filesystem",
-      "configuration": {
-        "catalogue": ""
-      }
-    },
-  },
-  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
-    "config": {
-      "address": "knotx.core.engine",
-      "template.debug": true,
-      "client.options": {
-        "maxPoolSize": 1000,
-        "keepAlive": false
-      },
-      "services": [
-        {
-          "path": "/service/mock/.*",
-          "domain": "localhost",
-          "port": 3000
-        },
-        {
-          "path": "/service/.*",
-          "domain": "localhost",
-          "port": 8080
-        }
-      ]
-    },
   }
 }
 ```
@@ -133,8 +130,11 @@ The mocks verticle is configured as follows:
 ### Configuration
 ####Server configuration
 Knot.x server requires JSON configuration with *config* object. **Config** section allows to define:
+
 - **http.port** property to set http port which will be used to start Knot.x server
 - **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
+- **repositories** mapping of paths to the repository verticles that should deliver Templates
+- **engine** event bus address of the Rendering engine verticle
 ```json
 {
   "com.cognifide.knotx.server.KnotxServerVerticle": {
@@ -145,6 +145,19 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         "X-Solr-Core-Key",
         "X-Language-Code"
       ],
+      "repositories": [
+        {
+          "path": "/content/local/.*",
+          "address": "knotx.core.repository.filesystem"
+        },
+        {
+          "path": "/content/.*",
+          "address": "knotx.core.repository.http"
+        }
+      ],
+      "engine": {
+        "address": "knotx.core.engine"
+      }
      }
      ...
  ``` 
@@ -153,21 +166,16 @@ Each verticle requires JSON configuration of **config** object. The configuratio
 For instance, a configuration JSON for the *HTTP repository* verticle could look like this:
 ```json
 {
-    "config": {
-      "address": "knotx.core.repository.http",
-      "configuration": {
-        "client.options": {
-          "maxPoolSize": 1000,
-          "keepAlive": false
-        },
-        "client.destination" : {
-          "domain": "localhost",
-          "port": 3001
-        }
-      }
-    ]
-  }
-    ]
+  "address": "knotx.core.repository.http",
+  "configuration": {
+    "client.options": {
+      "maxPoolSize": 1000,
+      "keepAlive": false
+    },
+    "client.destination" : {
+      "domain": "localhost",
+      "port": 3001
     }
+  }
 }
 ```

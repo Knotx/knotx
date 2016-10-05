@@ -19,7 +19,7 @@ package com.cognifide.knotx.engine.service;
 
 
 import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;

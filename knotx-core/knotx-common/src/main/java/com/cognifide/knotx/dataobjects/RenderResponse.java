@@ -19,7 +19,7 @@ package com.cognifide.knotx.dataobjects;
 
 import io.vertx.core.json.JsonObject;
 
-public class TemplateEngineResponse extends JsonObjectRequest {
+public class RenderResponse extends JsonObjectRequest {
 
   private String html;
 
@@ -27,11 +27,11 @@ public class TemplateEngineResponse extends JsonObjectRequest {
 
   private String reason;
 
-  public TemplateEngineResponse() {
+  public RenderResponse() {
     // No default constructor
   }
 
-  public TemplateEngineResponse(JsonObject body) {
+  public RenderResponse(JsonObject body) {
     this.success = body.getBoolean("success");
     if (success) {
       this.html = body.getString("html");
@@ -40,16 +40,16 @@ public class TemplateEngineResponse extends JsonObjectRequest {
     }
   }
 
-  public static TemplateEngineResponse success(String html) {
-    TemplateEngineResponse response = new TemplateEngineResponse();
+  public static RenderResponse success(String html) {
+    RenderResponse response = new RenderResponse();
     response.success = true;
     response.html = html;
 
     return response;
   }
 
-  public static TemplateEngineResponse error(String reason) {
-    TemplateEngineResponse response = new TemplateEngineResponse();
+  public static RenderResponse error(String reason) {
+    RenderResponse response = new RenderResponse();
     response.success = false;
     response.reason = reason;
 

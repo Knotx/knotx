@@ -19,7 +19,8 @@ package com.cognifide.knotx.engine.service;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
@@ -71,13 +72,6 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
     serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
   }
-
-
-  @Test
-  public void findServiceLocation() throws Exception {
-
-  }
-
 
   @Test
   public void test_ALL_ServiceCallWithFormPostRequest() throws Exception {

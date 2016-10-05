@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import com.cognifide.knotx.api.HttpRequestWrapper;
-import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.jsoup.nodes.Attribute;
@@ -27,8 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
-import com.cognifide.knotx.engine.service.ServiceEntry;
+import java.util.Arrays;
+import java.util.Collection;
 
 import io.vertx.rxjava.core.MultiMap;
 

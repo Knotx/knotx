@@ -27,6 +27,8 @@ import io.vertx.core.json.JsonObject;
 
 public class TemplateEngineConfiguration {
 
+  private String address;
+
   private List<ServiceMetadata> services;
 
   private boolean templateDebug;
@@ -34,6 +36,7 @@ public class TemplateEngineConfiguration {
   private JsonObject clientOptions;
 
   public TemplateEngineConfiguration(JsonObject config) {
+    address = config.getString("address");
     services = config.getJsonArray("services").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
@@ -47,6 +50,10 @@ public class TemplateEngineConfiguration {
 
     templateDebug = config.getBoolean("template.debug", false);
     clientOptions = config.getJsonObject("client.options", new JsonObject());
+  }
+
+  public String getAddress() {
+    return address;
   }
 
   public List<ServiceMetadata> getServices() {

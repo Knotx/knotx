@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.engine.impl;
 
-import com.cognifide.knotx.api.CustomHandlebarsHelper;
-import com.cognifide.knotx.api.RenderRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
+import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.apache.commons.lang3.StringUtils;

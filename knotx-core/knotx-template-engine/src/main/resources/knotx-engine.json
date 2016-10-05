@@ -1,17 +1,15 @@
 {
-  "config": {
-    "address": "knotx.core.engine",
-    "template.debug": true,
-    "client.options": {
-      "maxPoolSize": 1000,
-      "keepAlive": false
-    },
-    "services": [
-      {
-        "path": "/service/mock/.*",
-        "domain": "localhost",
-        "port": 3000
-      }
-    ]
-  }
+  "address": "knotx.core.engine",
+  "template.debug": true,
+  "client.options": {
+    "maxPoolSize": 100,
+    "keepAlive": false
+  },
+  "services": [
+    {
+      "path": "/service/mock/.*",
+      "domain": "localhost",
+      "port": 3000
+    }
+  ]
 }

@@ -1,24 +1,22 @@
 {
-  "config": {
-    "http.port": 8092,
-    "preserved.headers": [
-      "User-Agent",
-      "X-Solr-Core-Key",
-      "X-Language-Code",
-      "X-Requested-With"
-    ],
-    "repositories": [
-      {
-        "path" : "/content/local/.*",
-        "address" : "knotx.core.repository.filesystem"
-      },
-      {
-        "path" : "/content/.*",
-        "address" : "knotx.core.repository.http"
-      }
-    ],
-    "engine" : {
-      "address": "knotx.core.engine"
+  "http.port": 8092,
+  "preserved.headers": [
+    "User-Agent",
+    "X-Solr-Core-Key",
+    "X-Language-Code",
+    "X-Requested-With"
+  ],
+  "repositories": [
+    {
+      "path": "/content/local/.*",
+      "address": "knotx.core.repository.filesystem"
+    },
+    {
+      "path": "/content/.*",
+      "address": "knotx.core.repository.http"
     }
+  ],
+  "engine": {
+    "address": "knotx.core.engine"
   }
 }

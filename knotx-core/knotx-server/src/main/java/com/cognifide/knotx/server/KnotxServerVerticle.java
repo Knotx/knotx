@@ -17,14 +17,15 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.api.HttpRequestWrapper;
-import com.cognifide.knotx.api.HttpResponseWrapper;
-import com.cognifide.knotx.api.RenderRequest;
-import com.cognifide.knotx.api.RenderResponse;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.RenderRequest;
+import com.cognifide.knotx.dataobjects.RenderResponse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Optional;
+
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -50,7 +51,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    configuration = new KnotxServerConfiguration(config);
+    configuration = new KnotxServerConfiguration(config());
   }
 
   @Override
@@ -118,15 +119,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private JsonObject requestRendering(HttpResponseWrapper repositoryResponse, HttpServerRequest originalRequest) {
     return new RenderRequest().setRequest(new HttpRequestWrapper(originalRequest)).setTemplate(repositoryResponse.body().toString()).toJson();
-//
-//    return new RenderRequest(
-//        repositoryResponse.body().toString(),
-//        originalRequest.method(),
-//        getPreservedHeaders(originalRequest.headers()),
-//        originalRequest.params(),
-//        originalRequest.formAttributes(),
-//        originalRequest.uri())
-//        .toJsonObject();
   }
 
   private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {
