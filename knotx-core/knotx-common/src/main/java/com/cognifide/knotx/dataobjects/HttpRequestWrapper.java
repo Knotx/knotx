@@ -138,8 +138,7 @@ public class HttpRequestWrapper {
   private JsonArray toJsonArray(MultiMap multiMap) {
     return multiMap.names().stream()
         .map(name -> new JsonObject().put(name, multiMap.get(name)))
-        .reduce(new JsonArray(), (objects, item) -> objects.add(item),
-            (u, u2) -> u.addAll(u2));
+        .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll);
   }
 
   private MultiMap fromJsonArray(JsonArray jsonArray) {
