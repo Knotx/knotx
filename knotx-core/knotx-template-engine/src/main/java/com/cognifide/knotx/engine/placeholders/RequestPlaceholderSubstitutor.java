@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.placeholders;
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
 
   @Override
-  public String getValue(final TemplateEngineRequest request, final String placeholder) {
+  public String getValue(final RenderRequest request, final String placeholder) {
     return Arrays.stream(Strategy.values())
         .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix))
         .findFirst().map(strategy -> strategy.getValue(request, placeholder)).orElse(null);
@@ -36,14 +36,14 @@ public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
 
     HEADER("header.") {
       @Override
-      String getValue(TemplateEngineRequest request, String placeholder) {
-        return request.getHeaders().get(getName(placeholder));
+      String getValue(RenderRequest renderRequest, String placeholder) {
+        return renderRequest.request().headers().get(getName(placeholder));
       }
     },
     PARAM("param.") {
       @Override
-      String getValue(TemplateEngineRequest request, String placeholder) {
-        return request.getParams().get(getName(placeholder));
+      String getValue(RenderRequest renderRequest, String placeholder) {
+        return renderRequest.request().params().get(getName(placeholder));
       }
     };
 
@@ -57,7 +57,7 @@ public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
       return StringUtils.substringAfter(placeholder, ".");
     }
 
-    abstract String getValue(TemplateEngineRequest request, String placeholder);
+    abstract String getValue(RenderRequest request, String placeholder);
   }
 
 }

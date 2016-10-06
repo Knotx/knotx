@@ -1,8 +1,8 @@
 {
-  "service.name": "template-engine",
+  "address": "knotx.core.engine",
   "template.debug": true,
   "client.options": {
-    "maxPoolSize": 1000,
+    "maxPoolSize": 100,
     "keepAlive": false
   },
   "services": [

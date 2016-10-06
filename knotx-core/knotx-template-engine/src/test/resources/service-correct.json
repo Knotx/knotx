@@ -1,5 +1,4 @@
 {
-  "config": {
     "services": [
       {
         "path": "/service/mock/.*",
@@ -16,5 +15,4 @@
         "port": 8080
       }
     ]
-  }
 }

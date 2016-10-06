@@ -18,7 +18,8 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
@@ -56,6 +57,15 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
     serviceEntryAll = createServiceEntry("data-uri-all-labelsrepository", "/service/mock/labelsRepository.json");
     serviceEntryGet = createServiceEntry("data-uri-get-labelsrepository", "/service/mock/labelsRepository.json");
     serviceEntryPost = createServiceEntry("data-uri-post-labelsrepository", "/service/mock/labelsRepository.json");
+  }
+
+  private static ServiceEntry createServiceEntry(String attrName, String serviceUrl) throws Exception {
+    Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
+    ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readConfig("service-correct.json"));
+
+    serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
+    return serviceEntry;
   }
 
   @Test
@@ -106,7 +116,6 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
     assertThat(result, equalTo(true));
   }
 
-
   @Test
   public void canServeRequest_whenPostWithFormIdAndPostAttribute_expectRequestNotServed() throws Exception {
     boolean result = serviceEntryPost.canServeRequest(htmlFragment, createRequest(HttpMethod.POST, true));
@@ -131,16 +140,7 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
     assertThat(result, equalTo(false));
   }
 
-  private static ServiceEntry createServiceEntry(String attrName, String serviceUrl) throws Exception {
-    Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
-    ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readConfig("service-correct.json"));
-
-    serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
-    return serviceEntry;
-  }
-
-  private TemplateEngineRequest createRequest(HttpMethod method, boolean withAttributes) throws Exception {
+  private RenderRequest createRequest(HttpMethod method, boolean withAttributes) throws Exception {
     MultiMap headers = MultiMap.newInstance(new CaseInsensitiveHeaders());
 
     MultiMap formsAttributes = MultiMap.newInstance(new CaseInsensitiveHeaders());
@@ -149,7 +149,8 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
       formsAttributes.add("email", "email@dom.com");
     }
 
-    return new TemplateEngineRequest(readText("fragment-form1.txt"), method, headers, new MultiMap(null), formsAttributes, "");
+    HttpRequestWrapper httpRequest = new HttpRequestWrapper().setMethod(method).setHeaders(headers).setFormAttributes(formsAttributes);
+    return new RenderRequest().setRequest(httpRequest).setTemplate(readText("fragment-form1.txt"));
   }
 
 }

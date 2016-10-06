@@ -33,7 +33,7 @@ public class AbstractKnotxConfigurationTest {
   public final ExpectedException exception = ExpectedException.none();
 
   protected static JsonObject readConfig(String path) throws Exception {
-    return readJson(path).getJsonObject("config");
+    return readJson(path);
   }
 
   public static String readText(String path) throws Exception {

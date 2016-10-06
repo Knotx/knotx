@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.impl;
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.service.ServiceEngine;
@@ -51,14 +51,15 @@ public class TemplateSnippetProcessor {
     this.templateDebug = configuration.templateDebug();
   }
 
-  public Observable<String> processSnippet(final HtmlFragment fragment, TemplateEngineRequest request) {
+  public Observable<String> processSnippet(final HtmlFragment fragment, RenderRequest request) {
+    LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
     return Observable.just(fragment)
         .flatMap(HtmlFragment::getServices)
         .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
         .doOnNext(this::traceService)
         .map(serviceEngine::findServiceLocation)
         .flatMap(serviceEntry ->
-            getServiceData(serviceEntry, request)
+            fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new HashMap<String, Object>(), (allResults, result) -> {
           allResults.putAll(result);
@@ -68,7 +69,8 @@ public class TemplateSnippetProcessor {
         .defaultIfEmpty(fragment.getContent());
   }
 
-  public Observable<Map<String, Object>> getServiceData(ServiceEntry service, TemplateEngineRequest request) {
+  public Observable<Map<String, Object>> fetchServiceData(ServiceEntry service, RenderRequest request) {
+    LOGGER.debug("Fetching data from service {}", service.getServiceUri());
     try {
       return request.getCache().get(service.getServiceUri(), () -> serviceEngine.doServiceCall(service, request).cache());
     } catch (ExecutionException e) {
