@@ -54,8 +54,8 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
     assertThat(correctConfig.getServices().size(), is(2));
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceOne));
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceTwo));
-    assertEquals(correctConfig.getServices().get(0).getHeadersPatterns().toString(), expectedServiceOne.getHeadersPatterns().toString());
-    assertEquals(correctConfig.getServices().get(1).getHeadersPatterns().toString(), expectedServiceTwo.getHeadersPatterns().toString());
+    assertEquals(correctConfig.getServices().get(0).getAllowedRequestHeaderPatterns().toString(), expectedServiceOne.getAllowedRequestHeaderPatterns().toString());
+    assertEquals(correctConfig.getServices().get(1).getAllowedRequestHeaderPatterns().toString(), expectedServiceTwo.getAllowedRequestHeaderPatterns().toString());
   }
 
   @Test
@@ -69,7 +69,7 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
     newService.setPath(path);
     newService.setDomain(domain);
     newService.setPort(port);
-    newService.setHeadersPatterns(allowedHeaders.stream()
+    newService.setAllowedRequestHeaderPatterns(allowedHeaders.stream()
       .map(o -> (String) o)
       .map(new StringToPatternMap())
       .collect(Collectors.toList()));
