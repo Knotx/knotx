@@ -130,7 +130,8 @@ The configuration consists of **verticles** object containing set of configurati
       "configuration": {
         "client.options": {
           "maxPoolSize": 1000,
-          "keepAlive": false
+          "keepAlive": false,
+          "tryUseCompression": true
         },
         "client.destination" : {
           "domain": "localhost",

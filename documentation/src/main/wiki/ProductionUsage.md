@@ -49,7 +49,8 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
         "configuration": {
           "client.options": {
             "maxPoolSize": 1000,
-            "keepAlive": false
+            "keepAlive": false,
+            "tryUseCompression": true
           },
           "client.destination": {
             "domain": "localhost",

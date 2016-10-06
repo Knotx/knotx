@@ -30,7 +30,8 @@
         "configuration": {
           "client.options": {
             "maxPoolSize": 1000,
-            "keepAlive": false
+            "keepAlive": false,
+            "tryUseCompression": true
           },
           "client.destination": {
             "domain": "localhost",
