@@ -36,10 +36,10 @@ public class AllowedHeadersFilterTest {
   private StringToPatternMap patternGenerator = new StringToPatternMap();
 
   @Test
-  public void whenNoAllowedHeadersAvailable_expectAllHeadersPassed() {
+  public void whenNoAllowedHeadersAvailable_expectNoHeadersPassed() {
     AllowedHeadersFilter filter = AllowedHeadersFilter.create(Lists.newArrayList());
 
-    assertEquals(testHeaders.size(), filterHeaders(filter).size());
+    assertEquals(0, filterHeaders(filter).size());
   }
 
   @Test

@@ -35,6 +35,6 @@ public class AllowedHeadersFilter implements Predicate<String> {
 
   @Override
   public boolean test(String header) {
-    return patterns.size() == 0 || patterns.stream().anyMatch(pattern -> pattern.matcher(header).matches());
+    return patterns.stream().anyMatch(pattern -> pattern.matcher(header).matches());
   }
 }

@@ -197,14 +197,14 @@ For instance, a configuration JSON for the *HTTP repository* verticle could look
 ```
 #####Preserving headers passed to microservices
 Single service configuration allows to define which headers should be passed to microservices. 
-If **allowed.headers** section is not present, all headers will be filtered out. It is possible to use wildcard character (*) e.g.
+If **allowed.request.headers** section is not present, all headers will be filtered out. It is possible to use wildcard character (*) e.g.
 ```json
 "services": [
     {
       "path": "/service/mock/.*",
       "domain": "localhost",
       "port": 3000,
-      "allowed.headers": [
+      "allowed.request.headers": [
         "Content-Type",
         "X-*"
       ]
@@ -219,7 +219,7 @@ If **allowed.headers** section is not present, all headers will be filtered out.
       "path": "/service/mock/.*",
       "domain": "localhost",
       "port": 3000,
-      "allowed.headers": [
+      "allowed.request.headers": [
         "*"
       ]
     },
