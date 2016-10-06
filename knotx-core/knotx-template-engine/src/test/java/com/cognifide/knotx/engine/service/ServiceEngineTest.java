@@ -19,7 +19,8 @@ package com.cognifide.knotx.engine.service;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
@@ -72,19 +73,12 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
   }
 
-
-  @Test
-  public void findServiceLocation() throws Exception {
-
-  }
-
-
   @Test
   public void test_ALL_ServiceCallWithFormPostRequest() throws Exception {
 
     ServiceEntry serviceEntry = createServiceEntry("data-uri-all-labelsrepository", "/service/mock/labelsRepository.json", MOCK_SERVICE_RESPONSE_JSON);
 
-    TemplateEngineRequest templateEngineRequest = createFormPostRequest();
+    RenderRequest templateEngineRequest = createFormPostRequest();
 
     Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
@@ -100,7 +94,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
 
     ServiceEntry serviceEntry = createServiceEntry("data-uri-post-formresponse", "/service/mock/subscribeToNewsletter.json", FORM_RESPONSE_JSON);
 
-    TemplateEngineRequest templateEngineRequest = createFormPostRequest();
+    RenderRequest templateEngineRequest = createFormPostRequest();
 
     Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
@@ -122,14 +116,15 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     return serviceEntry;
   }
 
-  private TemplateEngineRequest createFormPostRequest() throws Exception {
+  private RenderRequest createFormPostRequest() throws Exception {
     MultiMap headers = MultiMap.newInstance(new CaseInsensitiveHeaders());
 
     MultiMap formsAttributes = MultiMap.newInstance(new CaseInsensitiveHeaders());
     formsAttributes.add("_id", "newsletter");
     formsAttributes.add("email", "email@dom.com");
 
-    return new TemplateEngineRequest(readText("fragment-form1.txt"), HttpMethod.POST, headers, new MultiMap(null), formsAttributes, "");
+    HttpRequestWrapper httpRequest = new HttpRequestWrapper().setMethod(HttpMethod.POST).setHeaders(headers).setFormAttributes(formsAttributes);
+    return new RenderRequest().setRequest(httpRequest).setTemplate(readText("fragment-form1.txt"));
   }
 
   private void mockServiceResponse(String responseJson) {

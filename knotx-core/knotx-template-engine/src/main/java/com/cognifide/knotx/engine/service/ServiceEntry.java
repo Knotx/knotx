@@ -19,7 +19,7 @@ package com.cognifide.knotx.engine.service;
 
 
 import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
@@ -89,11 +89,11 @@ public class ServiceEntry {
     }
   }
 
-  public boolean canServeRequest(HtmlFragment fragment, TemplateEngineRequest request) {
-    boolean canServeMethodType = canServeMethodType(request.getServerRequestMethod());
+  public boolean canServeRequest(HtmlFragment fragment, RenderRequest renderRequest) {
+    boolean canServeMethodType = canServeMethodType(renderRequest.request().method());
 
-    if (isRequestFormPostWithId(request)) {
-      return canServeMethodType && canServeFormPost(fragment, request);
+    if (isRequestFormPostWithId(renderRequest)) {
+      return canServeMethodType && canServeFormPost(fragment, renderRequest);
     } else {
       return canServeMethodType;
     }
@@ -125,17 +125,17 @@ public class ServiceEntry {
         || Objects.equals(this.methodType, ServiceCallMethod.ALL);
   }
 
-  private boolean isRequestFormPostWithId(TemplateEngineRequest request) {
-    if (request.getServerRequestMethod() != HttpMethod.POST) {
+  private boolean isRequestFormPostWithId(RenderRequest renderRequest) {
+    if (renderRequest.request().method() != HttpMethod.POST) {
       return false;
     }
-    String requestFormId = request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
+    String requestFormId = renderRequest.request().formAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
     return StringUtils.isNotEmpty(requestFormId);
   }
 
-  private boolean canServeFormPost(HtmlFragment fragment, TemplateEngineRequest request) {
+  private boolean canServeFormPost(HtmlFragment fragment, RenderRequest renderRequest) {
     Optional<String> fragmentId = Optional.ofNullable(fragment.getDataId());
-    Optional<String> formId = Optional.ofNullable(request.getFormAttributes())
+    Optional<String> formId = Optional.ofNullable(renderRequest.request().formAttributes())
         .map(attr -> attr.get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
 
     return fragmentId.equals(formId) || ServiceCallMethod.POST != methodType;

@@ -21,7 +21,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
@@ -52,19 +52,19 @@ public class ServiceEngine {
   }
 
   public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
-                                                       TemplateEngineRequest request) {
-    HttpMethod httpMethod = computeServiceMethodType(request, serviceEntry.getMethodType());
+                                                       RenderRequest renderRequest) {
+    HttpMethod httpMethod = computeServiceMethodType(renderRequest, serviceEntry.getMethodType());
     Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-        httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-        req -> buildRequestBody(req, request.getHeaders(), request.getFormAttributes(),
+        httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(renderRequest, serviceEntry),
+        req -> buildRequestBody(req, renderRequest.request().headers(), renderRequest.request().formAttributes(),
             httpMethod));
-    return serviceResponse.flatMap(this::transformResponse);
+    return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
   }
 
-  private Observable<Map<String, Object>> transformResponse(HttpClientResponse response) {
+  private Observable<Map<String, Object>> transformResponse(HttpClientResponse response, ServiceEntry serviceEntry) {
     return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
-        .doOnNext(this::traceServiceCall)
+        .doOnNext(buffer -> traceServiceCall(buffer, serviceEntry))
         .map(buffer -> buffer.toJsonObject().getMap())
         .map(results -> {
           results.put("_response",
@@ -101,9 +101,9 @@ public class ServiceEngine {
         .get();
   }
 
-  private HttpMethod computeServiceMethodType(TemplateEngineRequest request,
+  private HttpMethod computeServiceMethodType(RenderRequest renderRequest,
                                               ServiceCallMethod serviceCallMethod) {
-    if (HttpMethod.POST.equals(request.getServerRequestMethod())
+    if (HttpMethod.POST.equals(renderRequest.request().method())
         && ServiceCallMethod.POST.equals(serviceCallMethod)) {
       return HttpMethod.POST;
     } else {
@@ -111,9 +111,9 @@ public class ServiceEngine {
     }
   }
 
-  private void traceServiceCall(Buffer results) {
+  private void traceServiceCall(Buffer results, ServiceEntry entry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
+      LOGGER.trace("Service call returned <{}> <{}>", results.toJsonObject().encodePrettily(), entry.getServiceUri());
     }
   }
 }

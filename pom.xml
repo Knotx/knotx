@@ -85,8 +85,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
     <handlebars.version>4.0.5</handlebars.version>
-    <vertx.version>3.3.2</vertx.version>
-    <rxjava.version>1.1.8</rxjava.version>
+    <vertx.version>3.3.3</vertx.version>
+    <rxjava.version>1.1.9</rxjava.version>
     <junit.version>4.12</junit.version>
     <assertj.version>3.4.1</assertj.version>
     <commons-io.version>2.5</commons-io.version>

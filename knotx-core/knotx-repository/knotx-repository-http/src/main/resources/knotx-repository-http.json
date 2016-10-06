@@ -1,0 +1,14 @@
+{
+  "address": "knotx.core.repository.http",
+  "configuration": {
+    "client.options": {
+      "maxPoolSize": 1000,
+      "keepAlive": false,
+      "tryUseCompression": true
+    },
+    "client.destination": {
+      "domain": "localhost",
+      "port": 3001
+    }
+  }
+}

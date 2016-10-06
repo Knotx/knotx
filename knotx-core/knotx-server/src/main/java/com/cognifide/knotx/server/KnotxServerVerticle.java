@@ -17,13 +17,14 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.dataobjects.RepositoryRequest;
-import com.cognifide.knotx.dataobjects.RepositoryResponse;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
-import com.cognifide.knotx.dataobjects.TemplateEngineResponse;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.RenderRequest;
+import com.cognifide.knotx.dataobjects.RenderResponse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -47,16 +48,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private HttpServer httpServer;
 
-  private String repositoryAddress;
-
-  private String engineAddress;
-
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-
-    this.repositoryAddress = config().getJsonObject("dependencies").getString("repository.address");
-    this.engineAddress = config().getJsonObject("dependencies").getString("engine.address");
     configuration = new KnotxServerConfiguration(config());
   }
 
@@ -68,36 +62,42 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     httpServer.requestHandler(
         request -> {
-          request.setExpectMultipart(true);
-          request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress, createRepositoryRequest(request))
-              .doOnNext(this::traceMessage)
-              .subscribe(
-                  reply -> {
-                    RepositoryResponse repository = RepositoryResponse.fromJson(reply.body());
-                    if (repository.shouldProcess()) {
-                      eventBus.<JsonObject>sendObservable(engineAddress, createEngineRequest(repository, request))
-                          .subscribe(
-                              result -> {
-                                TemplateEngineResponse engineResponse = new TemplateEngineResponse(result.body());
-                                if (engineResponse.isSuccess()) {
-                                  rewriteHeaders(request, request.headers());
-                                  request.response().end(engineResponse.getHtml());
-                                } else {
-                                  request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+          Optional<String> repositoryAddress = configuration.repositoryForPath(request.path());
+
+          if (repositoryAddress.isPresent()) {
+            request.setExpectMultipart(true);
+            request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress.get(), new HttpRequestWrapper(request).toJson())
+                .doOnNext(this::traceMessage)
+                .subscribe(
+                    reply -> {
+                      HttpResponseWrapper repository = new HttpResponseWrapper(reply.body());
+                      if (repository.statusCode() == HttpResponseStatus.OK) {
+                        eventBus.<JsonObject>sendObservable(configuration.engineAddress(), requestRendering(repository, request))
+                            .subscribe(
+                                result -> {
+                                  RenderResponse engineResponse = new RenderResponse(result.body());
+                                  if (engineResponse.isSuccess()) {
+                                    rewriteHeaders(request, request.headers());
+                                    request.response().end(engineResponse.getHtml());
+                                  } else {
+                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                                  }
+                                },
+                                error -> {
+                                  LOGGER.error("Error happened", error);
+                                  request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                                 }
-                              },
-                              error -> {
-                                LOGGER.error("Error happened", error);
-                                request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(error.toString());
-                              }
-                          );
-                    } else {
-                      rewriteHeaders(request, repository.getHeaders());
-                      request.response().setStatusCode(repository.getStatusCode()).end();
-                    }
-                  },
-                  error -> LOGGER.error("Error: ", error)
-              ));
+                            );
+                      } else {
+                        rewriteHeaders(request, repository.headers());
+                        request.response().setStatusCode(repository.statusCode().code()).end();
+                      }
+                    },
+                    error -> LOGGER.error("Error: ", error)
+                ));
+          } else {
+            request.response().setStatusCode(HttpResponseStatus.NOT_FOUND.code()).end();
+          }
         }
     ).listen(
         configuration.httpPort(),
@@ -117,19 +117,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
     httpServer.close();
   }
 
-  private JsonObject createRepositoryRequest(HttpServerRequest request) {
-    return new RepositoryRequest(request.path(), request.headers()).toJsonObject();
-  }
-
-  private JsonObject createEngineRequest(RepositoryResponse repositoryResponse, HttpServerRequest request) {
-    return new TemplateEngineRequest(
-        repositoryResponse.getData(),
-        request.method(),
-        getPreservedHeaders(request.headers()),
-        request.params(),
-        request.formAttributes(),
-        request.uri())
-        .toJsonObject();
+  private JsonObject requestRendering(HttpResponseWrapper repositoryResponse, HttpServerRequest originalRequest) {
+    return new RenderRequest().setRequest(new HttpRequestWrapper(originalRequest)).setTemplate(repositoryResponse.body().toString()).toJson();
   }
 
   private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {

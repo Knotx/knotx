@@ -1,5 +1,5 @@
 {
-  "verticles" : {
+  "verticles": {
     "com.cognifide.knotx.server.KnotxServerVerticle": {
       "config": {
         "http.port": 8092,
@@ -9,38 +9,48 @@
           "X-Language-Code",
           "X-Requested-With"
         ],
-        "dependencies": {
-          "repository.address": "template-repository",
-          "engine.address": "template-engine"
-        }
-      },
-      "instances" : 2
-    },
-    "com.cognifide.knotx.repository.RepositoryVerticle": {
-      "config": {
-        "service.name": "template-repository",
         "repositories": [
           {
-            "type": "local",
             "path": "/content/local/.*",
-            "catalogue": ""
+            "address": "knotx.core.repository.filesystem"
           },
           {
-            "type": "remote",
             "path": "/content/.*",
-            "domain": "localhost",
-            "port": 3001,
-            "client.options": {
-              "tryUseCompression": true,
-              "keepAlive": false
-            }
+            "address": "knotx.core.repository.http"
           }
-        ]
+        ],
+        "engine": {
+          "address": "knotx.core.engine"
+        }
+      }
+    },
+    "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
+      "config": {
+        "address": "knotx.core.repository.http",
+        "configuration": {
+          "client.options": {
+            "maxPoolSize": 1000,
+            "keepAlive": false,
+            "tryUseCompression": true
+          },
+          "client.destination": {
+            "domain": "localhost",
+            "port": 3001
+          }
+        }
+      }
+    },
+    "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
+      "config": {
+        "address": "knotx.core.repository.filesystem",
+        "configuration": {
+          "catalogue": ""
+        }
       }
     },
     "com.cognifide.knotx.engine.TemplateEngineVerticle": {
       "config": {
-        "service.name": "template-engine",
+        "address": "knotx.core.engine",
         "template.debug": true,
         "client.options": {
           "maxPoolSize": 1000,
@@ -51,11 +61,6 @@
             "path": "/service/mock/.*",
             "domain": "localhost",
             "port": 3000
-          },
-          {
-            "path": "/service/.*",
-            "domain": "localhost",
-            "port": 8080
           }
         ]
       }

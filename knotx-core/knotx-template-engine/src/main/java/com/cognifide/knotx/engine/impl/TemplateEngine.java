@@ -17,13 +17,13 @@
  */
 package com.cognifide.knotx.engine.impl;
 
-import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
+import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,12 +49,12 @@ public class TemplateEngine {
     initHandlebars();
   }
 
-  public Observable<String> process(TemplateEngineRequest request) {
-    return extractFragments(request.getTemplate())
+  public Observable<String> process(RenderRequest renderRequest) {
+    return extractFragments(renderRequest.template())
         .doOnNext(this::traceSnippet)
         .flatMap(this::compileHtmlFragment)
-        .filter(htmlFragment -> shouldProcessRequest(htmlFragment, request))
-        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, request))
+        .filter(htmlFragment -> shouldProcessRequest(htmlFragment, renderRequest))
+        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, renderRequest))
         // eager will buffer faster processing to emit items in proper order, keeping concurrency.
         .reduce(new StringBuilder(), StringBuilder::append)
         .map(StringBuilder::toString);
@@ -72,11 +72,11 @@ public class TemplateEngine {
     });
   }
 
-  private Boolean shouldProcessRequest(HtmlFragment htmlFragment, TemplateEngineRequest request) {
+  private Boolean shouldProcessRequest(HtmlFragment htmlFragment, RenderRequest renderRequest) {
     String requestedWith =
-        StringUtils.defaultString(request.getHeaders().get(TemplateEngineConsts.X_REQUESTED_WITH));
+        StringUtils.defaultString(renderRequest.request().headers().get(TemplateEngineConsts.X_REQUESTED_WITH));
     String formId = StringUtils
-        .defaultString(request.getFormAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
+        .defaultString(renderRequest.request().formAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
     boolean isRequestByXHR = TemplateEngineConsts.XMLHTTP_REQUEST.equals(requestedWith);
     return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId())
         && formId.equals(htmlFragment.getDataId());

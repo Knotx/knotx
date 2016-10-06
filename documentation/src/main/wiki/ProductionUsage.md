@@ -14,72 +14,80 @@ This will run the server with production settings. For more information see the 
 
 #### Configuration
 
-The *core* module contains 3 Knot.x verticle without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
+The *core* module contains four Knot.x verticles without any sample data. Here's how its configuration files look based on a sample **standalone.json** available in knotx-standalone module:
 **standalone.json**
 ```json
 {
-  "com.cognifide.knotx.server.KnotxServerVerticle": {
-    "config": {
-      "http.port": 8092,
-      "preserved.headers": [
-        "User-Agent",
-        "X-Solr-Core-Key",
-        "X-Language-Code",
-        "X-Requested-With"
-      ],
-      "dependencies": {
-        "repository.address": "template-repository",
-        "engine.address": "template-engine"
+  "verticles": {
+    "com.cognifide.knotx.server.KnotxServerVerticle": {
+      "config": {
+        "http.port": 8092,
+        "preserved.headers": [
+          "User-Agent",
+          "X-Solr-Core-Key",
+          "X-Language-Code",
+          "X-Requested-With"
+        ],
+        "repositories": [
+          {
+            "path": "/content/local/.*",
+            "address": "knotx.core.repository.filesystem"
+          },
+          {
+            "path": "/content/.*",
+            "address": "knotx.core.repository.http"
+          }
+        ],
+        "engine": {
+          "address": "knotx.core.engine"
+        }
       }
     },
-  },
-  "com.cognifide.knotx.repository.RepositoryVerticle": {
-    "config": {
-      "service.name": "template-repository",
-      "repositories": [
-        {
-          "type": "local",
-          "path": "/content/local/.*",
-          "catalogue": ""
-        },
-        {
-          "type": "remote",
-          "path": "/content/.*",
-          "domain": "localhost",
-          "port": 3001,
+    "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
+      "config": {
+        "address": "knotx.core.repository.http",
+        "configuration": {
           "client.options": {
-            "tryUseCompression": true,
-            "keepAlive": false
+            "maxPoolSize": 1000,
+            "keepAlive": false,
+            "tryUseCompression": true
+          },
+          "client.destination": {
+            "domain": "localhost",
+            "port": 3001
           }
         }
-      ]
+      }
     },
-  },
-  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
-    "config": {
-      "service.name": "template-engine",
-      "template.debug": true,
-      "client.options": {
-        "maxPoolSize": 1000,
-        "keepAlive": false
-      },
-      "services": [
-        {
-          "path": "/service/mock/.*",
-          "domain": "localhost",
-          "port": 3000
-        },
-        {
-          "path": "/service/.*",
-          "domain": "localhost",
-          "port": 8080
+    "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
+      "config": {
+        "address": "knotx.core.repository.filesystem",
+        "configuration": {
+          "catalogue": ""
         }
-      ]
+      }
     },
+    "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+      "config": {
+        "address": "knotx.core.engine",
+        "template.debug": true,
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
+        },
+        "services": [
+          {
+            "path": "/service/mock/.*",
+            "domain": "localhost",
+            "port": 3000
+          }
+        ]
+      }
+    }
   }
 }
 ```
-Configuration JSON contains three config sections, one for each Knot.x verticle.
+Configuration JSON contains four config sections, one for each Knot.x verticle.
 Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options) 
 
 ### Executing Knot.x core verticles as a cluster
@@ -87,9 +95,13 @@ Thanks to the modular structure of the Knot.x project, it's possible to run each
 For other network configurations please consult Vert.x documentation [Vert.x Hazelcast - Configuring cluster manager](http://vertx.io/docs/vertx-hazelcast/java/#_configuring_this_cluster_manager)
 
 To run it, execute the following command:
-**Host 1 - Repository Verticle**
+**Host 1 - Http Repository Verticle**
 ```
-java -jar knotx-repository-XXX-fat.jar -conf <path-to-repository-configuration.json>
+java -jar knotx-repository-http-XXX-fat.jar -conf <path-to-http-repository-configuration.json>
+```
+**Host 2 - Filesystem Repository Verticle**
+```
+java -jar knotx-repository-filesystem-XXX-fat.jar -conf <path-to-filesystem-repository-configuration.json>
 ```
 **Host 2 - Template Engine Verticle**
 ```
@@ -119,8 +131,11 @@ The mocks verticle is configured as follows:
 ### Configuration
 ####Server configuration
 Knot.x server requires JSON configuration with *config* object. **Config** section allows to define:
+
 - **http.port** property to set http port which will be used to start Knot.x server
 - **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
+- **repositories** mapping of paths to the repository verticles that should deliver Templates
+- **engine** event bus address of the Rendering engine verticle
 ```json
 {
   "com.cognifide.knotx.server.KnotxServerVerticle": {
@@ -131,24 +146,37 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         "X-Solr-Core-Key",
         "X-Language-Code"
       ],
+      "repositories": [
+        {
+          "path": "/content/local/.*",
+          "address": "knotx.core.repository.filesystem"
+        },
+        {
+          "path": "/content/.*",
+          "address": "knotx.core.repository.http"
+        }
+      ],
+      "engine": {
+        "address": "knotx.core.engine"
+      }
+     }
      ...
  ``` 
 ####Verticle configuration
 Each verticle requires JSON configuration of **config** object. The configuration consists of the same parameters as previous examples.
-For instance, a configuration JSON for the *repository* verticle could look like this:
+For instance, a configuration JSON for the *HTTP repository* verticle could look like this:
 ```json
 {
-    "service.name": "template-repository",
-    "repositories": [
-      {
-        "type": "remote",
-        "path": "/content/.*",
-        "domain": "localhost",
-        "port": 3001,
-        "client.options": {
-          "tryUseCompression" : true
-       }
-      }
-    ]
+  "address": "knotx.core.repository.http",
+  "configuration": {
+    "client.options": {
+      "maxPoolSize": 1000,
+      "keepAlive": false
+    },
+    "client.destination" : {
+      "domain": "localhost",
+      "port": 3001
+    }
+  }
 }
 ```
