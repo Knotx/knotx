@@ -1,18 +1,18 @@
 {
-    "services": [
-      {
-        "path": "/service/mock/.*",
-        "domain": "localhost",
-        "port": 3000,
-        "allowed.headers": [
-          "Accept-*",
-          "Location"
-        ]
-      },
-      {
-        "path": "/service/.*",
-        "domain": "localhost",
-        "port": 8080
-      }
-    ]
+  "services": [
+    {
+      "path": "/service/mock/.*",
+      "domain": "localhost",
+      "port": 3000,
+      "allowed.request.headers": [
+        "Accept-*",
+        "Location"
+      ]
+    },
+    {
+      "path": "/service/.*",
+      "domain": "localhost",
+      "port": 8080
+    }
+  ]
 }

@@ -187,12 +187,20 @@ The config node consists of:
         {
           "path": "/service/mock/.*",
           "domain": "localhost",
-          "port": 3000
+          "port": 3000,
+          "allowed.request.headers": [
+            "Content-Type",
+            "X-*"
+          ]          
         },
         {
           "path": "/service/.*",
           "domain": "localhost",
-          "port": 8080
+          "port": 8080,
+          "allowed.request.headers": [
+            "Content-Type",
+            "X-*"
+          ]          
         }
       ]
     }
@@ -218,7 +226,7 @@ The first matched service will handle the request or, if there's no service matc
   "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
-      "preserved.headers": [
+      "allowed.response.headers": [
         "User-Agent",
         "X-Solr-Core-Key",
         "X-Language-Code",
@@ -245,6 +253,7 @@ The first matched service will handle the request or, if there's no service matc
 This section configures the Knot.x HTTP server. The config node consists of:
 
 - **http.port** - an HTTP port on which the server listens for requests,
+- **allowed.response.headers** - list of the headers that should be passed back to the client
 - **repositories** - configuration of repositories. It's a array of mappings what paths are supported by what repository verticles (by specifing its event bus addresses). The order of mappings is important as they are evaluated from top to down on each request. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
 - **engine** - configuration about templating engine dependency. You can configure event bus **address** of engine verticle here.
 

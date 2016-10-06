@@ -46,10 +46,10 @@ public class TemplateEngineConfiguration {
           metadata.path = item.getString("path");
           metadata.domain = item.getString("domain");
           metadata.port = item.getInteger("port");
-          metadata.headersPatterns = item.getJsonArray("allowed.headers", new JsonArray()).stream()
-            .map(o -> (String) o)
-            .map(new StringToPatternMap())
-            .collect(Collectors.toList());
+          metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
+              .map(object -> (String) object)
+              .map(new StringToPatternMap())
+              .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
     templateDebug = config.getBoolean("template.debug", false);
@@ -80,7 +80,7 @@ public class TemplateEngineConfiguration {
 
     private Integer port;
 
-    private List <Pattern> headersPatterns;
+    private List<Pattern> allowedRequestHeaderPatterns;
 
     @Override
     public boolean equals(Object obj) {
@@ -128,12 +128,12 @@ public class TemplateEngineConfiguration {
       this.port = port;
     }
 
-    public List<Pattern> getHeadersPatterns() {
-      return headersPatterns;
+    public List<Pattern> getAllowedRequestHeaderPatterns() {
+      return allowedRequestHeaderPatterns;
     }
 
-    public void setHeadersPatterns(List<Pattern> headersPatterns) {
-      this.headersPatterns = headersPatterns;
+    public void setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
+      this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
     }
   }
 }

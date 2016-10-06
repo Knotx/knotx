@@ -19,9 +19,9 @@ package com.cognifide.knotx.server;
 
 import com.google.common.collect.Maps;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertx.core.json.JsonObject;
@@ -31,6 +31,8 @@ public class KnotxServerConfiguration {
   private Integer httpPort;
 
   private String engineAddress;
+
+  private Set<String> allowedResponseHeaders;
 
   private Map<String, String> repositoryAddressMapping;
 
@@ -43,17 +45,14 @@ public class KnotxServerConfiguration {
     config.getJsonArray("repositories").stream()
         .map(item -> (JsonObject) item)
         .forEach(object -> repositoryAddressMapping.put(object.getString("path"), object.getString("address")));
+
+    allowedResponseHeaders = config.getJsonArray("allowed.response.headers").stream()
+        .map(item -> ((String) item).toLowerCase())
+        .collect(Collectors.toSet());
   }
 
   public Integer httpPort() {
     return httpPort;
-  }
-
-  List<String> serviceCallHeaders() {
-    return serviceCallHeaders;
-  }
-  public List<String> serviceCallHeaders() {
-    return serviceCallHeaders;
   }
 
   public String engineAddress() {
@@ -64,5 +63,9 @@ public class KnotxServerConfiguration {
     return repositoryAddressMapping.entrySet().stream()
         .filter(mapping -> path.matches(mapping.getKey()))
         .findFirst().map(matching -> matching.getValue());
+  }
+
+  public Set<String> allowedResponseHeaders() {
+    return allowedResponseHeaders;
   }
 }

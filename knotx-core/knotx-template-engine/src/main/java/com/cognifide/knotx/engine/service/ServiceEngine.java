@@ -20,8 +20,8 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
+import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-import com.cognifide.knotx.dataobjects.TemplateEngineRequest;
 import com.cognifide.knotx.engine.AllowedHeadersFilter;
 import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
@@ -58,10 +58,19 @@ public class ServiceEngine {
   public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
                                                        RenderRequest renderRequest) {
     HttpMethod httpMethod = computeServiceMethodType(renderRequest, serviceEntry.getMethodType());
-    Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-        httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(request, serviceEntry),
-        req -> buildRequestBody(req, getFilteredHeaders(request.getHeaders(), serviceEntry.getHeadersPatterns()), request.getFormAttributes(),
-            httpMethod));
+    Observable<HttpClientResponse> serviceResponse =
+        KnotxRxHelper.request(
+            httpClient,
+            httpMethod,
+            serviceEntry.getPort(),
+            serviceEntry.getDomain(),
+            UriTransformer.getServiceUri(renderRequest, serviceEntry),
+            req -> buildRequestBody(req,
+                getFilteredHeaders(renderRequest.request().headers(), serviceEntry.getHeadersPatterns()),
+                renderRequest.request().formAttributes(),
+                httpMethod
+            )
+        );
     return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
   }
 
@@ -89,8 +98,9 @@ public class ServiceEngine {
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
-    return headers.names().stream().filter(new AllowedHeadersFilter(allowedHeaders))
-      .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+    return headers.names().stream()
+        .filter(AllowedHeadersFilter.create(allowedHeaders))
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
   }
 
 
@@ -98,7 +108,7 @@ public class ServiceEngine {
     Buffer buffer = Buffer.buffer();
 
     String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-      .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
+        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
     buffer.appendString(formPostContent, Charsets.UTF_8.toString());
     return buffer;
   }

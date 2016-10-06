@@ -26,6 +26,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
+import rx.functions.Func1;
 
 public class HttpResponseWrapper {
 
@@ -46,16 +47,18 @@ public class HttpResponseWrapper {
    */
   public HttpResponseWrapper(JsonObject json) {
     this.statusCode = HttpResponseStatus.valueOf(json.getInteger("statusCode"));
-    this.headers = MultiMap.caseInsensitiveMultiMap();
 
     if (json.containsKey("body")) {
       this.body = Buffer.buffer(json.getString("body"));
     }
 
-    json.getJsonArray("headers").stream()
-        .map(item -> (JsonObject) item)
-        .flatMap(JsonObject::stream)
-        .forEach(entry -> this.headers.add(entry.getKey(), entry.getValue().toString()));
+    if (json.containsKey("headers")) {
+      this.headers = MultiMap.caseInsensitiveMultiMap();
+      json.getJsonArray("headers").stream()
+          .map(item -> (JsonObject) item)
+          .flatMap(JsonObject::stream)
+          .forEach(entry -> this.headers.add(entry.getKey(), entry.getValue().toString()));
+    }
   }
 
   public HttpResponseStatus statusCode() {
@@ -63,7 +66,11 @@ public class HttpResponseWrapper {
   }
 
   public MultiMap headers() {
-    return headers;
+    MultiMap result = MultiMap.caseInsensitiveMultiMap();
+    headers.names().stream()
+        .forEach(name -> result.add(name, headers.get(name)));
+
+    return result;
   }
 
   public Buffer body() {
@@ -76,7 +83,7 @@ public class HttpResponseWrapper {
   }
 
   public HttpResponseWrapper setHeaders(MultiMap headers) {
-    this.headers = headers;
+    //this.headers = headers;
     return this;
   }
 
@@ -122,5 +129,8 @@ public class HttpResponseWrapper {
             .map(String::hashCode)
             .orElse(0))
         .reduce(Objects.hashCode(statusCode, body), (sum, hash) -> 31 * sum + hash);
+  }
+
+  public interface Filter<T, R> extends Func1<T, R> {
   }
 }

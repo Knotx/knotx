@@ -80,7 +80,7 @@ public class ServiceEntry {
   }
 
   public List<Pattern> getHeadersPatterns(){
-    return serviceMetadata.getHeadersPatterns();
+    return serviceMetadata.getAllowedRequestHeaderPatterns();
   }
 
   public String getServiceUri() {

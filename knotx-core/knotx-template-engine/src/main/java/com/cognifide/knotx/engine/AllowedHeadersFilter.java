@@ -25,8 +25,12 @@ public class AllowedHeadersFilter implements Predicate<String> {
 
   private final List<Pattern> patterns;
 
-  public AllowedHeadersFilter(List<Pattern> patterns) {
+  private AllowedHeadersFilter(List<Pattern> patterns) {
     this.patterns = patterns;
+  }
+
+  public static AllowedHeadersFilter create(List<Pattern> patterns) {
+    return new AllowedHeadersFilter(patterns);
   }
 
   @Override

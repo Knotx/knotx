@@ -3,11 +3,45 @@
     "com.cognifide.knotx.server.KnotxServerVerticle": {
       "config": {
         "http.port": 8092,
-        "preserved.headers": [
-          "User-Agent",
-          "X-Solr-Core-Key",
-          "X-Language-Code",
-          "X-Requested-With"
+        "allowed.response.headers": [
+          "referer",
+          "user-agent",
+          "from",
+          "content-type",
+          "content-length",
+          "accept-charset",
+          "accept-encoding",
+          "accept-language",
+          "accept",
+          "host",
+          "if-match",
+          "if-none-match",
+          "if-range",
+          "if-unmodified-since",
+          "if-modified-since",
+          "max-forwards",
+          "proxy-authorization",
+          "proxy-connection",
+          "range",
+          "cookie",
+          "cq-action",
+          "cq-handle",
+          "handle",
+          "action",
+          "cqstats",
+          "depth",
+          "translate",
+          "expires",
+          "date",
+          "dav",
+          "ms-author-via",
+          "if",
+          "destination",
+          "access-control-allow-origin",
+          "x-original-requested-uri",
+          "x-solr-core-key",
+          "x-language-code",
+          "x-requested-with"
         ],
         "repositories": [
           {
@@ -61,7 +95,7 @@
             "path": "/service/mock/.*",
             "domain": "localhost",
             "port": 3000,
-            "allowed.headers": [
+            "allowed.request.headers": [
               "Content-Type",
               "X-*"
             ]
@@ -70,7 +104,7 @@
             "path": "/service/.*",
             "domain": "localhost",
             "port": 8080,
-            "allowed.headers": [
+            "allowed.request.headers": [
               "Content-Type",
               "X-*"
             ]

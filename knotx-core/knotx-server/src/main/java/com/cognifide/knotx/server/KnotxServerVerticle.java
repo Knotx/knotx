@@ -34,10 +34,11 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpServer;
-import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 
 public class KnotxServerVerticle extends AbstractVerticle {
@@ -62,25 +63,26 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     httpServer.requestHandler(
         request -> {
-          Optional<String> repositoryAddress = configuration.repositoryForPath(request.path());
+          final Optional<String> repositoryAddress = configuration.repositoryForPath(request.path());
+          final HttpRequestWrapper originalRequestWrapper = new HttpRequestWrapper(request);
 
           if (repositoryAddress.isPresent()) {
             request.setExpectMultipart(true);
-            request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress.get(), new HttpRequestWrapper(request).toJson())
+            request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress.get(), originalRequestWrapper.toJson())
                 .doOnNext(this::traceMessage)
+                .map(msg -> new HttpResponseWrapper(msg.body()))
                 .subscribe(
-                    reply -> {
-                      HttpResponseWrapper repository = new HttpResponseWrapper(reply.body());
-                      if (repository.statusCode() == HttpResponseStatus.OK) {
-                        eventBus.<JsonObject>sendObservable(configuration.engineAddress(), requestRendering(repository, request))
+                    repoResponse -> {
+                      if (repoResponse.statusCode() == HttpResponseStatus.OK) {
+                        eventBus.<JsonObject>sendObservable(configuration.engineAddress(), requestRendering(repoResponse.body(), originalRequestWrapper))
+                            .map(msg -> new RenderResponse(msg.body()))
                             .subscribe(
-                                result -> {
-                                  RenderResponse engineResponse = new RenderResponse(result.body());
+                                engineResponse -> {
                                   if (engineResponse.isSuccess()) {
-                                    rewriteHeaders(request, request.headers());
-                                    request.response().end(engineResponse.getHtml());
+                                    writeHeaders(request.response(), repoResponse.headers().add("content-length", contentLength(engineResponse)));
+                                    request.response().setStatusCode(HttpResponseStatus.OK.code()).end(engineResponse.getHtml());
                                   } else {
-                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end(engineResponse.getReason());
+                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
                                   }
                                 },
                                 error -> {
@@ -89,8 +91,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
                                 }
                             );
                       } else {
-                        rewriteHeaders(request, repository.headers());
-                        request.response().setStatusCode(repository.statusCode().code()).end();
+                        writeHeaders(request.response(), repoResponse.headers().add("content-length", "0"));
+                        request.response().setStatusCode(repoResponse.statusCode().code()).end();
                       }
                     },
                     error -> LOGGER.error("Error: ", error)
@@ -112,27 +114,24 @@ public class KnotxServerVerticle extends AbstractVerticle {
         });
   }
 
-  @Override
-  public void stop() throws Exception {
-    httpServer.close();
+  private String contentLength(RenderResponse engineResponse) {
+    return Integer.toString(engineResponse.getHtml().length());
   }
 
-  private JsonObject requestRendering(HttpResponseWrapper repositoryResponse, HttpServerRequest originalRequest) {
-    return new RenderRequest().setRequest(new HttpRequestWrapper(originalRequest)).setTemplate(repositoryResponse.body().toString()).toJson();
-  }
-
-  private void rewriteHeaders(HttpServerRequest httpServerRequest, MultiMap headers) {
-    MultiMap preservedHeaders = getPreservedHeaders(headers);
-    preservedHeaders.names().forEach(headerKey -> httpServerRequest.response().putHeader(headerKey, preservedHeaders.get(headerKey)));
-  }
-
-  private MultiMap getPreservedHeaders(MultiMap headers) {
-    final MultiMap preservedHeaders = MultiMap.caseInsensitiveMultiMap();
+  private void writeHeaders(HttpServerResponse response, MultiMap headers) {
     headers.names().stream()
-        .filter(header -> configuration.serviceCallHeaders().contains(header))
-        .forEach(header -> preservedHeaders.add(header, headers.get(header)));
+        .filter(this::headerFilter)
+        .forEach(name -> response.putHeader(name, headers.get(name)));
+  }
 
-    return preservedHeaders;
+  private Boolean headerFilter(String name) {
+    return configuration.allowedResponseHeaders().contains(name.toLowerCase());
+  }
+
+  private JsonObject requestRendering(Buffer htmlBuffer, HttpRequestWrapper originalRequest) {
+    return new RenderRequest().setRequest(originalRequest)
+        .setTemplate(htmlBuffer.toString())
+        .toJson();
   }
 
   private void traceMessage(Message<JsonObject> message) {
