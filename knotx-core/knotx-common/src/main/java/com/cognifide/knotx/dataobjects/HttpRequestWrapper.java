@@ -145,7 +145,7 @@ public class HttpRequestWrapper {
     MultiMap result = MultiMap.caseInsensitiveMultiMap();
     jsonArray.stream()
         .map(item -> (JsonObject) item)
-        .flatMap(item -> item.stream())
+        .flatMap(JsonObject::stream)
         .forEach(entry -> result.add(entry.getKey(), entry.getValue().toString()));
     return result;
   }

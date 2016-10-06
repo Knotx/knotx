@@ -54,7 +54,7 @@ public class HttpResponseWrapper {
 
     json.getJsonArray("headers").stream()
         .map(item -> (JsonObject) item)
-        .flatMap(item -> item.stream())
+        .flatMap(JsonObject::stream)
         .forEach(entry -> this.headers.add(entry.getKey(), entry.getValue().toString()));
   }
 
