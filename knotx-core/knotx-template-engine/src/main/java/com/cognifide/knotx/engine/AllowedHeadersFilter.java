@@ -17,30 +17,24 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+public class AllowedHeadersFilter implements Predicate<String> {
 
-import java.io.InputStreamReader;
+  private final List<Pattern> patterns;
 
-import io.vertx.core.json.JsonObject;
-
-public class AbstractKnotxConfigurationTest {
-
-  @Rule
-  public final ExpectedException exception = ExpectedException.none();
-
-  protected static JsonObject readConfig(String path) throws Exception {
-    return readJson(path);
+  private AllowedHeadersFilter(List<Pattern> patterns) {
+    this.patterns = patterns;
   }
 
-  public static String readText(String path) throws Exception {
-    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+  public static AllowedHeadersFilter create(List<Pattern> patterns) {
+    return new AllowedHeadersFilter(patterns);
   }
 
-  protected static JsonObject readJson(String path) throws Exception {
-    return new JsonObject(readText(path));
+  @Override
+  public boolean test(String header) {
+    return patterns.stream().anyMatch(pattern -> pattern.matcher(header).matches());
   }
 }

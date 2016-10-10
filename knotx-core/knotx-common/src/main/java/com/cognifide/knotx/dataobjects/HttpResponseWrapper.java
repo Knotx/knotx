@@ -46,16 +46,18 @@ public class HttpResponseWrapper {
    */
   public HttpResponseWrapper(JsonObject json) {
     this.statusCode = HttpResponseStatus.valueOf(json.getInteger("statusCode"));
-    this.headers = MultiMap.caseInsensitiveMultiMap();
 
     if (json.containsKey("body")) {
       this.body = Buffer.buffer(json.getString("body"));
     }
 
-    json.getJsonArray("headers").stream()
-        .map(item -> (JsonObject) item)
-        .flatMap(JsonObject::stream)
-        .forEach(entry -> this.headers.add(entry.getKey(), entry.getValue().toString()));
+    if (json.containsKey("headers")) {
+      this.headers = MultiMap.caseInsensitiveMultiMap();
+      json.getJsonArray("headers").stream()
+          .map(item -> (JsonObject) item)
+          .flatMap(JsonObject::stream)
+          .forEach(entry -> this.headers.add(entry.getKey(), entry.getValue().toString()));
+    }
   }
 
   public HttpResponseStatus statusCode() {
@@ -63,7 +65,10 @@ public class HttpResponseWrapper {
   }
 
   public MultiMap headers() {
-    return headers;
+    MultiMap result = MultiMap.caseInsensitiveMultiMap();
+    headers.names().forEach(name -> result.add(name, headers.get(name)));
+
+    return result;
   }
 
   public Buffer body() {

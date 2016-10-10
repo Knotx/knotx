@@ -20,13 +20,17 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
 import com.cognifide.knotx.dataobjects.RenderRequest;
+import com.cognifide.knotx.dataobjects.ServiceCallMethod;
+import com.cognifide.knotx.engine.AllowedHeadersFilter;
+import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
@@ -54,10 +58,19 @@ public class ServiceEngine {
   public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
                                                        RenderRequest renderRequest) {
     HttpMethod httpMethod = computeServiceMethodType(renderRequest, serviceEntry.getMethodType());
-    Observable<HttpClientResponse> serviceResponse = KnotxRxHelper.request(
-        httpClient, httpMethod, serviceEntry.getPort(), serviceEntry.getDomain(), UriTransformer.getServiceUri(renderRequest, serviceEntry),
-        req -> buildRequestBody(req, renderRequest.request().headers(), renderRequest.request().formAttributes(),
-            httpMethod));
+    Observable<HttpClientResponse> serviceResponse =
+        KnotxRxHelper.request(
+            httpClient,
+            httpMethod,
+            serviceEntry.getPort(),
+            serviceEntry.getDomain(),
+            UriTransformer.getServiceUri(renderRequest, serviceEntry),
+            req -> buildRequestBody(req,
+                getFilteredHeaders(renderRequest.request().headers(), serviceEntry.getHeadersPatterns()),
+                renderRequest.request().formAttributes(),
+                httpMethod
+            )
+        );
     return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
   }
 
@@ -82,6 +95,12 @@ public class ServiceEngine {
       request.headers().set("content-type", "application/x-www-form-urlencoded");
       request.write(buffer);
     }
+  }
+
+  private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
+    return headers.names().stream()
+        .filter(AllowedHeadersFilter.create(allowedHeaders))
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
   }
 
 
