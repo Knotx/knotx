@@ -69,7 +69,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
   @Before
   public void setUp() throws Exception {
     Vertx vertx = Vertx.vertx();
-    TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
+    TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readJson(SERVICE_CONFIGURATION));
     serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
   }
 
@@ -110,7 +110,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
 
     Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
     ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readConfig(SERVICE_CONFIGURATION));
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readJson(SERVICE_CONFIGURATION));
 
     serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
     return serviceEntry;

@@ -62,7 +62,7 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
   private static ServiceEntry createServiceEntry(String attrName, String serviceUrl) throws Exception {
     Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
     ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readConfig("service-correct.json"));
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readJson("service-correct.json"));
 
     serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
     return serviceEntry;

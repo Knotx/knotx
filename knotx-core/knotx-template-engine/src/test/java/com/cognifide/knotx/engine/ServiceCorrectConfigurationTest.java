@@ -43,7 +43,7 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
 
   @Before
   public void setUp() throws Exception {
-    correctConfig = new TemplateEngineConfiguration(readConfig(CORRECT_JSON));
+    correctConfig = new TemplateEngineConfiguration(readJson(CORRECT_JSON));
     expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, new JsonArray().add("Accept-*").add("Location"));
     expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, new JsonArray());
   }
