@@ -342,6 +342,7 @@
             <configuration>
               <excludes>
                 <exclude>**/*SampleApplicationTest.java</exclude>
+                <exclude>**/*SampleApplicationHeadersTest.java</exclude>
               </excludes>
             </configuration>
           </plugin>
