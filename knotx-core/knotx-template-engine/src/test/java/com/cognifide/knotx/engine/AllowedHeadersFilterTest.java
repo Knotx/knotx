@@ -31,7 +31,8 @@ import static org.junit.Assert.assertEquals;
 
 public class AllowedHeadersFilterTest {
 
-  private List<String> testHeaders = Lists.newArrayList("Content-Type", "content-length", "Accept", "Location");
+  private final static List<String> TEST_HEADERS =
+      Lists.newArrayList("Content-Type", "content-length", "Accept", "Location");
 
   private StringToPatternMap patternGenerator = new StringToPatternMap();
 
@@ -46,7 +47,7 @@ public class AllowedHeadersFilterTest {
   public void whenAllAllowedHeadersAvailable_expectAllHeadersPassed() {
     AllowedHeadersFilter filter = AllowedHeadersFilter.create(Lists.newArrayList(patternGenerator.apply("*")));
 
-    assertEquals(testHeaders.size(), filterHeaders(filter).size());
+    assertEquals(TEST_HEADERS.size(), filterHeaders(filter).size());
   }
 
   @Test
@@ -83,7 +84,7 @@ public class AllowedHeadersFilterTest {
   }
 
   private List<String> filterHeaders(Predicate<String> filter) {
-    return testHeaders.stream()
+    return TEST_HEADERS.stream()
         .filter(filter)
         .collect(Collectors.toList());
   }

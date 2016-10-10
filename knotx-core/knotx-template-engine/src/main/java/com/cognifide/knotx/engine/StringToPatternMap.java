@@ -38,7 +38,7 @@ class StringToPatternMap implements Function<String, Pattern> {
       compiledPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
     } catch (PatternSyntaxException e) {
       LOGGER.error("Invalid allowed headers configuration syntax: " + stringPattern, e);
-      throw new RuntimeException("Application error");
+      throw new RuntimeException("Application error - invalid configuration");
     }
     return compiledPattern;
   }

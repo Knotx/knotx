@@ -26,7 +26,6 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
-import rx.functions.Func1;
 
 public class HttpResponseWrapper {
 
@@ -67,8 +66,7 @@ public class HttpResponseWrapper {
 
   public MultiMap headers() {
     MultiMap result = MultiMap.caseInsensitiveMultiMap();
-    headers.names().stream()
-        .forEach(name -> result.add(name, headers.get(name)));
+    headers.names().forEach(name -> result.add(name, headers.get(name)));
 
     return result;
   }
