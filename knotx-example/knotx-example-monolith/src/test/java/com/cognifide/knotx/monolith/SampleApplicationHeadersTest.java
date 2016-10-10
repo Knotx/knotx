@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.monolith;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,6 +28,7 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 
 
@@ -36,6 +38,8 @@ public class SampleApplicationHeadersTest {
   public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
 
   private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
+
+  private String CONTENT_LENGTH_HEADER = "content-length";
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -51,7 +55,7 @@ public class SampleApplicationHeadersTest {
   public void before() {
     expectedHeaders.add("Access-Control-Allow-Origin", "*");
     expectedHeaders.add("Content-Type", "text/html; charset=UTF-8");
-    expectedHeaders.add("content-length", "4089");
+    expectedHeaders.add("content-length", StringUtils.EMPTY);
   }
 
   @Test
@@ -65,12 +69,27 @@ public class SampleApplicationHeadersTest {
     client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
         resp -> {
           MultiMap headers = resp.headers();
-          headers.names().stream()
-              .forEach(name -> {
-                context.assertTrue(expectedHeaders.contains(name));
-                context.assertEquals(expectedHeaders.get(name), headers.get(name));
-              });
-          async.complete();
+          resp.bodyHandler(
+              body -> {
+                headers.names().stream()
+                    .forEach(name -> {
+                      context.assertTrue(expectedHeaders.contains(name));
+                      context.assertEquals(headerExpectedValue(name, body), headers.get(name));
+                    });
+                async.complete();
+              }
+          );
         });
+  }
+
+  private String headerExpectedValue(String name, Buffer contentBody) {
+    String expectedValue;
+    if (name.equalsIgnoreCase(CONTENT_LENGTH_HEADER)) {
+      expectedValue = Integer.toString(contentBody.length());
+    } else {
+      expectedValue = expectedHeaders.get(name);
+    }
+
+    return expectedValue;
   }
 }
