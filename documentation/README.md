@@ -27,7 +27,7 @@ Below are instructions how to prepare documentation of a new released applicatio
 
 #### Steps
 1. Make sure that `package.json` file contains correct version number.
-2. Run maven build with `process-docs` profile.
+2. Run maven command `mvn install -P process-docs`.
 3. There should be compiled single page `Documentation-<version>.md` file in `wiki/releases/<version>` directory.
 4. From `wiki/releases/<version>` directory run command: `doctoc Documentation-<version>.md`.
 5. Check generated TOC in `Documentation-<version>.md`. You can modify its heading if you want.

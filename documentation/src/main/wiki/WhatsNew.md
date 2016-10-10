@@ -1,3 +1,9 @@
-# What's new in 0.3.0
+# What's new in 0.4.0
 
-- Introduced JavaRx and new architecture (separate server, repository and templating engine verticles) aka `Knot.x REACTivation`.
+* Comprehensive verticles deployment options
+* Placeholders in service url support
+* Repositories request / response HTTP headers rules
+* Services request / response HTTP headers rules
+* Caching service calls within one request
+* Custom handlebars helpers registration support
+* Specialized repositories verticle implementation
