@@ -58,7 +58,7 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
       event.response().putHeader("Content-Type", "text/html; charset=UTF-8");
       event.response().putHeader("Server", "Vert.x");
       event.response().putHeader("Cache-control", "no-cache, no-store, must-revalidate");
-      event.response().end(normalizeEndline(htmlContent));
+      event.response().end(normalizeNewline(htmlContent));
       event.connection().close();
     }
   }
@@ -71,7 +71,7 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
     }
   }
 
-  private String normalizeEndline(String content) {
+  private String normalizeNewline(String content) {
     return content.replace(DOS_NEWLINE, NIX_NEWLINE).replace(MAC_NEWLINE, NIX_NEWLINE);
   }
 
