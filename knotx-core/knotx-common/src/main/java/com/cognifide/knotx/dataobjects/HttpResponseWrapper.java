@@ -83,7 +83,7 @@ public class HttpResponseWrapper {
   }
 
   public HttpResponseWrapper setHeaders(MultiMap headers) {
-    //this.headers = headers;
+    this.headers = headers;
     return this;
   }
 
@@ -129,8 +129,5 @@ public class HttpResponseWrapper {
             .map(String::hashCode)
             .orElse(0))
         .reduce(Objects.hashCode(statusCode, body), (sum, hash) -> 31 * sum + hash);
-  }
-
-  public interface Filter<T, R> extends Func1<T, R> {
   }
 }
