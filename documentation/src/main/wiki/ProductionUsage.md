@@ -22,7 +22,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
     "com.cognifide.knotx.server.KnotxServerVerticle": {
       "config": {
         "http.port": 8092,
-        "preserved.headers": [
+        "allowed.response.headers": [
           "User-Agent",
           "X-Solr-Core-Key",
           "X-Language-Code",
@@ -79,7 +79,20 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
           {
             "path": "/service/mock/.*",
             "domain": "localhost",
-            "port": 3000
+            "port": 3000,
+            "allowed.request.headers": [
+              "Content-Type",
+              "X-*"
+            ]
+          },
+          {
+            "path": "/service/.*",
+            "domain": "localhost",
+            "port": 8080,
+            "allowed.request.headers": [
+              "Content-Type",
+              "X-*"
+            ]
           }
         ]
       }
@@ -133,7 +146,7 @@ The mocks verticle is configured as follows:
 Knot.x server requires JSON configuration with *config* object. **Config** section allows to define:
 
 - **http.port** property to set http port which will be used to start Knot.x server
-- **preserved.headers** array property of headers which will be rewritten between Knot.x, template repository and service call
+- **allowed.response.headers** list of headers that should be passed back to the client.
 - **repositories** mapping of paths to the repository verticles that should deliver Templates
 - **engine** event bus address of the Rendering engine verticle
 ```json
@@ -141,11 +154,12 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
   "com.cognifide.knotx.server.KnotxServerVerticle": {
     "config": {
       "http.port": 8092,
-      "preserved.headers": [
+      "allowed.response.headers": [
         "User-Agent",
         "X-Solr-Core-Key",
-        "X-Language-Code"
-      ],
+        "X-Language-Code",
+        "X-Requested-With"
+      ],      
       "repositories": [
         {
           "path": "/content/local/.*",
@@ -171,7 +185,8 @@ For instance, a configuration JSON for the *HTTP repository* verticle could look
   "configuration": {
     "client.options": {
       "maxPoolSize": 1000,
-      "keepAlive": false
+      "keepAlive": false,
+      "tryUseCompression": true
     },
     "client.destination" : {
       "domain": "localhost",
@@ -179,4 +194,35 @@ For instance, a configuration JSON for the *HTTP repository* verticle could look
     }
   }
 }
+```
+#####Preserving headers passed to microservices
+Single service configuration allows to define which headers should be passed to microservices. 
+If **allowed.request.headers** section is not present, no headers will be forwarded to microservice. It is possible to use wildcard character (*) e.g.
+```json
+"services": [
+    {
+      "path": "/service/mock/.*",
+      "domain": "localhost",
+      "port": 3000,
+      "allowed.request.headers": [
+        "Content-Type",
+        "X-*"
+      ]
+    },
+    ...
+]        
+```
+
+```json
+"services": [
+    {
+      "path": "/service/mock/.*",
+      "domain": "localhost",
+      "port": 3000,
+      "allowed.request.headers": [
+        "*"
+      ]
+    },
+    ...
+]
 ```

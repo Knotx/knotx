@@ -29,9 +29,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
 
@@ -75,6 +77,10 @@ public class ServiceEntry {
 
   public Integer getPort() {
     return serviceMetadata.getPort();
+  }
+
+  public List<Pattern> getHeadersPatterns(){
+    return serviceMetadata.getAllowedRequestHeaderPatterns();
   }
 
   public String getServiceUri() {

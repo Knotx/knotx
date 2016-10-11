@@ -53,6 +53,10 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
     } catch (IOException e) {
       LOGGER.error("Could not read content!", e);
     } finally {
+      event.response().putHeader("Access-Control-Allow-Origin", "*");
+      event.response().putHeader("Content-Type", "text/html; charset=UTF-8");
+      event.response().putHeader("Server", "Vert.x");
+      event.response().putHeader("Cache-control", "no-cache, no-store, must-revalidate");
       event.response().end(htmlContent);
       event.connection().close();
     }

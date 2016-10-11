@@ -25,8 +25,6 @@ public class RenderResponse {
 
   private boolean success;
 
-  private String reason;
-
   public RenderResponse() {
     // No default constructor
   }
@@ -35,8 +33,6 @@ public class RenderResponse {
     this.success = body.getBoolean("success");
     if (success) {
       this.html = body.getString("html");
-    } else {
-      this.reason = body.getString("reason");
     }
   }
 
@@ -51,7 +47,6 @@ public class RenderResponse {
   public static RenderResponse error(String reason) {
     RenderResponse response = new RenderResponse();
     response.success = false;
-    response.reason = reason;
 
     return response;
   }
@@ -61,8 +56,6 @@ public class RenderResponse {
         .put("success", success);
     if (success) {
       object.put("html", html);
-    } else {
-      object.put("reason", reason);
     }
     return object;
   }
@@ -73,9 +66,5 @@ public class RenderResponse {
 
   public boolean isSuccess() {
     return success;
-  }
-
-  public String getReason() {
-    return reason;
   }
 }

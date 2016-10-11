@@ -25,7 +25,7 @@
   <parent>
     <groupId>com.cognifide.knotx</groupId>
     <artifactId>knotx-core</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>knotx-template-engine</artifactId>
@@ -102,6 +102,10 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>

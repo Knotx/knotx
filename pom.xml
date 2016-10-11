@@ -25,7 +25,7 @@
 
   <groupId>com.cognifide.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
@@ -92,6 +92,7 @@
     <commons-io.version>2.5</commons-io.version>
     <powermock.version>1.6.5</powermock.version>
     <mockito.version>2.0.2-beta</mockito.version>
+    <hamcrest.version>1.3</hamcrest.version>
   </properties>
 
   <dependencyManagement>
@@ -163,6 +164,12 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>${hamcrest.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -335,6 +342,7 @@
             <configuration>
               <excludes>
                 <exclude>**/*SampleApplicationTest.java</exclude>
+                <exclude>**/*SampleApplicationHeadersTest.java</exclude>
               </excludes>
             </configuration>
           </plugin>

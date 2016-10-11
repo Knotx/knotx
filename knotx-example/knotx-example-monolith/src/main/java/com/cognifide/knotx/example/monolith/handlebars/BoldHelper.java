@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.monolith.handlebars;
+package com.cognifide.knotx.example.monolith.handlebars;
 
 import java.io.IOException;
 
