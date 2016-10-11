@@ -16,6 +16,6 @@ If the list of available handlebars helpers is not enough, you can easily extend
 ### Example extension
 
 Sample application contains an example custom Handlebars helper - please take a look at the implementation of ```BoldHelper```:
-* Implementation class: ```com.cognifide.knotx.monolith.handlebars.BoldHelper```
+* Implementation class: ```com.cognifide.knotx.example.monolith.handlebars.BoldHelper```
 * service registration: ```knotx-example-monolith/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
 

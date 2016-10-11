@@ -16,4 +16,4 @@
 
 
 # bold helper
-com.cognifide.knotx.monolith.handlebars.BoldHelper
+com.cognifide.knotx.example.monolith.handlebars.BoldHelper
