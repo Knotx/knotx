@@ -19,18 +19,18 @@ package com.cognifide.knotx.core.serviceadapter;
 
 
 import com.cognifide.knotx.core.serviceadapter.http.HttpClientFacade;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
@@ -50,24 +50,23 @@ public class ServiceAdapterVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start(Future<Void> fut) throws IOException, URISyntaxException {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
+  public void start() throws IOException, URISyntaxException {
+    LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
-    EventBus eventBus = vertx.eventBus();
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(configuration.getAddress()).toObservable();
+    Observable<Message<JsonObject>> observable = vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).toObservable();
 
-    messageObservable
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                    msg -> httpClientFacade.process(msg.body())
-                            .subscribe(
-                                    result -> msg.reply(ServiceAdapterResponse.success(result)),
-                                    error -> {
-                                      LOGGER.error("Error happened", error);
-                                      msg.reply(ServiceAdapterResponse.error(error.getMessage()).toJsonObject());
-                                    }
-                            )
-            );
+    observable
+        .doOnNext(this::traceMessage)
+        .subscribe(
+            msg -> httpClientFacade.process(msg.body())
+                .subscribe(
+                    result -> msg.reply(result.toJson()),
+                    error -> {
+                      LOGGER.error("Error happened", error);
+                      msg.reply(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                    }
+                )
+        );
   }
 
   @Override

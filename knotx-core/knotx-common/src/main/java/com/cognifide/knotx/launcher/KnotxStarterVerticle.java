@@ -22,6 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Map;
 
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -33,12 +34,15 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
 
   @Override
-  public void start() throws Exception {
+  public void start(Future<Void> startFuture) throws Exception {
     Observable.from(config().getJsonObject("verticles"))
         .flatMap(this::deployVerticle)
         .compose(joinDeployments())
         .subscribe(
-            message -> LOGGER.info("Knot.x STARTED {}", message),
+            message -> {
+              LOGGER.info("Knot.x STARTED {}", message);
+              startFuture.complete();
+            },
             error -> LOGGER.error("Verticle could not be deployed {}", error)
         );
   }

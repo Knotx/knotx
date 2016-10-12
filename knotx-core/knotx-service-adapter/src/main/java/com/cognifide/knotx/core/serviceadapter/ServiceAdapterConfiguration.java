@@ -37,14 +37,14 @@ public class ServiceAdapterConfiguration {
   public ServiceAdapterConfiguration(JsonObject config) {
     address = config.getString("address");
     services = config.getJsonArray("services").stream()
-            .map(item -> (JsonObject) item)
-            .map(item -> {
-              ServiceMetadata metadata = new ServiceMetadata();
-              metadata.path = item.getString("path");
-              metadata.domain = item.getString("domain");
-              metadata.port = item.getInteger("port");
-              return metadata;
-            }).collect(Collectors.toList());
+        .map(item -> (JsonObject) item)
+        .map(item -> {
+          ServiceMetadata metadata = new ServiceMetadata();
+          metadata.path = item.getString("path");
+          metadata.domain = item.getString("domain");
+          metadata.port = item.getInteger("port");
+          return metadata;
+        }).collect(Collectors.toList());
     clientOptions = config.getJsonObject("client.options", new JsonObject());
   }
 
@@ -73,9 +73,9 @@ public class ServiceAdapterConfiguration {
       if (obj != null && obj instanceof ServiceMetadata) {
         final ServiceMetadata other = (ServiceMetadata) obj;
         return new EqualsBuilder()
-                .append(path, other.getPath())
-                .append(domain, other.getDomain())
-                .append(port, other.getPort()).isEquals();
+            .append(path, other.getPath())
+            .append(domain, other.getDomain())
+            .append(port, other.getPort()).isEquals();
       } else {
         return false;
       }
@@ -84,10 +84,10 @@ public class ServiceAdapterConfiguration {
     @Override
     public int hashCode() {
       return new HashCodeBuilder()
-              .append(path)
-              .append(domain)
-              .append(port)
-              .toHashCode();
+          .append(path)
+          .append(domain)
+          .append(port)
+          .toHashCode();
     }
 
     public String getPath() {
