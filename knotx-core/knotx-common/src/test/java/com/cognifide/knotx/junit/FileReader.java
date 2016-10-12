@@ -15,22 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.junit;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
 
-public class Logback implements TestRule {
+import java.io.InputStreamReader;
 
-  @Override
-  public Statement apply(Statement base, Description description) {
-    return new Statement() {
-      @Override
-      public void evaluate() throws Throwable {
-        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
-        base.evaluate();
-      }
-    };
+public interface FileReader {
+
+  static String readText(String path) throws Exception {
+    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
   }
 }

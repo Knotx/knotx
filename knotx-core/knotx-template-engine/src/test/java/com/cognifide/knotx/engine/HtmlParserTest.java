@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.FileReader;
+import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 

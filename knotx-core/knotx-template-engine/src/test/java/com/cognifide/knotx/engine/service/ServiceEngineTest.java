@@ -19,11 +19,11 @@ package com.cognifide.knotx.engine.service;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.FileReader;
-import com.cognifide.knotx.Logback;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
+import com.cognifide.knotx.junit.FileReader;
+import com.cognifide.knotx.junit.Logback;
 
 import org.jsoup.nodes.Attribute;
 import org.junit.Before;
@@ -62,15 +62,11 @@ import static org.mockito.Mockito.when;
 public class ServiceEngineTest {
   private static final String MOCK_SERVICE_RESPONSE_JSON = "{\"welcomeInCompetition\":\"welcome in competition\",\"thankYouForSubscribingToCompetition\":\"thank you for subscribing to competition\",\"subscribeToNewsletter\":\"subscribe to newsletter\",\"thankYouForSubscribingToNewsletter\":\"thank you for subscribing to newsletter\",\"_response\":{\"statusCode\":200}}";
   private static final String FORM_RESPONSE_JSON = "{\"status\":\"success\",\"_response\":{\"statusCode\":200}}";
-
-  private ServiceEngine serviceEngine;
-
-  private JsonObject config;
-
   private final RunTestOnContext vertxRule = new RunTestOnContext();
-
   @Rule
   public RuleChain ruleChain = RuleChain.outerRule(new Logback()).around(vertxRule);
+  private ServiceEngine serviceEngine;
+  private JsonObject config;
 
   @Before
   public void setUp() throws Exception {

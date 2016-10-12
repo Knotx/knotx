@@ -15,16 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.junit;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.io.InputStreamReader;
-
-public interface FileReader {
-
-  static String readText(String path) throws Exception {
-    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface KnotxConfiguration {
+  String value();
 }

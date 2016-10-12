@@ -18,11 +18,11 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
 import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
+import com.cognifide.knotx.dataobjects.ServiceCallMethod;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;

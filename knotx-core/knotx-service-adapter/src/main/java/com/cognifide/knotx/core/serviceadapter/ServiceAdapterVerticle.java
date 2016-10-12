@@ -18,8 +18,8 @@
 package com.cognifide.knotx.core.serviceadapter;
 
 
-import com.cognifide.knotx.core.serviceadapter.http.HttpClientFacade;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.core.serviceadapter.http.HttpClientFacade;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

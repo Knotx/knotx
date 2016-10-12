@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx;
+package com.cognifide.knotx.junit;
 
 import com.cognifide.knotx.launcher.KnotxStarterVerticle;
 
@@ -34,12 +34,10 @@ import io.vertx.rxjava.core.Vertx;
 
 public class TestVertxDeployer implements TestRule {
 
-  private final String configPath;
   private RunTestOnContext vertxContext;
 
-  public TestVertxDeployer(RunTestOnContext vertxContext, String configPath) {
+  public TestVertxDeployer(RunTestOnContext vertxContext) {
     this.vertxContext = vertxContext;
-    this.configPath = configPath;
   }
 
   @Override
@@ -47,12 +45,16 @@ public class TestVertxDeployer implements TestRule {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
+        KnotxConfiguration knotxConfig = description.getAnnotation(KnotxConfiguration.class);
+        if (knotxConfig == null || knotxConfig.value().isEmpty()) {
+          throw new IllegalArgumentException("Missing @KnotxConfiguration annotation with the path to configuration JSON");
+        }
         Vertx vertx = Vertx.newInstance(vertxContext.vertx());
 
         CountDownLatch latch = new CountDownLatch(1);
         Future<String> deployFuture = Future.future();
 
-        vertx.deployVerticle(KnotxStarterVerticle.class.getName(), new DeploymentOptions().setConfig(readJson(configPath)), ar -> {
+        vertx.deployVerticle(KnotxStarterVerticle.class.getName(), new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
           if (ar.succeeded()) {
             deployFuture.complete();
           } else {

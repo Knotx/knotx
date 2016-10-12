@@ -18,12 +18,12 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
+import com.cognifide.knotx.junit.FileReader;
 
 import org.jsoup.nodes.Attribute;
 import org.junit.Before;

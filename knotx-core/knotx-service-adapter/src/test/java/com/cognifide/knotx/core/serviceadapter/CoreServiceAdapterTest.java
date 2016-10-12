@@ -17,8 +17,9 @@
  */
 package com.cognifide.knotx.core.serviceadapter;
 
-import com.cognifide.knotx.Logback;
-import com.cognifide.knotx.TestVertxDeployer;
+import com.cognifide.knotx.junit.KnotxConfiguration;
+import com.cognifide.knotx.junit.Logback;
+import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,12 +39,13 @@ public class CoreServiceAdapterTest {
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx, "knotx-service-adapter-test.json");
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
+  @KnotxConfiguration("knotx-service-adapter-test.json")
   public void sampleTest(TestContext context) {
     JsonObject message = new JsonObject().put("path", "/content/local/simple.html");
     Async async = context.async();

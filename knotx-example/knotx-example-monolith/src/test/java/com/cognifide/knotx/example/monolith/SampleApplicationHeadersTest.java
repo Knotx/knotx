@@ -17,8 +17,9 @@
  */
 package com.cognifide.knotx.example.monolith;
 
-import com.cognifide.knotx.Logback;
-import com.cognifide.knotx.TestVertxDeployer;
+import com.cognifide.knotx.junit.KnotxConfiguration;
+import com.cognifide.knotx.junit.Logback;
+import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,7 +47,7 @@ public class SampleApplicationHeadersTest {
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx, "knotx-example-monolith.json");
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
@@ -59,6 +60,7 @@ public class SampleApplicationHeadersTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI);
   }
