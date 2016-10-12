@@ -37,7 +37,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
@@ -45,7 +44,7 @@ import io.vertx.rxjava.core.Vertx;
 @RunWith(VertxUnitRunner.class)
 public class ServiceAdapterVerticleTest {
 
-  public Vertx vertx;
+  private Vertx vertx;
 
   @Before
   public void setUp(TestContext context) throws Exception {
@@ -59,28 +58,26 @@ public class ServiceAdapterVerticleTest {
   }
 
   @After
-  public void tearDown(TestContext context) {
+  public void tearDown() {
     vertx.close();
   }
 
   @Test
   public void whenRequestingMockFirstWithServiceAdapter_expectMockFirstResultInBody(TestContext context) {
-    final Async async = context.async();
     HttpRequestWrapper httpRequestWrapper = new HttpRequestWrapper().setMethod(HttpMethod.GET).setPath("/service/mock/first.json");
     this.vertx.eventBus().sendObservable("knotx.core.service-adapter", httpRequestWrapper.toJson()).map(result -> new HttpResponseWrapper((JsonObject) result.body())).subscribe(result -> {
       Assert.assertEquals(HttpResponseStatus.OK, result.statusCode());
       JsonObject jsonResponse = new JsonObject(result.body().toString());
       context.assertEquals("this is webservice no. 1", jsonResponse.getString("message"));
-      async.complete();
     }, error -> context.fail("Error from event bus."));
   }
 
 
-  public static String readText(String path) throws Exception {
+  private String readText(String path) throws Exception {
     return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
   }
 
-  protected static JsonObject readJson(String path) throws Exception {
+  private JsonObject readJson(String path) throws Exception {
     return new JsonObject(readText(path));
   }
 
