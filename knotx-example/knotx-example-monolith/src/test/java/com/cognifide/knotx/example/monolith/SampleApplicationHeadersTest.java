@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.example.monolith;
 
-import com.cognifide.knotx.ConfigReader;
-import com.cognifide.knotx.TestKnotxStarter;
+import com.cognifide.knotx.Logback;
+import com.cognifide.knotx.TestVertxDeployer;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,18 +38,18 @@ import io.vertx.rxjava.core.http.HttpClient;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationHeadersTest {
 
-  public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+  private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+  private static final int KNOTX_SERVER_PORT = 8092;
+  private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
   private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
 
-  private ConfigReader config = new ConfigReader("knotx-example-monolith.json");
-
   private RunTestOnContext vertx = new RunTestOnContext();
 
-  private TestKnotxStarter knotx = new TestKnotxStarter(vertx, config);
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx, "knotx-example-monolith.json");
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(config).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Before
   public void before() {
@@ -66,7 +66,7 @@ public class SampleApplicationHeadersTest {
   private void testGetRequest(TestContext context, String url) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
-    client.getNow(8092, "localhost", url,
+    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
         resp -> {
           MultiMap headers = resp.headers();
           headers.names().stream()

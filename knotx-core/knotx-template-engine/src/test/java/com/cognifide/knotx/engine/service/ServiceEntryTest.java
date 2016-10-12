@@ -18,7 +18,6 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.ConfigReader;
 import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
@@ -28,7 +27,6 @@ import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.jsoup.nodes.Attribute;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,6 +34,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.vertx.core.http.CaseInsensitiveHeaders;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -45,16 +44,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @PrepareForTest(KnotxRxHelper.class)
 public class ServiceEntryTest {
 
-  @Rule
-  public ConfigReader engineConfig = new ConfigReader("service-correct.json");
-
   private HtmlFragment htmlFragment;
   private ServiceEntry serviceEntryAll;
   private ServiceEntry serviceEntryGet;
   private ServiceEntry serviceEntryPost;
+  private JsonObject config;
 
   @Before
   public void setUp() throws Exception {
+    config = new JsonObject(FileReader.readText("service-correct.json"));
     htmlFragment = new HtmlParser(FileReader.readText("test.html")).getFragments().get(1);
     serviceEntryAll = createServiceEntry("data-uri-all-labelsrepository", "/service/mock/labelsRepository.json");
     serviceEntryGet = createServiceEntry("data-uri-get-labelsrepository", "/service/mock/labelsRepository.json");
@@ -136,7 +134,7 @@ public class ServiceEntryTest {
   private ServiceEntry createServiceEntry(String attrName, String serviceUrl) throws Exception {
     Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
     ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(engineConfig.getConfig());
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(config);
 
     serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
     return serviceEntry;

@@ -17,49 +17,39 @@
  */
 package com.cognifide.knotx.core.serviceadapter;
 
-import com.cognifide.knotx.ConfigReader;
-import com.cognifide.knotx.TestKnotxStarter;
+import com.cognifide.knotx.Logback;
+import com.cognifide.knotx.TestVertxDeployer;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.eventbus.EventBus;
 
 @RunWith(VertxUnitRunner.class)
 public class CoreServiceAdapterTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CoreServiceAdapterTest.class);
-
   private final static String ADAPTER_ADDRESS = "knotx.core.service-adapter";
-
-  private ConfigReader config = new ConfigReader("knotx-service-adapter-test.json");
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
-  private TestKnotxStarter knotx = new TestKnotxStarter(vertx, config);
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx, "knotx-service-adapter-test.json");
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(config).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
   public void sampleTest(TestContext context) {
-    EventBus eventBus = knotx.vertx().eventBus();
     JsonObject message = new JsonObject().put("path", "/content/local/simple.html");
     Async async = context.async();
 
-    eventBus.<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {
+    vertx.vertx().eventBus().<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {
       if (ar.succeeded()) {
-        LOGGER.info("Got message {}", ar.result().body().encodePrettily());
         context.assertEquals(new JsonObject("{\"headers\":[],\"statusCode\":400}"), ar.result().body());
       } else {
         context.fail(ar.cause());

@@ -19,9 +19,9 @@ package com.cognifide.knotx.example.monolith;
 
 import com.google.common.collect.Maps;
 
-import com.cognifide.knotx.ConfigReader;
 import com.cognifide.knotx.FileReader;
-import com.cognifide.knotx.TestKnotxStarter;
+import com.cognifide.knotx.Logback;
+import com.cognifide.knotx.TestVertxDeployer;
 import com.cognifide.knotx.engine.service.KnotxRxHelper;
 
 import org.jsoup.Jsoup;
@@ -29,8 +29,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -49,19 +47,18 @@ import rx.Observable;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
-  public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
-  public static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
-  public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
-  private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
+  private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+  private static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
+  private static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
+  private static final int KNOTX_SERVER_PORT = 8092;
+  private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
-  private ConfigReader config = new ConfigReader("knotx-example-monolith.json");
-
-  private TestKnotxStarter knotx = new TestKnotxStarter(vertx, config);
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx, "knotx-example-monolith.json");
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(config).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
@@ -98,7 +95,7 @@ public class SampleApplicationTest {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
 
     Async async = context.async();
-    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, 8092, "localhost", url, req -> {
+    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
       String bodyForm = formData.entrySet().stream()
           .map(entry -> entry.getKey() + "=" + entry.getValue())
           .reduce((p1, p2) -> p1 + "&" + p2).get();
@@ -115,11 +112,9 @@ public class SampleApplicationTest {
       try {
         context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).body().html());
       } catch (Exception e) {
-        LOG.error("Cannot read file {}", expectedResponseFile, e);
-        context.fail();
+        context.fail(e);
       }
 
-      client.close();
       async.complete();
     }));
   }
@@ -127,16 +122,14 @@ public class SampleApplicationTest {
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
-    client.getNow(8092, "localhost", url,
+    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
         resp -> resp.bodyHandler(body -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
           try {
             context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
           } catch (Exception e) {
-            LOG.error("Cannot read file {}", expectedResponseFile, e);
-            context.fail();
+            context.fail(e);
           }
-          client.close();
           async.complete();
         }));
   }

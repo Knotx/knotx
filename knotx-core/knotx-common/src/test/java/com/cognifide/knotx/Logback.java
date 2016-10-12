@@ -21,34 +21,16 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import io.vertx.core.json.JsonObject;
-
-public class ConfigReader implements TestRule {
-
-  private JsonObject config;
-  private String path;
-
-  public ConfigReader(String path) {
-    this.path = path;
-  }
+public class Logback implements TestRule {
 
   @Override
   public Statement apply(Statement base, Description description) {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        config = readJson(path);
         System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
         base.evaluate();
       }
     };
-  }
-
-  public JsonObject getConfig() {
-    return config;
-  }
-
-  private JsonObject readJson(String path) throws Exception {
-    return new JsonObject(FileReader.readText(path));
   }
 }

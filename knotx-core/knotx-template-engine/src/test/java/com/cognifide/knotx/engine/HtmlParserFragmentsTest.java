@@ -17,12 +17,10 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.ConfigReader;
 import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.ConfigReader;
+import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
 
 import org.hamcrest.CoreMatchers;
@@ -29,6 +29,7 @@ import org.junit.rules.ExpectedException;
 import java.util.stream.Collectors;
 
 import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,16 +41,14 @@ public class ServiceCorrectConfigurationTest {
   @Rule
   public final ExpectedException exception = ExpectedException.none();
 
-  @Rule
-  public ConfigReader engineConfig = new ConfigReader("service-correct.json");
-
   private TemplateEngineConfiguration correctConfig;
   private ServiceMetadata expectedServiceOne;
   private ServiceMetadata expectedServiceTwo;
 
   @Before
   public void setUp() throws Exception {
-    correctConfig = new TemplateEngineConfiguration(engineConfig.getConfig());
+    JsonObject config = new JsonObject(FileReader.readText("service-correct.json"));
+    correctConfig = new TemplateEngineConfiguration(config);
     expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, new JsonArray().add("Accept-*").add("Location"));
     expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, new JsonArray());
   }

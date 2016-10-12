@@ -28,23 +28,18 @@ import java.util.concurrent.TimeUnit;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.rxjava.core.Vertx;
 
-public class TestKnotxStarter implements TestRule {
+public class TestVertxDeployer implements TestRule {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TestKnotxStarter.class);
-
-  private final ConfigReader config;
+  private final String configPath;
   private RunTestOnContext vertxContext;
 
-  private Vertx vertx;
-
-  public TestKnotxStarter(RunTestOnContext vertxContext, ConfigReader config) {
+  public TestVertxDeployer(RunTestOnContext vertxContext, String configPath) {
     this.vertxContext = vertxContext;
-    this.config = config;
+    this.configPath = configPath;
   }
 
   @Override
@@ -52,13 +47,12 @@ public class TestKnotxStarter implements TestRule {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        vertx = Vertx.newInstance(vertxContext.vertx());
+        Vertx vertx = Vertx.newInstance(vertxContext.vertx());
 
         CountDownLatch latch = new CountDownLatch(1);
         Future<String> deployFuture = Future.future();
 
-        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
-        vertx.deployVerticle(KnotxStarterVerticle.class.getName(), new DeploymentOptions().setConfig(config.getConfig()), ar -> {
+        vertx.deployVerticle(KnotxStarterVerticle.class.getName(), new DeploymentOptions().setConfig(readJson(configPath)), ar -> {
           if (ar.succeeded()) {
             deployFuture.complete();
           } else {
@@ -77,7 +71,7 @@ public class TestKnotxStarter implements TestRule {
     };
   }
 
-  public Vertx vertx() {
-    return vertx;
+  private JsonObject readJson(String path) throws Exception {
+    return new JsonObject(FileReader.readText(path));
   }
 }
