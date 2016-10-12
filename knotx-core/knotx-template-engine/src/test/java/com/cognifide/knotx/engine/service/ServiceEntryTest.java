@@ -18,15 +18,17 @@
 package com.cognifide.knotx.engine.service;
 
 
+import com.cognifide.knotx.ConfigReader;
+import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.jsoup.nodes.Attribute;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -41,31 +43,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(KnotxRxHelper.class)
-public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
+public class ServiceEntryTest {
 
-  private static HtmlFragment htmlFragment;
+  @Rule
+  public ConfigReader engineConfig = new ConfigReader("service-correct.json");
 
-  private static ServiceEntry serviceEntryAll;
+  private HtmlFragment htmlFragment;
+  private ServiceEntry serviceEntryAll;
+  private ServiceEntry serviceEntryGet;
+  private ServiceEntry serviceEntryPost;
 
-  private static ServiceEntry serviceEntryGet;
-
-  private static ServiceEntry serviceEntryPost;
-
-  @BeforeClass
-  public static void setUp() throws Exception {
-    htmlFragment = new HtmlParser(readText("test.html")).getFragments().get(1);
+  @Before
+  public void setUp() throws Exception {
+    htmlFragment = new HtmlParser(FileReader.readText("test.html")).getFragments().get(1);
     serviceEntryAll = createServiceEntry("data-uri-all-labelsrepository", "/service/mock/labelsRepository.json");
     serviceEntryGet = createServiceEntry("data-uri-get-labelsrepository", "/service/mock/labelsRepository.json");
     serviceEntryPost = createServiceEntry("data-uri-post-labelsrepository", "/service/mock/labelsRepository.json");
-  }
-
-  private static ServiceEntry createServiceEntry(String attrName, String serviceUrl) throws Exception {
-    Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
-    ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readJson("service-correct.json"));
-
-    serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
-    return serviceEntry;
   }
 
   @Test
@@ -140,6 +133,15 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
     assertThat(result, equalTo(false));
   }
 
+  private ServiceEntry createServiceEntry(String attrName, String serviceUrl) throws Exception {
+    Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
+    ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(engineConfig.getConfig());
+
+    serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
+    return serviceEntry;
+  }
+
   private RenderRequest createRequest(HttpMethod method, boolean withAttributes) throws Exception {
     MultiMap headers = MultiMap.newInstance(new CaseInsensitiveHeaders());
 
@@ -150,7 +152,7 @@ public class ServiceEntryTest extends AbstractKnotxConfigurationTest {
     }
 
     HttpRequestWrapper httpRequest = new HttpRequestWrapper().setMethod(method).setHeaders(headers).setFormAttributes(formsAttributes);
-    return new RenderRequest().setRequest(httpRequest).setTemplate(readText("fragment-form1.txt"));
+    return new RenderRequest().setRequest(httpRequest).setTemplate(FileReader.readText("fragment-form1.txt"));
   }
 
 }

@@ -17,9 +17,12 @@
  */
 package com.cognifide.knotx.engine;
 
+import com.cognifide.knotx.ConfigReader;
+import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -32,7 +35,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(value = Parameterized.class)
-public class HtmlParserFragmentsTest extends AbstractKnotxConfigurationTest {
+public class HtmlParserFragmentsTest {
 
   private String TEST_HTML = "test.html";
 
@@ -62,11 +65,11 @@ public class HtmlParserFragmentsTest extends AbstractKnotxConfigurationTest {
 
   @Before
   public void setUp() throws Exception {
-    test = new HtmlParser(readText(TEST_HTML));
+    test = new HtmlParser(FileReader.readText(TEST_HTML));
   }
 
   @Test
   public void testFragment() throws Exception {
-    assertThat(test.getFragments().get(fragmentId).getContent().trim(), equalTo(readText(fragmentFile).trim()));
+    assertThat(test.getFragments().get(fragmentId).getContent().trim(), equalTo(FileReader.readText(fragmentFile).trim()));
   }
 }

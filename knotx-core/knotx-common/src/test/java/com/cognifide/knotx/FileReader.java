@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Templating Engine Verticle
+ * Knot.x - Reactive microservice assembler - API
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,28 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.engine;
+package com.cognifide.knotx;
 
 import com.google.common.io.CharStreams;
 import com.google.common.io.Resources;
 
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
-
 import java.io.InputStreamReader;
 
-import io.vertx.core.json.JsonObject;
+public interface FileReader {
 
-public class AbstractKnotxConfigurationTest {
-
-  @Rule
-  public final ExpectedException exception = ExpectedException.none();
-
-  public static String readText(String path) throws Exception {
+  static String readText(String path) throws Exception {
     return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
-  }
-
-  protected static JsonObject readJson(String path) throws Exception {
-    return new JsonObject(readText(path));
   }
 }

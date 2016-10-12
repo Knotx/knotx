@@ -19,12 +19,15 @@ package com.cognifide.knotx.example.monolith;
 
 import com.google.common.collect.Maps;
 
+import com.cognifide.knotx.ConfigReader;
+import com.cognifide.knotx.FileReader;
+import com.cognifide.knotx.TestKnotxStarter;
 import com.cognifide.knotx.engine.service.KnotxRxHelper;
 
 import org.jsoup.Jsoup;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +38,9 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
@@ -49,15 +54,14 @@ public class SampleApplicationTest {
   public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
   private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
 
-  @BeforeClass
-  public static void setUp() throws Exception {
-    ApplicationTestHelper.startKnotx();
-  }
+  private RunTestOnContext vertx = new RunTestOnContext();
 
-  @AfterClass
-  public static void tearDown(TestContext context) {
-    ApplicationTestHelper.tearDown(context);
-  }
+  private ConfigReader config = new ConfigReader("knotx-example-monolith.json");
+
+  private TestKnotxStarter knotx = new TestKnotxStarter(vertx, config);
+
+  @Rule
+  public RuleChain chain = RuleChain.outerRule(config).around(vertx).around(knotx);
 
   @Test
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
@@ -91,13 +95,13 @@ public class SampleApplicationTest {
   }
 
   private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
-    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
+    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
 
     Async async = context.async();
-    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
+    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, 8092, "localhost", url, req -> {
       String bodyForm = formData.entrySet().stream()
-              .map(entry -> entry.getKey() + "=" + entry.getValue())
-              .reduce((p1, p2) -> p1 + "&" + p2).get();
+          .map(entry -> entry.getKey() + "=" + entry.getValue())
+          .reduce((p1, p2) -> p1 + "&" + p2).get();
       req.headers().set("content-length", String.valueOf(bodyForm.length()));
       req.headers().set("content-type", "application/x-www-form-urlencoded");
       if (ajaxCall) {
@@ -109,7 +113,7 @@ public class SampleApplicationTest {
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
       try {
-        context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).body().html());
+        context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).body().html());
       } catch (Exception e) {
         LOG.error("Cannot read file {}", expectedResponseFile, e);
         context.fail();
@@ -121,20 +125,20 @@ public class SampleApplicationTest {
   }
 
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
-    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
+    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
-    client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
-            resp -> resp.bodyHandler(body -> {
-              context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
-              try {
-                context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
-              } catch (Exception e) {
-                LOG.error("Cannot read file {}", expectedResponseFile, e);
-                context.fail();
-              }
-              client.close();
-              async.complete();
-            }));
+    client.getNow(8092, "localhost", url,
+        resp -> resp.bodyHandler(body -> {
+          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          try {
+            context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
+          } catch (Exception e) {
+            LOG.error("Cannot read file {}", expectedResponseFile, e);
+            context.fail();
+          }
+          client.close();
+          async.complete();
+        }));
   }
 
   private Map<String, String> getFirstTestFormData() {

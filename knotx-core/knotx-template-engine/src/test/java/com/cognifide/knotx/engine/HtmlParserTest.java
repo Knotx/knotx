@@ -17,11 +17,11 @@
  */
 package com.cognifide.knotx.engine;
 
+import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,10 +32,11 @@ import java.util.stream.IntStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class HtmlParserTest extends AbstractKnotxConfigurationTest {
+public class HtmlParserTest {
 
   @Rule
   public final ExpectedException expectedException = ExpectedException.none();
+
   private String TEST_HTML = "test.html";
   private String TEST_NO_FRAGMENTS_HTML = "test-no-fragments.html";
   private String TEST_ONE_FRAGMENT_HTML = "test-one-fragment.html";
@@ -49,9 +50,9 @@ public class HtmlParserTest extends AbstractKnotxConfigurationTest {
 
   @Before
   public void setUp() throws Exception {
-    test = new HtmlParser(readText(TEST_HTML)).getFragments();
-    testNoTemplates = new HtmlParser(readText(TEST_NO_FRAGMENTS_HTML)).getFragments();
-    testOneTemplates = new HtmlParser(readText(TEST_ONE_FRAGMENT_HTML)).getFragments();
+    test = new HtmlParser(FileReader.readText(TEST_HTML)).getFragments();
+    testNoTemplates = new HtmlParser(FileReader.readText(TEST_NO_FRAGMENTS_HTML)).getFragments();
+    testOneTemplates = new HtmlParser(FileReader.readText(TEST_ONE_FRAGMENT_HTML)).getFragments();
   }
 
   @Test
@@ -59,14 +60,14 @@ public class HtmlParserTest extends AbstractKnotxConfigurationTest {
     StringBuilder result = new StringBuilder();
     IntStream.rangeClosed(0, 6).forEach(idx -> result.append(test.get(idx).getContent()));
 
-    assertThat(result.toString().trim(), equalTo(readText(TEST_HTML).trim()));
+    assertThat(result.toString().trim(), equalTo(FileReader.readText(TEST_HTML).trim()));
   }
 
   @Test
   public void testNoFragments() throws Exception {
     assertThat(testNoTemplates.size(), equalTo(1));
     assertThat(testNoTemplates.get(0).hasHandlebarsTemplate(), equalTo(false));
-    assertThat(testNoTemplates.get(0).getContent(), equalTo(readText(TEST_NO_FRAGMENTS_HTML)));
+    assertThat(testNoTemplates.get(0).getContent(), equalTo(FileReader.readText(TEST_NO_FRAGMENTS_HTML)));
   }
 
   @Test

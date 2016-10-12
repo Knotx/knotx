@@ -17,16 +17,21 @@
  */
 package com.cognifide.knotx.example.monolith;
 
-import org.junit.AfterClass;
+import com.cognifide.knotx.ConfigReader;
+import com.cognifide.knotx.TestKnotxStarter;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 
 
@@ -37,15 +42,14 @@ public class SampleApplicationHeadersTest {
 
   private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
 
-  @BeforeClass
-  public static void setUp() throws Exception {
-    ApplicationTestHelper.startKnotx();
-  }
+  private ConfigReader config = new ConfigReader("knotx-example-monolith.json");
 
-  @AfterClass
-  public static void tearDown(TestContext context) {
-    ApplicationTestHelper.tearDown(context);
-  }
+  private RunTestOnContext vertx = new RunTestOnContext();
+
+  private TestKnotxStarter knotx = new TestKnotxStarter(vertx, config);
+
+  @Rule
+  public RuleChain chain = RuleChain.outerRule(config).around(vertx).around(knotx);
 
   @Before
   public void before() {
@@ -60,9 +64,9 @@ public class SampleApplicationHeadersTest {
   }
 
   private void testGetRequest(TestContext context, String url) {
-    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
+    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
-    client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
+    client.getNow(8092, "localhost", url,
         resp -> {
           MultiMap headers = resp.headers();
           headers.names().stream()

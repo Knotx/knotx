@@ -19,13 +19,15 @@ package com.cognifide.knotx.engine.service;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.ConfigReader;
+import com.cognifide.knotx.FileReader;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.engine.AbstractKnotxConfigurationTest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import org.jsoup.nodes.Attribute;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -55,21 +57,19 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(KnotxRxHelper.class)
-public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
-
-
+public class ServiceEngineTest {
   private static final String MOCK_SERVICE_RESPONSE_JSON = "{\"welcomeInCompetition\":\"welcome in competition\",\"thankYouForSubscribingToCompetition\":\"thank you for subscribing to competition\",\"subscribeToNewsletter\":\"subscribe to newsletter\",\"thankYouForSubscribingToNewsletter\":\"thank you for subscribing to newsletter\",\"_response\":{\"statusCode\":200}}";
   private static final String FORM_RESPONSE_JSON = "{\"status\":\"success\",\"_response\":{\"statusCode\":200}}";
 
+  @Rule
+  public ConfigReader engineConfig = new ConfigReader("service-correct.json");
+
   private ServiceEngine serviceEngine;
-
-  private String SERVICE_CONFIGURATION = "service-correct.json";
-
 
   @Before
   public void setUp() throws Exception {
     Vertx vertx = Vertx.vertx();
-    TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(readJson(SERVICE_CONFIGURATION));
+    TemplateEngineConfiguration configuration = new TemplateEngineConfiguration(engineConfig.getConfig());
     serviceEngine = new ServiceEngine(vertx.createHttpClient(), configuration);
   }
 
@@ -110,7 +110,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
 
     Attribute mockedServiceAttribute = new Attribute(attrName, serviceUrl);
     ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute);
-    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(readJson(SERVICE_CONFIGURATION));
+    TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(engineConfig.getConfig());
 
     serviceEntry.setServiceMetadata(correctConfig.getServices().stream().findFirst().get());
     return serviceEntry;
@@ -124,7 +124,7 @@ public class ServiceEngineTest extends AbstractKnotxConfigurationTest {
     formsAttributes.add("email", "email@dom.com");
 
     HttpRequestWrapper httpRequest = new HttpRequestWrapper().setMethod(HttpMethod.POST).setHeaders(headers).setFormAttributes(formsAttributes);
-    return new RenderRequest().setRequest(httpRequest).setTemplate(readText("fragment-form1.txt"));
+    return new RenderRequest().setRequest(httpRequest).setTemplate(FileReader.readText("fragment-form1.txt"));
   }
 
   private void mockServiceResponse(String responseJson) {

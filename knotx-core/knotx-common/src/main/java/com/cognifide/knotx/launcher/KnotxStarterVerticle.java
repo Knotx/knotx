@@ -43,7 +43,10 @@ public class KnotxStarterVerticle extends AbstractVerticle {
               LOGGER.info("Knot.x STARTED {}", message);
               startFuture.complete();
             },
-            error -> LOGGER.error("Verticle could not be deployed {}", error)
+            error -> {
+              LOGGER.error("Verticle could not be deployed {}", error);
+              startFuture.fail(error);
+            }
         );
   }
 

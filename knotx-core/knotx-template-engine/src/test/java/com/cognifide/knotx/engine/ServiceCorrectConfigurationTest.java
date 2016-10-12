@@ -17,11 +17,14 @@
  */
 package com.cognifide.knotx.engine;
 
+import com.cognifide.knotx.ConfigReader;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.stream.Collectors;
 
@@ -32,18 +35,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
-public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
+public class ServiceCorrectConfigurationTest {
 
-  private static final String CORRECT_JSON = "service-correct.json";
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
+
+  @Rule
+  public ConfigReader engineConfig = new ConfigReader("service-correct.json");
 
   private TemplateEngineConfiguration correctConfig;
-
   private ServiceMetadata expectedServiceOne;
   private ServiceMetadata expectedServiceTwo;
 
   @Before
   public void setUp() throws Exception {
-    correctConfig = new TemplateEngineConfiguration(readJson(CORRECT_JSON));
+    correctConfig = new TemplateEngineConfiguration(engineConfig.getConfig());
     expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, new JsonArray().add("Accept-*").add("Location"));
     expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, new JsonArray());
   }
@@ -70,9 +76,9 @@ public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationT
     newService.setDomain(domain);
     newService.setPort(port);
     newService.setAllowedRequestHeaderPatterns(allowedHeaders.stream()
-      .map(o -> (String) o)
-      .map(new StringToPatternMap())
-      .collect(Collectors.toList()));
+        .map(o -> (String) o)
+        .map(new StringToPatternMap())
+        .collect(Collectors.toList()));
     return newService;
   }
 

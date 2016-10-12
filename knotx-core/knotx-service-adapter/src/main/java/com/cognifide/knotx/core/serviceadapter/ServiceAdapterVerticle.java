@@ -51,7 +51,7 @@ public class ServiceAdapterVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws IOException, URISyntaxException {
-    LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
+    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
     Observable<Message<JsonObject>> observable = vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).toObservable();
 
