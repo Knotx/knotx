@@ -37,15 +37,18 @@ public class CoreServiceAdapterTest {
 
   private final static String ADAPTER_ADDRESS = "knotx.core.service-adapter";
 
+  //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
 
+  //Test Runner Rule of Knotx
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
+  //Junit Rule, sets up logger, prepares verts, starts verticles according to the config (supplied in annotation of test method)
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-test.json")
+  @KnotxConfiguration("knotx-service-adapter-test.json") //Annotation when you need to supply filename (in classpath) of the json config - what verticles to start.
   public void sampleTest(TestContext context) {
     JsonObject message = new JsonObject().put("path", "/content/local/simple.html");
     Async async = context.async();
