@@ -37,8 +37,8 @@ public class ConfigReader implements TestRule {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
         config = readJson(path);
+        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
         base.evaluate();
       }
     };

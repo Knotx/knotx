@@ -58,15 +58,29 @@ public class HttpClientFacade {
         vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
+  }
+
   public Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
     HttpRequestWrapper request = new HttpRequestWrapper(httpRequest);
 
-    Optional<ServiceAdapterConfiguration.ServiceMetadata> serviceEntry = services.stream().filter(metadata -> request.path().matches(metadata.getPath())).findFirst();
+    Optional<ServiceAdapterConfiguration.ServiceMetadata> serviceEntry = services.stream()
+        .filter(metadata -> request.path().matches(metadata.getPath()))
+        .findFirst();
+
     if (serviceEntry.isPresent()) {
       Observable<HttpClientResponse> serviceResponse = request(
           httpClient, request.method(), serviceEntry.get().getPort(), serviceEntry.get().getDomain(), request.path(),
           req -> buildRequestBody(req, request.headers(), request.formAttributes(),
               request.method()));
+
       return serviceResponse.flatMap(item -> transformResponse(item, request.method(), request.path()));
     } else {
       LOGGER.error("Could not handle request with path [{}]", request.path());
@@ -84,16 +98,6 @@ public class HttpClientFacade {
     return Observable.just(Buffer.buffer()).mergeWith(response.toObservable()).reduce(Buffer::appendBuffer)
         .doOnNext(buffer -> traceServiceCall(method, path, buffer))
         .map(buffer -> new HttpResponseWrapper().setBody(buffer).setStatusCode(HttpResponseStatus.valueOf(response.statusCode())));
-  }
-
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
-    });
   }
 
   private void buildRequestBody(HttpClientRequest request, MultiMap headers,

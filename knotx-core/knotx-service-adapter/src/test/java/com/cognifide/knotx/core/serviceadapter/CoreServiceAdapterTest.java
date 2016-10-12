@@ -20,6 +20,7 @@ package com.cognifide.knotx.core.serviceadapter;
 import com.cognifide.knotx.ConfigReader;
 import com.cognifide.knotx.TestKnotxStarter;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -41,7 +42,7 @@ public class CoreServiceAdapterTest {
 
   private final static String ADAPTER_ADDRESS = "knotx.core.service-adapter";
 
-  private ConfigReader config = new ConfigReader("test-service-adapter.json");
+  private ConfigReader config = new ConfigReader("knotx-service-adapter-test.json");
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -53,13 +54,13 @@ public class CoreServiceAdapterTest {
   @Test
   public void sampleTest(TestContext context) {
     EventBus eventBus = knotx.vertx().eventBus();
-    JsonObject message = new JsonObject().put("test", "message");
+    JsonObject message = new JsonObject().put("path", "/content/local/simple.html");
     Async async = context.async();
 
     eventBus.<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {
       if (ar.succeeded()) {
         LOGGER.info("Got message {}", ar.result().body().encodePrettily());
-        context.assertEquals(message, ar.result().body());
+        context.assertEquals(new JsonObject("{\"headers\":[],\"statusCode\":400}"), ar.result().body());
       } else {
         context.fail(ar.cause());
       }
