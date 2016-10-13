@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.core.serviceadapter;
+package com.cognifide.knotx.core.serviceadapter.http;
 
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import io.vertx.core.json.JsonObject;
 
-public class ServiceAdapterConfiguration {
+class HttpServiceAdapterConfiguration {
 
   private List<ServiceMetadata> services;
 
@@ -34,7 +34,7 @@ public class ServiceAdapterConfiguration {
 
   private String address;
 
-  public ServiceAdapterConfiguration(JsonObject config) {
+  HttpServiceAdapterConfiguration(JsonObject config) {
     address = config.getString("address");
     services = config.getJsonArray("services").stream()
         .map(item -> (JsonObject) item)
@@ -60,7 +60,7 @@ public class ServiceAdapterConfiguration {
     return services;
   }
 
-  public static class ServiceMetadata {
+  static class ServiceMetadata {
 
     private String path;
 

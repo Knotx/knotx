@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.core.serviceadapter;
+package com.cognifide.knotx.core.serviceadapter.http;
 
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -33,7 +33,7 @@ import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 
 @RunWith(VertxUnitRunner.class)
-public class CoreServiceAdapterTest {
+public class HttpServiceAdapterTest {
 
   private final static String ADAPTER_ADDRESS = "knotx.core.service-adapter";
 
@@ -48,7 +48,7 @@ public class CoreServiceAdapterTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-test.json") //Annotation when you need to supply filename (in classpath) of the json config - what verticles to start.
+  @KnotxConfiguration("knotx-service-adapter-http-test.json") //Annotation when you need to supply filename (in classpath) of the json config - what verticles to start.
   public void sampleTest(TestContext context) {
     JsonObject message = new JsonObject().put("path", "/content/local/simple.html");
     Async async = context.async();

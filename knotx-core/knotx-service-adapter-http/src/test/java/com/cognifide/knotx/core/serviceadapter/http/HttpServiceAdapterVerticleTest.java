@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.core.serviceadapter;
+package com.cognifide.knotx.core.serviceadapter.http;
 
 
 import com.google.common.io.CharStreams;
@@ -42,7 +42,7 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
 
 @RunWith(VertxUnitRunner.class)
-public class ServiceAdapterVerticleTest {
+public class HttpServiceAdapterVerticleTest {
 
   private Vertx vertx;
 
@@ -52,7 +52,7 @@ public class ServiceAdapterVerticleTest {
     this.vertx = Vertx.vertx();
 
     DeploymentOptions deploymentOptions = new DeploymentOptions();
-    deploymentOptions.fromJson(new JsonObject().put("config", readJson("knotx-service-adapter-test.json")));
+    deploymentOptions.fromJson(new JsonObject().put("config", readJson("knotx-service-adapter-http-test.json")));
 
     vertx.deployVerticle(KnotxStarterVerticle.class.getName(), deploymentOptions, context.asyncAssertSuccess());
   }

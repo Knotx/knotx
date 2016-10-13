@@ -1,6 +1,6 @@
 {
   "verticles": {
-    "com.cognifide.knotx.core.serviceadapter.ServiceAdapterVerticle": {
+    "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle": {
       "config": {
         "address": "knotx.core.service-adapter",
         "client.options": {

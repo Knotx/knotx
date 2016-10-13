@@ -15,11 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.core.serviceadapter;
+package com.cognifide.knotx.core.serviceadapter.http;
 
 
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
-import com.cognifide.knotx.core.serviceadapter.http.HttpClientFacade;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -34,18 +33,18 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
-public class ServiceAdapterVerticle extends AbstractVerticle {
+public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceAdapterVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceAdapterVerticle.class);
 
-  private ServiceAdapterConfiguration configuration;
+  private HttpServiceAdapterConfiguration configuration;
 
   private HttpClientFacade httpClientFacade;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new ServiceAdapterConfiguration(config());
+    this.configuration = new HttpServiceAdapterConfiguration(config());
     this.httpClientFacade = new HttpClientFacade(this.vertx, configuration);
   }
 

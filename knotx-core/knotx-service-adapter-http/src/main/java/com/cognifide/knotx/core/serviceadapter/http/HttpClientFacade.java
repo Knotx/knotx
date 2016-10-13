@@ -20,7 +20,6 @@ package com.cognifide.knotx.core.serviceadapter.http;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
-import com.cognifide.knotx.core.serviceadapter.ServiceAdapterConfiguration;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
@@ -43,35 +42,25 @@ import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 import rx.functions.Action1;
 
-public class HttpClientFacade {
+class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
 
-  private final List<ServiceAdapterConfiguration.ServiceMetadata> services;
+  private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
 
   private final HttpClient httpClient;
 
-  public HttpClientFacade(Vertx vertx, ServiceAdapterConfiguration configuration) {
+  HttpClientFacade(Vertx vertx, HttpServiceAdapterConfiguration configuration) {
     final JsonObject clientOptions = configuration.getClientOptions();
     this.services = configuration.getServices();
     this.httpClient = clientOptions.isEmpty() ?
         vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
-    });
-  }
-
-  public Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
+  Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
     HttpRequestWrapper request = new HttpRequestWrapper(httpRequest);
 
-    Optional<ServiceAdapterConfiguration.ServiceMetadata> serviceEntry = services.stream()
+    Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceEntry = services.stream()
         .filter(metadata -> request.path().matches(metadata.getPath()))
         .findFirst();
 
@@ -88,10 +77,20 @@ public class HttpClientFacade {
     }
   }
 
-  public void close() {
+  void close() {
     LOGGER.info("HttpClient is closing.");
     httpClient.close();
     LOGGER.info("HttpClient closed.");
+  }
+
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
   }
 
   private Observable<HttpResponseWrapper> transformResponse(HttpClientResponse response, HttpMethod method, String path) {

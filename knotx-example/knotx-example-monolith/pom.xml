@@ -67,7 +67,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-service-adapter</artifactId>
+      <artifactId>knotx-service-adapter-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
