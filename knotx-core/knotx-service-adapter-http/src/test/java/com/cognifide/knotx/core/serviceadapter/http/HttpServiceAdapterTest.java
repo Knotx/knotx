@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - API
+ * Knot.x - Reactive microservice assembler - Service Adapter Http
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http;
 
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
@@ -26,11 +28,15 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import rx.Observable;
+import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpServiceAdapterTest {
@@ -48,19 +54,68 @@ public class HttpServiceAdapterTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json") //Annotation when you need to supply filename (in classpath) of the json config - what verticles to start.
-  public void sampleTest(TestContext context) {
-    JsonObject message = new JsonObject().put("path", "/content/local/simple.html");
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void callNonExistingService_expectBadRequestResponse(TestContext context) {
+    callAdapterServiceWithAssertions(context, "not/existing/service/address", HttpMethod.GET, httpResponseWrapper ->
+        context.assertTrue(httpResponseWrapper.statusCode().equals(HttpResponseStatus.BAD_REQUEST)));
+  }
+
+
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void callExistingServiceUsingGETMethod_expectOKResponseWithServiceDataProvidedByService1(TestContext context) {
+    callAdapterServiceWithAssertions(context, "/service/mock/first.json", HttpMethod.GET, httpResponseWrapper -> {
+      context.assertTrue(httpResponseWrapper.statusCode().equals(HttpResponseStatus.OK));
+      context.assertTrue(httpResponseWrapper.headers().isEmpty());
+
+      try {
+        JsonObject serviceResponse = new JsonObject(httpResponseWrapper.body().toString());
+        JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
+        context.assertEquals(serviceResponse, expectedResponse);
+      } catch (Exception e) {
+        context.fail(e);
+      }
+    });
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void callExistingServiceUsingPOSTMethod_expectOKResponseWithServiceDataProvidedByService1(TestContext context) {
+    callAdapterServiceWithAssertions(context, "/service/mock/first.json", HttpMethod.POST, httpResponseWrapper -> {
+      context.assertTrue(httpResponseWrapper.statusCode().equals(HttpResponseStatus.OK));
+      context.assertTrue(httpResponseWrapper.headers().isEmpty());
+
+      try {
+        JsonObject serviceResponse = new JsonObject(httpResponseWrapper.body().toString());
+        JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
+        context.assertEquals(serviceResponse, expectedResponse);
+      } catch (Exception e) {
+        context.fail(e);
+      }
+    });
+  }
+
+  private void callAdapterServiceWithAssertions(TestContext context, String servicePath, HttpMethod method, Action1<HttpResponseWrapper> testFunction) {
+    JsonObject message = getPayloadMessage(servicePath, method);
+
     Async async = context.async();
 
     vertx.vertx().eventBus().<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {
       if (ar.succeeded()) {
-        context.assertEquals(new JsonObject("{\"headers\":[],\"statusCode\":400}"), ar.result().body());
+        Observable
+            .just(new HttpResponseWrapper(ar.result().body()))
+            .doOnNext(testFunction);
       } else {
         context.fail(ar.cause());
       }
       async.complete();
     });
+  }
+
+  private JsonObject getPayloadMessage(String servicePath, HttpMethod method) {
+    return new JsonObject()
+        .put("path", servicePath)
+        .put("method", method);
   }
 
 }
