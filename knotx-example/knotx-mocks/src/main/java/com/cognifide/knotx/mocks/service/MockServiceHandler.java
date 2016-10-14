@@ -23,16 +23,23 @@ import java.io.File;
 
 import io.vertx.core.Handler;
 import io.vertx.core.file.FileSystem;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.http.HttpServerRequest;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.rxjava.core.MultiMap;
+import rx.functions.Action2;
 
 public class MockServiceHandler implements Handler<RoutingContext> {
   private static final String SEPARATOR = "/";
+
+  private static final String DEFAULT_MIME = "text/plain";
+  private static final MultiMap EXTENSION_MIME_TYPE = MultiMap.caseInsensitiveMultiMap()
+      .add("xml", "application/xml")
+      .add("json", "application/json");
+
   private final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final FileSystem fileSystem;
+  private Action2<RoutingContext, String> bodyProcessor;
   private String catalogue;
 
   public MockServiceHandler(String catalogue, FileSystem fileSystem) {
@@ -40,28 +47,39 @@ public class MockServiceHandler implements Handler<RoutingContext> {
     this.fileSystem = fileSystem;
   }
 
-  @Override
-  public void handle(RoutingContext context) {
-    String resourcePath = getFilePath(context.request());
-
-    try {
-      fileSystem.readFile(resourcePath, ar -> {
-        if (ar.succeeded()) {
-          JsonObject responseBody = new JsonObject(ar.result().toString());
-          context.response().setStatusCode(200).end(responseBody.encodePrettily());
-        } else {
-          LOGGER.error("Unable to read file. {}", ar.cause());
-          context.response().setStatusCode(500).end();
-        }
-      });
-    } catch (Exception ex) {
-      LOGGER.error("Unable to read file. {}", ex);
-      context.response().setStatusCode(500).end();
-    }
+  public MockServiceHandler withBodyProcessor(Action2<RoutingContext, String> bodyProcessor) {
+    this.bodyProcessor = bodyProcessor;
+    return this;
   }
 
-  private String getFilePath(HttpServerRequest event) {
-    return catalogue + File.separator + StringUtils.substringAfterLast(event.path(), SEPARATOR);
+  @Override
+  public void handle(RoutingContext context) {
+    String resourcePath = getFilePath(context);
+    String contentType = getContentType(context);
+
+    fileSystem.readFile(resourcePath, ar -> {
+      if (ar.succeeded()) {
+        String mockData = ar.result().toString();
+        if (bodyProcessor != null) {
+          bodyProcessor.call(context, mockData);
+        } else {
+          context.response().putHeader("content-type", contentType);
+          context.response().setStatusCode(200).end(mockData);
+        }
+      } else {
+        LOGGER.error("Unable to read file. {}", ar.cause());
+        context.response().setStatusCode(500).end();
+      }
+    });
+  }
+
+  private String getContentType(RoutingContext context) {
+    String extension = StringUtils.substringAfterLast(context.request().path(), ".");
+    return EXTENSION_MIME_TYPE.contains(extension) ? EXTENSION_MIME_TYPE.get(extension) : DEFAULT_MIME;
+  }
+
+  private String getFilePath(RoutingContext context) {
+    return catalogue + File.separator + StringUtils.substringAfterLast(context.request().path(), SEPARATOR);
   }
 
 }
