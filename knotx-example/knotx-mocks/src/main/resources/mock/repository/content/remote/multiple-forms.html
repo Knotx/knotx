@@ -52,11 +52,11 @@
               data-uri-post-formresponse="/service/mock/subscribeToCompetition.json"
               data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
               data-id="competition-form">
-        <h1>{{labelsrepository.welcomeInCompetition}}</h1>
-        {{#if formresponse}}
-        <p>{{labelsrepository.thankYouForSubscribingToCompetition}}</p>
-        <p>Submitted: {{formresponse.email}}</p>
-        <p>Submitted: {{formresponse.name}}</p>
+        <h1>{{labelsrepository.result.welcomeInCompetition}}</h1>
+        {{#if formresponse.result}}
+        <p>{{labelsrepository.result.thankYouForSubscribingToCompetition}}</p>
+        <p>Submitted: {{formresponse.result.email}}</p>
+        <p>Submitted: {{formresponse.result.name}}</p>
         {{else}}
         <p>Please subscribe to our new competition:</p>
         <form method="post" class="form-inline">
@@ -83,10 +83,10 @@
               data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
               data-id="newsletter-form">
         <div id="newsletter-form-wrapper">
-          <h1>{{labelsrepository.subscribeToNewsletter}}</h1>
-          {{#if formresponse}}
-          <p>{{labelsrepository.thankYouForSubscribingToNewsletter}}</p>
-          <p>Submitted: {{formresponse.email}}</p>
+          <h1>{{labelsrepository.result.subscribeToNewsletter}}</h1>
+          {{#if formresponse.result}}
+          <p>{{labelsrepository.result.thankYouForSubscribingToNewsletter}}</p>
+          <p>Submitted: {{formresponse.result.email}}</p>
           {{else}}
           <p>Please subscribe to our newsletter:</p>
           <form method="post" class="form-inline" id="newsletter">
