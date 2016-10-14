@@ -26,16 +26,17 @@ import io.vertx.core.file.FileSystem;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
-public class MockServiceHandler implements Handler<RoutingContext> {
+public class PostServiceHandler implements Handler<RoutingContext> {
   private static final String SEPARATOR = "/";
   private final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final FileSystem fileSystem;
   private String catalogue;
 
-  public MockServiceHandler(String catalogue, FileSystem fileSystem) {
+  public PostServiceHandler(String catalogue, FileSystem fileSystem) {
     this.catalogue = catalogue;
     this.fileSystem = fileSystem;
   }
@@ -48,6 +49,10 @@ public class MockServiceHandler implements Handler<RoutingContext> {
       fileSystem.readFile(resourcePath, ar -> {
         if (ar.succeeded()) {
           JsonObject responseBody = new JsonObject(ar.result().toString());
+
+          MultiMap formParams = context.request().params();
+          formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
+
           context.response().setStatusCode(200).end(responseBody.encodePrettily());
         } else {
           LOGGER.error("Unable to read file. {}", ar.cause());
@@ -63,5 +68,4 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   private String getFilePath(HttpServerRequest event) {
     return catalogue + File.separator + StringUtils.substringAfterLast(event.path(), SEPARATOR);
   }
-
 }
