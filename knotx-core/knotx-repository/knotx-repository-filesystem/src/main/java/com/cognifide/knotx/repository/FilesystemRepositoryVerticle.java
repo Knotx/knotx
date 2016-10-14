@@ -33,6 +33,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.file.AsyncFile;
@@ -79,10 +80,16 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
     return fileSystem.openObservable(localFilePath, new OpenOptions())
-        .flatMap(AsyncFile::toObservable)
+        .flatMap(this::processFile)
         .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setBody(buffer))
         .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
         .onErrorReturn(this::processError);
+  }
+
+  private Observable<Buffer> processFile(final AsyncFile asyncFile) {
+    return Observable.just(Buffer.buffer())
+        .mergeWith(asyncFile.toObservable())
+        .reduce(Buffer::appendBuffer);
   }
 
   private HttpResponseWrapper processError(Throwable error) {
