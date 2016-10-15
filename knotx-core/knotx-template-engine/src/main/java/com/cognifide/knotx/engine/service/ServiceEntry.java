@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
 
 public class ServiceEntry {
 
@@ -87,9 +88,9 @@ public class ServiceEntry {
     return serviceUri;
   }
 
-  public Map<String, Object> getResultWithNamespaceAsKey(Map<String, Object> result) {
+  public JsonObject getResultWithNamespaceAsKey(JsonObject result) {
     if (StringUtils.isNotEmpty(placeholderNamespace)) {
-      return Collections.singletonMap(placeholderNamespace, result);
+      return new JsonObject().put(placeholderNamespace, result);
     } else {
       return result;
     }

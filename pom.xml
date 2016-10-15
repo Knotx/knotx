@@ -141,11 +141,6 @@
         <artifactId>handlebars-jackson2</artifactId>
         <version>${handlebars.version}</version>
       </dependency>
-      <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.7</version>
-      </dependency>
 
       <!-- COMMON -->
       <dependency>

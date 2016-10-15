@@ -36,8 +36,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Map;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.CaseInsensitiveHeaders;
 import io.vertx.core.http.HttpMethod;
@@ -81,11 +79,11 @@ public class ServiceEngineTest {
 
     RenderRequest templateEngineRequest = createFormPostRequest();
 
-    Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
+    Observable<JsonObject> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
-    mapObservable.subscribe(map -> {
-      assertThat(map.size(), equalTo(5));
-      assertThat(new JsonObject(map).toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
+    mapObservable.subscribe(obj -> {
+      assertThat(obj.size(), equalTo(2));
+      assertThat(obj.getJsonObject("result").toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
     });
   }
 
@@ -95,11 +93,11 @@ public class ServiceEngineTest {
     ServiceEntry serviceEntry = createServiceEntry("data-uri-post-formresponse", "/service/mock/subscribeToNewsletter.json", FORM_RESPONSE_JSON);
     RenderRequest templateEngineRequest = createFormPostRequest();
 
-    Observable<Map<String, Object>> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
+    Observable<JsonObject> mapObservable = serviceEngine.doServiceCall(serviceEntry, templateEngineRequest);
 
-    mapObservable.subscribe(map -> {
-      assertThat(map.size(), equalTo(2));
-      assertThat(new JsonObject(map).toString(), equalTo(FORM_RESPONSE_JSON));
+    mapObservable.subscribe(obj -> {
+      assertThat(obj.size(), equalTo(2));
+      assertThat(obj.getJsonObject("result").toString(), equalTo(FORM_RESPONSE_JSON));
     });
   }
 

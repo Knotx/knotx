@@ -25,6 +25,7 @@ import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.junit.Rule;
 import org.junit.Test;
@@ -129,10 +130,13 @@ public class SampleApplicationTest {
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
-    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
+    client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
         resp -> resp.bodyHandler(body -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
           try {
+            String difference = StringUtils.difference(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+            System.err.println(difference);
+
             context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
           } catch (Exception e) {
             context.fail(e);
