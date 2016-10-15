@@ -33,6 +33,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
@@ -81,9 +82,13 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
     return fileSystem.openObservable(localFilePath, new OpenOptions())
         .flatMap(this::processFile)
-        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setBody(buffer))
+        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers()).setBody(buffer))
         .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
         .onErrorReturn(this::processError);
+  }
+
+  private MultiMap headers() {
+    return MultiMap.caseInsensitiveMultiMap().add("Content-Type", "text/html; charset=utf-8");
   }
 
   private Observable<Buffer> processFile(final AsyncFile asyncFile) {
