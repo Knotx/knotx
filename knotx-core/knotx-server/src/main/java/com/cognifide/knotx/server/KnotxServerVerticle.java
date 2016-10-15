@@ -79,7 +79,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                             .subscribe(
                                 engineResponse -> {
                                   if (engineResponse.isSuccess()) {
-                                    writeHeaders(request.response(), repoResponse.headers().add("content-length", contentLength(engineResponse)));
+                                    writeHeaders(request.response(), repoResponse.headers().add("Content-Length", contentLength(engineResponse)));
                                     request.response().setStatusCode(HttpResponseStatus.OK.code()).end(engineResponse.getHtml());
                                   } else {
                                     request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
