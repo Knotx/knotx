@@ -18,9 +18,11 @@
 package com.cognifide.knotx.engine.parser;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
+import com.github.jknack.handlebars.Context;
 
 import java.util.Map;
 
+import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
 public interface HtmlFragment {
@@ -28,10 +30,10 @@ public interface HtmlFragment {
    * Returns the Fragment content with applied context data. Only have effect if fragment
    * is using templating language (e.g. Handlebars)
    *
-   * @param context - Context data
+   * @param model - Model data
    * @return String - html fragment with applied cotext data
    */
-  String getContentWithContext(Map<String, Object> context);
+  String getContentWithContext(JsonObject model);
 
   /**
    * Gets the raw HTML content of the fragment

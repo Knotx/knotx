@@ -51,7 +51,7 @@ public class SampleApplicationHeadersTest {
   public void before() {
     expectedHeaders.add("Access-Control-Allow-Origin", "*");
     expectedHeaders.add("Content-Type", "text/html; charset=UTF-8");
-    expectedHeaders.add("content-length", "4089");
+    expectedHeaders.add("content-length", "4090");
   }
 
   @Test

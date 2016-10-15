@@ -83,10 +83,6 @@
       <groupId>com.github.jknack</groupId>
       <artifactId>handlebars-jackson2</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
 
     <!-- COMMON -->
     <dependency>

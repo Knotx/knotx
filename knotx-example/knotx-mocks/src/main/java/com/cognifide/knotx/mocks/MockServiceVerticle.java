@@ -29,6 +29,7 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -67,7 +68,6 @@ public class MockServiceVerticle extends AbstractVerticle {
     router.route().method(HttpMethod.GET).handler(createGetHandler());
 
     router.route().failureHandler(ErrorHandler.create(true));
-
     httpServer.requestHandler(router::accept).listen(config().getInteger("http.port"));
   }
 

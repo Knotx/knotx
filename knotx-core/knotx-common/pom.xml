@@ -58,6 +58,16 @@
       <groupId>com.github.jknack</groupId>
       <artifactId>handlebars</artifactId>
     </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-unit</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

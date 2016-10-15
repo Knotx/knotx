@@ -31,7 +31,7 @@ public class RenderRequest {
 
   private String template;
 
-  private Cache<String, Observable<Map<String, Object>>> cache = CacheBuilder.newBuilder().build();
+  private Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
   public RenderRequest() {
     //Nothing to set by default
@@ -67,7 +67,7 @@ public class RenderRequest {
     return template;
   }
 
-  public Cache<String, Observable<Map<String, Object>>> getCache() {
+  public Cache<String, Observable<JsonObject>> getCache() {
     return cache;
   }
 
