@@ -151,7 +151,7 @@ public class ServiceEngine {
 
   private void traceServiceCall(Buffer results, ServiceEntry entry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}>", results.toJsonObject().encodePrettily(), entry.getServiceUri());
+      LOGGER.trace("Service call returned <{}> <{}>", results.toString(), entry.getServiceUri());
     }
   }
 }
