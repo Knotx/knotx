@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 
 import com.cognifide.knotx.engine.service.KnotxRxHelper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -96,8 +97,8 @@ public class SampleApplicationTest {
     Async async = context.async();
     Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
       String bodyForm = formData.entrySet().stream()
-              .map(entry -> entry.getKey() + "=" + entry.getValue())
-              .reduce((p1, p2) -> p1 + "&" + p2).get();
+          .map(entry -> entry.getKey() + "=" + entry.getValue())
+          .reduce((p1, p2) -> p1 + "&" + p2).get();
       req.headers().set("content-length", String.valueOf(bodyForm.length()));
       req.headers().set("content-type", "application/x-www-form-urlencoded");
       if (ajaxCall) {
@@ -124,17 +125,21 @@ public class SampleApplicationTest {
     HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
     Async async = context.async();
     client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
-            resp -> resp.bodyHandler(body -> {
-              context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
-              try {
-                context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
-              } catch (Exception e) {
-                LOG.error("Cannot read file {}", expectedResponseFile, e);
-                context.fail();
-              }
-              client.close();
-              async.complete();
-            }));
+        resp -> resp.bodyHandler(body -> {
+          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          try {
+            String difference = StringUtils.difference(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+            System.err.println(difference);
+
+            context.assertEquals(Jsoup.parse(body.toString()).html(),
+                Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+          } catch (Exception e) {
+            LOG.error("Cannot read file {}", expectedResponseFile, e);
+            context.fail();
+          }
+          client.close();
+          async.complete();
+        }));
   }
 
   private Map<String, String> getFirstTestFormData() {

@@ -18,11 +18,13 @@
 package com.cognifide.knotx.engine.parser;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
+import com.github.jknack.handlebars.Context;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
+import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
 public class RawHtmlFragment implements HtmlFragment {
@@ -37,7 +39,7 @@ public class RawHtmlFragment implements HtmlFragment {
   }
 
   @Override
-  public String getContentWithContext(Map<String, Object> context) {
+  public String getContentWithContext(JsonObject model) {
     return fragment;
   }
 

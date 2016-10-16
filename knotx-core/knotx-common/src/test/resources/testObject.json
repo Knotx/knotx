@@ -1,0 +1,18 @@
+{
+  "sample": {
+    "result": {
+      "first": "First Message",
+      "second": {
+        "foo": "Very Long Second Foo Message !! 2 &&%^$"
+      }
+    },
+    "arr": [
+      1,
+      2,
+      3,
+      "foo",
+      "bar",
+      true
+    ]
+  }
+}

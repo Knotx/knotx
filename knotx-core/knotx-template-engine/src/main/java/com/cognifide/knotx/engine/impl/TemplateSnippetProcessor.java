@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.http.HttpClient;
@@ -61,15 +62,12 @@ public class TemplateSnippetProcessor {
         .flatMap(serviceEntry ->
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
-        .reduce(new HashMap<String, Object>(), (allResults, result) -> {
-          allResults.putAll(result);
-          return allResults;
-        })
+        .reduce(new JsonObject(), JsonObject::mergeIn)
         .map(results -> applyData(fragment, results))
         .defaultIfEmpty(fragment.getContent());
   }
 
-  public Observable<Map<String, Object>> fetchServiceData(ServiceEntry service, RenderRequest request) {
+  public Observable<JsonObject> fetchServiceData(ServiceEntry service, RenderRequest request) {
     LOGGER.debug("Fetching data from service {}", service.getServiceUri());
     try {
       return request.getCache().get(service.getServiceUri(), () -> serviceEngine.doServiceCall(service, request).cache());
@@ -79,7 +77,7 @@ public class TemplateSnippetProcessor {
     }
   }
 
-  private String applyData(final HtmlFragment snippet, Map<String, Object> serviceResult) {
+  private String applyData(final HtmlFragment snippet, JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", snippet);
     final StringBuilder result = new StringBuilder();
 

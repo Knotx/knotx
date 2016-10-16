@@ -17,80 +17,65 @@
  */
 package com.cognifide.knotx.mocks.service;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.net.URL;
+import java.io.File;
+import java.util.Optional;
 
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.file.FileSystem;
+import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.http.HttpServerRequest;
+import io.vertx.ext.web.RoutingContext;
+import rx.functions.Action2;
 
-public class MockServiceHandler implements Handler<HttpServerRequest> {
-
+public class MockServiceHandler implements Handler<RoutingContext> {
   private static final String SEPARATOR = "/";
-  private final Logger LOGGER = LoggerFactory.getLogger(MockServiceHandler.class);
+
+  private static final String DEFAULT_MIME = "text/plain";
+  private final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
+  private final FileSystem fileSystem;
+  private Action2<RoutingContext, String> bodyProcessor;
   private String catalogue;
 
-  public MockServiceHandler(String catalogue) {
+  public MockServiceHandler(String catalogue, FileSystem fileSystem) {
     this.catalogue = catalogue;
+    this.fileSystem = fileSystem;
+  }
+
+  public MockServiceHandler withBodyProcessor(Action2<RoutingContext, String> bodyProcessor) {
+    this.bodyProcessor = bodyProcessor;
+    return this;
   }
 
   @Override
-  public void handle(HttpServerRequest request) {
-    URL mockDataFileUrl = this.getClass().getClassLoader().getResource(getFilePath(request));
-    JsonObject responseBody = getMockContent(request);
+  public void handle(RoutingContext context) {
+    String resourcePath = getFilePath(context);
+    String contentType = getContentType(context);
 
-    if (mockDataFileUrl != null) {
-      if (request.method() == HttpMethod.POST) {
-        request.setExpectMultipart(true);
-        request.endHandler(v -> {
-          MultiMap formParams = request.formAttributes();
-          formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
-
-          request.response().end(responseBody.encodePrettily());
-          request.response().setStatusCode(200);
-          request.connection().close();
-        });
+    fileSystem.readFile(resourcePath, ar -> {
+      if (ar.succeeded()) {
+        String mockData = ar.result().toString();
+        if (bodyProcessor != null) {
+          bodyProcessor.call(context, mockData);
+        } else {
+          context.response().putHeader("Content-Type", contentType);
+          context.response().setStatusCode(200).end(mockData);
+        }
       } else {
-        request.response().end(responseBody.encodePrettily());
-        request.response().setStatusCode(200);
-        request.connection().close();
+        LOGGER.error("Unable to read file. {}", ar.cause());
+        context.response().setStatusCode(500).end();
       }
-    } else {
-      request.response().setStatusCode(500);
-      request.connection().close();
-    }
+    });
   }
 
-  private JsonObject getMockContent(HttpServerRequest event) {
-    String resourcePath = getFilePath(event);
-    URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-    JsonObject content = new JsonObject();
-
-    if (resourceUrl != null) {
-      URL url = Resources.getResource(resourcePath);
-
-      try {
-        content = new JsonObject(Resources.toString(url, Charsets.UTF_8));
-      } catch (IOException e) {
-        LOGGER.error("Could not read content!", e);
-      }
-      LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
-    }
-
-    return content;
+  private String getContentType(RoutingContext context) {
+    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(context.request().path())).orElse(DEFAULT_MIME);
   }
 
-  private String getFilePath(HttpServerRequest event) {
-    return catalogue + SEPARATOR + StringUtils.substringAfterLast(event.path(), SEPARATOR);
+  private String getFilePath(RoutingContext context) {
+    return catalogue + File.separator + StringUtils.substringAfterLast(context.request().path(), SEPARATOR);
   }
 
 }

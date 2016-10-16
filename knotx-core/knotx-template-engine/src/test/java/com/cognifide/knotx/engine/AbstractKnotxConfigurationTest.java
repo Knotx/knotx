@@ -33,7 +33,7 @@ public class AbstractKnotxConfigurationTest {
   public final ExpectedException exception = ExpectedException.none();
 
   public static String readText(String path) throws Exception {
-    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
   }
 
   protected static JsonObject readJson(String path) throws Exception {

@@ -20,6 +20,8 @@ package com.cognifide.knotx.engine.parser;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.engine.service.ServiceEntry;
+import com.cognifide.knotx.handlebars.JsonObjectValueResolver;
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
@@ -31,10 +33,10 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
 public class TemplateHtmlFragment implements HtmlFragment {
@@ -67,9 +69,9 @@ public class TemplateHtmlFragment implements HtmlFragment {
   }
 
   @Override
-  public String getContentWithContext(Map<String, Object> context) {
+  public String getContentWithContext(JsonObject model) {
     try {
-      return compiledFragment.apply(context);
+      return compiledFragment.apply(Context.newBuilder(model).push(JsonObjectValueResolver.INSTANCE).build());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

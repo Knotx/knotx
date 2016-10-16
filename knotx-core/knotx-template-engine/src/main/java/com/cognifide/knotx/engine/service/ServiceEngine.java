@@ -27,12 +27,14 @@ import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.DecodeException;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -45,6 +47,8 @@ import rx.Observable;
 public class ServiceEngine {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
+  private static final String RESULT_NAMESPACE_KEY = "_result";
+  private static final String RESPONSE_NAMESPACE_KEY = "_response";
 
   private final TemplateEngineConfiguration configuration;
 
@@ -55,8 +59,8 @@ public class ServiceEngine {
     this.configuration = serviceConfiguration;
   }
 
-  public Observable<Map<String, Object>> doServiceCall(ServiceEntry serviceEntry,
-                                                       RenderRequest renderRequest) {
+  public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
+                                              RenderRequest renderRequest) {
     HttpMethod httpMethod = computeServiceMethodType(renderRequest, serviceEntry.getMethodType());
     Observable<HttpClientResponse> serviceResponse =
         KnotxRxHelper.request(
@@ -74,21 +78,20 @@ public class ServiceEngine {
     return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
   }
 
-  private Observable<Map<String, Object>> transformResponse(HttpClientResponse response, ServiceEntry serviceEntry) {
+  private Observable<JsonObject> transformResponse(HttpClientResponse response, ServiceEntry serviceEntry) {
     return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
         .doOnNext(buffer -> traceServiceCall(buffer, serviceEntry))
-        .map(buffer -> buffer.toJsonObject().getMap())
-        .map(results -> {
-          results.put("_response",
-              Collections.singletonMap("statusCode", response.statusCode()));
-          return results;
-        });
+        .map(this::buildResultObject)
+        .map(results ->
+            results.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode()))
+        );
   }
 
   private void buildRequestBody(HttpClientRequest request, MultiMap headers,
                                 MultiMap formAttributes, HttpMethod httpMethod) {
     request.headers().addAll(headers);
+
     if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
       Buffer buffer = createFormPostBody(formAttributes);
       request.headers().set("content-length", String.valueOf(buffer.length()));
@@ -130,9 +133,25 @@ public class ServiceEngine {
     }
   }
 
+  private JsonObject buildResultObject(Buffer buffer) {
+    JsonObject object = new JsonObject();
+
+    String rawData = buffer.toString().trim();
+
+    if (rawData.charAt(0) == '[') {
+      object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
+    } else if (rawData.charAt(0) == '{') {
+      object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
+    } else {
+      throw new DecodeException("Result is neither Json Array nor Json Object");
+    }
+
+    return object;
+  }
+
   private void traceServiceCall(Buffer results, ServiceEntry entry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}>", results.toJsonObject().encodePrettily(), entry.getServiceUri());
+      LOGGER.trace("Service call returned <{}> <{}>", results.toString(), entry.getServiceUri());
     }
   }
 }
