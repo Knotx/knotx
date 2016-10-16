@@ -83,7 +83,7 @@ public class ServiceEngineTest {
 
     mapObservable.subscribe(obj -> {
       assertThat(obj.size(), equalTo(2));
-      assertThat(obj.getJsonObject("result").toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
+      assertThat(obj.getJsonObject("_result").toString(), equalTo(MOCK_SERVICE_RESPONSE_JSON));
     });
   }
 
@@ -97,7 +97,7 @@ public class ServiceEngineTest {
 
     mapObservable.subscribe(obj -> {
       assertThat(obj.size(), equalTo(2));
-      assertThat(obj.getJsonObject("result").toString(), equalTo(FORM_RESPONSE_JSON));
+      assertThat(obj.getJsonObject("_result").toString(), equalTo(FORM_RESPONSE_JSON));
     });
   }
 

@@ -29,7 +29,6 @@ import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -45,7 +44,7 @@ public class MockServiceVerticle extends AbstractVerticle {
 
   private HttpServer httpServer;
 
-  private Action2<RoutingContext, String> bouncer = (context, mockData) -> {
+  private static final Action2<RoutingContext, String> BOUNCER = (context, mockData) -> {
     JsonObject responseBody = new JsonObject(mockData);
     MultiMap formParams = context.request().params();
     formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
@@ -83,7 +82,7 @@ public class MockServiceVerticle extends AbstractVerticle {
   private MockServiceHandler createPostHandler() {
     MockServiceHandler mockServiceHandler = new MockServiceHandler(config().getString("mock.data.root"), vertx.fileSystem());
     return config().getBoolean("bouncing", false)
-        ? mockServiceHandler.withBodyProcessor(bouncer)
+        ? mockServiceHandler.withBodyProcessor(BOUNCER)
         : mockServiceHandler;
   }
 
