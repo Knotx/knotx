@@ -84,7 +84,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
-    return fileSystem.openObservable(localFilePath, new OpenOptions())
+    return fileSystem.openObservable(localFilePath, new OpenOptions().setCreate(false))
         .flatMap(this::processFile)
         .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
         .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
