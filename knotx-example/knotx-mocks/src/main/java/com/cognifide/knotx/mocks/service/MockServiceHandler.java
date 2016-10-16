@@ -20,23 +20,20 @@ package com.cognifide.knotx.mocks.service;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.Optional;
 
 import io.vertx.core.Handler;
 import io.vertx.core.file.FileSystem;
+import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.rxjava.core.MultiMap;
 import rx.functions.Action2;
 
 public class MockServiceHandler implements Handler<RoutingContext> {
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
-  private static final MultiMap EXTENSION_MIME_TYPE = MultiMap.caseInsensitiveMultiMap()
-      .add("xml", "application/xml")
-      .add("json", "application/json");
-
   private final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final FileSystem fileSystem;
   private Action2<RoutingContext, String> bodyProcessor;
@@ -63,7 +60,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
         if (bodyProcessor != null) {
           bodyProcessor.call(context, mockData);
         } else {
-          context.response().putHeader("content-type", contentType);
+          context.response().putHeader("Content-Type", contentType);
           context.response().setStatusCode(200).end(mockData);
         }
       } else {
@@ -74,8 +71,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   }
 
   private String getContentType(RoutingContext context) {
-    String extension = StringUtils.substringAfterLast(context.request().path(), ".");
-    return EXTENSION_MIME_TYPE.contains(extension) ? EXTENSION_MIME_TYPE.get(extension) : DEFAULT_MIME;
+    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(context.request().path())).orElse(DEFAULT_MIME);
   }
 
   private String getFilePath(RoutingContext context) {
