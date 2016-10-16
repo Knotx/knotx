@@ -24,11 +24,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.file.NoSuchFileException;
+import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.OpenOptions;
+import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -78,17 +80,23 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
 
     final String localFilePath = catalogue + StringUtils.stripStart(repoRequest.path(), "/");
+    final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
+
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
     return fileSystem.openObservable(localFilePath, new OpenOptions())
         .flatMap(this::processFile)
-        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers()).setBody(buffer))
+        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
         .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
         .onErrorReturn(this::processError);
   }
 
-  private MultiMap headers() {
-    return MultiMap.caseInsensitiveMultiMap().add("Content-Type", "text/html; charset=utf-8");
+  private MultiMap headers(Optional<String> contentType) {
+    MultiMap headers = MultiMap.caseInsensitiveMultiMap();
+    if (contentType.isPresent()) {
+      headers.add("Content-Type", contentType.get());
+    }
+    return headers;
   }
 
   private Observable<Buffer> processFile(final AsyncFile asyncFile) {
