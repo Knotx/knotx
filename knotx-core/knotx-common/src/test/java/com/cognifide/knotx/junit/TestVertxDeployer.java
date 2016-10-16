@@ -64,6 +64,10 @@ public class TestVertxDeployer implements TestRule {
         });
         latch.await(3, TimeUnit.SECONDS);
 
+        if (latch.getCount() != 0) {
+          deployFuture.fail(new IllegalStateException("Knot.x did not finish deploy all verticles"));
+        }
+
         if (deployFuture.failed()) {
           throw deployFuture.cause();
         }
