@@ -35,7 +35,7 @@ import io.vertx.core.json.JsonObject;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-public class TestJsonObjectValueResolver {
+public class JsonObjectValueResolverTest {
 
   private String expected;
   private Template template;
@@ -47,7 +47,7 @@ public class TestJsonObjectValueResolver {
   }
 
   @Test
-  public void testJsonObjectResolverForProgramaticallyCreatedObject() throws Exception {
+  public void JsonObjectResolver_whenApplyingProgrammaticallyCreatedObject_expectVariablesResolved() throws Exception {
     Context context = Context.newBuilder(programmaticModel()).push(JsonObjectValueResolver.INSTANCE).build();
     String compiled = template.apply(context).trim();
 
@@ -55,7 +55,7 @@ public class TestJsonObjectValueResolver {
   }
 
   @Test
-  public void testJsonObjectResolverForFileBasedObject() throws Exception {
+  public void JsonObjectResolver_whenApplyingFileBasedObject_expectVariablesResolved() throws Exception {
     Context context = Context.newBuilder(filebasedModel()).push(JsonObjectValueResolver.INSTANCE).build();
     String compiled = template.apply(context).trim();
 

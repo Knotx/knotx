@@ -1,7 +1,7 @@
 #Snippet processing
 ##Overview
 In order to fetch the data for snippet different services can be called. Decision which services to call is made depends on service path data attribute and incoming request method.
-The result of the call is always available in **result** context and it contains the exactly same structure as the response from the service - it might be JSON Object or Array.
+The result of the call is always available in **_result** context and it contains the exactly same structure as the response from the service - it might be JSON Object or Array.
 
 ###GET services calls
 When service path is marked as data-uri-**get**, call will be executed only if http method of incoming request is GET.
@@ -9,7 +9,7 @@ When service path is marked as data-uri-**get**, call will be executed only if h
 <script data-api-type="templating" type="text/x-handlebars-template"
     data-uri-get="/service/sample">
         <h1>Welcome</h1>
-        <h2>{{result.welcomeMessage}}</h2>
+        <h2>{{_result.welcomeMessage}}</h2>
 </script>
 ```
 
@@ -87,11 +87,11 @@ Consider below scenario: user visits page with form for the first time and then 
         data-uri-get-infoservice="/service/mock/infoService.json"
         data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
         data-id="competition-form">
-    <h1>{{labelsrepository.result.welcomeInCompetition}}</h1>
+    <h1>{{labelsrepository._result.welcomeInCompetition}}</h1>
     {{#if formresponse.result}}
-    <p>{{labelsrepository.result.thankYouForSubscribingToCompetition}}</p>
+    <p>{{labelsrepository._result.thankYouForSubscribingToCompetition}}</p>
     {{else}}
-    <p>{{labelsrepository.result.generalInfo}}</p>
+    <p>{{labelsrepository._result.generalInfo}}</p>
     <form method="post" class="form-inline">
         <div class="form-group">
             <label for="name">Name</label>
@@ -153,9 +153,9 @@ Snippet in example below will call /service/subscribeToCompetition only when req
   data-uri-post-formResponse="/service/subscribeToCompetition"
   data-uri-all-labelsRepository="/service/labelsRepository"
   data-id="competition-form">
-  <h1>{{labelsRepository.result.welcomeInCompetition}}</h1>
+  <h1>{{labelsRepository._result.welcomeInCompetition}}</h1>
   {{#if formResponse.result}}
-     <p>{{labelsRepository.result.thankYouForSubscribingToCompetition}}</p>
+     <p>{{labelsRepository._result.thankYouForSubscribingToCompetition}}</p>
   {{else}}
       <p>Please subscribe to our new competition:</p>
       <form method="post">
@@ -172,9 +172,9 @@ Snippet in example below will call /service/subscribeToCompetition only when req
   data-uri-post-formResponse="/service/subscribeToNewsletter"
   data-uri-all-labelsRepository="/service/labelsRepository"
   data-id="newsletter-form">
-  <h1>{{labelsRepository.result.subscribeToNewsletter}}</h1>
+  <h1>{{labelsRepository._result.subscribeToNewsletter}}</h1>
   {{#if formResponse.result}}
-    <p>{{labelsRepository.result.thankYouForSubscribingToNewsletter}}</p>
+    <p>{{labelsRepository._result.thankYouForSubscribingToNewsletter}}</p>
   {{else}}
       <p>Please subscribe to our newsletter:</p>
       <form method="post">

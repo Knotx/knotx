@@ -47,6 +47,8 @@ import rx.Observable;
 public class ServiceEngine {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
+  private static final String RESULT_NAMESPACE_KEY = "_result";
+  private static final String RESPONSE_NAMESPACE_KEY = "_response";
 
   private final TemplateEngineConfiguration configuration;
 
@@ -82,7 +84,7 @@ public class ServiceEngine {
         .doOnNext(buffer -> traceServiceCall(buffer, serviceEntry))
         .map(this::buildResultObject)
         .map(results ->
-            results.put("_response", new JsonObject().put("statusCode", response.statusCode()))
+            results.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode()))
         );
   }
 
@@ -137,9 +139,9 @@ public class ServiceEngine {
     String rawData = buffer.toString().trim();
 
     if (rawData.charAt(0) == '[') {
-      object.put("result", new JsonArray(rawData));
+      object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
     } else if (rawData.charAt(0) == '{') {
-      object.put("result", new JsonObject(rawData));
+      object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
