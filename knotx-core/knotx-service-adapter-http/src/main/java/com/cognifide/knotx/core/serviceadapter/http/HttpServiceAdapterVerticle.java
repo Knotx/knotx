@@ -68,11 +68,6 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
         );
   }
 
-  @Override
-  public void stop() throws Exception {
-    httpClientFacade.close();
-  }
-
   private void traceMessage(Message<JsonObject> message) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());

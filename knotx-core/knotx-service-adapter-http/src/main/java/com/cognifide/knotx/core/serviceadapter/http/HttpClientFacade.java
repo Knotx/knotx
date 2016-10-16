@@ -57,6 +57,16 @@ class HttpClientFacade {
         vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
+  }
+
   Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
     HttpRequestWrapper request = new HttpRequestWrapper(httpRequest);
 
@@ -75,22 +85,6 @@ class HttpClientFacade {
       LOGGER.error("Could not handle request with path [{}]", request.path());
       return Observable.just(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST));
     }
-  }
-
-  void close() {
-    LOGGER.info("HttpClient is closing.");
-    httpClient.close();
-    LOGGER.info("HttpClient closed.");
-  }
-
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
-    });
   }
 
   private Observable<HttpResponseWrapper> transformResponse(HttpClientResponse response, HttpMethod method, String path) {
