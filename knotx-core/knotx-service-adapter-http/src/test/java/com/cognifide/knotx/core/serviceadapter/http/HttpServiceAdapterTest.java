@@ -97,7 +97,6 @@ public class HttpServiceAdapterTest {
 
   private void callAdapterServiceWithAssertions(TestContext context, String servicePath, HttpMethod method, Action1<HttpResponseWrapper> testFunction) {
     JsonObject message = getPayloadMessage(servicePath, method);
-
     Async async = context.async();
 
     vertx.vertx().eventBus().<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {

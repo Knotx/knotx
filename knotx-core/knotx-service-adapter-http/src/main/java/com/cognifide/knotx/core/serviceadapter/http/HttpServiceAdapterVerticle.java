@@ -62,7 +62,7 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
                     result -> msg.reply(result.toJson()),
                     error -> {
                       LOGGER.error("Error happened", error);
-                      msg.reply(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                      msg.reply(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR).toJson());
                     }
                 )
         );
