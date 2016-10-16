@@ -134,15 +134,10 @@ public class SampleApplicationTest {
         resp -> resp.bodyHandler(body -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
           try {
-            String difference = StringUtils.difference(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+            String difference = StringUtils.difference(Jsoup.parse(body.toString()).html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
             System.err.println(difference);
 
-            context.assertEquals(Jsoup.parse(body.toString()).html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
-          } catch (Exception e) {
             context.fail(e);
-          }
-          async.complete();
-        }));
   }
 
   private Map<String, String> getFirstTestFormData() {
