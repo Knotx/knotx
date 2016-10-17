@@ -20,16 +20,15 @@ package com.cognifide.knotx.example.monolith;
 import com.google.common.collect.Maps;
 
 import com.cognifide.knotx.engine.service.KnotxRxHelper;
-import com.cognifide.knotx.junit.FileReader;
-import com.cognifide.knotx.junit.KnotxConfiguration;
-import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.junit.TestVertxDeployer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
-import org.junit.Rule;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -37,9 +36,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
@@ -48,61 +45,57 @@ import rx.Observable;
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
-  private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
-  private static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
-  private static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
-  private static final int KNOTX_SERVER_PORT = 8092;
-  private static final String KNOTX_SERVER_ADDRESS = "localhost";
+  public static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+  public static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
+  public static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
+  private static final Logger LOG = LoggerFactory.getLogger(SampleApplicationTest.class);
 
-  private RunTestOnContext vertx = new RunTestOnContext();
+  @BeforeClass
+  public static void setUp() throws Exception {
+    ApplicationTestHelper.startKnotx();
+  }
 
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
-  @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  @AfterClass
+  public static void tearDown(TestContext context) {
+    ApplicationTestHelper.tearDown(context);
+  }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithXhrAndPostAForm_expectOnlyRenderedSnippetWithFormReturned(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithAjaxPostResult.html", true);
   }
 
   private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
 
     Async async = context.async();
-    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
+    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url, req -> {
       String bodyForm = formData.entrySet().stream()
           .map(entry -> entry.getKey() + "=" + entry.getValue())
           .reduce((p1, p2) -> p1 + "&" + p2).get();
@@ -117,26 +110,32 @@ public class SampleApplicationTest {
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
       try {
-        context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).body().html());
+        context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).body().html());
       } catch (Exception e) {
-        context.fail(e);
+        LOG.error("Cannot read file {}", expectedResponseFile, e);
+        context.fail();
       }
 
+      client.close();
       async.complete();
     }));
   }
 
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    HttpClient client = ApplicationTestHelper.vertx.createHttpClient();
     Async async = context.async();
-    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
+    client.getNow(ApplicationTestHelper.knotxPort, ApplicationTestHelper.knotxDomain, url,
         resp -> resp.bodyHandler(body -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
           try {
+            String difference = StringUtils.difference(Jsoup.parse(body.toString()).html(), Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
+            System.err.println(difference);
+
             context.assertEquals(Jsoup.parse(body.toString()).html(),
-                Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
+                Jsoup.parse(ApplicationTestHelper.readText(expectedResponseFile)).html());
           } catch (Exception e) {
-            context.fail(e);
+            LOG.error("Cannot read file {}", expectedResponseFile, e);
+            context.fail();
           }
           client.close();
           async.complete();

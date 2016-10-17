@@ -59,7 +59,7 @@
       <artifactId>handlebars</artifactId>
     </dependency>
 
-    <!-- Tests -->
+    <!-- Test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -68,7 +68,6 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
     </dependency>
-  </dependencies>
 
   <build>
     <plugins>
