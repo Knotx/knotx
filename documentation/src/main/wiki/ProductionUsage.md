@@ -101,7 +101,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
 }
 ```
 Configuration JSON contains four config sections, one for each Knot.x verticle.
-Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options) 
+Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options)
 
 ### Executing Knot.x core verticles as a cluster
 Thanks to the modular structure of the Knot.x project, it's possible to run each Knot.x verticle on a separate JVM or host them as a cluster. An out of the box requirement to form a cluster (driven by Hazelcast) is that the network supports multicast.
@@ -159,7 +159,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         "X-Solr-Core-Key",
         "X-Language-Code",
         "X-Requested-With"
-      ],      
+      ],
       "repositories": [
         {
           "path": "/content/local/.*",
@@ -175,7 +175,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
       }
      }
      ...
- ``` 
+ ```
 ####Verticle configuration
 Each verticle requires JSON configuration of **config** object. The configuration consists of the same parameters as previous examples.
 For instance, a configuration JSON for the *HTTP repository* verticle could look like this:
@@ -196,7 +196,7 @@ For instance, a configuration JSON for the *HTTP repository* verticle could look
 }
 ```
 #####Preserving headers passed to microservices
-Single service configuration allows to define which headers should be passed to microservices. 
+Single service configuration allows to define which headers should be passed to microservices.
 If **allowed.request.headers** section is not present, no headers will be forwarded to microservice. It is possible to use wildcard character (*) e.g.
 ```json
 "services": [
@@ -210,7 +210,7 @@ If **allowed.request.headers** section is not present, no headers will be forwar
       ]
     },
     ...
-]        
+]
 ```
 
 ```json
@@ -225,4 +225,19 @@ If **allowed.request.headers** section is not present, no headers will be forwar
     },
     ...
 ]
+```
+
+### Recommended Knot.x deployment
+Thanks to the modular architecture of Knot.x there are multiple approaches how to deploy Knot.x for the production usage. However, the easiest approach is to use Knot.x as one **far** jar with other jar files specific for the target implementation (such as adapter services, Handlebars helpers) available in classpath.
+For instance:
+
+- Assuming you have folder created on your host machine where Knot.x is going to be run, let's assume it's KNOTX_HOME
+- Create subfolder **$KNOTX_HOME/lib** and put there **knotx-standalone-X.Y.Z-fat.jar**
+- If you have custom Handlebars helpers ([See how to implement custom Handlebars helpers](TemplatingEngine#extending)), you can put it as JAR file here
+- If you have project specific Verticles, e.g. Adapter services, you can put their jar files here (**DO NOT PUT ANOTHER FAT JARS**)
+- Create your own configuration JSON (any location on the host)
+- Create your own Logback logger configuration (any location on the host)
+- Start Knot.x using following command
+```
+java -Dlogback.configurationFile=/path/to/your/logback.xml -cp "lib/*" com.cognifide.knotx.launcher.LogbackLauncher -conf /path/to/your/setup.json
 ```
