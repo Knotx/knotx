@@ -21,10 +21,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class TemplateEngineConfiguration {
@@ -43,13 +41,9 @@ public class TemplateEngineConfiguration {
         .map(item -> (JsonObject) item)
         .map(item -> {
           ServiceMetadata metadata = new ServiceMetadata();
-          metadata.path = item.getString("path");
-          metadata.domain = item.getString("domain");
-          metadata.port = item.getInteger("port");
-          metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
-              .map(object -> (String) object)
-              .map(new StringToPatternMap())
-              .collect(Collectors.toList());
+          metadata.name = item.getString("name");
+          metadata.address = item.getString("address");
+          metadata.config = item.getJsonObject("config");
           return metadata;
         }).collect(Collectors.toList());
     templateDebug = config.getBoolean("template.debug", false);
@@ -74,22 +68,18 @@ public class TemplateEngineConfiguration {
 
   public static class ServiceMetadata {
 
-    private String path;
-
-    private String domain;
-
-    private Integer port;
-
-    private List<Pattern> allowedRequestHeaderPatterns;
+    private String name;
+    private String address;
+    private JsonObject config;
 
     @Override
     public boolean equals(Object obj) {
       if (obj != null && obj instanceof ServiceMetadata) {
         final ServiceMetadata other = (ServiceMetadata) obj;
         return new EqualsBuilder()
-            .append(path, other.getPath())
-            .append(domain, other.getDomain())
-            .append(port, other.getPort()).isEquals();
+            .append(name, other.getName())
+            .append(address, other.getAddress())
+            .append(config, other.getConfig()).isEquals();
       } else {
         return false;
       }
@@ -98,42 +88,34 @@ public class TemplateEngineConfiguration {
     @Override
     public int hashCode() {
       return new HashCodeBuilder()
-          .append(path)
-          .append(domain)
-          .append(port)
+          .append(name)
+          .append(address)
+          .append(config)
           .toHashCode();
     }
 
-    public String getPath() {
-      return path;
+    public String getName() {
+      return name;
     }
 
-    public void setPath(String path) {
-      this.path = path;
+    public String getAddress() {
+      return address;
     }
 
-    public String getDomain() {
-      return domain;
+    public JsonObject getConfig() {
+      return config;
     }
 
-    public void setDomain(String domain) {
-      this.domain = domain;
+    public void setName(String name) {
+      this.name = name;
     }
 
-    public Integer getPort() {
-      return port;
+    public void setAddress(String address) {
+      this.address = address;
     }
 
-    public void setPort(Integer port) {
-      this.port = port;
-    }
-
-    public List<Pattern> getAllowedRequestHeaderPatterns() {
-      return allowedRequestHeaderPatterns;
-    }
-
-    public void setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
-      this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
+    public void setConfig(JsonObject config) {
+      this.config = config;
     }
   }
 }

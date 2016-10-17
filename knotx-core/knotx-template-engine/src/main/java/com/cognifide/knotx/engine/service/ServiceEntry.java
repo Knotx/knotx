@@ -18,91 +18,75 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.TemplateEngineConsts;
-import com.cognifide.knotx.engine.parser.HtmlFragment;
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Pattern;
 
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
 public class ServiceEntry {
 
-  private String placeholderNamespace;
-  private ServiceCallMethod methodType;
-  private String serviceUri;
-  private TemplateEngineConfiguration.ServiceMetadata serviceMetadata;
+  private String namespace;
+  private String name;
+  private String address;
+  private String cacheKey;
+  private JsonObject payload;
 
   private ServiceEntry() {
     //Hidden constructors
   }
 
-  public static ServiceEntry of(Attribute serviceAttribute) {
+  public static ServiceEntry of(Attribute serviceAttribute, Attribute paramsAttribute) {
     ServiceEntry entry = new ServiceEntry();
 
-    String relatedAttribute = serviceAttribute.getKey();
-    entry.placeholderNamespace = ServiceAttributeUtil.extractNamespace(relatedAttribute);
-    entry.methodType = ServiceAttributeUtil.extractMethodType(relatedAttribute);
-    entry.serviceUri = serviceAttribute.getValue();
+    entry.namespace = ServiceAttributeUtil.extractNamespace(serviceAttribute.getKey());
+    entry.name = serviceAttribute.getValue();
+    entry.payload = new JsonObject(paramsAttribute.getValue());
+    entry.cacheKey = serviceAttribute.getValue() + paramsAttribute.getValue();
+
     return entry;
   }
 
-  public String getPlaceholderNamespace() {
-    return placeholderNamespace;
+  public String getNamespace() {
+    return namespace;
   }
 
-  public ServiceCallMethod getMethodType() {
-    return methodType;
+  public String getName() {
+    return name;
   }
 
-  public ServiceEntry setServiceMetadata(TemplateEngineConfiguration.ServiceMetadata serviceMetadata) {
-    this.serviceMetadata = serviceMetadata;
+  public String getAddress() {
+    return address;
+  }
+
+  public JsonObject getPayload() {
+    return payload;
+  }
+
+  public String getCacheKey() {
+    return cacheKey;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  public void setCacheKey(String cacheKey) {
+    this.cacheKey = cacheKey;
+  }
+
+  public ServiceEntry mergePayload(JsonObject value) {
+    // TODO implement mergePayload
     return this;
   }
 
-  public String getDomain() {
-    return serviceMetadata.getDomain();
-  }
-
-  public Integer getPort() {
-    return serviceMetadata.getPort();
-  }
-
-  public List<Pattern> getHeadersPatterns(){
-    return serviceMetadata.getAllowedRequestHeaderPatterns();
-  }
-
-  public String getServiceUri() {
-    return serviceUri;
-  }
-
   public JsonObject getResultWithNamespaceAsKey(JsonObject result) {
-    if (StringUtils.isNotEmpty(placeholderNamespace)) {
-      return new JsonObject().put(placeholderNamespace, result);
+    if (StringUtils.isNotEmpty(namespace)) {
+      return new JsonObject().put(namespace, result);
     } else {
       return result;
-    }
-  }
-
-  public boolean canServeRequest(HtmlFragment fragment, RenderRequest renderRequest) {
-    boolean canServeMethodType = canServeMethodType(renderRequest.request().method());
-
-    if (isRequestFormPostWithId(renderRequest)) {
-      return canServeMethodType && canServeFormPost(fragment, renderRequest);
-    } else {
-      return canServeMethodType;
     }
   }
 
@@ -111,9 +95,9 @@ public class ServiceEntry {
     if (o instanceof ServiceEntry) {
       final ServiceEntry other = (ServiceEntry) o;
       return new EqualsBuilder()
-          .append(serviceUri, other.getServiceUri())
-          .append(placeholderNamespace, other.getPlaceholderNamespace())
-          .append(methodType, other.getMethodType())
+          .append(namespace, other.getNamespace())
+          .append(name, other.getName())
+          .append(payload, other.getPayload())
           .isEquals();
     } else {
       return false;
@@ -123,28 +107,7 @@ public class ServiceEntry {
 
   @Override
   public int hashCode() {
-    return Objects.hash(serviceUri, placeholderNamespace, methodType);
+    return Objects.hash(namespace, name, payload);
   }
 
-  private boolean canServeMethodType(HttpMethod requestMethodType) {
-    ServiceCallMethod methodTypeFromRequest = ServiceCallMethod.from(requestMethodType);
-    return Objects.equals(this.methodType, methodTypeFromRequest)
-        || Objects.equals(this.methodType, ServiceCallMethod.ALL);
-  }
-
-  private boolean isRequestFormPostWithId(RenderRequest renderRequest) {
-    if (renderRequest.request().method() != HttpMethod.POST) {
-      return false;
-    }
-    String requestFormId = renderRequest.request().formAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE);
-    return StringUtils.isNotEmpty(requestFormId);
-  }
-
-  private boolean canServeFormPost(HtmlFragment fragment, RenderRequest renderRequest) {
-    Optional<String> fragmentId = Optional.ofNullable(fragment.getDataId());
-    Optional<String> formId = Optional.ofNullable(renderRequest.request().formAttributes())
-        .map(attr -> attr.get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
-
-    return fragmentId.equals(formId) || ServiceCallMethod.POST != methodType;
-  }
 }

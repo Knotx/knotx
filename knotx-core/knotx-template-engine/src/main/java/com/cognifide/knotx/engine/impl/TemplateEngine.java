@@ -33,7 +33,7 @@ import java.util.ServiceLoader;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.eventbus.EventBus;
 import rx.Observable;
 
 public class TemplateEngine {
@@ -44,8 +44,8 @@ public class TemplateEngine {
 
   private TemplateSnippetProcessor snippetProcessor;
 
-  public TemplateEngine(HttpClient httpClient, TemplateEngineConfiguration configuration) {
-    this.snippetProcessor = new TemplateSnippetProcessor(httpClient, configuration);
+  public TemplateEngine(EventBus eventBus, TemplateEngineConfiguration configuration) {
+    this.snippetProcessor = new TemplateSnippetProcessor(eventBus, configuration);
     initHandlebars();
   }
 

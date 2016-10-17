@@ -20,12 +20,11 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
-import com.cognifide.knotx.engine.AllowedHeadersFilter;
-import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.placeholders.UriTransformer;
+import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
+import com.cognifide.knotx.engine.AllowedHeadersFilter;
 import com.cognifide.knotx.engine.MultiMapCollector;
+import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
@@ -52,30 +52,23 @@ public class ServiceEngine {
 
   private final TemplateEngineConfiguration configuration;
 
-  private final HttpClient httpClient;
+  private final EventBus eventBus;
 
-  public ServiceEngine(HttpClient httpClient, TemplateEngineConfiguration serviceConfiguration) {
-    this.httpClient = httpClient;
+  public ServiceEngine(EventBus eventBus, TemplateEngineConfiguration serviceConfiguration) {
+    this.eventBus = eventBus;
     this.configuration = serviceConfiguration;
   }
 
   public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
                                               RenderRequest renderRequest) {
-    HttpMethod httpMethod = computeServiceMethodType(renderRequest, serviceEntry.getMethodType());
-    Observable<HttpClientResponse> serviceResponse =
-        KnotxRxHelper.request(
-            httpClient,
-            httpMethod,
-            serviceEntry.getPort(),
-            serviceEntry.getDomain(),
-            UriTransformer.getServiceUri(renderRequest, serviceEntry),
-            req -> buildRequestBody(req,
-                getFilteredHeaders(renderRequest.request().headers(), serviceEntry.getHeadersPatterns()),
-                renderRequest.request().formAttributes(),
-                httpMethod
-            )
-        );
-    return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
+//    ServicePayload payload = new ServicePayload(renderRequest, new ServicePayload.ServiceRequest(params.getString("path"), renderRequest.request().method().toString()));
+//    HttpRequestWrapper requestWrapper = new Re
+
+    JsonObject payload = new JsonObject();
+    Observable<Message<Object>> serviceResponse = eventBus.sendObservable(serviceEntry.getAddress(), payload);
+
+//    return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
+    return null;
   }
 
   private Observable<JsonObject> transformResponse(HttpClientResponse response, ServiceEntry serviceEntry) {
@@ -118,19 +111,12 @@ public class ServiceEngine {
 
   public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
     return configuration.getServices().stream()
-        .filter(service -> serviceEntry.getServiceUri().matches(service.getPath()))
-        .findFirst().map(metadata -> serviceEntry.setServiceMetadata(metadata))
+        .filter(service -> serviceEntry.getName().matches(service.getName()))
+        .findFirst().map(metadata -> {
+          serviceEntry.setAddress(metadata.getAddress());
+          return serviceEntry.mergePayload(metadata.getConfig());
+        })
         .get();
-  }
-
-  private HttpMethod computeServiceMethodType(RenderRequest renderRequest,
-                                              ServiceCallMethod serviceCallMethod) {
-    if (HttpMethod.POST.equals(renderRequest.request().method())
-        && ServiceCallMethod.POST.equals(serviceCallMethod)) {
-      return HttpMethod.POST;
-    } else {
-      return HttpMethod.GET;
-    }
   }
 
   private JsonObject buildResultObject(Buffer buffer) {
@@ -151,7 +137,7 @@ public class ServiceEngine {
 
   private void traceServiceCall(Buffer results, ServiceEntry entry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}>", results.toString(), entry.getServiceUri());
+      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getPayload());
     }
   }
 }

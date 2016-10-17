@@ -7,9 +7,11 @@
   },
   "services": [
     {
-      "path": "/service/mock/.*",
-      "domain": "localhost",
-      "port": 3000
+      "name" : "mock",
+      "address" : "knotx.core-adapter",
+      "config": {
+        "path": "/service/mock/.*"
+      }
     }
   ]
 }

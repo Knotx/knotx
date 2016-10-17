@@ -92,9 +92,25 @@
         },
         "services": [
           {
-            "path": "/service/mock/.*",
-            "domain": "localhost",
-            "port": 3000
+            "name" : "first-service",
+            "address" : "knotx.core-adapter",
+            "config": {
+              "path": "/service/mock/first.json"
+            }
+          },
+          {
+            "name" : "second-service",
+            "address" : "knotx.core-adapter",
+            "config": {
+              "path": "/service/mock/second.json"
+            }
+          },
+          {
+            "name" : "third-service",
+            "address" : "knotx.core-adapter",
+            "config": {
+              "path": "/service/mock/third.json"
+            }
           }
         ]
       }

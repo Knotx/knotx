@@ -23,14 +23,12 @@ import com.cognifide.knotx.engine.impl.TemplateEngine;
 
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public class TemplateEngineVerticle extends AbstractVerticle {
@@ -41,17 +39,12 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
   private TemplateEngineConfiguration configuration;
 
-  private HttpClient httpClient;
-
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     configuration = new TemplateEngineConfiguration(config());
 
-    final JsonObject clientOptions = configuration.getClientOptions();
-
-    httpClient = clientOptions.isEmpty() ? this.vertx.createHttpClient() : this.vertx.createHttpClient(new HttpClientOptions(clientOptions));
-    templateEngine = new TemplateEngine(httpClient, configuration);
+    templateEngine = new TemplateEngine(this.vertx.eventBus(), configuration);
   }
 
   @Override
@@ -75,7 +68,6 @@ public class TemplateEngineVerticle extends AbstractVerticle {
   @Override
   public void stop() throws Exception {
     LOGGER.debug("Stopping TemplateEngineVerticle and stopping http client");
-    httpClient.close();
   }
 
   private void traceMessage(Message<JsonObject> message) {

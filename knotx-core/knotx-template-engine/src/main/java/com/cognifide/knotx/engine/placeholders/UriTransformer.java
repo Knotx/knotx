@@ -36,17 +36,17 @@ public final class UriTransformer {
     // util
   }
 
-  public static String getServiceUri(RenderRequest request, ServiceEntry serviceEntry) {
-    String serviceUri = serviceEntry.getServiceUri();
-    List<String> placeholders = getPlaceholders(serviceUri);
-
-    for (String placeholder : placeholders) {
-      serviceUri = serviceUri.replace("{" + placeholder + "}",
-          getPlaceholderValue(request, placeholder));
-    }
-
-    return serviceUri;
-  }
+//  public static String getServiceUri(RenderRequest request, ServiceEntry serviceEntry) {
+//    String serviceUri = serviceEntry.getServiceUri();
+//    List<String> placeholders = getPlaceholders(serviceUri);
+//
+//    for (String placeholder : placeholders) {
+//      serviceUri = serviceUri.replace("{" + placeholder + "}",
+//          getPlaceholderValue(request, placeholder));
+//    }
+//
+//    return serviceUri;
+//  }
 
   protected static List<String> getPlaceholders(String serviceUri) {
     return Arrays.asList(serviceUri.split("\\{")).stream()

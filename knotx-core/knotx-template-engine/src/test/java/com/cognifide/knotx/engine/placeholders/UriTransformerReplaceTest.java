@@ -111,14 +111,14 @@ public class UriTransformerReplaceTest {
     return map;
   }
 
-  @Test
-  public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
-    HttpRequestWrapper httpRequest = new HttpRequestWrapper().setHeaders(getHeadersMultiMap()).setParams(getParamsMultiMap()).setPath(requestedUri);
-    RenderRequest request = new RenderRequest().setRequest(httpRequest);
-    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-uri", uri));
-
-    String finalUri = UriTransformer.getServiceUri(request, serviceEntry);
-
-    Assert.assertEquals(expectedUri, finalUri);
-  }
+//  @Test
+//  public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
+//    HttpRequestWrapper httpRequest = new HttpRequestWrapper().setHeaders(getHeadersMultiMap()).setParams(getParamsMultiMap()).setPath(requestedUri);
+//    RenderRequest request = new RenderRequest().setRequest(httpRequest);
+//    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-uri", uri));
+//
+//    String finalUri = UriTransformer.getServiceUri(request, serviceEntry);
+//
+//    Assert.assertEquals(expectedUri, finalUri);
+//  }
 }

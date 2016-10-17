@@ -25,13 +25,12 @@ import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
@@ -47,8 +46,8 @@ public class TemplateSnippetProcessor {
   private final boolean templateDebug;
 
 
-  public TemplateSnippetProcessor(HttpClient httpClient, TemplateEngineConfiguration configuration) {
-    this.serviceEngine = new ServiceEngine(httpClient, configuration);
+  public TemplateSnippetProcessor(EventBus eventBus, TemplateEngineConfiguration configuration) {
+    this.serviceEngine = new ServiceEngine(eventBus, configuration);
     this.templateDebug = configuration.templateDebug();
   }
 
@@ -56,7 +55,7 @@ public class TemplateSnippetProcessor {
     LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
     return Observable.just(fragment)
         .flatMap(HtmlFragment::getServices)
-        .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
+//        .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
         .doOnNext(this::traceService)
         .map(serviceEngine::findServiceLocation)
         .flatMap(serviceEntry ->
@@ -68,9 +67,9 @@ public class TemplateSnippetProcessor {
   }
 
   public Observable<JsonObject> fetchServiceData(ServiceEntry service, RenderRequest request) {
-    LOGGER.debug("Fetching data from service {}", service.getServiceUri());
+    LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getPayload());
     try {
-      return request.getCache().get(service.getServiceUri(), () -> serviceEngine.doServiceCall(service, request).cache());
+      return request.getCache().get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
     } catch (ExecutionException e) {
       LOGGER.fatal("Unable to get service data {}", e);
       return Observable.error(e);
@@ -107,7 +106,7 @@ public class TemplateSnippetProcessor {
 
   private void traceService(ServiceEntry serviceEntry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Found service call definition: {}", serviceEntry.getServiceUri());
+      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(), serviceEntry.getPayload());
     }
   }
 
