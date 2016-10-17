@@ -1,9 +1,5 @@
-# What's new in 0.4.0
+# What's new in 0.4.1
 
-* Comprehensive verticles deployment options
-* Placeholders in service url support
-* Repositories request / response HTTP headers rules
-* Services request / response HTTP headers rules
-* Caching service calls within one request
-* Custom handlebars helpers registration support
-* Specialized repositories verticle implementation
+* Response from services - handling json object and json array.
+* Updated FilesystemRepository implementation.
+* Updated MockService - now it can read mocked responses from any place on a disk.
