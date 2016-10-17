@@ -20,17 +20,18 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
-import com.cognifide.knotx.engine.AllowedHeadersFilter;
-import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.dataobjects.ServiceCallMethod;
+import com.cognifide.knotx.engine.AllowedHeadersFilter;
 import com.cognifide.knotx.engine.MultiMapCollector;
+import com.cognifide.knotx.engine.TemplateEngineConfiguration;
+import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
@@ -90,13 +91,14 @@ public class ServiceEngine {
 
   private void buildRequestBody(HttpClientRequest request, MultiMap headers,
                                 MultiMap formAttributes, HttpMethod httpMethod) {
-    request.headers().addAll(headers);
+    request.headers().setAll(headers);
 
-    if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
+    if (HttpMethod.POST.equals(httpMethod)) {
       Buffer buffer = createFormPostBody(formAttributes);
-      request.headers().set("content-length", String.valueOf(buffer.length()));
-      request.headers().set("content-type", "application/x-www-form-urlencoded");
+      request.headers().set(HttpHeaders.CONTENT_LENGTH.toString(), String.valueOf(buffer.length()));
       request.write(buffer);
+    } else {
+      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
     }
   }
 
