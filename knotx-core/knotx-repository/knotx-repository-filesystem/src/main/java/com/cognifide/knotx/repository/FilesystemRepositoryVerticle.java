@@ -46,9 +46,8 @@ import rx.Observable;
 public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryVerticle.class);
-
+  private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
   private String catalogue;
-
   private String address;
 
   @Override
@@ -84,7 +83,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
-    return fileSystem.openObservable(localFilePath, new OpenOptions())
+    return fileSystem.openObservable(localFilePath, OPEN_OPTIONS)
         .flatMap(this::processFile)
         .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
         .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
