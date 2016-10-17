@@ -47,7 +47,7 @@ class HttpServiceAdapterConfiguration {
           metadata.port = item.getInteger("port");
           metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
               .map(object -> (String) object)
-              .map(new StringToPatternMap())
+              .map(new StringToPatternFunction())
               .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
