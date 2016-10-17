@@ -24,22 +24,25 @@ import java.util.regex.PatternSyntaxException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-class StringToPatternMap implements Function<String, Pattern> {
+class StringToPatternFunction implements Function<String, Pattern> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StringToPatternMap.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StringToPatternFunction.class);
 
   private static final String WILDCARD = "*";
 
   @Override
   public Pattern apply(String stringPattern) {
-    String pattern = "^" + stringPattern.replace(WILDCARD, "(.+)") + "$";
     Pattern compiledPattern;
     try {
-      compiledPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+      compiledPattern = Pattern.compile(toRegex(stringPattern), Pattern.CASE_INSENSITIVE);
     } catch (PatternSyntaxException e) {
-      LOGGER.error("Invalid allowed headers configuration syntax: " + stringPattern, e);
+      LOGGER.error("Invalid allowed headers configuration syntax: {}", stringPattern, e);
       throw new RuntimeException("Application error - invalid configuration");
     }
     return compiledPattern;
+  }
+
+  private String toRegex(String stringPattern) {
+    return "^" + stringPattern.replace(WILDCARD, "(.+)") + "$";
   }
 }

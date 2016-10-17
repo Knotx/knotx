@@ -25,16 +25,14 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertEquals;
 
 public class AllowedHeadersFilterTest {
 
-  private final static List<String> TEST_HEADERS =
+  private static final List<String> TEST_HEADERS =
       Lists.newArrayList("Content-Type", "content-length", "Accept", "Location");
 
-  private StringToPatternMap patternGenerator = new StringToPatternMap();
+  private StringToPatternFunction patternGenerator = new StringToPatternFunction();
 
   @Test
   public void whenNoAllowedHeadersAvailable_expectNoHeadersPassed() {
@@ -45,42 +43,45 @@ public class AllowedHeadersFilterTest {
 
   @Test
   public void whenAllAllowedHeadersAvailable_expectAllHeadersPassed() {
-    AllowedHeadersFilter filter = AllowedHeadersFilter.create(Lists.newArrayList(patternGenerator.apply("*")));
+    AllowedHeadersFilter filter = AllowedHeadersFilter.create(
+        Lists.newArrayList(patternGenerator.apply("*")));
 
     assertEquals(TEST_HEADERS.size(), filterHeaders(filter).size());
   }
 
   @Test
   public void whenWildcardPatternAvailable_expectMatchingHeadersPassed() {
-    AllowedHeadersFilter filter = AllowedHeadersFilter.create(Lists.newArrayList(patternGenerator.apply("content-*")));
+    AllowedHeadersFilter filter = AllowedHeadersFilter.create(
+        Lists.newArrayList(patternGenerator.apply("content-*")));
 
     List<String> filtered = filterHeaders(filter);
 
     assertEquals(2, filtered.size());
-    assertThat("Content-Type", equalToIgnoringCase(filtered.get(0)));
-    assertThat("content-length", equalToIgnoringCase(filtered.get(1)));
+    assertEquals("Content-Type", filtered.get(0));
+    assertEquals("content-length", filtered.get(1));
   }
 
   @Test
-  public void whenNoWildcardPatternAvailable_expectExactMatchingHeaderPassed() {
-    AllowedHeadersFilter filter = AllowedHeadersFilter.create(Lists.newArrayList(patternGenerator.apply("content-type")));
+  public void whenPatternAvailableWithDifferentCasing_expectMatchingHeaderPassed() {
+    AllowedHeadersFilter filter = AllowedHeadersFilter.create(
+        Lists.newArrayList(patternGenerator.apply("content-type")));
 
     List<String> filtered = filterHeaders(filter);
 
     assertEquals(1, filtered.size());
-    assertThat("Content-Type", equalToIgnoringCase(filtered.get(0)));
+    assertEquals("Content-Type", filtered.get(0));
   }
 
   @Test
-  public void whenNoWildcardPatternsAvailable_expectExactMatchingHeadersPassed() {
-    AllowedHeadersFilter filter = AllowedHeadersFilter.create(Lists.newArrayList(patternGenerator.apply("content-type"), patternGenerator.apply("Location")));
+  public void whenNoWildcardPatternsAvailableWithDifferentCasing_expectExactMatchingHeadersPassed() {
+    AllowedHeadersFilter filter = AllowedHeadersFilter.create(
+        Lists.newArrayList(patternGenerator.apply("content-type"), patternGenerator.apply("Location")));
 
     List<String> filtered = filterHeaders(filter);
 
     assertEquals(2, filtered.size());
-
-    assertThat("Content-type", equalToIgnoringCase(filtered.get(0).toLowerCase()));
-    assertThat("Location", equalToIgnoringCase(filtered.get(1).toLowerCase()));
+    assertEquals("Content-Type", filtered.get(0));
+    assertEquals("Location", filtered.get(1));
   }
 
   private List<String> filterHeaders(Predicate<String> filter) {

@@ -22,7 +22,6 @@ import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
-import com.cognifide.knotx.engine.MultiMapCollector;
 
 import java.util.List;
 import java.util.Map;
