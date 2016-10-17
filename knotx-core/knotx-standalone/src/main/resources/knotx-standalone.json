@@ -61,25 +61,21 @@
     "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
       "config": {
         "address": "knotx.core.repository.http",
-        "configuration": {
-          "client.options": {
-            "maxPoolSize": 1000,
-            "keepAlive": false,
-            "tryUseCompression": true
-          },
-          "client.destination": {
-            "domain": "localhost",
-            "port": 3001
-          }
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false,
+          "tryUseCompression": true
+        },
+        "client.destination": {
+          "domain": "localhost",
+          "port": 3001
         }
       }
     },
     "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
       "config": {
         "address": "knotx.core.repository.filesystem",
-        "configuration": {
-          "catalogue": ""
-        }
+        "catalogue": ""
       }
     },
     "com.cognifide.knotx.engine.TemplateEngineVerticle": {

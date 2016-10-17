@@ -127,16 +127,14 @@ The configuration consists of **verticles** object containing set of configurati
   "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
     "config": {
       "address": "knotx.core.repository.http",
-      "configuration": {
-        "client.options": {
-          "maxPoolSize": 1000,
-          "keepAlive": false,
-          "tryUseCompression": true
-        },
-        "client.destination" : {
-          "domain": "localhost",
-          "port": 3001
-        }
+      "client.options": {
+        "maxPoolSize": 1000,
+        "keepAlive": false,
+        "tryUseCompression": true
+      },
+      "client.destination" : {
+        "domain": "localhost",
+        "port": 3001
       }
     }
   },
@@ -147,9 +145,8 @@ This section configures the Knot.x HTTP Repository Verticle that fetches a templ
 The config node consists of:
 
 - **address** - the event bus address on which Http Repository Verticle listens for template requests.
-- **configuration** - it's a configuration section specific to the Http protocol used by verticle, it contains:
--- **client.options** - HTTP Client options used when communicating with the destination repository. See [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) to get all options supported.
--- **client.destination** - Allows to specify **domain** and **port** of the HTTP repository endpoint.
+- **client.options** - HTTP Client options used when communicating with the destination repository. See [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) to get all options supported.
+- **client.destination** - Allows to specify **domain** and **port** of the HTTP repository endpoint.
 
 #### 1.2. Filesystem Repository section
 ```json
@@ -157,9 +154,7 @@ The config node consists of:
   "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
     "config": {
       "address": "knotx.core.repository.filesystem",
-      "configuration": {
-        "catalogue": ""
-      }
+      "catalogue": ""
     }
   },
   ...
@@ -169,8 +164,7 @@ If you need to take files from a local machine, this is the kind of repository y
 The config node consists of:
 
 - **address** - the event bus address on which file system Repository Verticle listens for template requests.
-- **configuration** - it's a configuration section specific to the file system.
--- **catalogue** - it determines where to take the resources from. If it's left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
+- **catalogue** - it determines where to take the resources from. If it's left empty, they will be taken from the classpath. It may be treated like a prefix to the requested resources.
 
 #### 1.3. Engine section
 ```json
