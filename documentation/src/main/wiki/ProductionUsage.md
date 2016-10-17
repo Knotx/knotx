@@ -46,25 +46,21 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
     "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
       "config": {
         "address": "knotx.core.repository.http",
-        "configuration": {
-          "client.options": {
-            "maxPoolSize": 1000,
-            "keepAlive": false,
-            "tryUseCompression": true
-          },
-          "client.destination": {
-            "domain": "localhost",
-            "port": 3001
-          }
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false,
+          "tryUseCompression": true
+        },
+        "client.destination": {
+          "domain": "localhost",
+          "port": 3001
         }
       }
     },
     "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
       "config": {
         "address": "knotx.core.repository.filesystem",
-        "configuration": {
-          "catalogue": ""
-        }
+        "catalogue": ""
       }
     },
     "com.cognifide.knotx.engine.TemplateEngineVerticle": {
@@ -174,7 +170,8 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         "address": "knotx.core.engine"
       }
      }
-     ...
+    }
+}
  ```
 ####Verticle configuration
 Each verticle requires JSON configuration of **config** object. The configuration consists of the same parameters as previous examples.
@@ -182,16 +179,14 @@ For instance, a configuration JSON for the *HTTP repository* verticle could look
 ```json
 {
   "address": "knotx.core.repository.http",
-  "configuration": {
-    "client.options": {
-      "maxPoolSize": 1000,
-      "keepAlive": false,
-      "tryUseCompression": true
-    },
-    "client.destination" : {
-      "domain": "localhost",
-      "port": 3001
-    }
+  "client.options": {
+    "maxPoolSize": 1000,
+    "keepAlive": false,
+    "tryUseCompression": true
+  },
+  "client.destination" : {
+    "domain": "localhost",
+    "port": 3001
   }
 }
 ```
