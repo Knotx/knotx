@@ -8,12 +8,20 @@
     {
       "path": "/service/mock/.*",
       "domain": "localhost",
-      "port": 3000
+      "port": 3000,
+      "allowed.request.headers": [
+        "Content-Type",
+        "X-*"
+      ]
     },
     {
       "path": "/service/.*",
       "domain": "localhost",
-      "port": 8080
+      "port": 8080,
+      "allowed.request.headers": [
+        "Content-Type",
+        "X-*"
+      ]
     }
   ]
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - API
+    Knot.x - Reactive microservice assembler - http service adapter
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -30,7 +30,7 @@
 
   <artifactId>knotx-service-adapter-http</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - service adapter</name>
+  <name>Knot.x - Reactive microservice assembler - http service adapter</name>
 
   <dependencies>
     <dependency>
@@ -77,6 +77,18 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>

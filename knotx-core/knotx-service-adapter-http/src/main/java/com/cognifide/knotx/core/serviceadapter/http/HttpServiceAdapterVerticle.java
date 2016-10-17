@@ -1,5 +1,5 @@
 /*
- * Knot.x - Sample App with Mock service
+ * Knot.x - Reactive microservice assembler - http service adapter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -26,11 +26,13 @@ import java.net.URISyntaxException;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public class HttpServiceAdapterVerticle extends AbstractVerticle {
@@ -45,7 +47,7 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     this.configuration = new HttpServiceAdapterConfiguration(config());
-    this.httpClientFacade = new HttpClientFacade(this.vertx, configuration);
+    this.httpClientFacade = new HttpClientFacade(getHttpClient(configuration), configuration.getServices());
   }
 
   @Override
@@ -66,6 +68,12 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
                     }
                 )
         );
+  }
+
+  private HttpClient getHttpClient(HttpServiceAdapterConfiguration configuration) {
+    JsonObject clientOptions = configuration.getClientOptions();
+    return clientOptions.isEmpty() ?
+        vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
   private void traceMessage(Message<JsonObject> message) {

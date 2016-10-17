@@ -1,5 +1,5 @@
 /*
- * Knot.x - Sample App with Mock service
+ * Knot.x - Reactive microservice assembler - http service adapter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -22,19 +22,19 @@ import com.google.common.base.Joiner;
 
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.engine.MultiMapCollector;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
@@ -50,21 +50,9 @@ class HttpClientFacade {
 
   private final HttpClient httpClient;
 
-  HttpClientFacade(Vertx vertx, HttpServiceAdapterConfiguration configuration) {
-    final JsonObject clientOptions = configuration.getClientOptions();
-    this.services = configuration.getServices();
-    this.httpClient = clientOptions.isEmpty() ?
-        vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-  }
-
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
-    });
+  HttpClientFacade(HttpClient httpClient, List<HttpServiceAdapterConfiguration.ServiceMetadata> services) {
+    this.httpClient = httpClient;
+    this.services = services;
   }
 
   Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
@@ -77,7 +65,7 @@ class HttpClientFacade {
     if (serviceEntry.isPresent()) {
       Observable<HttpClientResponse> serviceResponse = request(
           httpClient, request.method(), serviceEntry.get().getPort(), serviceEntry.get().getDomain(), request.path(),
-          req -> buildRequestBody(req, request.headers(), request.formAttributes(),
+          req -> buildRequestBody(req, getFilteredHeaders(request.headers(), serviceEntry.get().getAllowedRequestHeaderPatterns()), request.formAttributes(),
               request.method()));
 
       return serviceResponse.flatMap(item -> transformResponse(item, request.method(), request.path()));
@@ -85,6 +73,22 @@ class HttpClientFacade {
       LOGGER.error("Could not handle request with path [{}]", request.path());
       return Observable.just(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST));
     }
+  }
+
+  private Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
+  }
+
+  private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
+    return headers.names().stream()
+        .filter(AllowedHeadersFilter.create(allowedHeaders))
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
   }
 
   private Observable<HttpResponseWrapper> transformResponse(HttpClientResponse response, HttpMethod method, String path) {

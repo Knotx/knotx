@@ -1,5 +1,5 @@
 /*
- * Knot.x - Sample App with Mock service
+ * Knot.x - Reactive microservice assembler - http service adapter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -22,8 +22,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 class HttpServiceAdapterConfiguration {
@@ -43,6 +45,10 @@ class HttpServiceAdapterConfiguration {
           metadata.path = item.getString("path");
           metadata.domain = item.getString("domain");
           metadata.port = item.getInteger("port");
+          metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
+              .map(object -> (String) object)
+              .map(new StringToPatternMap())
+              .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
     clientOptions = config.getJsonObject("client.options", new JsonObject());
@@ -67,6 +73,8 @@ class HttpServiceAdapterConfiguration {
     private String domain;
 
     private Integer port;
+
+    private List<Pattern> allowedRequestHeaderPatterns;
 
     @Override
     public boolean equals(Object obj) {
@@ -94,24 +102,36 @@ class HttpServiceAdapterConfiguration {
       return path;
     }
 
-    public void setPath(String path) {
+    public ServiceMetadata setPath(String path) {
       this.path = path;
+      return this;
     }
 
     public String getDomain() {
       return domain;
     }
 
-    public void setDomain(String domain) {
+    public ServiceMetadata setDomain(String domain) {
       this.domain = domain;
+      return this;
     }
 
     public Integer getPort() {
       return port;
     }
 
-    public void setPort(Integer port) {
+    public ServiceMetadata setPort(Integer port) {
       this.port = port;
+      return this;
+    }
+
+    public List<Pattern> getAllowedRequestHeaderPatterns() {
+      return allowedRequestHeaderPatterns;
+    }
+
+    public ServiceMetadata setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
+      this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
+      return this;
     }
   }
 
