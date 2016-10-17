@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -98,12 +99,14 @@ class HttpClientFacade {
 
   private void buildRequestBody(HttpClientRequest request, MultiMap headers,
                                 MultiMap formAttributes, HttpMethod httpMethod) {
-    request.headers().addAll(headers);
-    if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
+    request.headers().setAll(headers);
+
+    if (HttpMethod.POST.equals(httpMethod)) {
       Buffer buffer = createFormPostBody(formAttributes);
-      request.headers().set("content-length", String.valueOf(buffer.length()));
-      request.headers().set("content-type", "application/x-www-form-urlencoded");
+      request.headers().set(HttpHeaders.CONTENT_LENGTH.toString(), String.valueOf(buffer.length()));
       request.write(buffer);
+    } else {
+      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
     }
   }
 

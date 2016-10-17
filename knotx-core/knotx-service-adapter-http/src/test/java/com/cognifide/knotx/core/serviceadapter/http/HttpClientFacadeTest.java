@@ -17,76 +17,107 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http;
 
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.google.common.collect.Lists;
 
-import org.junit.Assert;
-import org.junit.Ignore;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.junit.KnotxConfiguration;
+import com.cognifide.knotx.junit.Logback;
+import com.cognifide.knotx.junit.TestVertxDeployer;
+
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.RunTestOnContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
+import static org.powermock.api.mockito.PowerMockito.spy;
+
+@RunWith(VertxUnitRunner.class)
 public class HttpClientFacadeTest {
 
   // Configuration
 
-  private static final Integer PORT = 6001;
+  private static final Integer PORT = 3000;
 
-  private static final String DOMAIN = "knotxdomain.com";
+  private static final String DOMAIN = "localhost";
 
-  private static final String PATH = "/services/test.*";
+  private static final String PATH = "/services/mock.*";
 
   // Request payload
 
-  private static final String REQUEST_PATH = "/services/test/service1";
+  private static final String REQUEST_PATH = "/services/mock/first.json";
 
   private static final HttpMethod REQUEST_METHOD = HttpMethod.GET;
 
   private static final List<Pattern> patterns = Collections.singletonList(Pattern.compile("X-test*"));
 
+  private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
+
+  private RunTestOnContext vertx = new RunTestOnContext();
+
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
+
   @Rule
-  public MockitoRule mockitoRule = MockitoJUnit.rule();
+  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
-  @Mock
-  private HttpClient httpClientMock;
-
-
-  @Ignore
-  @Test
-  // FIXME: 17.10.2016
-  public void whenNoAllowedHeadersAvailable_expectNoHeadersPassed() {
-    // before
-    List<HttpServiceAdapterConfiguration.ServiceMetadata> services = new ArrayList<>();
-    services.add(new HttpServiceAdapterConfiguration.ServiceMetadata().setPort(PORT).setDomain(DOMAIN).setPath(PATH).setAllowedRequestHeaderPatterns(patterns));
-    HttpClientFacade clientFacade = new HttpClientFacade(httpClientMock, services);
-
-    // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(getPayloadMessage(REQUEST_PATH, REQUEST_METHOD));
-
-    // then
-    result.subscribe(response -> {
-          Mockito.verify(httpClientMock).request(HttpMethod.GET, PORT, DOMAIN, REQUEST_PATH);
-        },
-        error -> Assert.fail(error.getMessage()));
+  @Before
+  public void before() {
+    expectedHeaders.add("Access-Control-Allow-Origin", "*");
+    expectedHeaders.add("Content-Type", "text/html; charset=UTF-8");
+    expectedHeaders.add("content-length", "4090");
   }
 
-  private JsonObject getPayloadMessage(String servicePath, HttpMethod method) {
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void whenNoAllowedHeadersAvailable_expectNoHeadersPassed(TestContext context) throws Exception {
+    Async async = context.async();
+    // given
+    HttpClientFacade clientFacade = spy(new HttpClientFacade(httpClient(), getServiceConfigurations()));
+
+    // when
+    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage(REQUEST_PATH, REQUEST_METHOD));
+
+    // then
+    result.subscribe(
+        response -> {
+        },
+        error -> {
+        },
+        () -> async.complete());
+  }
+
+  private HttpClient httpClient() {
+    return Vertx.newInstance(vertx.vertx()).createHttpClient();
+  }
+
+  private JsonObject payloadMessage(String servicePath, HttpMethod method) {
     return new JsonObject()
         .put("path", servicePath)
         .put("method", method);
   }
 
+  private List<HttpServiceAdapterConfiguration.ServiceMetadata> getServiceConfigurations() {
+    return Lists.newArrayList(
+        new HttpServiceAdapterConfiguration.ServiceMetadata()
+            .setPort(PORT)
+            .setDomain(DOMAIN)
+            .setPath(PATH)
+            .setAllowedRequestHeaderPatterns(patterns));
+  }
 
 }
