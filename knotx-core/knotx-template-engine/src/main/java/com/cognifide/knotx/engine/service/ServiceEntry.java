@@ -77,8 +77,9 @@ public class ServiceEntry {
     this.cacheKey = cacheKey;
   }
 
-  public ServiceEntry mergePayload(JsonObject value) {
-    // TODO implement mergePayload
+  public ServiceEntry mergePayload(JsonObject config) {
+    JsonObject merged = config.mergeIn(this.payload);
+    this.payload = merged;
     return this;
   }
 
@@ -97,6 +98,7 @@ public class ServiceEntry {
       return new EqualsBuilder()
           .append(namespace, other.getNamespace())
           .append(name, other.getName())
+          .append(cacheKey, other.getCacheKey())
           .append(payload, other.getPayload())
           .isEquals();
     } else {
@@ -107,7 +109,7 @@ public class ServiceEntry {
 
   @Override
   public int hashCode() {
-    return Objects.hash(namespace, name, payload);
+    return Objects.hash(namespace, name, cacheKey, payload);
   }
 
 }

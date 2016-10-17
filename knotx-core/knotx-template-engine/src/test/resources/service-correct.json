@@ -1,18 +1,11 @@
 {
   "services": [
     {
-      "path": "/service/mock/.*",
-      "domain": "localhost",
-      "port": 3000,
-      "allowed.request.headers": [
-        "Accept-*",
-        "Location"
-      ]
-    },
-    {
-      "path": "/service/.*",
-      "domain": "localhost",
-      "port": 8080
+      "name" : "first-service",
+      "address" : "knotx.core-adapter",
+      "config": {
+        "path": "/service/mock/first.json"
+      }
     }
   ]
 }

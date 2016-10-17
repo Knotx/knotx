@@ -20,15 +20,10 @@ package com.cognifide.knotx.engine.service;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.engine.AllowedHeadersFilter;
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
 import com.cognifide.knotx.engine.AllowedHeadersFilter;
 import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
 import java.util.List;
 import java.util.Map;
