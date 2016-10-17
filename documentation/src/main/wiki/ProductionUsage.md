@@ -228,7 +228,7 @@ If **allowed.request.headers** section is not present, no headers will be forwar
 ```
 
 ### Recommended Knot.x deployment
-Thanks to the modular architecture of Knot.x there are multiple approaches how to deploy Knot.x for the production usage. However, the easiest approach is to use Knot.x as one **far** jar with other jar files specific for the target implementation (such as adapter services, Handlebars helpers) available in classpath.
+Thanks to the modular architecture of Knot.x, there are multiple approaches how to deploy Knot.x for the production usage. However, the easiest approach is to use Knot.x as one **far** jar together with jar files specific for your target implementation (such as adapter services, Handlebars helpers) all available in classpath.
 For instance:
 
 - Assuming you have folder created on your host machine where Knot.x is going to be run, let's assume it's KNOTX_HOME
