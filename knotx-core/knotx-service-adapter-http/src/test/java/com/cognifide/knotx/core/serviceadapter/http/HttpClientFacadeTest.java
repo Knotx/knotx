@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
@@ -45,6 +46,7 @@ import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
+import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
 @RunWith(VertxUnitRunner.class)
@@ -84,7 +86,7 @@ public class HttpClientFacadeTest {
 
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
-  public void whenNoAllowedHeadersAvailable_expectNoHeadersPassed(TestContext context) throws Exception {
+  public void basicTest_expectResponseOK(TestContext context) throws Exception {
     Async async = context.async();
     // given
     HttpClientFacade clientFacade = spy(new HttpClientFacade(httpClient(), getServiceConfigurations()));
@@ -95,8 +97,10 @@ public class HttpClientFacadeTest {
     // then
     result.subscribe(
         response -> {
+          assertEquals(response.statusCode(), HttpResponseStatus.OK);
         },
         error -> {
+          context.fail(error.getMessage());
         },
         () -> async.complete());
   }
@@ -107,8 +111,15 @@ public class HttpClientFacadeTest {
 
   private JsonObject payloadMessage(String servicePath, HttpMethod method) {
     return new JsonObject()
-        .put("path", servicePath)
-        .put("method", method);
+        .put("params", new JsonObject()
+            .put("path", servicePath)
+            .put("method", method))
+        .put("request", mockHttpRequest());
+  }
+
+  private JsonObject mockHttpRequest() {
+    return new JsonObject()
+        .put("method", HttpMethod.GET);
   }
 
   private List<HttpServiceAdapterConfiguration.ServiceMetadata> getServiceConfigurations() {
