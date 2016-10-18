@@ -60,8 +60,9 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
   @Override
   public void handle(Message<JsonObject> message) {
     HttpRequestWrapper request = new HttpRequestWrapper(message.body().getJsonObject("request"));
+    JsonObject params = message.body().getJsonObject("params");
 
-    String resourcePath = getFilePath(request);
+    String resourcePath = getFilePath(params.getString("path"));
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
         String mockData = ar.result().toString();
@@ -105,8 +106,8 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
     return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.path())).orElse(DEFAULT_MIME);
   }
 
-  private String getFilePath(HttpRequestWrapper request) {
-    return catalogue + File.separator + StringUtils.substringAfterLast(request.path(), SEPARATOR);
+  private String getFilePath(String path) {
+    return catalogue + File.separator + StringUtils.substringAfterLast(path, SEPARATOR);
   }
 
   private MultiMap headers(HttpRequestWrapper request, String data) {

@@ -51,13 +51,16 @@ public class ServiceEngine {
     JsonObject serviceMessage = new JsonObject();
     serviceMessage.put("request", renderRequest.request().toJson());
     serviceMessage.put("params", serviceEntry.getParams());
-    Observable<Message<JsonObject>> serviceResponse = eventBus.sendObservable(serviceEntry.getAddress(), serviceMessage);
+    Observable<Message<Object>> singleSubscriptionObservable = eventBus.sendObservable(serviceEntry.getAddress(), serviceMessage);
+    // http://stackoverflow.com/questions/37304880/rxjava-with-vertx-cant-have-multiple-subscriptions-exception
+    Observable<Message<Object>> serviceResponse = singleSubscriptionObservable.cache();
 
     return serviceResponse.flatMap(item -> transformResponse(serviceResponse, serviceEntry));
   }
 
-  private Observable<JsonObject> transformResponse(Observable<Message<JsonObject>> response, ServiceEntry serviceEntry) {
-    return response.map(jsonResponse -> new HttpResponseWrapper(jsonResponse.body()))
+  private Observable<JsonObject> transformResponse(Observable<Message<Object>> response, ServiceEntry serviceEntry) {
+    return response.map(objResp -> (JsonObject) objResp.body())
+        .map(jsonResponse -> new HttpResponseWrapper(jsonResponse))
         .doOnNext(httpResponseWrapper -> traceServiceCall(httpResponseWrapper.body(), serviceEntry))
         .map(this::buildResultObject);
   }
@@ -81,11 +84,12 @@ public class ServiceEngine {
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
     } else if (rawData.charAt(0) == '{') {
-      object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
+      object.put(RESULT_NAMESPACE_KEY, response.toJson());
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode()));
+    object.put(RESULT_NAMESPACE_KEY, new JsonObject(response.toJson().getString("body")));
+    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode().codeAsText()));
     return object;
   }
 

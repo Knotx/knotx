@@ -54,8 +54,8 @@ public class TemplateSnippetProcessor {
     LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
     return Observable.just(fragment)
         .flatMap(HtmlFragment::getServices)
-        .doOnNext(this::traceService)
         .map(serviceEngine::mergeWithConfiguration)
+        .doOnNext(this::traceService)
         .flatMap(serviceEntry ->
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
