@@ -38,9 +38,10 @@ import rx.Observable;
 public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceAdapterVerticle.class);
+  private static final JsonObject ADAPTER_SERVICE_INTERNAL_ERROR_REPLY = new HttpResponseWrapper()
+      .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR).toJson();
 
   private HttpServiceAdapterConfiguration configuration;
-
   private HttpClientFacade httpClientFacade;
 
   @Override
@@ -54,7 +55,8 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
   public void start() throws IOException, URISyntaxException {
     LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
-    Observable<Message<JsonObject>> observable = vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).toObservable();
+    Observable<Message<JsonObject>> observable = vertx.eventBus()
+        .<JsonObject>consumer(configuration.getAddress()).toObservable();
 
     observable
         .doOnNext(this::traceMessage)
@@ -64,7 +66,7 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
                     result -> msg.reply(result.toJson()),
                     error -> {
                       LOGGER.error("Error happened", error);
-                      msg.reply(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR).toJson());
+                      msg.reply(ADAPTER_SERVICE_INTERNAL_ERROR_REPLY);
                     }
                 )
         );

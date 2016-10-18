@@ -23,6 +23,8 @@ import com.google.common.base.Joiner;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,11 +41,13 @@ import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
-import rx.functions.Action1;
 
 class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
+  private static final String REQUEST_KEY = "request";
+  private static final String PARAMS_KEY = "params";
+  private static final String PATH_PROPERTY_KEY = "path";
 
   private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
 
@@ -54,33 +58,66 @@ class HttpClientFacade {
     this.services = services;
   }
 
-  Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
-    HttpRequestWrapper request = new HttpRequestWrapper(httpRequest);
-
-    Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceEntry = services.stream()
-        .filter(metadata -> request.path().matches(metadata.getPath()))
-        .findFirst();
-
-    if (serviceEntry.isPresent()) {
-      Observable<HttpClientResponse> serviceResponse = request(
-          httpClient, request.method(), serviceEntry.get().getPort(), serviceEntry.get().getDomain(), request.path(),
-          req -> buildRequestBody(req, getFilteredHeaders(request.headers(), serviceEntry.get().getAllowedRequestHeaderPatterns()), request.formAttributes(),
-              request.method()));
-
-      return serviceResponse.flatMap(item -> transformResponse(item, request.method(), request.path()));
-    } else {
-      LOGGER.error("Could not handle request with path [{}]", request.path());
-      return Observable.just(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST));
-    }
+  Observable<HttpResponseWrapper> process(JsonObject message) {
+    return Observable.just(message)
+        .filter(this::validateContract)
+        .map(this::prepareRequest)
+        .filter(this::ensureRequestIsSupported)
+        .first() // FIXME: there should be no more than one result - is first() necessary here?
+        .flatMap(this::callService)
+        .flatMap(this::wrapResponse)
+        .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST));
   }
 
-  private Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+  private Boolean validateContract(JsonObject message) {
+    return message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
+  }
+
+  private Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> prepareRequest(JsonObject message) {
+    final Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest;
+
+    final HttpRequestWrapper originalRequest = new HttpRequestWrapper(message.getJsonObject(REQUEST_KEY));
+    final JsonObject params = message.getJsonObject(PARAMS_KEY);
+
+    //TODO prepare service path with request attributes
+    final String servicePath = params.getString(PATH_PROPERTY_KEY);
+
+    final Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
+    if (serviceMetadata.isPresent()) {
+      final HttpRequestWrapper serviceRequestWrapper = new HttpRequestWrapper(originalRequest.toJson());
+      serviceRequestWrapper.setPath(servicePath);
+      serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
+    } else {
+      serviceRequest = Pair.of(null, null);
+    }
+
+    return serviceRequest;
+  }
+
+  private Optional<HttpServiceAdapterConfiguration.ServiceMetadata> findServiceMetadata(String servicePath) {
+    return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
+  }
+
+  private Boolean ensureRequestIsSupported(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
+    return serviceRequest.getRight() != null;
+  }
+
+  private Observable<HttpClientResponse> callService(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
+    final HttpRequestWrapper requestWrapper = serviceRequest.getLeft();
+    final HttpServiceAdapterConfiguration.ServiceMetadata serviceMetadata = serviceRequest.getRight();
+
     return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
+      HttpClientRequest request = httpClient.request(requestWrapper.method(), serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
+      Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
+      request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
+      if (!requestWrapper.formAttributes().isEmpty() && HttpMethod.POST == requestWrapper.method()) {
+        Buffer buffer = createFormPostBody(requestWrapper.formAttributes());
+        request.headers().set("content-length", String.valueOf(buffer.length()));
+        request.headers().set("content-type", "application/x-www-form-urlencoded");
+        request.write(buffer);
+      }
+      request.end();
     });
   }
 
@@ -88,23 +125,6 @@ class HttpClientFacade {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
         .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
-  }
-
-  private Observable<HttpResponseWrapper> transformResponse(HttpClientResponse response, HttpMethod method, String path) {
-    return Observable.just(Buffer.buffer()).mergeWith(response.toObservable()).reduce(Buffer::appendBuffer)
-        .doOnNext(buffer -> traceServiceCall(method, path, buffer))
-        .map(buffer -> new HttpResponseWrapper().setBody(buffer).setStatusCode(HttpResponseStatus.valueOf(response.statusCode())));
-  }
-
-  private void buildRequestBody(HttpClientRequest request, MultiMap headers,
-                                MultiMap formAttributes, HttpMethod httpMethod) {
-    request.headers().addAll(headers);
-    if (!formAttributes.isEmpty() && HttpMethod.POST.equals(httpMethod)) {
-      Buffer buffer = createFormPostBody(formAttributes);
-      request.headers().set("content-length", String.valueOf(buffer.length()));
-      request.headers().set("content-type", "application/x-www-form-urlencoded");
-      request.write(buffer);
-    }
   }
 
   private Buffer createFormPostBody(MultiMap formAttributes) {
@@ -116,9 +136,20 @@ class HttpClientFacade {
     return buffer;
   }
 
-  private void traceServiceCall(HttpMethod method, String path, Buffer results) {
+  private Observable<HttpResponseWrapper> wrapResponse(HttpClientResponse response) {
+    return Observable.just(Buffer.buffer())
+        .mergeWith(response.toObservable())
+        .reduce(Buffer::appendBuffer)
+        .doOnNext(this::traceServiceCall)
+        .map(buffer -> new HttpResponseWrapper()
+            .setBody(buffer)
+            .setStatusCode(HttpResponseStatus.valueOf(response.statusCode()))
+        );
+  }
+
+  private void traceServiceCall(Buffer results) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}>", method, path, results.toJsonObject().encodePrettily());
+      LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
     }
   }
 }
