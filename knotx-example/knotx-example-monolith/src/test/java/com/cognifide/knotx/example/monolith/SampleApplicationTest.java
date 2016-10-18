@@ -48,7 +48,6 @@ import rx.Observable;
 import rx.functions.Action1;
 
 
-@Ignore
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
@@ -83,12 +82,14 @@ public class SampleApplicationTest {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
@@ -96,6 +97,7 @@ public class SampleApplicationTest {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithXhrAndPostAForm_expectOnlyRenderedSnippetWithFormReturned(TestContext context) {

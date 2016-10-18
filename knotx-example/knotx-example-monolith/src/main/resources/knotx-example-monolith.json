@@ -108,6 +108,11 @@
             "params": {
               "path": "/service/mock/third.json"
             }
+          },
+          {
+            "name" : "labelsRepository",
+            "address" : "mock-adapter-service",
+            "params": {}
           }
         ]
       }

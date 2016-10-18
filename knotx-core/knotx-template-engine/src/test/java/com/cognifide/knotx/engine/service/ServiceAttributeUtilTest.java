@@ -27,18 +27,18 @@ public class ServiceAttributeUtilTest {
 
   @Test
   public void testAttributeWithoutNamespace() throws Exception {
-    String attributeInput = "data-service";
-    String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
-
-    Assert.assertThat(namespace, is(StringUtils.EMPTY));
+    String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-service");
+    String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-params");
+    Assert.assertThat(serviceNamespace, is(StringUtils.EMPTY));
+    Assert.assertThat(paramsNamespace, is(StringUtils.EMPTY));
   }
 
   @Test
   public void testAttributeWithNamespace() throws Exception {
-    String attributeInput = "data-service-label";
-    String namespace = ServiceAttributeUtil.extractNamespace(attributeInput);
-
-    Assert.assertThat(namespace, is("label"));
+    String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-service-label");
+    String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-params-label");
+    Assert.assertThat(serviceNamespace, is("label"));
+    Assert.assertThat(paramsNamespace, is("label"));
   }
 
   @Test(expected = RuntimeException.class)

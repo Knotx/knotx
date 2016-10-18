@@ -66,11 +66,6 @@ public class TemplateEngineVerticle extends AbstractVerticle {
 
   }
 
-  @Override
-  public void stop() throws Exception {
-    LOGGER.debug("Stopping TemplateEngineVerticle and stopping http client");
-  }
-
   private void traceMessage(Message<JsonObject> message) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
