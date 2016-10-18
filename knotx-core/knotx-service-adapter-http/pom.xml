@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - http service adapter
+    Knot.x - Reactive microservice assembler - Http Service Adapter
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -30,7 +30,7 @@
 
   <artifactId>knotx-service-adapter-http</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - http service adapter</name>
+  <name>Knot.x - Reactive microservice assembler - Http Service Adapter</name>
 
   <dependencies>
     <dependency>

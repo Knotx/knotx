@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - http service adapter
+ * Knot.x - Reactive microservice assembler - Http Service Adapter
  *
  * Copyright (C) 2016 Cognifide Limited
  *

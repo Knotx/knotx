@@ -19,7 +19,6 @@ package com.cognifide.knotx.example.monolith;
 
 import com.google.common.collect.Maps;
 
-import com.cognifide.knotx.engine.service.KnotxRxHelper;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -167,7 +166,7 @@ public class SampleApplicationTest {
     return data;
   }
 
-  static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
     return Observable.create(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();

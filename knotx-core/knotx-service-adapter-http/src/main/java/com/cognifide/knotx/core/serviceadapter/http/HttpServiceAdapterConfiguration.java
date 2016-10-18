@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - http service adapter
+ * Knot.x - Reactive microservice assembler - Http Service Adapter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -129,7 +129,7 @@ class HttpServiceAdapterConfiguration {
       return allowedRequestHeaderPatterns;
     }
 
-    public ServiceMetadata setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
+    ServiceMetadata setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
       this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
       return this;
     }
