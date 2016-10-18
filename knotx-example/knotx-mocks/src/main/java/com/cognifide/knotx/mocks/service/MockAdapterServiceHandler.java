@@ -72,7 +72,7 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
         }
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
-        message.reply(errorResponse());
+        message.reply(errorResponse().toJson());
       }
     });
   }
