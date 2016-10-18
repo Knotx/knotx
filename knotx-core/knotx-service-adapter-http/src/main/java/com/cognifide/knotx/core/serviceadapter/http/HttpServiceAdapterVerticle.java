@@ -31,6 +31,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
@@ -38,8 +39,6 @@ import rx.Observable;
 public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceAdapterVerticle.class);
-  private static final JsonObject ADAPTER_SERVICE_INTERNAL_ERROR_REPLY = new HttpResponseWrapper()
-      .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR).toJson();
 
   private HttpServiceAdapterConfiguration configuration;
   private HttpClientFacade httpClientFacade;
@@ -66,10 +65,17 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
                     result -> msg.reply(result.toJson()),
                     error -> {
                       LOGGER.error("Error happened", error);
-                      msg.reply(ADAPTER_SERVICE_INTERNAL_ERROR_REPLY);
+                      msg.reply(getErrorResponse(error.getMessage()));
                     }
                 )
         );
+  }
+
+  private JsonObject getErrorResponse(String message) {
+    return new HttpResponseWrapper()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR)
+        .setBody(Buffer.buffer(message))
+        .toJson();
   }
 
   private HttpClient getHttpClient(HttpServiceAdapterConfiguration configuration) {

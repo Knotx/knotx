@@ -73,7 +73,7 @@ class HttpClientFacade {
   private void validateContract(JsonObject message) {
     final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
     if (!pathPresent) {
-      throw new RuntimeException("Parameter `path` was not defined in `params`!");
+      throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
 
@@ -106,7 +106,7 @@ class HttpClientFacade {
     final boolean anyServiceSupportsPath = serviceRequest.getRight() != null;
     if (!anyServiceSupportsPath) {
       final String error = String.format("Parameter `params.path`: `%s` not supported!", serviceRequest.getLeft().path());
-      throw new RuntimeException(error);
+      throw new UnsupportedServiceException(error);
     }
   }
 
