@@ -63,13 +63,14 @@ public class TemplateEngineVerticle extends AbstractVerticle {
     messageObservable
         .doOnNext(this::traceMessage)
         .flatMap(msg -> templateEngine.process(new RenderRequest(msg.body()))
-            .doOnNext(result -> msg.reply(RenderResponse.success(result).toJsonObject()))
-            .doOnError(error -> {
-              LOGGER.error("Error happened", error);
-              msg.reply(RenderResponse.error(error.getMessage()).toJsonObject());
+            .map(renderedData -> RenderResponse.success(renderedData).toJsonObject())
+            .onErrorReturn(error -> {
+              LOGGER.error("Error happened during Template processing", error);
+              return RenderResponse.error(error.getMessage()).toJsonObject();
             })
-        )
-        .subscribe();
+            .doOnNext(msg::reply)
+        ).subscribe();
+
   }
 
   @Override
