@@ -74,7 +74,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 .subscribe(
                     repoResponse -> {
                       if (repoResponse.statusCode() == HttpResponseStatus.OK) {
-                        eventBus.<JsonObject>sendObservable(configuration.engineAddress(), requestRendering(repoResponse.body(), originalRequestWrapper))
+                        eventBus.<JsonObject>sendObservable("TODO", requestRendering(repoResponse.body(), originalRequestWrapper))
                             .map(msg -> new RenderResponse(msg.body()))
                             .subscribe(
                                 engineResponse -> {

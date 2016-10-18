@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine;
 
-import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
+import com.cognifide.knotx.junit.FileReader;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -31,7 +31,6 @@ import io.vertx.core.json.JsonObject;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 
 public class ServiceCorrectConfigurationTest {
 

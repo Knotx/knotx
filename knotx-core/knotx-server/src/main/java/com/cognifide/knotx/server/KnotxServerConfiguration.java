@@ -17,29 +17,34 @@
  */
 package com.cognifide.knotx.server;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
 
   private Integer httpPort;
 
-  private String engineAddress;
-
   private Set<String> allowedResponseHeaders;
 
   private Map<String, String> repositoryAddressMapping;
 
+  private Map<String, List<RoutingCriteria>> engineRouting;
+
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("http.port");
 
-    engineAddress = config.getJsonObject("engine").getString("address");
+    engineRouting = Maps.newHashMap();
+    config.getJsonObject("engines").stream()
+        .forEach(entry -> parseMethodRouting(entry));
 
     repositoryAddressMapping = Maps.newHashMap();
     config.getJsonArray("repositories").stream()
@@ -55,10 +60,6 @@ public class KnotxServerConfiguration {
     return httpPort;
   }
 
-  public String engineAddress() {
-    return engineAddress;
-  }
-
   public Optional<String> repositoryForPath(final String path) {
     return repositoryAddressMapping.entrySet().stream()
         .filter(mapping -> path.matches(mapping.getKey()))
@@ -67,5 +68,30 @@ public class KnotxServerConfiguration {
 
   public Set<String> allowedResponseHeaders() {
     return allowedResponseHeaders;
+  }
+
+  public Map<String, List<RoutingCriteria>> getEngineRouting() {
+    return engineRouting;
+  }
+
+  private void parseMethodRouting(Map.Entry<String, Object> entry) {
+    final List<RoutingCriteria> methodCriteria = getMethodCriterias(entry.getKey());
+    JsonArray methodMapping = (JsonArray) entry.getValue();
+
+    methodMapping.stream()
+        .map(item -> (JsonObject) item)
+        .map(item -> new RoutingCriteria(item.getString("path"), item.getString("address")))
+        .forEach(methodCriteria::add);
+  }
+
+  private List<RoutingCriteria> getMethodCriterias(String method) {
+    List<RoutingCriteria> routingCriterias = Lists.newArrayList();
+    if (engineRouting.containsKey(method)) {
+      routingCriterias = engineRouting.get(method);
+    } else {
+      engineRouting.put(method, routingCriterias);
+    }
+
+    return routingCriterias;
   }
 }

@@ -53,14 +53,22 @@
   "engines": {
     "GET": [
       {
+        "path": "/content/remote/.*",
+        "address": "knotx.core.view2-engine"
+      },
+      {
         "path": "/content/.*",
-        "target": "knotx.core.view-engine"
+        "address": "knotx.core.view-engine"
       }
     ],
     "POST": [
       {
+        "path": "/content/local/.*",
+        "address": "knotx.core.post2-engine"
+      },
+      {
         "path": "/content/.*",
-        "target": "knotx.core.post-engine"
+        "address": "knotx.core.post-engine"
       }
     ]
   }
