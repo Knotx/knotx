@@ -49,6 +49,7 @@ class HttpClientFacade {
   private static final String REQUEST_KEY = "request";
   private static final String PARAMS_KEY = "params";
   private static final String PATH_PROPERTY_KEY = "path";
+  private static final HttpResponseWrapper DEFAULT_ERROR_RESPONSE = new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST);
 
   private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
 
@@ -64,10 +65,9 @@ class HttpClientFacade {
         .filter(this::validateContract)
         .map(this::prepareRequest)
         .filter(this::ensureRequestIsSupported)
-        .first() // FIXME: there should be no more than one result - is first() necessary here?
         .flatMap(this::callService)
         .flatMap(this::wrapResponse)
-        .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST));
+        .defaultIfEmpty(DEFAULT_ERROR_RESPONSE);
   }
 
   private Boolean validateContract(JsonObject message) {
@@ -108,7 +108,7 @@ class HttpClientFacade {
     final HttpServiceAdapterConfiguration.ServiceMetadata serviceMetadata = serviceRequest.getRight();
 
     return Observable.create(subscriber -> {
-      HttpClientRequest request = httpClient.request(requestWrapper.method(), serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
+      HttpClientRequest request = httpClient.get(serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
       Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
       request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));

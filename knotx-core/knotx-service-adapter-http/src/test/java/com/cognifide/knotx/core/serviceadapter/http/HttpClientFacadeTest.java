@@ -20,33 +20,35 @@ package com.cognifide.knotx.core.serviceadapter.http;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
 @RunWith(VertxUnitRunner.class)
@@ -64,11 +66,7 @@ public class HttpClientFacadeTest {
 
   private static final String REQUEST_PATH = "/services/mock/first.json";
 
-  private static final HttpMethod REQUEST_METHOD = HttpMethod.GET;
-
-  private static final List<Pattern> patterns = Collections.singletonList(Pattern.compile("X-test*"));
-
-  private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
+  private static final List<Pattern> PATTERNS = Collections.singletonList(Pattern.compile("X-test*"));
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -77,49 +75,82 @@ public class HttpClientFacadeTest {
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
-  @Before
-  public void before() {
-    expectedHeaders.add("Access-Control-Allow-Origin", "*");
-    expectedHeaders.add("Content-Type", "text/html; charset=UTF-8");
-    expectedHeaders.add("content-length", "4090");
-  }
-
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
-  public void basicTest_expectResponseOK(TestContext context) throws Exception {
+  public void whenSupportedPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
     Async async = context.async();
     // given
-    HttpClientFacade clientFacade = spy(new HttpClientFacade(httpClient(), getServiceConfigurations()));
+    final HttpClient httpClient = spy(httpClient());
+    HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
+    final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage(REQUEST_PATH, REQUEST_METHOD));
+    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage(REQUEST_PATH));
 
     // then
     result.subscribe(
         response -> {
-          assertEquals(response.statusCode(), HttpResponseStatus.OK);
+          context.assertEquals(response.statusCode(), HttpResponseStatus.OK);
+          context.assertEquals(response.body().toJsonObject(), expectedResponse);
+          verify(httpClient, times(1)).get(anyInt(), anyString(), anyString());
         },
-        error -> {
-          context.fail(error.getMessage());
+        error -> context.fail(error.getMessage()),
+        async::complete);
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void whenServiceRequestedWithoutPathParam_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
+    Async async = context.async();
+    // given
+    HttpClient mockedHttpClient = Mockito.mock(HttpClient.class);
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
+
+    // when
+    Observable<HttpResponseWrapper> result = clientFacade.process(new JsonObject()
+        .put("params", new JsonObject())
+        .put("request", new JsonObject()));
+
+    // then
+    result.subscribe(
+        response -> {
+          context.assertEquals(response.statusCode(), HttpResponseStatus.BAD_REQUEST);
+          verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
         },
-        () -> async.complete());
+        error -> context.fail(error.getMessage()),
+        async::complete);
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void whenUnsupportedPathServiceRequested_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
+    Async async = context.async();
+    // given
+    HttpClient mockedHttpClient = Mockito.mock(HttpClient.class);
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
+
+    // when
+    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage("/not/supported/path"));
+
+    // then
+    result.subscribe(
+        response -> {
+          context.assertEquals(response.statusCode(), HttpResponseStatus.BAD_REQUEST);
+          verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+        },
+        error -> context.fail(error.getMessage()),
+        async::complete);
   }
 
   private HttpClient httpClient() {
     return Vertx.newInstance(vertx.vertx()).createHttpClient();
   }
 
-  private JsonObject payloadMessage(String servicePath, HttpMethod method) {
+  private JsonObject payloadMessage(String servicePath) {
     return new JsonObject()
         .put("params", new JsonObject()
-            .put("path", servicePath)
-            .put("method", method))
-        .put("request", mockHttpRequest());
-  }
-
-  private JsonObject mockHttpRequest() {
-    return new JsonObject()
-        .put("method", HttpMethod.GET);
+            .put("path", servicePath))
+        .put("request", new JsonObject());
   }
 
   private List<HttpServiceAdapterConfiguration.ServiceMetadata> getServiceConfigurations() {
@@ -128,7 +159,7 @@ public class HttpClientFacadeTest {
             .setPort(PORT)
             .setDomain(DOMAIN)
             .setPath(PATH)
-            .setAllowedRequestHeaderPatterns(patterns));
+            .setAllowedRequestHeaderPatterns(PATTERNS));
   }
 
 }
