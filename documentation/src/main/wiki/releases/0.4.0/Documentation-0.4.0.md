@@ -220,7 +220,7 @@ Here's how JSON configuration files look:
             ...
         }
       },      
-      "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+      "com.cognifide.knotx.viewengine.ViewEngineVerticle": {
         "config" : {
             ...
         }
@@ -299,7 +299,7 @@ The config node consists of:
 #### 1.3. Engine section
 ```json
   ...
-  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+  "com.cognifide.knotx.viewengine.ViewEngineVerticle": {
     "config": {
       "address": "knotx.core.engine",
       "template.debug": true,
@@ -762,7 +762,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
         }
       }
     },
-    "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+    "com.cognifide.knotx.viewengine.ViewEngineVerticle": {
       "config": {
         "address": "knotx.core.engine",
         "template.debug": true,

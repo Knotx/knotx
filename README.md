@@ -54,7 +54,7 @@ You will see output similar to the following:
 2016-08-30 16:16:07 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.mocks.MockServiceVerticle - Registered <MockServiceVerticle>
 2016-08-30 16:16:07 [vert.x-eventloop-thread-0] DEBUG c.c.k.m.MockRemoteRepositoryVerticle - Registered <MockRemoteRepositoryVerticle>
 2016-08-30 16:16:07 [vert.x-eventloop-thread-2] DEBUG c.c.k.repository.RepositoryVerticle - Registered <RepositoryVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-3] DEBUG c.c.k.engine.TemplateEngineVerticle - Registered <TemplateEngineVerticle>
+2016-08-30 16:16:07 [vert.x-eventloop-thread-3] DEBUG c.c.k.viewengine.ViewEngineVerticle - Registered <ViewEngineVerticle>
 2016-08-30 16:16:08 [vert.x-eventloop-thread-0] DEBUG c.c.knotx.server.KnotxServerVerticle - Registered <KnotxServerVerticle>
 2016-08-30 16:16:08 [vert.x-eventloop-thread-0] INFO  c.c.knotx.server.KnotxServerVerticle - Successfully Started
 
@@ -63,10 +63,10 @@ You will see output similar to the following:
 This example app simulates Vert.x based application running Knot.x core verticles:
  - Knot.x Server
  - Knot.x Repository
- - Knot.x Template Engine
+ - Knot.x View Engine
  
 Besides Knot.x two mock verticles are started:
- - Mock Service  -> simulates services used by Template Engine feeding the Handlebars snippets
+ - Mock Service  -> simulates services used by View Engine feeding the Handlebars snippets
  - Mock Remote Repository -> simulates HTTP Remote repository serving HTML templates
 
 You can access example Knot.x application from the following URLs
