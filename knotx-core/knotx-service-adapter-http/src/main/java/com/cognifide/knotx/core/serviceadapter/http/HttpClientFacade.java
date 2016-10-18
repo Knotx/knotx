@@ -65,7 +65,6 @@ class HttpClientFacade {
     return Observable.just(message)
         .doOnNext(this::validateContract)
         .map(this::prepareRequest)
-        .doOnNext(this::ensureRequestIsSupported)
         .flatMap(this::callService)
         .flatMap(this::wrapResponse)
         .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
@@ -92,7 +91,8 @@ class HttpClientFacade {
       serviceRequestWrapper.setPath(servicePath);
       serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
     } else {
-      serviceRequest = Pair.of(new HttpRequestWrapper().setPath(servicePath), null);
+      final String error = String.format("Parameter `params.path`: `%s` not supported!", servicePath);
+      throw new UnsupportedServiceException(error);
     }
 
     return serviceRequest;
@@ -100,14 +100,6 @@ class HttpClientFacade {
 
   private Optional<HttpServiceAdapterConfiguration.ServiceMetadata> findServiceMetadata(String servicePath) {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
-  }
-
-  private void ensureRequestIsSupported(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
-    final boolean anyServiceSupportsPath = serviceRequest.getRight() != null;
-    if (!anyServiceSupportsPath) {
-      final String error = String.format("Parameter `params.path`: `%s` not supported!", serviceRequest.getLeft().path());
-      throw new UnsupportedServiceException(error);
-    }
   }
 
   private Observable<HttpClientResponse> callService(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
