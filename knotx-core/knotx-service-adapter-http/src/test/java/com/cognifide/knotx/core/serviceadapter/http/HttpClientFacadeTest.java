@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -77,7 +78,7 @@ public class HttpClientFacadeTest {
 
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
-  public void whenSupportedPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
+  public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
     Async async = context.async();
     // given
     final HttpClient httpClient = spy(httpClient());
@@ -85,7 +86,31 @@ public class HttpClientFacadeTest {
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage(REQUEST_PATH));
+    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage(REQUEST_PATH, new JsonObject()));
+
+    // then
+    result.subscribe(
+        response -> {
+          context.assertEquals(HttpResponseStatus.OK, response.statusCode());
+          context.assertEquals(expectedResponse, response.body().toJsonObject());
+          verify(httpClient, times(1)).get(anyInt(), anyString(), anyString());
+        },
+        error -> context.fail(error.getMessage()),
+        async::complete);
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
+    Async async = context.async();
+    // given
+    final HttpClient httpClient = spy(httpClient());
+    HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
+    final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
+    final JsonObject request = new JsonObject().put("params", new JsonArray().add(new JsonObject().put("dynamicValue","first")));
+
+    // when
+    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage("/services/mock/{param.dynamicValue}.json", request));
 
     // then
     result.subscribe(
@@ -133,7 +158,7 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage("/not/supported/path"));
+    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage("/not/supported/path", new JsonObject()));
 
     // then
     result.subscribe(
@@ -152,11 +177,11 @@ public class HttpClientFacadeTest {
     return Vertx.newInstance(vertx.vertx()).createHttpClient();
   }
 
-  private JsonObject payloadMessage(String servicePath) {
+  private JsonObject payloadMessage(String servicePath, JsonObject request) {
     return new JsonObject()
         .put("params", new JsonObject()
             .put("path", servicePath))
-        .put("request", new JsonObject());
+        .put("request", request);
   }
 
   private List<HttpServiceAdapterConfiguration.ServiceMetadata> getServiceConfigurations() {

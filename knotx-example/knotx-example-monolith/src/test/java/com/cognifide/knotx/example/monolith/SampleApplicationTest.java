@@ -42,8 +42,10 @@ import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
+import rx.functions.Action1;
 
 
 @Ignore
@@ -104,7 +106,7 @@ public class SampleApplicationTest {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
 
     Async async = context.async();
-    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
+    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
       String bodyForm = formData.entrySet().stream()
           .map(entry -> entry.getKey() + "=" + entry.getValue())
           .reduce((p1, p2) -> p1 + "&" + p2).get();
@@ -161,6 +163,16 @@ public class SampleApplicationTest {
     data.put("_id", "competition-form");
 
     return data;
+  }
+
+  static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
   }
 
 }

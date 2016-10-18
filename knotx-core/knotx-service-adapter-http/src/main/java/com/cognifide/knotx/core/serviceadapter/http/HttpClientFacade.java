@@ -20,6 +20,7 @@ package com.cognifide.knotx.core.serviceadapter.http;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
+import com.cognifide.knotx.core.serviceadapter.http.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
@@ -83,8 +84,7 @@ class HttpClientFacade {
     final HttpRequestWrapper originalRequest = new HttpRequestWrapper(message.getJsonObject(REQUEST_KEY));
     final JsonObject params = message.getJsonObject(PARAMS_KEY);
 
-    //TODO prepare service path with request attributes
-    final String servicePath = params.getString(PATH_PROPERTY_KEY);
+    final String servicePath = UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest);
 
     final Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
     if (serviceMetadata.isPresent()) {
