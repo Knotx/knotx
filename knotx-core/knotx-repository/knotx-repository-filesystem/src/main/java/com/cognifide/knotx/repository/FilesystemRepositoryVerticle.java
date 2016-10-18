@@ -54,7 +54,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     this.address = config().getString("address");
-    this.catalogue = config().getJsonObject("configuration").getString("catalogue");
+    this.catalogue = config().getString("catalogue");
   }
 
   @Override

@@ -53,11 +53,9 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.address = config().getString("address");
-
-    JsonObject configuration = config().getJsonObject("configuration");
-    clientOptions = configuration.getJsonObject("client.options", new JsonObject());
-    clientDestination = configuration.getJsonObject("client.destination");
+    address = config().getString("address");
+    clientOptions = config().getJsonObject("client.options", new JsonObject());
+    clientDestination = config().getJsonObject("client.destination");
   }
 
   @Override
