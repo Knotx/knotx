@@ -338,6 +338,7 @@
               <excludes>
                 <exclude>**/*SampleApplicationTest.java</exclude>
                 <exclude>**/*SampleApplicationHeadersTest.java</exclude>
+                <exclude>**/*HttpClientFacadeTest.java</exclude>
                 <exclude>**/*HttpServiceAdapterTest.java</exclude>
               </excludes>
             </configuration>
