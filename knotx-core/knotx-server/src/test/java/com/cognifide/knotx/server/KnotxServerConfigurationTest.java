@@ -22,9 +22,10 @@ import com.cognifide.knotx.junit.FileReader;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -44,37 +45,37 @@ public class KnotxServerConfigurationTest {
   public void whenConfigWithTwoRoutingMethods_expectTwoMethodsInRouting() throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    Map<String, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
+    EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
 
     assertThat(engineRouting.keySet().size(), equalTo(2));
-    assertThat(engineRouting.keySet(), hasItem("GET"));
-    assertThat(engineRouting.keySet(), hasItem("POST"));
+    assertThat(engineRouting.keySet(), hasItem(HttpMethod.GET));
+    assertThat(engineRouting.keySet(), hasItem(HttpMethod.POST));
   }
 
   @Test
   public void whenConfigWithGetRouting_expectTwoRoutings() throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    Map<String, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
+    EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
 
-    assertThat(engineRouting.get("GET").size(), equalTo(2));
-    assertThat(engineRouting.get("GET").get(0).path(), equalTo("/content/remote/.*"));
-    assertThat(engineRouting.get("GET").get(0).address(), equalTo("knotx.core.view2-engine"));
-    assertThat(engineRouting.get("GET").get(1).path(), equalTo("/content/.*"));
-    assertThat(engineRouting.get("GET").get(1).address(), equalTo("knotx.core.view-engine"));
+    assertThat(engineRouting.get(HttpMethod.GET).size(), equalTo(2));
+    assertThat(engineRouting.get(HttpMethod.GET).get(0).path(), equalTo("/content/remote/.*"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(0).address(), equalTo("knotx.core.view2-engine"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(1).path(), equalTo("/content/.*"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(1).address(), equalTo("knotx.core.view-engine"));
   }
 
   @Test
   public void whenConfigWithPostRouting_expectTwoRoutings() throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    Map<String, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
+    EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
 
-    assertThat(engineRouting.get("POST").size(), equalTo(2));
-    assertThat(engineRouting.get("POST").get(0).path(), equalTo("/content/local/.*"));
-    assertThat(engineRouting.get("POST").get(0).address(), equalTo("knotx.core.post2-engine"));
-    assertThat(engineRouting.get("POST").get(1).path(), equalTo("/content/.*"));
-    assertThat(engineRouting.get("POST").get(1).address(), equalTo("knotx.core.post-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).size(), equalTo(2));
+    assertThat(engineRouting.get(HttpMethod.POST).get(0).path(), equalTo("/content/local/.*"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(0).address(), equalTo("knotx.core.post2-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(1).path(), equalTo("/content/.*"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(1).address(), equalTo("knotx.core.post-engine"));
   }
 
   @Test

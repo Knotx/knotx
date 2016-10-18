@@ -53,8 +53,19 @@
             "address": "knotx.core.repository.http"
           }
         ],
-        "engine": {
-          "address": "knotx.core.engine"
+        "engines": {
+          "GET": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.core.view-engine"
+            }
+          ],
+          "POST": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.core.post-engine"
+            }
+          ]
         }
       }
     },

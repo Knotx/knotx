@@ -20,12 +20,14 @@ package com.cognifide.knotx.server;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -37,12 +39,12 @@ public class KnotxServerConfiguration {
 
   private Map<String, String> repositoryAddressMapping;
 
-  private Map<String, List<RoutingCriteria>> engineRouting;
+  private EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting;
 
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("http.port");
 
-    engineRouting = Maps.newHashMap();
+    engineRouting = Maps.newEnumMap(HttpMethod.class);
     config.getJsonObject("engines").stream()
         .forEach(entry -> parseMethodRouting(entry));
 
@@ -70,21 +72,20 @@ public class KnotxServerConfiguration {
     return allowedResponseHeaders;
   }
 
-  public Map<String, List<RoutingCriteria>> getEngineRouting() {
+  public EnumMap<HttpMethod, List<RoutingCriteria>> getEngineRouting() {
     return engineRouting;
   }
 
   private void parseMethodRouting(Map.Entry<String, Object> entry) {
-    final List<RoutingCriteria> methodCriteria = getMethodCriterias(entry.getKey());
-    JsonArray methodMapping = (JsonArray) entry.getValue();
+    final List<RoutingCriteria> methodCriteria = getMethodCriterias(HttpMethod.valueOf(entry.getKey()));
 
-    methodMapping.stream()
+    ((JsonArray) entry.getValue()).stream()
         .map(item -> (JsonObject) item)
         .map(item -> new RoutingCriteria(item.getString("path"), item.getString("address")))
         .forEach(methodCriteria::add);
   }
 
-  private List<RoutingCriteria> getMethodCriterias(String method) {
+  private List<RoutingCriteria> getMethodCriterias(HttpMethod method) {
     List<RoutingCriteria> routingCriterias = Lists.newArrayList();
     if (engineRouting.containsKey(method)) {
       routingCriterias = engineRouting.get(method);
