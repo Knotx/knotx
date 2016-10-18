@@ -24,13 +24,13 @@ import org.apache.commons.lang3.StringUtils;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-public class RawHtmlFragment implements HtmlFragment {
+class RawHtmlFragment implements HtmlFragment {
 
   private String fragment;
 
   private boolean isHandlebarsTemplate;
 
-  public RawHtmlFragment(String fragment, boolean isHandlebarsTemplate) {
+  RawHtmlFragment(String fragment, boolean isHandlebarsTemplate) {
     this.fragment = fragment;
     this.isHandlebarsTemplate = isHandlebarsTemplate;
   }

@@ -51,14 +51,13 @@ public class ServiceEngine {
     JsonObject serviceMessage = new JsonObject();
     serviceMessage.put("request", renderRequest.request().toJson());
     serviceMessage.put("params", serviceEntry.getParams());
-    Observable<Message<JsonObject>> serviceResponse = eventBus.sendObservable(serviceEntry.getAddress(), serviceMessage);
 
-    return serviceResponse.flatMap(item -> transformResponse(serviceResponse, serviceEntry));
+    return eventBus.<JsonObject>sendObservable(serviceEntry.getAddress(), serviceMessage)
+        .compose(transformResponse());
   }
 
-  private Observable<JsonObject> transformResponse(Observable<Message<JsonObject>> response, ServiceEntry serviceEntry) {
-    return response.map(jsonResponse -> new HttpResponseWrapper(jsonResponse.body()))
-        .doOnNext(httpResponseWrapper -> traceServiceCall(httpResponseWrapper.body(), serviceEntry))
+  private Observable.Transformer<Message<JsonObject>, JsonObject> transformResponse() {
+    return messageObs -> messageObs.map(msg -> new HttpResponseWrapper(msg.body()))
         .map(this::buildResultObject);
   }
 
@@ -81,11 +80,12 @@ public class ServiceEngine {
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
     } else if (rawData.charAt(0) == '{') {
-      object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
+      object.put(RESULT_NAMESPACE_KEY, response.toJson());
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode()));
+    object.put(RESULT_NAMESPACE_KEY, new JsonObject(response.toJson().getString("body")));
+    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode().codeAsText()));
     return object;
   }
 
