@@ -52,11 +52,6 @@ public class MockServiceVerticle extends AbstractVerticle {
   };
 
   @Override
-  public void init(Vertx vertx, Context context) {
-    super.init(vertx, context);
-  }
-
-  @Override
   public void start() throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();

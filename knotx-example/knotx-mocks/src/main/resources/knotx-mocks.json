@@ -12,6 +12,12 @@
         "bouncing" : true,
         "http.port": 3000
       }
+    },
+    "com.cognifide.knotx.mocks.MockServiceAdapterVerticle": {
+      "config": {
+        "address" : "mock-adapter-service",
+        "mock.data.root": "mock/service"
+      }
     }
   }
 }
