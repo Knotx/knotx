@@ -41,8 +41,11 @@ public class ServiceEntry {
     this.cacheKey = String.format("%s|%s", getName(), getParams());
   }
 
-  public void overrideCacheKey(String newCacheKey) {
-    this.cacheKey = newCacheKey;
+  public ServiceEntry overrideCacheKey(String newCacheKey) {
+    if (StringUtils.isNotEmpty(newCacheKey)) {
+      this.cacheKey = newCacheKey;
+    }
+    return this;
   }
 
   public ServiceEntry mergeParams(JsonObject defaultParams) {
@@ -99,8 +102,9 @@ public class ServiceEntry {
     return Objects.hash(namespace, name, cacheKey, params);
   }
 
-  void setAddress(String address) {
+  ServiceEntry setAddress(String address) {
     this.address = address;
+    return this;
   }
 
   private JsonObject getParams(Attribute paramsAttribute) {
