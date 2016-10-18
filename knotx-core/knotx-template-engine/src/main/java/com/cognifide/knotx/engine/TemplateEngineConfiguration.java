@@ -33,8 +33,6 @@ public class TemplateEngineConfiguration {
 
   private boolean templateDebug;
 
-  private JsonObject clientOptions;
-
   public TemplateEngineConfiguration(JsonObject config) {
     address = config.getString("address");
     services = config.getJsonArray("services").stream()
@@ -48,10 +46,9 @@ public class TemplateEngineConfiguration {
           return metadata;
         }).collect(Collectors.toList());
     templateDebug = config.getBoolean("template.debug", false);
-    clientOptions = config.getJsonObject("client.options", new JsonObject());
   }
 
-  public String getAddress() {
+  String getAddress() {
     return address;
   }
 
@@ -61,10 +58,6 @@ public class TemplateEngineConfiguration {
 
   public boolean templateDebug() {
     return templateDebug;
-  }
-
-  public JsonObject getClientOptions() {
-    return clientOptions;
   }
 
   public static class ServiceMetadata {
@@ -114,19 +107,19 @@ public class TemplateEngineConfiguration {
       return cacheKey;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
       this.name = name;
     }
 
-    public void setAddress(String address) {
+    void setAddress(String address) {
       this.address = address;
     }
 
-    public void setParams(JsonObject params) {
+    void setParams(JsonObject params) {
       this.params = params;
     }
 
-    public void setCacheKey(String cacheKey) {
+    void setCacheKey(String cacheKey) {
       this.cacheKey = cacheKey;
     }
   }

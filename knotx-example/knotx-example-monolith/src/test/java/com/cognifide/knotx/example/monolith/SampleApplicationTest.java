@@ -26,6 +26,7 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.jsoup.Jsoup;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -45,6 +46,7 @@ import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
 
+@Ignore
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
