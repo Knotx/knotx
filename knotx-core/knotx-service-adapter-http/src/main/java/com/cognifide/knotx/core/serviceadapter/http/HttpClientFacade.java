@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - http service adapter
+ * Knot.x - Reactive microservice assembler - Http Service Adapter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -17,20 +17,18 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-
+import com.cognifide.knotx.core.serviceadapter.http.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -40,11 +38,14 @@ import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
-import rx.functions.Action1;
 
 class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
+  private static final String REQUEST_KEY = "request";
+  private static final String PARAMS_KEY = "params";
+  private static final String PATH_PROPERTY_KEY = "path";
+  private static final HttpResponseWrapper INTERNAL_SERVER_ERROR_RESPONSE = new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
   private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
 
@@ -55,33 +56,59 @@ class HttpClientFacade {
     this.services = services;
   }
 
-  Observable<HttpResponseWrapper> process(JsonObject httpRequest) {
-    HttpRequestWrapper request = new HttpRequestWrapper(httpRequest);
+  Observable<HttpResponseWrapper> process(JsonObject message) {
+    return Observable.just(message)
+        .doOnNext(this::validateContract)
+        .map(this::prepareRequest)
+        .flatMap(this::callService)
+        .flatMap(this::wrapResponse)
+        .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
+  }
 
-    Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceEntry = services.stream()
-        .filter(metadata -> request.path().matches(metadata.getPath()))
-        .findFirst();
-
-    if (serviceEntry.isPresent()) {
-      Observable<HttpClientResponse> serviceResponse = request(
-          httpClient, request.method(), serviceEntry.get().getPort(), serviceEntry.get().getDomain(), request.path(),
-          req -> buildRequestBody(req, getFilteredHeaders(request.headers(), serviceEntry.get().getAllowedRequestHeaderPatterns()), request.formAttributes(),
-              request.method()));
-
-      return serviceResponse.flatMap(item -> transformResponse(item, request.method(), request.path()));
-    } else {
-      LOGGER.error("Could not handle request with path [{}]", request.path());
-      return Observable.just(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST));
+  private void validateContract(JsonObject message) {
+    final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
+    if (!pathPresent) {
+      throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
 
-  private Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+  private Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> prepareRequest(JsonObject message) {
+    final Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest;
+
+    final HttpRequestWrapper originalRequest = new HttpRequestWrapper(message.getJsonObject(REQUEST_KEY));
+    final JsonObject params = message.getJsonObject(PARAMS_KEY);
+
+    final String servicePath = UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest);
+
+    final Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
+    if (serviceMetadata.isPresent()) {
+      final HttpRequestWrapper serviceRequestWrapper = new HttpRequestWrapper(originalRequest.toJson());
+      serviceRequestWrapper.setPath(servicePath);
+      serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
+    } else {
+      final String error = String.format("Parameter `params.path`: `%s` not supported!", servicePath);
+      throw new UnsupportedServiceException(error);
+    }
+
+    return serviceRequest;
+  }
+
+  private Optional<HttpServiceAdapterConfiguration.ServiceMetadata> findServiceMetadata(String servicePath) {
+    return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
+  }
+
+  private Observable<HttpClientResponse> callService(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
+    final HttpRequestWrapper requestWrapper = serviceRequest.getLeft();
+    final HttpServiceAdapterConfiguration.ServiceMetadata serviceMetadata = serviceRequest.getRight();
+
     return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
+      HttpClientRequest request = httpClient.get(serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
+      Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
+      request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
+      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
+
+      request.end();
     });
   }
 
@@ -91,37 +118,20 @@ class HttpClientFacade {
         .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
   }
 
-  private Observable<HttpResponseWrapper> transformResponse(HttpClientResponse response, HttpMethod method, String path) {
-    return Observable.just(Buffer.buffer()).mergeWith(response.toObservable()).reduce(Buffer::appendBuffer)
-        .doOnNext(buffer -> traceServiceCall(method, path, buffer))
-        .map(buffer -> new HttpResponseWrapper().setBody(buffer).setStatusCode(HttpResponseStatus.valueOf(response.statusCode())));
+  private Observable<HttpResponseWrapper> wrapResponse(HttpClientResponse response) {
+    return Observable.just(Buffer.buffer())
+        .mergeWith(response.toObservable())
+        .reduce(Buffer::appendBuffer)
+        .doOnNext(this::traceServiceCall)
+        .map(buffer -> new HttpResponseWrapper()
+            .setBody(buffer)
+            .setStatusCode(HttpResponseStatus.valueOf(response.statusCode()))
+        );
   }
 
-  private void buildRequestBody(HttpClientRequest request, MultiMap headers,
-                                MultiMap formAttributes, HttpMethod httpMethod) {
-    request.headers().setAll(headers);
-
-    if (HttpMethod.POST.equals(httpMethod)) {
-      Buffer buffer = createFormPostBody(formAttributes);
-      request.headers().set(HttpHeaders.CONTENT_LENGTH.toString(), String.valueOf(buffer.length()));
-      request.write(buffer);
-    } else {
-      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
-    }
-  }
-
-  private Buffer createFormPostBody(MultiMap formAttributes) {
-    Buffer buffer = Buffer.buffer();
-
-    String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
-    buffer.appendString(formPostContent, Charsets.UTF_8.toString());
-    return buffer;
-  }
-
-  private void traceServiceCall(HttpMethod method, String path, Buffer results) {
+  private void traceServiceCall(Buffer results) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}>", method, path, results.toJsonObject().encodePrettily());
+      LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
     }
   }
 }

@@ -19,7 +19,6 @@ package com.cognifide.knotx.example.monolith;
 
 import com.google.common.collect.Maps;
 
-import com.cognifide.knotx.engine.service.KnotxRxHelper;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -42,11 +41,12 @@ import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
+import rx.functions.Action1;
 
 
-@Ignore
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
 
@@ -81,12 +81,14 @@ public class SampleApplicationTest {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
@@ -94,6 +96,7 @@ public class SampleApplicationTest {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithXhrAndPostAForm_expectOnlyRenderedSnippetWithFormReturned(TestContext context) {
@@ -104,7 +107,7 @@ public class SampleApplicationTest {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
 
     Async async = context.async();
-    Observable<HttpClientResponse> request = KnotxRxHelper.request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
+    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
       String bodyForm = formData.entrySet().stream()
           .map(entry -> entry.getKey() + "=" + entry.getValue())
           .reduce((p1, p2) -> p1 + "&" + p2).get();
@@ -161,6 +164,16 @@ public class SampleApplicationTest {
     data.put("_id", "competition-form");
 
     return data;
+  }
+
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
   }
 
 }

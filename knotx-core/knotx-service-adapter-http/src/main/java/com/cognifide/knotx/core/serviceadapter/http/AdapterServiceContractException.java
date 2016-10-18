@@ -17,24 +17,11 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http;
 
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-
-public class AllowedHeadersFilter implements Predicate<String> {
-
-  private final List<Pattern> patterns;
-
-  private AllowedHeadersFilter(List<Pattern> patterns) {
-    this.patterns = patterns;
-  }
-
-  public static AllowedHeadersFilter create(List<Pattern> patterns) {
-    return new AllowedHeadersFilter(patterns);
-  }
-
-  @Override
-  public boolean test(String header) {
-    return patterns.stream().anyMatch(pattern -> pattern.matcher(header).matches());
+/**
+ * Thrown to indicate that adapter service contract was violated.
+ */
+class AdapterServiceContractException extends RuntimeException {
+  AdapterServiceContractException(String message) {
+    super(message);
   }
 }

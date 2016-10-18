@@ -50,7 +50,8 @@
       <script data-api-type="templating"
               type="text/x-handlebars-template"
               data-uri-post-formresponse="/service/mock/subscribeToCompetition.json"
-              data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
+              data-service-labelsrepository="labelsRepository"
+              data-params-labelsrepository='{"path":"/service/mock/labelsRepository.json"}'
               data-id="competition-form">
         <h1>{{labelsrepository._result.welcomeInCompetition}}</h1>
         {{#if formresponse._result}}
@@ -80,7 +81,8 @@
       <script data-api-type="templating"
               type="text/x-handlebars-template"
               data-uri-post-formresponse="/service/mock/subscribeToNewsletter.json"
-              data-uri-all-labelsrepository="/service/mock/labelsRepository.json"
+              data-service-labelsrepository="labelsRepository"
+              data-params-labelsrepository='{"path":"/service/mock/labelsRepository.json"}'
               data-id="newsletter-form">
         <div id="newsletter-form-wrapper">
           <h1>{{labelsrepository._result.subscribeToNewsletter}}</h1>

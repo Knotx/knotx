@@ -26,9 +26,9 @@ import java.util.regex.Pattern;
 
 public final class ServiceAttributeUtil {
 
-  private static final int NAMESPACE_GROUP_INDEX = 2;
+  private static final int NAMESPACE_GROUP_INDEX = 3;
 
-  private static final String ATTR_REGEX = "data-service(-(\\w*))?";
+  private static final String ATTR_REGEX = "data-(service|params)+(-(\\w*))?";
 
   private static final Pattern ATTR_PATTERN = Pattern.compile(ATTR_REGEX);
 
