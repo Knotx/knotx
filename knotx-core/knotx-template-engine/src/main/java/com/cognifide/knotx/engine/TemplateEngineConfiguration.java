@@ -48,7 +48,7 @@ public class TemplateEngineConfiguration {
     templateDebug = config.getBoolean("template.debug", false);
   }
 
-  public String getAddress() {
+  String getAddress() {
     return address;
   }
 
@@ -107,19 +107,19 @@ public class TemplateEngineConfiguration {
       return cacheKey;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
       this.name = name;
     }
 
-    public void setAddress(String address) {
+    void setAddress(String address) {
       this.address = address;
     }
 
-    public void setParams(JsonObject params) {
+    void setParams(JsonObject params) {
       this.params = params;
     }
 
-    public void setCacheKey(String cacheKey) {
+    void setCacheKey(String cacheKey) {
       this.cacheKey = cacheKey;
     }
   }
