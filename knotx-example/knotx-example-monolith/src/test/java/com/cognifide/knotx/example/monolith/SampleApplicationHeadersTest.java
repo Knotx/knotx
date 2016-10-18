@@ -36,7 +36,6 @@ import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 
-@Ignore
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationHeadersTest {
 
