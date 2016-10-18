@@ -26,9 +26,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.stream.Collectors;
-
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -48,7 +45,7 @@ public class ServiceCorrectConfigurationTest {
   public void setUp() throws Exception {
     JsonObject config = new JsonObject(FileReader.readText("service-correct.json"));
     correctConfig = new TemplateEngineConfiguration(config);
-    expectedService = createMockedService("test", "address", "{\"path\":\"/service/mock/.*\"}");
+    expectedService = createMockedService("first-service", "knotx.core-adapter", "{\"path\":\"/service/mock/first.json\"}", "first");
   }
 
   @Test
@@ -58,11 +55,12 @@ public class ServiceCorrectConfigurationTest {
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedService));
   }
 
-  private ServiceMetadata createMockedService(String name, String address, String config) {
+  private ServiceMetadata createMockedService(String name, String address, String params, String cacheKey) {
     ServiceMetadata newService = new ServiceMetadata();
     newService.setName(name);
     newService.setAddress(address);
-    newService.setConfig(new JsonObject(config));
+    newService.setParams(new JsonObject(params));
+    newService.setCacheKey(cacheKey);
     return newService;
   }
 

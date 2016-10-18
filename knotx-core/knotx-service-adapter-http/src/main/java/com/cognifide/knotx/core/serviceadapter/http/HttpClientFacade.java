@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -111,12 +112,15 @@ class HttpClientFacade {
       Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
       request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
-      if (!requestWrapper.formAttributes().isEmpty() && HttpMethod.POST == requestWrapper.method()) {
+
+      if (HttpMethod.POST == requestWrapper.method()) {
         Buffer buffer = createFormPostBody(requestWrapper.formAttributes());
-        request.headers().set("content-length", String.valueOf(buffer.length()));
-        request.headers().set("content-type", "application/x-www-form-urlencoded");
+        request.headers().set(HttpHeaders.CONTENT_LENGTH.toString(), String.valueOf(buffer.length()));
         request.write(buffer);
+      } else {
+        request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
       }
+
       request.end();
     });
   }

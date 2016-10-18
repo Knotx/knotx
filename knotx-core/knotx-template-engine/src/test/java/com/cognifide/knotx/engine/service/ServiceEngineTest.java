@@ -28,7 +28,6 @@ import com.cognifide.knotx.junit.Logback;
 import org.jsoup.nodes.Attribute;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -47,7 +46,6 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
@@ -92,10 +90,10 @@ public class ServiceEngineTest {
 
     Attribute mockedServiceAttribute = new Attribute("data-service-" + namespace, name);
     Attribute mockedParamsAttribute = new Attribute("data-params-" + namespace, params);
-    ServiceEntry serviceEntry = ServiceEntry.of(mockedServiceAttribute, mockedParamsAttribute);
+    ServiceEntry serviceEntry = new ServiceEntry(mockedServiceAttribute, mockedParamsAttribute);
     TemplateEngineConfiguration correctConfig = new TemplateEngineConfiguration(config);
 
-    serviceEntry.mergePayload(correctConfig.getServices().stream().findFirst().get().getConfig());
+    serviceEntry.mergeParams(correctConfig.getServices().stream().findFirst().get().getParams());
     serviceEntry.setAddress(correctConfig.getServices().stream().findFirst().get().getAddress());
     return serviceEntry;
   }

@@ -94,21 +94,22 @@
           {
             "name" : "first-service",
             "address" : "knotx.core-adapter",
-            "config": {
+            "params": {
               "path": "/service/mock/first.json"
-            }
+            },
+            "cacheKey": "first"
           },
           {
             "name" : "second-service",
             "address" : "knotx.core-adapter",
-            "config": {
+            "params": {
               "path": "/service/mock/second.json"
             }
           },
           {
             "name" : "third-service",
             "address" : "knotx.core-adapter",
-            "config": {
+            "params": {
               "path": "/service/mock/third.json"
             }
           }

@@ -43,7 +43,8 @@ public class TemplateEngineConfiguration {
           ServiceMetadata metadata = new ServiceMetadata();
           metadata.name = item.getString("name");
           metadata.address = item.getString("address");
-          metadata.config = item.getJsonObject("config");
+          metadata.params = item.getJsonObject("params");
+          metadata.cacheKey = item.getString("cacheKey");
           return metadata;
         }).collect(Collectors.toList());
     templateDebug = config.getBoolean("template.debug", false);
@@ -70,7 +71,8 @@ public class TemplateEngineConfiguration {
 
     private String name;
     private String address;
-    private JsonObject config;
+    private JsonObject params;
+    private String cacheKey;
 
     @Override
     public boolean equals(Object obj) {
@@ -79,7 +81,8 @@ public class TemplateEngineConfiguration {
         return new EqualsBuilder()
             .append(name, other.getName())
             .append(address, other.getAddress())
-            .append(config, other.getConfig()).isEquals();
+            .append(params, other.getParams())
+            .append(cacheKey, other.getCacheKey()).isEquals();
       } else {
         return false;
       }
@@ -90,7 +93,8 @@ public class TemplateEngineConfiguration {
       return new HashCodeBuilder()
           .append(name)
           .append(address)
-          .append(config)
+          .append(params)
+          .append(cacheKey)
           .toHashCode();
     }
 
@@ -102,8 +106,12 @@ public class TemplateEngineConfiguration {
       return address;
     }
 
-    public JsonObject getConfig() {
-      return config;
+    public JsonObject getParams() {
+      return params;
+    }
+
+    public String getCacheKey() {
+      return cacheKey;
     }
 
     public void setName(String name) {
@@ -114,8 +122,12 @@ public class TemplateEngineConfiguration {
       this.address = address;
     }
 
-    public void setConfig(JsonObject config) {
-      this.config = config;
+    public void setParams(JsonObject params) {
+      this.params = params;
+    }
+
+    public void setCacheKey(String cacheKey) {
+      this.cacheKey = cacheKey;
     }
   }
 }

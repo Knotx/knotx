@@ -17,36 +17,18 @@
  */
 package com.cognifide.knotx.engine.service;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.engine.AllowedHeadersFilter;
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-import com.cognifide.knotx.engine.AllowedHeadersFilter;
-import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.placeholders.UriTransformer;
 
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.http.HttpClientRequest;
-import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
 public class ServiceEngine {
@@ -66,69 +48,35 @@ public class ServiceEngine {
 
   public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
                                               RenderRequest renderRequest) {
-//    ServicePayload payload = new ServicePayload(renderRequest, new ServicePayload.ServiceRequest(params.getString("path"), renderRequest.request().method().toString()));
-//    HttpRequestWrapper requestWrapper = new Re
+    JsonObject serviceMessage = new JsonObject();
+    serviceMessage.put("request", renderRequest.request().toJson());
+    serviceMessage.put("params", serviceEntry.getParams());
+    Observable<Message<JsonObject>> serviceResponse = eventBus.sendObservable(serviceEntry.getAddress(), serviceMessage);
 
-    JsonObject payload = new JsonObject();
-    Observable<Message<Object>> serviceResponse = eventBus.sendObservable(serviceEntry.getAddress(), payload);
-
-//    return serviceResponse.flatMap(item -> transformResponse(item, serviceEntry));
-    return null;
+    return serviceResponse.flatMap(item -> transformResponse(serviceResponse, serviceEntry));
   }
 
-  private Observable<JsonObject> transformResponse(HttpClientResponse response, ServiceEntry serviceEntry) {
-    return Observable.just(Buffer.buffer()).mergeWith(response.toObservable())
-        .reduce(Buffer::appendBuffer)
-        .doOnNext(buffer -> traceServiceCall(buffer, serviceEntry))
-        .map(this::buildResultObject)
-        .map(results ->
-            results.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode()))
-        );
+  private Observable<JsonObject> transformResponse(Observable<Message<JsonObject>> response, ServiceEntry serviceEntry) {
+    return response.map(jsonResponse -> new HttpResponseWrapper(jsonResponse.body()))
+        .doOnNext(httpResponseWrapper -> traceServiceCall(httpResponseWrapper.body(), serviceEntry))
+        .map(this::buildResultObject);
   }
 
-  private void buildRequestBody(HttpClientRequest request, MultiMap headers,
-                                MultiMap formAttributes, HttpMethod httpMethod) {
-    request.headers().setAll(headers);
-
-    if (HttpMethod.POST.equals(httpMethod)) {
-      Buffer buffer = createFormPostBody(formAttributes);
-      request.headers().set(HttpHeaders.CONTENT_LENGTH.toString(), String.valueOf(buffer.length()));
-      request.write(buffer);
-    } else {
-      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
-    }
-  }
-
-  private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
-    return headers.names().stream()
-        .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
-  }
-
-
-  private Buffer createFormPostBody(MultiMap formAttributes) {
-    Buffer buffer = Buffer.buffer();
-
-    String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
-    buffer.appendString(formPostContent, Charsets.UTF_8.toString());
-    return buffer;
-  }
-
-  public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
+  public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
     return configuration.getServices().stream()
         .filter(service -> serviceEntry.getName().matches(service.getName()))
-        .findFirst().map(metadata -> {
-          serviceEntry.setAddress(metadata.getAddress());
-          return serviceEntry.mergePayload(metadata.getConfig());
-        })
+        .findFirst().map(metadata ->
+            serviceEntry.setAddress(metadata.getAddress())
+                .mergeParams(metadata.getParams())
+                .overrideCacheKey(metadata.getCacheKey())
+        )
         .get();
   }
 
-  private JsonObject buildResultObject(Buffer buffer) {
+  private JsonObject buildResultObject(HttpResponseWrapper response) {
     JsonObject object = new JsonObject();
 
-    String rawData = buffer.toString().trim();
+    String rawData = response.body().toString().trim();
 
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
@@ -137,13 +85,13 @@ public class ServiceEngine {
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-
+    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode()));
     return object;
   }
 
   private void traceServiceCall(Buffer results, ServiceEntry entry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getPayload());
+      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getParams());
     }
   }
 }
