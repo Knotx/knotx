@@ -25,6 +25,8 @@ import com.cognifide.knotx.engine.AllowedHeadersFilter;
 import com.cognifide.knotx.engine.MultiMapCollector;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -110,12 +112,15 @@ public class ServiceEngine {
     return buffer;
   }
 
-  public ServiceEntry findServiceLocation(final ServiceEntry serviceEntry) {
+  public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
     return configuration.getServices().stream()
         .filter(service -> serviceEntry.getName().matches(service.getName()))
         .findFirst().map(metadata -> {
           serviceEntry.setAddress(metadata.getAddress());
-          return serviceEntry.mergePayload(metadata.getConfig());
+          if (StringUtils.isNotEmpty(metadata.getCacheKey())) {
+            serviceEntry.overrideCacheKey(metadata.getCacheKey());
+          }
+          return serviceEntry.mergeParams(metadata.getParams());
         })
         .get();
   }
@@ -138,7 +143,7 @@ public class ServiceEngine {
 
   private void traceServiceCall(Buffer results, ServiceEntry entry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getPayload());
+      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getParams());
     }
   }
 }

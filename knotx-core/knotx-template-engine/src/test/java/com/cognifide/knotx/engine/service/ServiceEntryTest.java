@@ -41,27 +41,27 @@ public class ServiceEntryTest {
 
   @Test
   public void mergePayload_pathFromParamsAttribute() {
-    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-service-first", "first-service"),
+    ServiceEntry serviceEntry = new ServiceEntry(new Attribute("data-service-first", "first-service"),
         new Attribute("data-params-first", "{\"path\":\"first-service\"}"));
-    serviceEntry.mergePayload(config.getServices().stream().findFirst().get().getConfig());
-    Assert.assertEquals("first-service", serviceEntry.getPayload().getString("path"));
+    serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
+    Assert.assertEquals("first-service", serviceEntry.getParams().getString("path"));
   }
 
   @Test
   public void mergePayload_pathFromConfigAttribute() {
-    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-service-first", "first-service"),
+    ServiceEntry serviceEntry = new ServiceEntry(new Attribute("data-service-first", "first-service"),
         new Attribute("data-params-first", "{}"));
-    serviceEntry.mergePayload(config.getServices().stream().findFirst().get().getConfig());
-    Assert.assertEquals("/service/mock/first.json", serviceEntry.getPayload().getString("path"));
+    serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
+    Assert.assertEquals("/service/mock/first.json", serviceEntry.getParams().getString("path"));
   }
 
   @Test
   public void mergePayload_nameFromParamsAttribute() {
-    ServiceEntry serviceEntry = ServiceEntry.of(new Attribute("data-service-first", "first-service"),
+    ServiceEntry serviceEntry = new ServiceEntry(new Attribute("data-service-first", "first-service"),
         new Attribute("data-params-first", "{\"name\":\"first-service-name\"}"));
-    serviceEntry.mergePayload(config.getServices().stream().findFirst().get().getConfig());
-    Assert.assertEquals("/service/mock/first.json", serviceEntry.getPayload().getString("path"));
-    Assert.assertEquals("first-service-name", serviceEntry.getPayload().getString("name"));
+    serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
+    Assert.assertEquals("/service/mock/first.json", serviceEntry.getParams().getString("path"));
+    Assert.assertEquals("first-service-name", serviceEntry.getParams().getString("name"));
   }
 
 }

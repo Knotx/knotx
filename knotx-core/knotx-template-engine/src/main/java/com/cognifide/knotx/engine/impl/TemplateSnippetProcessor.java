@@ -31,7 +31,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
 public class TemplateSnippetProcessor {
@@ -55,9 +54,8 @@ public class TemplateSnippetProcessor {
     LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
     return Observable.just(fragment)
         .flatMap(HtmlFragment::getServices)
-//        .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
         .doOnNext(this::traceService)
-        .map(serviceEngine::findServiceLocation)
+        .map(serviceEngine::mergeWithConfiguration)
         .flatMap(serviceEntry ->
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
@@ -67,7 +65,7 @@ public class TemplateSnippetProcessor {
   }
 
   public Observable<JsonObject> fetchServiceData(ServiceEntry service, RenderRequest request) {
-    LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getPayload());
+    LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
       return request.getCache().get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
     } catch (ExecutionException e) {
@@ -106,7 +104,7 @@ public class TemplateSnippetProcessor {
 
   private void traceService(ServiceEntry serviceEntry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(), serviceEntry.getPayload());
+      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(), serviceEntry.getParams());
     }
   }
 

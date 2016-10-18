@@ -32,21 +32,22 @@ public class ServiceEntry {
   private String name;
   private String address;
   private String cacheKey;
-  private JsonObject payload;
+  private JsonObject params;
 
-  private ServiceEntry() {
-    //Hidden constructors
+  public ServiceEntry(Attribute serviceAttribute, Attribute paramsAttribute) {
+    this.namespace = ServiceAttributeUtil.extractNamespace(serviceAttribute.getKey());
+    this.name = serviceAttribute.getValue();
+    this.params = getParams(paramsAttribute);
+    this.cacheKey = String.format("%s|%s", getName(), getParams());
   }
 
-  public static ServiceEntry of(Attribute serviceAttribute, Attribute paramsAttribute) {
-    ServiceEntry entry = new ServiceEntry();
+  public void overrideCacheKey(String newCacheKey) {
+    this.cacheKey = newCacheKey;
+  }
 
-    entry.namespace = ServiceAttributeUtil.extractNamespace(serviceAttribute.getKey());
-    entry.name = serviceAttribute.getValue();
-    entry.payload = new JsonObject(paramsAttribute.getValue());
-    entry.cacheKey = serviceAttribute.getValue() + paramsAttribute.getValue();
-
-    return entry;
+  public ServiceEntry mergeParams(JsonObject defaultParams) {
+    this.params = defaultParams.copy().mergeIn(this.params);
+    return this;
   }
 
   public String getNamespace() {
@@ -61,26 +62,12 @@ public class ServiceEntry {
     return address;
   }
 
-  public JsonObject getPayload() {
-    return payload;
-  }
-
   public String getCacheKey() {
     return cacheKey;
   }
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public void setCacheKey(String cacheKey) {
-    this.cacheKey = cacheKey;
-  }
-
-  public ServiceEntry mergePayload(JsonObject config) {
-    JsonObject merged = config.mergeIn(this.payload);
-    this.payload = merged;
-    return this;
+  public JsonObject getParams() {
+    return params;
   }
 
   public JsonObject getResultWithNamespaceAsKey(JsonObject result) {
@@ -99,7 +86,7 @@ public class ServiceEntry {
           .append(namespace, other.getNamespace())
           .append(name, other.getName())
           .append(cacheKey, other.getCacheKey())
-          .append(payload, other.getPayload())
+          .append(params, other.getParams())
           .isEquals();
     } else {
       return false;
@@ -109,7 +96,21 @@ public class ServiceEntry {
 
   @Override
   public int hashCode() {
-    return Objects.hash(namespace, name, cacheKey, payload);
+    return Objects.hash(namespace, name, cacheKey, params);
+  }
+
+  void setAddress(String address) {
+    this.address = address;
+  }
+
+  private JsonObject getParams(Attribute paramsAttribute) {
+    final JsonObject result;
+    if (paramsAttribute == null || StringUtils.isEmpty(paramsAttribute.getValue())) {
+      result = new JsonObject();
+    } else {
+      result = new JsonObject(paramsAttribute.getValue());
+    }
+    return result;
   }
 
 }

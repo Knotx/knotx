@@ -73,7 +73,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
         .collect(Collectors.toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()), Function.identity()));
 
     services = serviceAttributes.entrySet().stream()
-        .map(entry -> ServiceEntry.of(entry.getValue(), paramsAttributes.get(entry.getKey())))
+        .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
         .collect(Collectors.toList());
 
     dataId = getDataIdAttr(attributes);
