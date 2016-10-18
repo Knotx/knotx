@@ -33,6 +33,8 @@ import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
 
+  private boolean displayExceptionDetails;
+
   private Integer httpPort;
 
   private Set<String> allowedResponseHeaders;
@@ -43,6 +45,8 @@ public class KnotxServerConfiguration {
 
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("http.port");
+
+    displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
     engineRouting = Maps.newEnumMap(HttpMethod.class);
     config.getJsonObject("engines").stream()
@@ -56,6 +60,10 @@ public class KnotxServerConfiguration {
     allowedResponseHeaders = config.getJsonArray("allowed.response.headers").stream()
         .map(item -> ((String) item).toLowerCase())
         .collect(Collectors.toSet());
+  }
+
+  public boolean displayExceptionDetails() {
+    return displayExceptionDetails;
   }
 
   public Integer httpPort() {

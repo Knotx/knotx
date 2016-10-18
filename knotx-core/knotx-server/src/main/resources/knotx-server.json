@@ -1,5 +1,6 @@
 {
   "http.port": 8092,
+  "displayExceptionDetails": true,
   "allowed.response.headers": [
     "referer",
     "user-agent",
