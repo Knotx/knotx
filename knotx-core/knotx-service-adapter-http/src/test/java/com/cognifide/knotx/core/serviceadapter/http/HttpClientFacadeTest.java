@@ -90,8 +90,8 @@ public class HttpClientFacadeTest {
     // then
     result.subscribe(
         response -> {
-          context.assertEquals(response.statusCode(), HttpResponseStatus.OK);
-          context.assertEquals(response.body().toJsonObject(), expectedResponse);
+          context.assertEquals(HttpResponseStatus.OK, response.statusCode());
+          context.assertEquals(expectedResponse, response.body().toJsonObject());
           verify(httpClient, times(1)).get(anyInt(), anyString(), anyString());
         },
         error -> context.fail(error.getMessage()),
@@ -113,11 +113,14 @@ public class HttpClientFacadeTest {
 
     // then
     result.subscribe(
-        response -> {
-          context.assertEquals(response.statusCode(), HttpResponseStatus.BAD_REQUEST);
-          verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+        response -> context.fail("Error should occur!"),
+        error -> {
+          {
+            context.assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
+            verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+            async.complete();
+          }
         },
-        error -> context.fail(error.getMessage()),
         async::complete);
   }
 
@@ -134,11 +137,14 @@ public class HttpClientFacadeTest {
 
     // then
     result.subscribe(
-        response -> {
-          context.assertEquals(response.statusCode(), HttpResponseStatus.BAD_REQUEST);
-          verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+        response -> context.fail("Error should occur!"),
+        error -> {
+          {
+            context.assertEquals("Parameter `params.path`: `/not/supported/path` not supported!", error.getMessage());
+            verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+            async.complete();
+          }
         },
-        error -> context.fail(error.getMessage()),
         async::complete);
   }
 

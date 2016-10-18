@@ -49,7 +49,7 @@ class HttpClientFacade {
   private static final String REQUEST_KEY = "request";
   private static final String PARAMS_KEY = "params";
   private static final String PATH_PROPERTY_KEY = "path";
-  private static final HttpResponseWrapper DEFAULT_ERROR_RESPONSE = new HttpResponseWrapper().setStatusCode(HttpResponseStatus.BAD_REQUEST);
+  private static final HttpResponseWrapper INTERNAL_SERVER_ERROR_RESPONSE = new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
   private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
 
@@ -62,16 +62,19 @@ class HttpClientFacade {
 
   Observable<HttpResponseWrapper> process(JsonObject message) {
     return Observable.just(message)
-        .filter(this::validateContract)
+        .doOnNext(this::validateContract)
         .map(this::prepareRequest)
-        .filter(this::ensureRequestIsSupported)
+        .doOnNext(this::ensureRequestIsSupported)
         .flatMap(this::callService)
         .flatMap(this::wrapResponse)
-        .defaultIfEmpty(DEFAULT_ERROR_RESPONSE);
+        .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
   }
 
-  private Boolean validateContract(JsonObject message) {
-    return message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
+  private void validateContract(JsonObject message) {
+    final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
+    if (!pathPresent) {
+      throw new RuntimeException("Parameter `path` was not defined in `params`!");
+    }
   }
 
   private Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> prepareRequest(JsonObject message) {
@@ -89,7 +92,7 @@ class HttpClientFacade {
       serviceRequestWrapper.setPath(servicePath);
       serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
     } else {
-      serviceRequest = Pair.of(null, null);
+      serviceRequest = Pair.of(new HttpRequestWrapper().setPath(servicePath), null);
     }
 
     return serviceRequest;
@@ -99,8 +102,12 @@ class HttpClientFacade {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Boolean ensureRequestIsSupported(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
-    return serviceRequest.getRight() != null;
+  private void ensureRequestIsSupported(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
+    final boolean anyServiceSupportsPath = serviceRequest.getRight() != null;
+    if (!anyServiceSupportsPath) {
+      final String error = String.format("Parameter `params.path`: `%s` not supported!", serviceRequest.getLeft().path());
+      throw new RuntimeException(error);
+    }
   }
 
   private Observable<HttpClientResponse> callService(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
