@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-
 import com.cognifide.knotx.core.serviceadapter.http.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
@@ -27,13 +24,11 @@ import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -111,14 +106,7 @@ class HttpClientFacade {
       Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
       request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
-
-      if (HttpMethod.POST == requestWrapper.method()) {
-        Buffer buffer = createFormPostBody(requestWrapper.formAttributes());
-        request.headers().set(HttpHeaders.CONTENT_LENGTH.toString(), String.valueOf(buffer.length()));
-        request.write(buffer);
-      } else {
-        request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
-      }
+      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
 
       request.end();
     });
@@ -128,15 +116,6 @@ class HttpClientFacade {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
         .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
-  }
-
-  private Buffer createFormPostBody(MultiMap formAttributes) {
-    Buffer buffer = Buffer.buffer();
-
-    String formPostContent = Joiner.on("&").withKeyValueSeparator("=")
-        .join((Iterable<Map.Entry<String, String>>) formAttributes.getDelegate());
-    buffer.appendString(formPostContent, Charsets.UTF_8.toString());
-    return buffer;
   }
 
   private Observable<HttpResponseWrapper> wrapResponse(HttpClientResponse response) {
