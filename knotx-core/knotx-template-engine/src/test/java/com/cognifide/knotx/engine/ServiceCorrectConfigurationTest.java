@@ -17,62 +17,50 @@
  */
 package com.cognifide.knotx.engine;
 
+import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import java.util.stream.Collectors;
-
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 
-public class ServiceCorrectConfigurationTest extends AbstractKnotxConfigurationTest {
+public class ServiceCorrectConfigurationTest {
 
-  private static final String CORRECT_JSON = "service-correct.json";
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
 
   private TemplateEngineConfiguration correctConfig;
-
-  private ServiceMetadata expectedServiceOne;
-  private ServiceMetadata expectedServiceTwo;
+  private ServiceMetadata expectedService;
 
   @Before
   public void setUp() throws Exception {
-    correctConfig = new TemplateEngineConfiguration(readJson(CORRECT_JSON));
-    expectedServiceOne = createMockedService("/service/mock/.*", "localhost", 3000, new JsonArray().add("Accept-*").add("Location"));
-    expectedServiceTwo = createMockedService("/service/.*", "localhost", 8080, new JsonArray());
+    JsonObject config = new JsonObject(FileReader.readText("service-correct.json"));
+    correctConfig = new TemplateEngineConfiguration(config);
+    expectedService = createMockedService("first-service", "knotx.core-adapter", "{\"path\":\"/service/mock/first.json\"}", "first");
   }
 
   @Test
   public void whenCorrectConfigIsProvided_expectConfigIsProperlyParsed() {
     assertThat(correctConfig.getServices(), is(notNullValue()));
-    assertThat(correctConfig.getServices().size(), is(2));
-    assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceOne));
-    assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedServiceTwo));
-    assertEquals(correctConfig.getServices().get(0).getAllowedRequestHeaderPatterns().toString(), expectedServiceOne.getAllowedRequestHeaderPatterns().toString());
-    assertEquals(correctConfig.getServices().get(1).getAllowedRequestHeaderPatterns().toString(), expectedServiceTwo.getAllowedRequestHeaderPatterns().toString());
+    assertThat(correctConfig.getServices().size(), is(1));
+    assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedService));
   }
 
-  @Test
-  public void whenAllowedHeaderSyntaxIsIncorrect_expectException() {
-    exception.expect(RuntimeException.class);
-    createMockedService("/service/.*", "localhost", 8080, new JsonArray().add("Accept("));
-  }
-
-  private ServiceMetadata createMockedService(String path, String domain, Integer port, JsonArray allowedHeaders) {
+  private ServiceMetadata createMockedService(String name, String address, String params, String cacheKey) {
     ServiceMetadata newService = new ServiceMetadata();
-    newService.setPath(path);
-    newService.setDomain(domain);
-    newService.setPort(port);
-    newService.setAllowedRequestHeaderPatterns(allowedHeaders.stream()
-      .map(o -> (String) o)
-      .map(new StringToPatternMap())
-      .collect(Collectors.toList()));
+    newService.setName(name);
+    newService.setAddress(address);
+    newService.setParams(new JsonObject(params));
+    newService.setCacheKey(cacheKey);
     return newService;
   }
 

@@ -21,10 +21,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class TemplateEngineConfiguration {
@@ -35,28 +33,22 @@ public class TemplateEngineConfiguration {
 
   private boolean templateDebug;
 
-  private JsonObject clientOptions;
-
   public TemplateEngineConfiguration(JsonObject config) {
     address = config.getString("address");
     services = config.getJsonArray("services").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
           ServiceMetadata metadata = new ServiceMetadata();
-          metadata.path = item.getString("path");
-          metadata.domain = item.getString("domain");
-          metadata.port = item.getInteger("port");
-          metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
-              .map(object -> (String) object)
-              .map(new StringToPatternMap())
-              .collect(Collectors.toList());
+          metadata.name = item.getString("name");
+          metadata.address = item.getString("address");
+          metadata.params = item.getJsonObject("params");
+          metadata.cacheKey = item.getString("cacheKey");
           return metadata;
         }).collect(Collectors.toList());
     templateDebug = config.getBoolean("template.debug", false);
-    clientOptions = config.getJsonObject("client.options", new JsonObject());
   }
 
-  public String getAddress() {
+  String getAddress() {
     return address;
   }
 
@@ -68,28 +60,22 @@ public class TemplateEngineConfiguration {
     return templateDebug;
   }
 
-  public JsonObject getClientOptions() {
-    return clientOptions;
-  }
-
   public static class ServiceMetadata {
 
-    private String path;
-
-    private String domain;
-
-    private Integer port;
-
-    private List<Pattern> allowedRequestHeaderPatterns;
+    private String name;
+    private String address;
+    private JsonObject params;
+    private String cacheKey;
 
     @Override
     public boolean equals(Object obj) {
       if (obj != null && obj instanceof ServiceMetadata) {
         final ServiceMetadata other = (ServiceMetadata) obj;
         return new EqualsBuilder()
-            .append(path, other.getPath())
-            .append(domain, other.getDomain())
-            .append(port, other.getPort()).isEquals();
+            .append(name, other.getName())
+            .append(address, other.getAddress())
+            .append(params, other.getParams())
+            .append(cacheKey, other.getCacheKey()).isEquals();
       } else {
         return false;
       }
@@ -98,42 +84,43 @@ public class TemplateEngineConfiguration {
     @Override
     public int hashCode() {
       return new HashCodeBuilder()
-          .append(path)
-          .append(domain)
-          .append(port)
+          .append(name)
+          .append(address)
+          .append(params)
+          .append(cacheKey)
           .toHashCode();
     }
 
-    public String getPath() {
-      return path;
+    public String getName() {
+      return name;
     }
 
-    public void setPath(String path) {
-      this.path = path;
+    public String getAddress() {
+      return address;
     }
 
-    public String getDomain() {
-      return domain;
+    public JsonObject getParams() {
+      return params;
     }
 
-    public void setDomain(String domain) {
-      this.domain = domain;
+    public String getCacheKey() {
+      return cacheKey;
     }
 
-    public Integer getPort() {
-      return port;
+    void setName(String name) {
+      this.name = name;
     }
 
-    public void setPort(Integer port) {
-      this.port = port;
+    void setAddress(String address) {
+      this.address = address;
     }
 
-    public List<Pattern> getAllowedRequestHeaderPatterns() {
-      return allowedRequestHeaderPatterns;
+    void setParams(JsonObject params) {
+      this.params = params;
     }
 
-    public void setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
-      this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
+    void setCacheKey(String cacheKey) {
+      this.cacheKey = cacheKey;
     }
   }
 }

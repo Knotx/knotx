@@ -88,6 +88,44 @@
         },
         "services": [
           {
+            "name" : "first-service",
+            "address" : "mock-adapter-service",
+            "params": {
+              "path": "/service/mock/first.json"
+            },
+            "cacheKey": "first"
+          },
+          {
+            "name" : "second-service",
+            "address" : "mock-adapter-service",
+            "params": {
+              "path": "/service/mock/second.json"
+            }
+          },
+          {
+            "name" : "third-service",
+            "address" : "mock-adapter-service",
+            "params": {
+              "path": "/service/mock/third.json"
+            }
+          },
+          {
+            "name" : "labelsRepository",
+            "address" : "mock-adapter-service",
+            "params": {}
+          }
+        ]
+      }
+    },
+    "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle" :{
+      "config": {
+        "address": "knotx.core.service-adapter",
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
+        },
+        "services": [
+          {
             "path": "/service/mock/.*",
             "domain": "localhost",
             "port": 3000,
@@ -119,6 +157,12 @@
         "mock.data.root": "mock/service",
         "bouncing" : true,
         "http.port": 3000
+      }
+    },
+    "com.cognifide.knotx.mocks.MockServiceAdapterVerticle": {
+      "config": {
+        "address" : "mock-adapter-service",
+        "mock.data.root": "mock/service"
       }
     }
   }

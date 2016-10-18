@@ -67,6 +67,11 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-service-adapter-http</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-mocks</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -102,7 +107,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-template-engine</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>

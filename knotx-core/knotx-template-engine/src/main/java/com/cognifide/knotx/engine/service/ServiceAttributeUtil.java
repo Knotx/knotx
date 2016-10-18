@@ -18,21 +18,17 @@
 package com.cognifide.knotx.engine.service;
 
 
-import com.cognifide.knotx.dataobjects.ServiceCallMethod;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class ServiceAttributeUtil {
+public final class ServiceAttributeUtil {
 
-  private static final int NAMESPACE_GROUP_INDEX = 4;
+  private static final int NAMESPACE_GROUP_INDEX = 3;
 
-  private static final int METHOD_TYPE_GROUP_INDEX = 2;
-
-  private static final String ATTR_REGEX = "data-uri(-(post|get|all))?(-(\\w*))?";
+  private static final String ATTR_REGEX = "data-(service|params)+(-(\\w*))?";
 
   private static final Pattern ATTR_PATTERN = Pattern.compile(ATTR_REGEX);
 
@@ -42,15 +38,6 @@ final class ServiceAttributeUtil {
 
   public static String extractNamespace(String attributeName) {
     return extract(attributeName, NAMESPACE_GROUP_INDEX);
-  }
-
-  public static ServiceCallMethod extractMethodType(String attributeName) {
-    String methodTypeName = extract(attributeName, METHOD_TYPE_GROUP_INDEX);
-    if (StringUtils.isEmpty(methodTypeName)) {
-      return ServiceCallMethod.ALL;
-    }
-
-    return ServiceCallMethod.valueOf(methodTypeName.toUpperCase());
   }
 
   private static String extract(String attributeName, int groupIndex) {

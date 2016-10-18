@@ -19,21 +19,18 @@ package com.cognifide.knotx.engine.impl;
 
 import com.cognifide.knotx.dataobjects.RenderRequest;
 import com.cognifide.knotx.engine.TemplateEngineConfiguration;
-import com.cognifide.knotx.engine.TemplateEngineConsts;
 import com.cognifide.knotx.engine.parser.HtmlFragment;
 import com.cognifide.knotx.engine.parser.HtmlParser;
 import com.cognifide.knotx.engine.parser.TemplateHtmlFragment;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Handlebars;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.util.ServiceLoader;
 
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.eventbus.EventBus;
 import rx.Observable;
 
 public class TemplateEngine {
@@ -44,8 +41,8 @@ public class TemplateEngine {
 
   private TemplateSnippetProcessor snippetProcessor;
 
-  public TemplateEngine(HttpClient httpClient, TemplateEngineConfiguration configuration) {
-    this.snippetProcessor = new TemplateSnippetProcessor(httpClient, configuration);
+  public TemplateEngine(EventBus eventBus, TemplateEngineConfiguration configuration) {
+    this.snippetProcessor = new TemplateSnippetProcessor(eventBus, configuration);
     initHandlebars();
   }
 
@@ -53,14 +50,12 @@ public class TemplateEngine {
     return extractFragments(renderRequest.template())
         .doOnNext(this::traceSnippet)
         .flatMap(this::compileHtmlFragment)
-        .filter(htmlFragment -> shouldProcessRequest(htmlFragment, renderRequest))
         .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, renderRequest))
         // eager will buffer faster processing to emit items in proper order, keeping concurrency.
         .reduce(new StringBuilder(), StringBuilder::append)
         .map(StringBuilder::toString);
   }
 
-  @SuppressWarnings({"unchecked"})
   private void initHandlebars() {
     handlebars = new Handlebars();
     DefaultHandlebarsHelpers.registerFor(handlebars);
@@ -70,16 +65,6 @@ public class TemplateEngine {
       handlebars.registerHelper(helper.getName(), helper);
       LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
     });
-  }
-
-  private Boolean shouldProcessRequest(HtmlFragment htmlFragment, RenderRequest renderRequest) {
-    String requestedWith =
-        StringUtils.defaultString(renderRequest.request().headers().get(TemplateEngineConsts.X_REQUESTED_WITH));
-    String formId = StringUtils
-        .defaultString(renderRequest.request().formAttributes().get(TemplateEngineConsts.FORM_ID_ATTRIBUTE));
-    boolean isRequestByXHR = TemplateEngineConsts.XMLHTTP_REQUEST.equals(requestedWith);
-    return !isRequestByXHR || StringUtils.isNotEmpty(htmlFragment.getDataId())
-        && formId.equals(htmlFragment.getDataId());
   }
 
   private Observable<HtmlFragment> extractFragments(String template) {

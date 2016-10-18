@@ -19,6 +19,7 @@ package com.cognifide.knotx.engine.parser;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.engine.service.ServiceAttributeUtil;
 import com.cognifide.knotx.engine.service.ServiceEntry;
 import com.cognifide.knotx.handlebars.JsonObjectValueResolver;
 import com.github.jknack.handlebars.Context;
@@ -33,14 +34,19 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
 public class TemplateHtmlFragment implements HtmlFragment {
-  private static final String DATA_URI = "data-uri";
+
+  private static final String DATA_SERVICE = "data-service.*";
+
+  private static final String DATA_PARAMS = "data-params.*";
 
   private static final String DATA_ID = "data-id";
 
@@ -58,9 +64,16 @@ public class TemplateHtmlFragment implements HtmlFragment {
 
     List<Attribute> attributes = scriptTag.attributes().asList();
 
-    services = attributes.stream()
-        .filter(attribute -> attribute.getKey().startsWith(DATA_URI))
-        .map(ServiceEntry::of)
+    Map<String, Attribute> serviceAttributes = attributes.stream()
+        .filter(attribute -> attribute.getKey().matches(DATA_SERVICE))
+        .collect(Collectors.toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()), Function.identity()));
+
+    Map<String, Attribute> paramsAttributes = attributes.stream()
+        .filter(attribute -> attribute.getKey().matches(DATA_PARAMS))
+        .collect(Collectors.toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()), Function.identity()));
+
+    services = serviceAttributes.entrySet().stream()
+        .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
         .collect(Collectors.toList());
 
     dataId = getDataIdAttr(attributes);

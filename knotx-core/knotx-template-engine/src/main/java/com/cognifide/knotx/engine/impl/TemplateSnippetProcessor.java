@@ -25,17 +25,15 @@ import com.cognifide.knotx.engine.service.ServiceEntry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.http.HttpClient;
+import io.vertx.rxjava.core.eventbus.EventBus;
 import rx.Observable;
 
-public class TemplateSnippetProcessor {
+class TemplateSnippetProcessor {
   private static final Logger LOGGER = LoggerFactory.getLogger(TemplateSnippetProcessor.class);
 
   private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start compiled snippet -->";
@@ -47,18 +45,17 @@ public class TemplateSnippetProcessor {
   private final boolean templateDebug;
 
 
-  public TemplateSnippetProcessor(HttpClient httpClient, TemplateEngineConfiguration configuration) {
-    this.serviceEngine = new ServiceEngine(httpClient, configuration);
+  TemplateSnippetProcessor(EventBus eventBus, TemplateEngineConfiguration configuration) {
+    this.serviceEngine = new ServiceEngine(eventBus, configuration);
     this.templateDebug = configuration.templateDebug();
   }
 
-  public Observable<String> processSnippet(final HtmlFragment fragment, RenderRequest request) {
+  Observable<String> processSnippet(final HtmlFragment fragment, RenderRequest request) {
     LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
     return Observable.just(fragment)
         .flatMap(HtmlFragment::getServices)
-        .filter(serviceEntry -> serviceEntry.canServeRequest(fragment, request))
+        .map(serviceEngine::mergeWithConfiguration)
         .doOnNext(this::traceService)
-        .map(serviceEngine::findServiceLocation)
         .flatMap(serviceEntry ->
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
@@ -67,10 +64,10 @@ public class TemplateSnippetProcessor {
         .defaultIfEmpty(fragment.getContent());
   }
 
-  public Observable<JsonObject> fetchServiceData(ServiceEntry service, RenderRequest request) {
-    LOGGER.debug("Fetching data from service {}", service.getServiceUri());
+  private Observable<JsonObject> fetchServiceData(ServiceEntry service, RenderRequest request) {
+    LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
-      return request.getCache().get(service.getServiceUri(), () -> serviceEngine.doServiceCall(service, request).cache());
+      return request.getCache().get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
     } catch (ExecutionException e) {
       LOGGER.fatal("Unable to get service data {}", e);
       return Observable.error(e);
@@ -79,13 +76,9 @@ public class TemplateSnippetProcessor {
 
   private String applyData(final HtmlFragment snippet, JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", snippet);
-    final StringBuilder result = new StringBuilder();
-
-    result.append(startComment());
-    result.append(snippet.getContentWithContext(serviceResult));
-    result.append(endComment());
-
-    return result.toString();
+    return startComment() +
+        snippet.getContentWithContext(serviceResult) +
+        endComment();
   }
 
 
@@ -107,7 +100,7 @@ public class TemplateSnippetProcessor {
 
   private void traceService(ServiceEntry serviceEntry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Found service call definition: {}", serviceEntry.getServiceUri());
+      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(), serviceEntry.getParams());
     }
   }
 

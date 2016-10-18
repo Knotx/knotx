@@ -35,9 +35,10 @@
 
   <modules>
     <module>knotx-common</module>
-    <module>knotx-server</module>
     <module>knotx-repository</module>
-    <module>knotx-template-engine</module>
+    <module>knotx-server</module>
+    <module>knotx-service-adapter-http</module>
     <module>knotx-standalone</module>
+    <module>knotx-template-engine</module>
   </modules>
 </project>
