@@ -51,17 +51,13 @@ public class ServiceEngine {
     JsonObject serviceMessage = new JsonObject();
     serviceMessage.put("request", renderRequest.request().toJson());
     serviceMessage.put("params", serviceEntry.getParams());
-    Observable<Message<Object>> singleSubscriptionObservable = eventBus.sendObservable(serviceEntry.getAddress(), serviceMessage);
-    // http://stackoverflow.com/questions/37304880/rxjava-with-vertx-cant-have-multiple-subscriptions-exception
-    Observable<Message<Object>> serviceResponse = singleSubscriptionObservable.cache();
 
-    return serviceResponse.flatMap(item -> transformResponse(serviceResponse, serviceEntry));
+    return eventBus.<JsonObject>sendObservable(serviceEntry.getAddress(), serviceMessage)
+        .compose(transformResponse());
   }
 
-  private Observable<JsonObject> transformResponse(Observable<Message<Object>> response, ServiceEntry serviceEntry) {
-    return response.map(objResp -> (JsonObject) objResp.body())
-        .map(jsonResponse -> new HttpResponseWrapper(jsonResponse))
-        .doOnNext(httpResponseWrapper -> traceServiceCall(httpResponseWrapper.body(), serviceEntry))
+  private Observable.Transformer<Message<JsonObject>, JsonObject> transformResponse() {
+    return messageObs -> messageObs.map(msg -> new HttpResponseWrapper(msg.body()))
         .map(this::buildResultObject);
   }
 
