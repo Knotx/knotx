@@ -23,7 +23,6 @@ import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -55,7 +54,6 @@ public class HttpServiceAdapterTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @Ignore
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void callNonExistingService_expectBadRequestResponse(TestContext context) {
     callAdapterServiceWithAssertions(context, "not/existing/service/address", HttpMethod.GET, httpResponseWrapper ->
@@ -64,43 +62,22 @@ public class HttpServiceAdapterTest {
 
 
   @Test
-  @Ignore
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
-  public void callExistingServiceUsingGETMethod_expectOKResponseWithServiceDataProvidedByService1(TestContext context) {
+  public void callExistingService_expectOKResponseWithServiceDataProvidedByService1(TestContext context) throws Exception {
+    final String expected = FileReader.readText("first-response.json");
+
     callAdapterServiceWithAssertions(context, "/service/mock/first.json", HttpMethod.GET, httpResponseWrapper -> {
       context.assertTrue(httpResponseWrapper.statusCode().equals(HttpResponseStatus.OK));
       context.assertTrue(httpResponseWrapper.headers().isEmpty());
 
-      try {
         JsonObject serviceResponse = new JsonObject(httpResponseWrapper.body().toString());
-        JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
+      JsonObject expectedResponse = new JsonObject(expected);
         context.assertEquals(serviceResponse, expectedResponse);
-      } catch (Exception e) {
-        context.fail(e);
-      }
-    });
-  }
-
-  @Test
-  @Ignore
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
-  public void callExistingServiceUsingPOSTMethod_expectOKResponseWithServiceDataProvidedByService1(TestContext context) {
-    callAdapterServiceWithAssertions(context, "/service/mock/first.json", HttpMethod.POST, httpResponseWrapper -> {
-      context.assertTrue(httpResponseWrapper.statusCode().equals(HttpResponseStatus.OK));
-      context.assertTrue(httpResponseWrapper.headers().isEmpty());
-
-      try {
-        JsonObject serviceResponse = new JsonObject(httpResponseWrapper.body().toString());
-        JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
-        context.assertEquals(serviceResponse, expectedResponse);
-      } catch (Exception e) {
-        context.fail(e);
-      }
     });
   }
 
   private void callAdapterServiceWithAssertions(TestContext context, String servicePath, HttpMethod method, Action1<HttpResponseWrapper> testFunction) {
-    JsonObject message = getPayloadMessage(servicePath, method);
+    JsonObject message = payloadMessage(servicePath);
     Async async = context.async();
 
     vertx.vertx().eventBus().<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {
@@ -115,10 +92,11 @@ public class HttpServiceAdapterTest {
     });
   }
 
-  private JsonObject getPayloadMessage(String servicePath, HttpMethod method) {
+  private JsonObject payloadMessage(String servicePath) {
     return new JsonObject()
-        .put("path", servicePath)
-        .put("method", method);
+        .put("params", new JsonObject()
+            .put("path", servicePath))
+        .put("request", new JsonObject());
   }
 
 }
