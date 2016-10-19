@@ -17,13 +17,17 @@
  */
 package com.cognifide.knotx.server;
 
+import java.util.Map;
+
 public class RoutingCriteria {
   private String path;
   private String address;
+  private Map<String, RoutingCriteria> onTransition;
 
-  public RoutingCriteria(String path, String address) {
+  public RoutingCriteria(String path, String address, Map<String, RoutingCriteria> onTransition) {
     this.path = path;
     this.address = address;
+    this.onTransition = onTransition;
   }
 
   public String path() {
@@ -32,5 +36,9 @@ public class RoutingCriteria {
 
   public String address() {
     return address;
+  }
+
+  public Map<String, RoutingCriteria> onTransition() {
+    return onTransition;
   }
 }

@@ -32,50 +32,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class KnotxServerConfigurationTest {
+public class KnotxServerConfigurationRepositoriesTest {
 
   private JsonObject config;
 
   @Before
   public void before() throws Exception {
     config = new JsonObject(FileReader.readText("test-server.json"));
-  }
-
-  @Test
-  public void whenConfigWithTwoRoutingMethods_expectTwoMethodsInRouting() throws Exception {
-    KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
-
-    EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
-
-    assertThat(engineRouting.keySet().size(), equalTo(2));
-    assertThat(engineRouting.keySet(), hasItem(HttpMethod.GET));
-    assertThat(engineRouting.keySet(), hasItem(HttpMethod.POST));
-  }
-
-  @Test
-  public void whenConfigWithGetRouting_expectTwoRoutings() throws Exception {
-    KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
-
-    EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
-
-    assertThat(engineRouting.get(HttpMethod.GET).size(), equalTo(2));
-    assertThat(engineRouting.get(HttpMethod.GET).get(0).path(), equalTo("/content/remote/.*"));
-    assertThat(engineRouting.get(HttpMethod.GET).get(0).address(), equalTo("knotx.core.view2-engine"));
-    assertThat(engineRouting.get(HttpMethod.GET).get(1).path(), equalTo("/content/.*"));
-    assertThat(engineRouting.get(HttpMethod.GET).get(1).address(), equalTo("knotx.core.view-engine"));
-  }
-
-  @Test
-  public void whenConfigWithPostRouting_expectTwoRoutings() throws Exception {
-    KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
-
-    EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting = serverConfig.getEngineRouting();
-
-    assertThat(engineRouting.get(HttpMethod.POST).size(), equalTo(2));
-    assertThat(engineRouting.get(HttpMethod.POST).get(0).path(), equalTo("/content/local/.*"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(0).address(), equalTo("knotx.core.post2-engine"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(1).path(), equalTo("/content/.*"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(1).address(), equalTo("knotx.core.post-engine"));
   }
 
   @Test

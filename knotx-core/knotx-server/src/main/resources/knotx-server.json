@@ -51,17 +51,45 @@
       "address": "knotx.core.repository.http"
     }
   ],
-  "engines": {
+  "routing": {
     "GET": [
       {
+        "path": "/content/secure/.*",
+        "address": "auth-engine",
+        "onTransition": {
+          "view": {
+            "address": "knotx.core.view-engine"
+          }
+        }
+      },
+      {
         "path": "/content/.*",
-        "target": "knotx.core.view-engine"
+        "address": "knotx.core.view-engine"
       }
     ],
     "POST": [
       {
+        "path": "/content/secure/.*",
+        "address": "auth-engine",
+        "onTransition": {
+          "action": {
+            "address": "knotx.core.action-engine",
+            "onTransition": {
+              "view": {
+                "address": "knotx.core.view-engine"
+              }
+            }
+          }
+        }
+      },
+      {
         "path": "/content/.*",
-        "target": "knotx.core.post-engine"
+        "address": "knotx.core.action-engine",
+        "onTransition": {
+          "view": {
+            "address": "knotx.core.view-engine"
+          }
+        }
       }
     ]
   }

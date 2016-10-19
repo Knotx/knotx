@@ -49,7 +49,7 @@ public class KnotxServerConfiguration {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
     engineRouting = Maps.newEnumMap(HttpMethod.class);
-    config.getJsonObject("engines").stream()
+    config.getJsonObject("routing").stream()
         .forEach(entry -> parseMethodRouting(entry));
 
     repositoryAddressMapping = Maps.newHashMap();
@@ -89,8 +89,24 @@ public class KnotxServerConfiguration {
 
     ((JsonArray) entry.getValue()).stream()
         .map(item -> (JsonObject) item)
-        .map(item -> new RoutingCriteria(item.getString("path"), item.getString("address")))
+        .map(item -> parseRoutingCriteria(item))
         .forEach(methodCriteria::add);
+  }
+
+  private RoutingCriteria parseRoutingCriteria(JsonObject object) {
+    return new RoutingCriteria(object.getString("path"), object.getString("address"), parseOnTransition(object.getJsonObject("onTransition")));
+  }
+
+  private Map<String, RoutingCriteria> parseOnTransition(JsonObject onTransition) {
+    Map<String, RoutingCriteria> transitions = Maps.newHashMap();
+
+    if (onTransition != null) {
+      onTransition.stream().forEach(
+          entry -> transitions.put(entry.getKey(), parseRoutingCriteria((JsonObject) entry.getValue()))
+      );
+    }
+
+    return transitions;
   }
 
   private List<RoutingCriteria> getMethodCriterias(HttpMethod method) {
