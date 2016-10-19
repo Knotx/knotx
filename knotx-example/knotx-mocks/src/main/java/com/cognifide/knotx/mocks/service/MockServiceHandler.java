@@ -34,7 +34,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
-  private final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final FileSystem fileSystem;
   private Action2<RoutingContext, String> bodyProcessor;
   private String catalogue;

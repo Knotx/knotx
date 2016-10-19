@@ -9,14 +9,53 @@
     "com.cognifide.knotx.mocks.MockServiceVerticle": {
       "config": {
         "mock.data.root": "mock/service",
-        "bouncing" : true,
+        "bouncing": true,
         "http.port": 3000
       }
     },
     "com.cognifide.knotx.mocks.MockServiceAdapterVerticle": {
       "config": {
-        "address" : "mock-adapter-service",
+        "address": "mock-adapter-service",
         "mock.data.root": "mock/service"
+      }
+    },
+    "com.cognifide.knotx.mocks.MockKnotVerticle": {
+      "config": {
+        "handlers": [
+          {
+            "address": "knot.action",
+            "mocks": [
+              {
+                "request.path": "/simple",
+                "fragments": "mock/knot/action/simple.fragments.json"
+              },
+              {
+                "request.path": "/form-validation-error",
+                "fragments": "mock/knot/action/form-validation-error.fragments.json",
+                "clientResponse": "mock/knot/action/form-validation-error.response.json"
+              },
+              {
+                "request.path": "/redirect",
+                "clientResponse": "mock/knot/action/redirect.response.json"
+              }
+            ]
+          },
+          {
+            "address": "knot.view",
+            "mocks": [
+              {
+                "request.path": "/simple",
+                "fragments": "mock/knot/view/simple.fragments.json",
+                "clientResponse": "mock/knot/view/simple.response.json"
+              },
+              {
+                "request.path": "/form-validation-error",
+                "fragments": "mock/knot/view/form-validation.fragments.json",
+                "clientResponse": "mock/knot/view/form-validation-error.response.json"
+              }
+            ]
+          }
+        ]
       }
     }
   }
