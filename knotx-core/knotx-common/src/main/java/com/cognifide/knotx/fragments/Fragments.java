@@ -55,7 +55,7 @@ public class Fragments {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof Fragment)) return false;
+    if (!(o instanceof Fragments)) return false;
     Fragments that = (Fragments) o;
     return Objects.equal(fragments, that.fragments);
   }
