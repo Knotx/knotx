@@ -1,6 +1,6 @@
 # Production
 
-The example module is provided for testing purposes. Only the core verticles should be deployed in a production environment. (The Knot.x application consists of 3 verticles).
+The example module is provided for testing purposes. Only the core verticles should be deployed in a production environment.
 
 ### Executing Knot.x core verticles as standalone fat jar
 
@@ -23,10 +23,44 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
       "config": {
         "http.port": 8092,
         "allowed.response.headers": [
-          "User-Agent",
-          "X-Solr-Core-Key",
-          "X-Language-Code",
-          "X-Requested-With"
+          "referer",
+          "user-agent",
+          "from",
+          "content-type",
+          "content-length",
+          "accept-charset",
+          "accept-encoding",
+          "accept-language",
+          "accept",
+          "host",
+          "if-match",
+          "if-none-match",
+          "if-range",
+          "if-unmodified-since",
+          "if-modified-since",
+          "max-forwards",
+          "proxy-authorization",
+          "proxy-connection",
+          "range",
+          "cookie",
+          "cq-action",
+          "cq-handle",
+          "handle",
+          "action",
+          "cqstats",
+          "depth",
+          "translate",
+          "expires",
+          "date",
+          "dav",
+          "ms-author-via",
+          "if",
+          "destination",
+          "access-control-allow-origin",
+          "x-original-requested-uri",
+          "x-solr-core-key",
+          "x-language-code",
+          "x-requested-with"
         ],
         "repositories": [
           {
@@ -39,7 +73,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
           }
         ],
         "engine": {
-          "address": "knotx.core.engine"
+          "address": "knotx.core.viewengine"
         }
       }
     },
@@ -63,10 +97,48 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
         "catalogue": ""
       }
     },
-    "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+    "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
       "config": {
-        "address": "knotx.core.engine",
+        "address": "knotx.core.viewengine",
         "template.debug": true,
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
+        },
+        "services": [
+          {
+            "name" : "first-service",
+            "address" : "knotx.core-adapter",
+            "params": {
+              "path": "/service/mock/first.json"
+            },
+            "cacheKey": "first"
+          },
+          {
+            "name" : "second-service",
+            "address" : "knotx.core-adapter",
+            "params": {
+              "path": "/service/mock/second.json"
+            }
+          },
+          {
+            "name" : "third-service",
+            "address" : "knotx.core-adapter",
+            "params": {
+              "path": "/service/mock/third.json"
+            }
+          },
+          {
+            "name" : "labelsRepository",
+            "address" : "mock-adapter-service",
+            "params": {}
+          }
+        ]
+      }
+    },
+    "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle": {
+      "config": {
+        "address": "knotx.core.service-adapter",
         "client.options": {
           "maxPoolSize": 1000,
           "keepAlive": false
@@ -95,6 +167,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
     }
   }
 }
+
 ```
 Configuration JSON contains four config sections, one for each Knot.x verticle.
 Each verticle can be configured with additional [Deployment Options](https://github.com/Cognifide/knotx/wiki/GettingStarted#deployment-options)
@@ -112,9 +185,9 @@ java -jar knotx-repository-http-XXX-fat.jar -conf <path-to-http-repository-confi
 ```
 java -jar knotx-repository-filesystem-XXX-fat.jar -conf <path-to-filesystem-repository-configuration.json>
 ```
-**Host 2 - Template Engine Verticle**
+**Host 2 - View Engine Verticle**
 ```
-java -jar knotx-template-engine-XXX-fat.jar -conf <path-to-engine-configuration.json>
+java -jar knotx-engine-view-XXX-fat.jar -conf <path-to-engine-configuration.json>
 ```
 **Host 3 - Knot.x Server Verticle**
 ```
@@ -167,7 +240,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         }
       ],
       "engine": {
-        "address": "knotx.core.engine"
+        "address": "knotx.core.viewengine"
       }
      }
     }

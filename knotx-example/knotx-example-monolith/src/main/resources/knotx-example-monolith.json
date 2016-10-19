@@ -84,9 +84,9 @@
         "catalogue": ""
       }
     },
-    "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+    "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
       "config": {
-        "address": "knotx.core.engine",
+        "address": "knotx.core.viewengine",
         "template.debug": true,
         "client.options": {
           "maxPoolSize": 1000,
@@ -95,7 +95,7 @@
         "services": [
           {
             "name" : "first-service",
-            "address" : "mock-adapter-service",
+            "address" : "knotx.core.http.service-adapter",
             "params": {
               "path": "/service/mock/first.json"
             },
@@ -103,21 +103,21 @@
           },
           {
             "name" : "second-service",
-            "address" : "mock-adapter-service",
+            "address" : "knotx.core.http.service-adapter",
             "params": {
               "path": "/service/mock/second.json"
             }
           },
           {
             "name" : "third-service",
-            "address" : "mock-adapter-service",
+            "address" : "knotx.core.http.service-adapter",
             "params": {
               "path": "/service/mock/third.json"
             }
           },
           {
             "name" : "labelsRepository",
-            "address" : "mock-adapter-service",
+            "address" : "knotx.core.http.service-adapter",
             "params": {}
           }
         ]
@@ -125,7 +125,7 @@
     },
     "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle" :{
       "config": {
-        "address": "knotx.core.service-adapter",
+        "address": "knotx.core.http.service-adapter",
         "client.options": {
           "maxPoolSize": 1000,
           "keepAlive": false

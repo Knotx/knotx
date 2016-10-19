@@ -49,25 +49,40 @@ $ java -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/
 You will see output similar to the following:
 ```
 ...
-16:16:07,030 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@737996a0 - Registering current configuration as safe fallback point
+11:52:04,513 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@4f933fd1 - Registering current configuration as safe fallback point
 
-2016-08-30 16:16:07 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.mocks.MockServiceVerticle - Registered <MockServiceVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-0] DEBUG c.c.k.m.MockRemoteRepositoryVerticle - Registered <MockRemoteRepositoryVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-2] DEBUG c.c.k.repository.RepositoryVerticle - Registered <RepositoryVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-3] DEBUG c.c.k.engine.TemplateEngineVerticle - Registered <TemplateEngineVerticle>
-2016-08-30 16:16:08 [vert.x-eventloop-thread-0] DEBUG c.c.knotx.server.KnotxServerVerticle - Registered <KnotxServerVerticle>
-2016-08-30 16:16:08 [vert.x-eventloop-thread-0] INFO  c.c.knotx.server.KnotxServerVerticle - Successfully Started
+2016-10-19 11:52:06 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
+2016-10-19 11:52:06 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
+2016-10-19 11:52:06 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryVerticle - Registered <HttpRepositoryVerticle>
+2016-10-19 11:52:06 [vert.x-eventloop-thread-0] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
+2016-10-19 11:52:06 [vert.x-eventloop-thread-6] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
+2016-10-19 11:52:06 [vert.x-eventloop-thread-7] INFO  c.c.k.r.FilesystemRepositoryVerticle - Registered <FilesystemRepositoryVerticle>
+2016-10-19 11:52:06 [vert.x-eventloop-thread-4] INFO  c.c.k.e.view.impl.TemplateEngine - Registered custom Handlebars helper: bold
+2016-10-19 11:52:06 [vert.x-eventloop-thread-4] DEBUG c.c.k.engine.view.ViewEngineVerticle - Starting <com.cognifide.knotx.engine.view.ViewEngineVerticle>
+2016-10-19 11:52:07 [vert.x-eventloop-thread-5] DEBUG c.c.k.c.s.h.HttpServiceAdapterVerticle - Registered <HttpServiceAdapterVerticle>
+2016-10-19 11:52:07 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2016-10-19 11:52:07 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED 
 
+		Deployed fe2a7ef0-1f91-4ee0-ac7a-8617aedd8f9a [com.cognifide.knotx.mocks.MockServiceAdapterVerticle]
+		Deployed 1d92984b-27a2-495d-baa1-50bea688c869 [com.cognifide.knotx.repository.FilesystemRepositoryVerticle]
+		Deployed 11776e93-4541-465a-ab05-a0bf472088a6 [com.cognifide.knotx.engine.view.ViewEngineVerticle]
+		Deployed 73e3ad21-b121-4d13-8cd4-c17ea868a640 [com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle]
+		Deployed b8d9b6e8-2faf-4eb9-a43f-375d15805e5f [com.cognifide.knotx.repository.HttpRepositoryVerticle]
+		Deployed 1aa196a0-461c-4c46-913b-2dd85be8503e [com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle]
+		Deployed 54083a13-681f-411c-968c-f2efb810b28e [com.cognifide.knotx.mocks.MockServiceVerticle]
+		Deployed 4688e02e-8e1b-4858-a3af-d59262b1500c [com.cognifide.knotx.server.KnotxServerVerticle]
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:
  - Knot.x Server
- - Knot.x Repository
- - Knot.x Template Engine
+ - Knot.x Repository: File System Repository, Http Repository
+ - Knot.x View Engine
+ - Knot.x Http Service Adapter
  
-Besides Knot.x two mock verticles are started:
- - Mock Service  -> simulates services used by Template Engine feeding the Handlebars snippets
+Besides Knot.x mock verticles are started:
+ - Mock Service  -> simulates services used by View Engine feeding the Handlebars snippets
  - Mock Remote Repository -> simulates HTTP Remote repository serving HTML templates
+ - Mock Service Adapter -> simulates real service adapters on event bus
 
 You can access example Knot.x application from the following URLs
 ```
