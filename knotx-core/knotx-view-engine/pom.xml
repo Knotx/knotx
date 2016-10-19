@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Templating Engine Verticle
+    Knot.x - Reactive microservice assembler - View Engine Verticle
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -34,7 +34,7 @@
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.viewengine.ViewEngineVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.engine.view.ViewEngineVerticle</main.verticle>
   </properties>
 
   <dependencies>

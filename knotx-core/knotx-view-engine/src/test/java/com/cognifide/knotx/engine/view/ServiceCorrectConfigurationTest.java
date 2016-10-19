@@ -15,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.viewengine;
+package com.cognifide.knotx.engine.view;
 
 import com.cognifide.knotx.junit.FileReader;
-import com.cognifide.knotx.viewengine.ViewEngineConfiguration.ServiceMetadata;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -39,7 +38,7 @@ public class ServiceCorrectConfigurationTest {
   public final ExpectedException exception = ExpectedException.none();
 
   private ViewEngineConfiguration correctConfig;
-  private ServiceMetadata expectedService;
+  private ViewEngineConfiguration.ServiceMetadata expectedService;
 
   @Before
   public void setUp() throws Exception {
@@ -55,8 +54,8 @@ public class ServiceCorrectConfigurationTest {
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedService));
   }
 
-  private ServiceMetadata createMockedService(String name, String address, String params, String cacheKey) {
-    ServiceMetadata newService = new ServiceMetadata();
+  private ViewEngineConfiguration.ServiceMetadata createMockedService(String name, String address, String params, String cacheKey) {
+    ViewEngineConfiguration.ServiceMetadata newService = new ViewEngineConfiguration.ServiceMetadata();
     newService.setName(name);
     newService.setAddress(address);
     newService.setParams(new JsonObject(params));

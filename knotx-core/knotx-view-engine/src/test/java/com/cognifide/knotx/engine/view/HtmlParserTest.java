@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.viewengine;
+package com.cognifide.knotx.engine.view;
 
+import com.cognifide.knotx.engine.view.parser.HtmlFragment;
+import com.cognifide.knotx.engine.view.parser.HtmlParser;
 import com.cognifide.knotx.junit.FileReader;
-import com.cognifide.knotx.viewengine.parser.HtmlFragment;
-import com.cognifide.knotx.viewengine.parser.HtmlParser;
 
 import org.junit.Before;
 import org.junit.Rule;

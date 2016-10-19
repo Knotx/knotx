@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.viewengine.parser;
+package com.cognifide.knotx.engine.view.parser;
 
-import com.cognifide.knotx.viewengine.service.ServiceEntry;
+import com.cognifide.knotx.engine.view.service.ServiceEntry;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;

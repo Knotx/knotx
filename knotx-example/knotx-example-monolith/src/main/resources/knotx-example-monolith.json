@@ -78,7 +78,7 @@
         "catalogue": ""
       }
     },
-    "com.cognifide.knotx.viewengine.ViewEngineVerticle": {
+    "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
       "config": {
         "address": "knotx.core.viewengine",
         "template.debug": true,

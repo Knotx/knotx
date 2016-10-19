@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.viewengine.impl;
+package com.cognifide.knotx.engine.view.impl;
 
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.viewengine.ViewEngineConfiguration;
-import com.cognifide.knotx.viewengine.parser.HtmlFragment;
-import com.cognifide.knotx.viewengine.parser.HtmlParser;
-import com.cognifide.knotx.viewengine.parser.TemplateHtmlFragment;
+import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
+import com.cognifide.knotx.engine.view.parser.HtmlFragment;
+import com.cognifide.knotx.engine.view.parser.HtmlParser;
+import com.cognifide.knotx.engine.view.parser.TemplateHtmlFragment;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Handlebars;
 

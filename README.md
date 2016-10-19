@@ -49,25 +49,41 @@ $ java -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/
 You will see output similar to the following:
 ```
 ...
-16:16:07,030 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@737996a0 - Registering current configuration as safe fallback point
+08:54:52,604 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@6767c1fc - Registering current configuration as safe fallback point
 
-2016-08-30 16:16:07 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.mocks.MockServiceVerticle - Registered <MockServiceVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-0] DEBUG c.c.k.m.MockRemoteRepositoryVerticle - Registered <MockRemoteRepositoryVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-2] DEBUG c.c.k.repository.RepositoryVerticle - Registered <RepositoryVerticle>
-2016-08-30 16:16:07 [vert.x-eventloop-thread-3] DEBUG c.c.k.viewengine.ViewEngineVerticle - Registered <ViewEngineVerticle>
-2016-08-30 16:16:08 [vert.x-eventloop-thread-0] DEBUG c.c.knotx.server.KnotxServerVerticle - Registered <KnotxServerVerticle>
-2016-08-30 16:16:08 [vert.x-eventloop-thread-0] INFO  c.c.knotx.server.KnotxServerVerticle - Successfully Started
+2016-10-19 08:54:54 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryVerticle - Registered <HttpRepositoryVerticle>
+2016-10-19 08:54:54 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
+2016-10-19 08:54:54 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
+2016-10-19 08:54:55 [vert.x-eventloop-thread-0] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
+2016-10-19 08:54:55 [vert.x-eventloop-thread-7] INFO  c.c.k.r.FilesystemRepositoryVerticle - Registered <FilesystemRepositoryVerticle>
+2016-10-19 08:54:55 [vert.x-eventloop-thread-6] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
+2016-10-19 08:54:55 [vert.x-eventloop-thread-4] INFO  c.c.k.viewengine.impl.TemplateEngine - Registered custom Handlebars helper: bold
+2016-10-19 08:54:55 [vert.x-eventloop-thread-4] DEBUG c.c.k.viewengine.ViewEngineVerticle - Starting <com.cognifide.knotx.viewengine.ViewEngineVerticle>
+2016-10-19 08:54:55 [vert.x-eventloop-thread-5] DEBUG c.c.k.c.s.h.HttpServiceAdapterVerticle - Registered <HttpServiceAdapterVerticle>
+2016-10-19 08:54:56 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2016-10-19 08:54:56 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED 
+
+		Deployed 35bba51f-305b-4197-aeb6-f5e21175a4ec [com.cognifide.knotx.mocks.MockServiceAdapterVerticle]
+		Deployed 2267a2cd-6d69-476e-b97b-53a9114576fc [com.cognifide.knotx.repository.FilesystemRepositoryVerticle]
+		Deployed 7f9b3792-360d-4992-b78f-f8e262e2a2c3 [com.cognifide.knotx.viewengine.ViewEngineVerticle]
+		Deployed c194a0b2-c702-4af6-a4bd-593ea662b5c9 [com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle]
+		Deployed ac12212f-5cd4-4ad5-8c6b-3f823189d3b8 [com.cognifide.knotx.repository.HttpRepositoryVerticle]
+		Deployed c987cce6-e6d8-4a7b-aaf9-2c91d0d9b0ca [com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle]
+		Deployed 1ee64be5-744a-44c8-b5a7-03f10a34452e [com.cognifide.knotx.mocks.MockServiceVerticle]
+		Deployed 5077ba0f-e8bd-4bc0-8e5a-49f2fd22b5f4 [com.cognifide.knotx.server.KnotxServerVerticle]
 
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:
  - Knot.x Server
- - Knot.x Repository
+ - Knot.x Repository: File System Repository, Http Repository
  - Knot.x View Engine
+ - Knot.x Http Service Adapter
  
-Besides Knot.x two mock verticles are started:
+Besides Knot.x mock verticles are started:
  - Mock Service  -> simulates services used by View Engine feeding the Handlebars snippets
  - Mock Remote Repository -> simulates HTTP Remote repository serving HTML templates
+ - Mock Service Adapter -> simulates real service adapters on event bus
 
 You can access example Knot.x application from the following URLs
 ```

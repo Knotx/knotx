@@ -1,6 +1,6 @@
-# Templating Engine
+# View Engine
 
-At the heart of the Knot.x Templating Engine lies [Handlebars.js](http://handlebarsjs.com/). Knot.x utilizes its Java port - [Handlebars.java](https://github.com/jknack/handlebars.java) to compile and evaluate templates.
+At the heart of the Knot.x View Engine lies [Handlebars.js](http://handlebarsjs.com/). Knot.x utilizes its Java port - [Handlebars.java](https://github.com/jknack/handlebars.java) to compile and evaluate templates.
 
 ## Extending handlebars with custom helpers
 

@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Templating Engine Verticle
+ * Knot.x - Reactive microservice assembler - View Engine Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.viewengine.service;
+package com.cognifide.knotx.engine.view.service;
 
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
 import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.viewengine.ViewEngineConfiguration;
+import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
 
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;

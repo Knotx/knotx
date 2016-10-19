@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.viewengine.parser;
+package com.cognifide.knotx.engine.view.parser;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.viewengine.service.ServiceAttributeUtil;
-import com.cognifide.knotx.viewengine.service.ServiceEntry;
+import com.cognifide.knotx.engine.view.service.ServiceAttributeUtil;
+import com.cognifide.knotx.engine.view.service.ServiceEntry;
 import com.cognifide.knotx.handlebars.JsonObjectValueResolver;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
