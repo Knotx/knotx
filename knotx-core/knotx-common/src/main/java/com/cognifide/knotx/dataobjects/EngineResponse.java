@@ -17,35 +17,40 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+import java.util.Optional;
+
 import io.vertx.core.json.JsonObject;
 
-public class RenderResponse {
+public class EngineResponse {
+
+  private Optional<String> transition;
 
   private String html;
 
   private boolean success;
 
-  public RenderResponse() {
+  public EngineResponse() {
     // No default constructor
   }
 
-  public RenderResponse(JsonObject body) {
+  public EngineResponse(JsonObject body) {
     this.success = body.getBoolean("success");
     if (success) {
       this.html = body.getString("html");
     }
+    this.transition = Optional.ofNullable(body.getString("transition"));
   }
 
-  public static RenderResponse success(String html) {
-    RenderResponse response = new RenderResponse();
+  public static EngineResponse success(String html) {
+    EngineResponse response = new EngineResponse();
     response.success = true;
     response.html = html;
 
     return response;
   }
 
-  public static RenderResponse error(String reason) {
-    RenderResponse response = new RenderResponse();
+  public static EngineResponse error(String reason) {
+    EngineResponse response = new EngineResponse();
     response.success = false;
 
     return response;
@@ -57,6 +62,7 @@ public class RenderResponse {
     if (success) {
       object.put("html", html);
     }
+    transition.ifPresent(value -> object.put("transition", value));
     return object;
   }
 
@@ -66,5 +72,9 @@ public class RenderResponse {
 
   public boolean isSuccess() {
     return success;
+  }
+
+  public Optional<String> getTransition() {
+    return transition;
   }
 }

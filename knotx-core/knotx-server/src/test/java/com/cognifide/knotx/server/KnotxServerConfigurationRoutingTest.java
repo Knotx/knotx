@@ -36,7 +36,7 @@ public class KnotxServerConfigurationRoutingTest {
 
   public static final int FIRST_IDX = 0;
   public static final int SECOND_IDX = 1;
-  private EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting;
+  private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   @Before
   public void before() throws Exception {
@@ -54,20 +54,20 @@ public class KnotxServerConfigurationRoutingTest {
   public void whenConfigWithGetRouting_expectTwoRoutings() throws Exception {
     assertThat(engineRouting.get(HttpMethod.GET).size(), equalTo(2));
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).path(), equalTo("/content/secure/.*"));
-    assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).address(), equalTo("auth-engine"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).address(), equalTo("A-engine"));
 
     assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).path(), equalTo("/content/.*"));
-    assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).address(), equalTo("knotx.core.view-engine"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).address(), equalTo("C-engine"));
   }
 
   @Test
   public void whenConfigWithPostRouting_expectTwoRoutings() throws Exception {
     assertThat(engineRouting.get(HttpMethod.POST).size(), equalTo(2));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).path(), equalTo("/content/secure/.*"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).address(), equalTo("auth-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).address(), equalTo("A-engine"));
 
     assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).path(), equalTo("/content/.*"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).address(), equalTo("knotx.core.action-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).address(), equalTo("B-engine"));
   }
 
   @Test
@@ -75,7 +75,7 @@ public class KnotxServerConfigurationRoutingTest {
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).onTransition().isEmpty(), equalTo(false));
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).onTransition().keySet().size(), equalTo(1));
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).onTransition().keySet(), hasItem("view"));
-    assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).onTransition().get("view").address(), equalTo("knotx.core.view-engine"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).onTransition().get("view").address(), equalTo("C-engine"));
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).onTransition().get("view").onTransition().isEmpty(), equalTo(true));
 
     assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).onTransition().isEmpty(), equalTo(true));
@@ -88,20 +88,20 @@ public class KnotxServerConfigurationRoutingTest {
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().keySet(), hasItem("action"));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().keySet(), hasItem("view-authed"));
 
-    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").address(), equalTo("knotx.core.action-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").address(), equalTo("B-engine"));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").onTransition().isEmpty(), equalTo(false));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").onTransition().keySet().size(), equalTo(1));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").onTransition().keySet(), hasItem("view"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").onTransition().get("view").address(), equalTo("knotx.core.view-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").onTransition().get("view").address(), equalTo("C-engine"));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("action").onTransition().get("view").onTransition().isEmpty(), equalTo(true));
 
-    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("view-authed").address(), equalTo("knotx-view-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("view-authed").address(), equalTo("C-engine"));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("view-authed").onTransition().isEmpty(), equalTo(true));
 
     assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).onTransition().isEmpty(), equalTo(false));
     assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).onTransition().keySet().size(), equalTo(1));
     assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).onTransition().keySet(), hasItem("view"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).onTransition().get("view").address(), equalTo("knotx.core.view-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).onTransition().get("view").address(), equalTo("C-engine"));
     assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).onTransition().get("view").onTransition().isEmpty(), equalTo(true));
   }
 }

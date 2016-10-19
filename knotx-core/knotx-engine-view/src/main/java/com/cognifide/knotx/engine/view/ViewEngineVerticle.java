@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine.view;
 
-import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.dataobjects.RenderResponse;
+import com.cognifide.knotx.dataobjects.EngineRequest;
+import com.cognifide.knotx.dataobjects.EngineResponse;
 import com.cognifide.knotx.engine.view.impl.TemplateEngine;
 
 import io.vertx.core.Context;
@@ -55,11 +55,11 @@ public class ViewEngineVerticle extends AbstractVerticle {
     Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(configuration.getAddress()).toObservable();
     messageObservable
         .doOnNext(this::traceMessage)
-        .flatMap(msg -> templateEngine.process(new RenderRequest(msg.body()))
-            .map(renderedData -> RenderResponse.success(renderedData).toJsonObject())
+        .flatMap(msg -> templateEngine.process(new EngineRequest(msg.body()))
+            .map(renderedData -> EngineResponse.success(renderedData).toJsonObject())
             .onErrorReturn(error -> {
               LOGGER.error("Error happened during Template processing", error);
-              return RenderResponse.error(error.getMessage()).toJsonObject();
+              return EngineResponse.error(error.getMessage()).toJsonObject();
             })
             .doOnNext(msg::reply)
         ).subscribe();

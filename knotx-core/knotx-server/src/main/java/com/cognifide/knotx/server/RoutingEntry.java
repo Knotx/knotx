@@ -19,12 +19,12 @@ package com.cognifide.knotx.server;
 
 import java.util.Map;
 
-public class RoutingCriteria {
+public class RoutingEntry {
   private String path;
   private String address;
-  private Map<String, RoutingCriteria> onTransition;
+  private Map<String, RoutingEntry> onTransition;
 
-  public RoutingCriteria(String path, String address, Map<String, RoutingCriteria> onTransition) {
+  public RoutingEntry(String path, String address, Map<String, RoutingEntry> onTransition) {
     this.path = path;
     this.address = address;
     this.onTransition = onTransition;
@@ -38,7 +38,7 @@ public class RoutingCriteria {
     return address;
   }
 
-  public Map<String, RoutingCriteria> onTransition() {
+  public Map<String, RoutingEntry> onTransition() {
     return onTransition;
   }
 }

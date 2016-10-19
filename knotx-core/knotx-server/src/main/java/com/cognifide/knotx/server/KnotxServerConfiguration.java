@@ -41,7 +41,7 @@ public class KnotxServerConfiguration {
 
   private Map<String, String> repositoryAddressMapping;
 
-  private EnumMap<HttpMethod, List<RoutingCriteria>> engineRouting;
+  private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("http.port");
@@ -80,12 +80,12 @@ public class KnotxServerConfiguration {
     return allowedResponseHeaders;
   }
 
-  public EnumMap<HttpMethod, List<RoutingCriteria>> getEngineRouting() {
+  public EnumMap<HttpMethod, List<RoutingEntry>> getEngineRouting() {
     return engineRouting;
   }
 
   private void parseMethodRouting(Map.Entry<String, Object> entry) {
-    final List<RoutingCriteria> methodCriteria = getMethodCriterias(HttpMethod.valueOf(entry.getKey()));
+    final List<RoutingEntry> methodCriteria = getMethodCriterias(HttpMethod.valueOf(entry.getKey()));
 
     ((JsonArray) entry.getValue()).stream()
         .map(item -> (JsonObject) item)
@@ -93,12 +93,12 @@ public class KnotxServerConfiguration {
         .forEach(methodCriteria::add);
   }
 
-  private RoutingCriteria parseRoutingCriteria(JsonObject object) {
-    return new RoutingCriteria(object.getString("path"), object.getString("address"), parseOnTransition(object.getJsonObject("onTransition")));
+  private RoutingEntry parseRoutingCriteria(JsonObject object) {
+    return new RoutingEntry(object.getString("path"), object.getString("address"), parseOnTransition(object.getJsonObject("onTransition")));
   }
 
-  private Map<String, RoutingCriteria> parseOnTransition(JsonObject onTransition) {
-    Map<String, RoutingCriteria> transitions = Maps.newHashMap();
+  private Map<String, RoutingEntry> parseOnTransition(JsonObject onTransition) {
+    Map<String, RoutingEntry> transitions = Maps.newHashMap();
 
     if (onTransition != null) {
       onTransition.stream().forEach(
@@ -109,14 +109,14 @@ public class KnotxServerConfiguration {
     return transitions;
   }
 
-  private List<RoutingCriteria> getMethodCriterias(HttpMethod method) {
-    List<RoutingCriteria> routingCriterias = Lists.newArrayList();
+  private List<RoutingEntry> getMethodCriterias(HttpMethod method) {
+    List<RoutingEntry> routingEntries = Lists.newArrayList();
     if (engineRouting.containsKey(method)) {
-      routingCriterias = engineRouting.get(method);
+      routingEntries = engineRouting.get(method);
     } else {
-      engineRouting.put(method, routingCriterias);
+      engineRouting.put(method, routingEntries);
     }
 
-    return routingCriterias;
+    return routingEntries;
   }
 }

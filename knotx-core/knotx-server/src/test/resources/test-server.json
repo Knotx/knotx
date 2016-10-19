@@ -54,42 +54,42 @@
     "GET": [
       {
         "path": "/content/secure/.*",
-        "address": "auth-engine",
+        "address": "A-engine",
         "onTransition": {
           "view": {
-            "address": "knotx.core.view-engine"
+            "address": "C-engine"
           }
         }
       },
       {
         "path": "/content/.*",
-        "address": "knotx.core.view-engine"
+        "address": "C-engine"
       }
     ],
     "POST": [
       {
         "path": "/content/secure/.*",
-        "address": "auth-engine",
+        "address": "A-engine",
         "onTransition": {
           "action": {
-            "address": "knotx.core.action-engine",
+            "address": "B-engine",
             "onTransition": {
               "view": {
-                "address": "knotx.core.view-engine"
+                "address": "C-engine"
               }
             }
           },
           "view-authed": {
-            "address": "knotx-view-engine"
+            "address": "C-engine"
           }
         }
       },
       {
         "path": "/content/.*",
-        "address": "knotx.core.action-engine",
+        "address": "B-engine",
         "onTransition": {
           "view": {
-            "address": "knotx.core.view-engine"
+            "address": "C-engine"
           }
         }
       }

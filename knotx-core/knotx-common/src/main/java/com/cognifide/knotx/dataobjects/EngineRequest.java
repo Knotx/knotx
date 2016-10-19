@@ -20,12 +20,10 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import java.util.Map;
-
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-public class RenderRequest {
+public class EngineRequest {
 
   private HttpRequestWrapper request;
 
@@ -33,7 +31,7 @@ public class RenderRequest {
 
   private Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
-  public RenderRequest() {
+  public EngineRequest() {
     //Nothing to set by default
   }
 
@@ -42,19 +40,19 @@ public class RenderRequest {
    *
    * @param json the JSON
    */
-  public RenderRequest(JsonObject json) {
+  public EngineRequest(JsonObject json) {
     this.request = new HttpRequestWrapper(json.getJsonObject("request"));
     if (json.containsKey("template")) {
       this.template = json.getString("template");
     }
   }
 
-  public RenderRequest setRequest(HttpRequestWrapper request) {
+  public EngineRequest setRequest(HttpRequestWrapper request) {
     this.request = request;
     return this;
   }
 
-  public RenderRequest setTemplate(String template) {
+  public EngineRequest setTemplate(String template) {
     this.template = template;
     return this;
   }
@@ -88,8 +86,8 @@ public class RenderRequest {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof RenderRequest)) return false;
-    RenderRequest that = (RenderRequest) o;
+    if (!(o instanceof EngineRequest)) return false;
+    EngineRequest that = (EngineRequest) o;
     return Objects.equal(request, that.request) &&
         Objects.equal(template, that.template);
   }

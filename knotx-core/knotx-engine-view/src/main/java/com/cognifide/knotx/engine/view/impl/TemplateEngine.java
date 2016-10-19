@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.view.impl;
 
-import com.cognifide.knotx.dataobjects.RenderRequest;
+import com.cognifide.knotx.dataobjects.EngineRequest;
 import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
 import com.cognifide.knotx.engine.view.parser.HtmlFragment;
 import com.cognifide.knotx.engine.view.parser.HtmlParser;
@@ -46,11 +46,11 @@ public class TemplateEngine {
     initHandlebars();
   }
 
-  public Observable<String> process(RenderRequest renderRequest) {
-    return extractFragments(renderRequest.template())
+  public Observable<String> process(EngineRequest engineRequest) {
+    return extractFragments(engineRequest.template())
         .doOnNext(this::traceSnippet)
         .flatMap(this::compileHtmlFragment)
-        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, renderRequest))
+        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, engineRequest))
         // eager will buffer faster processing to emit items in proper order, keeping concurrency.
         .reduce(new StringBuilder(), StringBuilder::append)
         .map(StringBuilder::toString);

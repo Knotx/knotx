@@ -18,7 +18,7 @@
 package com.cognifide.knotx.engine.view.service;
 
 import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
-import com.cognifide.knotx.dataobjects.RenderRequest;
+import com.cognifide.knotx.dataobjects.EngineRequest;
 import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
 
 import io.vertx.core.json.DecodeException;
@@ -47,9 +47,9 @@ public class ServiceEngine {
   }
 
   public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
-                                              RenderRequest renderRequest) {
+                                              EngineRequest engineRequest) {
     JsonObject serviceMessage = new JsonObject();
-    serviceMessage.put("request", renderRequest.request().toJson());
+    serviceMessage.put("request", engineRequest.request().toJson());
     serviceMessage.put("params", serviceEntry.getParams());
 
     return eventBus.<JsonObject>sendObservable(serviceEntry.getAddress(), serviceMessage)
