@@ -28,7 +28,7 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-view-engine</artifactId>
+  <artifactId>knotx-engine-view</artifactId>
 
   <name>Knot.x - Reactive microservice assembler - View Engine Verticle</name>
 

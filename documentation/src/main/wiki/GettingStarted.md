@@ -30,8 +30,8 @@ A module that contains the **server** [verticle](http://vertx.io/docs/apidocs/io
 #### knotx-standalone
 A module that contains JSON configuration to start Knot.x as standalone system. It means only following verticles to be started: `server`, `repository` and `template-engine`. It enables one to quickly set up a standalone Knot.x core application.
 
-#### knotx-view-engine
-A module that contains the **view-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. View Engine is responsible for processing template snippets, calling external services (only GET requests) for dynamic data and producing final markup with injected data.
+#### knotx-engine-view
+A module that contains the **engine-view** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. View Engine is responsible for processing template snippets, calling external services (only GET requests) for dynamic data and producing final markup with injected data.
 See [[View Engine|ViewEngine]] to learn more.
 
 ### Example
@@ -56,7 +56,7 @@ mvn clean install
 This will create executable fat JAR files for each Knot.x:
 - Knot.x Http Repository in `knotx-core/knotx-repository/knotx-repository-http/target`
 - Knot.x Filesystem Repository in `knotx-core/knotx-repository/knotx-repository-filesystem/target`
-- Knot.x View Engine in `knotx-core/knotx-view-engine/target`
+- Knot.x View Engine in `knotx-core/knotx-engine-view/target`
 - Knot.x Http Server in `knotx-core/knotx-server/target`
 
 And in example application:

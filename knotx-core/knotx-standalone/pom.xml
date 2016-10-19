@@ -80,7 +80,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-view-engine</artifactId>
+      <artifactId>knotx-engine-view</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

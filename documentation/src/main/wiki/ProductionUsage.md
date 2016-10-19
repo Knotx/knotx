@@ -187,7 +187,7 @@ java -jar knotx-repository-filesystem-XXX-fat.jar -conf <path-to-filesystem-repo
 ```
 **Host 2 - View Engine Verticle**
 ```
-java -jar knotx-view-engine-XXX-fat.jar -conf <path-to-engine-configuration.json>
+java -jar knotx-engine-view-XXX-fat.jar -conf <path-to-engine-configuration.json>
 ```
 **Host 3 - Knot.x Server Verticle**
 ```
