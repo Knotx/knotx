@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http.placeholders;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -110,7 +110,7 @@ public class UriTransformerReplaceTest {
 
   @Test
   public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
-    HttpRequestWrapper httpRequest = new HttpRequestWrapper().setHeaders(getHeadersMultiMap()).setParams(getParamsMultiMap()).setPath(requestedUri);
+    ClientRequest httpRequest = new ClientRequest().setHeaders(getHeadersMultiMap()).setParams(getParamsMultiMap()).setPath(requestedUri);
 
     String finalUri = UriTransformer.resolveServicePath(servicePath, httpRequest);
 

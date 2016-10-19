@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.engine.view.impl;
 
-import com.cognifide.knotx.dataobjects.EngineRequest;
+import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
 import com.cognifide.knotx.engine.view.parser.HtmlFragment;
 import com.cognifide.knotx.engine.view.service.ServiceEngine;
@@ -50,7 +50,7 @@ class TemplateSnippetProcessor {
     this.templateDebug = configuration.templateDebug();
   }
 
-  Observable<String> processSnippet(final HtmlFragment fragment, EngineRequest request) {
+  Observable<String> processSnippet(final HtmlFragment fragment, KnotContext request) {
     LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
     return Observable.just(fragment)
         .flatMap(HtmlFragment::getServices)
@@ -64,7 +64,7 @@ class TemplateSnippetProcessor {
         .defaultIfEmpty(fragment.getContent());
   }
 
-  private Observable<JsonObject> fetchServiceData(ServiceEntry service, EngineRequest request) {
+  private Observable<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
     LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
       return request.getCache().get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());

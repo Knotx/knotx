@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http.placeholders;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -32,7 +32,7 @@ public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
   private static final String SLING_URI_PREFIX = "slingUri.";
 
   @Override
-  public String getValue(HttpRequestWrapper request, String placeholder) {
+  public String getValue(ClientRequest request, String placeholder) {
     return Arrays.stream(Strategy.values())
         .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix))
         .findFirst()

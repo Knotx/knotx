@@ -17,19 +17,18 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.dataobjects.EngineRequest;
-import com.cognifide.knotx.dataobjects.EngineResponse;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.util.OptionalAction;
 
 import java.util.Map;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
@@ -55,36 +54,27 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    if (context.get("repoResponse") != null && context.get("originalRequest") != null) {
+    if (context.get("clientResponse") != null && context.get("clientRequest") != null) {
       handleRoute(context, address, routing);
     } else {
-      LOGGER.error("Something very unexpected happened - 'repoReponse' is {}, 'originalRequest' is {}. This should not happen",
-          context.get("repoResponse") ? "present" : "missing",
-          context.get("originalRequest") ? "present" : "missing");
+      LOGGER.error("Something very unexpected happened - 'clientResponse' is {}, 'clientRequest' is {}. This should not happen",
+          context.get("clientResponse") ? "present" : "missing",
+          context.get("clientRequest") ? "present" : "missing");
       context.fail(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
     }
   }
 
   private void handleRoute(final RoutingContext context, final String address, final Map<String, RoutingEntry> routing) {
-    HttpResponseWrapper repoResponse = context.get("repoResponse");
-
-    //FIXME: Passing request/responses (body + headers) between engine calls.
-    eventBus.<JsonObject>sendObservable(address, requestEngine(context))
-        .map(msg -> new EngineResponse(msg.body()))
+    eventBus.<JsonObject>sendObservable(address, knotContext(context))
+        .map(msg -> new KnotContext(msg.body()))
+        .doOnNext(knotContext -> context.put("clientResponse", knotContext))
         .subscribe(
-            engineResponse -> OptionalAction.of(engineResponse.getTransition())
+            knotContext -> OptionalAction.of(knotContext.transition())
                 .ifPresent(on -> {
                   RoutingEntry entry = routing.get(on);
                   handleRoute(context, entry.address(), entry.onTransition());
                 })
-                .ifNotPresent(() -> {
-                  if (engineResponse.isSuccess()) {
-                    writeHeaders(context.response(), repoResponse.headers().add("Content-Length", contentLength(engineResponse)));
-                    context.response().setStatusCode(HttpResponseStatus.OK.code()).end(engineResponse.getHtml());
-                  } else {
-                    context.fail(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-                  }
-                }),
+                .ifNotPresent(() -> sendResponse(context, knotContext)),
             error -> {
               LOGGER.error("Error happened while communicating with {} engine", error, address);
               context.fail(error);
@@ -92,23 +82,42 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
         );
   }
 
-  private JsonObject requestEngine(final RoutingContext context) {
-    return new EngineRequest().setRequest(context.get("originalRequest"))
-        .setTemplate(((HttpResponseWrapper)context.get("repoResponse")).body().toString())
+  private void sendResponse(final RoutingContext context, final KnotContext knotContext) {
+    ClientResponse clientResponse = knotContext.clientResponse();
+
+    if (clientResponse.statusCode() == HttpResponseStatus.OK) {
+      writeContentLength(context.response(), clientResponse);
+      writeHeaders(context.response(), clientResponse);
+      context.response().setStatusCode(HttpResponseStatus.OK.code()).end(clientResponse.body());
+    } else if (clientResponse.statusCode().code() == 500 || clientResponse.statusCode().code() == 404) {
+      context.fail(clientResponse.statusCode().code());
+    } else {
+      writeHeaders(context.response(), clientResponse);
+      context.response().setStatusCode(clientResponse.statusCode().code()).end(clientResponse.body());
+    }
+  }
+
+  private JsonObject knotContext(final RoutingContext context) {
+    return new KnotContext()
+        .setClientRequest(context.get("clientRequest"))
+        .setClientResponse(context.get("clientResponse"))
+        .setTemplate(((ClientResponse) context.get("clientResponse")).body().toString())
         .toJson();
   }
 
-  private void writeHeaders(HttpServerResponse response, MultiMap headers) {
-    headers.names().stream()
+  private void writeHeaders(final HttpServerResponse response, final ClientResponse clientResponse) {
+    clientResponse.headers().names().stream()
         .filter(this::headerFilter)
-        .forEach(name -> response.putHeader(name, headers.get(name)));
+        .forEach(name -> response.putHeader(name, clientResponse.headers().get(name)));
+  }
+
+  private void writeContentLength(final HttpServerResponse response, final ClientResponse clientResponse) {
+    response.putHeader(HttpHeaders.CONTENT_LENGTH.toString(),
+        Integer.toString(clientResponse.body().length()));
   }
 
   private Boolean headerFilter(String name) {
     return configuration.allowedResponseHeaders().contains(name.toLowerCase());
   }
 
-  private String contentLength(EngineResponse engineResponse) {
-    return Integer.toString(engineResponse.getHtml().length());
-  }
 }

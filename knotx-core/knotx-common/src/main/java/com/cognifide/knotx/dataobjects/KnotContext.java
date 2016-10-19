@@ -20,18 +20,24 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import java.util.Optional;
+
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-public class EngineRequest {
+public class KnotContext {
 
-  private HttpRequestWrapper request;
+  private Optional<String> transition;
+
+  private ClientRequest clientRequest;
+
+  private ClientResponse clientResponse;
 
   private String template;
 
-  private Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
+  private volatile Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
-  public EngineRequest() {
+  public KnotContext() {
     //Nothing to set by default
   }
 
@@ -40,25 +46,38 @@ public class EngineRequest {
    *
    * @param json the JSON
    */
-  public EngineRequest(JsonObject json) {
-    this.request = new HttpRequestWrapper(json.getJsonObject("request"));
-    if (json.containsKey("template")) {
-      this.template = json.getString("template");
-    }
+  public KnotContext(JsonObject json) {
+    this.transition = Optional.ofNullable(json.getString("transition"));
+    this.clientRequest = new ClientRequest(json.getJsonObject("clientRequest"));
+    this.clientResponse = new ClientResponse(json.getJsonObject("clientResponse"));
+    this.template = json.getString("template");
   }
 
-  public EngineRequest setRequest(HttpRequestWrapper request) {
-    this.request = request;
+  public KnotContext setClientRequest(ClientRequest request) {
+    this.clientRequest = request;
     return this;
   }
 
-  public EngineRequest setTemplate(String template) {
+  public KnotContext setClientResponse(ClientResponse response) {
+    this.clientResponse = response;
+    return this;
+  }
+
+  public KnotContext setTemplate(String template) {
     this.template = template;
     return this;
   }
 
-  public HttpRequestWrapper request() {
-    return request;
+  public ClientRequest clientRequest() {
+    return clientRequest;
+  }
+
+  public ClientResponse clientResponse() {
+    return clientResponse;
+  }
+
+  public Optional<String> transition() {
+    return transition;
   }
 
   public String template() {
@@ -76,7 +95,9 @@ public class EngineRequest {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    json.put("request", request.toJson());
+    json.put("clientRequest", clientRequest.toJson());
+    json.put("clientResponse", clientResponse.toJson());
+    transition.ifPresent(value -> json.put("transition", value));
     if (template != null) {
       json.put("template", template);
     }
@@ -86,14 +107,17 @@ public class EngineRequest {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof EngineRequest)) return false;
-    EngineRequest that = (EngineRequest) o;
-    return Objects.equal(request, that.request) &&
+    if (!(o instanceof KnotContext)) return false;
+    KnotContext that = (KnotContext) o;
+    return Objects.equal(transition, that.transition) &&
+        Objects.equal(clientRequest, that.clientRequest) &&
+        Objects.equal(clientResponse, that.clientResponse) &&
         Objects.equal(template, that.template);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(request, template);
+    return Objects.hashCode(transition, clientRequest, clientResponse, template);
   }
 }
+

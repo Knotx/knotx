@@ -17,17 +17,17 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http.placeholders;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 
 public interface PlaceholderSubstitutor {
 
   /**
-   * Get the replacement value from the supplied request and placeholder name
+   * Get the replacement value from the supplied clientRequest and placeholder name
    *
-   * @param request     the supplied request
+   * @param request     the supplied clientRequest
    * @param placeholder the placeholder name
    * @return the replacement value, or null if no replacement can be get
    */
-  String getValue(HttpRequestWrapper request, String placeholder);
+  String getValue(ClientRequest request, String placeholder);
 
 }

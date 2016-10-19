@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import java.util.Optional;
 
@@ -53,20 +53,20 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   @Override
   public void handle(RoutingContext context) {
     final Optional<String> repositoryAddress = configuration.repositoryForPath(context.request().path());
-    final HttpRequestWrapper originalRequest = new HttpRequestWrapper(context.request());
+    final ClientRequest originalRequest = new ClientRequest(context.request());
 
     if (repositoryAddress.isPresent()) {
       eventBus.<JsonObject>sendObservable(repositoryAddress.get(), originalRequest.toJson())
           .doOnNext(this::traceMessage)
-          .map(msg -> new HttpResponseWrapper(msg.body()))
+          .map(msg -> new ClientResponse(msg.body()))
           .subscribe(
               repoResponse -> {
                 if (repoResponse.statusCode() == HttpResponseStatus.OK) {
-                  context.put("repoResponse", repoResponse);
-                  context.put("originalRequest", originalRequest);
+                  context.put("clientResponse", repoResponse);
+                  context.put("clientRequest", originalRequest);
                   context.next();
                 } else {
-                  writeHeaders(context.response(), repoResponse.headers().add("content-length", "0"));
+                  writeHeaders(context.response(), repoResponse.headers().add("Content-Length", "0"));
                   context.response().setStatusCode(repoResponse.statusCode().code()).end();
                 }
               },
