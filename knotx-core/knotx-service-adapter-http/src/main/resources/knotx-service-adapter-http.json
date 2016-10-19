@@ -1,5 +1,5 @@
 {
-  "address": "knotx.core.service-adapter",
+  "address": "knotx.core.http.service-adapter",
   "client.options": {
     "maxPoolSize": 1000,
     "keepAlive": false

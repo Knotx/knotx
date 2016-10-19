@@ -30,12 +30,12 @@ A module that contains the **server** [verticle](http://vertx.io/docs/apidocs/io
 #### knotx-standalone
 A module that contains JSON configuration to start Knot.x as standalone system. It means only following verticles to be started: `server`, `repository` and `template-engine`. It enables one to quickly set up a standalone Knot.x core application.
 
-#### knotx-template-engine
-A module that contains the **template-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. Templating Engine is responsible for processing template snippets, calling external services for dynamic data and producing final markup with injected data.
-See [[Templating Engine|TemplatingEngine]] to learn more.
+#### knotx-view-engine
+A module that contains the **view-engine** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. View Engine is responsible for processing template snippets, calling external services (only GET requests) for dynamic data and producing final markup with injected data.
+See [[View Engine|ViewEngine]] to learn more.
 
 ### Example
-The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts five verticles (Knot.x Repository, Knot.x Template Engine, Knot.x Server, Services Mocks and Mocked Remote repository). This module is a perfect fit for those getting started with Knot.x. 
+The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts five verticles (Knot.x Repository, Knot.x View Engine, Knot.x Server, Services Mocks and Mocked Remote repository). This module is a perfect fit for those getting started with Knot.x. 
 
 #### knotx-example-monolith
 A module that can be used to set up a Knot.x instance with mocked external services (from `knotx-mocks`) on a single Vert.x instance using one command. Please mind that this an example that depicts a valid setup of Sample monolith application and is not fit for use in production environments.
@@ -56,7 +56,7 @@ mvn clean install
 This will create executable fat JAR files for each Knot.x:
 - Knot.x Http Repository in `knotx-core/knotx-repository/knotx-repository-http/target`
 - Knot.x Filesystem Repository in `knotx-core/knotx-repository/knotx-repository-filesystem/target`
-- Knot.x Template Engine in `knotx-core/knotx-engine/target`
+- Knot.x View Engine in `knotx-core/knotx-view-engine/target`
 - Knot.x Http Server in `knotx-core/knotx-server/target`
 
 And in example application:
@@ -86,6 +86,11 @@ Here's how JSON configuration files look:
 ```json
 {
   "verticles" : {  
+      "com.cognifide.knotx.server.KnotxServerVerticle": {
+         "config" : {
+            ...
+         }
+      },
       "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
         "config" : {
             ...
@@ -96,22 +101,27 @@ Here's how JSON configuration files look:
             ...
         }
       },      
-      "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+      "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
         "config" : {
             ...
         }
       },
-      "com.cognifide.knotx.server.KnotxServerVerticle": {
+      "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle" :{
         "config" : {
             ...
         }
-      },  
+      },
       "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
         "config" : {
             ...
         }
       },
       "com.cognifide.knotx.mocks.MockServiceVerticle": {
+        "config" : {
+            ...
+        }
+      },
+      "com.cognifide.knotx.mocks.MockServiceAdapterVerticle": {
         "config" : {
             ...
         }
@@ -169,9 +179,9 @@ The config node consists of:
 #### 1.3. Engine section
 ```json
   ...
-  "com.cognifide.knotx.engine.TemplateEngineVerticle": {
+  "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
     "config": {
-      "address": "knotx.core.engine",
+      "address": "knotx.core.viewengine",
       "template.debug": true,
       "client.options": {
         "maxPoolSize": 1000,
@@ -201,7 +211,7 @@ The config node consists of:
   },
   ...,
 ```
-This section configures the Knot.x Template Engine Verticle responsible for rendering page consists of Handlebars template using data from corresponding services. The config node consists of:
+This section configures the Knot.x View Engine Verticle responsible for rendering page consists of Handlebars template using data from corresponding services. The config node consists of:
 - **address** - event bus address of the verticle it listens on,
 - **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
 - **client.options** - contains json representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html), 
@@ -237,7 +247,7 @@ The first matched service will handle the request or, if there's no service matc
         }
       ],
       "engine" : {
-        "address": "knotx.core.engine"
+        "address": "knotx.core.viewengine"
       }
     }
   },
@@ -249,7 +259,7 @@ This section configures the Knot.x HTTP server. The config node consists of:
 - **http.port** - an HTTP port on which the server listens for requests,
 - **allowed.response.headers** - list of the headers that should be passed back to the client
 - **repositories** - configuration of repositories. It's a array of mappings what paths are supported by what repository verticles (by specifing its event bus addresses). The order of mappings is important as they are evaluated from top to down on each request. The first one matched will handle the request or, if no repository is matched, **Knot.x** will return a `404 Not found` response for the given request.
-- **engine** - configuration about templating engine dependency. You can configure event bus **address** of engine verticle here.
+- **engine** - configuration about view engine dependency. You can configure event bus **address** of engine verticle here.
 
 #### 1.5 MockRepo section
 ```json

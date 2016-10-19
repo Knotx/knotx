@@ -41,7 +41,7 @@ import rx.functions.Action1;
 @RunWith(VertxUnitRunner.class)
 public class HttpServiceAdapterTest {
 
-  private final static String ADAPTER_ADDRESS = "knotx.core.service-adapter";
+  private final static String ADAPTER_ADDRESS = "knotx.core.http.service-adapter";
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();

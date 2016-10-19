@@ -51,6 +51,6 @@
     }
   ],
   "engine": {
-    "address": "knotx.core.engine"
+    "address": "knotx.core.viewengine"
   }
 }
