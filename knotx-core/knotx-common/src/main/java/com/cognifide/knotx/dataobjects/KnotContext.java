@@ -20,8 +20,6 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import com.cognifide.knotx.fragments.Fragment;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +28,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-public class KnotContext {
+public class KnotContext implements JsonAdapter {
 
   private Optional<String> transition = Optional.empty();
 
@@ -121,6 +119,7 @@ public class KnotContext {
    *
    * @return the JSON
    */
+  @Override
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
     json.put("clientRequest", clientRequest.toJson());

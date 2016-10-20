@@ -27,7 +27,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
-public class ClientResponse {
+public class ClientResponse implements JsonAdapter {
 
   private HttpResponseStatus statusCode;
 
@@ -100,6 +100,7 @@ public class ClientResponse {
    *
    * @return the JSON
    */
+  @Override
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode.code());

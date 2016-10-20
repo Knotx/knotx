@@ -23,7 +23,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
-public class ClientRequest {
+public class ClientRequest implements JsonAdapter {
   private String path;
 
   private HttpMethod method;
@@ -117,6 +117,7 @@ public class ClientRequest {
    *
    * @return the JSON
    */
+  @Override
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
     json.put("path", path);

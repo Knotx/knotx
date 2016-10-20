@@ -40,14 +40,24 @@ enum KnotContextKeys {
   REQUEST("clientRequest") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return Optional.of(context.clientRequest().toJson());
+      return context.clientRequest() != null ? Optional.of(context.clientRequest().toJson()) : Optional.empty();
     }
   },
-  FRAGMENTS("fragments"),
+  FRAGMENTS("fragments") {
+    @Override
+    Optional<Object> defaultValue(KnotContext context) {
+      return context.getFragments().isPresent() ? Optional.of(context.toJson().getJsonArray(this.key)) : Optional.empty();
+    }
+  },
   TRANSITION("transition") {
     @Override
     Observable<Optional<Object>> mockValue(FileSystem fileSystem, String mockConfigValue) {
       return Observable.just(Optional.of(mockConfigValue));
+    }
+
+    @Override
+    Optional<Object> defaultValue(KnotContext context) {
+      return Optional.empty();
     }
   };
 
@@ -75,9 +85,7 @@ enum KnotContextKeys {
         .map(this::toJson);
   }
 
-  Optional<Object> defaultValue(KnotContext context) {
-    return Optional.empty();
-  }
+  abstract Optional<Object> defaultValue(KnotContext context);
 
   private Optional<Object> toJson(Buffer buffer) {
     return Optional.of(buffer.toString().trim().charAt(0) == '{' ? buffer.toJsonObject() : buffer.toJsonArray());

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.fragments;
+package com.cognifide.knotx.dataobjects;
 
 import com.google.common.base.Objects;
 
@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 
 import io.vertx.core.json.JsonObject;
 
-public class Fragment {
+public class Fragment implements JsonAdapter {
 
   private static final String RAW_FRAGMENT_ID = "_raw";
 
@@ -64,6 +64,7 @@ public class Fragment {
     return new Fragment(id, data);
   }
 
+  @Override
   public JsonObject toJson() {
     return new JsonObject().put(ID, id).put(CONTENT, content).put(CONTEXT, context);
   }
