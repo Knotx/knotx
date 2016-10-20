@@ -1,6 +1,5 @@
 {
   "http.port": 8092,
-  "displayExceptionDetails": true,
   "allowed.response.headers": [
     "referer",
     "user-agent",
@@ -44,27 +43,53 @@
   "repositories": [
     {
       "path": "/content/local/.*",
-      "address": "knotx.core.repository.filesystem"
+      "address": "knotx.repository.filesystem"
     },
     {
       "path": "/content/.*",
-      "address": "knotx.core.repository.http"
+      "address": "knotx.repository.http"
     }
   ],
   "routing": {
     "GET": [
       {
+        "path": "/content/local/.*",
+        "address": "A-engine",
+        "onTransition": {
+          "go-c": {
+            "address": "C-engine"
+          }
+        }
+      },
+      {
         "path": "/content/.*",
-        "address": "knotx.core.viewengine"
+        "address": "C-engine"
       }
     ],
     "POST": [
       {
-        "path": "/content/.*",
-        "address": "knotx.core.actionengine",
+        "path": "/content/local/.*",
+        "address": "A-post-engine",
         "onTransition": {
-          "render": {
-            "address": "knotx.core.viewengine"
+          "go-b": {
+            "address": "B-engine",
+            "onTransition": {
+              "go-c": {
+                "address": "C-engine"
+              }
+            }
+          },
+          "go-c": {
+            "address": "C-engine"
+          }
+        }
+      },
+      {
+        "path": "/content/.*",
+        "address": "B-engine",
+        "onTransition": {
+          "go-c": {
+            "address": "C-engine"
           }
         }
       }

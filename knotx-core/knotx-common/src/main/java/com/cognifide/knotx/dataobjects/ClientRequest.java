@@ -23,7 +23,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
-public class HttpRequestWrapper {
+public class ClientRequest {
   private String path;
 
   private HttpMethod method;
@@ -34,7 +34,7 @@ public class HttpRequestWrapper {
 
   private MultiMap formAttributes = MultiMap.caseInsensitiveMultiMap();
 
-  public HttpRequestWrapper() {
+  public ClientRequest() {
     //Nothing to set by default
   }
 
@@ -43,7 +43,7 @@ public class HttpRequestWrapper {
    *
    * @param json the JSON
    */
-  public HttpRequestWrapper(JsonObject json) {
+  public ClientRequest(JsonObject json) {
     this.path = json.getString("path");
     if (json.containsKey("method")) {
       this.method = HttpMethod.valueOf(json.getString("method"));
@@ -59,7 +59,7 @@ public class HttpRequestWrapper {
     }
   }
 
-  public HttpRequestWrapper(HttpServerRequest serverRequest) {
+  public ClientRequest(HttpServerRequest serverRequest) {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
     this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.headers().getDelegate());
@@ -87,27 +87,27 @@ public class HttpRequestWrapper {
     return formAttributes;
   }
 
-  public HttpRequestWrapper setPath(String path) {
+  public ClientRequest setPath(String path) {
     this.path = path;
     return this;
   }
 
-  public HttpRequestWrapper setMethod(HttpMethod method) {
+  public ClientRequest setMethod(HttpMethod method) {
     this.method = method;
     return this;
   }
 
-  public HttpRequestWrapper setHeaders(MultiMap headers) {
+  public ClientRequest setHeaders(MultiMap headers) {
     this.headers = headers;
     return this;
   }
 
-  public HttpRequestWrapper setParams(MultiMap params) {
+  public ClientRequest setParams(MultiMap params) {
     this.params = params;
     return this;
   }
 
-  public HttpRequestWrapper setFormAttributes(MultiMap formAttributes) {
+  public ClientRequest setFormAttributes(MultiMap formAttributes) {
     this.formAttributes = formAttributes;
     return this;
   }

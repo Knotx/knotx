@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http.placeholders;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,7 +34,7 @@ public final class UriTransformer {
     // util
   }
 
-  public static String resolveServicePath(String servicePath, HttpRequestWrapper request) {
+  public static String resolveServicePath(String servicePath, ClientRequest request) {
     String serviceUri = servicePath;
     List<String> placeholders = getPlaceholders(servicePath);
 
@@ -53,7 +53,7 @@ public final class UriTransformer {
         .collect(Collectors.toList());
   }
 
-  private static String getPlaceholderValue(HttpRequestWrapper request, String placeholder) {
+  private static String getPlaceholderValue(ClientRequest request, String placeholder) {
     return placeholderSubstitutors.stream()
         .map(substitutor -> substitutor.getValue(request, placeholder))
         .filter(str -> str != null)
