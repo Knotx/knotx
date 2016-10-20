@@ -26,8 +26,9 @@ import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Handlebars;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
-import java.util.Optional;
 import java.util.ServiceLoader;
 
 import io.vertx.core.logging.Logger;
@@ -49,17 +50,17 @@ public class TemplateEngine {
   }
 
   public Observable<String> process(KnotContext knotContext) {
-    return Observable.just(knotContext.fragments())
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .flatMap(Observable::from)
-        .doOnNext(this::traceSnippet)
-        .flatMap(this::compileHtmlFragment)
-        .concatMapEager(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
-        // eager will buffer faster processing to emit items in proper order, keeping concurrency.
-        .reduce(new StringBuilder(), StringBuilder::append)
-        .map(StringBuilder::toString)
-        .defaultIfEmpty("");
+    return knotContext.fragments()
+        .map(
+            fragments -> Observable.from(fragments)
+                .doOnNext(this::traceFragment)
+                .flatMap(this::compileHtmlFragment)
+                .concatMapEager(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
+                // eager will buffer faster processing to emit items in proper order, keeping concurrency.
+                .reduce(new StringBuilder(), StringBuilder::append)
+                .map(StringBuilder::toString)
+        )
+        .orElse(Observable.just(StringUtils.EMPTY));
   }
 
   private void initHandlebars() {
@@ -89,9 +90,9 @@ public class TemplateEngine {
     }
   }
 
-  private void traceSnippet(Fragment fragment) {
+  private void traceFragment(Fragment fragment) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Processing snippet {}", fragment.toJson().encodePrettily());
+      LOGGER.trace("Processing fragment {}", fragment.toJson().encodePrettily());
     }
   }
 }

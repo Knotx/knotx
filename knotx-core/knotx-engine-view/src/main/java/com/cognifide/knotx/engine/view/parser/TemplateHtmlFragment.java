@@ -97,7 +97,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
   }
 
   public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
-    this.compiledFragment = handlebars.compileInline(fragment.getContent());
+    this.compiledFragment = handlebars.compileInline(content);
     return this;
   }
 
