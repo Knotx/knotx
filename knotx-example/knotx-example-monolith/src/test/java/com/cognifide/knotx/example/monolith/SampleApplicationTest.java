@@ -64,18 +64,21 @@ public class SampleApplicationTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
+  @Ignore(value = "Unignore when splitter fills fragments in KnotContext.")
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
   }
 
   @Test
+  @Ignore(value = "Unignore when splitter fills fragments in KnotContext.")
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
   }
 
   @Test
+  @Ignore(value = "Unignore when splitter fills fragments in KnotContext.")
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");

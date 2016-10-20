@@ -18,36 +18,32 @@
 package com.cognifide.knotx.engine.view.parser;
 
 import com.cognifide.knotx.engine.view.service.ServiceEntry;
-
-import org.apache.commons.lang3.StringUtils;
+import com.cognifide.knotx.fragments.Fragment;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-class RawHtmlFragment implements HtmlFragment {
+public class RawHtmlFragment implements HtmlFragment {
 
-  private String fragment;
+  private final Fragment fragment;
 
-  private boolean isHandlebarsTemplate;
-
-  RawHtmlFragment(String fragment, boolean isHandlebarsTemplate) {
+  public RawHtmlFragment(Fragment fragment) {
     this.fragment = fragment;
-    this.isHandlebarsTemplate = isHandlebarsTemplate;
   }
 
   @Override
   public String getContentWithContext(JsonObject model) {
-    return fragment;
+    return fragment.getContent();
   }
 
   @Override
-  public String getContent() {
+  public Fragment getFragment() {
     return fragment;
   }
 
   @Override
   public boolean hasHandlebarsTemplate() {
-    return isHandlebarsTemplate;
+    return false;
   }
 
   @Override
@@ -55,8 +51,4 @@ class RawHtmlFragment implements HtmlFragment {
     return Observable.empty();
   }
 
-  @Override
-  public String getDataId() {
-    return StringUtils.EMPTY;
-  }
 }

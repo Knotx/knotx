@@ -61,7 +61,7 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
             .subscribe(
                 response -> {
                   KnotContext context = new KnotContext(response.body());
-                  context.setFragments(Optional.of(splitter.split(context.clientResponse().body().toString())));
+                  context.setFragments(splitter.split(context.clientResponse().body().toString()));
                   context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
                   response.reply(context.toJson());
                 },
