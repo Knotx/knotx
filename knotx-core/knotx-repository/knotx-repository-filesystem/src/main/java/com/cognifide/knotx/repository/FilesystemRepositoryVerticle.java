@@ -47,6 +47,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryVerticle.class);
   private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
+  private static final String ERROR_MESSAGE = "Unable to get template from the repository";
   private String catalogue;
   private String address;
 
@@ -62,15 +63,19 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
 
     EventBus eventBus = vertx.eventBus();
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
+    eventBus.<JsonObject>consumer(address).handler(
+        message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .flatMap(this::getTemplateContent, Pair::of)
+            .subscribe(
+                response -> response.getLeft().reply(response.getRight().toJson()),
+                error -> {
+                  LOGGER.error(ERROR_MESSAGE, error);
+                  message.reply(processError(error));
+                }
+            )
+    );
 
-    messageObservable
-        .doOnNext(this::traceMessage)
-        .flatMap(this::getTemplateContent, Pair::of)
-        .subscribe(
-            response -> response.getLeft().reply(response.getRight().toJson()),
-            error -> LOGGER.error("Unable to get template from the repository", error)
-        );
   }
 
   private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
@@ -86,8 +91,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     return fileSystem.openObservable(localFilePath, OPEN_OPTIONS)
         .flatMap(this::processFile)
         .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
-        .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND))
-        .onErrorReturn(this::processError);
+        .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND));
   }
 
   private MultiMap headers(Optional<String> contentType) {
@@ -105,7 +109,6 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
   }
 
   private ClientResponse processError(Throwable error) {
-    LOGGER.error("Error reading template file from file system", error);
     HttpResponseStatus statusCode;
     if (error.getCause().getClass().equals(NoSuchFileException.class)) {
       statusCode = HttpResponseStatus.NOT_FOUND;
