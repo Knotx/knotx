@@ -33,7 +33,7 @@ import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
-public class KnotxEngineHandler implements Handler<RoutingContext> {
+class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxEngineHandler.class);
   private EventBus eventBus;
@@ -48,7 +48,7 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
   }
 
-  public static KnotxEngineHandler create(EventBus eventBus, String address, Map<String, RoutingEntry> routing, KnotxServerConfiguration configuration) {
+  static KnotxEngineHandler create(EventBus eventBus, String address, Map<String, RoutingEntry> routing, KnotxServerConfiguration configuration) {
     return new KnotxEngineHandler(eventBus, address, routing, configuration);
   }
 
@@ -100,6 +100,14 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
       writeHeaders(context.response(), clientResponse);
       context.response().setStatusCode(clientResponse.statusCode().code()).end(clientResponse.body());
     }
+  }
+
+  private JsonObject knotContext(final RoutingContext context) {
+    return new KnotContext()
+        .setClientRequest(context.get("clientRequest"))
+        .setClientResponse(context.get("clientResponse"))
+        .setFragments(context.get("fragments"))
+        .toJson();
   }
 
   private void writeHeaders(final HttpServerResponse response, final ClientResponse clientResponse) {

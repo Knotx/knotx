@@ -65,7 +65,7 @@ public class HtmlFragmentSplitterVerticleTest {
     callFragmentSplitterWithAssertions(context, "",
         knotContext -> {
           context.assertEquals(knotContext.clientResponse().statusCode(), HttpResponseStatus.NOT_FOUND);
-          context.assertFalse(knotContext.getFragments().isPresent());
+          context.assertFalse(knotContext.fragments().isPresent());
         });
   }
 
@@ -74,8 +74,8 @@ public class HtmlFragmentSplitterVerticleTest {
   public void callSplitterEmptyBody_expectErrorReponse(TestContext context) throws Exception {
     callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
         knotContext -> {
-          context.assertTrue(knotContext.getFragments().isPresent());
-          context.assertEquals(knotContext.getFragments().get().size(), NUMBER_OF_FRAGMENTS);
+          context.assertTrue(knotContext.fragments().isPresent());
+          context.assertEquals(knotContext.fragments().get().size(), NUMBER_OF_FRAGMENTS);
         });
   }
 

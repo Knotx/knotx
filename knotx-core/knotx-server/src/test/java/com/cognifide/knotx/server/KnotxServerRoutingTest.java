@@ -28,8 +28,6 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
-import java.util.Optional;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
@@ -154,7 +152,7 @@ public class KnotxServerRoutingTest {
       KnotContext knotContext = new KnotContext(msg.body());
       Buffer inBody = knotContext.clientResponse().body();
       knotContext.clientResponse().setBody(inBody.appendString(addToBody));
-      knotContext.setTransition(Optional.ofNullable(transition));
+      knotContext.setTransition(transition);
       msg.reply(knotContext.toJson());
     });
   }

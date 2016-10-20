@@ -18,6 +18,7 @@
 package com.cognifide.knotx.engine.view.parser;
 
 import com.cognifide.knotx.engine.view.service.ServiceEntry;
+import com.cognifide.knotx.fragments.Fragment;
 
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
@@ -35,7 +36,7 @@ public interface HtmlFragment {
   /**
    * Gets the raw HTML content of the fragment
    */
-  String getContent();
+  Fragment getFragment();
 
   /**
    * Checks if the fragment is Handlebars template or not
@@ -47,8 +48,4 @@ public interface HtmlFragment {
    */
   Observable<ServiceEntry> getServices();
 
-  /**
-   * Gets 'data id' attribute
-   */
-  String getDataId();
 }

@@ -32,13 +32,13 @@ import rx.Observable;
 
 public class KnotContext {
 
-  private Optional<String> transition = Optional.empty();
+  private String transition;
 
   private ClientRequest clientRequest;
 
   private ClientResponse clientResponse;
 
-  private Optional<List<Fragment>> fragments = Optional.empty();
+  private List<Fragment> fragments;
 
   private volatile Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
@@ -52,14 +52,14 @@ public class KnotContext {
    * @param json the JSON
    */
   public KnotContext(JsonObject json) {
-    this.transition = Optional.ofNullable(json.getString("transition"));
+    this.transition = json.getString("transition");
     this.clientRequest = new ClientRequest(json.getJsonObject("clientRequest"));
     this.clientResponse = new ClientResponse(json.getJsonObject("clientResponse"));
     if (json.containsKey("fragments")) {
-      this.fragments = Optional.of(json.getJsonArray("fragments").stream()
+      this.fragments = json.getJsonArray("fragments").stream()
           .map(item -> (JsonObject) item)
           .map(Fragment::new)
-          .collect(Collectors.toList()));
+          .collect(Collectors.toList());
     }
   }
 
@@ -73,7 +73,12 @@ public class KnotContext {
     return this;
   }
 
-  public KnotContext setTransition(Optional<String> transition) {
+  public KnotContext setFragments(List<Fragment> fragments) {
+    this.fragments = fragments;
+    return this;
+  }
+
+  public KnotContext setTransition(String transition) {
     this.transition = transition;
     return this;
   }
@@ -87,16 +92,11 @@ public class KnotContext {
   }
 
   public Optional<String> transition() {
-    return transition;
+    return Optional.ofNullable(transition);
   }
 
-  public Optional<List<Fragment>> getFragments() {
-    return fragments;
-  }
-
-  public KnotContext setFragments(Optional<List<Fragment>> fragments) {
-    this.fragments = fragments;
-    return this;
+  public Optional<List<Fragment>> fragments() {
+    return Optional.ofNullable(fragments);
   }
 
   public Cache<String, Observable<JsonObject>> getCache() {
@@ -112,8 +112,8 @@ public class KnotContext {
     JsonObject json = new JsonObject();
     json.put("clientRequest", clientRequest.toJson());
     json.put("clientResponse", clientResponse.toJson());
-    transition.ifPresent(value -> json.put("transition", value));
-    fragments.ifPresent(value -> json.put("fragments", value.stream()
+    transition().ifPresent(value -> json.put("transition", value));
+    fragments().ifPresent(value -> json.put("fragments", value.stream()
         .map(Fragment::toJson)
         .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll)));
     return json;
