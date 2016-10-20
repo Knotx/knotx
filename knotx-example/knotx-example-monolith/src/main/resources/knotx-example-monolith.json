@@ -58,7 +58,7 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.core.view-engine"
+              "address": "knotx.core.viewengine"
             }
           ]
         }
