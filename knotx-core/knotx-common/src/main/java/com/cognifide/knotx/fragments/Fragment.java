@@ -25,6 +25,8 @@ import io.vertx.core.json.JsonObject;
 
 public class Fragment {
 
+  private static final String RAW_FRAGMENT_ID = "_raw";
+
   private static final String ID = "_ID";
 
   private static final String CONTENT = "_CONTENT";
@@ -43,13 +45,21 @@ public class Fragment {
     this.context = fragment.getJsonObject(CONTEXT);
   }
 
-  public Fragment(String id, String data) {
+  private Fragment(String id, String data) {
     if (StringUtils.isEmpty(id) || StringUtils.isEmpty(data)) {
       throw new IllegalArgumentException("Fragment is not valid [" + id + "], [" + data + "].");
     }
     this.id = id;
     this.content = data;
     this.context = new JsonObject();
+  }
+
+  public static Fragment raw(String data) {
+    return new Fragment(RAW_FRAGMENT_ID, data);
+  }
+
+  public static Fragment snippet(String id, String data) {
+    return new Fragment(id, data);
   }
 
   public JsonObject toJson() {
@@ -67,6 +77,11 @@ public class Fragment {
   public JsonObject getContext() {
     return context;
   }
+
+  public boolean isRaw() {
+    return RAW_FRAGMENT_ID.equals(id);
+  }
+
 
   @Override
   public boolean equals(Object o) {

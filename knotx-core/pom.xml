@@ -36,6 +36,7 @@
   <modules>
     <module>knotx-common</module>
     <module>knotx-repository</module>
+    <module>knotx-fragment-splitter</module>
     <module>knotx-server</module>
     <module>knotx-service-adapter-http</module>
     <module>knotx-standalone</module>

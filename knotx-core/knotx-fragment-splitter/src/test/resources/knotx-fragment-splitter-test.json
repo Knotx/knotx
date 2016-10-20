@@ -1,0 +1,9 @@
+{
+  "verticles": {
+    "com.cognifide.knotx.splitter.FragmentSplitterVerticle": {
+      "config": {
+        "address": "knotx.core.splitter"
+      }
+    }
+  }
+}
