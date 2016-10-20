@@ -54,20 +54,18 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    if (context.get("clientResponse") != null && context.get("clientRequest") != null) {
+    try {
       handleRoute(context, address, routing);
-    } else {
-      LOGGER.error("Something very unexpected happened - 'clientResponse' is {}, 'clientRequest' is {}. This should not happen",
-          context.get("clientResponse") ? "present" : "missing",
-          context.get("clientRequest") ? "present" : "missing");
-      context.fail(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+    } catch(Exception ex) {
+      LOGGER.error("Something very unexpected happened", ex);
+      context.fail(ex);
     }
   }
 
   private void handleRoute(final RoutingContext context, final String address, final Map<String, RoutingEntry> routing) {
     eventBus.<JsonObject>sendObservable(address, knotContext(context))
         .map(msg -> new KnotContext(msg.body()))
-        .doOnNext(knotContext -> context.put("clientResponse", knotContext))
+        .doOnNext(knotContext -> context.put("clientResponse", knotContext.clientResponse()))
         .subscribe(
             knotContext -> OptionalAction.of(knotContext.transition())
                 .ifPresent(on -> {

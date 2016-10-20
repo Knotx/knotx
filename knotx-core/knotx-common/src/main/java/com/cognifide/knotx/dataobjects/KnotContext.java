@@ -27,7 +27,7 @@ import rx.Observable;
 
 public class KnotContext {
 
-  private Optional<String> transition;
+  private Optional<String> transition = Optional.empty();
 
   private ClientRequest clientRequest;
 
@@ -65,6 +65,11 @@ public class KnotContext {
 
   public KnotContext setTemplate(String template) {
     this.template = template;
+    return this;
+  }
+
+  public KnotContext setTransition(Optional<String> transition) {
+    this.transition = transition;
     return this;
   }
 

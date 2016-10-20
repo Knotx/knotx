@@ -54,11 +54,11 @@
             "address": "knotx.core.repository.http"
           }
         ],
-        "engines": {
+        "routing": {
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.core.engine"
+              "address": "knotx.core.view-engine"
             }
           ]
         }
