@@ -17,12 +17,14 @@
  */
 package com.cognifide.knotx.mocks.knot;
 
-import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Optional;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -36,8 +38,8 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
 
-  private static final JsonObject ERROR_RESPONSE = new JsonObject().put(KnotContextKeys.RESPONSE.key(), new JsonObject().put("statusCode", 500));
-  private static final JsonObject NOT_FOUND = new JsonObject().put(KnotContextKeys.RESPONSE.key(), new JsonObject().put("statusCode", 404));
+  private static final JsonObject ERROR_RESPONSE = new KnotContext().setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR)).toJson();
+  private static final JsonObject NOT_FOUND = new KnotContext().setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND)).toJson();
 
   private final FileSystem fileSystem;
   private final JsonObject handlerConfig;
@@ -50,7 +52,7 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   @Override
   public void handle(Message<JsonObject> message) {
     final Observable<JsonObject> result = Observable.just(message)
-        .map(msg -> message.body())
+        .map(msg -> new KnotContext(message.body()))
         .filter(this::findConfiguration)
         .doOnNext(this::logProcessedInfo)
         .flatMap(this::prepareHandlerResponse)
@@ -65,29 +67,25 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
     );
   }
 
-  private Boolean findConfiguration(JsonObject message) {
-    return handlerConfig.containsKey(getRequestPath(message));
+  private Boolean findConfiguration(KnotContext context) {
+    return handlerConfig.containsKey(context.clientRequest().path());
   }
 
-  private void logProcessedInfo(JsonObject message) {
-    LOGGER.info("Processing `{}`", getRequestPath(message));
+  private void logProcessedInfo(KnotContext context) {
+    LOGGER.info("Processing `{}`", context.clientRequest().path());
   }
 
-  private Observable<JsonObject> prepareHandlerResponse(JsonObject message) {
-    final JsonObject responseConfig = handlerConfig.getJsonObject(getRequestPath(message));
+  private Observable<JsonObject> prepareHandlerResponse(KnotContext context) {
+    final JsonObject responseConfig = handlerConfig.getJsonObject(context.clientRequest().path());
 
     return Observable.from(KnotContextKeys.values())
-        .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig))
+        .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig, context))
         .filter(value -> value.getRight().isPresent())
         .reduce(new JsonObject(), this::mergeResponseValues);
   }
 
   private JsonObject mergeResponseValues(JsonObject result, Pair<String, Optional<Object>> value) {
     return new JsonObject().put(value.getLeft(), value.getRight().get());
-  }
-
-  private String getRequestPath(JsonObject message) {
-    return new ClientRequest(message.getJsonObject(KnotContextKeys.REQUEST.key())).path();
   }
 
 }

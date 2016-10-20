@@ -21,7 +21,7 @@
     },
     "com.cognifide.knotx.mocks.MockKnotVerticle": {
       "config": {
-        "knot.action": {
+        "knot.action.mock": {
           "/form-simple": {
             "fragments": "mock/knot/action/form-simple.fragments.json",
             "clientResponse": "mock/knot/action/form-simple.response.json",
@@ -31,7 +31,7 @@
             "clientResponse": "mock/knot/action/redirect.response.json"
           }
         },
-        "knot.view": {
+        "knot.view.mock": {
           "/simple": {
             "fragments": "mock/knot/view/simple.fragments.json",
             "clientResponse": "mock/knot/view/simple.response.json"

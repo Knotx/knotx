@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.mocks.knot;
 
+import com.cognifide.knotx.dataobjects.KnotContext;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Optional;
@@ -31,11 +33,16 @@ import rx.Observable;
 enum KnotContextKeys {
   RESPONSE("clientResponse") {
     @Override
-    Optional<Object> defaultValue() {
+    Optional<Object> defaultValue(KnotContext context) {
       return Optional.of(new JsonObject().put("statusCode", 200));
     }
   },
-  REQUEST("clientRequest"),
+  REQUEST("clientRequest") {
+    @Override
+    Optional<Object> defaultValue(KnotContext context) {
+      return Optional.of(context.clientRequest().toJson());
+    }
+  },
   FRAGMENTS("fragments"),
   TRANSITION("transition") {
     @Override
@@ -54,12 +61,12 @@ enum KnotContextKeys {
     return key;
   }
 
-  Observable<Pair<String, Optional<Object>>> valueOrDefault(FileSystem fileSystem, JsonObject responseConfig) {
+  Observable<Pair<String, Optional<Object>>> valueOrDefault(FileSystem fileSystem, JsonObject responseConfig, KnotContext context) {
     return Observable.just(key)
         .filter(responseConfig::containsKey)
         .flatMap(contextKey -> this.mockValue(fileSystem, responseConfig.getString(contextKey)))
         .map(value -> Pair.of(key, value))
-        .defaultIfEmpty(Pair.of(key, this.defaultValue()));
+        .defaultIfEmpty(Pair.of(key, this.defaultValue(context)));
   }
 
   Observable<Optional<Object>> mockValue(FileSystem fileSystem, String resourcePath) {
@@ -68,7 +75,7 @@ enum KnotContextKeys {
         .map(this::toJson);
   }
 
-  Optional<Object> defaultValue() {
+  Optional<Object> defaultValue(KnotContext context) {
     return Optional.empty();
   }
 
