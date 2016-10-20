@@ -18,8 +18,8 @@
 package com.cognifide.knotx.core.serviceadapter.http;
 
 import com.cognifide.knotx.core.serviceadapter.http.placeholders.UriTransformer;
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -42,10 +42,10 @@ import rx.Observable;
 class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
-  private static final String REQUEST_KEY = "request";
+  private static final String REQUEST_KEY = "clientRequest";
   private static final String PARAMS_KEY = "params";
   private static final String PATH_PROPERTY_KEY = "path";
-  private static final HttpResponseWrapper INTERNAL_SERVER_ERROR_RESPONSE = new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+  private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
   private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
 
@@ -56,7 +56,7 @@ class HttpClientFacade {
     this.services = services;
   }
 
-  Observable<HttpResponseWrapper> process(JsonObject message) {
+  Observable<ClientResponse> process(JsonObject message) {
     return Observable.just(message)
         .doOnNext(this::validateContract)
         .map(this::prepareRequest)
@@ -72,17 +72,17 @@ class HttpClientFacade {
     }
   }
 
-  private Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> prepareRequest(JsonObject message) {
-    final Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest;
+  private Pair<ClientRequest, HttpServiceAdapterConfiguration.ServiceMetadata> prepareRequest(JsonObject message) {
+    final Pair<ClientRequest, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest;
 
-    final HttpRequestWrapper originalRequest = new HttpRequestWrapper(message.getJsonObject(REQUEST_KEY));
+    final ClientRequest originalRequest = new ClientRequest(message.getJsonObject(REQUEST_KEY));
     final JsonObject params = message.getJsonObject(PARAMS_KEY);
 
     final String servicePath = UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest);
 
     final Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
     if (serviceMetadata.isPresent()) {
-      final HttpRequestWrapper serviceRequestWrapper = new HttpRequestWrapper(originalRequest.toJson());
+      final ClientRequest serviceRequestWrapper = new ClientRequest(originalRequest.toJson());
       serviceRequestWrapper.setPath(servicePath);
       serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
     } else {
@@ -97,8 +97,8 @@ class HttpClientFacade {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Observable<HttpClientResponse> callService(Pair<HttpRequestWrapper, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
-    final HttpRequestWrapper requestWrapper = serviceRequest.getLeft();
+  private Observable<HttpClientResponse> callService(Pair<ClientRequest, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
+    final ClientRequest requestWrapper = serviceRequest.getLeft();
     final HttpServiceAdapterConfiguration.ServiceMetadata serviceMetadata = serviceRequest.getRight();
 
     return Observable.create(subscriber -> {
@@ -118,12 +118,12 @@ class HttpClientFacade {
         .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
   }
 
-  private Observable<HttpResponseWrapper> wrapResponse(HttpClientResponse response) {
+  private Observable<ClientResponse> wrapResponse(HttpClientResponse response) {
     return Observable.just(Buffer.buffer())
         .mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
         .doOnNext(this::traceServiceCall)
-        .map(buffer -> new HttpResponseWrapper()
+        .map(buffer -> new ClientResponse()
             .setBody(buffer)
             .setStatusCode(HttpResponseStatus.valueOf(response.statusCode()))
         );

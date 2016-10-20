@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Templating Engine Verticle
+ * Knot.x - Reactive microservice assembler - HTTP Server
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,19 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.core.serviceadapter.http.placeholders;
+package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.dataobjects.ClientRequest;
+import java.util.Map;
 
-public interface PlaceholderSubstitutor {
+public class RoutingEntry {
+  private String path;
+  private String address;
+  private Map<String, RoutingEntry> onTransition;
 
-  /**
-   * Get the replacement value from the supplied clientRequest and placeholder name
-   *
-   * @param request     the supplied clientRequest
-   * @param placeholder the placeholder name
-   * @return the replacement value, or null if no replacement can be get
-   */
-  String getValue(ClientRequest request, String placeholder);
+  public RoutingEntry(String path, String address, Map<String, RoutingEntry> onTransition) {
+    this.path = path;
+    this.address = address;
+    this.onTransition = onTransition;
+  }
 
+  public String path() {
+    return path;
+  }
+
+  public String address() {
+    return address;
+  }
+
+  public Map<String, RoutingEntry> onTransition() {
+    return onTransition;
+  }
 }

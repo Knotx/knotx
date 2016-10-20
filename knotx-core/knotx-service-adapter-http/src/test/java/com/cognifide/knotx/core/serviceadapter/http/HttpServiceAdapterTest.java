@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.core.serviceadapter.http;
 
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -76,14 +76,14 @@ public class HttpServiceAdapterTest {
     });
   }
 
-  private void callAdapterServiceWithAssertions(TestContext context, String servicePath, HttpMethod method, Action1<HttpResponseWrapper> testFunction) {
+  private void callAdapterServiceWithAssertions(TestContext context, String servicePath, HttpMethod method, Action1<ClientResponse> testFunction) {
     JsonObject message = payloadMessage(servicePath);
     Async async = context.async();
 
     vertx.vertx().eventBus().<JsonObject>send(ADAPTER_ADDRESS, message, ar -> {
       if (ar.succeeded()) {
         Observable
-            .just(new HttpResponseWrapper(ar.result().body()))
+            .just(new ClientResponse(ar.result().body()))
             .doOnNext(testFunction);
       } else {
         context.fail(ar.cause());
@@ -96,7 +96,7 @@ public class HttpServiceAdapterTest {
     return new JsonObject()
         .put("params", new JsonObject()
             .put("path", servicePath))
-        .put("request", new JsonObject());
+        .put("clientRequest", new JsonObject());
   }
 
 }

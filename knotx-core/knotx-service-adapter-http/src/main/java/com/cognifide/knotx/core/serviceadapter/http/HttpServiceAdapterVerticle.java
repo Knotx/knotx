@@ -18,7 +18,7 @@
 package com.cognifide.knotx.core.serviceadapter.http;
 
 
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -72,7 +72,7 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
   }
 
   private JsonObject getErrorResponse(String message) {
-    return new HttpResponseWrapper()
+    return new ClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR)
         .setBody(Buffer.buffer(message))
         .toJson();

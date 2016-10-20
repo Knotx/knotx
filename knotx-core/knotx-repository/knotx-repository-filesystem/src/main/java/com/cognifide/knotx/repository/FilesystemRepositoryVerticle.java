@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -73,10 +73,10 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
         );
   }
 
-  private Observable<HttpResponseWrapper> getTemplateContent(final Message<JsonObject> repoMessage) {
+  private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
     FileSystem fileSystem = vertx.fileSystem();
 
-    HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
+    ClientRequest repoRequest = new ClientRequest(repoMessage.body());
 
     final String localFilePath = catalogue + StringUtils.stripStart(repoRequest.path(), "/");
     final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
@@ -85,8 +85,8 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
     return fileSystem.openObservable(localFilePath, OPEN_OPTIONS)
         .flatMap(this::processFile)
-        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
-        .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
+        .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
+        .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND))
         .onErrorReturn(this::processError);
   }
 
@@ -104,7 +104,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
         .reduce(Buffer::appendBuffer);
   }
 
-  private HttpResponseWrapper processError(Throwable error) {
+  private ClientResponse processError(Throwable error) {
     LOGGER.error("Error reading template file from file system", error);
     HttpResponseStatus statusCode;
     if (error.getCause().getClass().equals(NoSuchFileException.class)) {
@@ -112,7 +112,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
-    return new HttpResponseWrapper().setStatusCode(statusCode);
+    return new ClientResponse().setStatusCode(statusCode);
   }
 
   private void traceMessage(Message<JsonObject> message) {

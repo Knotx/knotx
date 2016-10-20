@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.engine.view.service;
 
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
-import com.cognifide.knotx.dataobjects.RenderRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
 
 import io.vertx.core.json.DecodeException;
@@ -47,9 +47,9 @@ public class ServiceEngine {
   }
 
   public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
-                                              RenderRequest renderRequest) {
+                                              KnotContext knotContext) {
     JsonObject serviceMessage = new JsonObject();
-    serviceMessage.put("request", renderRequest.request().toJson());
+    serviceMessage.put("clientRequest", knotContext.clientRequest().toJson());
     serviceMessage.put("params", serviceEntry.getParams());
 
     return eventBus.<JsonObject>sendObservable(serviceEntry.getAddress(), serviceMessage)
@@ -57,7 +57,7 @@ public class ServiceEngine {
   }
 
   private Observable.Transformer<Message<JsonObject>, JsonObject> transformResponse() {
-    return messageObs -> messageObs.map(msg -> new HttpResponseWrapper(msg.body()))
+    return messageObs -> messageObs.map(msg -> new ClientResponse(msg.body()))
         .map(this::buildResultObject);
   }
 
@@ -72,7 +72,7 @@ public class ServiceEngine {
         .get();
   }
 
-  private JsonObject buildResultObject(HttpResponseWrapper response) {
+  private JsonObject buildResultObject(ClientResponse response) {
     JsonObject object = new JsonObject();
 
     String rawData = response.body().toString().trim();

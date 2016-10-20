@@ -72,8 +72,9 @@ public class SampleApplicationHeadersTest {
           MultiMap headers = resp.headers();
           headers.names().stream()
               .forEach(name -> {
-                context.assertTrue(expectedHeaders.contains(name));
-                context.assertEquals(expectedHeaders.get(name), headers.get(name));
+                context.assertEquals(resp.statusCode(), 200, "Wrong status code received.");
+                context.assertTrue(expectedHeaders.contains(name), "Missing " + name + " header in response.");
+                context.assertEquals(expectedHeaders.get(name), headers.get(name), "Wrong value of " + name + " header.");
               });
           async.complete();
         });

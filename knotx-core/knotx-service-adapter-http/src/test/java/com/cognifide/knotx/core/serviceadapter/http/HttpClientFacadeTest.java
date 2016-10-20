@@ -19,7 +19,7 @@ package com.cognifide.knotx.core.serviceadapter.http;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -86,7 +86,7 @@ public class HttpClientFacadeTest {
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage(REQUEST_PATH, new JsonObject()));
+    Observable<ClientResponse> result = clientFacade.process(payloadMessage(REQUEST_PATH, new JsonObject()));
 
     // then
     result.subscribe(
@@ -110,7 +110,7 @@ public class HttpClientFacadeTest {
     final JsonObject request = new JsonObject().put("params", new JsonArray().add(new JsonObject().put("dynamicValue","first")));
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage("/services/mock/{param.dynamicValue}.json", request));
+    Observable<ClientResponse> result = clientFacade.process(payloadMessage("/services/mock/{param.dynamicValue}.json", request));
 
     // then
     result.subscribe(
@@ -132,9 +132,9 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(new JsonObject()
+    Observable<ClientResponse> result = clientFacade.process(new JsonObject()
         .put("params", new JsonObject())
-        .put("request", new JsonObject()));
+        .put("clientRequest", new JsonObject()));
 
     // then
     result.subscribe(
@@ -158,7 +158,7 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
 
     // when
-    Observable<HttpResponseWrapper> result = clientFacade.process(payloadMessage("/not/supported/path", new JsonObject()));
+    Observable<ClientResponse> result = clientFacade.process(payloadMessage("/not/supported/path", new JsonObject()));
 
     // then
     result.subscribe(
@@ -181,7 +181,7 @@ public class HttpClientFacadeTest {
     return new JsonObject()
         .put("params", new JsonObject()
             .put("path", servicePath))
-        .put("request", request);
+        .put("clientRequest", request);
   }
 
   private List<HttpServiceAdapterConfiguration.ServiceMetadata> getServiceConfigurations() {
