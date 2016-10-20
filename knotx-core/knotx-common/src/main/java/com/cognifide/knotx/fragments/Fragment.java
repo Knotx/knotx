@@ -21,6 +21,8 @@ import com.google.common.base.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.NoSuchElementException;
+
 import io.vertx.core.json.JsonObject;
 
 public class Fragment {
@@ -47,7 +49,7 @@ public class Fragment {
 
   private Fragment(String id, String data) {
     if (StringUtils.isEmpty(id) || StringUtils.isEmpty(data)) {
-      throw new IllegalArgumentException("Fragment is not valid [" + id + "], [" + data + "].");
+      throw new NoSuchElementException("Fragment is not valid [" + id + "], [" + data + "].");
     }
     this.id = id;
     this.content = data;

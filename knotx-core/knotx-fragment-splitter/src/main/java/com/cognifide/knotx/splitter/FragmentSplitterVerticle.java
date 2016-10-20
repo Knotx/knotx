@@ -21,6 +21,7 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -54,18 +55,33 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
     EventBus eventBus = vertx.eventBus();
 
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(configuration.getAddress()).toObservable();
-    messageObservable
-        .doOnNext(this::traceMessage)
-        .subscribe(
-            msg -> {
-              KnotContext context = new KnotContext(msg.body());
-              context.setFragments(Optional.of(splitter.split(context.clientResponse().body().toString())));
-              context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
-              msg.reply(context.toJson());
-            },
-            error -> LOGGER.error("Exception happened during HTML splitting.", error)
-        );
+    eventBus.<JsonObject>consumer(configuration.getAddress()).handler(
+        message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .subscribe(
+                response -> {
+                  KnotContext context = new KnotContext(response.body());
+                  context.setFragments(Optional.of(splitter.split(context.clientResponse().body().toString())));
+                  context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
+                  response.reply(context.toJson());
+                },
+                error -> {
+                  LOGGER.error("Exception happened during HTML splitting.", error);
+                  message.reply(processError(new KnotContext(message.body()), error).toJson());
+                }
+            )
+    );
+  }
+
+  private KnotContext processError(KnotContext context, Throwable error) {
+    HttpResponseStatus statusCode;
+    if (error instanceof NoSuchElementException) {
+      statusCode = HttpResponseStatus.NOT_FOUND;
+    } else {
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    context.clientResponse().setStatusCode(statusCode);
+    return context;
   }
 
   private void traceMessage(Message<JsonObject> message) {

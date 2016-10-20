@@ -31,10 +31,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -64,9 +61,22 @@ public class HtmlFragmentSplitterVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callSplitterWithManySnippets_expectFragments(TestContext context) throws Exception {
+  public void callSplitterWithManySnippets_expectNoFragments(TestContext context) throws Exception {
+    callFragmentSplitterWithAssertions(context, "",
+        knotContext -> {
+          context.assertEquals(knotContext.clientResponse().statusCode(), HttpResponseStatus.NOT_FOUND);
+          context.assertFalse(knotContext.getFragments().isPresent());
+        });
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  public void callSplitterEmptyBody_expectErrorReponse(TestContext context) throws Exception {
     callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
-        knotContext -> context.assertEquals(knotContext.getFragments().get().size(), NUMBER_OF_FRAGMENTS));
+        knotContext -> {
+          context.assertTrue(knotContext.getFragments().isPresent());
+          context.assertEquals(knotContext.getFragments().get().size(), NUMBER_OF_FRAGMENTS);
+        });
   }
 
   private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
