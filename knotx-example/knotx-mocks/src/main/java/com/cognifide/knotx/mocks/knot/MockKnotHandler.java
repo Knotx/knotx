@@ -80,14 +80,13 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   }
 
   private Observable<JsonObject> prepareHandlerResponse(JsonObject message) {
-    final JsonObject handlerResponse = new JsonObject();
     final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
     final JsonObject responseConfig = handledMocks.get(request.path());
 
     return Observable.from(KnotContextKeys.values())
         .map(key -> key.valueOrDefault(fileSystem, responseConfig))
         .filter(value -> value.getRight() != null)
-        .reduce(handlerResponse, this::mergeResponseValues);
+        .reduce(new JsonObject(), this::mergeResponseValues);
   }
 
   private JsonObject mergeResponseValues(JsonObject result, Pair<String, Object> value) {
