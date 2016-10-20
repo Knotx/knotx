@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.mocks.knot;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -87,7 +87,7 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   }
 
   private String getRequestPath(JsonObject message) {
-    return new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key())).path();
+    return new ClientRequest(message.getJsonObject(KnotContextKeys.REQUEST.key())).path();
   }
 
 }
