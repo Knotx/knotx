@@ -32,7 +32,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
@@ -41,13 +40,11 @@ import rx.Observable;
 public class HttpRepositoryVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryVerticle.class);
+  private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
   private String address;
-
   private JsonObject clientOptions;
-
   private JsonObject clientDestination;
-
   private HttpClient httpClient;
 
   @Override
@@ -63,17 +60,18 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
     httpClient = createHttpClient();
 
-    EventBus eventBus = vertx.eventBus();
-
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
-
-    messageObservable
-        .doOnNext(this::traceMessage)
-        .flatMap(this::getTemplateContent, Pair::of)
-        .subscribe(
-            response -> response.getLeft().reply(response.getRight().toJson()),
-            error -> LOGGER.error("Unable to get template from the repository", error)
-        );
+    vertx.eventBus().<JsonObject>consumer(address).handler(
+        message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .flatMap(this::getTemplateContent, Pair::of)
+            .subscribe(
+                response -> response.getLeft().reply(response.getRight().toJson()),
+                error -> {
+                  LOGGER.error(ERROR_MESSAGE, error);
+                  message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                }
+            )
+    );
   }
 
   private HttpClient createHttpClient() {
@@ -85,12 +83,7 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
 
     return requestForTemplate(repoRequest)
         .doOnNext(this::traceHttpResponse)
-        .flatMap(this::processResponse)
-        .onErrorReturn(error -> {
-              LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repoRequest.path(), error);
-              return new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-            }
-        );
+        .flatMap(this::processResponse);
   }
 
   private Observable<HttpClientResponse> requestForTemplate(ClientRequest repoRequest) {
