@@ -17,14 +17,10 @@
  */
 package com.cognifide.knotx.mocks.knot;
 
-import com.google.common.collect.ImmutableMap;
-
 import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -44,16 +40,10 @@ import rx.Observable;
 public class MockKnotHandler implements Handler<Message<JsonObject>> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
-  private static final String RESPONSE_KEY = "clientResponse";
-  private static final JsonObject ERROR_RESPONSE = new JsonObject().put(RESPONSE_KEY, new JsonObject().put("statusCode", 500));
-  private static final JsonObject NOT_FOUND = new JsonObject().put(RESPONSE_KEY, new JsonObject().put("statusCode", 404));
-  private static final String MESSAGE_REQUEST_KEY = "request";
-  private static final List<String> MOCK_RESPONSE_KEYS = Arrays.asList("clientResponse", "fragments", "transition");
-  private static final Map<String, JsonObject> DEFAULT_RESPONSES = ImmutableMap.of(
-      "clientResponse", new JsonObject().put("statusCode", 200),
-      "fragments", new JsonObject(),
-      "transition", new JsonObject()
-  );
+  private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
+
+  private static final JsonObject ERROR_RESPONSE = new JsonObject().put(KnotContextKeys.RESPONSE.key(), new JsonObject().put("statusCode", 500));
+  private static final JsonObject NOT_FOUND = new JsonObject().put(KnotContextKeys.RESPONSE.key(), new JsonObject().put("statusCode", 404));
 
   private final FileSystem fileSystem;
   private final Map<String, JsonObject> handledMocks;
@@ -84,42 +74,42 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   }
 
   private Boolean findConfiguration(JsonObject message) {
-    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(MESSAGE_REQUEST_KEY));
+    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
     return handledMocks.containsKey(request.path());
   }
 
   private void logProcessedInfo(JsonObject message) {
-    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(MESSAGE_REQUEST_KEY));
+    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
     LOGGER.info("Processing `{}`", request.path());
   }
 
   private Observable<JsonObject> prepareHandlerResponse(JsonObject message) {
     final JsonObject handlerResponse = new JsonObject();
-    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(MESSAGE_REQUEST_KEY));
+    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
     final JsonObject responseConfig = handledMocks.get(request.path());
 
-    return Observable.from(MOCK_RESPONSE_KEYS)
-        .map(key -> enrich(key, responseConfig))
+    return Observable.from(KnotContextKeys.values())
+        .map(key -> mockData(key, responseConfig))
         .reduce(handlerResponse, this::mergeResponseValues);
   }
 
-  private JsonObject mergeResponseValues(JsonObject result, Pair<String, JsonObject> value) {
+  private JsonObject mergeResponseValues(JsonObject result, Pair<String, Object> value) {
     return new JsonObject().put(value.getLeft(), value.getRight());
   }
 
-  private Pair<String, JsonObject> enrich(String key, JsonObject responseConfig) {
+  private Pair<String, Object> mockData(KnotContextKeys key, JsonObject responseConfig) {
     final JsonObject value = new JsonObject();
-    if (responseConfig.containsKey(key)) {
-      value.put(key, getMockFile(responseConfig.getString(key)));
+    if (responseConfig.containsKey(key.key())) {
+      value.put(key.key(), getMockFile(responseConfig.getString(key.key())));
     } else {
-      value.put(key, DEFAULT_RESPONSES.get(key));
+      value.put(key.key(), key.defaultValue());
     }
 
-    return Pair.of(key, value);
+    return Pair.of(key.key(), value);
   }
 
   private Observable<JsonObject> getMockFile(String resourcePath) {
-    return fileSystem.openObservable(resourcePath, new OpenOptions())
+    return fileSystem.openObservable(resourcePath, OPEN_OPTIONS)
         .flatMap(this::processFile)
         .map(Buffer::toJsonObject);
   }
@@ -128,6 +118,39 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
     return Observable.just(Buffer.buffer())
         .mergeWith(asyncFile.toObservable())
         .reduce(Buffer::appendBuffer);
+  }
+
+  private enum KnotContextKeys {
+    RESPONSE("clientResponse") {
+      @Override
+      Object defaultValue() {
+        return new JsonObject().put("statusCode", 200);
+      }
+    },
+    REQUEST("clientRequest") {
+      @Override
+      Object defaultValue() {
+        return new JsonObject();
+      }
+    },
+    FRAGMENTS("fragments") {
+      @Override
+      Object defaultValue() {
+        return new JsonArray();
+      }
+    };
+
+    private final String key;
+
+    KnotContextKeys(String key) {
+      this.key = key;
+    }
+
+    String key() {
+      return key;
+    }
+
+    abstract Object defaultValue();
   }
 
 }
