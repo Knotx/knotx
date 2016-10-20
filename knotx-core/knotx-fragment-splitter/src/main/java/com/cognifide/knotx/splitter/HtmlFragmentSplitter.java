@@ -19,7 +19,7 @@ package com.cognifide.knotx.splitter;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 
 import java.util.List;
 import java.util.regex.MatchResult;

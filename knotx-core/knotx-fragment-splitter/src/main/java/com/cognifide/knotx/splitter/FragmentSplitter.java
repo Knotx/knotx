@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 
 import java.util.List;
 

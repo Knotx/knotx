@@ -18,7 +18,7 @@
 package com.cognifide.knotx.splitter;
 
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.junit.FileReader;
 
 import org.junit.Before;
