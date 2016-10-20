@@ -84,7 +84,6 @@ public class Fragment {
     return RAW_FRAGMENT_ID.equals(id);
   }
 
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

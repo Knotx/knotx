@@ -50,9 +50,9 @@ class TemplateSnippetProcessor {
     this.templateDebug = configuration.templateDebug();
   }
 
-  Observable<String> processSnippet(final HtmlFragment fragment, KnotContext request) {
-    LOGGER.debug("Processing Handlebars snippet {}", fragment.getContent());
-    return Observable.just(fragment)
+  Observable<String> processSnippet(final HtmlFragment htmlFragment, KnotContext request) {
+    LOGGER.debug("Processing Handlebars snippet {}", htmlFragment.getFragment());
+    return Observable.just(htmlFragment)
         .flatMap(HtmlFragment::getServices)
         .map(serviceEngine::mergeWithConfiguration)
         .doOnNext(this::traceService)
@@ -60,8 +60,8 @@ class TemplateSnippetProcessor {
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new JsonObject(), JsonObject::mergeIn)
-        .map(results -> applyData(fragment, results))
-        .defaultIfEmpty(fragment.getContent());
+        .map(results -> applyData(htmlFragment, results))
+        .defaultIfEmpty(htmlFragment.getFragment().getContent());
   }
 
   private Observable<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {

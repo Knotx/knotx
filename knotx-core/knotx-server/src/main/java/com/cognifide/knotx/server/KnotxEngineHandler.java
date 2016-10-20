@@ -22,7 +22,6 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.util.OptionalAction;
 
 import java.util.Map;
-import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -34,7 +33,7 @@ import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
-public class KnotxEngineHandler implements Handler<RoutingContext> {
+class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxEngineHandler.class);
   private EventBus eventBus;
@@ -49,7 +48,7 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
   }
 
-  public static KnotxEngineHandler create(EventBus eventBus, String address, Map<String, RoutingEntry> routing, KnotxServerConfiguration configuration) {
+  static KnotxEngineHandler create(EventBus eventBus, String address, Map<String, RoutingEntry> routing, KnotxServerConfiguration configuration) {
     return new KnotxEngineHandler(eventBus, address, routing, configuration);
   }
 
@@ -105,8 +104,7 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
     return new KnotContext()
         .setClientRequest(context.get("clientRequest"))
         .setClientResponse(context.get("clientResponse"))
-        .setFragments(Optional.ofNullable(context.get("fragments")))
-        .setTemplate(((ClientResponse) context.get("clientResponse")).body().toString())
+        .setFragments(context.get("fragments"))
         .toJson();
   }
 

@@ -20,12 +20,14 @@ package com.cognifide.knotx.engine.view.impl;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.engine.view.ViewEngineConfiguration;
 import com.cognifide.knotx.engine.view.parser.HtmlFragment;
-import com.cognifide.knotx.engine.view.parser.HtmlParser;
+import com.cognifide.knotx.engine.view.parser.RawHtmlFragment;
 import com.cognifide.knotx.engine.view.parser.TemplateHtmlFragment;
+import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.github.jknack.handlebars.Handlebars;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 import io.vertx.core.logging.Logger;
@@ -47,13 +49,17 @@ public class TemplateEngine {
   }
 
   public Observable<String> process(KnotContext knotContext) {
-    return extractFragments(knotContext.template())
+    return Observable.just(knotContext.fragments())
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .flatMap(Observable::from)
         .doOnNext(this::traceSnippet)
         .flatMap(this::compileHtmlFragment)
-        .concatMapEager(htmlFragment -> snippetProcessor.processSnippet(htmlFragment, knotContext))
+        .concatMapEager(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
         // eager will buffer faster processing to emit items in proper order, keeping concurrency.
         .reduce(new StringBuilder(), StringBuilder::append)
-        .map(StringBuilder::toString);
+        .map(StringBuilder::toString)
+        .defaultIfEmpty("");
   }
 
   private void initHandlebars() {
@@ -67,30 +73,25 @@ public class TemplateEngine {
     });
   }
 
-  private Observable<HtmlFragment> extractFragments(String template) {
-    return Observable.from(new HtmlParser(template).getFragments());
-  }
-
-  private Observable<HtmlFragment> compileHtmlFragment(HtmlFragment fragment) {
-    if (fragment.hasHandlebarsTemplate()) {
+  private Observable<HtmlFragment> compileHtmlFragment(Fragment fragment) {
+    if (!fragment.isRaw()) {
       return Observable.create(subscriber -> {
         try {
           subscriber.onNext(
-              new TemplateHtmlFragment(fragment.getContent()).compileWith(handlebars));
+              new TemplateHtmlFragment(fragment).compileWith(handlebars));
           subscriber.onCompleted();
         } catch (IOException e) {
           subscriber.onError(e);
         }
       });
     } else {
-      return Observable.just(fragment);
+      return Observable.just(new RawHtmlFragment(fragment));
     }
   }
 
-  private void traceSnippet(HtmlFragment fragment) {
+  private void traceSnippet(Fragment fragment) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Processing snippet <{}>, <{}>",
-          fragment.hasHandlebarsTemplate() ? "HBS" : "RAW", fragment.getContent());
+      LOGGER.trace("Processing snippet {}", fragment.toJson().encodePrettily());
     }
   }
 }
