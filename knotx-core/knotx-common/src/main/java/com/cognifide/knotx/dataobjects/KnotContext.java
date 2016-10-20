@@ -40,6 +40,9 @@ public class KnotContext {
 
   private Optional<List<Fragment>> fragments = Optional.empty();
 
+  // TODO to remove
+  private String template;
+
   private volatile Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
   public KnotContext() {
@@ -61,6 +64,7 @@ public class KnotContext {
           .map(Fragment::new)
           .collect(Collectors.toList()));
     }
+    this.template = json.getString("template");
   }
 
   public KnotContext setClientRequest(ClientRequest request) {
@@ -73,8 +77,14 @@ public class KnotContext {
     return this;
   }
 
-  public void setFragments(Optional<List<Fragment>> fragments) {
+  public KnotContext setTemplate(String template) {
+    this.template = template;
+    return this;
+  }
+
+  public KnotContext setFragments(Optional<List<Fragment>> fragments) {
     this.fragments = fragments;
+    return this;
   }
 
   public KnotContext setTransition(Optional<String> transition) {
@@ -92,6 +102,10 @@ public class KnotContext {
 
   public Optional<String> transition() {
     return transition;
+  }
+
+  public String template() {
+    return template;
   }
 
   public Optional<List<Fragment>> getFragments() {
@@ -115,6 +129,9 @@ public class KnotContext {
     fragments.ifPresent(value -> json.put("fragments", value.stream()
         .map(Fragment::toJson)
         .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll)));
+    if (template != null) {
+      json.put("template", template);
+    }
     return json;
   }
 
@@ -126,12 +143,13 @@ public class KnotContext {
     return Objects.equal(transition, that.transition) &&
         Objects.equal(clientRequest, that.clientRequest) &&
         Objects.equal(clientResponse, that.clientResponse) &&
-        Objects.equal(fragments, that.fragments);
+        Objects.equal(fragments, that.fragments) &&
+        Objects.equal(template, that.template);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+    return Objects.hashCode(transition, clientRequest, clientResponse, fragments, template);
   }
 }
 
