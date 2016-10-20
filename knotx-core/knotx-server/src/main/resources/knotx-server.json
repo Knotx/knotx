@@ -1,5 +1,6 @@
 {
   "http.port": 8092,
+  "displayExceptionDetails": true,
   "allowed.response.headers": [
     "referer",
     "user-agent",
@@ -50,7 +51,23 @@
       "address": "knotx.core.repository.http"
     }
   ],
-  "engine": {
-    "address": "knotx.core.viewengine"
+  "routing": {
+    "GET": [
+      {
+        "path": "/content/.*",
+        "address": "knotx.core.viewengine"
+      }
+    ],
+    "POST": [
+      {
+        "path": "/content/.*",
+        "address": "knotx.core.actionengine",
+        "onTransition": {
+          "render": {
+            "address": "knotx.core.viewengine"
+          }
+        }
+      }
+    ]
   }
 }

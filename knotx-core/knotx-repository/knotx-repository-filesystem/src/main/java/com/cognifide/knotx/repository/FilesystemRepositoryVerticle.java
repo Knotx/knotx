@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,6 +47,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryVerticle.class);
   private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
+  private static final String ERROR_MESSAGE = "Unable to get template from the repository";
   private String catalogue;
   private String address;
 
@@ -61,22 +62,24 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
   public void start() throws Exception {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
 
-    EventBus eventBus = vertx.eventBus();
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(address).toObservable();
-
-    messageObservable
-        .doOnNext(this::traceMessage)
-        .flatMap(this::getTemplateContent, Pair::of)
-        .subscribe(
-            response -> response.getLeft().reply(response.getRight().toJson()),
-            error -> LOGGER.error("Unable to get template from the repository", error)
-        );
+    vertx.eventBus().<JsonObject>consumer(address).handler(
+        message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .flatMap(this::getTemplateContent, Pair::of)
+            .subscribe(
+                response -> response.getLeft().reply(response.getRight().toJson()),
+                error -> {
+                  LOGGER.error(ERROR_MESSAGE, error);
+                  message.reply(processError(error));
+                }
+            )
+    );
   }
 
-  private Observable<HttpResponseWrapper> getTemplateContent(final Message<JsonObject> repoMessage) {
+  private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
     FileSystem fileSystem = vertx.fileSystem();
 
-    HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
+    ClientRequest repoRequest = new ClientRequest(repoMessage.body());
 
     final String localFilePath = catalogue + StringUtils.stripStart(repoRequest.path(), "/");
     final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
@@ -85,9 +88,8 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
 
     return fileSystem.openObservable(localFilePath, OPEN_OPTIONS)
         .flatMap(this::processFile)
-        .map(buffer -> new HttpResponseWrapper().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
-        .defaultIfEmpty(new HttpResponseWrapper().setStatusCode(HttpResponseStatus.NOT_FOUND))
-        .onErrorReturn(this::processError);
+        .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK).setHeaders(headers(contentType)).setBody(buffer))
+        .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND));
   }
 
   private MultiMap headers(Optional<String> contentType) {
@@ -104,15 +106,14 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
         .reduce(Buffer::appendBuffer);
   }
 
-  private HttpResponseWrapper processError(Throwable error) {
-    LOGGER.error("Error reading template file from file system", error);
+  private ClientResponse processError(Throwable error) {
     HttpResponseStatus statusCode;
     if (error.getCause().getClass().equals(NoSuchFileException.class)) {
       statusCode = HttpResponseStatus.NOT_FOUND;
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
-    return new HttpResponseWrapper().setStatusCode(statusCode);
+    return new ClientResponse().setStatusCode(statusCode);
   }
 
   private void traceMessage(Message<JsonObject> message) {

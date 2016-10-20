@@ -1,0 +1,104 @@
+/*
+ * Knot.x - Reactive microservice assembler - HTML Fragment Splitter
+ *
+ * Copyright (C) 2016 Cognifide Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.cognifide.knotx.splitter;
+
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.junit.FileReader;
+import com.cognifide.knotx.junit.KnotxConfiguration;
+import com.cognifide.knotx.junit.Logback;
+import com.cognifide.knotx.junit.TestVertxDeployer;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
+
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.RunTestOnContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
+import rx.Observable;
+import rx.functions.Action1;
+
+@RunWith(VertxUnitRunner.class)
+public class HtmlFragmentSplitterVerticleTest {
+
+  private final static String ADDRESS = "knotx.core.splitter";
+
+  private final static Integer NUMBER_OF_FRAGMENTS = 7;
+
+  //Test Runner Rule of Verts
+  private RunTestOnContext vertx = new RunTestOnContext();
+
+  //Test Runner Rule of Knotx
+  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
+
+  //Junit Rule, sets up logger, prepares verts, starts verticles according to the config (supplied in annotation of test method)
+  @Rule
+  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+
+  @Test
+  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  public void callSplitterWithManySnippets_expectNoFragments(TestContext context) throws Exception {
+    callFragmentSplitterWithAssertions(context, "",
+        knotContext -> {
+          context.assertEquals(knotContext.clientResponse().statusCode(), HttpResponseStatus.NOT_FOUND);
+          context.assertFalse(knotContext.getFragments().isPresent());
+        });
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  public void callSplitterEmptyBody_expectErrorReponse(TestContext context) throws Exception {
+    callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
+        knotContext -> {
+          context.assertTrue(knotContext.getFragments().isPresent());
+          context.assertEquals(knotContext.getFragments().get().size(), NUMBER_OF_FRAGMENTS);
+        });
+  }
+
+  private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
+    KnotContext knotContext = new KnotContext();
+    knotContext.setClientResponse(new ClientResponse().setBody(Buffer.buffer(template)).setStatusCode(HttpResponseStatus.OK).setHeaders(MultiMap.caseInsensitiveMultiMap()));
+    knotContext.setClientRequest(new ClientRequest());
+
+    Async async = context.async();
+
+    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, knotContext.toJson(), ar -> {
+      if (ar.succeeded()) {
+        Observable
+            .just(ar.result().body())
+            .map(KnotContext::new)
+            .map(knot -> Pair.of(async, knot))
+            .subscribe(pair -> testFunction.call(pair.getRight()),
+                error -> context.fail(error.getMessage()),
+                async::complete);
+      } else {
+        context.fail(ar.cause());
+      }
+    });
+  }
+
+}

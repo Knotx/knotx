@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.mocks.service;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,7 +42,7 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
-  private final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final FileSystem fileSystem;
   private boolean withBouncer = false;
   private String catalogue;
@@ -59,7 +59,7 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
 
   @Override
   public void handle(Message<JsonObject> message) {
-    HttpRequestWrapper request = new HttpRequestWrapper(message.body().getJsonObject("request"));
+    ClientRequest request = new ClientRequest(message.body().getJsonObject("clientRequest"));
     JsonObject params = message.body().getJsonObject("params");
 
     String resourcePath = getFilePath(params.getString("path"));
@@ -79,30 +79,30 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
   }
 
 
-  private HttpResponseWrapper bouncerResponse(HttpRequestWrapper request, String mockData) {
+  private ClientResponse bouncerResponse(ClientRequest request, String mockData) {
     JsonObject responseBody = new JsonObject(mockData);
     MultiMap formParams = request.formAttributes();
     formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
 
-    return new HttpResponseWrapper()
+    return new ClientResponse()
         .setStatusCode(HttpResponseStatus.OK)
         .setHeaders(headers(request, mockData))
         .setBody(Buffer.buffer(responseBody.toString()));
   }
 
-  private HttpResponseWrapper okResponse(HttpRequestWrapper request, String data) {
-    return new HttpResponseWrapper()
+  private ClientResponse okResponse(ClientRequest request, String data) {
+    return new ClientResponse()
         .setHeaders(headers(request, data))
         .setStatusCode(HttpResponseStatus.OK)
         .setBody(Buffer.buffer(data));
   }
 
-  private HttpResponseWrapper errorResponse() {
-    return new HttpResponseWrapper()
+  private ClientResponse errorResponse() {
+    return new ClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
   }
 
-  private String getContentType(HttpRequestWrapper request) {
+  private String getContentType(ClientRequest request) {
     return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.path())).orElse(DEFAULT_MIME);
   }
 
@@ -110,7 +110,7 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
     return catalogue + File.separator + StringUtils.substringAfterLast(path, SEPARATOR);
   }
 
-  private MultiMap headers(HttpRequestWrapper request, String data) {
+  private MultiMap headers(ClientRequest request, String data) {
     return MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.CONTENT_TYPE.toString(), getContentType(request))
         .add(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(data.length()));
   }

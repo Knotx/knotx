@@ -340,6 +340,7 @@
                 <exclude>**/*SampleApplicationHeadersTest.java</exclude>
                 <exclude>**/*HttpClientFacadeTest.java</exclude>
                 <exclude>**/*HttpServiceAdapterTest.java</exclude>
+                <exclude>**/*KnotxServerRoutingTest.java</exclude>
               </excludes>
             </configuration>
           </plugin>
