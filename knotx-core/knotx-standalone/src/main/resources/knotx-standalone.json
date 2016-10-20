@@ -94,6 +94,11 @@
         "catalogue": ""
       }
     },
+    "com.cognifide.knotx.splitter.FragmentSplitterVerticle": {
+      "config": {
+        "address": "knotx.core.splitter"
+      }
+    },
     "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
       "config": {
         "address": "knotx.core.viewengine",

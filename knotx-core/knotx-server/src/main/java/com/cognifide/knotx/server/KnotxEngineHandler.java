@@ -22,6 +22,7 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.util.OptionalAction;
 
 import java.util.Map;
+import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -104,6 +105,7 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
     return new KnotContext()
         .setClientRequest(context.get("clientRequest"))
         .setClientResponse(context.get("clientResponse"))
+        .setFragments(Optional.ofNullable(context.get("fragments")))
         .setTemplate(((ClientResponse) context.get("clientResponse")).body().toString())
         .toJson();
   }
