@@ -41,10 +41,13 @@ public class KnotxServerConfiguration {
 
   private Map<String, String> repositoryAddressMapping;
 
+  private String splitterAddress;
+
   private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("http.port");
+    splitterAddress = config.getJsonObject("splitter").getString("address");
 
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
@@ -60,6 +63,10 @@ public class KnotxServerConfiguration {
     allowedResponseHeaders = config.getJsonArray("allowed.response.headers").stream()
         .map(item -> ((String) item).toLowerCase())
         .collect(Collectors.toSet());
+  }
+
+  public String splitterAddress() {
+    return splitterAddress;
   }
 
   public boolean displayExceptionDetails() {

@@ -72,14 +72,14 @@ public class KnotxServerRoutingTest {
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     createKnotConsumer("A-engine", "+A", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testGetRequest(context, "/content/local/simple.html", "local+A+C");
+    testGetRequest(context, "/content/local/simple.html", "+A+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
     createKnotConsumer("C-engine", "+C", null);
-    testGetRequest(context, "/content/simple.html", "global+C");
+    testGetRequest(context, "/content/simple.html", "+C");
   }
 
   @Test
@@ -88,7 +88,7 @@ public class KnotxServerRoutingTest {
     createKnotConsumer("A-post-engine", "+Apost", "go-b");
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testPostRequest(context, "/content/local/simple.html", "local+Apost+B+C");
+    testPostRequest(context, "/content/local/simple.html", "+Apost+B+C");
   }
 
   @Test
@@ -96,7 +96,7 @@ public class KnotxServerRoutingTest {
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
     createKnotConsumer("A-post-engine", "+Apost", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testPostRequest(context, "/content/local/simple.html", "local+Apost+C");
+    testPostRequest(context, "/content/local/simple.html", "+Apost+C");
   }
 
   @Test
@@ -104,7 +104,7 @@ public class KnotxServerRoutingTest {
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testPostRequest(context, "/content/simple.html", "global+B+C");
+    testPostRequest(context, "/content/simple.html", "+B+C");
   }
 
   private void testPostRequest(TestContext context, String url, String expectedResult) {

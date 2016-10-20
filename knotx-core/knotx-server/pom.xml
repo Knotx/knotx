@@ -43,6 +43,16 @@
       <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-fragment-splitter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-repository-filesystem</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -97,12 +107,6 @@
       <version>${project.version}</version>
       <scope>test</scope>
       <type>test-jar</type>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-repository-filesystem</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

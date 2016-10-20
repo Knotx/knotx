@@ -50,6 +50,9 @@
       "address": "knotx.repository.http"
     }
   ],
+  "splitter": {
+    "address": "knotx.core.splitter"
+  },
   "routing": {
     "GET": [
       {

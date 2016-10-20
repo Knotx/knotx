@@ -60,7 +60,6 @@ public class SampleApplicationHeadersTest {
   }
 
   @Test
-  @Ignore(value = "Unignore when splitter fills fragments in KnotContext.")
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI);
