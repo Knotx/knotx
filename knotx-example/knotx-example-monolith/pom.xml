@@ -67,7 +67,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-engine-action</artifactId>
+      <artifactId>knotx-knot-action</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

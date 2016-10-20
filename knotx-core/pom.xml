@@ -40,7 +40,7 @@
     <module>knotx-server</module>
     <module>knotx-service-adapter-http</module>
     <module>knotx-standalone</module>
-    <module>knotx-engine-action</module>
+    <module>knotx-knot-action</module>
     <module>knotx-engine-view</module>
   </modules>
 </project>

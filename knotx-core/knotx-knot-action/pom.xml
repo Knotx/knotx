@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Action Engine Verticle
+    Knot.x - Reactive microservice assembler - Action Knot Verticle
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -28,13 +28,13 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-engine-action</artifactId>
+  <artifactId>knotx-knot-action</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Action Engine Verticle</name>
+  <name>Knot.x - Reactive microservice assembler - Action Knot Verticle</name>
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.engine.action.ActionEngineVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.knot.action.ActionKnotVerticle</main.verticle>
   </properties>
 
   <dependencies>
