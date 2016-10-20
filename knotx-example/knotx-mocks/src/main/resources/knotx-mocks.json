@@ -28,13 +28,13 @@
               {
                 "request.path": "/simple",
                 "fragments": "mock/knot/action/simple.fragments.json",
-                "transition": "knot.view"
+                "transition": "view"
               },
               {
                 "request.path": "/form-validation-error",
                 "fragments": "mock/knot/action/form-validation-error.fragments.json",
                 "clientResponse": "mock/knot/action/form-validation-error.response.json",
-                "transition": "knot.view"
+                "transition": "view"
               },
               {
                 "request.path": "/redirect",
