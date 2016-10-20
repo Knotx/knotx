@@ -70,7 +70,12 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
             knotContext -> OptionalAction.of(knotContext.transition())
                 .ifPresent(on -> {
                   RoutingEntry entry = routing.get(on);
-                  handleRoute(context, entry.address(), entry.onTransition());
+                  if (entry != null) {
+                    handleRoute(context, entry.address(), entry.onTransition());
+                  } else {
+                    LOGGER.error("No on criteria defined in routing for {} transition received from {}", on, address);
+                    context.fail(500);
+                  }
                 })
                 .ifNotPresent(() -> sendResponse(context, knotContext)),
             error -> {
