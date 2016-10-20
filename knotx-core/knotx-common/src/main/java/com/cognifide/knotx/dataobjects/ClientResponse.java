@@ -27,7 +27,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
-public class HttpResponseWrapper {
+public class ClientResponse {
 
   private HttpResponseStatus statusCode;
 
@@ -35,7 +35,7 @@ public class HttpResponseWrapper {
 
   private Buffer body;
 
-  public HttpResponseWrapper() {
+  public ClientResponse() {
     this.headers = MultiMap.caseInsensitiveMultiMap();
   }
 
@@ -44,7 +44,7 @@ public class HttpResponseWrapper {
    *
    * @param json the JSON
    */
-  public HttpResponseWrapper(JsonObject json) {
+  public ClientResponse(JsonObject json) {
     this.statusCode = HttpResponseStatus.valueOf(json.getInteger("statusCode"));
 
     if (json.containsKey("body")) {
@@ -75,17 +75,17 @@ public class HttpResponseWrapper {
     return body;
   }
 
-  public HttpResponseWrapper setStatusCode(HttpResponseStatus statusCode) {
+  public ClientResponse setStatusCode(HttpResponseStatus statusCode) {
     this.statusCode = statusCode;
     return this;
   }
 
-  public HttpResponseWrapper setHeaders(MultiMap headers) {
+  public ClientResponse setHeaders(MultiMap headers) {
     this.headers = headers;
     return this;
   }
 
-  public HttpResponseWrapper setBody(Buffer body) {
+  public ClientResponse setBody(Buffer body) {
     this.body = body;
     return this;
   }
@@ -113,8 +113,8 @@ public class HttpResponseWrapper {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof HttpResponseWrapper)) return false;
-    HttpResponseWrapper that = (HttpResponseWrapper) o;
+    if (!(o instanceof ClientResponse)) return false;
+    ClientResponse that = (ClientResponse) o;
     return Objects.equal(statusCode, that.statusCode) &&
         Objects.equal(headers, that.headers) &&
         Objects.equal(body, that.body);

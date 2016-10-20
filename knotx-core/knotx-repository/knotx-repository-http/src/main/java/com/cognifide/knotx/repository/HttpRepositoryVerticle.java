@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -80,33 +80,33 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
-  private Observable<HttpResponseWrapper> getTemplateContent(final Message<JsonObject> repoMessage) {
-    final HttpRequestWrapper repoRequest = new HttpRequestWrapper(repoMessage.body());
+  private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
+    final ClientRequest repoRequest = new ClientRequest(repoMessage.body());
 
     return requestForTemplate(repoRequest)
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
         .onErrorReturn(error -> {
               LOGGER.error("Error occurred while trying to fetch template from remote repository for path `{}`", repoRequest.path(), error);
-              return new HttpResponseWrapper().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+              return new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             }
         );
   }
 
-  private Observable<HttpClientResponse> requestForTemplate(HttpRequestWrapper repoRequest) {
+  private Observable<HttpClientResponse> requestForTemplate(ClientRequest repoRequest) {
     return RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
         repoRequest.path(), repoRequest.headers());
   }
 
-  private Observable<HttpResponseWrapper> processResponse(final HttpClientResponse response) {
+  private Observable<ClientResponse> processResponse(final HttpClientResponse response) {
     return Observable.just(Buffer.buffer())
         .mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
         .map(buffer -> toRepositoryResponse(buffer, response));
   }
 
-  private HttpResponseWrapper toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
-    return new HttpResponseWrapper()
+  private ClientResponse toRepositoryResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
+    return new ClientResponse()
         .setStatusCode(HttpResponseStatus.valueOf(httpClientResponse.statusCode()))
         .setHeaders(httpClientResponse.headers())
         .setBody(buffer);

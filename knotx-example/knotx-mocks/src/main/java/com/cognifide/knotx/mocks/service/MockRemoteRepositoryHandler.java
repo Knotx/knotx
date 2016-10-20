@@ -48,7 +48,7 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
       if (resourceUrl != null) {
         URL url = Resources.getResource(resourcePath);
         htmlContent = Resources.toString(url, Charsets.UTF_8);
-        LOGGER.info("Mocked request [{}] fetch data from file [{}]", event.path(), resourcePath);
+        LOGGER.info("Mocked clientRequest [{}] fetch data from file [{}]", event.path(), resourcePath);
       }
     } catch (IOException e) {
       LOGGER.error("Could not read content!", e);
