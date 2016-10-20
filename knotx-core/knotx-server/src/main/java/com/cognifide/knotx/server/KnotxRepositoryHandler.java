@@ -19,6 +19,7 @@ package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
 
 import java.util.Optional;
 
@@ -53,17 +54,17 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   @Override
   public void handle(RoutingContext context) {
     final Optional<String> repositoryAddress = configuration.repositoryForPath(context.request().path());
-    final ClientRequest originalRequest = new ClientRequest(context.request());
+    final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryAddress.isPresent()) {
-      eventBus.<JsonObject>sendObservable(repositoryAddress.get(), originalRequest.toJson())
+      eventBus.<JsonObject>sendObservable(repositoryAddress.get(), knotContext.clientRequest().toJson())
           .doOnNext(this::traceMessage)
           .map(msg -> new ClientResponse(msg.body()))
           .subscribe(
               repoResponse -> {
                 if (repoResponse.statusCode() == HttpResponseStatus.OK) {
-                  context.put("clientResponse", repoResponse);
-                  context.put("clientRequest", originalRequest);
+                  knotContext.setClientResponse(repoResponse);
+                  context.put("knotContext", knotContext);
                   context.next();
                 } else {
                   writeHeaders(context.response(), repoResponse.headers().add("Content-Length", "0"));
@@ -76,6 +77,10 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     } else {
       context.fail(HttpResponseStatus.NOT_FOUND.code());
     }
+  }
+
+  private KnotContext toKnotContext(RoutingContext context) {
+    return new KnotContext().setClientRequest(new ClientRequest(context.request()));
   }
 
   private void traceMessage(Message<JsonObject> message) {

@@ -22,7 +22,6 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.util.OptionalAction;
 
 import java.util.Map;
-import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -57,18 +56,20 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     try {
       handleRoute(context, address, routing);
-    } catch(Exception ex) {
+    } catch (Exception ex) {
       LOGGER.error("Something very unexpected happened", ex);
       context.fail(ex);
     }
   }
 
   private void handleRoute(final RoutingContext context, final String address, final Map<String, RoutingEntry> routing) {
-    eventBus.<JsonObject>sendObservable(address, knotContext(context))
+    KnotContext knotContext = context.get("knotContext");
+
+    eventBus.<JsonObject>sendObservable(address, knotContext.toJson())
         .map(msg -> new KnotContext(msg.body()))
-        .doOnNext(knotContext -> context.put("clientResponse", knotContext.clientResponse()))
+        .doOnNext(ctx -> context.put("knotContext", ctx))
         .subscribe(
-            knotContext -> OptionalAction.of(knotContext.transition())
+            ctx -> OptionalAction.of(ctx.transition())
                 .ifPresent(on -> {
                   RoutingEntry entry = routing.get(on);
                   if (entry != null) {
@@ -78,7 +79,7 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
                     context.fail(500);
                   }
                 })
-                .ifNotPresent(() -> sendResponse(context, knotContext)),
+                .ifNotPresent(() -> sendResponse(context, ctx)),
             error -> {
               LOGGER.error("Error happened while communicating with {} engine", error, address);
               context.fail(error);
@@ -99,15 +100,6 @@ public class KnotxEngineHandler implements Handler<RoutingContext> {
       writeHeaders(context.response(), clientResponse);
       context.response().setStatusCode(clientResponse.statusCode().code()).end(clientResponse.body());
     }
-  }
-
-  private JsonObject knotContext(final RoutingContext context) {
-    return new KnotContext()
-        .setClientRequest(context.get("clientRequest"))
-        .setClientResponse(context.get("clientResponse"))
-        .setFragments(Optional.ofNullable(context.get("fragments")))
-        .setTemplate(((ClientResponse) context.get("clientResponse")).body().toString())
-        .toJson();
   }
 
   private void writeHeaders(final HttpServerResponse response, final ClientResponse clientResponse) {
