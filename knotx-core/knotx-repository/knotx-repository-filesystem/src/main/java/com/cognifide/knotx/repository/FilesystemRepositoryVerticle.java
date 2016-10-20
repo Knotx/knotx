@@ -62,8 +62,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
   public void start() throws Exception {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
 
-    EventBus eventBus = vertx.eventBus();
-    eventBus.<JsonObject>consumer(address).handler(
+    vertx.eventBus().<JsonObject>consumer(address).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .flatMap(this::getTemplateContent, Pair::of)
@@ -75,7 +74,6 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
                 }
             )
     );
-
   }
 
   private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {

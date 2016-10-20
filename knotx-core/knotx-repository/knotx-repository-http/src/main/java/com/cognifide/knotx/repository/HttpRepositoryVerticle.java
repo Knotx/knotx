@@ -32,7 +32,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
@@ -61,9 +60,7 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
     httpClient = createHttpClient();
 
-    EventBus eventBus = vertx.eventBus();
-
-    eventBus.<JsonObject>consumer(address).handler(
+    vertx.eventBus().<JsonObject>consumer(address).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .flatMap(this::getTemplateContent, Pair::of)
