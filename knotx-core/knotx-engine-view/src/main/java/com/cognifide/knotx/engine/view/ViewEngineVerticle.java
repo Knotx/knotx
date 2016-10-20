@@ -31,7 +31,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
@@ -47,7 +46,6 @@ public class ViewEngineVerticle extends AbstractVerticle {
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     configuration = new ViewEngineConfiguration(config());
-
     templateEngine = new TemplateEngine(this.vertx.eventBus(), configuration);
   }
 
@@ -55,21 +53,23 @@ public class ViewEngineVerticle extends AbstractVerticle {
   public void start() throws Exception {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    EventBus eventBus = vertx.eventBus();
-    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(configuration.getAddress()).toObservable();
-    messageObservable
-        .doOnNext(this::traceMessage)
-        .flatMap(msg -> {
-              KnotContext inputContext = new KnotContext(msg.body());
-              return templateEngine.process(inputContext)
-                  .map(renderedData -> createSuccessResponse(inputContext, renderedData).toJson())
-                  .onErrorReturn(error -> {
-                    LOGGER.error("Error happened during Template processing", error);
-                    return createErrorResponse(inputContext).toJson();
-                  })
-                  .doOnNext(msg::reply);
-            }
-        ).subscribe();
+    vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).handler(
+        message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .flatMap(msg -> {
+                  KnotContext inputContext = new KnotContext(msg.body());
+                  return templateEngine.process(inputContext)
+                      .map(renderedData -> createSuccessResponse(inputContext, renderedData).toJson())
+                      .onErrorReturn(error -> {
+                        LOGGER.error("Error happened during Template processing", error);
+                        return createErrorResponse(inputContext).toJson();
+                      });
+                }
+            ).subscribe(
+                message::reply,
+                error -> message.reply(createErrorResponse(new KnotContext(message.body())).toJson())
+            )
+    );
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
@@ -93,7 +93,7 @@ public class ViewEngineVerticle extends AbstractVerticle {
 
   private void traceMessage(Message<JsonObject> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+      LOGGER.trace("Processing message {}", message.body().encodePrettily());
     }
   }
 }

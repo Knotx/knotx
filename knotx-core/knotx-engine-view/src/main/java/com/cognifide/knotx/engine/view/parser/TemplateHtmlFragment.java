@@ -17,16 +17,14 @@
  */
 package com.cognifide.knotx.engine.view.parser;
 
-import com.google.common.collect.Lists;
-
 import com.cognifide.knotx.engine.view.service.ServiceAttributeUtil;
 import com.cognifide.knotx.engine.view.service.ServiceEntry;
+import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.handlebars.JsonObjectValueResolver;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -35,7 +33,6 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,21 +42,17 @@ import rx.Observable;
 public class TemplateHtmlFragment implements HtmlFragment {
 
   private static final String DATA_SERVICE = "data-service.*";
-
   private static final String DATA_PARAMS = "data-params.*";
 
-  private static final String DATA_ID = "data-id";
-
-  private String content;
-
-  private String dataId = StringUtils.EMPTY;
+  private final String unwrappedContent;
+  private final Fragment fragment;
+  private final List<ServiceEntry> services;
 
   private Template compiledFragment;
 
-  private List<ServiceEntry> services = Lists.newArrayList();
-
-  public TemplateHtmlFragment(String templateFragment) {
-    Document document = Jsoup.parseBodyFragment(templateFragment);
+  public TemplateHtmlFragment(Fragment fragment) {
+    this.fragment = fragment;
+    Document document = Jsoup.parseBodyFragment(fragment.getContent());
     Element scriptTag = document.body().child(0);
 
     List<Attribute> attributes = scriptTag.attributes().asList();
@@ -76,9 +69,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
         .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
         .collect(Collectors.toList());
 
-    dataId = getDataIdAttr(attributes);
-
-    this.content = scriptTag.unwrap().toString(); //remove outer script tag
+    this.unwrappedContent = scriptTag.unwrap().toString(); //remove outer script tag
   }
 
   @Override
@@ -91,8 +82,8 @@ public class TemplateHtmlFragment implements HtmlFragment {
   }
 
   @Override
-  public String getContent() {
-    return compiledFragment.text();
+  public Fragment getFragment() {
+    return fragment;
   }
 
   @Override
@@ -105,18 +96,9 @@ public class TemplateHtmlFragment implements HtmlFragment {
     return Observable.from(services);
   }
 
-  @Override
-  public String getDataId() {
-    return dataId;
-  }
-
   public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
-    this.compiledFragment = handlebars.compileInline(content);
+    this.compiledFragment = handlebars.compileInline(unwrappedContent);
     return this;
   }
 
-  private String getDataIdAttr(List<Attribute> attributes) {
-    Optional<Attribute> dataIdAttribute = attributes.stream().filter(attribute -> attribute.getKey().equals(DATA_ID)).findFirst();
-    return dataIdAttribute.map(Attribute::getValue).orElse(StringUtils.EMPTY);
-  }
 }
