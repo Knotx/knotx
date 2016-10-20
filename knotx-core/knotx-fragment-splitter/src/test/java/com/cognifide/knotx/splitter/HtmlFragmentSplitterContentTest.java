@@ -33,6 +33,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+//FIXME: rename tests to meet naming convention
 @RunWith(value = Parameterized.class)
 public class HtmlFragmentSplitterContentTest {
 

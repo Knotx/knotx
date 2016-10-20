@@ -42,7 +42,7 @@ public class Fragment {
   public Fragment(JsonObject fragment) {
     this.id = fragment.getString(ID);
     this.content = fragment.getString(CONTENT);
-    this.context = fragment.getJsonObject(CONTEXT);
+    this.context = fragment.getJsonObject(CONTEXT, new JsonObject());
   }
 
   private Fragment(String id, String data) {

@@ -75,6 +75,11 @@ public class ClientResponse {
     return body;
   }
 
+  public ClientResponse clearBody() {
+    body = Buffer.buffer("");
+    return this;
+  }
+
   public ClientResponse setStatusCode(HttpResponseStatus statusCode) {
     this.statusCode = statusCode;
     return this;

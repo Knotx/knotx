@@ -17,6 +17,9 @@
  */
 package com.cognifide.knotx.splitter;
 
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -28,11 +31,17 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
+import java.util.HashMap;
+
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -40,6 +49,8 @@ import rx.functions.Action1;
 public class HtmlFragmentSplitterVerticleTest {
 
   private final static String ADDRESS = "knotx.core.splitter";
+
+  private final static Integer NUMBER_OF_FRAGMENTS = 7;
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -53,19 +64,24 @@ public class HtmlFragmentSplitterVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callNonExistingService_expectBadRequestResponse(TestContext context) throws Exception {
+  public void callSplitterWithManySnippets_expectFragments(TestContext context) throws Exception {
     callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
-        pair -> context.assertEquals(pair.size(), 7));
+        knotContext -> context.assertEquals(knotContext.getFragments().get().size(), NUMBER_OF_FRAGMENTS));
   }
 
-  private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<JsonArray> testFunction) {
+  private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
+    KnotContext knotContext = new KnotContext();
+    knotContext.setClientResponse(new ClientResponse().setBody(Buffer.buffer(template)).setStatusCode(HttpResponseStatus.OK).setHeaders(MultiMap.caseInsensitiveMultiMap()));
+    knotContext.setClientRequest(new ClientRequest());
+
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonArray>send(ADDRESS, template, ar -> {
+    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, knotContext.toJson(), ar -> {
       if (ar.succeeded()) {
         Observable
             .just(ar.result().body())
-            .map(jsonArray -> Pair.of(async, jsonArray))
+            .map(KnotContext::new)
+            .map(knot -> Pair.of(async, knot))
             .subscribe(pair -> testFunction.call(pair.getRight()),
                 error -> context.fail(error.getMessage()),
                 async::complete);

@@ -20,8 +20,13 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import java.util.Optional;
+import com.cognifide.knotx.fragments.Fragment;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
@@ -33,7 +38,7 @@ public class KnotContext {
 
   private ClientResponse clientResponse;
 
-  private String template;
+  private Optional<List<Fragment>> fragments = Optional.empty();
 
   private volatile Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
@@ -50,7 +55,12 @@ public class KnotContext {
     this.transition = Optional.ofNullable(json.getString("transition"));
     this.clientRequest = new ClientRequest(json.getJsonObject("clientRequest"));
     this.clientResponse = new ClientResponse(json.getJsonObject("clientResponse"));
-    this.template = json.getString("template");
+    if (json.containsKey("fragments")) {
+      this.fragments = Optional.of(json.getJsonArray("fragments").stream()
+          .map(item -> (JsonObject) item)
+          .map(Fragment::new)
+          .collect(Collectors.toList()));
+    }
   }
 
   public KnotContext setClientRequest(ClientRequest request) {
@@ -63,9 +73,8 @@ public class KnotContext {
     return this;
   }
 
-  public KnotContext setTemplate(String template) {
-    this.template = template;
-    return this;
+  public void setFragments(Optional<List<Fragment>> fragments) {
+    this.fragments = fragments;
   }
 
   public KnotContext setTransition(Optional<String> transition) {
@@ -85,8 +94,8 @@ public class KnotContext {
     return transition;
   }
 
-  public String template() {
-    return template;
+  public Optional<List<Fragment>> getFragments() {
+    return fragments;
   }
 
   public Cache<String, Observable<JsonObject>> getCache() {
@@ -103,9 +112,9 @@ public class KnotContext {
     json.put("clientRequest", clientRequest.toJson());
     json.put("clientResponse", clientResponse.toJson());
     transition.ifPresent(value -> json.put("transition", value));
-    if (template != null) {
-      json.put("template", template);
-    }
+    fragments.ifPresent(value -> json.put("fragments", value.stream()
+        .map(Fragment::toJson)
+        .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll)));
     return json;
   }
 
@@ -117,12 +126,12 @@ public class KnotContext {
     return Objects.equal(transition, that.transition) &&
         Objects.equal(clientRequest, that.clientRequest) &&
         Objects.equal(clientResponse, that.clientResponse) &&
-        Objects.equal(template, that.template);
+        Objects.equal(fragments, that.fragments);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(transition, clientRequest, clientResponse, template);
+    return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
   }
 }
 

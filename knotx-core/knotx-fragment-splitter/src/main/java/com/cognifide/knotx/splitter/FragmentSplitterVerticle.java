@@ -17,15 +17,16 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.KnotContext;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Optional;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -53,35 +54,21 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
     EventBus eventBus = vertx.eventBus();
 
-    Observable<Message<String>> messageObservable = eventBus.<String>consumer(configuration.getAddress()).toObservable();
+    Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(configuration.getAddress()).toObservable();
     messageObservable
         .doOnNext(this::traceMessage)
         .subscribe(
-            msg -> this.split(msg.body())
-                .flatMap(this::emitFragments)
-                .map(Fragment::toJson)
-                .reduce(new JsonArray(), JsonArray::add)
-                .subscribe(
-                    msg::reply,
-                    error -> {
-                      LOGGER.error("Error happened", error);
-                      msg.reply(error.getMessage());
-                    }
-                )
+            msg -> {
+              KnotContext context = new KnotContext(msg.body());
+              context.setFragments(Optional.of(splitter.split(context.clientResponse().body().toString())));
+              context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
+              msg.reply(context.toJson());
+            },
+            error -> LOGGER.error("Exception happened during HTML splitting.", error)
         );
   }
 
-  private Observable<List<Fragment>> split(final String template) {
-    return vertx.executeBlockingObservable(handle ->
-        handle.complete(splitter.split(template))
-    );
-  }
-
-  private Observable<Fragment> emitFragments(List<Fragment> fragments) {
-    return Observable.from(fragments);
-  }
-
-  private void traceMessage(Message<String> message) {
+  private void traceMessage(Message<JsonObject> message) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }

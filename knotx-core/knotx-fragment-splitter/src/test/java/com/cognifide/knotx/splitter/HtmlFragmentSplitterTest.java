@@ -32,6 +32,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+//FIXME: rename tests to meet naming convention
 public class HtmlFragmentSplitterTest {
 
   @Rule
