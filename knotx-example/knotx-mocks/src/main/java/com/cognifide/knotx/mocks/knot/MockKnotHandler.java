@@ -22,6 +22,7 @@ import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertx.core.Handler;
@@ -81,13 +82,13 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
     final JsonObject responseConfig = handledMocks.get(getRequestPath(message));
 
     return Observable.from(KnotContextKeys.values())
-        .map(key -> key.valueOrDefault(fileSystem, responseConfig))
-        .filter(value -> value.getRight() != null)
+        .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig))
+        .filter(value -> value.getRight().isPresent())
         .reduce(new JsonObject(), this::mergeResponseValues);
   }
 
-  private JsonObject mergeResponseValues(JsonObject result, Pair<String, Object> value) {
-    return new JsonObject().put(value.getLeft(), value.getRight());
+  private JsonObject mergeResponseValues(JsonObject result, Pair<String, Optional<Object>> value) {
+    return new JsonObject().put(value.getLeft(), value.getRight().get());
   }
 
   private String getRequestPath(JsonObject message) {

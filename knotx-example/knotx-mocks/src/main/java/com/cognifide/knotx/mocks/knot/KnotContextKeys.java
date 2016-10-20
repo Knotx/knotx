@@ -19,8 +19,9 @@ package com.cognifide.knotx.mocks.knot;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Optional;
+
 import io.vertx.core.file.OpenOptions;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.file.AsyncFile;
@@ -30,31 +31,16 @@ import rx.Observable;
 enum KnotContextKeys {
   RESPONSE("clientResponse") {
     @Override
-    Object defaultValue() {
-      return new JsonObject().put("statusCode", 200);
+    Optional<Object> defaultValue() {
+      return Optional.of(new JsonObject().put("statusCode", 200));
     }
   },
-  REQUEST("clientRequest") {
-    @Override
-    Object defaultValue() {
-      return null;
-    }
-  },
-  FRAGMENTS("fragments") {
-    @Override
-    Object defaultValue() {
-      return new JsonArray();
-    }
-  },
+  REQUEST("clientRequest"),
+  FRAGMENTS("fragments"),
   TRANSITION("transition") {
     @Override
-    Object defaultValue() {
-      return null;
-    }
-
-    @Override
-    Observable<Object> mockValue(FileSystem fileSystem, String mockConfigValue) {
-      return Observable.just(mockConfigValue);
+    Observable<Optional<Object>> mockValue(FileSystem fileSystem, String mockConfigValue) {
+      return Observable.just(Optional.of(mockConfigValue));
     }
   };
 
@@ -68,26 +54,26 @@ enum KnotContextKeys {
     return key;
   }
 
-  Pair<String, Object> valueOrDefault(FileSystem fileSystem, JsonObject responseConfig) {
-    Object value;
-    if (responseConfig.containsKey(key)) {
-      value = mockValue(fileSystem, responseConfig.getString(key));
-    } else {
-      value = defaultValue();
-    }
-    return Pair.of(key, value);
+  Observable<Pair<String, Optional<Object>>> valueOrDefault(FileSystem fileSystem, JsonObject responseConfig) {
+    return Observable.just(key)
+        .filter(responseConfig::containsKey)
+        .flatMap(contextKey -> this.mockValue(fileSystem, responseConfig.getString(contextKey)))
+        .map(value -> Pair.of(key, value))
+        .defaultIfEmpty(Pair.of(key, this.defaultValue()));
   }
 
-  Observable<Object> mockValue(FileSystem fileSystem, String resourcePath) {
+  Observable<Optional<Object>> mockValue(FileSystem fileSystem, String resourcePath) {
     return fileSystem.openObservable(resourcePath, new OpenOptions().setCreate(false).setWrite(false))
         .flatMap(this::processFile)
         .map(this::toJson);
   }
 
-  abstract Object defaultValue();
+  Optional<Object> defaultValue() {
+    return Optional.empty();
+  }
 
-  private Object toJson(Buffer buffer) {
-    return buffer.toString().charAt(0) == '{' ? buffer.toJsonObject() : buffer.toJsonArray();
+  private Optional<Object> toJson(Buffer buffer) {
+    return Optional.of(buffer.toString().trim().charAt(0) == '{' ? buffer.toJsonObject() : buffer.toJsonArray());
   }
 
   private Observable<Buffer> processFile(final AsyncFile asyncFile) {
