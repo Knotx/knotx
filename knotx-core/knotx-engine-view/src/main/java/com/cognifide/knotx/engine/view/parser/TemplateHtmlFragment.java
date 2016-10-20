@@ -44,7 +44,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
   private static final String DATA_SERVICE = "data-service.*";
   private static final String DATA_PARAMS = "data-params.*";
 
-  private final String content;
+  private final String unwrappedContent;
   private final Fragment fragment;
   private final List<ServiceEntry> services;
 
@@ -69,7 +69,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
         .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
         .collect(Collectors.toList());
 
-    this.content = scriptTag.unwrap().toString(); //remove outer script tag
+    this.unwrappedContent = scriptTag.unwrap().toString(); //remove outer script tag
   }
 
   @Override
@@ -97,7 +97,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
   }
 
   public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
-    this.compiledFragment = handlebars.compileInline(content);
+    this.compiledFragment = handlebars.compileInline(unwrappedContent);
     return this;
   }
 
