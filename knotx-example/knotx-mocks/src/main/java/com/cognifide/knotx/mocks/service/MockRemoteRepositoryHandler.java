@@ -31,7 +31,7 @@ import io.vertx.rxjava.core.http.HttpServerRequest;
 public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
 
   private static final String SEPARATOR = "/";
-  private final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
   private String catalogue;
 
   public MockRemoteRepositoryHandler(String catalogue) {

@@ -9,14 +9,34 @@
     "com.cognifide.knotx.mocks.MockServiceVerticle": {
       "config": {
         "mock.data.root": "mock/service",
-        "bouncing" : true,
+        "bouncing": true,
         "http.port": 3000
       }
     },
     "com.cognifide.knotx.mocks.MockServiceAdapterVerticle": {
       "config": {
-        "address" : "mock-adapter-service",
+        "address": "mock-adapter-service",
         "mock.data.root": "mock/service"
+      }
+    },
+    "com.cognifide.knotx.mocks.MockKnotVerticle": {
+      "config": {
+        "knot.action": {
+          "/form-simple": {
+            "fragments": "mock/knot/action/form-simple.fragments.json",
+            "clientResponse": "mock/knot/action/form-simple.response.json",
+            "transition": "view"
+          },
+          "/redirect": {
+            "clientResponse": "mock/knot/action/redirect.response.json"
+          }
+        },
+        "knot.view": {
+          "/simple": {
+            "fragments": "mock/knot/view/simple.fragments.json",
+            "clientResponse": "mock/knot/view/simple.response.json"
+          }
+        }
       }
     }
   }
