@@ -38,15 +38,15 @@ public class KnotxServerConfigurationRepositoriesTest {
 
   @Before
   public void before() throws Exception {
-    config = new JsonObject(FileReader.readText("test-server.json"));
+    config = new JsonObject(FileReader.readText("test-config-server.json"));
   }
 
   @Test
   public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths() throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get(), equalTo("knotx.core.repository.filesystem"));
-    assertThat(serverConfig.repositoryForPath("/content/simple.html").get(), equalTo("knotx.core.repository.http"));
+    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get(), equalTo("knotx.repository.filesystem"));
+    assertThat(serverConfig.repositoryForPath("/content/simple.html").get(), equalTo("knotx.repository.http"));
   }
 
   @Test

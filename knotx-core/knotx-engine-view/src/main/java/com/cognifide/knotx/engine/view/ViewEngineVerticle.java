@@ -17,16 +17,20 @@
  */
 package com.cognifide.knotx.engine.view;
 
+import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.dataobjects.EngineResponse;
 import com.cognifide.knotx.engine.view.impl.TemplateEngine;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
@@ -55,15 +59,36 @@ public class ViewEngineVerticle extends AbstractVerticle {
     Observable<Message<JsonObject>> messageObservable = eventBus.<JsonObject>consumer(configuration.getAddress()).toObservable();
     messageObservable
         .doOnNext(this::traceMessage)
-        .flatMap(msg -> templateEngine.process(new KnotContext(msg.body()))
-            .map(renderedData -> EngineResponse.success(renderedData).toJsonObject())
-            .onErrorReturn(error -> {
-              LOGGER.error("Error happened during Template processing", error);
-              return EngineResponse.error(error.getMessage()).toJsonObject();
-            })
-            .doOnNext(msg::reply)
+        .flatMap(msg -> {
+              KnotContext inputContext = new KnotContext(msg.body());
+              return templateEngine.process(inputContext)
+                  .map(renderedData -> createSuccessResponse(inputContext, renderedData).toJson())
+                  .onErrorReturn(error -> {
+                    LOGGER.error("Error happened during Template processing", error);
+                    return createErrorResponse(inputContext).toJson();
+                  })
+                  .doOnNext(msg::reply);
+            }
         ).subscribe();
+  }
 
+  private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
+    ClientResponse clientResponse = inputContext.clientResponse();
+    MultiMap headers = clientResponse.headers();
+    headers.set(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(renderedContent.length()));
+    clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
+
+    return new KnotContext()
+        .setClientRequest(inputContext.clientRequest())
+        .setClientResponse(clientResponse);
+  }
+
+  private KnotContext createErrorResponse(KnotContext inputContext) {
+    ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+
+    return new KnotContext()
+        .setClientRequest(inputContext.clientRequest())
+        .setClientResponse(errorResponse);
   }
 
   private void traceMessage(Message<JsonObject> message) {

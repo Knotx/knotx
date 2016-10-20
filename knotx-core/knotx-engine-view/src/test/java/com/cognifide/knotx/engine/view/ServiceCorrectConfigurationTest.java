@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.engine.view;
 
-import com.cognifide.knotx.engine.TemplateEngineConfiguration.ServiceMetadata;
 import com.cognifide.knotx.junit.FileReader;
 
 import org.hamcrest.CoreMatchers;

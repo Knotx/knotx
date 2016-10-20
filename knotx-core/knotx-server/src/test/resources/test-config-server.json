@@ -42,8 +42,12 @@
   ],
   "repositories": [
     {
-      "path": "/content/.*",
+      "path": "/content/local/.*",
       "address": "knotx.repository.filesystem"
+    },
+    {
+      "path": "/content/.*",
+      "address": "knotx.repository.http"
     }
   ],
   "routing": {
