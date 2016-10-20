@@ -70,18 +70,15 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   }
 
   private Boolean findConfiguration(JsonObject message) {
-    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
-    return handledMocks.containsKey(request.path());
+    return handledMocks.containsKey(getRequestPath(message));
   }
 
   private void logProcessedInfo(JsonObject message) {
-    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
-    LOGGER.info("Processing `{}`", request.path());
+    LOGGER.info("Processing `{}`", getRequestPath(message));
   }
 
   private Observable<JsonObject> prepareHandlerResponse(JsonObject message) {
-    final HttpRequestWrapper request = new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key()));
-    final JsonObject responseConfig = handledMocks.get(request.path());
+    final JsonObject responseConfig = handledMocks.get(getRequestPath(message));
 
     return Observable.from(KnotContextKeys.values())
         .map(key -> key.valueOrDefault(fileSystem, responseConfig))
@@ -91,6 +88,10 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
 
   private JsonObject mergeResponseValues(JsonObject result, Pair<String, Object> value) {
     return new JsonObject().put(value.getLeft(), value.getRight());
+  }
+
+  private String getRequestPath(JsonObject message) {
+    return new HttpRequestWrapper(message.getJsonObject(KnotContextKeys.REQUEST.key())).path();
   }
 
 }
