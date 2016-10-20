@@ -21,33 +21,22 @@
     },
     "com.cognifide.knotx.mocks.MockKnotVerticle": {
       "config": {
-        "handlers": [
-          {
-            "address": "knot.action",
-            "mocks": [
-              {
-                "request.path": "/form-simple",
-                "fragments": "mock/knot/action/form-simple.fragments.json",
-                "clientResponse": "mock/knot/action/form-simple.response.json",
-                "transition": "view"
-              },
-              {
-                "request.path": "/redirect",
-                "clientResponse": "mock/knot/action/redirect.response.json"
-              }
-            ]
+        "knot.action": {
+          "/form-simple": {
+            "fragments": "mock/knot/action/form-simple.fragments.json",
+            "clientResponse": "mock/knot/action/form-simple.response.json",
+            "transition": "view"
           },
-          {
-            "address": "knot.view",
-            "mocks": [
-              {
-                "request.path": "/simple",
-                "fragments": "mock/knot/view/simple.fragments.json",
-                "clientResponse": "mock/knot/view/simple.response.json"
-              }
-            ]
+          "/redirect": {
+            "clientResponse": "mock/knot/action/redirect.response.json"
           }
-        ]
+        },
+        "knot.view": {
+          "/simple": {
+            "fragments": "mock/knot/view/simple.fragments.json",
+            "clientResponse": "mock/knot/view/simple.response.json"
+          }
+        }
       }
     }
   }

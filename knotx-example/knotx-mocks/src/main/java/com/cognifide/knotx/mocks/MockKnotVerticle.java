@@ -20,7 +20,6 @@ package com.cognifide.knotx.mocks;
 
 import com.cognifide.knotx.mocks.knot.MockKnotHandler;
 
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -33,18 +32,16 @@ public class MockKnotVerticle extends AbstractVerticle {
   @Override
   public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
-    final JsonArray handlers = config().getJsonArray("handlers");
-    handlers.forEach(config -> {
-      final JsonObject handlerConfig = (JsonObject) config;
-      final String address = handlerConfig.getString("address");
-      final JsonArray handledMocks = handlerConfig.getJsonArray("mocks");
+    config().forEach(configEntry -> {
+      final JsonObject handlerConfig = (JsonObject) configEntry.getValue();
+      final String address = configEntry.getKey();
       LOGGER.info("  listening @ `{}`", address);
-      vertx.eventBus().consumer(address, createHandler(handledMocks));
+      vertx.eventBus().consumer(address, createHandler(handlerConfig));
     });
   }
 
-  private MockKnotHandler createHandler(JsonArray handledMocks) {
-    return new MockKnotHandler(handledMocks, vertx.fileSystem());
+  private MockKnotHandler createHandler(JsonObject handlerConfig) {
+    return new MockKnotHandler(handlerConfig, vertx.fileSystem());
   }
 
 }

@@ -21,12 +21,9 @@ import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -43,12 +40,10 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   private static final JsonObject NOT_FOUND = new JsonObject().put(KnotContextKeys.RESPONSE.key(), new JsonObject().put("statusCode", 404));
 
   private final FileSystem fileSystem;
-  private final Map<String, JsonObject> handledMocks;
+  private final JsonObject handlerConfig;
 
-  public MockKnotHandler(JsonArray handledMocks, FileSystem fileSystem) {
-    this.handledMocks = handledMocks.stream()
-        .map(object -> (JsonObject) object)
-        .collect(Collectors.toMap(value -> value.getString("request.path"), value -> value));
+  public MockKnotHandler(JsonObject handlerConfig, FileSystem fileSystem) {
+    this.handlerConfig = handlerConfig;
     this.fileSystem = fileSystem;
   }
 
@@ -71,7 +66,7 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   }
 
   private Boolean findConfiguration(JsonObject message) {
-    return handledMocks.containsKey(getRequestPath(message));
+    return handlerConfig.containsKey(getRequestPath(message));
   }
 
   private void logProcessedInfo(JsonObject message) {
@@ -79,7 +74,7 @@ public class MockKnotHandler implements Handler<Message<JsonObject>> {
   }
 
   private Observable<JsonObject> prepareHandlerResponse(JsonObject message) {
-    final JsonObject responseConfig = handledMocks.get(getRequestPath(message));
+    final JsonObject responseConfig = handlerConfig.getJsonObject(getRequestPath(message));
 
     return Observable.from(KnotContextKeys.values())
         .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig))
