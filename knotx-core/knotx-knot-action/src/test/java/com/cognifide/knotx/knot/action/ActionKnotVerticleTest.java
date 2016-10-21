@@ -95,8 +95,8 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callGetWithTwoActionFragments_expectResponseOkTwoFragmentChanges(TestContext context) throws Exception {
-    String expectedRedirectFormFragment = clean(FileReader.readText("fragment_form_redirect_out.txt"));
-    String expectedSelfFormFragment = clean(FileReader.readText("fragment_form_self_out.txt"));
+    String expectedRedirectFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
+    String expectedSelfFormFragment = FileReader.readText("fragment_form_self_out.txt");
     KnotContext knotContext = createKnotContext("form-identifier", "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
 
     callActionKnotWithAssertions(context, knotContext,
@@ -106,8 +106,8 @@ public class ActionKnotVerticleTest {
 
           List<Fragment> fragments = knotContext.fragments().get();
           context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
-          context.assertEquals(expectedRedirectFormFragment, clean(fragments.get(1).getContent()));
-          context.assertEquals(expectedSelfFormFragment, clean(fragments.get(2).getContent()));
+          context.assertEquals(clean(expectedRedirectFormFragment), clean(fragments.get(1).getContent()));
+          context.assertEquals(clean(expectedSelfFormFragment), clean(fragments.get(2).getContent()));
           context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(3).getContent());
         },
         error -> context.fail(error.getMessage()));
@@ -116,8 +116,8 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
-    String expectedFirstFormFragment = clean(FileReader.readText("fragment_form_redirect_out.txt"));
-    String expectedSecondFormFragment = clean(FileReader.readText("fragment_form_self_out.txt"));
+    String expectedFirstFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
+    String expectedSecondFormFragment = FileReader.readText("fragment_form_self_out.txt");
     KnotContext knotContext = createKnotContext("form-identifier", "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
 
     knotContext.clientRequest()
@@ -137,8 +137,8 @@ public class ActionKnotVerticleTest {
 
           List<Fragment> fragments = knotContext.fragments().get();
           context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
-          context.assertEquals(expectedFirstFormFragment, clean(fragments.get(1).getContent()));
-          context.assertEquals(expectedSecondFormFragment, clean(fragments.get(2).getContent()));
+          context.assertEquals(clean(expectedFirstFormFragment), clean(fragments.get(1).getContent()));
+          context.assertEquals(clean(expectedSecondFormFragment), clean(fragments.get(2).getContent()));
           context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(3).getContent());
         },
         error -> context.fail(error.getMessage()));
