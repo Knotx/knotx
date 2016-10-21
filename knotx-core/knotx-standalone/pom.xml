@@ -90,7 +90,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-service-adapter-http</artifactId>
+      <artifactId>knotx-adapter-service-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
