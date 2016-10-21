@@ -26,8 +26,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 
 public class KnotContext {
@@ -61,6 +64,19 @@ public class KnotContext {
           .map(Fragment::new)
           .collect(Collectors.toList());
     }
+  }
+
+  public static KnotContext empty(List<Fragment> fragments) {
+    return new KnotContext()
+        .setClientResponse(new ClientResponse().setBody(Buffer.buffer()).setStatusCode(HttpResponseStatus.OK).setHeaders(MultiMap.caseInsensitiveMultiMap()))
+        .setClientRequest(new ClientRequest())
+        .setFragments(fragments);
+  }
+
+  public static KnotContext empty(String template) {
+    return new KnotContext()
+        .setClientResponse(new ClientResponse().setBody(Buffer.buffer(template)).setStatusCode(HttpResponseStatus.OK).setHeaders(MultiMap.caseInsensitiveMultiMap()))
+        .setClientRequest(new ClientRequest());
   }
 
   public KnotContext setClientRequest(ClientRequest request) {

@@ -130,7 +130,7 @@
     },
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
       "config" : {
-        "addres": "knotx.knot.action"
+        "address": "knotx.knot.action"
       }
     },
     "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle" :{

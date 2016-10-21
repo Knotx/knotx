@@ -1,0 +1,9 @@
+{
+  "verticles": {
+    "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
+      "config" : {
+        "address": "knotx.knot.action"
+      }
+    }
+  }
+}

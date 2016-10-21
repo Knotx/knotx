@@ -17,6 +17,11 @@
  */
 package com.cognifide.knotx.knot.action;
 
+import com.cognifide.knotx.dataobjects.KnotContext;
+
+import java.util.NoSuchElementException;
+
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -24,6 +29,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
+import rx.Observable;
 
 public class ActionKnotVerticle extends AbstractVerticle {
 
@@ -41,6 +47,29 @@ public class ActionKnotVerticle extends AbstractVerticle {
   public void start() throws Exception {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
+    vertx.eventBus().<JsonObject>consumer(configuration.address())
+        .handler(message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .subscribe(
+                result -> {
+                  message.reply(result.body());
+                },
+                error -> {
+                  LOGGER.error("Error occured in Action Knot.", error);
+                  message.reply(processError(new KnotContext(message.body()), error).toJson());
+                }
+            ));
+  }
+
+  private KnotContext processError(KnotContext context, Throwable error) {
+    HttpResponseStatus statusCode;
+    if (error instanceof NoSuchElementException) {
+      statusCode = HttpResponseStatus.NOT_FOUND;
+    } else {
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    context.clientResponse().setStatusCode(statusCode);
+    return context;
   }
 
   private void traceMessage(Message<JsonObject> message) {

@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - HTML Fragment Splitter
+ * Knot.x - Reactive microservice assembler - Action Knot Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,21 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.splitter;
+package com.cognifide.knotx.knot.action;
 
-import com.cognifide.knotx.dataobjects.ClientRequest;
-import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonObject;
@@ -37,17 +38,13 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
-public class HtmlFragmentSplitterVerticleTest {
+public class ActionKnotVerticleTest {
 
-  private final static String ADDRESS = "knotx.core.splitter";
-
-  private final static Integer NUMBER_OF_FRAGMENTS = 7;
+  private final static String ADDRESS = "knotx.knot.action";
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -60,37 +57,42 @@ public class HtmlFragmentSplitterVerticleTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callSplitterWithManySnippets_expectNoFragments(TestContext context) throws Exception {
-    callFragmentSplitterWithAssertions(context, "",
-        knotContext -> {
-          context.assertEquals(knotContext.clientResponse().statusCode(), HttpResponseStatus.NOT_FOUND);
-          context.assertFalse(knotContext.fragments().isPresent());
-        });
+  @KnotxConfiguration("knotx-knot-action-test.json")
+  public void callWithNoActionFragments_expectResponseOkNoFragmentChanges(TestContext context) throws Exception {
+    String firstFragment = "<html><head></head><body>";
+    String lastFragment = "</body></html>";
+    String expectedFormFragment = FileReader.readText("form_step1_out_fragment.txt");
+
+    KnotContext knotContext = KnotContext.empty(Arrays.asList(
+        Fragment.raw(firstFragment),
+        Fragment.snippet("form-identifier", FileReader.readText("form_step1_in_fragment.txt")),
+        Fragment.raw(lastFragment)));
+
+    callActionKnotWithAssertions(context, knotContext,
+        clientResponse -> {
+          context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
+          List<Fragment> fragments = knotContext.fragments().get();
+          context.assertEquals(firstFragment, fragments.get(0).getContent());
+          context.assertEquals(expectedFormFragment, fragments.get(1).getContent());
+          context.assertEquals(lastFragment, fragments.get(2).getContent());
+
+        },
+        error -> context.fail(error.getMessage()));
+
   }
 
-  @Test
-  @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callSplitterEmptyBody_expectErrorReponse(TestContext context) throws Exception {
-    callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
-        knotContext -> {
-          context.assertTrue(knotContext.fragments().isPresent());
-          context.assertEquals(knotContext.fragments().get().size(), NUMBER_OF_FRAGMENTS);
-        });
-  }
-
-  private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
+  private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext, Action1<KnotContext> onSuccess, Action1<Throwable> onError) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, KnotContext.empty(template).toJson(), ar -> {
+    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, knotContext.toJson(), ar -> {
       if (ar.succeeded()) {
         Observable
-            .just(ar.result().body())
-            .map(KnotContext::new)
-            .map(knot -> Pair.of(async, knot))
-            .subscribe(pair -> testFunction.call(pair.getRight()),
-                error -> context.fail(error.getMessage()),
-                async::complete);
+            .just(new KnotContext(ar.result().body()))
+            .subscribe(
+                onSuccess,
+                onError,
+                async::complete
+            );
       } else {
         context.fail(ar.cause());
       }
