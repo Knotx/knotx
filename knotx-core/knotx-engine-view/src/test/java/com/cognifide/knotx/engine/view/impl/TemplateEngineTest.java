@@ -120,6 +120,20 @@ public class TemplateEngineTest {
     );
   }
 
+  @SuppressWarnings("unchecked")
+  @Test
+  public void whenRequestedWithSevenMixedFragmentsAllCallsToSingleService_expectHtmlAndOneServiceCall(TestContext context) throws Exception {
+    final String resourcesFolderName = "multiple-calls-to-single-service";
+    final String expectedResponse = getExpectedResponse(resourcesFolderName);
+
+    testViewEngineProcessing(context, resourcesFolderName, 7, (result, eventBus) -> {
+          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(result));
+          verify(eventBus, times(1)).send(anyString(), anyObject(), (Handler<AsyncResult<Message<Object>>>) anyObject());
+        },
+        error -> context.fail(error.getMessage())
+    );
+  }
+
   private void testViewEngineProcessing(TestContext context, String resourcesFolderName, int fragmentsNo, Action2<String, EventBus> onSuccess, Action1<Throwable> onError) throws Exception {
     Async async = context.async();
 
