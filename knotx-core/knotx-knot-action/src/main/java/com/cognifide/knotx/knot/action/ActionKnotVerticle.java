@@ -61,6 +61,10 @@ public class ActionKnotVerticle extends AbstractVerticle {
             ));
   }
 
+  ActionKnotConfiguration getConfiguration() {
+    return configuration;
+  }
+
   private KnotContext processError(KnotContext context, Throwable error) {
     HttpResponseStatus statusCode;
     if (error instanceof NoSuchElementException) {

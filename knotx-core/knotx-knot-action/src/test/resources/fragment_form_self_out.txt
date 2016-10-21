@@ -1,5 +1,5 @@
     <form>
-        <input type="hidden" name="action-identifier" id="identifierA" />
+        <input type="hidden" name="snippet-identifier" id="self" />
         <div class="form-group">
             <label for="email2">Email</label>
             <input type="email" name="email" id="email2"/>
