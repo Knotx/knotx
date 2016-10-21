@@ -65,6 +65,12 @@ public class TemplateEngineTest {
 
   private static final String TEST_RESOURCES_ROOT = "template-engine";
   private static final String TEMPLATE_ENGINE_CONFIG_JSON = TEST_RESOURCES_ROOT + "/test-config.json";
+  private static final String EXPECTED_RESULT_FILE_NAME = "expected.html";
+  private static final String FRAGMENT_FILE_NAME_PATTERN = "fragment%d.txt";
+  private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings()
+      .escapeMode(Entities.EscapeMode.xhtml)
+      .indentAmount(0)
+      .prettyPrint(false);
 
   private RunTestOnContext runTestOnContext = new RunTestOnContext();
   private Vertx vertx;
@@ -166,19 +172,18 @@ public class TemplateEngineTest {
   }
 
   private String getFragmentResourcePath(String testResourcesPath, int i) {
-    return TEST_RESOURCES_ROOT + File.separator + testResourcesPath + File.separator + "fragment" + i + ".txt";
+    return TEST_RESOURCES_ROOT + File.separator + testResourcesPath + File.separator + String.format(FRAGMENT_FILE_NAME_PATTERN, i);
   }
 
   private String getExpectedResponse(String testName) throws Exception {
-    return FileReader.readText(TEST_RESOURCES_ROOT + "/" + testName + "/expected.html");
+    return FileReader.readText(TEST_RESOURCES_ROOT + File.separator + testName + File.separator + EXPECTED_RESULT_FILE_NAME);
   }
 
   private String unifyHtml(String html) {
-    Document.OutputSettings outputSettings = new Document.OutputSettings()
-        .escapeMode(Entities.EscapeMode.xhtml)
-        .indentAmount(0)
-        .prettyPrint(false);
-    return Jsoup.parse(html.replace("\n", ""), "UTF-8", Parser.xmlParser()).outputSettings(outputSettings).html().trim();
+    return Jsoup.parse(html.replace("\n", ""), "UTF-8", Parser.xmlParser())
+        .outputSettings(OUTPUT_SETTINGS)
+        .html()
+        .trim();
   }
 
   private void mockServiceAdapter(Message<JsonObject> message) {
