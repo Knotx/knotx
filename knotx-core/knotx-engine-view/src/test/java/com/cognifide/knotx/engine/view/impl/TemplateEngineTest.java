@@ -51,6 +51,8 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Action2;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -79,75 +81,59 @@ public class TemplateEngineTest {
   @SuppressWarnings("unchecked")
   @Test
   public void whenRequestedWithOneRawFragment_expectNotChangedHtmlAndNoServiceCalls(TestContext context) throws Exception {
-    Async async = context.async();
+    final String resourcesFolderName = "one-raw-fragment";
+    final String expectedResponse = getExpectedResponse(resourcesFolderName);
 
-    // given
-    final String testName = "one-raw-fragment";
-    final EventBus eventBus = spy(vertx.eventBus());
-    final TemplateEngine templateEngine = new TemplateEngine(eventBus, getConfig(TEMPLATE_ENGINE_CONFIG_JSON));
-
-    final String expectedResponse = getExpectedResponse(testName);
-
-    // when
-    Observable<String> result = templateEngine.process(getContext(testName, 1));
-
-    // then
-    result.subscribe(
-        response -> {
-          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(response));
+    testViewEngineProcessing(context, resourcesFolderName, 1, (result, eventBus) -> {
+          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(result));
           verify(eventBus, times(0)).send(anyString(), anyObject(), (Handler<AsyncResult<Message<Object>>>) anyObject());
         },
-        error -> context.fail(error.getMessage()),
-        async::complete);
+        error -> context.fail(error.getMessage())
+    );
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void whenRequestedWithOneSnippetFragment_expectHtmlAndOneServiceCall(TestContext context) throws Exception {
-    Async async = context.async();
+    final String resourcesFolderName = "one-snippet-fragment";
+    final String expectedResponse = getExpectedResponse(resourcesFolderName);
 
-    // given
-    final String testName = "one-snippet-fragment";
-    final EventBus eventBus = spy(vertx.eventBus());
-    final TemplateEngine templateEngine = new TemplateEngine(eventBus, getConfig(TEMPLATE_ENGINE_CONFIG_JSON));
-
-    final String expectedResponse = getExpectedResponse(testName);
-
-    // when
-    Observable<String> result = templateEngine.process(getContext(testName, 1));
-
-    // then
-    result.subscribe(
-        response -> {
-          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(response));
+    testViewEngineProcessing(context, resourcesFolderName, 1, (result, eventBus) -> {
+          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(result));
           verify(eventBus, times(1)).send(anyString(), anyObject(), (Handler<AsyncResult<Message<Object>>>) anyObject());
         },
-        error -> context.fail(error.getMessage()),
-        async::complete);
+        error -> context.fail(error.getMessage())
+    );
   }
 
   @SuppressWarnings("unchecked")
   @Test
   public void whenRequestedWithSevenMixedFragments_expectHtmlAndThreeServiceCall(TestContext context) throws Exception {
+    final String resourcesFolderName = "seven-mixed-fragments";
+    final String expectedResponse = getExpectedResponse(resourcesFolderName);
+
+    testViewEngineProcessing(context, resourcesFolderName, 7, (result, eventBus) -> {
+          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(result));
+          verify(eventBus, times(3)).send(anyString(), anyObject(), (Handler<AsyncResult<Message<Object>>>) anyObject());
+        },
+        error -> context.fail(error.getMessage())
+    );
+  }
+
+  private void testViewEngineProcessing(TestContext context, String resourcesFolderName, int fragmentsNo, Action2<String, EventBus> onSuccess, Action1<Throwable> onError) throws Exception {
     Async async = context.async();
 
     // given
-    final String testName = "seven-mixed-fragments";
     final EventBus eventBus = spy(vertx.eventBus());
     final TemplateEngine templateEngine = new TemplateEngine(eventBus, getConfig(TEMPLATE_ENGINE_CONFIG_JSON));
 
-    final String expectedResponse = getExpectedResponse(testName);
-
     // when
-    Observable<String> result = templateEngine.process(getContext(testName, 7));
+    Observable<String> result = templateEngine.process(getContext(resourcesFolderName, fragmentsNo));
 
     // then
     result.subscribe(
-        response -> {
-          context.assertEquals(unifyHtml(expectedResponse), unifyHtml(response));
-          verify(eventBus, times(3)).send(anyString(), anyObject(), (Handler<AsyncResult<Message<Object>>>) anyObject());
-        },
-        error -> context.fail(error.getMessage()),
+        testResult -> onSuccess.call(testResult, eventBus),
+        onError,
         async::complete);
   }
 
@@ -193,9 +179,7 @@ public class TemplateEngineTest {
                 message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND).toJson());
               }
             },
-            error -> {
-              message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND).toJson());
-            }
+            error -> message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND).toJson())
         );
   }
 }
