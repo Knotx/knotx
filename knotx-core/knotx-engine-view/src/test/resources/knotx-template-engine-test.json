@@ -1,0 +1,11 @@
+{
+  "verticles": {
+    "com.cognifide.knotx.mocks.MockServiceVerticle": {
+      "config": {
+        "mock.data.root": "mock/service",
+        "bouncing" : true,
+        "http.port": 3000
+      }
+    }
+  }
+}
