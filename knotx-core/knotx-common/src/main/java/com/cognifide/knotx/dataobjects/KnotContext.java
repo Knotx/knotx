@@ -66,19 +66,6 @@ public class KnotContext {
     }
   }
 
-  public static KnotContext empty(List<Fragment> fragments) {
-    return new KnotContext()
-        .setClientResponse(new ClientResponse().setBody(Buffer.buffer()).setStatusCode(HttpResponseStatus.OK).setHeaders(MultiMap.caseInsensitiveMultiMap()))
-        .setClientRequest(new ClientRequest())
-        .setFragments(fragments);
-  }
-
-  public static KnotContext empty(String template) {
-    return new KnotContext()
-        .setClientResponse(new ClientResponse().setBody(Buffer.buffer(template)).setStatusCode(HttpResponseStatus.OK).setHeaders(MultiMap.caseInsensitiveMultiMap()))
-        .setClientRequest(new ClientRequest());
-  }
-
   public KnotContext setClientRequest(ClientRequest request) {
     this.clientRequest = request;
     return this;

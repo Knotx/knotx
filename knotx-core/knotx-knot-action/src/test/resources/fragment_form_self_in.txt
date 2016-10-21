@@ -1,5 +1,6 @@
-<script data-api-type="form-self" data-service="/path/to/service.json" type="text/x-handlebars-template">
+<script data-api-type="form-someId456" data-service="/path/to/service.json" type="text/x-handlebars-template">
     <form data-knotx-action="action-self">
+        {{someValue}}
         <div class="form-group">
             <label for="email2">Email</label>
             <input type="email" name="email" id="email2"/>

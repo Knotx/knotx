@@ -1,5 +1,6 @@
-<script data-api-type="form-redirect" data-service="/path/to/service.json" type="text/x-handlebars-template">
+<script data-api-type="form-someId123" data-service="/path/to/service.json" type="text/x-handlebars-template">
     <form data-knotx-action="action-redirect" data-knotx-on-step2="/content/form/step2.html">
+        {{someValue}}
         <div class="form-group">
             <label for="email2">Email</label>
             <input type="email" name="email" id="email2"/>
