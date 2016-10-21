@@ -1,3 +1,3 @@
-<script data-api-type="templating" data-service="/path/to/service.json" type="text/x-handlebars-template">
+<script data-api-type="templating" data-service="some-service" type="text/x-handlebars-template">
     This should not be modified.
 </script>
