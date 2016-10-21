@@ -136,7 +136,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
         ]
       }
     },
-    "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle": {
+    "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
       "config": {
         "address": "knotx.core.service-adapter",
         "client.options": {
