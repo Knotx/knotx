@@ -103,7 +103,7 @@
         "services": [
           {
             "name" : "first-service",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/first.json"
             },
@@ -111,21 +111,21 @@
           },
           {
             "name" : "second-service",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/second.json"
             }
           },
           {
             "name" : "third-service",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/third.json"
             }
           },
           {
             "name" : "labelsRepository",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {}
           }
         ]
@@ -133,7 +133,7 @@
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
       "config": {
-        "address": "knotx.core.http.service-adapter",
+        "address": "knotx.adapter.service.http",
         "client.options": {
           "maxPoolSize": 1000,
           "keepAlive": false

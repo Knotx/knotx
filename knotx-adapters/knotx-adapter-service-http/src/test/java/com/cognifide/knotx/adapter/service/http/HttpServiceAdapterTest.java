@@ -40,7 +40,7 @@ import rx.functions.Action1;
 @RunWith(VertxUnitRunner.class)
 public class HttpServiceAdapterTest {
 
-  private final static String ADAPTER_ADDRESS = "knotx.core.http.service-adapter";
+  private final static String ADAPTER_ADDRESS = "knotx.adapter.service.http";
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -56,9 +56,7 @@ public class HttpServiceAdapterTest {
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void callNonExistingService_expectBadRequestResponse(TestContext context) {
     callAdapterServiceWithAssertions(context, "not/existing/service/address",
-        clientResponse -> {
-          context.assertTrue(clientResponse.statusCode().equals(HttpResponseStatus.INTERNAL_SERVER_ERROR));
-        },
+        clientResponse -> context.assertTrue(clientResponse.statusCode().equals(HttpResponseStatus.INTERNAL_SERVER_ERROR)),
         error -> context.fail(error.getMessage()));
   }
 
