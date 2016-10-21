@@ -78,8 +78,7 @@ public class TemplateEngine {
     if (!fragment.isRaw()) {
       return Observable.create(subscriber -> {
         try {
-          subscriber.onNext(
-              new TemplateHtmlFragment(fragment).compileWith(handlebars));
+          subscriber.onNext(new TemplateHtmlFragment(fragment).compileWith(handlebars));
           subscriber.onCompleted();
         } catch (IOException e) {
           subscriber.onError(e);
