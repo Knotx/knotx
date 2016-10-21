@@ -1,4 +1,4 @@
 {
   "address": "knotx.knot.action",
-  "hiddenInputTagName": "snippet-identifier"
+  "formIdentifierName": "snippet-identifier"
 }

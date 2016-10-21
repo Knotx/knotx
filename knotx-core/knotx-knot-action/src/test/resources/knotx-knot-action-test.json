@@ -3,7 +3,7 @@
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
       "config" : {
         "address": "knotx.knot.action",
-        "hiddenInputTagName": "snippet-identifier"
+        "formIdentifierName": "snippet-identifier"
       }
     }
   }
