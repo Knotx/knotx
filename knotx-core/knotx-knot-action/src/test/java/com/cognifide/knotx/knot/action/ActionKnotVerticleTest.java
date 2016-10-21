@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.junit.FileReader;
+import com.cognifide.knotx.junit.KnotContextFactory;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
@@ -186,7 +187,7 @@ public class ActionKnotVerticleTest {
     }
     fragments.add(LAST_FRAGMENT);
 
-    return KnotContext.empty(fragments);
+    return KnotContextFactory.empty(fragments);
   }
 
   private String clean(String text) {
