@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.knot.action;
 
+import com.google.common.collect.Lists;
+
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.junit.FileReader;
@@ -31,7 +33,6 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,6 +58,9 @@ public class ActionKnotVerticleTest {
 
   private final static String FRAGMENT_SELF_IDENTIFIER = "self";
 
+  private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
+  private final static Fragment LAST_FRAGMENT = Fragment.raw("</body></html>");
+
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -70,22 +74,16 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callGetWithNoActionFragments_expectResponseOkNoFragmentChanges(TestContext context) throws Exception {
-    String firstFragment = "<html><head></head><body>";
-    String lastFragment = "</body></html>";
     String expectedTempatingFragment = FileReader.readText("fragment_templating_out.txt");
-
-    KnotContext knotContext = KnotContext.empty(Arrays.asList(
-        Fragment.raw(firstFragment),
-        Fragment.snippet("templating", FileReader.readText("fragment_templating_in.txt")),
-        Fragment.raw(lastFragment)));
+    KnotContext knotContext = crerateKnotContext("templating", "fragment_templating_in.txt");
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
           List<Fragment> fragments = knotContext.fragments().get();
-          context.assertEquals(firstFragment, fragments.get(0).getContent());
+          context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
           context.assertEquals(expectedTempatingFragment, fragments.get(1).getContent());
-          context.assertEquals(lastFragment, fragments.get(2).getContent());
+          context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(2).getContent());
 
         },
         error -> context.fail(error.getMessage()));
@@ -94,25 +92,18 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callGetWithTwoActionFragments_expectResponseOkTwoFragmentChanges(TestContext context) throws Exception {
-    String firstFragment = "<html><head></head><body>";
-    String lastFragment = "</body></html>";
     String expectedRedirectFormFragment = clean(FileReader.readText("fragment_form_redirect_out.txt"));
     String expectedSelfFormFragment = clean(FileReader.readText("fragment_form_self_out.txt"));
-
-    KnotContext knotContext = KnotContext.empty(Arrays.asList(
-        Fragment.raw(firstFragment),
-        Fragment.snippet("form-identifier", FileReader.readText("fragment_form_redirect_in.txt")),
-        Fragment.snippet("form-identifier", FileReader.readText("fragment_form_self_in.txt")),
-        Fragment.raw(lastFragment)));
+    KnotContext knotContext = crerateKnotContext("form-identifier", "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
           List<Fragment> fragments = knotContext.fragments().get();
-          context.assertEquals(firstFragment, fragments.get(0).getContent());
+          context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
           context.assertEquals(expectedRedirectFormFragment, clean(fragments.get(1).getContent()));
           context.assertEquals(expectedSelfFormFragment, clean(fragments.get(2).getContent()));
-          context.assertEquals(lastFragment, fragments.get(3).getContent());
+          context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(3).getContent());
         },
         error -> context.fail(error.getMessage()));
   }
@@ -120,16 +111,10 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
-    String firstFragment = "<html><head></head><body>";
-    String lastFragment = "</body></html>";
     String expectedFirstFormFragment = clean(FileReader.readText("fragment_form_redirect_out.txt"));
     String expectedSecondFormFragment = clean(FileReader.readText("fragment_form_self_out.txt"));
+    KnotContext knotContext = crerateKnotContext("form-identifier", "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
 
-    KnotContext knotContext = KnotContext.empty(Arrays.asList(
-        Fragment.raw(firstFragment),
-        Fragment.snippet("form-identifier", FileReader.readText("fragment_form_redirect_in.txt")),
-        Fragment.snippet("form-identifier", FileReader.readText("fragment_form_self_in.txt")),
-        Fragment.raw(lastFragment)));
     knotContext.clientRequest()
         .setMethod(HttpMethod.POST)
         .setFormAttributes(MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, FRAGMENT_SELF_IDENTIFIER));
@@ -142,10 +127,10 @@ public class ActionKnotVerticleTest {
           context.assertTrue(Objects.nonNull(selfFragment.getContext().getJsonObject("_response")));
 
           List<Fragment> fragments = knotContext.fragments().get();
-          context.assertEquals(firstFragment, fragments.get(0).getContent());
+          context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
           context.assertEquals(expectedFirstFormFragment, clean(fragments.get(1).getContent()));
           context.assertEquals(expectedSecondFormFragment, clean(fragments.get(2).getContent()));
-          context.assertEquals(lastFragment, fragments.get(3).getContent());
+          context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(3).getContent());
         },
         error -> context.fail(error.getMessage()));
   }
@@ -153,14 +138,7 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(TestContext context) throws Exception {
-    String firstFragment = "<html><head></head><body>";
-    String lastFragment = "</body></html>";
-
-    KnotContext knotContext = KnotContext.empty(Arrays.asList(
-        Fragment.raw(firstFragment),
-        Fragment.snippet("form-identifier", FileReader.readText("fragment_form_redirect_in.txt")),
-        Fragment.snippet("form-identifier", FileReader.readText("fragment_form_self_in.txt")),
-        Fragment.raw(lastFragment)));
+    KnotContext knotContext = crerateKnotContext("form-identifier", "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
     knotContext.clientRequest()
         .setMethod(HttpMethod.POST)
         .setFormAttributes(MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, FRAGMENT_REDIRECT_IDENTIFIER));
@@ -191,6 +169,16 @@ public class ActionKnotVerticleTest {
         context.fail(ar.cause());
       }
     });
+  }
+
+  private KnotContext crerateKnotContext(String id, String... fragmentFilename) throws Exception {
+    List<Fragment> fragments = Lists.newArrayList(FIRST_FRAGMENT);
+    for (String file : fragmentFilename) {
+      fragments.add(Fragment.snippet(id, FileReader.readText(file)));
+    }
+    fragments.add(LAST_FRAGMENT);
+
+    return KnotContext.empty(fragments);
   }
 
   private String clean(String text) {
