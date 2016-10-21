@@ -140,7 +140,8 @@
     },
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
       "config" : {
-        "address": "knotx.knot.action"
+        "address": "knotx.knot.action",
+        "hiddenInputTagName": "snippet-identifier"
       }
     },
     "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle": {
