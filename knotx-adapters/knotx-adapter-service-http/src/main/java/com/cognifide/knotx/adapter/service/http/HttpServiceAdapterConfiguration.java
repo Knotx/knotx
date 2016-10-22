@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.adapter.service.http;
 
+import com.cognifide.knotx.adapter.api.AdapterConfiguration;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -28,16 +29,14 @@ import java.util.stream.Collectors;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-class HttpServiceAdapterConfiguration {
+class HttpServiceAdapterConfiguration extends AdapterConfiguration {
 
   private List<ServiceMetadata> services;
 
   private JsonObject clientOptions;
 
-  private String address;
-
   HttpServiceAdapterConfiguration(JsonObject config) {
-    address = config.getString("address");
+    super(config);
     services = config.getJsonArray("services").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
@@ -54,11 +53,7 @@ class HttpServiceAdapterConfiguration {
     clientOptions = config.getJsonObject("client.options", new JsonObject());
   }
 
-  public String getAddress() {
-    return address;
-  }
-
-  public JsonObject getClientOptions() {
+  JsonObject getClientOptions() {
     return clientOptions;
   }
 
@@ -98,34 +93,34 @@ class HttpServiceAdapterConfiguration {
           .toHashCode();
     }
 
-    public String getPath() {
+    String getPath() {
       return path;
     }
 
-    public ServiceMetadata setPath(String path) {
+    ServiceMetadata setPath(String path) {
       this.path = path;
       return this;
     }
 
-    public String getDomain() {
+    String getDomain() {
       return domain;
     }
 
-    public ServiceMetadata setDomain(String domain) {
+    ServiceMetadata setDomain(String domain) {
       this.domain = domain;
       return this;
     }
 
-    public Integer getPort() {
+    Integer getPort() {
       return port;
     }
 
-    public ServiceMetadata setPort(Integer port) {
+    ServiceMetadata setPort(Integer port) {
       this.port = port;
       return this;
     }
 
-    public List<Pattern> getAllowedRequestHeaderPatterns() {
+    List<Pattern> getAllowedRequestHeaderPatterns() {
       return allowedRequestHeaderPatterns;
     }
 

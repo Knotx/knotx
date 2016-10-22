@@ -18,76 +18,40 @@
 package com.cognifide.knotx.adapter.service.http;
 
 
+import com.cognifide.knotx.adapter.api.AbstractAdapter;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
-public class HttpServiceAdapterVerticle extends AbstractVerticle {
+public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpServiceAdapterConfiguration> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceAdapterVerticle.class);
-
-  private HttpServiceAdapterConfiguration configuration;
   private HttpClientFacade httpClientFacade;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new HttpServiceAdapterConfiguration(config());
     this.httpClientFacade = new HttpClientFacade(getHttpClient(configuration), configuration.getServices());
   }
 
   @Override
-  public void start() throws IOException, URISyntaxException {
-    LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
-
-    Observable<Message<JsonObject>> observable = vertx.eventBus()
-        .<JsonObject>consumer(configuration.getAddress()).toObservable();
-
-    observable
-        .doOnNext(this::traceMessage)
-        .subscribe(
-            msg -> httpClientFacade.process(msg.body())
-                .subscribe(
-                    result -> msg.reply(result.toJson()),
-                    error -> {
-                      LOGGER.error("Error happened", error);
-                      msg.reply(getErrorResponse(error.getMessage()));
-                    }
-                )
-        );
+  protected HttpServiceAdapterConfiguration initConfiguration(JsonObject config) {
+    return new HttpServiceAdapterConfiguration(config());
   }
 
-  private JsonObject getErrorResponse(String message) {
-    return new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR)
-        .setBody(Buffer.buffer(message))
-        .toJson();
+  @Override
+  protected Observable<JsonObject> processMessage(JsonObject message) {
+    return httpClientFacade.process(message).map(ClientResponse::toJson);
   }
 
   private HttpClient getHttpClient(HttpServiceAdapterConfiguration configuration) {
     JsonObject clientOptions = configuration.getClientOptions();
     return clientOptions.isEmpty() ?
         vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-  }
-
-  private void traceMessage(Message<JsonObject> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
-    }
   }
 
 }
