@@ -17,10 +17,9 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.dataobjects.ClientRequest;
-import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.junit.FileReader;
+import com.cognifide.knotx.junit.KnotContextFactory;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
@@ -37,8 +36,6 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -82,7 +79,7 @@ public class HtmlFragmentSplitterVerticleTest {
   private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, KnotContext.empty(template).toJson(), ar -> {
+    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, KnotContextFactory.empty(template).toJson(), ar -> {
       if (ar.succeeded()) {
         Observable
             .just(ar.result().body())

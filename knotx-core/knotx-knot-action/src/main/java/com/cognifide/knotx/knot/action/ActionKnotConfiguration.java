@@ -23,12 +23,18 @@ class ActionKnotConfiguration {
 
   private final String address;
 
+  private final String formIdentifierName;
+
   ActionKnotConfiguration(JsonObject config) {
     this.address = config.getString("address");
+    this.formIdentifierName = config.getString("formIdentifierName");
   }
 
   public String address() {
     return address;
   }
 
+  public String getFormIdentifierName() {
+    return formIdentifierName;
+  }
 }

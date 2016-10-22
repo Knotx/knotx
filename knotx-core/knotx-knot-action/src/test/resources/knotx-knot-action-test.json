@@ -2,7 +2,8 @@
   "verticles": {
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
       "config" : {
-        "address": "knotx.knot.action"
+        "address": "knotx.knot.action",
+        "formIdentifierName": "snippet-identifier"
       }
     }
   }
