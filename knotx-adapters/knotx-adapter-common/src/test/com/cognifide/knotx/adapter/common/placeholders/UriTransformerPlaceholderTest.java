@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Adapter API
+ * Knot.x - Reactive microservice assembler - Adapter Common
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,19 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.api.placeholders;
+package com.cognifide.knotx.adapter.common.placeholders;
 
-import com.cognifide.knotx.dataobjects.ClientRequest;
+import org.junit.Assert;
+import org.junit.Test;
 
-public interface PlaceholderSubstitutor {
+import java.util.List;
 
-  /**
-   * Get the replacement value from the supplied clientRequest and placeholder name
-   *
-   * @param request     the supplied clientRequest
-   * @param placeholder the placeholder name
-   * @return the replacement value, or null if no replacement can be get
-   */
-  String getValue(ClientRequest request, String placeholder);
+public class UriTransformerPlaceholderTest {
 
+  @Test
+  public void getPlaceholders_whenGivenUrlWithPlaceholders_expectPlaceholdersExtractedInArray() {
+    List<String> placeholders =
+        UriTransformer.getPlaceholders("/dssds/{first.aa}/dsu/{second}");
+    Assert.assertArrayEquals(placeholders.toArray(), new String[]{"first.aa", "second"});
+  }
 }

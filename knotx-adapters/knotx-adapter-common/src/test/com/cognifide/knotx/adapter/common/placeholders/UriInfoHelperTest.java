@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Adapter API
+ * Knot.x - Reactive microservice assembler - Adapter Common
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.api.placeholders;
-
-import java.util.Arrays;
-import java.util.Collection;
+package com.cognifide.knotx.adapter.common.placeholders;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class UriInfoHelperTest {

@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Adapter API
+ * Knot.x - Reactive microservice assembler - Adapter Common
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.api.placeholders;
+package com.cognifide.knotx.adapter.common.placeholders;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 

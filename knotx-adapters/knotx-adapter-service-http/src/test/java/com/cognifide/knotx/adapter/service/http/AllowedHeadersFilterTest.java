@@ -19,8 +19,7 @@ package com.cognifide.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.adapter.service.http.AllowedHeadersFilter;
-import com.cognifide.knotx.adapter.service.http.StringToPatternFunction;
+import com.cognifide.knotx.adapter.common.http.StringToPatternFunction;
 
 import org.junit.Test;
 

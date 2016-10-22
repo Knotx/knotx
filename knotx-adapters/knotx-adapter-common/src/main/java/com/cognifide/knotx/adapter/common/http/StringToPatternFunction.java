@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.service.http;
+package com.cognifide.knotx.adapter.common.http;
 
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -24,7 +24,7 @@ import java.util.regex.PatternSyntaxException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-class StringToPatternFunction implements Function<String, Pattern> {
+public class StringToPatternFunction implements Function<String, Pattern> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StringToPatternFunction.class);
 

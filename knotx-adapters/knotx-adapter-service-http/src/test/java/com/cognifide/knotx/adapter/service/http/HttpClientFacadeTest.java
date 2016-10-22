@@ -19,8 +19,7 @@ package com.cognifide.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.adapter.service.http.HttpClientFacade;
-import com.cognifide.knotx.adapter.service.http.HttpServiceAdapterConfiguration;
+import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
@@ -186,9 +185,9 @@ public class HttpClientFacadeTest {
         .put("clientRequest", request);
   }
 
-  private List<HttpServiceAdapterConfiguration.ServiceMetadata> getServiceConfigurations() {
+  private List<ServiceMetadata> getServiceConfigurations() {
     return Lists.newArrayList(
-        new HttpServiceAdapterConfiguration.ServiceMetadata()
+        new ServiceMetadata()
             .setPort(PORT)
             .setDomain(DOMAIN)
             .setPath(PATH)

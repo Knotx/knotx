@@ -19,6 +19,7 @@ package com.cognifide.knotx.adapter.service.http;
 
 
 import com.cognifide.knotx.adapter.api.AbstractAdapter;
+import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import io.vertx.core.Context;
@@ -28,7 +29,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
-public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpServiceAdapterConfiguration> {
+public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpAdapterConfiguration> {
 
   private HttpClientFacade httpClientFacade;
 
@@ -39,8 +40,8 @@ public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpServiceAdapt
   }
 
   @Override
-  protected HttpServiceAdapterConfiguration initConfiguration(JsonObject config) {
-    return new HttpServiceAdapterConfiguration(config());
+  protected HttpAdapterConfiguration initConfiguration(JsonObject config) {
+    return new HttpAdapterConfiguration(config());
   }
 
   @Override
@@ -48,7 +49,7 @@ public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpServiceAdapt
     return httpClientFacade.process(message).map(ClientResponse::toJson);
   }
 
-  private HttpClient getHttpClient(HttpServiceAdapterConfiguration configuration) {
+  private HttpClient getHttpClient(HttpAdapterConfiguration configuration) {
     JsonObject clientOptions = configuration.getClientOptions();
     return clientOptions.isEmpty() ?
         vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));

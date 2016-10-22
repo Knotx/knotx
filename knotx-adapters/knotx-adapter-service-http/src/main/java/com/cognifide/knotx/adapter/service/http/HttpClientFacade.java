@@ -17,7 +17,8 @@
  */
 package com.cognifide.knotx.adapter.service.http;
 
-import com.cognifide.knotx.adapter.api.placeholders.UriTransformer;
+import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
+import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -47,11 +48,11 @@ class HttpClientFacade {
   private static final String PATH_PROPERTY_KEY = "path";
   private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
-  private final List<HttpServiceAdapterConfiguration.ServiceMetadata> services;
+  private final List<ServiceMetadata> services;
 
   private final HttpClient httpClient;
 
-  HttpClientFacade(HttpClient httpClient, List<HttpServiceAdapterConfiguration.ServiceMetadata> services) {
+  HttpClientFacade(HttpClient httpClient, List<ServiceMetadata> services) {
     this.httpClient = httpClient;
     this.services = services;
   }
@@ -72,15 +73,15 @@ class HttpClientFacade {
     }
   }
 
-  private Pair<ClientRequest, HttpServiceAdapterConfiguration.ServiceMetadata> prepareRequest(JsonObject message) {
-    final Pair<ClientRequest, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest;
+  private Pair<ClientRequest, ServiceMetadata> prepareRequest(JsonObject message) {
+    final Pair<ClientRequest, ServiceMetadata> serviceRequest;
 
     final ClientRequest originalRequest = new ClientRequest(message.getJsonObject(REQUEST_KEY));
     final JsonObject params = message.getJsonObject(PARAMS_KEY);
 
     final String servicePath = UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest);
 
-    final Optional<HttpServiceAdapterConfiguration.ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
+    final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
     if (serviceMetadata.isPresent()) {
       final ClientRequest serviceRequestWrapper = new ClientRequest(originalRequest.toJson());
       serviceRequestWrapper.setPath(servicePath);
@@ -93,13 +94,13 @@ class HttpClientFacade {
     return serviceRequest;
   }
 
-  private Optional<HttpServiceAdapterConfiguration.ServiceMetadata> findServiceMetadata(String servicePath) {
+  private Optional<ServiceMetadata> findServiceMetadata(String servicePath) {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Observable<HttpClientResponse> callService(Pair<ClientRequest, HttpServiceAdapterConfiguration.ServiceMetadata> serviceRequest) {
+  private Observable<HttpClientResponse> callService(Pair<ClientRequest, ServiceMetadata> serviceRequest) {
     final ClientRequest requestWrapper = serviceRequest.getLeft();
-    final HttpServiceAdapterConfiguration.ServiceMetadata serviceMetadata = serviceRequest.getRight();
+    final ServiceMetadata serviceMetadata = serviceRequest.getRight();
 
     return Observable.create(subscriber -> {
       HttpClientRequest request = httpClient.get(serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
