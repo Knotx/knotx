@@ -18,15 +18,26 @@
 package com.cognifide.knotx.adapter.action.http;
 
 
+import com.cognifide.knotx.adapter.api.AbstractAdapter;
+import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
+
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
+import rx.Observable;
 
-public class HttpActionAdapterVerticle extends AbstractVerticle {
+public class HttpActionAdapterVerticle extends AbstractAdapter<HttpAdapterConfiguration> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpActionAdapterVerticle.class);
 
+  @Override
+  protected HttpAdapterConfiguration initConfiguration(JsonObject config) {
+    return new HttpAdapterConfiguration(config());
+  }
 
-  // TODO implement me
+  @Override
+  protected Observable<JsonObject> processMessage(JsonObject message) {
+    return null;
+  }
 
 }

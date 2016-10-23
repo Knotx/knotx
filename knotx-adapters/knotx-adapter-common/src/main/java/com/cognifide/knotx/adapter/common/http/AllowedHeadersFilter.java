@@ -15,13 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.service.http;
+package com.cognifide.knotx.adapter.common.http;
 
-/**
- * Thrown to indicate that adapter service contract was violated.
- */
-class UnsupportedServiceException extends RuntimeException {
-  UnsupportedServiceException(String message) {
-    super(message);
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+
+public class AllowedHeadersFilter implements Predicate<String> {
+
+  private final List<Pattern> patterns;
+
+  private AllowedHeadersFilter(List<Pattern> patterns) {
+    this.patterns = patterns;
+  }
+
+  public static AllowedHeadersFilter create(List<Pattern> patterns) {
+    return new AllowedHeadersFilter(patterns);
+  }
+
+  @Override
+  public boolean test(String header) {
+    return patterns.stream().anyMatch(pattern -> pattern.matcher(header).matches());
   }
 }

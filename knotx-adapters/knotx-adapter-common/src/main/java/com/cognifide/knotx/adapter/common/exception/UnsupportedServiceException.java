@@ -15,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.service.http;
+package com.cognifide.knotx.adapter.common.exception;
 
 /**
  * Thrown to indicate that adapter service contract was violated.
  */
-class AdapterServiceContractException extends RuntimeException {
-  AdapterServiceContractException(String message) {
+public class UnsupportedServiceException extends RuntimeException {
+  public UnsupportedServiceException(String message) {
     super(message);
   }
 }

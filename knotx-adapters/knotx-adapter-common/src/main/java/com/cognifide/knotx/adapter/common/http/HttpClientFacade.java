@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.service.http;
+package com.cognifide.knotx.adapter.common.http;
 
-import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
+import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
+import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
@@ -40,7 +41,7 @@ import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
-class HttpClientFacade {
+public class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
   private static final String REQUEST_KEY = "clientRequest";
@@ -52,12 +53,12 @@ class HttpClientFacade {
 
   private final HttpClient httpClient;
 
-  HttpClientFacade(HttpClient httpClient, List<ServiceMetadata> services) {
+  public HttpClientFacade(HttpClient httpClient, List<ServiceMetadata> services) {
     this.httpClient = httpClient;
     this.services = services;
   }
 
-  Observable<ClientResponse> process(JsonObject message) {
+  public Observable<ClientResponse> process(JsonObject message) {
     return Observable.just(message)
         .doOnNext(this::validateContract)
         .map(this::prepareRequest)

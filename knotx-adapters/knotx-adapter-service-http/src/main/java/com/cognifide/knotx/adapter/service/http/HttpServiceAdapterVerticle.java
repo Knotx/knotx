@@ -20,6 +20,7 @@ package com.cognifide.knotx.adapter.service.http;
 
 import com.cognifide.knotx.adapter.api.AbstractAdapter;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
+import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import io.vertx.core.Context;

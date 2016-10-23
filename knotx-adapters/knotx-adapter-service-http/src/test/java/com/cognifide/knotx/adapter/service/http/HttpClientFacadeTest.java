@@ -19,6 +19,7 @@ package com.cognifide.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.FileReader;
@@ -30,7 +31,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,12 +49,6 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
-
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.spy;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpClientFacadeTest {
@@ -82,7 +79,7 @@ public class HttpClientFacadeTest {
   public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final HttpClient httpClient = spy(httpClient());
+    final HttpClient httpClient = PowerMockito.spy(httpClient());
     HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
@@ -94,7 +91,7 @@ public class HttpClientFacadeTest {
         response -> {
           context.assertEquals(HttpResponseStatus.OK, response.statusCode());
           context.assertEquals(expectedResponse, response.body().toJsonObject());
-          verify(httpClient, times(1)).get(anyInt(), anyString(), anyString());
+          Mockito.verify(httpClient, Mockito.times(1)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
         },
         error -> context.fail(error.getMessage()),
         async::complete);
@@ -105,7 +102,7 @@ public class HttpClientFacadeTest {
   public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final HttpClient httpClient = spy(httpClient());
+    final HttpClient httpClient = PowerMockito.spy(httpClient());
     HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
     final JsonObject request = new JsonObject().put("params", new JsonArray().add(new JsonObject().put("dynamicValue","first")));
@@ -118,7 +115,7 @@ public class HttpClientFacadeTest {
         response -> {
           context.assertEquals(HttpResponseStatus.OK, response.statusCode());
           context.assertEquals(expectedResponse, response.body().toJsonObject());
-          verify(httpClient, times(1)).get(anyInt(), anyString(), anyString());
+          Mockito.verify(httpClient, Mockito.times(1)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
         },
         error -> context.fail(error.getMessage()),
         async::complete);
@@ -143,7 +140,7 @@ public class HttpClientFacadeTest {
         error -> {
           {
             context.assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
-            verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+            Mockito.verify(mockedHttpClient, Mockito.times(0)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
         },
@@ -167,7 +164,7 @@ public class HttpClientFacadeTest {
         error -> {
           {
             context.assertEquals("Parameter `params.path`: `/not/supported/path` not supported!", error.getMessage());
-            verify(mockedHttpClient, times(0)).get(anyInt(), anyString(), anyString());
+            Mockito.verify(mockedHttpClient, Mockito.times(0)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
         },
