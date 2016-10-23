@@ -106,7 +106,7 @@ Here's how JSON configuration files look:
             ...
         }
       },
-      "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle" :{
+      "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
         "config" : {
             ...
         }

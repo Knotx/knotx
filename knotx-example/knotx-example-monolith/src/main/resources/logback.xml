@@ -28,12 +28,7 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide.knotx" level="DEBUG"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <logger name="com.cognifide.knotx.engine" level="TRACE"
+  <logger name="com.cognifide.knotx" level="TRACE"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>

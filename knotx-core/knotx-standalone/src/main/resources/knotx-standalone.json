@@ -53,6 +53,9 @@
             "address": "knotx.core.repository.http"
           }
         ],
+        "splitter": {
+          "address": "knotx.core.splitter"
+        },
         "routing": {
           "GET": [
             {
@@ -110,7 +113,7 @@
         "services": [
           {
             "name" : "first-service",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/first.json"
             },
@@ -118,21 +121,21 @@
           },
           {
             "name" : "second-service",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/second.json"
             }
           },
           {
             "name" : "third-service",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/third.json"
             }
           },
           {
             "name" : "labelsRepository",
-            "address" : "knotx.core.http.service-adapter",
+            "address" : "knotx.adapter.service.http",
             "params": {}
           }
         ]
@@ -144,9 +147,9 @@
         "formIdentifierName": "snippet-identifier"
       }
     },
-    "com.cognifide.knotx.core.serviceadapter.http.HttpServiceAdapterVerticle": {
+    "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
       "config": {
-        "address": "knotx.core.http.service-adapter",
+        "address": "knotx.adapter.service.http",
         "client.options": {
           "maxPoolSize": 1000,
           "keepAlive": false

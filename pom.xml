@@ -57,6 +57,7 @@
   <modules>
     <module>documentation</module>
     <module>knotx-core</module>
+    <module>knotx-adapters</module>
     <module>knotx-example</module>
   </modules>
 
@@ -195,6 +196,7 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-module-junit4</artifactId>
         <version>${powermock.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>

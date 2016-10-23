@@ -65,6 +65,11 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 router.route()
                     .method(entry.getKey())
                     .pathRegex(criteria.path())
+                    .handler(KnotxSplitterHandler.create(vertx.eventBus(), configuration));
+
+                router.route()
+                    .method(entry.getKey())
+                    .pathRegex(criteria.path())
                     .handler(KnotxEngineHandler.create(vertx.eventBus(), criteria.address(), criteria.onTransition(), configuration));
               }
           );

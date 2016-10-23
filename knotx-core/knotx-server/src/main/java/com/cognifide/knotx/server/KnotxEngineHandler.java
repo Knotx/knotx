@@ -56,18 +56,20 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     try {
       handleRoute(context, address, routing);
-    } catch(Exception ex) {
+    } catch (Exception ex) {
       LOGGER.error("Something very unexpected happened", ex);
       context.fail(ex);
     }
   }
 
   private void handleRoute(final RoutingContext context, final String address, final Map<String, RoutingEntry> routing) {
-    eventBus.<JsonObject>sendObservable(address, knotContext(context))
+    KnotContext knotContext = context.get("knotContext");
+
+    eventBus.<JsonObject>sendObservable(address, knotContext.toJson())
         .map(msg -> new KnotContext(msg.body()))
-        .doOnNext(knotContext -> context.put("clientResponse", knotContext.clientResponse()))
+        .doOnNext(ctx -> context.put("knotContext", ctx))
         .subscribe(
-            knotContext -> OptionalAction.of(knotContext.transition())
+            ctx -> OptionalAction.of(ctx.transition())
                 .ifPresent(on -> {
                   RoutingEntry entry = routing.get(on);
                   if (entry != null) {
@@ -77,7 +79,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                     context.fail(500);
                   }
                 })
-                .ifNotPresent(() -> sendResponse(context, knotContext)),
+                .ifNotPresent(() -> sendResponse(context, ctx)),
             error -> {
               LOGGER.error("Error happened while communicating with {} engine", error, address);
               context.fail(error);
