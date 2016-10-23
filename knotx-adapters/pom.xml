@@ -37,7 +37,6 @@
     <module>knotx-adapter-api</module>
     <module>knotx-adapter-common</module>
     <module>knotx-adapter-service-http</module>
-    <module>knotx-adapter-action-http</module>
   </modules>
 
 </project>
