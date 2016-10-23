@@ -1,0 +1,22 @@
+{
+  "transitions": [
+    {
+      "transition": "step1",
+      "data": {
+        "status": "success"
+      },
+      "condition": {
+        "email": "john.doe@knotx.io"
+      }
+    },
+    {
+      "transition": "_self",
+      "data": {
+        "validationError": "Invalid email address!"
+      },
+      "condition": {
+        "email": "unknown@knotx.io"
+      }
+    }
+  ]
+}

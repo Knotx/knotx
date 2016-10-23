@@ -18,15 +18,13 @@
 package com.cognifide.knotx.mocks;
 
 
-import com.cognifide.knotx.mocks.service.MockServiceHandler;
+import com.cognifide.knotx.mocks.adapter.MockServiceHandler;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Context;
 import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;

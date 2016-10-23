@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.mocks.service;
+package com.cognifide.knotx.mocks.adapter;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
@@ -38,25 +38,19 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
-public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
+public class MockAdapterHandler implements Handler<Message<JsonObject>> {
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
-  private final FileSystem fileSystem;
-  private boolean withBouncer = false;
-  private String catalogue;
 
-  public MockAdapterServiceHandler(String catalogue, FileSystem fileSystem) {
+  protected final FileSystem fileSystem;
+  protected String catalogue;
+
+  public MockAdapterHandler(String catalogue, FileSystem fileSystem) {
     this.catalogue = catalogue;
     this.fileSystem = fileSystem;
   }
-
-  public MockAdapterServiceHandler withBouncer() {
-    this.withBouncer = true;
-    return this;
-  }
-
   @Override
   public void handle(Message<JsonObject> message) {
     ClientRequest request = new ClientRequest(message.body().getJsonObject("clientRequest"));
@@ -66,28 +60,12 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
         String mockData = ar.result().toString();
-        if (withBouncer) {
-          message.reply(bouncerResponse(request, mockData).toJson());
-        } else {
-          message.reply(okResponse(request, mockData).toJson());
-        }
+        message.reply(okResponse(request, mockData).toJson());
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
         message.reply(errorResponse().toJson());
       }
     });
-  }
-
-
-  private ClientResponse bouncerResponse(ClientRequest request, String mockData) {
-    JsonObject responseBody = new JsonObject(mockData);
-    MultiMap formParams = request.formAttributes();
-    formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
-
-    return new ClientResponse()
-        .setStatusCode(HttpResponseStatus.OK)
-        .setHeaders(headers(request, mockData))
-        .setBody(Buffer.buffer(responseBody.toString()));
   }
 
   private ClientResponse okResponse(ClientRequest request, String data) {
@@ -97,20 +75,20 @@ public class MockAdapterServiceHandler implements Handler<Message<JsonObject>> {
         .setBody(Buffer.buffer(data));
   }
 
-  private ClientResponse errorResponse() {
+  protected ClientResponse errorResponse() {
     return new ClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
   }
 
-  private String getContentType(ClientRequest request) {
+  protected String getContentType(ClientRequest request) {
     return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.path())).orElse(DEFAULT_MIME);
   }
 
-  private String getFilePath(String path) {
+  protected String getFilePath(String path) {
     return catalogue + File.separator + StringUtils.substringAfterLast(path, SEPARATOR);
   }
 
-  private MultiMap headers(ClientRequest request, String data) {
+  protected MultiMap headers(ClientRequest request, String data) {
     return MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.CONTENT_TYPE.toString(), getContentType(request))
         .add(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(data.length()));
   }
