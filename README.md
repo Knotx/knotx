@@ -66,7 +66,7 @@ You will see output similar to the following:
 		Deployed fe2a7ef0-1f91-4ee0-ac7a-8617aedd8f9a [com.cognifide.knotx.mocks.MockServiceAdapterVerticle]
 		Deployed 1d92984b-27a2-495d-baa1-50bea688c869 [com.cognifide.knotx.repository.FilesystemRepositoryVerticle]
 		Deployed 11776e93-4541-465a-ab05-a0bf472088a6 [com.cognifide.knotx.engine.view.ViewEngineVerticle]
-		Deployed 73e3ad21-b121-4d13-8cd4-c17ea868a640 [com.cognifide.knotx.adapter.service.http.HttpActionAdapterVerticle]
+		Deployed 73e3ad21-b121-4d13-8cd4-c17ea868a640 [com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle]
 		Deployed b8d9b6e8-2faf-4eb9-a43f-375d15805e5f [com.cognifide.knotx.repository.HttpRepositoryVerticle]
 		Deployed 1aa196a0-461c-4c46-913b-2dd85be8503e [com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle]
 		Deployed 54083a13-681f-411c-968c-f2efb810b28e [com.cognifide.knotx.mocks.MockServiceVerticle]
