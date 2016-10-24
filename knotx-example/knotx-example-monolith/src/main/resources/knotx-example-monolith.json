@@ -68,6 +68,17 @@
                 }
               }
             }
+          ],
+          "POST": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next" : {
+                  "address": "knotx.core.viewengine"
+                }
+              }
+            }
           ]
         }
       }

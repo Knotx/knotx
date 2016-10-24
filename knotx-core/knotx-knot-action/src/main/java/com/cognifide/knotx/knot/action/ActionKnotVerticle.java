@@ -101,11 +101,12 @@ public class ActionKnotVerticle extends AbstractVerticle {
           });
 
 
-      String actionAdapterName = Optional.ofNullable(getScriptContentDocument(currentFragment).getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
+      String actionAdapterName = Optional.ofNullable(getScriptContentDocument(currentFragment)
+          .getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
           .map(element -> element.attr(ACTION_FORM_ACTION_ATTRIBUTE))
           .orElseThrow(() -> {
             LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-            return new NoSuchElementException("Could not action adapter name");
+            return new NoSuchElementException("Could not find action adapter name");
           });
 
       ActionKnotConfiguration.AdapterMetadata adapterMetadata = configuration.adapterMetadatas().stream()
@@ -141,7 +142,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
             handler.handle(knotContext.toJson());
           },
           err -> {
-            LOGGER.error(err);
+
           }
       );
     } else {
