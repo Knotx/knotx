@@ -203,12 +203,12 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithActionFragmentWithoutRequestedFragmentIdentifier_expectStatusCode500(TestContext context) throws Exception {
-    KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt");
+    KnotContext knotContext = createKnotContext("fragment_form_incorrect_identifier_in.txt");
     knotContext.clientRequest().setMethod(HttpMethod.POST);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR, clientResponse.clientResponse().statusCode());
+          context.assertEquals(HttpResponseStatus.NOT_FOUND, clientResponse.clientResponse().statusCode());
           context.assertFalse(clientResponse.fragments().isPresent());
         },
         error -> context.fail(error.getMessage()));
@@ -223,7 +223,7 @@ public class ActionKnotVerticleTest {
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR, clientResponse.clientResponse().statusCode());
+          context.assertEquals(HttpResponseStatus.NOT_FOUND, clientResponse.clientResponse().statusCode());
           context.assertFalse(clientResponse.fragments().isPresent());
         },
         error -> context.fail(error.getMessage()));
