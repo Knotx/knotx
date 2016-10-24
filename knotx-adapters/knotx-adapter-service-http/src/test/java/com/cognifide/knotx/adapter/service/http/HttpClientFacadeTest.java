@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
@@ -84,14 +85,15 @@ public class HttpClientFacadeTest {
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
-    Observable<ClientResponse> result = clientFacade.process(payloadMessage(REQUEST_PATH, new JsonObject()));
+    Observable<ClientResponse> result = clientFacade
+        .process(payloadMessage(REQUEST_PATH, new JsonObject()), HttpMethod.GET);
 
     // then
     result.subscribe(
         response -> {
           context.assertEquals(HttpResponseStatus.OK, response.statusCode());
           context.assertEquals(expectedResponse, response.body().toJsonObject());
-          Mockito.verify(httpClient, Mockito.times(1)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
+          Mockito.verify(httpClient, Mockito.times(1)).request(HttpMethod.GET, 3000, "localhost", REQUEST_PATH);
         },
         error -> context.fail(error.getMessage()),
         async::complete);
@@ -105,17 +107,18 @@ public class HttpClientFacadeTest {
     final HttpClient httpClient = PowerMockito.spy(httpClient());
     HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
-    final JsonObject request = new JsonObject().put("params", new JsonArray().add(new JsonObject().put("dynamicValue","first")));
+    final JsonObject request = new JsonObject().put("params", new JsonArray().add(new JsonObject().put("dynamicValue", "first")));
 
     // when
-    Observable<ClientResponse> result = clientFacade.process(payloadMessage("/services/mock/{param.dynamicValue}.json", request));
+    Observable<ClientResponse> result =
+        clientFacade.process(payloadMessage("/services/mock/{param.dynamicValue}.json", request), HttpMethod.GET);
 
     // then
     result.subscribe(
         response -> {
           context.assertEquals(HttpResponseStatus.OK, response.statusCode());
           context.assertEquals(expectedResponse, response.body().toJsonObject());
-          Mockito.verify(httpClient, Mockito.times(1)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
+          Mockito.verify(httpClient, Mockito.times(1)).request(HttpMethod.GET, 3000, "localhost", REQUEST_PATH);
         },
         error -> context.fail(error.getMessage()),
         async::complete);
@@ -131,8 +134,9 @@ public class HttpClientFacadeTest {
 
     // when
     Observable<ClientResponse> result = clientFacade.process(new JsonObject()
-        .put("params", new JsonObject())
-        .put("clientRequest", new JsonObject()));
+            .put("params", new JsonObject())
+            .put("clientRequest", new JsonObject())
+        , HttpMethod.GET);
 
     // then
     result.subscribe(
@@ -140,7 +144,7 @@ public class HttpClientFacadeTest {
         error -> {
           {
             context.assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
-            Mockito.verify(mockedHttpClient, Mockito.times(0)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
+            Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
         },
@@ -156,7 +160,8 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
 
     // when
-    Observable<ClientResponse> result = clientFacade.process(payloadMessage("/not/supported/path", new JsonObject()));
+    Observable<ClientResponse> result =
+        clientFacade.process(payloadMessage("/not/supported/path", new JsonObject()), HttpMethod.GET);
 
     // then
     result.subscribe(
@@ -164,7 +169,7 @@ public class HttpClientFacadeTest {
         error -> {
           {
             context.assertEquals("Parameter `params.path`: `/not/supported/path` not supported!", error.getMessage());
-            Mockito.verify(mockedHttpClient, Mockito.times(0)).get(Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
+            Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
         },

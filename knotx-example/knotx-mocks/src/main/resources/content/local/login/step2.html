@@ -1,5 +1,4 @@
-
-<!-- start compiled snippet --><!--
+<!--
 
     Knot.x - Mocked services for sample app
 
@@ -25,7 +24,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
-  <title>Knot.x</title>
+  <title>Knot.x - Login Step 2</title>
   <link href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
@@ -33,12 +32,12 @@
   <div class="row">
     <div class="col-md-12">
       <div class="jumbotron">
+        <h1>
+          Sample multi-step form wizard
+        </h1>
         <h2>
-          Hello Knot.x - reactive micro-service assembler world!
+          Login Form - STEP 2
         </h2>
-        <p>
-          This template is served from the <strong>local</strong> repository.
-        </p>
         <p>
           <a class="btn btn-primary btn-large"
              href="https://github.com/Cognifide/knotx">Learn more</a>
@@ -47,45 +46,18 @@
     </div>
   </div>
   <div class="row">
-    <!-- end compiled snippet --><!-- start compiled snippet -->
-
-    <div class="col-md-4">
-      <h2>Snippet1 - this is webservice no. 1</h2>
-      <div>Snippet1 - message - a</div>
-      <div><strong>Custom Handlebars helper</strong></div>
-    </div>
-    <div class="col-md-4">
-      <h2>Snippet1 - this is webservice no. 2</h2>
-      <div>Snippet1 - message - a</div>
-
-      <div>Success! Status code : 200</div>
-
-    </div>
-    <div class="col-md-4">
-      <h2>Snippet1 - this is webservice no. 3</h2>
-      <div>Snippet1 - message - a</div>
-    </div>
-    <!-- end compiled snippet --><!-- start compiled snippet -->
-  </div>
-  <div class="row">
-    <div class="col-md-4">
-      <!-- end compiled snippet --><!-- start compiled snippet -->
-      <h2>Snippet2 - this is webservice no. 2</h2>
-      <p>Snippet2 - message - a</p>
-      <p>Success!</p>
-      <!-- end compiled snippet --><!-- start compiled snippet -->
-    </div>
-    <div class="col-md-4">
-      <!-- end compiled snippet --><!-- start compiled snippet -->
-      <h2>Snippet3 - this is webservice no. 3</h2>
-      <p>Snippet3 - message - a</p>
-      <!-- end compiled snippet --><!-- start compiled snippet -->
-    </div>
-    <div class="col-md-4">
-      <!-- end compiled snippet --><!-- start compiled snippet -->
-      <h2>Snippet4 - this is webservice no. 3</h2>
-      <p>Snippet4 - http%3A%2F%2Fexample.com</p>
-      <!-- end compiled snippet --><!-- start compiled snippet -->
+    <div class="col-md-12">
+      <script data-api-type="form-1"
+              type="text/x-handlebars-template">
+        {{#if action._result.validationError}}
+        <strong>Please check your credentials</strong>
+        {{/if}}
+        <p>Please provide your password</p>
+        <form data-knotx-action="login-step2" data-knotx-on-success="/content/local/simple.html" data-knotx-on-error="_self" method="post">
+          <input type="password" name="password" />
+          <input type="submit" value="Submit"/>
+        </form>
+      </script>
     </div>
   </div>
 </div>
@@ -97,4 +69,3 @@
         crossorigin="anonymous"></script>
 </body>
 </html>
-<!-- end compiled snippet -->
