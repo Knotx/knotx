@@ -53,7 +53,7 @@
         <strong>Email address does not exists</strong>
         {{/if}}
         <p>Please provide your email address</p>
-        <form data-knotx-action="login-step1" data-knotx-on-success="/content/local/login/step1.html" data-knotx-on-validationError="_self" method="post">
+        <form data-knotx-action="login-step1" data-knotx-on-success="/content/local/login/step2.html" data-knotx-on-validationError="_self" method="post">
           <input type="email" name="email" {{#if action._result.form.email}}/>
           <input type="submit" value="Submit"/>
         </form>
