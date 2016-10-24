@@ -133,4 +133,9 @@ public class ClientResponse {
             .orElse(0))
         .reduce(Objects.hashCode(statusCode, body), (sum, hash) -> 31 * sum + hash);
   }
+
+  @Override
+  public String toString() {
+    return toJson().toString();
+  }
 }

@@ -16,7 +16,6 @@
  */
 package com.cognifide.knotx.dataobjects;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -27,11 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 
 public class KnotContext {
@@ -146,13 +142,7 @@ public class KnotContext {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("transition", transition)
-        .add("clientRequest", clientRequest)
-        .add("clientResponse", clientResponse)
-        .add("fragments", fragments)
-        .add("cache", cache)
-        .toString();
+    return toJson().toString();
   }
 }
 

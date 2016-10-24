@@ -17,6 +17,9 @@
  */
 package com.cognifide.knotx.knot.action;
 
+import com.cognifide.knotx.adapter.common.http.AllowedHeadersFilter;
+import com.cognifide.knotx.adapter.common.http.MultiMapCollector;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
@@ -46,6 +49,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
@@ -76,7 +80,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
             .doOnNext(this::traceMessage)
             .subscribe(
                 result -> {
-                  process(result, message::reply);
+                  handle(result, message::reply);
                 },
                 error -> {
                   LOGGER.error("Error occured in Action Knot.", error);
@@ -85,90 +89,94 @@ public class ActionKnotVerticle extends AbstractVerticle {
             ));
   }
 
-  private void process(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
+  private void handle(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
     KnotContext knotContext = new KnotContext(jsonObject.body());
-
     if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
-      LOGGER.trace("Process {} request", knotContext.clientRequest().method());
-      Fragment currentFragment = knotContext.fragments()
-          .flatMap(fragments -> fragments.stream()
-              .filter(fragment -> isCurrentFormFragment(fragment, knotContext))
-              .findFirst())
-          .orElseThrow(() -> {
-            String formIdentifier = getFormIdentifier(knotContext).orElse("EMPTY");
-            LOGGER.error("Could not find fragment with id [{}] in fragments [{}]", formIdentifier, knotContext.fragments());
-            return new NoSuchElementException("Fragment for [" + formIdentifier + "] not found");
-          });
-
-
-      String actionAdapterName = Optional.ofNullable(getScriptContentDocument(currentFragment)
-          .getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
-          .map(element -> element.attr(ACTION_FORM_ACTION_ATTRIBUTE))
-          .orElseThrow(() -> {
-            LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-            return new NoSuchElementException("Could not find action adapter name");
-          });
-
-      ActionKnotConfiguration.AdapterMetadata adapterMetadata = configuration.adapterMetadatas().stream()
-          .filter(item -> item.getName().equals(actionAdapterName))
-          .findFirst()
-          .orElseThrow(() -> {
-            LOGGER.error("Could not find adapter name [{}] in configuration [{}]", actionAdapterName, configuration.adapterMetadatas());
-            return new NoSuchElementException("Action adapter not found!");
-          });
-
-      vertx.eventBus().<JsonObject>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
-          msg -> {
-            JsonObject jsonResponse = msg.body();
-            ClientResponse clientResponse = new ClientResponse(jsonResponse.getJsonObject("clientResponse"));
-            String signal = jsonResponse.getString("signal");
-
-            if (StringUtils.isNotEmpty(signal) || "_self".equals(signal)) {
-              String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
-                  .getElementsByAttribute("data-knotx-on-" + signal).first())
-                  .map(element -> element.attr("data-knotx-on-" + signal))
-                  .orElseThrow(() -> {
-                    LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-                    return new NoSuchElementException("Could not action adapter name");
-                  });
-              knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
-              knotContext.clientResponse().setHeaders(knotContext.clientResponse().headers().add("Location", redirectLocation));
-              knotContext.clearFragments();
-            } else {
-              currentFragment.getContext().put("_response", new JsonObject(clientResponse.body().toString()));
-              knotContext.fragments().ifPresent(this::processFragments);
-              knotContext.setTransition(DEFAULT_TRANSITION);
-            }
-            handler.handle(knotContext.toJson());
-          },
-          err -> {
-
-          }
-      );
+      handleFormAction(knotContext, handler);
     } else {
-      LOGGER.trace("Pass-through {} request", knotContext.clientRequest().method());
-      knotContext.setTransition(DEFAULT_TRANSITION);
-      knotContext.fragments().ifPresent(this::processFragments);
-      handler.handle(knotContext.toJson());
+      handleGetMethod(handler, knotContext);
     }
 
   }
 
-  private boolean isCurrentFormFragment(Fragment fragment, KnotContext knotContext) {
-    return getFormIdentifier(knotContext).map(formId -> "form-" + formId).map(fragmentId -> fragmentId.equals(fragment.getId())).orElse(Boolean.FALSE);
+  private void handleFormAction(KnotContext knotContext, Handler<JsonObject> handler) {
+    LOGGER.trace("Process form for {} ", knotContext);
+    Fragment currentFragment = knotContext.fragments()
+        .flatMap(fragments -> fragments.stream()
+            .filter(fragment -> isCurrentFormFragment(fragment, knotContext))
+            .findFirst())
+        .orElseThrow(() -> {
+          String formIdentifier = getFormIdentifier(knotContext).orElse("EMPTY");
+          LOGGER.error("Could not find fragment with id [{}] in fragments [{}]", formIdentifier, knotContext.fragments());
+          return new NoSuchElementException("Fragment for [" + formIdentifier + "] not found");
+        });
+
+
+    String actionAdapterName = Optional.ofNullable(getScriptContentDocument(currentFragment)
+        .getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
+        .map(element -> element.attr(ACTION_FORM_ACTION_ATTRIBUTE))
+        .orElseThrow(() -> {
+          LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
+          return new NoSuchElementException("Could not find action adapter name");
+        });
+
+    ActionKnotConfiguration.AdapterMetadata adapterMetadata = configuration.adapterMetadatas().stream()
+        .filter(item -> item.getName().equals(actionAdapterName))
+        .findFirst()
+        .orElseThrow(() -> {
+          LOGGER.error("Could not find adapter name [{}] in configuration [{}]", actionAdapterName, configuration.adapterMetadatas());
+          return new NoSuchElementException("Action adapter not found!");
+        });
+
+    vertx.eventBus().<JsonObject>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
+        msg -> {
+          ClientResponse clientResponse = new ClientResponse(msg.body().getJsonObject("clientResponse"));
+          String signal = msg.body().getString("signal");
+
+          if (shouldRedirect(signal)) {
+            String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
+                .getElementsByAttribute("data-knotx-on-" + signal).first())
+                .map(element -> element.attr("data-knotx-on-" + signal))
+                .orElseThrow(() -> {
+                  LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
+                  return new NoSuchElementException("Could not action adapter name");
+                });
+            LOGGER.trace("Request redirected to [{}]", redirectLocation);
+            knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
+            knotContext.clientResponse().setHeaders(knotContext.clientResponse().headers().add("Location", redirectLocation));
+            knotContext.clearFragments();
+          } else {
+            LOGGER.trace("Request next transition to [{}]", DEFAULT_TRANSITION);
+            currentFragment.getContext().put("_response", new JsonObject(clientResponse.body().toString()));
+            knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+            knotContext.fragments().ifPresent(this::processFragments);
+            knotContext.setTransition(DEFAULT_TRANSITION);
+          }
+          handler.handle(knotContext.toJson());
+        },
+        err -> {
+          knotContext.clientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+          handler.handle(knotContext.toJson());
+        }
+    );
   }
 
-  private Optional<String> getFormIdentifier(KnotContext knotContext) {
-    return Optional.ofNullable(knotContext.clientRequest().formAttributes().get(configuration.formIdentifierName()));
+  private void handleGetMethod(Handler<JsonObject> handler, KnotContext knotContext) {
+    LOGGER.trace("Pass-through {} request", knotContext.clientRequest().method());
+    knotContext.setTransition(DEFAULT_TRANSITION);
+    knotContext.fragments().ifPresent(this::processFragments);
+    handler.handle(knotContext.toJson());
   }
 
-  private JsonObject prepareRequest(KnotContext knotContext, ActionKnotConfiguration.AdapterMetadata adapterMetadata) {
-    JsonObject request = new JsonObject();
-
-    // TODO narrow request headers
-    request.put("clientRequest", knotContext.clientRequest().toJson());
-    request.put("params", new JsonObject(adapterMetadata.getParams()));
-    return request;
+  private JsonObject prepareRequest(KnotContext knotContext, ActionKnotConfiguration.AdapterMetadata metadata) {
+    ClientRequest cr = knotContext.clientRequest();
+    return new JsonObject()
+        .put("clientRequest", new ClientRequest()
+            .setPath(cr.path())
+            .setMethod(cr.method())
+            .setFormAttributes(cr.formAttributes())
+            .setHeaders(getFilteredHeaders(knotContext.clientRequest().headers(), metadata.getAllowedRequestHeaders())).toJson())
+        .put("params", new JsonObject(metadata.getParams()));
   }
 
   private KnotContext processError(KnotContext context, Throwable error) {
@@ -184,6 +192,18 @@ public class ActionKnotVerticle extends AbstractVerticle {
     context.clientResponse().setStatusCode(statusCode);
     context.setFragments(null);
     return context;
+  }
+
+  private boolean shouldRedirect(String signal) {
+    return StringUtils.isNotEmpty(signal) && !"_self".equals(signal);
+  }
+
+  private boolean isCurrentFormFragment(Fragment fragment, KnotContext knotContext) {
+    return getFormIdentifier(knotContext).map(formId -> "form-" + formId).map(fragmentId -> fragmentId.equals(fragment.getId())).orElse(Boolean.FALSE);
+  }
+
+  private Optional<String> getFormIdentifier(KnotContext knotContext) {
+    return Optional.ofNullable(knotContext.clientRequest().formAttributes().get(configuration.formIdentifierName()));
   }
 
   private void processFragments(List<Fragment> fragments) {
@@ -249,6 +269,12 @@ public class ActionKnotVerticle extends AbstractVerticle {
           .collect(Attributes::new, Attributes::put, Attributes::addAll);
       form.prependChild(new Element(Tag.valueOf("input"), "/", attributes));
     }
+  }
+
+  private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
+    return headers.names().stream()
+        .filter(AllowedHeadersFilter.create(allowedHeaders))
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
   }
 
   private void traceMessage(Message<JsonObject> message) {
