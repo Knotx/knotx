@@ -29,6 +29,8 @@ import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
+import org.jsoup.parser.Parser;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -64,6 +66,11 @@ public class ActionKnotVerticleTest {
 
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
   private final static Fragment LAST_FRAGMENT = Fragment.raw("</body></html>");
+
+  private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings()
+      .escapeMode(Entities.EscapeMode.xhtml)
+      .indentAmount(0)
+      .prettyPrint(false);
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -105,10 +112,10 @@ public class ActionKnotVerticleTest {
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
-          context.assertTrue(knotContext.fragments().isPresent());
+          context.assertEquals(HttpResponseStatus.OK, clientResponse.clientResponse().statusCode());
+          context.assertTrue(clientResponse.fragments().isPresent());
 
-          List<Fragment> fragments = knotContext.fragments().get();
+          List<Fragment> fragments = clientResponse.fragments().get();
           context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
           context.assertEquals(clean(expectedRedirectFormFragment), clean(fragments.get(1).getContent()));
           context.assertEquals(clean(expectedSelfFormFragment), clean(fragments.get(2).getContent()));
@@ -256,8 +263,11 @@ public class ActionKnotVerticleTest {
   }
 
   private String clean(String text) {
-    // TODO correct html formatting
-    return Jsoup.parse(text).outputSettings(new Document.OutputSettings().prettyPrint(true)).html();
+    String cleanText = text.replace("\n", "").replaceAll(">(\\s)+<", "><").replaceAll(">(\\s)+\\{", ">{").replaceAll("\\}(\\s)+<", "}<");
+    return Jsoup.parse(cleanText, "UTF-8", Parser.xmlParser())
+        .outputSettings(OUTPUT_SETTINGS)
+        .html()
+        .trim();
   }
 
 }

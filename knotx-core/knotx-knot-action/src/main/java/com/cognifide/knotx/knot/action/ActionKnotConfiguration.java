@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.knot.action;
 
+import com.google.common.base.MoreObjects;
+
 import com.cognifide.knotx.adapter.common.http.StringToPatternFunction;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -64,7 +66,7 @@ class ActionKnotConfiguration {
     return address;
   }
 
-  public List<AdapterMetadata> getAdapterMetadataList() {
+  public List<AdapterMetadata> adapterMetadatas() {
     return adapterMetadataList;
   }
 
@@ -84,6 +86,28 @@ class ActionKnotConfiguration {
     private List<Pattern> allowedRequestHeaders;
 
     private List<Pattern> allowedResponseHeaders;
+
+    public String getName() {
+      return name;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+
+    public Map<String, Object> getParams() {
+      return params;
+    }
+
+    public List<Pattern> getAllowedRequestHeaders() {
+      return allowedRequestHeaders;
+    }
+
+
+    public List<Pattern> getAllowedResponseHeaders() {
+      return allowedResponseHeaders;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -112,27 +136,15 @@ class ActionKnotConfiguration {
           .toHashCode();
     }
 
-    public String getName() {
-      return name;
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+          .add("name", name)
+          .add("address", address)
+          .add("params", params)
+          .add("allowedRequestHeaders", allowedRequestHeaders)
+          .add("allowedResponseHeaders", allowedResponseHeaders)
+          .toString();
     }
-
-    public String getAddress() {
-      return address;
-    }
-
-
-    public Map<String, Object> getParams() {
-      return params;
-    }
-
-    public List<Pattern> getAllowedRequestHeaders() {
-      return allowedRequestHeaders;
-    }
-
-
-    public List<Pattern> getAllowedResponseHeaders() {
-      return allowedResponseHeaders;
-    }
-
   }
 }

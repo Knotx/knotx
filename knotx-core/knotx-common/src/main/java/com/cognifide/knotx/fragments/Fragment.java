@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.fragments;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class Fragment {
 
   private final String id;
 
-  private final String content;
+  private String content;
 
   private final JsonObject context;
 
@@ -76,6 +77,11 @@ public class Fragment {
     return content;
   }
 
+  public Fragment setContent(String content) {
+    this.content = content;
+    return this;
+  }
+
   public JsonObject getContext() {
     return context;
   }
@@ -97,5 +103,14 @@ public class Fragment {
   @Override
   public int hashCode() {
     return Objects.hashCode(id, content, context);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .add("content", content)
+        .add("context", context)
+        .toString();
   }
 }

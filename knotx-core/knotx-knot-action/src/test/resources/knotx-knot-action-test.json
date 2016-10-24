@@ -1,10 +1,32 @@
 {
   "verticles": {
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
-      "config" : {
-        "address": "knotx.knot.action",
-        "formIdentifierName": "snippet-identifier"
-      }
+      "config" :
+        {
+          "address": "knotx.knot.action",
+          "client.options": {
+            "maxPoolSize": 1000,
+            "keepAlive": false
+          },
+          "adapters": [
+            {
+              "name": "action-self",
+              "address": "test",
+              "params" : {
+                "example": "example-value"
+              },
+              "allowed.request.headers": [
+                "Content-Type",
+                "X-*"
+              ],
+              "allowed.response.headers": [
+                "X-*"
+              ]
+            }
+          ],
+          "formIdentifierName": "snippet-identifier"
+        }
+
     }
   }
 }
