@@ -40,10 +40,13 @@ class ActionKnotConfiguration {
 
   private final String formIdentifierName;
 
+  private final String onGetTransition;
+
   ActionKnotConfiguration(JsonObject config) {
     this.address = config.getString("address");
     this.formIdentifierName = config.getString("formIdentifierName");
-    adapterMetadataList = config.getJsonArray("adapters").stream()
+    this.onGetTransition = config.getString("onGetTransition");
+    this.adapterMetadataList = config.getJsonArray("adapters").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
           AdapterMetadata metadata = new AdapterMetadata();
@@ -70,10 +73,13 @@ class ActionKnotConfiguration {
     return adapterMetadataList;
   }
 
-  public String getFormIdentifierName() {
+  public String formIdentifierName() {
     return formIdentifierName;
   }
 
+  public String onGetTransition() {
+    return onGetTransition;
+  }
 
   static class AdapterMetadata {
 

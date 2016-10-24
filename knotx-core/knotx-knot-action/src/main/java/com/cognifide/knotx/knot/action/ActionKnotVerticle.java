@@ -89,6 +89,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
     KnotContext knotContext = new KnotContext(jsonObject.body());
 
     if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
+      LOGGER.trace("Process {} request", knotContext.clientRequest().method());
       Fragment currentFragment = knotContext.fragments()
           .flatMap(fragments -> fragments.stream()
               .filter(fragment -> isCurrentFormFragment(fragment, knotContext))
@@ -135,6 +136,9 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
           }
       );
+    } else {
+      LOGGER.trace("Pass-through {} request", knotContext.clientRequest().method());
+      knotContext.setTransition(configuration.onGetTransition());
     }
 
     knotContext.fragments().ifPresent(this::processFragments);
@@ -146,7 +150,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
   }
 
   private Optional<String> getFormIdentifier(KnotContext knotContext) {
-    return Optional.ofNullable(knotContext.clientRequest().formAttributes().get(configuration.getFormIdentifierName()));
+    return Optional.ofNullable(knotContext.clientRequest().formAttributes().get(configuration.formIdentifierName()));
   }
 
   private JsonObject prepareRequest(KnotContext knotContext) {
@@ -227,7 +231,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
       Attributes attributes = Stream.of(
           new Attribute("type", "hidden"),
-          new Attribute("name", configuration.getFormIdentifierName()),
+          new Attribute("name", configuration.formIdentifierName()),
           new Attribute("value", formIdentifier))
           .collect(Attributes::new, Attributes::put, Attributes::addAll);
       form.prependChild(new Element(Tag.valueOf("input"), "/", attributes));

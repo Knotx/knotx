@@ -1,9 +1,5 @@
 {
   "address": "knotx.knot.action",
-  "client.options": {
-    "maxPoolSize": 1000,
-    "keepAlive": false
-  },
   "adapters": [
     {
       "name": "action-self",
@@ -20,5 +16,6 @@
       ]
     }
   ],
-  "formIdentifierName": "snippet-identifier"
+  "formIdentifierName": "snippet-identifier",
+  "onGetTransition": "pass-through"
 }

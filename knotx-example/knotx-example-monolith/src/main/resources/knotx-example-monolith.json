@@ -61,7 +61,12 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.core.viewengine"
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "pass-through" : {
+                  "address": "knotx.core.viewengine"
+                }
+              }
             }
           ]
         }
@@ -134,7 +139,23 @@
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
       "config" : {
         "address": "knotx.knot.action",
-        "formIdentifierName": "snippet-identifier"
+        "adapters": [
+          {
+            "name": "action-self",
+            "address": "test",
+            "params" : {
+              "example": "example-value"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie"
+            ]
+          }
+        ],
+        "formIdentifierName": "_frmId",
+        "onGetTransition": "pass-through"
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
