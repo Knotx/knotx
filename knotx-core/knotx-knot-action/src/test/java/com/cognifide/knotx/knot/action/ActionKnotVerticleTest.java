@@ -19,6 +19,7 @@ package com.cognifide.knotx.knot.action;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.junit.FileReader;
@@ -42,6 +43,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
@@ -49,6 +51,7 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -61,9 +64,9 @@ public class ActionKnotVerticleTest {
 
   private static final String FRAGMENT_IDENTIFIER = "data-api-type";
 
-  private final static String FRAGMENT_REDIRECT_IDENTIFIER = "redirect";
+  private final static String FRAGMENT_REDIRECT_IDENTIFIER = "someId123";
 
-  private final static String FRAGMENT_SELF_IDENTIFIER = "self";
+  private final static String FRAGMENT_SELF_IDENTIFIER = "someId456";
 
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
   private final static Fragment LAST_FRAGMENT = Fragment.raw("</body></html>");
@@ -164,6 +167,9 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
+    String actionAdapterResponse = "{\"success\":\"true\"}";
+    createKnotConsumer("address-self", actionAdapterResponse, null);
+
     String expectedFirstFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
     String expectedSecondFormFragment = FileReader.readText("fragment_form_self_out.txt");
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
@@ -178,10 +184,10 @@ public class ActionKnotVerticleTest {
           context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.transition().get());
           context.assertTrue(clientResponse.fragments().isPresent());
 
-          Optional<Fragment> selfFragment = clientResponse.fragments().get().stream().filter(item -> FRAGMENT_SELF_IDENTIFIER.equals(item.getId())).findFirst();
+          Optional<Fragment> selfFragment = clientResponse.fragments().get().stream().filter(item -> item.getId().equals("form-" + FRAGMENT_SELF_IDENTIFIER)).findFirst();
 
           context.assertTrue(selfFragment.isPresent());
-          context.assertTrue(Objects.nonNull(selfFragment.get().getContext().getJsonObject("_response")));
+          context.assertEquals(new JsonObject(actionAdapterResponse), selfFragment.get().getContext().getJsonObject("_response"));
 
           List<Fragment> fragments = clientResponse.fragments().get();
           context.assertEquals(clean(expectedFirstFormFragment), clean(fragments.get(0).getContent()));
@@ -193,6 +199,7 @@ public class ActionKnotVerticleTest {
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(TestContext context) throws Exception {
+    createKnotConsumer("address-redirect", "", "step2");
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
     knotContext.clientRequest()
         .setMethod(HttpMethod.POST)
@@ -200,7 +207,7 @@ public class ActionKnotVerticleTest {
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.MOVED_PERMANENTLY, knotContext.clientResponse().statusCode());
+          context.assertEquals(HttpResponseStatus.MOVED_PERMANENTLY, clientResponse.clientResponse().statusCode());
           context.assertEquals("/content/form/step2.html", clientResponse.clientResponse().headers().get("Location"));
           context.assertFalse(clientResponse.transition().isPresent());
           context.assertFalse(clientResponse.fragments().isPresent());
@@ -280,6 +287,17 @@ public class ActionKnotVerticleTest {
         .outputSettings(OUTPUT_SETTINGS)
         .html()
         .trim();
+  }
+
+  private void createKnotConsumer(String adddress, String addToBody, String signal) {
+    EventBus eventBus = vertx.vertx().eventBus();
+    eventBus.<JsonObject>consumer(adddress, msg -> {
+      ClientResponse response = new ClientResponse();
+      response.setStatusCode(HttpResponseStatus.OK);
+      response.setBody(Buffer.buffer().appendString(addToBody));
+
+      msg.reply(new JsonObject().put("clientResponse", response.toJson()).put("signal", signal));
+    });
   }
 
 }

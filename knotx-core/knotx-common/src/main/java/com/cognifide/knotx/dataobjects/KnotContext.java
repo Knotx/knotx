@@ -82,6 +82,11 @@ public class KnotContext {
     return this;
   }
 
+  public KnotContext clearFragments() {
+    this.fragments = null;
+    return this;
+  }
+
   public KnotContext setTransition(String transition) {
     this.transition = transition;
     return this;

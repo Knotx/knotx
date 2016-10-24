@@ -21,6 +21,7 @@ import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
@@ -38,6 +39,7 @@ import java.util.stream.Stream;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -74,7 +76,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
             .doOnNext(this::traceMessage)
             .subscribe(
                 result -> {
-                  message.reply(process(result));
+                  process(result, message::reply);
                 },
                 error -> {
                   LOGGER.error("Error occured in Action Knot.", error);
@@ -83,7 +85,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
             ));
   }
 
-  private JsonObject process(Message<JsonObject> jsonObject) {
+  private void process(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
     KnotContext knotContext = new KnotContext(jsonObject.body());
 
     if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
@@ -99,8 +101,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
           });
 
 
-      String actionAdapterName = Optional.ofNullable(Jsoup.parse(currentFragment.getContent())
-          .getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
+      String actionAdapterName = Optional.ofNullable(getScriptContentDocument(currentFragment).getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
           .map(element -> element.attr(ACTION_FORM_ACTION_ATTRIBUTE))
           .orElseThrow(() -> {
             LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
@@ -115,32 +116,41 @@ public class ActionKnotVerticle extends AbstractVerticle {
             return new NoSuchElementException("Action adapter not found!");
           });
 
-      vertx.eventBus().<JsonObject>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext)).subscribe(
+      vertx.eventBus().<JsonObject>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
           msg -> {
             JsonObject jsonResponse = msg.body();
             ClientResponse clientResponse = new ClientResponse(jsonResponse.getJsonObject("clientResponse"));
             String signal = jsonResponse.getString("signal");
 
-            // TODO implement POST handling
-
-//            if (jsonResponse.getString("transition") != null) {
-//               then redirect
-//            } else {
-//              currentFragment.get().getContext().put("_result", clientResponse.body().toString());
-//              knotContext.setTransition("viewEngine");
-//            }
+            if (StringUtils.isNotEmpty(signal) || "_self".equals(signal)) {
+              String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
+                  .getElementsByAttribute("data-knotx-on-" + signal).first())
+                  .map(element -> element.attr("data-knotx-on-" + signal))
+                  .orElseThrow(() -> {
+                    LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
+                    return new NoSuchElementException("Could not action adapter name");
+                  });
+              knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
+              knotContext.clientResponse().setHeaders(knotContext.clientResponse().headers().add("Location", redirectLocation));
+              knotContext.clearFragments();
+            } else {
+              currentFragment.getContext().put("_response", new JsonObject(clientResponse.body().toString()));
+              knotContext.fragments().ifPresent(this::processFragments);
+              knotContext.setTransition(DEFAULT_TRANSITION);
+            }
+            handler.handle(knotContext.toJson());
           },
           err -> {
-
+            LOGGER.error(err);
           }
       );
     } else {
       LOGGER.trace("Pass-through {} request", knotContext.clientRequest().method());
       knotContext.setTransition(DEFAULT_TRANSITION);
+      knotContext.fragments().ifPresent(this::processFragments);
+      handler.handle(knotContext.toJson());
     }
 
-    knotContext.fragments().ifPresent(this::processFragments);
-    return knotContext.toJson();
   }
 
   private boolean isCurrentFormFragment(Fragment fragment, KnotContext knotContext) {
@@ -151,8 +161,13 @@ public class ActionKnotVerticle extends AbstractVerticle {
     return Optional.ofNullable(knotContext.clientRequest().formAttributes().get(configuration.formIdentifierName()));
   }
 
-  private JsonObject prepareRequest(KnotContext knotContext) {
-    return new JsonObject();
+  private JsonObject prepareRequest(KnotContext knotContext, ActionKnotConfiguration.AdapterMetadata adapterMetadata) {
+    JsonObject request = new JsonObject();
+
+    // TODO narrow request headers
+    request.put("clientRequest", knotContext.clientRequest().toJson());
+    request.put("params", new JsonObject(adapterMetadata.getParams()));
+    return request;
   }
 
   private KnotContext processError(KnotContext context, Throwable error) {

@@ -7,7 +7,7 @@
           "adapters": [
             {
               "name": "action-self",
-              "address": "test",
+              "address": "address-self",
               "params" : {
                 "example": "example-value"
               },
@@ -21,7 +21,7 @@
             },
             {
               "name": "action-redirect",
-              "address": "test",
+              "address": "address-redirect",
               "params" : {
                 "example": "example-value"
               },
