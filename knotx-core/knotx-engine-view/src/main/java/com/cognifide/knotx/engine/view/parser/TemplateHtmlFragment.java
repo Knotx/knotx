@@ -47,11 +47,13 @@ public class TemplateHtmlFragment implements HtmlFragment {
   private final String unwrappedContent;
   private final Fragment fragment;
   private final List<ServiceEntry> services;
+  private final JsonObject context;
 
   private Template compiledFragment;
 
   public TemplateHtmlFragment(Fragment fragment) {
     this.fragment = fragment;
+    this.context = fragment.getContext();
     Document document = Jsoup.parseBodyFragment(fragment.getContent());
     Element scriptTag = document.body().child(0);
 
@@ -75,7 +77,7 @@ public class TemplateHtmlFragment implements HtmlFragment {
   @Override
   public String getContentWithContext(JsonObject model) {
     try {
-      return compiledFragment.apply(Context.newBuilder(model).push(JsonObjectValueResolver.INSTANCE).build());
+      return compiledFragment.apply(Context.newBuilder(model.mergeIn(context)).push(JsonObjectValueResolver.INSTANCE).build());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

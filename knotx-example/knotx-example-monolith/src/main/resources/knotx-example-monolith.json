@@ -152,19 +152,6 @@
         "address": "knotx.knot.action",
         "adapters": [
           {
-            "name": "action-self",
-            "address": "test",
-            "params" : {
-              "example": "example-value"
-            },
-            "allowed.request.headers": [
-              "Cookie"
-            ],
-            "allowed.response.headers": [
-              "Set-Cookie"
-            ]
-          },
-          {
             "name": "step1",
             "address": "mock-action-adapter",
             "params": {
