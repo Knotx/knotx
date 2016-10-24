@@ -19,6 +19,7 @@ package com.cognifide.knotx.knot.action;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.adapter.common.http.MultiMapCollector;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
@@ -38,8 +39,10 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -168,7 +171,10 @@ public class ActionKnotVerticleTest {
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
     String actionAdapterResponse = "{\"success\":\"true\"}";
-    createKnotConsumer("address-self", actionAdapterResponse, null);
+    Map<String, String> headers = new HashMap<String, String>() {{
+      put("X-Auth", "x-auth-value");
+    }};
+    createKnotConsumer("address-self", actionAdapterResponse, "_self", headers);
 
     String expectedFirstFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
     String expectedSecondFormFragment = FileReader.readText("fragment_form_self_out.txt");
@@ -178,18 +184,19 @@ public class ActionKnotVerticleTest {
         .setFormAttributes(MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, FRAGMENT_SELF_IDENTIFIER));
 
     callActionKnotWithAssertions(context, knotContext,
-        clientResponse -> {
-          context.assertEquals(HttpResponseStatus.OK, clientResponse.clientResponse().statusCode());
-          context.assertTrue(clientResponse.transition().isPresent());
-          context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.transition().get());
-          context.assertTrue(clientResponse.fragments().isPresent());
+        response -> {
+          context.assertEquals(HttpResponseStatus.OK, response.clientResponse().statusCode());
+          context.assertTrue(response.transition().isPresent());
+          context.assertEquals(EXPECTED_KNOT_TRANSITION, response.transition().get());
+          context.assertTrue(response.fragments().isPresent());
 
-          Optional<Fragment> selfFragment = clientResponse.fragments().get().stream().filter(item -> item.getId().equals("form-" + FRAGMENT_SELF_IDENTIFIER)).findFirst();
+          Optional<Fragment> selfFragment = response.fragments().get().stream().filter(item -> item.getId().equals("form-" + FRAGMENT_SELF_IDENTIFIER)).findFirst();
 
           context.assertTrue(selfFragment.isPresent());
           context.assertEquals(new JsonObject(actionAdapterResponse), selfFragment.get().getContext().getJsonObject("_response"));
+          context.assertEquals("x-auth-value", response.clientResponse().headers().get("X-Auth"));
 
-          List<Fragment> fragments = clientResponse.fragments().get();
+          List<Fragment> fragments = response.fragments().get();
           context.assertEquals(clean(expectedFirstFormFragment), clean(fragments.get(0).getContent()));
           context.assertEquals(clean(expectedSecondFormFragment), clean(fragments.get(1).getContent()));
         },
@@ -290,12 +297,16 @@ public class ActionKnotVerticleTest {
   }
 
   private void createKnotConsumer(String adddress, String addToBody, String signal) {
+    createKnotConsumer(adddress, addToBody, signal, Collections.emptyMap());
+  }
+
+  private void createKnotConsumer(String adddress, String addToBody, String signal, Map<String, String> headers) {
     EventBus eventBus = vertx.vertx().eventBus();
     eventBus.<JsonObject>consumer(adddress, msg -> {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(HttpResponseStatus.OK);
       response.setBody(Buffer.buffer().appendString(addToBody));
-
+      response.setHeaders(headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
       msg.reply(new JsonObject().put("clientResponse", response.toJson()).put("signal", signal));
     });
   }
