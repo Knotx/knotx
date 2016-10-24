@@ -205,7 +205,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
     Document resultDocument = Jsoup.parse(fragment.getContent(), "UTF-8", Parser.xmlParser());
     Element scriptTag = resultDocument.child(0);
     scriptTag.children().remove();
-    scriptTag.appendChild(scriptContentDocument.child(0));
+    scriptContentDocument.children().stream().forEach(scriptTag::appendChild);
 
     return resultDocument.html();
   }
@@ -216,10 +216,9 @@ public class ActionKnotVerticle extends AbstractVerticle {
   }
 
   private void clearFromActionAttributes(Element item) {
-    Observable.from(item.attributes())
+    item.attributes().asList().stream()
         .filter(attr -> attr.getKey().matches(ACTION_FORM_ATTRIBUTES_PATTERN))
-        .doOnNext(attr -> item.removeAttr(attr.getKey()))
-        .subscribe();
+        .forEach(attr -> item.removeAttr(attr.getKey()));
   }
 
   private void addHiddenInputTag(Element form, String fragmentIdentifier) {

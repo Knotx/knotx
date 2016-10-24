@@ -180,8 +180,7 @@
             ]
           }
         ],
-        "formIdentifierName": "_frmId",
-        "onGetTransition": "pass-through"
+        "formIdentifierName": "_frmId"
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
