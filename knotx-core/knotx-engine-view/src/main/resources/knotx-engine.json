@@ -8,7 +8,7 @@
   "services": [
     {
       "name" : "mock",
-      "address" : "mock-adapter-service",
+      "address" : "mock-service-adapter",
       "config": {
         "path": "/service/mock/.*"
       }
