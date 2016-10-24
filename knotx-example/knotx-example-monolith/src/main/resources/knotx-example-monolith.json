@@ -63,7 +63,7 @@
               "path": "/content/.*",
               "address": "knotx.knot.action",
               "onTransition": {
-                "pass-through" : {
+                "next" : {
                   "address": "knotx.core.viewengine"
                 }
               }
