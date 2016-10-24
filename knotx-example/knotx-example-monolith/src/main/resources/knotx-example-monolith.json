@@ -42,7 +42,8 @@
           "x-original-requested-uri",
           "x-solr-core-key",
           "x-language-code",
-          "x-requested-with"
+          "x-requested-with",
+          "location"
         ],
         "repositories": [
           {
@@ -161,7 +162,8 @@
               "Cookie"
             ],
             "allowed.response.headers": [
-              "Set-Cookie"
+              "Set-Cookie",
+              "Location"
             ]
           },
           {
@@ -174,7 +176,8 @@
               "Cookie"
             ],
             "allowed.response.headers": [
-              "Set-Cookie"
+              "Set-Cookie",
+              "Location"
             ]
           }
         ],

@@ -133,14 +133,15 @@ public class ActionKnotVerticle extends AbstractVerticle {
           ClientResponse clientResponse = new ClientResponse(msg.body().getJsonObject("clientResponse"));
           String signal = msg.body().getString("signal");
 
-          if (shouldRedirect(signal)) {
-            String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
-                .getElementsByAttribute("data-knotx-on-" + signal).first())
-                .map(element -> element.attr("data-knotx-on-" + signal))
-                .orElseThrow(() -> {
-                  LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-                  return new NoSuchElementException("Could not action adapter name");
-                });
+          String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
+              .getElementsByAttribute("data-knotx-on-" + signal).first())
+              .map(element -> element.attr("data-knotx-on-" + signal))
+              .orElseThrow(() -> {
+                LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
+                return new NoSuchElementException("Could not action adapter name");
+              });
+
+          if (shouldRedirect(redirectLocation)) {
             LOGGER.trace("Request redirected to [{}]", redirectLocation);
             knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
             knotContext.clientResponse().setHeaders(knotContext.clientResponse().headers().add("Location", redirectLocation));
