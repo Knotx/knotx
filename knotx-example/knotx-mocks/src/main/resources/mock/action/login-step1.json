@@ -1,20 +1,18 @@
 {
-  "signals": {
-    "success": {
-      "response": {
-        "found": true
-      },
-      "condition": {
-        "email": "^john\\.doe.*$"
-      }
+  "success": {
+    "response": {
+      "found": true
     },
-    "error": {
-      "response": {
-        "validationError": "Invalid email address!"
-      },
-      "condition": {
-        "email": "^(?!john\\.doe).*$"
-      }
+    "condition": {
+      "email": "^john\\.doe.*$"
+    }
+  },
+  "error": {
+    "response": {
+      "validationError": "Invalid email address!"
+    },
+    "condition": {
+      "email": "^(?!john\\.doe).*$"
     }
   }
 }

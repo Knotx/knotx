@@ -1,20 +1,18 @@
 {
-  "signals": {
-    "success": {
-      "data": {
-        "result": "success"
-      },
-      "condition": {
-        "password": "^knotx.*$"
-      }
+  "success": {
+    "response": {
+      "result": "success"
     },
-    "error": {
-      "data": {
-        "validationError": "Invalid password address!"
-      },
-      "condition": {
-        "password": "^(?!knotx).*$"
-      }
+    "condition": {
+      "password": "^knotx.*$"
+    }
+  },
+  "error": {
+    "response": {
+      "validationError": "Invalid password address!"
+    },
+    "condition": {
+      "password": "^(?!knotx).*$"
     }
   }
 }

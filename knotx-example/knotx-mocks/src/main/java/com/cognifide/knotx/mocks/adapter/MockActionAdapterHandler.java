@@ -28,6 +28,7 @@ import java.util.Optional;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.file.FileSystem;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -51,8 +52,8 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     String resourcePath = getFilePath(params.getString("step"));
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
-        final JsonObject signals = ar.result().toJsonObject();
-        message.reply(signalResponse(request, signals));
+        final JsonObject transitions = ar.result().toJsonObject();
+        message.reply(transitionResponse(request, transitions));
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
         message.reply(getErrorResponse());
@@ -70,10 +71,10 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
         new JsonObject().put("response", errorResponse().toJson()));
   }
 
-  private JsonObject signalResponse(ClientRequest request, JsonObject signals) {
-    final Pair<Optional<String>, JsonObject> result = getSignalResult(request, signals);
+  private JsonObject transitionResponse(ClientRequest request, JsonObject transitions) {
+    final Pair<Optional<String>, JsonObject> result = getTransitionResult(request, transitions);
 
-    final JsonObject resultBody = result.getRight().put("form", request.formAttributes());
+    final JsonObject resultBody = result.getRight().put("form", toJsonObject(request.formAttributes()));
 
     final String data = resultBody.toString();
     final ClientResponse clientResponse = new ClientResponse()
@@ -84,30 +85,38 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     final JsonObject response = new JsonObject()
         .put("response", clientResponse.toJson());
 
-    final Optional<String> signal = result.getLeft();
-    if (signal.isPresent()) {
-      response.put("signal", signal.get());
+    final Optional<String> transition = result.getLeft();
+    if (transition.isPresent()) {
+      response.put("transition", transition.get());
     }
     return response;
   }
 
-  private Pair<Optional<String>, JsonObject> getSignalResult(ClientRequest request, JsonObject signals) {
-    return signals.stream()
+  private Pair<Optional<String>, JsonObject> getTransitionResult(ClientRequest request, JsonObject transitions) {
+    return transitions.stream()
         .filter(entry -> matchRequest(request, entry)).findFirst()
-        .map(this::toSignalPair)
+        .map(this::toTransitionPair)
         .orElse(getErrorResponse());
   }
 
-  private Pair<Optional<String>, JsonObject> toSignalPair(Map.Entry<String, Object> entry) {
+  private Pair<Optional<String>, JsonObject> toTransitionPair(Map.Entry<String, Object> entry) {
     return Pair.of(Optional.of(entry.getKey()), ((JsonObject) entry.getValue()).getJsonObject("response"));
   }
 
-  private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> signal) {
-    final JsonObject condition = ((JsonObject) signal).getJsonObject("condition");
+  private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> transition) {
+    final JsonObject condition = ((JsonObject) transition.getValue()).getJsonObject("condition");
     final MultiMap params = request.params();
     return condition.stream().allMatch(entry ->
         params.contains(entry.getKey())
             && params.get(entry.getKey()).matches(String.valueOf(entry.getValue()))
     );
+  }
+
+  private JsonObject toJsonObject(MultiMap multiMap) {
+    JsonObject result = new JsonObject();
+    multiMap.names().stream()
+        .forEach(name -> result.put(name, multiMap.get(name)));
+
+    return result;
   }
 }
