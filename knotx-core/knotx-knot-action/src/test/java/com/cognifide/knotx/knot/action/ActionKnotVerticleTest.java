@@ -174,7 +174,7 @@ public class ActionKnotVerticleTest {
     Map<String, String> headers = new HashMap<String, String>() {{
       put("X-Auth", "x-auth-value");
     }};
-    createKnotConsumer("address-self", actionAdapterResponse, "_self", headers);
+    createKnotConsumer("address-redirect", actionAdapterResponse, "step2", headers);
 
     String expectedFirstFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
     String expectedSecondFormFragment = FileReader.readText("fragment_form_self_out.txt");
