@@ -1,5 +1,5 @@
 {
-  "transitions": {
+  "signals": {
     "success": {
       "data": {
         "result": "success"

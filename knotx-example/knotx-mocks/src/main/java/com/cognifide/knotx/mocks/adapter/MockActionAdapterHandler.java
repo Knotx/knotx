@@ -51,8 +51,8 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     String resourcePath = getFilePath(params.getString("step"));
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
-        final JsonObject transitions = ar.result().toJsonObject();
-        message.reply(transitionResponse(request, transitions));
+        final JsonObject signals = ar.result().toJsonObject();
+        message.reply(signalResponse(request, signals));
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
         message.reply(getErrorResponse());
@@ -70,8 +70,8 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
         new JsonObject().put("response", errorResponse().toJson()));
   }
 
-  private JsonObject transitionResponse(ClientRequest request, JsonObject transitions) {
-    final Pair<Optional<String>, JsonObject> result = getTransitionResult(request, transitions);
+  private JsonObject signalResponse(ClientRequest request, JsonObject signals) {
+    final Pair<Optional<String>, JsonObject> result = getSignalResult(request, signals);
 
     final JsonObject resultBody = result.getRight().put("form", request.formAttributes());
 
@@ -84,26 +84,26 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     final JsonObject response = new JsonObject()
         .put("response", clientResponse.toJson());
 
-    final Optional<String> transition = result.getLeft();
-    if (transition.isPresent()) {
-      response.put("transition", transition.get());
+    final Optional<String> signal = result.getLeft();
+    if (signal.isPresent()) {
+      response.put("signal", signal.get());
     }
     return response;
   }
 
-  private Pair<Optional<String>, JsonObject> getTransitionResult(ClientRequest request, JsonObject transitions) {
-    return transitions.stream()
+  private Pair<Optional<String>, JsonObject> getSignalResult(ClientRequest request, JsonObject signals) {
+    return signals.stream()
         .filter(entry -> matchRequest(request, entry)).findFirst()
-        .map(this::toTransitionPair)
+        .map(this::toSignalPair)
         .orElse(getErrorResponse());
   }
 
-  private Pair<Optional<String>, JsonObject> toTransitionPair(Map.Entry<String, Object> entry) {
+  private Pair<Optional<String>, JsonObject> toSignalPair(Map.Entry<String, Object> entry) {
     return Pair.of(Optional.of(entry.getKey()), ((JsonObject) entry.getValue()).getJsonObject("response"));
   }
 
-  private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> transition) {
-    final JsonObject condition = ((JsonObject) transition).getJsonObject("condition");
+  private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> signal) {
+    final JsonObject condition = ((JsonObject) signal).getJsonObject("condition");
     final MultiMap params = request.params();
     return condition.stream().allMatch(entry ->
         params.contains(entry.getKey())
