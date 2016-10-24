@@ -152,6 +152,32 @@
             "allowed.response.headers": [
               "Set-Cookie"
             ]
+          },
+          {
+            "name": "step1",
+            "address": "mock-action-adapter",
+            "params": {
+              "step": "login-step1"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie"
+            ]
+          },
+          {
+            "name": "step2",
+            "address": "mock-action-adapter",
+            "params": {
+              "step": "login-step2"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie"
+            ]
           }
         ],
         "formIdentifierName": "_frmId",
