@@ -49,12 +49,10 @@ import rx.Observable;
 
 public class ActionKnotVerticle extends AbstractVerticle {
 
+  public static final String DEFAULT_TRANSITION = "next";
   private static final String ACTION_FRAGMENT_IDENTIFIER_REGEXP = "form-([A-Za-z0-9]+)*";
-
   private static final Pattern ACTION_FRAGMENT_IDENTIFIER_PATTERN = Pattern.compile(ACTION_FRAGMENT_IDENTIFIER_REGEXP);
-
   private static final String ACTION_FORM_ATTRIBUTES_PATTERN = "data-knotx-.*";
-
   private static final String ACTION_FORM_ACTION_ATTRIBUTE = "data-knotx-action";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);
@@ -121,7 +119,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
           msg -> {
             JsonObject jsonResponse = msg.body();
             ClientResponse clientResponse = new ClientResponse(jsonResponse.getJsonObject("clientResponse"));
-            String transition = jsonResponse.getString("transition");
+            String signal = jsonResponse.getString("signal");
 
             // TODO implement POST handling
 
@@ -138,7 +136,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
       );
     } else {
       LOGGER.trace("Pass-through {} request", knotContext.clientRequest().method());
-      knotContext.setTransition(configuration.onGetTransition());
+      knotContext.setTransition(DEFAULT_TRANSITION);
     }
 
     knotContext.fragments().ifPresent(this::processFragments);

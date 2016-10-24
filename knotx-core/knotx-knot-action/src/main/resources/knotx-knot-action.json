@@ -8,14 +8,12 @@
         "example": "example-value"
       },
       "allowed.request.headers": [
-        "Content-Type",
-        "X-*"
+        "Cookie"
       ],
       "allowed.response.headers": [
-        "X-*"
+        "Set-Cookie"
       ]
     }
   ],
-  "formIdentifierName": "snippet-identifier",
-  "onGetTransition": "pass-through"
+  "formIdentifierName": "snippet-identifier"
 }

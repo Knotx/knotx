@@ -72,6 +72,7 @@ public class ActionKnotVerticleTest {
       .escapeMode(Entities.EscapeMode.xhtml)
       .indentAmount(0)
       .prettyPrint(false);
+  public static final String EXPECTED_KNOT_TRANSITION = "next";
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -93,6 +94,8 @@ public class ActionKnotVerticleTest {
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.OK, clientResponse.clientResponse().statusCode());
+          context.assertTrue(clientResponse.transition().isPresent());
+          context.assertEquals("next", clientResponse.transition().get());
           context.assertTrue(clientResponse.fragments().isPresent());
 
           List<Fragment> fragments = clientResponse.fragments().get();
@@ -114,6 +117,8 @@ public class ActionKnotVerticleTest {
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.OK, clientResponse.clientResponse().statusCode());
+          context.assertTrue(clientResponse.transition().isPresent());
+          context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.transition().get());
           context.assertTrue(clientResponse.fragments().isPresent());
 
           List<Fragment> fragments = clientResponse.fragments().get();
@@ -135,6 +140,7 @@ public class ActionKnotVerticleTest {
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR, clientResponse.clientResponse().statusCode());
+          context.assertFalse(clientResponse.transition().isPresent());
           context.assertFalse(clientResponse.fragments().isPresent());
         },
         error -> context.fail(error.getMessage()));
@@ -149,6 +155,7 @@ public class ActionKnotVerticleTest {
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR, clientResponse.clientResponse().statusCode());
+          context.assertFalse(clientResponse.transition().isPresent());
           context.assertFalse(clientResponse.fragments().isPresent());
         },
         error -> context.fail(error.getMessage()));
@@ -168,6 +175,7 @@ public class ActionKnotVerticleTest {
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.OK, clientResponse.clientResponse().statusCode());
           context.assertTrue(clientResponse.transition().isPresent());
+          context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.transition().get());
           context.assertTrue(clientResponse.fragments().isPresent());
 
           Optional<Fragment> selfFragment = clientResponse.fragments().get().stream().filter(item -> FRAGMENT_SELF_IDENTIFIER.equals(item.getId())).findFirst();
@@ -210,6 +218,7 @@ public class ActionKnotVerticleTest {
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.NOT_FOUND, clientResponse.clientResponse().statusCode());
           context.assertFalse(clientResponse.fragments().isPresent());
+          context.assertFalse(clientResponse.transition().isPresent());
         },
         error -> context.fail(error.getMessage()));
   }
@@ -225,6 +234,7 @@ public class ActionKnotVerticleTest {
         clientResponse -> {
           context.assertEquals(HttpResponseStatus.NOT_FOUND, clientResponse.clientResponse().statusCode());
           context.assertFalse(clientResponse.fragments().isPresent());
+          context.assertFalse(clientResponse.transition().isPresent());
         },
         error -> context.fail(error.getMessage()));
   }
