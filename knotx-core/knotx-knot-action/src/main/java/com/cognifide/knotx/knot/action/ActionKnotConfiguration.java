@@ -17,24 +17,122 @@
  */
 package com.cognifide.knotx.knot.action;
 
+import com.cognifide.knotx.adapter.common.http.StringToPatternFunction;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 class ActionKnotConfiguration {
 
   private final String address;
 
+  private final List<AdapterMetadata> adapterMetadataList;
+
   private final String formIdentifierName;
 
   ActionKnotConfiguration(JsonObject config) {
     this.address = config.getString("address");
     this.formIdentifierName = config.getString("formIdentifierName");
+    adapterMetadataList = config.getJsonArray("adapters").stream()
+        .map(item -> (JsonObject) item)
+        .map(item -> {
+          AdapterMetadata metadata = new AdapterMetadata();
+          metadata.name = item.getString("name");
+          metadata.address = item.getString("address");
+          metadata.params = item.getJsonObject("params", new JsonObject()).getMap();
+          metadata.allowedRequestHeaders = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
+              .map(object -> (String) object)
+              .map(new StringToPatternFunction())
+              .collect(Collectors.toList());
+          metadata.allowedResponseHeaders = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
+              .map(object -> (String) object)
+              .map(new StringToPatternFunction())
+              .collect(Collectors.toList());
+          return metadata;
+        }).collect(Collectors.toList());
   }
 
   public String address() {
     return address;
   }
 
+  public List<AdapterMetadata> getAdapterMetadataList() {
+    return adapterMetadataList;
+  }
+
   public String getFormIdentifierName() {
     return formIdentifierName;
+  }
+
+
+  static class AdapterMetadata {
+
+    private String name;
+
+    private String address;
+
+    private Map<String, Object> params;
+
+    private List<Pattern> allowedRequestHeaders;
+
+    private List<Pattern> allowedResponseHeaders;
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj != null && obj instanceof AdapterMetadata) {
+        final AdapterMetadata other = (AdapterMetadata) obj;
+        return new EqualsBuilder()
+            .append(name, other.getName())
+            .append(address, other.getAddress())
+            .append(params, other.getParams())
+            .append(allowedRequestHeaders, other.getAllowedRequestHeaders())
+            .append(allowedResponseHeaders, other.getAllowedResponseHeaders())
+            .isEquals();
+      } else {
+        return false;
+      }
+    }
+
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder()
+          .append(name)
+          .append(address)
+          .append(params)
+          .append(allowedRequestHeaders)
+          .append(allowedResponseHeaders)
+          .toHashCode();
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+
+    public Map<String, Object> getParams() {
+      return params;
+    }
+
+    public List<Pattern> getAllowedRequestHeaders() {
+      return allowedRequestHeaders;
+    }
+
+
+    public List<Pattern> getAllowedResponseHeaders() {
+      return allowedResponseHeaders;
+    }
+
   }
 }
