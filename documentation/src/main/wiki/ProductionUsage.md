@@ -130,7 +130,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
           },
           {
             "name" : "labelsRepository",
-            "address" : "mock-adapter-service",
+            "address" : "mock-service-adapter",
             "params": {}
           }
         ]

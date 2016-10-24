@@ -1,0 +1,20 @@
+{
+  "transitions": {
+    "success": {
+      "data": {
+        "result": "success"
+      },
+      "condition": {
+        "password": "^knotx.*$"
+      }
+    },
+    "error": {
+      "data": {
+        "validationError": "Invalid password address!"
+      },
+      "condition": {
+        "password": "^(?!knotx).*$"
+      }
+    }
+  }
+}
