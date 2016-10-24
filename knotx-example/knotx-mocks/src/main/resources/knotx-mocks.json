@@ -21,7 +21,7 @@
     },
     "com.cognifide.knotx.mocks.MockActionAdapterVerticle": {
       "config": {
-        "address": "mock-service-adapter",
+        "address": "mock-action-adapter",
         "mock.data.root": "mock/action"
       }
     },

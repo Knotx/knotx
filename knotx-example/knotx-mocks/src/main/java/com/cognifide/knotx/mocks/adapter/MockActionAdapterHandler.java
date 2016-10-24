@@ -20,10 +20,14 @@ package com.cognifide.knotx.mocks.adapter;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Map;
+import java.util.Optional;
+
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.file.FileSystem;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -34,7 +38,6 @@ import io.vertx.rxjava.core.buffer.Buffer;
 public class MockActionAdapterHandler extends MockAdapterHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
-  private static final String DEFAULT_TRANSITION = "_self";
 
   public MockActionAdapterHandler(String catalogue, FileSystem fileSystem) {
     super(catalogue, fileSystem);
@@ -45,10 +48,10 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     ClientRequest request = new ClientRequest(message.body().getJsonObject("clientRequest"));
     JsonObject params = message.body().getJsonObject("params");
 
-    String resourcePath = getFilePath(params.getString("path"));
+    String resourcePath = getFilePath(params.getString("step"));
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
-        final JsonArray transitions = ar.result().toJsonArray();
+        final JsonObject transitions = ar.result().toJsonObject();
         message.reply(transitionResponse(request, transitions));
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
@@ -57,41 +60,54 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     });
   }
 
-  private JsonObject getErrorResponse() {
-    return new JsonObject()
-        .put("response", errorResponse().toJson());
+  @Override
+  protected String getFilePath(String step) {
+    return super.getFilePath(step) + ".json";
   }
 
-  private JsonObject transitionResponse(ClientRequest request, JsonArray transitions) {
-    final JsonObject result = getTransitionResult(request, transitions);
+  private Pair<Optional<String>, JsonObject> getErrorResponse() {
+    return Pair.of(Optional.empty(),
+        new JsonObject().put("response", errorResponse().toJson()));
+  }
 
-    final String transition = result.getString("transition");
-    final String data = result.getJsonObject("data").toString();
+  private JsonObject transitionResponse(ClientRequest request, JsonObject transitions) {
+    final Pair<Optional<String>, JsonObject> result = getTransitionResult(request, transitions);
+
+    final JsonObject resultBody = result.getRight().put("form", request.formAttributes());
+
+    final String data = resultBody.toString();
     final ClientResponse clientResponse = new ClientResponse()
         .setHeaders(headers(request, data))
         .setStatusCode(HttpResponseStatus.OK)
         .setBody(Buffer.buffer(data));
 
-    return new JsonObject()
-        .put("response", clientResponse.toJson())
-        .put("transition", transition);
+    final JsonObject response = new JsonObject()
+        .put("response", clientResponse.toJson());
+
+    final Optional<String> transition = result.getLeft();
+    if (transition.isPresent()) {
+      response.put("transition", transition.get());
+    }
+    return response;
   }
 
-  private JsonObject getTransitionResult(ClientRequest request, JsonArray transitions) {
+  private Pair<Optional<String>, JsonObject> getTransitionResult(ClientRequest request, JsonObject transitions) {
     return transitions.stream()
-        .map(o -> (JsonObject) o)
-        .filter(t -> matchRequest(request, t)).findFirst()
+        .filter(entry -> matchRequest(request, entry)).findFirst()
+        .map(this::toTransitionPair)
         .orElse(getErrorResponse());
   }
 
-  private boolean matchRequest(ClientRequest request, JsonObject transition) {
-    final JsonObject condition = transition.getJsonObject("condition");
+  private Pair<Optional<String>, JsonObject> toTransitionPair(Map.Entry<String, Object> entry) {
+    return Pair.of(Optional.of(entry.getKey()), ((JsonObject) entry.getValue()).getJsonObject("response"));
+  }
+
+  private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> transition) {
+    final JsonObject condition = ((JsonObject) transition).getJsonObject("condition");
     final MultiMap params = request.params();
     return condition.stream().allMatch(entry ->
         params.contains(entry.getKey())
-            && params.get(entry.getKey()).equals(entry.getValue())
+            && params.get(entry.getKey()).matches(String.valueOf(entry.getValue()))
     );
   }
-
-
 }
