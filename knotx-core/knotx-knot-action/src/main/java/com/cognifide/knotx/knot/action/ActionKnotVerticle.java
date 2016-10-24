@@ -157,10 +157,14 @@ public class ActionKnotVerticle extends AbstractVerticle {
     HttpResponseStatus statusCode;
     if (error instanceof NoSuchElementException) {
       statusCode = HttpResponseStatus.NOT_FOUND;
+    } else if (error instanceof FormConfigurationException) {
+      LOGGER.error("Form incorrectly configured [{}]", context.clientRequest());
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
     context.clientResponse().setStatusCode(statusCode);
+    context.setFragments(null);
     return context;
   }
 
@@ -172,17 +176,36 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
   private void processFragment(Fragment fragment) {
     Document scriptContentDocument = getScriptContentDocument(fragment);
-    Optional.ofNullable(scriptContentDocument.getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first()).ifPresent(item -> {
-      LOGGER.trace("Changing fragment [{}]", fragment.getId());
-      addHiddenInputTag(item, fragment.getId());
-      clearFromActionAttributes(item);
+    Element actionFormElement = Optional.ofNullable(scriptContentDocument.getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first()).orElseThrow(() -> {
+      LOGGER.error("Attribute {} not found!", ACTION_FORM_ACTION_ATTRIBUTE);
+      return new FormConfigurationException(fragment);
     });
+    checkActionFormNameDefinition(fragment, actionFormElement);
+
+    LOGGER.trace("Changing fragment [{}]", fragment.getId());
+    addHiddenInputTag(actionFormElement, fragment.getId());
+    clearFromActionAttributes(actionFormElement);
+    fragment.setContent(getFragmentContent(fragment, scriptContentDocument));
+  }
+
+  private void checkActionFormNameDefinition(Fragment fragment, Element actionFormElement) {
+    String formActionName = actionFormElement.attr(ACTION_FORM_ACTION_ATTRIBUTE);
+    configuration.adapterMetadatas().stream()
+        .filter(adapterMetadata -> adapterMetadata.getName().equals(formActionName))
+        .findFirst()
+        .orElseThrow(() -> {
+          LOGGER.error("Form action name [{}] not found in configuration [{}]", configuration.adapterMetadatas());
+          return new FormConfigurationException(fragment);
+        });
+  }
+
+  private String getFragmentContent(Fragment fragment, Document scriptContentDocument) {
     Document resultDocument = Jsoup.parse(fragment.getContent(), "UTF-8", Parser.xmlParser());
     Element scriptTag = resultDocument.child(0);
     scriptTag.children().remove();
     scriptTag.appendChild(scriptContentDocument.child(0));
 
-    fragment.setContent(resultDocument.html());
+    return resultDocument.html();
   }
 
   private Document getScriptContentDocument(Fragment fragment) {

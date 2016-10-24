@@ -4,13 +4,23 @@
       "config" :
         {
           "address": "knotx.knot.action",
-          "client.options": {
-            "maxPoolSize": 1000,
-            "keepAlive": false
-          },
           "adapters": [
             {
               "name": "action-self",
+              "address": "test",
+              "params" : {
+                "example": "example-value"
+              },
+              "allowed.request.headers": [
+                "Content-Type",
+                "X-*"
+              ],
+              "allowed.response.headers": [
+                "X-*"
+              ]
+            },
+            {
+              "name": "action-redirect",
               "address": "test",
               "params" : {
                 "example": "example-value"

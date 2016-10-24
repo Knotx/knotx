@@ -16,6 +16,7 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -136,6 +137,17 @@ public class KnotContext {
   @Override
   public int hashCode() {
     return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("transition", transition)
+        .add("clientRequest", clientRequest)
+        .add("clientResponse", clientResponse)
+        .add("fragments", fragments)
+        .add("cache", cache)
+        .toString();
   }
 }
 
