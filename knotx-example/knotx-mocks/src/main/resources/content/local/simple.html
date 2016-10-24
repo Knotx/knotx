@@ -94,27 +94,6 @@
       </script>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <script data-api-type="templating"
-              type="text/x-handlebars-template"
-              data-service-userinfo="first-service"
-              data-action="second-service"
-              data-service-dataservice="third-service">
-        <h1>{{userinfo._result.welcomeMessage}}</h1>
-        {{#if formresponse._result}}
-        <p>{{formresponse._result.responseMessage}}</p>
-        <p>Submitted: {{formresponse._result.email}}</p>
-        {{else}}
-        <p>Please subscribe to the newsletter:</p>
-        <form method="post">
-          <input type="email" name="email"/>
-          <input type="submit" value="Submit"/>
-        </form>
-        {{/if}}
-      </script>
-    </div>
-  </div>
 </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
