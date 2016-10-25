@@ -18,7 +18,7 @@
 package com.cognifide.knotx.mocks;
 
 
-import com.cognifide.knotx.mocks.service.MockAdapterServiceHandler;
+import com.cognifide.knotx.mocks.adapter.MockAdapterHandler;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.logging.Logger;
@@ -57,10 +57,7 @@ public class MockServiceAdapterVerticle extends AbstractVerticle {
     vertx.eventBus().consumer(config().getString("address"), createHandler());
   }
 
-  private MockAdapterServiceHandler createHandler() {
-    MockAdapterServiceHandler handler = new MockAdapterServiceHandler(config().getString("mock.data.root"), vertx.fileSystem());
-    return config().getBoolean("bouncing", false)
-        ? handler.withBouncer()
-        : handler;
+  private MockAdapterHandler createHandler() {
+    return new MockAdapterHandler(config().getString("mock.data.root"), vertx.fileSystem());
   }
 }

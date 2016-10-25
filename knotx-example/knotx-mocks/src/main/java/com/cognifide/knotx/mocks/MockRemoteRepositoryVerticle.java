@@ -18,7 +18,7 @@
 package com.cognifide.knotx.mocks;
 
 
-import com.cognifide.knotx.mocks.service.MockRemoteRepositoryHandler;
+import com.cognifide.knotx.mocks.adapter.MockRemoteRepositoryHandler;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

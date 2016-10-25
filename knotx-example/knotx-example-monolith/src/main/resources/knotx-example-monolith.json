@@ -42,7 +42,9 @@
           "x-original-requested-uri",
           "x-solr-core-key",
           "x-language-code",
-          "x-requested-with"
+          "x-requested-with",
+          "location",
+          "set-cookie"
         ],
         "repositories": [
           {
@@ -61,7 +63,23 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.core.viewengine"
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next" : {
+                  "address": "knotx.knot.view"
+                }
+              }
+            }
+          ],
+          "POST": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next" : {
+                  "address": "knotx.knot.view"
+                }
+              }
             }
           ]
         }
@@ -92,9 +110,9 @@
         "address": "knotx.core.splitter"
       }
     },
-    "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
+    "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
       "config": {
-        "address": "knotx.core.viewengine",
+        "address": "knotx.knot.view",
         "template.debug": true,
         "client.options": {
           "maxPoolSize": 1000,
@@ -131,6 +149,42 @@
         ]
       }
     },
+    "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
+      "config" : {
+        "address": "knotx.knot.action",
+        "adapters": [
+          {
+            "name": "step1",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-step-1.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          },
+          {
+            "name": "step2",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-step-2.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          }
+        ],
+        "formIdentifierName": "_frmId"
+      }
+    },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
       "config": {
         "address": "knotx.adapter.service.http",
@@ -160,6 +214,25 @@
         ]
       }
     },
+    "com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle" :{
+      "config": {
+        "address": "knotx.adapter.action.http",
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
+        },
+        "services": [
+          {
+            "path": "/service/mock/.*",
+            "domain": "localhost",
+            "port": 3000,
+            "allowed.request.headers": [
+              "Cookie"
+            ]
+          }
+        ]
+      }
+    },
     "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle": {
       "config": {
         "mock.data.root": "mock/repository",
@@ -175,8 +248,14 @@
     },
     "com.cognifide.knotx.mocks.MockServiceAdapterVerticle": {
       "config": {
-        "address" : "mock-adapter-service",
+        "address" : "mock-service-adapter",
         "mock.data.root": "mock/service"
+      }
+    },
+    "com.cognifide.knotx.mocks.MockActionAdapterVerticle": {
+      "config": {
+        "address": "mock-action-adapter",
+        "mock.data.root": "mock/action"
       }
     }
   }

@@ -62,7 +62,12 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-engine-view</artifactId>
+      <artifactId>knotx-knot-view</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-knot-action</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -73,6 +78,11 @@
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-adapter-service-http</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-adapter-action-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

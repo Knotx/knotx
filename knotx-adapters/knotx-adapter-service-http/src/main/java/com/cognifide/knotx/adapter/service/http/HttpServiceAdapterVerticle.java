@@ -26,6 +26,7 @@ import com.cognifide.knotx.dataobjects.ClientResponse;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
@@ -47,7 +48,8 @@ public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpAdapterConfi
 
   @Override
   protected Observable<JsonObject> processMessage(JsonObject message) {
-    return httpClientFacade.process(message).map(ClientResponse::toJson);
+    return httpClientFacade.process(message, HttpMethod.GET)
+        .map(ClientResponse::toJson);
   }
 
   private HttpClient getHttpClient(HttpAdapterConfiguration configuration) {

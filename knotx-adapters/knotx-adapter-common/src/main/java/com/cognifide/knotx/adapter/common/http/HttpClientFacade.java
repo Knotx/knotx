@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -58,11 +59,11 @@ public class HttpClientFacade {
     this.services = services;
   }
 
-  public Observable<ClientResponse> process(JsonObject message) {
+  public Observable<ClientResponse> process(JsonObject message, HttpMethod method) {
     return Observable.just(message)
         .doOnNext(this::validateContract)
         .map(this::prepareRequest)
-        .flatMap(this::callService)
+        .flatMap(serviceRequest -> callService(serviceRequest, method))
         .flatMap(this::wrapResponse)
         .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
   }
@@ -99,12 +100,12 @@ public class HttpClientFacade {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Observable<HttpClientResponse> callService(Pair<ClientRequest, ServiceMetadata> serviceRequest) {
+  private Observable<HttpClientResponse> callService(Pair<ClientRequest, ServiceMetadata> serviceRequest, HttpMethod method) {
     final ClientRequest requestWrapper = serviceRequest.getLeft();
     final ServiceMetadata serviceMetadata = serviceRequest.getRight();
 
     return Observable.create(subscriber -> {
-      HttpClientRequest request = httpClient.get(serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
+      HttpClientRequest request = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
       Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
       request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
@@ -127,6 +128,7 @@ public class HttpClientFacade {
         .doOnNext(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
             .setBody(buffer)
+            .setHeaders(response.headers())
             .setStatusCode(HttpResponseStatus.valueOf(response.statusCode()))
         );
   }

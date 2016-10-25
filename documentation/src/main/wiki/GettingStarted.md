@@ -101,7 +101,7 @@ Here's how JSON configuration files look:
             ...
         }
       },      
-      "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
+      "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
         "config" : {
             ...
         }
@@ -179,9 +179,9 @@ The config node consists of:
 #### 1.3. Engine section
 ```json
   ...
-  "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
+  "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
     "config": {
-      "address": "knotx.core.viewengine",
+      "address": "knotx.knot.view",
       "template.debug": true,
       "client.options": {
         "maxPoolSize": 1000,
@@ -211,7 +211,7 @@ The config node consists of:
   },
   ...,
 ```
-This section configures the Knot.x View Engine Verticle responsible for rendering page consists of Handlebars template using data from corresponding services. The config node consists of:
+This section configures the Knot.x View Knot responsible for rendering page consists of Handlebars template using data from corresponding services. The config node consists of:
 - **address** - event bus address of the verticle it listens on,
 - **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
 - **client.options** - contains json representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html), 
@@ -247,7 +247,7 @@ The first matched service will handle the request or, if there's no service matc
         }
       ],
       "engine" : {
-        "address": "knotx.core.viewengine"
+        "address": "knotx.knot.view"
       }
     }
   },

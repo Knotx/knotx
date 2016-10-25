@@ -18,15 +18,13 @@
 package com.cognifide.knotx.mocks;
 
 
-import com.cognifide.knotx.mocks.service.MockServiceHandler;
+import com.cognifide.knotx.mocks.adapter.MockServiceHandler;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Context;
 import io.vertx.core.MultiMap;
-import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
@@ -46,8 +44,7 @@ public class MockServiceVerticle extends AbstractVerticle {
 
   private static final Action2<RoutingContext, String> BOUNCER = (context, mockData) -> {
     JsonObject responseBody = new JsonObject(mockData);
-    MultiMap formParams = context.request().params();
-    formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
+    context.response().putHeader("Set-Cookie", "mockCookie="+context.request().path());
     context.response().setStatusCode(200).end(responseBody.encodePrettily());
   };
 
