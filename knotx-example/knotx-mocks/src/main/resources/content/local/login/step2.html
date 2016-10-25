@@ -53,10 +53,15 @@
         <strong>Please check your credentials</strong>
         {{/if}}
         <p>Please provide your password</p>
-        <form data-knotx-action="step2" data-knotx-on-success="/content/local/simple.html" data-knotx-on-error="_self" method="post">
-          <input type="password" name="password" />
+        <form data-knotx-action="step2" data-knotx-on-success="/content/local/simple.html"
+              data-knotx-on-error="_self" method="post">
+          <input type="password" name="password"/>
           <input type="submit" value="Submit"/>
         </form>
+        <div>
+          <p class="bg-primary">Pro tip: All passwords that starts with <kbd>knotx</kbd> will be
+            accepted.</p>
+        </div>
       </script>
     </div>
   </div>

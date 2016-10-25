@@ -57,6 +57,10 @@
           <input type="email" name="email" {{#if action._result.validationError}} value="{{action._result.form.email}}" {{/if}} />
           <input type="submit" value="Submit"/>
         </form>
+        <div>
+          <p class="bg-primary">Pro tip: All emails that starts with <kbd>john.doe</kbd> will be
+            accepted.</p>
+        </div>
       </script>
     </div>
   </div>
