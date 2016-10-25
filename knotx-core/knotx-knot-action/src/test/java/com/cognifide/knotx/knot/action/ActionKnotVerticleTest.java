@@ -167,6 +167,7 @@ public class ActionKnotVerticleTest {
         error -> context.fail(error.getMessage()));
   }
 
+  @Ignore
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
