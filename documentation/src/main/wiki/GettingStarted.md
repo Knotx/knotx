@@ -101,7 +101,7 @@ Here's how JSON configuration files look:
             ...
         }
       },      
-      "com.cognifide.knotx.engine.view.ViewKnotVerticle": {
+      "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
         "config" : {
             ...
         }
@@ -179,7 +179,7 @@ The config node consists of:
 #### 1.3. Engine section
 ```json
   ...
-  "com.cognifide.knotx.engine.view.ViewKnotVerticle": {
+  "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
     "config": {
       "address": "knotx.knot.view",
       "template.debug": true,

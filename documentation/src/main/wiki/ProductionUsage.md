@@ -97,7 +97,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
         "catalogue": ""
       }
     },
-    "com.cognifide.knotx.engine.view.ViewKnotVerticle": {
+    "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
       "config": {
         "address": "knotx.knot.view",
         "template.debug": true,
