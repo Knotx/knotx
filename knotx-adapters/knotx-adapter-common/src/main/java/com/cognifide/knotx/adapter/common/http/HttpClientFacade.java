@@ -128,6 +128,7 @@ public class HttpClientFacade {
         .doOnNext(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
             .setBody(buffer)
+            .setHeaders(response.headers())
             .setStatusCode(HttpResponseStatus.valueOf(response.statusCode()))
         );
   }

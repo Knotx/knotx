@@ -44,6 +44,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -144,11 +145,19 @@ public class ActionKnotVerticle extends AbstractVerticle {
           if (shouldRedirect(redirectLocation)) {
             LOGGER.trace("Request redirected to [{}]", redirectLocation);
             knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
-            knotContext.clientResponse().setHeaders(knotContext.clientResponse().headers().add("Location", redirectLocation));
+            MultiMap headers = knotContext.clientResponse().headers();
+            headers.addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()));
+            headers.set(HttpHeaders.LOCATION.toString(), redirectLocation);
+
+            knotContext.clientResponse().setHeaders(headers);
             knotContext.clearFragments();
           } else {
             LOGGER.trace("Request next transition to [{}]", DEFAULT_TRANSITION);
-            currentFragment.getContext().put("_response", new JsonObject(clientResponse.body().toString()));
+            JsonObject actionContext = new JsonObject()
+                .put("_result", new JsonObject(clientResponse.body().toString()))
+                .put("_response", clientResponse.clearBody().toJson());
+
+            currentFragment.getContext().put("action", actionContext);
             knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
             knotContext.fragments().ifPresent(this::processFragments);
             knotContext.setTransition(DEFAULT_TRANSITION);

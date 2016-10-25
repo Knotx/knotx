@@ -43,7 +43,8 @@
           "x-solr-core-key",
           "x-language-code",
           "x-requested-with",
-          "location"
+          "location",
+          "set-cookie"
         ],
         "repositories": [
           {
@@ -154,9 +155,9 @@
         "adapters": [
           {
             "name": "step1",
-            "address": "mock-action-adapter",
+            "address": "knotx.adapter.action.http",
             "params": {
-              "step": "login-step1"
+              "path": "/service/mock/post-step-1.json"
             },
             "allowed.request.headers": [
               "Cookie"
@@ -168,9 +169,9 @@
           },
           {
             "name": "step2",
-            "address": "mock-action-adapter",
+            "address": "knotx.adapter.action.http",
             "params": {
-              "step": "login-step2"
+              "path": "/service/mock/post-step-2.json"
             },
             "allowed.request.headers": [
               "Cookie"
@@ -208,6 +209,25 @@
             "allowed.request.headers": [
               "Content-Type",
               "X-*"
+            ]
+          }
+        ]
+      }
+    },
+    "com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle" :{
+      "config": {
+        "address": "knotx.adapter.action.http",
+        "client.options": {
+          "maxPoolSize": 1000,
+          "keepAlive": false
+        },
+        "services": [
+          {
+            "path": "/service/mock/.*",
+            "domain": "localhost",
+            "port": 3000,
+            "allowed.request.headers": [
+              "Cookie"
             ]
           }
         ]

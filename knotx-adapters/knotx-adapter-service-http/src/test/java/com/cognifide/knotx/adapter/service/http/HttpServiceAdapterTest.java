@@ -69,7 +69,6 @@ public class HttpServiceAdapterTest {
     callAdapterServiceWithAssertions(context, "/service/mock/first.json",
         clientResponse -> {
           context.assertTrue(clientResponse.statusCode().equals(HttpResponseStatus.OK));
-          context.assertTrue(clientResponse.headers().isEmpty());
 
           JsonObject serviceResponse = new JsonObject(clientResponse.body().toString());
           JsonObject expectedResponse = new JsonObject(expected);
