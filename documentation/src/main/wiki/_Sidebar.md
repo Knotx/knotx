@@ -5,9 +5,9 @@
     * [[High Level Architecture|HighLevelArchitecture]]
     * [[Communication Flow|CommunicationFlow]]
     * [[Knot Routing|KnotRouting]]
-  * [[Server|TemplatingEngine]]
-  * [[Repository|TemplatingEngine]]
-  * [[Splitter|TemplatingEngine]]
+  * [[Server|Server]]
+  * [[Repository|Repository]]
+  * [[Splitter|Splitter]]
   * [[Knot|Knot]] (Describe what's Knot, it's API - KnotContext, how to build your own knot, and links to Knot.x shipped Knots as below)
     * [[Action Knot|ActionKnot]]
     * [[View Knot|ViewKnot]]
