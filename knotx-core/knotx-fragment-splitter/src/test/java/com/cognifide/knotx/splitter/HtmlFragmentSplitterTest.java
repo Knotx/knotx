@@ -42,7 +42,7 @@ public class HtmlFragmentSplitterTest {
   private String TEST_ONE_SNIPPET_HTML = "test-one-fragment.html";
   private String TEST_MANY_SNIPPETS_HTML = "test-many-fragments.html";
 
-  private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
+  private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating-X\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
 
 
   private List<Fragment> testNoSnippets;

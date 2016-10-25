@@ -149,4 +149,9 @@ public class ClientRequest {
         .forEach(entry -> result.add(entry.getKey(), entry.getValue().toString()));
     return result;
   }
+
+  @Override
+  public String toString() {
+    return toJson().toString();
+  }
 }

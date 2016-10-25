@@ -51,6 +51,7 @@ public class MockAdapterHandler implements Handler<Message<JsonObject>> {
     this.catalogue = catalogue;
     this.fileSystem = fileSystem;
   }
+
   @Override
   public void handle(Message<JsonObject> message) {
     ClientRequest request = new ClientRequest(message.body().getJsonObject("clientRequest"));
@@ -85,7 +86,7 @@ public class MockAdapterHandler implements Handler<Message<JsonObject>> {
   }
 
   protected String getFilePath(String path) {
-    return catalogue + File.separator + StringUtils.substringAfterLast(path, SEPARATOR);
+    return catalogue + File.separator + (path.contains(SEPARATOR) ? StringUtils.substringAfterLast(path, SEPARATOR) : path);
   }
 
   protected MultiMap headers(ClientRequest request, String data) {

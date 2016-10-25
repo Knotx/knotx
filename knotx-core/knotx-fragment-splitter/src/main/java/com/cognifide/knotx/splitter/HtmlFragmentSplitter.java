@@ -33,7 +33,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private final static String ANY_SNIPPET_PATTERN = "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
   private final static Pattern SNIPPET_PATTERN =
-      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME + "\\s*=\\s*\"([A-Za-z0-9]+)*\".+?</script>", Pattern.DOTALL);
+      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME + "\\s*=\\s*\"([A-Za-z0-9-]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
 
   @Override
   public List<Fragment> split(String html) {

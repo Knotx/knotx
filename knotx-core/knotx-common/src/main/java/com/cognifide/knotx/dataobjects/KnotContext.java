@@ -26,11 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 import rx.Observable;
 
 public class KnotContext {
@@ -78,6 +75,11 @@ public class KnotContext {
 
   public KnotContext setFragments(List<Fragment> fragments) {
     this.fragments = fragments;
+    return this;
+  }
+
+  public KnotContext clearFragments() {
+    this.fragments = null;
     return this;
   }
 
@@ -136,6 +138,11 @@ public class KnotContext {
   @Override
   public int hashCode() {
     return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+  }
+
+  @Override
+  public String toString() {
+    return toJson().toString();
   }
 }
 

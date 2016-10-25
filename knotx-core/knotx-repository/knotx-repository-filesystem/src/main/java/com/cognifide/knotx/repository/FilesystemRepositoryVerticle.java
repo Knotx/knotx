@@ -70,7 +70,7 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
                 response -> response.getLeft().reply(response.getRight().toJson()),
                 error -> {
                   LOGGER.error(ERROR_MESSAGE, error);
-                  message.reply(processError(error));
+                  message.reply(processError(error).toJson());
                 }
             )
     );
