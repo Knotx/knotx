@@ -44,8 +44,7 @@ public class MockServiceVerticle extends AbstractVerticle {
 
   private static final Action2<RoutingContext, String> BOUNCER = (context, mockData) -> {
     JsonObject responseBody = new JsonObject(mockData);
-    MultiMap formParams = context.request().params();
-    formParams.names().forEach(name -> responseBody.put(name, formParams.get(name)));
+    context.response().putHeader("Set-Cookie", "mockCookie="+context.request().path());
     context.response().setStatusCode(200).end(responseBody.encodePrettily());
   };
 
