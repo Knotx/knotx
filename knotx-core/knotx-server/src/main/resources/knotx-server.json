@@ -61,7 +61,7 @@
         "address": "knotx.knot.action",
         "onTransition": {
           "next": {
-            "address": "knotx.core.viewengine"
+            "address": "knotx.knot.view"
           }
         }
       }
@@ -72,7 +72,7 @@
         "address": "knotx.knot.action",
         "onTransition": {
           "next": {
-            "address": "knotx.core.viewengine"
+            "address": "knotx.knot.view"
           }
         }
       }

@@ -40,6 +40,6 @@
     <module>knotx-server</module>
     <module>knotx-standalone</module>
     <module>knotx-knot-action</module>
-    <module>knotx-engine-view</module>
+    <module>knotx-knot-view</module>
   </modules>
 </project>

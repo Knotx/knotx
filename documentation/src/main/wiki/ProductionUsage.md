@@ -73,7 +73,7 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
           }
         ],
         "engine": {
-          "address": "knotx.core.viewengine"
+          "address": "knotx.knot.view"
         }
       }
     },
@@ -97,9 +97,9 @@ The *core* module contains four Knot.x verticles without any sample data. Here's
         "catalogue": ""
       }
     },
-    "com.cognifide.knotx.engine.view.ViewEngineVerticle": {
+    "com.cognifide.knotx.engine.view.ViewKnotVerticle": {
       "config": {
-        "address": "knotx.core.viewengine",
+        "address": "knotx.knot.view",
         "template.debug": true,
         "client.options": {
           "maxPoolSize": 1000,
@@ -185,7 +185,7 @@ java -jar knotx-repository-http-XXX-fat.jar -conf <path-to-http-repository-confi
 ```
 java -jar knotx-repository-filesystem-XXX-fat.jar -conf <path-to-filesystem-repository-configuration.json>
 ```
-**Host 2 - View Engine Verticle**
+**Host 2 - View Knot**
 ```
 java -jar knotx-engine-view-XXX-fat.jar -conf <path-to-engine-configuration.json>
 ```
@@ -240,7 +240,7 @@ Knot.x server requires JSON configuration with *config* object. **Config** secti
         }
       ],
       "engine": {
-        "address": "knotx.core.viewengine"
+        "address": "knotx.knot.view"
       }
      }
     }
