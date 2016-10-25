@@ -29,6 +29,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
@@ -63,10 +64,23 @@ public class HttpActionAdapterVerticle extends AbstractAdapter<HttpAdapterConfig
     JsonObject result = new JsonObject();
 
     if (response.statusCode() == HttpResponseStatus.OK) {
-      result.put("signal", "success");
+      if (isJsonBody(response.body()) && response.body().toJsonObject().containsKey("validationErrors")) {
+        result.put("signal", "error");
+      } else {
+        result.put("signal", "success");
+      }
     }
     result.put("clientResponse", response.toJson());
 
     return result;
+  }
+
+  private boolean isJsonBody(Buffer bodyBuffer) {
+    String body = bodyBuffer.toString().trim();
+    if (body.charAt(0) == '{' && body.charAt(body.length() - 1) == '}') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
