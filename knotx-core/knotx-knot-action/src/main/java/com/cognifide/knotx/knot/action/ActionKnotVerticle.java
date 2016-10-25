@@ -153,7 +153,11 @@ public class ActionKnotVerticle extends AbstractVerticle {
             knotContext.clearFragments();
           } else {
             LOGGER.trace("Request next transition to [{}]", DEFAULT_TRANSITION);
-            currentFragment.getContext().put("_response", new JsonObject(clientResponse.body().toString()));
+            JsonObject actionContext = new JsonObject()
+                .put("_result", new JsonObject(clientResponse.body().toString()))
+                .put("_response", clientResponse.clearBody().toJson());
+
+            currentFragment.getContext().put("action", actionContext);
             knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
             knotContext.fragments().ifPresent(this::processFragments);
             knotContext.setTransition(DEFAULT_TRANSITION);
