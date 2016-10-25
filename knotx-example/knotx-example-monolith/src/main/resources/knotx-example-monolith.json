@@ -42,7 +42,8 @@
           "x-original-requested-uri",
           "x-solr-core-key",
           "x-language-code",
-          "x-requested-with"
+          "x-requested-with",
+          "location"
         ],
         "repositories": [
           {
@@ -61,7 +62,23 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.core.viewengine"
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next" : {
+                  "address": "knotx.core.viewengine"
+                }
+              }
+            }
+          ],
+          "POST": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next" : {
+                  "address": "knotx.core.viewengine"
+                }
+              }
             }
           ]
         }
@@ -129,6 +146,42 @@
             "params": {}
           }
         ]
+      }
+    },
+    "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
+      "config" : {
+        "address": "knotx.knot.action",
+        "adapters": [
+          {
+            "name": "step1",
+            "address": "mock-action-adapter",
+            "params": {
+              "step": "login-step1"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          },
+          {
+            "name": "step2",
+            "address": "mock-action-adapter",
+            "params": {
+              "step": "login-step2"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          }
+        ],
+        "formIdentifierName": "_frmId"
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{

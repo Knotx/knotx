@@ -28,6 +28,7 @@ import java.util.Optional;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.file.FileSystem;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -67,13 +68,13 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
 
   private Pair<Optional<String>, JsonObject> getErrorResponse() {
     return Pair.of(Optional.empty(),
-        new JsonObject().put("response", errorResponse().toJson()));
+        new JsonObject().put("clientResponse", errorResponse().toJson()));
   }
 
   private JsonObject transitionResponse(ClientRequest request, JsonObject transitions) {
     final Pair<Optional<String>, JsonObject> result = getTransitionResult(request, transitions);
 
-    final JsonObject resultBody = result.getRight().put("form", request.formAttributes());
+    final JsonObject resultBody = result.getRight().put("form", toJsonObject(request.formAttributes()));
 
     final String data = resultBody.toString();
     final ClientResponse clientResponse = new ClientResponse()
@@ -82,11 +83,11 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
         .setBody(Buffer.buffer(data));
 
     final JsonObject response = new JsonObject()
-        .put("response", clientResponse.toJson());
+        .put("clientResponse", clientResponse.toJson());
 
     final Optional<String> transition = result.getLeft();
     if (transition.isPresent()) {
-      response.put("transition", transition.get());
+      response.put("signal", transition.get());
     }
     return response;
   }
@@ -103,11 +104,19 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
   }
 
   private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> transition) {
-    final JsonObject condition = ((JsonObject) transition).getJsonObject("condition");
-    final MultiMap params = request.params();
+    final JsonObject condition = ((JsonObject) transition.getValue()).getJsonObject("condition");
+    final MultiMap formAttributes = request.formAttributes();
     return condition.stream().allMatch(entry ->
-        params.contains(entry.getKey())
-            && params.get(entry.getKey()).matches(String.valueOf(entry.getValue()))
+        formAttributes.contains(entry.getKey())
+            && formAttributes.get(entry.getKey()).matches(String.valueOf(entry.getValue()))
     );
+  }
+
+  private JsonObject toJsonObject(MultiMap multiMap) {
+    JsonObject result = new JsonObject();
+    multiMap.names().stream()
+        .forEach(name -> result.put(name, multiMap.get(name)));
+
+    return result;
   }
 }

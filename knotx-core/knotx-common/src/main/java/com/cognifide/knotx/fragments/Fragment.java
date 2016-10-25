@@ -37,7 +37,7 @@ public class Fragment {
 
   private final String id;
 
-  private final String content;
+  private String content;
 
   private final JsonObject context;
 
@@ -76,6 +76,11 @@ public class Fragment {
     return content;
   }
 
+  public Fragment setContent(String content) {
+    this.content = content;
+    return this;
+  }
+
   public JsonObject getContext() {
     return context;
   }
@@ -97,5 +102,10 @@ public class Fragment {
   @Override
   public int hashCode() {
     return Objects.hashCode(id, content, context);
+  }
+
+  @Override
+  public String toString() {
+    return toJson().toString();
   }
 }

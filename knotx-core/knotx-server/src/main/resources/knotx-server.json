@@ -58,15 +58,20 @@
     "GET": [
       {
         "path": "/content/.*",
-        "address": "knotx.core.viewengine"
+        "address": "knotx.knot.action",
+        "onTransition": {
+          "next": {
+            "address": "knotx.core.viewengine"
+          }
+        }
       }
     ],
     "POST": [
       {
         "path": "/content/.*",
-        "address": "knotx.core.actionengine",
+        "address": "knotx.knot.action",
         "onTransition": {
-          "render": {
+          "next": {
             "address": "knotx.core.viewengine"
           }
         }

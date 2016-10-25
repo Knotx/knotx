@@ -141,6 +141,12 @@
         ]
       }
     },
+    "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
+      "config" : {
+        "address": "knotx.knot.action",
+        "formIdentifierName": "snippet-identifier"
+      }
+    },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
       "config": {
         "address": "knotx.adapter.service.http",

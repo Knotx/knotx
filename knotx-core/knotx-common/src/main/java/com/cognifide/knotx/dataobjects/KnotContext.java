@@ -78,6 +78,11 @@ public class KnotContext {
     return this;
   }
 
+  public KnotContext clearFragments() {
+    this.fragments = null;
+    return this;
+  }
+
   public KnotContext setTransition(String transition) {
     this.transition = transition;
     return this;
@@ -133,6 +138,11 @@ public class KnotContext {
   @Override
   public int hashCode() {
     return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+  }
+
+  @Override
+  public String toString() {
+    return toJson().toString();
   }
 }
 
