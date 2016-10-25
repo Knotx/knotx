@@ -50,7 +50,7 @@
       <script data-api-type="form-1"
               type="text/x-handlebars-template">
         {{#if action._result.validationError}}
-        <strong>Please check your credentials</strong>
+        <p class="bg-danger">Invalid credentials</p>
         {{/if}}
         <p>Please provide your password</p>
         <form data-knotx-action="login-step2" data-knotx-on-success="/content/remote/simple.html" data-knotx-on-error="_self" method="post">
@@ -58,8 +58,7 @@
           <input type="submit" value="Submit"/>
         </form>
         <div>
-          <p class="bg-primary">Pro tip: All passwords that starts with <kbd>knotx</kbd> will be
-            accepted.</p>
+          <strong>Pro tip: All passwords that starts with <kbd>knotx</kbd> will be accepted.</strong>
         </div>
       </script>
     </div>
