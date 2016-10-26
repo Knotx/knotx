@@ -1,0 +1,27 @@
+{
+  "address": "knotx.adapter.service.http",
+  "client.options": {
+    "maxPoolSize": 1000,
+    "keepAlive": false
+  },
+  "services": [
+    {
+      "path": "/service/mock/.*",
+      "domain": "localhost",
+      "port": 3000,
+      "allowed.request.headers": [
+        "Content-Type",
+        "X-*"
+      ]
+    },
+    {
+      "path": "/service/.*",
+      "domain": "localhost",
+      "port": 8080,
+      "allowed.request.headers": [
+        "Content-Type",
+        "X-*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "success": {
+    "response": {
+      "result": "success"
+    },
+    "condition": {
+      "password": "^knotx.*$"
+    }
+  },
+  "error": {
+    "response": {
+      "validationError": "Invalid password address!"
+    },
+    "condition": {
+      "password": "^(?!knotx).*$"
+    }
+  }
+}

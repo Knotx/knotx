@@ -25,7 +25,7 @@
 
   <groupId>com.cognifide.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
@@ -57,6 +57,7 @@
   <modules>
     <module>documentation</module>
     <module>knotx-core</module>
+    <module>knotx-adapters</module>
     <module>knotx-example</module>
   </modules>
 
@@ -195,6 +196,7 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-module-junit4</artifactId>
         <version>${powermock.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -338,6 +340,9 @@
               <excludes>
                 <exclude>**/*SampleApplicationTest.java</exclude>
                 <exclude>**/*SampleApplicationHeadersTest.java</exclude>
+                <exclude>**/*HttpClientFacadeTest.java</exclude>
+                <exclude>**/*HttpServiceAdapterTest.java</exclude>
+                <exclude>**/*KnotxServerRoutingTest.java</exclude>
               </excludes>
             </configuration>
           </plugin>

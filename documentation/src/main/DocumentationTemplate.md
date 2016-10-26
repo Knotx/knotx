@@ -1,7 +1,7 @@
 #include "wiki/Home.md"
 #include "wiki/GettingStarted.md"
 #include "wiki/SnippetProcessing.md"
-#include "wiki/TemplatingEngine.md"
+#include "wiki/ViewEngine.md"
 #include "wiki/ProductionUsage.md"
 #include "wiki/Dependencies.md"
 #include "wiki/WhatsNew.md"

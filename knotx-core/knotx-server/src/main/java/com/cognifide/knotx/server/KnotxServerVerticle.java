@@ -17,37 +17,25 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.dataobjects.HttpRequestWrapper;
-import com.cognifide.knotx.dataobjects.HttpResponseWrapper;
-import com.cognifide.knotx.dataobjects.RenderRequest;
-import com.cognifide.knotx.dataobjects.RenderResponse;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.http.HttpServer;
-import io.vertx.rxjava.core.http.HttpServerResponse;
+import io.vertx.rxjava.ext.web.Router;
+import io.vertx.rxjava.ext.web.handler.BodyHandler;
+import io.vertx.rxjava.ext.web.handler.ErrorHandler;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
 
   private KnotxServerConfiguration configuration;
-
-  private HttpServer httpServer;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -58,50 +46,36 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
-    httpServer = vertx.createHttpServer();
-    EventBus eventBus = vertx.eventBus();
+    Router router = Router.router(vertx);
 
-    httpServer.requestHandler(
-        request -> {
-          final Optional<String> repositoryAddress = configuration.repositoryForPath(request.path());
-          final HttpRequestWrapper originalRequestWrapper = new HttpRequestWrapper(request);
-
-          if (repositoryAddress.isPresent()) {
-            request.setExpectMultipart(true);
-            request.endHandler(aVoid -> eventBus.<JsonObject>sendObservable(repositoryAddress.get(), originalRequestWrapper.toJson())
-                .doOnNext(this::traceMessage)
-                .map(msg -> new HttpResponseWrapper(msg.body()))
-                .subscribe(
-                    repoResponse -> {
-                      if (repoResponse.statusCode() == HttpResponseStatus.OK) {
-                        eventBus.<JsonObject>sendObservable(configuration.engineAddress(), requestRendering(repoResponse.body(), originalRequestWrapper))
-                            .map(msg -> new RenderResponse(msg.body()))
-                            .subscribe(
-                                engineResponse -> {
-                                  if (engineResponse.isSuccess()) {
-                                    writeHeaders(request.response(), repoResponse.headers().add("Content-Length", contentLength(engineResponse)));
-                                    request.response().setStatusCode(HttpResponseStatus.OK.code()).end(engineResponse.getHtml());
-                                  } else {
-                                    request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                                  }
-                                },
-                                error -> {
-                                  LOGGER.error("Error happened", error);
-                                  request.response().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()).end();
-                                }
-                            );
-                      } else {
-                        writeHeaders(request.response(), repoResponse.headers().add("content-length", "0"));
-                        request.response().setStatusCode(repoResponse.statusCode().code()).end();
-                      }
-                    },
-                    error -> LOGGER.error("Error: ", error)
-                ));
-          } else {
-            request.response().setStatusCode(HttpResponseStatus.NOT_FOUND.code()).end();
+    router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
+    router.route().handler(SupportedMethodsHandler.create(configuration));
+    configuration.getEngineRouting().entrySet().stream()
+        .forEach(entry -> {
+          if (entry.getKey() == HttpMethod.POST) {
+            router.route().method(entry.getKey()).handler(BodyHandler.create());
           }
-        }
-    ).listen(
+          entry.getValue().stream().forEach(
+              criteria -> {
+                router.route()
+                    .method(entry.getKey())
+                    .pathRegex(criteria.path())
+                    .handler(KnotxRepositoryHandler.create(vertx.eventBus(), configuration));
+
+                router.route()
+                    .method(entry.getKey())
+                    .pathRegex(criteria.path())
+                    .handler(KnotxSplitterHandler.create(vertx.eventBus(), configuration));
+
+                router.route()
+                    .method(entry.getKey())
+                    .pathRegex(criteria.path())
+                    .handler(KnotxEngineHandler.create(vertx.eventBus(), criteria.address(), criteria.onTransition(), configuration));
+              }
+          );
+        });
+
+    vertx.createHttpServer().requestHandler(router::accept).listen(
         configuration.httpPort(),
         result -> {
           if (result.succeeded()) {
@@ -112,31 +86,5 @@ public class KnotxServerVerticle extends AbstractVerticle {
             fut.fail(result.cause());
           }
         });
-  }
-
-  private String contentLength(RenderResponse engineResponse) {
-    return Integer.toString(engineResponse.getHtml().length());
-  }
-
-  private void writeHeaders(HttpServerResponse response, MultiMap headers) {
-    headers.names().stream()
-        .filter(this::headerFilter)
-        .forEach(name -> response.putHeader(name, headers.get(name)));
-  }
-
-  private Boolean headerFilter(String name) {
-    return configuration.allowedResponseHeaders().contains(name.toLowerCase());
-  }
-
-  private JsonObject requestRendering(Buffer htmlBuffer, HttpRequestWrapper originalRequest) {
-    return new RenderRequest().setRequest(originalRequest)
-        .setTemplate(htmlBuffer.toString())
-        .toJson();
-  }
-
-  private void traceMessage(Message<JsonObject> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <template-repository> with value <{}>", message.body().encodePrettily());
-    }
   }
 }

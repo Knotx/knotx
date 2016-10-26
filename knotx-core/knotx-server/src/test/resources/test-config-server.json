@@ -1,0 +1,101 @@
+{
+  "http.port": 8092,
+  "allowed.response.headers": [
+    "referer",
+    "user-agent",
+    "from",
+    "content-type",
+    "content-length",
+    "accept-charset",
+    "accept-encoding",
+    "accept-language",
+    "accept",
+    "host",
+    "if-match",
+    "if-none-match",
+    "if-range",
+    "if-unmodified-since",
+    "if-modified-since",
+    "max-forwards",
+    "proxy-authorization",
+    "proxy-connection",
+    "range",
+    "cookie",
+    "cq-action",
+    "cq-handle",
+    "handle",
+    "action",
+    "cqstats",
+    "depth",
+    "translate",
+    "expires",
+    "date",
+    "dav",
+    "ms-author-via",
+    "if",
+    "destination",
+    "access-control-allow-origin",
+    "x-original-requested-uri",
+    "x-solr-core-key",
+    "x-language-code",
+    "x-requested-with"
+  ],
+  "repositories": [
+    {
+      "path": "/content/local/.*",
+      "address": "knotx.repository.filesystem"
+    },
+    {
+      "path": "/content/.*",
+      "address": "knotx.repository.http"
+    }
+  ],
+  "splitter": {
+    "address": "knotx.core.splitter"
+  },
+  "routing": {
+    "GET": [
+      {
+        "path": "/content/local/.*",
+        "address": "A-engine",
+        "onTransition": {
+          "go-c": {
+            "address": "C-engine"
+          }
+        }
+      },
+      {
+        "path": "/content/.*",
+        "address": "C-engine"
+      }
+    ],
+    "POST": [
+      {
+        "path": "/content/local/.*",
+        "address": "A-post-engine",
+        "onTransition": {
+          "go-b": {
+            "address": "B-engine",
+            "onTransition": {
+              "go-c": {
+                "address": "C-engine"
+              }
+            }
+          },
+          "go-c": {
+            "address": "C-engine"
+          }
+        }
+      },
+      {
+        "path": "/content/.*",
+        "address": "B-engine",
+        "onTransition": {
+          "go-c": {
+            "address": "C-engine"
+          }
+        }
+      }
+    ]
+  }
+}

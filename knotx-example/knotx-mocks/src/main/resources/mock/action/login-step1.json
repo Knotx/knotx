@@ -1,0 +1,18 @@
+{
+  "success": {
+    "response": {
+      "found": true
+    },
+    "condition": {
+      "email": "^john\\.doe.*$"
+    }
+  },
+  "error": {
+    "response": {
+      "validationError": "Invalid email address!"
+    },
+    "condition": {
+      "email": "^(?!john\\.doe).*$"
+    }
+  }
+}

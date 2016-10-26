@@ -1,0 +1,72 @@
+<!--
+
+    Knot.x - Mocked services for sample app
+
+    Copyright (C) 2016 Cognifide Limited
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
+  <title>Knot.x - Login Step 1</title>
+  <link href="https://bootswatch.com/superhero/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="jumbotron">
+        <h1>
+          Sample multi-step form wizard
+        </h1>
+        <h2>
+          Login Form - STEP 1
+        </h2>
+        <p>
+          <a class="btn btn-primary btn-large"
+             href="https://github.com/Cognifide/knotx">Learn more</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <script data-api-type="form-1"
+              type="text/x-handlebars-template">
+        <p class="bg-danger">{{#if action._result.validationErrors}}Email address does not exists{{/if}}</p>
+        <p>Please provide your email address</p>
+        <form data-knotx-action="step1" data-knotx-on-success="/content/remote/login/step2.html" data-knotx-on-error="_self" method="post">
+          <input type="email" name="email" value="{{#if action._result.validationError}} {{action._result.form.email}} {{/if}}" />
+          <input type="submit" value="Submit"/>
+        </form>
+        <div>
+          <strong>Pro tip: All emails that starts with <kbd>john.doe</kbd> will be accepted.</strong>
+        </div>
+      </script>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>

@@ -17,29 +17,43 @@
  */
 package com.cognifide.knotx.server;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
 
-  private Integer httpPort;
+  private boolean displayExceptionDetails;
 
-  private String engineAddress;
+  private Integer httpPort;
 
   private Set<String> allowedResponseHeaders;
 
   private Map<String, String> repositoryAddressMapping;
 
+  private String splitterAddress;
+
+  private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
+
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("http.port");
+    splitterAddress = config.getJsonObject("splitter").getString("address");
 
-    engineAddress = config.getJsonObject("engine").getString("address");
+    displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
+
+    engineRouting = Maps.newEnumMap(HttpMethod.class);
+    config.getJsonObject("routing").stream()
+        .forEach(entry -> parseMethodRouting(entry));
 
     repositoryAddressMapping = Maps.newHashMap();
     config.getJsonArray("repositories").stream()
@@ -51,12 +65,16 @@ public class KnotxServerConfiguration {
         .collect(Collectors.toSet());
   }
 
-  public Integer httpPort() {
-    return httpPort;
+  public String splitterAddress() {
+    return splitterAddress;
   }
 
-  public String engineAddress() {
-    return engineAddress;
+  public boolean displayExceptionDetails() {
+    return displayExceptionDetails;
+  }
+
+  public Integer httpPort() {
+    return httpPort;
   }
 
   public Optional<String> repositoryForPath(final String path) {
@@ -67,5 +85,45 @@ public class KnotxServerConfiguration {
 
   public Set<String> allowedResponseHeaders() {
     return allowedResponseHeaders;
+  }
+
+  public EnumMap<HttpMethod, List<RoutingEntry>> getEngineRouting() {
+    return engineRouting;
+  }
+
+  private void parseMethodRouting(Map.Entry<String, Object> entry) {
+    final List<RoutingEntry> methodCriteria = getMethodCriterias(HttpMethod.valueOf(entry.getKey()));
+
+    ((JsonArray) entry.getValue()).stream()
+        .map(item -> (JsonObject) item)
+        .map(item -> parseRoutingCriteria(item))
+        .forEach(methodCriteria::add);
+  }
+
+  private RoutingEntry parseRoutingCriteria(JsonObject object) {
+    return new RoutingEntry(object.getString("path"), object.getString("address"), parseOnTransition(object.getJsonObject("onTransition")));
+  }
+
+  private Map<String, RoutingEntry> parseOnTransition(JsonObject onTransition) {
+    Map<String, RoutingEntry> transitions = Maps.newHashMap();
+
+    if (onTransition != null) {
+      onTransition.stream().forEach(
+          entry -> transitions.put(entry.getKey(), parseRoutingCriteria((JsonObject) entry.getValue()))
+      );
+    }
+
+    return transitions;
+  }
+
+  private List<RoutingEntry> getMethodCriterias(HttpMethod method) {
+    List<RoutingEntry> routingEntries = Lists.newArrayList();
+    if (engineRouting.containsKey(method)) {
+      routingEntries = engineRouting.get(method);
+    } else {
+      engineRouting.put(method, routingEntries);
+    }
+
+    return routingEntries;
   }
 }

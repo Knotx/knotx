@@ -25,7 +25,7 @@
   <parent>
     <groupId>com.cognifide.knotx</groupId>
     <artifactId>knotx-root</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>knotx-core</artifactId>
@@ -35,9 +35,11 @@
 
   <modules>
     <module>knotx-common</module>
-    <module>knotx-server</module>
     <module>knotx-repository</module>
-    <module>knotx-template-engine</module>
+    <module>knotx-fragment-splitter</module>
+    <module>knotx-server</module>
     <module>knotx-standalone</module>
+    <module>knotx-knot-action</module>
+    <module>knotx-knot-view</module>
   </modules>
 </project>
