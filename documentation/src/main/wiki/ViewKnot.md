@@ -19,3 +19,49 @@ Sample application contains an example custom Handlebars helper - please take a 
 * Implementation class: ```com.cognifide.knotx.example.monolith.handlebars.BoldHelper```
 * service registration: ```knotx-example-monolith/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
 
+#### 1.3. Engine section
+```json
+  ...
+  "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+    "config": {
+      "address": "knotx.knot.view",
+      "template.debug": true,
+      "client.options": {
+        "maxPoolSize": 1000,
+        "keepAlive": false
+      },
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 3000,
+          "allowed.request.headers": [
+            "Content-Type",
+            "X-*"
+          ]          
+        },
+        {
+          "path": "/service/.*",
+          "domain": "localhost",
+          "port": 8080,
+          "allowed.request.headers": [
+            "Content-Type",
+            "X-*"
+          ]          
+        }
+      ]
+    }
+  },
+  ...,
+```
+This section configures the Knot.x View Knot responsible for rendering page consists of Handlebars template using data from corresponding services. The config node consists of:
+- **address** - event bus address of the verticle it listens on,
+- **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
+- **client.options** - contains json representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html), 
+- **services** - an array of definitions of all service endpoints used by dynamic snippets.
+
+There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
+- `/service/mock/.*` will by handled by `localhost:3000`
+- `/service/.*` will be handled by `localhost:8080`
+
+The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.

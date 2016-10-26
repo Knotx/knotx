@@ -1,3 +1,5 @@
+[WORKING IN PROGRESS]
+
 Knot.x uses two main concepts which make it easily customizable: dedicated modules with single 
 responsibility and communication / event bus. Those two factors make Knot.x very expendable 
 and adaptable.
