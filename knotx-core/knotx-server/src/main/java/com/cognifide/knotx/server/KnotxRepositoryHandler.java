@@ -62,10 +62,12 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
           .map(msg -> new ClientResponse(msg.body()))
           .subscribe(
               repoResponse -> {
-                if (repoResponse.statusCode() == HttpResponseStatus.OK) {
+                if (isSuccessResponse(repoResponse)) {
                   knotContext.setClientResponse(repoResponse);
                   context.put("knotContext", knotContext);
                   context.next();
+                } else if (isErrorResponse(repoResponse)) {
+                  context.fail(repoResponse.statusCode().code());
                 } else {
                   writeHeaders(context.response(), repoResponse.headers().add("Content-Length", "0"));
                   context.response().setStatusCode(repoResponse.statusCode().code()).end();
@@ -77,6 +79,14 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     } else {
       context.fail(HttpResponseStatus.NOT_FOUND.code());
     }
+  }
+
+  private boolean isSuccessResponse(ClientResponse repoResponse) {
+    return repoResponse.statusCode().equals(HttpResponseStatus.OK);
+  }
+
+  private boolean isErrorResponse(ClientResponse repoResponse) {
+    return repoResponse.statusCode().equals(HttpResponseStatus.INTERNAL_SERVER_ERROR) || repoResponse.statusCode().equals(HttpResponseStatus.NOT_FOUND);
   }
 
   private KnotContext toKnotContext(RoutingContext context) {

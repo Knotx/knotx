@@ -3,6 +3,7 @@
     "com.cognifide.knotx.server.KnotxServerVerticle": {
       "config": {
         "http.port": 8092,
+        "displayExceptionDetails": true,
         "allowed.response.headers": [
           "referer",
           "user-agent",
@@ -41,7 +42,9 @@
           "x-original-requested-uri",
           "x-solr-core-key",
           "x-language-code",
-          "x-requested-with"
+          "x-requested-with",
+          "location",
+          "set-cookie"
         ],
         "repositories": [
           {
@@ -61,17 +64,6 @@
             {
               "path": "/content/.*",
               "address": "knotx.knot.view"
-            }
-          ],
-          "POST": [
-            {
-              "path": "/content/.*",
-              "address": "knotx.core.actionengine",
-              "onTransition": {
-                "render": {
-                  "address": "knotx.knot.view"
-                }
-              }
             }
           ]
         }
@@ -144,10 +136,40 @@
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
       "config" : {
         "address": "knotx.knot.action",
-        "formIdentifierName": "snippet-identifier"
+        "adapters": [
+          {
+            "name": "step1",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-step-1.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          },
+          {
+            "name": "step2",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-step-2.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          }
+        ],
+        "formIdentifierName": "_frmId"
       }
     },
-    "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
+    "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
       "config": {
         "address": "knotx.adapter.service.http",
         "client.options": {
