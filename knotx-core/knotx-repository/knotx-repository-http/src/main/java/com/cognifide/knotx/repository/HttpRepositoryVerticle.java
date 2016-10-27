@@ -68,7 +68,7 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
                 response -> response.getLeft().reply(response.getRight().toJson()),
                 error -> {
                   LOGGER.error(ERROR_MESSAGE, error);
-                  message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                  message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR).toJson());
                 }
             )
     );
