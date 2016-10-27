@@ -3,6 +3,7 @@
     "com.cognifide.knotx.server.KnotxServerVerticle": {
       "config": {
         "http.port": 8092,
+        "displayExceptionDetails": true,
         "allowed.response.headers": [
           "referer",
           "user-agent",
@@ -39,9 +40,10 @@
           "destination",
           "access-control-allow-origin",
           "x-original-requested-uri",
-          "x-solr-core-key",
           "x-language-code",
-          "x-requested-with"
+          "x-requested-with",
+          "location",
+          "set-cookie"
         ],
         "repositories": [
           {
@@ -61,17 +63,6 @@
             {
               "path": "/content/.*",
               "address": "knotx.knot.view"
-            }
-          ],
-          "POST": [
-            {
-              "path": "/content/.*",
-              "address": "knotx.core.actionengine",
-              "onTransition": {
-                "render": {
-                  "address": "knotx.knot.view"
-                }
-              }
             }
           ]
         }
@@ -112,39 +103,69 @@
         },
         "services": [
           {
-            "name" : "first-service",
-            "address" : "knotx.adapter.service.http",
+            "name": "first-service",
+            "address": "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/first.json"
             },
             "cacheKey": "first"
           },
           {
-            "name" : "second-service",
-            "address" : "knotx.adapter.service.http",
+            "name": "second-service",
+            "address": "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/second.json"
             }
           },
           {
-            "name" : "third-service",
-            "address" : "knotx.adapter.service.http",
+            "name": "third-service",
+            "address": "knotx.adapter.service.http",
             "params": {
               "path": "/service/mock/third.json"
             }
           },
           {
-            "name" : "labelsRepository",
-            "address" : "knotx.adapter.service.http",
+            "name": "labelsRepository",
+            "address": "knotx.adapter.service.http",
             "params": {}
           }
         ]
       }
     },
-    "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {
-      "config" : {
+    "com.cognifide.knotx.knot.action.ActionKnotVerticle": {
+      "config": {
         "address": "knotx.knot.action",
-        "formIdentifierName": "snippet-identifier"
+        "adapters": [
+          {
+            "name": "step1",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-step-1.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          },
+          {
+            "name": "step2",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-step-2.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          }
+        ],
+        "formIdentifierName": "_frmId"
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle": {

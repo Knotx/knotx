@@ -19,27 +19,41 @@ package com.cognifide.knotx.server;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.rxjava.ext.web.handler.LoggerHandler;
 
-public class SupportedMethodsHandler implements Handler<RoutingContext> {
+public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxSplitterHandler.class);
+
 
   private KnotxServerConfiguration configuration;
 
-  private SupportedMethodsHandler(KnotxServerConfiguration configuration) {
+  private SupportedMethodsAndPathsHandler(KnotxServerConfiguration configuration) {
     this.configuration = configuration;
   }
 
-  public static SupportedMethodsHandler create(KnotxServerConfiguration configuration) {
-    return new SupportedMethodsHandler(configuration);
+  public static SupportedMethodsAndPathsHandler create(KnotxServerConfiguration configuration) {
+    return new SupportedMethodsAndPathsHandler(configuration);
   }
 
   @Override
   public void handle(RoutingContext context) {
-    boolean shouldReject = configuration.getEngineRouting().keySet().stream()
+    boolean shouldRejectMethod = configuration.getEngineRouting().keySet().stream()
         .noneMatch(supportedMethod -> supportedMethod == context.request().method());
 
-    if (shouldReject) {
+    boolean shouldRejectPath = configuration.getEngineRouting().values().stream().noneMatch(
+        routingEntries -> routingEntries.stream().anyMatch(item -> context.request().path().matches(item.path()))
+    );
+
+    if (shouldRejectMethod) {
+      LOGGER.warn("Requested method {} is not supported based on configuration", context.request().method());
       context.fail(HttpResponseStatus.METHOD_NOT_ALLOWED.code());
+    } else if (shouldRejectPath) {
+      LOGGER.warn("Requested path {} is not supported based on configuration", context.request().path());
+      context.fail(HttpResponseStatus.NOT_FOUND.code());
     } else {
       context.next();
     }

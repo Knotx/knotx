@@ -48,8 +48,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
     Router router = Router.router(vertx);
 
-    router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
-    router.route().handler(SupportedMethodsHandler.create(configuration));
+    router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
     configuration.getEngineRouting().entrySet().stream()
         .forEach(entry -> {
           if (entry.getKey() == HttpMethod.POST) {
@@ -74,6 +73,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
               }
           );
         });
+    router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 
     vertx.createHttpServer().requestHandler(router::accept).listen(
         configuration.httpPort(),
