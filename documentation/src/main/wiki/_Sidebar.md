@@ -3,6 +3,7 @@
   * [[Getting started|GettingStarted]]
   * [[Architecture|Architecture]]
     * [[High Level Architecture|HighLevelArchitecture]]
+    * [[Core Architecture|CoreArchitecture]]
     * [[Communication Flow|CommunicationFlow]]
     * [[Knot Routing|KnotRouting]]
   * [[Server|Server]]
