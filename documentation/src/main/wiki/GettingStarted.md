@@ -1,5 +1,15 @@
 # Getting started
 
+## What Knot.x is?
+
+Very efficient, high-performance and scalable platform which assembles static and dynamic content from multiple sources.
+
+## What are base concepts of Knot.x?
+Knot.x uses asynchronous programming principles which allows it to process a large number of requests using a single thread.
+Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
+The platform stays responsive under heavy and varying load.
+
+
 ## Requirements
 
 To run Knot.x you only need Java 8.

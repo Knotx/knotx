@@ -1,22 +1,26 @@
-[WORKING IN PROGRESS]
+[TO REVIEW]
 
-Knot.x uses two main concepts which make it easily customizable: dedicated modules with single 
-responsibility and communication / event bus. Those two factors make Knot.x very expendable 
-and adaptable.
+Knot.x is modular easily extensible and adaptable platform which assembles static and dynamic 
+content from multiple sources.
 
-Knot.x delivers a default configuration which hides its internal complexity and allows to use it 
-in projects with limited knowledge about Knot.x Core modules. Project specific features can be added 
-to Knot.x as external adapters. Those adapters register in the event bus and handle project
-specific business logic.
+Knot.x hides its internal complexity and allows to use it with very basic knowledge about Knot.x 
+Core modules. Custom features can be easily added to Knot.x with two flexible extension points: Knots
+and Adapters. Both [Knots](#Knot) and [Adapters](#Adapter) listen to the event bus and handle 
+custom business logic.
 
-Diagram below depicts high level Knot.x architecture:
+Diagram below depicts high level Knot.x architecture.
 
-[[assets/highLevelArchitecture-external.png|alt=High Level Architecture]]
+[[assets/knotx-high-level-architecture.png|alt=High Level Architecture]]
 
-Every business logic functionality is encapsulated in dedicated adapters. There are two main Knot.x
-Core adapter types: Action and Service Adapters. Knot.x recommends to create those very small adapters
-to communicate with external services or perform some business logic.
+Custom business logic can be encapsulated in dedicated Knots / Adapters.
 
-For cases where Knot.x can consume service responses without any modifications no custom adapters 
-are required. Internally Knot.x provides default HTTP adapters which can communicate with services.
-On diagram it is marked with arrow between Knot.x and cloud services.
+Knot is module which defines custom step while [request routing](#KnotRouting). It can process custom
+fragments, invoke Adapters and redirect site visitors to new site or error page. More about Knots you
+can read in dedicated section.
+ 
+Adapters are used to communicate with external services. Knot.x recommends to create dedicated Adapter
+every time we need to perform some business logic or adapt service response to other format.
+
+If service responses can be used as is without any changes no custom Adapters will be required. 
+Knot.x Core provides generic HTTP Adapter which can communicate with services.
+It is marked on diagram with arrow between Knot.x and Services Layer.
