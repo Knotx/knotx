@@ -82,11 +82,11 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   }
 
   private boolean isSuccessResponse(ClientResponse repoResponse) {
-    return repoResponse.statusCode().equals(HttpResponseStatus.OK);
+    return HttpResponseStatus.OK.equals(repoResponse.statusCode());
   }
 
   private boolean isErrorResponse(ClientResponse repoResponse) {
-    return repoResponse.statusCode().equals(HttpResponseStatus.INTERNAL_SERVER_ERROR) || repoResponse.statusCode().equals(HttpResponseStatus.NOT_FOUND);
+    return HttpResponseStatus.INTERNAL_SERVER_ERROR.equals(repoResponse.statusCode()) || HttpResponseStatus.NOT_FOUND.equals(repoResponse.statusCode());
   }
 
   private KnotContext toKnotContext(RoutingContext context) {
