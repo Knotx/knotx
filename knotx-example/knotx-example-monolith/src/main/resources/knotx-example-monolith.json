@@ -54,6 +54,11 @@
           {
             "path": "/content/.*",
             "address": "knotx.core.repository.http"
+          },
+          {
+            "path": "/img/.*",
+            "address": "knotx.core.repository.http",
+            "doProcessing": false
           }
         ],
         "splitter": {
@@ -62,7 +67,7 @@
         "routing": {
           "GET": [
             {
-              "path": "/content/.*",
+              "path": "/.*",
               "address": "knotx.knot.action",
               "onTransition": {
                 "next" : {

@@ -24,26 +24,6 @@
         "address": "mock-action-adapter",
         "mock.data.root": "mock/action"
       }
-    },
-    "com.cognifide.knotx.mocks.MockKnotVerticle": {
-      "config": {
-        "knot.action.mock": {
-          "/form-simple": {
-            "fragments": "mock/knot/action/form-simple.fragments.json",
-            "clientResponse": "mock/knot/action/form-simple.response.json",
-            "transition": "view"
-          },
-          "/redirect": {
-            "clientResponse": "mock/knot/action/redirect.response.json"
-          }
-        },
-        "knot.view.mock": {
-          "/simple": {
-            "fragments": "mock/knot/view/simple.fragments.json",
-            "clientResponse": "mock/knot/view/simple.response.json"
-          }
-        }
-      }
     }
   }
 }

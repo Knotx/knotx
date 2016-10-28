@@ -53,19 +53,23 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    final Optional<String> repositoryAddress = configuration.repositoryForPath(context.request().path());
+    final Optional<KnotxServerConfiguration.RepositoryEntry> repositoryEntry = configuration.repositoryForPath(context.request().path());
     final KnotContext knotContext = toKnotContext(context);
 
-    if (repositoryAddress.isPresent()) {
-      eventBus.<JsonObject>sendObservable(repositoryAddress.get(), knotContext.clientRequest().toJson())
+    if (repositoryEntry.isPresent()) {
+      eventBus.<JsonObject>sendObservable(repositoryEntry.get().address(), knotContext.clientRequest().toJson())
           .doOnNext(this::traceMessage)
           .map(msg -> new ClientResponse(msg.body()))
           .subscribe(
               repoResponse -> {
                 if (isSuccessResponse(repoResponse)) {
-                  knotContext.setClientResponse(repoResponse);
-                  context.put("knotContext", knotContext);
-                  context.next();
+                  if (repositoryEntry.get().doProcessing()) {
+                    knotContext.setClientResponse(repoResponse);
+                    context.put("knotContext", knotContext);
+                    context.next();
+                  }
+                  writeHeaders(context.response(), repoResponse.headers());
+                  context.response().setStatusCode(repoResponse.statusCode().code()).end(repoResponse.body());
                 } else if (isErrorResponse(repoResponse)) {
                   context.fail(repoResponse.statusCode().code());
                 } else {
