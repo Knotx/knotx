@@ -20,6 +20,7 @@ package com.cognifide.knotx.adapter.common.http;
 import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
+import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -130,8 +131,11 @@ public class HttpClientFacade {
       resp.subscribe(subscriber);
       httpRequest.headers().addAll(getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
       httpRequest.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
-
-      httpRequest.end();
+      if (!serviceRequest.formAttributes().isEmpty()) {
+        httpRequest.end(FormBodyBuilder.createBody(serviceRequest.formAttributes()));
+      } else {
+        httpRequest.end();
+      }
     });
   }
 
