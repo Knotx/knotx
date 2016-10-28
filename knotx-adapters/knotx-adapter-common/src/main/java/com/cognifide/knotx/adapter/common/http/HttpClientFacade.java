@@ -109,12 +109,6 @@ public class HttpClientFacade {
       HttpClientRequest request = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
       Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
-<<<<<<< Updated upstream
-      request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
-      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
-
-      request.end();
-=======
       httpRequest.headers().addAll(getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
       httpRequest.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
       if (!serviceRequest.formAttributes().isEmpty()) {
@@ -122,7 +116,6 @@ public class HttpClientFacade {
       } else {
         httpRequest.end();
       }
->>>>>>> Stashed changes
     });
   }
 
