@@ -133,8 +133,11 @@ public class ActionKnotVerticle extends AbstractVerticle {
           ClientResponse clientResponse = new ClientResponse(msg.body().getJsonObject("clientResponse"));
           String signal = msg.body().getString("signal");
 
-          if (!HttpResponseStatus.OK.equals(clientResponse.statusCode())) {
-            knotContext.clientResponse().setStatusCode(clientResponse.statusCode());
+          if (isNotOkStatus(clientResponse)) {
+            knotContext.clientResponse()
+                .setStatusCode(clientResponse.statusCode())
+                .setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+            
             knotContext.clearFragments();
             handler.handle(knotContext.toJson());
           }
@@ -174,6 +177,10 @@ public class ActionKnotVerticle extends AbstractVerticle {
           handler.handle(knotContext.toJson());
         }
     );
+  }
+
+  private boolean isNotOkStatus(ClientResponse response) {
+    return !HttpResponseStatus.OK.equals(response.statusCode());
   }
 
   private void handleGetMethod(Handler<JsonObject> handler, KnotContext knotContext) {
