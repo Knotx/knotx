@@ -96,10 +96,8 @@ public class HttpClientFacade {
    * @return ClientRequest representing Http request to the target service
    */
   protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
-    final ClientRequest serviceRequest = new ClientRequest(originalRequest.toJson())
+    return new ClientRequest(originalRequest.toJson())
         .setPath(UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
-
-    return serviceRequest;
   }
 
   private Pair<ClientRequest, ServiceMetadata> prepareRequestData(JsonObject message) {
