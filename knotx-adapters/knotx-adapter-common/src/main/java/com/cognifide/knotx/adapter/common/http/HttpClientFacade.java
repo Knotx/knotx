@@ -129,8 +129,9 @@ public class HttpClientFacade {
       HttpClientRequest httpRequest = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), serviceRequest.path());
       Observable<HttpClientResponse> resp = httpRequest.toObservable();
       resp.subscribe(subscriber);
-      httpRequest.headers().addAll(getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
-      httpRequest.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
+
+      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns());
+      filteredHeaders.names().forEach(headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
       if (!serviceRequest.formAttributes().isEmpty()) {
         httpRequest.end(FormBodyBuilder.createBody(serviceRequest.formAttributes()));
       } else {

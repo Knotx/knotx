@@ -153,9 +153,9 @@ public class ActionKnotVerticle extends AbstractVerticle {
           if (shouldRedirect(redirectLocation)) {
             LOGGER.trace("Request redirected to [{}]", redirectLocation);
             knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
-            MultiMap headers = knotContext.clientResponse().headers();
+            MultiMap headers = MultiMap.caseInsensitiveMultiMap();
             headers.addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()));
-            headers.set(HttpHeaders.LOCATION.toString(), redirectLocation);
+            headers.add(HttpHeaders.LOCATION.toString(), redirectLocation);
 
             knotContext.clientResponse().setHeaders(headers);
             knotContext.clearFragments();
@@ -166,7 +166,8 @@ public class ActionKnotVerticle extends AbstractVerticle {
                 .put("_response", clientResponse.clearBody().toJson());
 
             currentFragment.getContext().put("action", actionContext);
-            knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+            knotContext.clientResponse().setHeaders(
+                MultiMap.caseInsensitiveMultiMap().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
             knotContext.fragments().ifPresent(this::processFragments);
             knotContext.setTransition(DEFAULT_TRANSITION);
           }
