@@ -137,7 +137,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
             knotContext.clientResponse()
                 .setStatusCode(clientResponse.statusCode())
                 .setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
-            
+
             knotContext.clearFragments();
             handler.handle(knotContext.toJson());
           }
