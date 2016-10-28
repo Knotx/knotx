@@ -110,7 +110,7 @@ public class HttpClientFacade {
     if (serviceMetadata.isPresent()) {
       serviceData = Pair.of(serviceRequest, serviceMetadata.get());
     } else {
-      final String error = String.format("Parameter `params.path`: `%s` not supported!", serviceRequest.path());
+      final String error = String.format("No matching service definition for the requested path '%s'", serviceRequest.path());
       throw new UnsupportedServiceException(error);
     }
     return serviceData;
