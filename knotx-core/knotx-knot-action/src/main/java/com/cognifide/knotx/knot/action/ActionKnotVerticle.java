@@ -97,7 +97,6 @@ public class ActionKnotVerticle extends AbstractVerticle {
     } else {
       handleGetMethod(handler, knotContext);
     }
-
   }
 
   private void handleFormAction(KnotContext knotContext, Handler<JsonObject> handler) {
@@ -134,12 +133,18 @@ public class ActionKnotVerticle extends AbstractVerticle {
           ClientResponse clientResponse = new ClientResponse(msg.body().getJsonObject("clientResponse"));
           String signal = msg.body().getString("signal");
 
+          if (!HttpResponseStatus.OK.equals(clientResponse.statusCode())) {
+            knotContext.clientResponse().setStatusCode(clientResponse.statusCode());
+            knotContext.clearFragments();
+            handler.handle(knotContext.toJson());
+          }
+
           String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
               .getElementsByAttribute("data-knotx-on-" + signal).first())
               .map(element -> element.attr("data-knotx-on-" + signal))
               .orElseThrow(() -> {
-                LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-                return new NoSuchElementException("Could not action adapter name");
+                LOGGER.error("Could not find signal name [{}] in fragment [{}].", signal, currentFragment);
+                return new NoSuchElementException("Could not find signal in configuration!");
               });
 
           if (shouldRedirect(redirectLocation)) {
