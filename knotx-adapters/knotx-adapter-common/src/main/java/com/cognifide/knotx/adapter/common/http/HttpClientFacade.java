@@ -20,6 +20,7 @@ package com.cognifide.knotx.adapter.common.http;
 import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
+import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -108,10 +109,20 @@ public class HttpClientFacade {
       HttpClientRequest request = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
       Observable<HttpClientResponse> resp = request.toObservable();
       resp.subscribe(subscriber);
+<<<<<<< Updated upstream
       request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
       request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
 
       request.end();
+=======
+      httpRequest.headers().addAll(getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
+      httpRequest.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
+      if (!serviceRequest.formAttributes().isEmpty()) {
+        httpRequest.end(FormBodyBuilder.createBody(serviceRequest.formAttributes()));
+      } else {
+        httpRequest.end();
+      }
+>>>>>>> Stashed changes
     });
   }
 
