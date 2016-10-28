@@ -19,6 +19,7 @@ package com.cognifide.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
 import com.cognifide.knotx.dataobjects.ClientRequest;
@@ -168,7 +169,7 @@ public class HttpClientFacadeTest {
         response -> context.fail("Error should occur!"),
         error -> {
           {
-            context.assertEquals("No matching service definition for the requested path '/not/supported/path'", error.getMessage());
+            context.assertEquals(UnsupportedServiceException.class, error.getClass());
             Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
