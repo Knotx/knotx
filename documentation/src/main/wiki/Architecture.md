@@ -1,4 +1,5 @@
 [TO REVIEW]
+#Architecture
 
 Knot.x can be treated as tool which fetches requested templates from Repository and processes those 
 templates. So requests from site visitor are first seen by Knot.x. Then Knot.x calls Repository for 

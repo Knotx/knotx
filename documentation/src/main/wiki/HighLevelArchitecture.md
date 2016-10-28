@@ -1,4 +1,5 @@
 [TO REVIEW]
+#High Level Architecture
 
 Knot.x is modular easily extensible and adaptable platform which assembles static and dynamic 
 content from multiple sources.
