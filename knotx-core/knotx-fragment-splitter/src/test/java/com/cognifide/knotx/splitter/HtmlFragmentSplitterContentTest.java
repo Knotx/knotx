@@ -57,7 +57,8 @@ public class HtmlFragmentSplitterContentTest {
         {3, "fragment4.txt"},
         {4, "fragment5.txt"},
         {5, "fragment6.txt"},
-        {6, "fragment7.txt"}
+        {6, "fragment7.txt"},
+        {7, "fragment8.txt"}
     });
   }
 
