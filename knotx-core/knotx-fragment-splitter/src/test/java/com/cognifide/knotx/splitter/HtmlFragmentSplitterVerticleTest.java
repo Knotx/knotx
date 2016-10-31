@@ -44,7 +44,7 @@ public class HtmlFragmentSplitterVerticleTest {
 
   private final static String ADDRESS = "knotx.core.splitter";
 
-  private final static Integer NUMBER_OF_FRAGMENTS = 7;
+  private final static Integer NUMBER_OF_FRAGMENTS = 8;
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
