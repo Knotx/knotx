@@ -57,9 +57,9 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void testComposeFragmetns() throws Exception {
+  public void testJoinFragments() throws Exception {
     StringBuilder result = new StringBuilder();
-    IntStream.rangeClosed(0, 6).forEach(idx -> result.append(testManySnippets.get(idx).getContent()));
+    IntStream.rangeClosed(0, testManySnippets.size() - 1).forEach(idx -> result.append(testManySnippets.get(idx).getContent()));
 
     assertThat(result.toString().trim(), equalTo(FileReader.readText(TEST_MANY_SNIPPETS_HTML).trim()));
   }

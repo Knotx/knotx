@@ -47,7 +47,9 @@ class HtmlFragmentSplitter implements FragmentSplitter {
         fragments.add(toSnippet(matchResult.group(1).intern(), html, matchResult.start(), matchResult.end()));
         idx = matchResult.end();
       }
-      fragments.add(toRaw(html, idx, html.length()));
+      if (idx < html.length()) {
+        fragments.add(toRaw(html, idx, html.length()));
+      }
     } else {
       fragments.add(toRaw(html, 0, html.length()));
     }
