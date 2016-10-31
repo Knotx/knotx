@@ -97,7 +97,6 @@ public class ActionKnotVerticle extends AbstractVerticle {
     } else {
       handleGetMethod(handler, knotContext);
     }
-
   }
 
   private void handleFormAction(KnotContext knotContext, Handler<KnotContext> handler) {
@@ -135,20 +134,22 @@ public class ActionKnotVerticle extends AbstractVerticle {
               final ClientResponse clientResponse = msg.body().response();
               final String signal = msg.body().signal();
 
-              String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
-                  .getElementsByAttribute("data-knotx-on-" + signal).first())
-                  .map(element -> element.attr("data-knotx-on-" + signal))
-                  .orElseThrow(() -> {
-                    LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-                    return new NoSuchElementException("Could not action adapter name");
-                  });
+          if (isNotOkStatus(clientResponse)) {
+            knotContext.clientResponse()
+                .setStatusCode(clientResponse.statusCode())
+                .setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
 
-              if (shouldRedirect(redirectLocation)) {
-                LOGGER.trace("Request redirected to [{}]", redirectLocation);
-                knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
-                MultiMap headers = knotContext.clientResponse().headers();
-                headers.addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()));
-                headers.set(HttpHeaders.LOCATION.toString(), redirectLocation);
+            knotContext.clearFragments();
+            handler.handle(knotContext.toJson());
+          }
+
+
+          if (shouldRedirect(redirectLocation)) {
+            LOGGER.trace("Request redirected to [{}]", redirectLocation);
+            knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
+            MultiMap headers = knotContext.clientResponse().headers();
+            headers.addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()));
+            headers.set(HttpHeaders.LOCATION.toString(), redirectLocation);
 
                 knotContext.clientResponse().setHeaders(headers);
                 knotContext.clearFragments();
@@ -158,6 +159,31 @@ public class ActionKnotVerticle extends AbstractVerticle {
                     .put("_result", new JsonObject(clientResponse.body().toString()))
                     .put("_response", clientResponse.toMetadataJson());
 
+            currentFragment.getContext().put("action", actionContext);
+            knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+            knotContext.fragments().ifPresent(this::processFragments);
+            knotContext.setTransition(DEFAULT_TRANSITION);
+          }
+          handler.handle(knotContext.toJson());
+        },
+        err -> {
+          knotContext.clientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+          handler.handle(knotContext.toJson());
+        }
+    );
+            currentFragment.getContext().put("action", actionContext);
+            knotContext.clientResponse().setHeaders(
+                MultiMap.caseInsensitiveMultiMap().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+            knotContext.fragments().ifPresent(this::processFragments);
+            knotContext.setTransition(DEFAULT_TRANSITION);
+          }
+          handler.handle(knotContext.toJson());
+        },
+        err -> {
+          knotContext.clientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+          handler.handle(knotContext.toJson());
+        }
+    );
                 currentFragment.getContext().put("action", actionContext);
                 knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
                 knotContext.fragments().ifPresent(this::processFragments);
@@ -172,6 +198,12 @@ public class ActionKnotVerticle extends AbstractVerticle {
         );
   }
 
+  private void handleGetMethod(Handler<JsonObject> handler, KnotContext knotContext) {
+  private boolean isNotOkStatus(ClientResponse response) {
+    return !HttpResponseStatus.OK.equals(response.statusCode());
+  }
+
+  private void handleGetMethod(Handler<JsonObject> handler, KnotContext knotContext) {
   private void handleGetMethod(Handler<KnotContext> handler, KnotContext knotContext) {
     LOGGER.trace("Pass-through {} request", knotContext.clientRequest().method());
     knotContext.setTransition(DEFAULT_TRANSITION);

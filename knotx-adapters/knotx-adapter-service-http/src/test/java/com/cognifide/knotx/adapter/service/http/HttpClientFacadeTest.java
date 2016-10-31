@@ -168,7 +168,7 @@ public class HttpClientFacadeTest {
         response -> context.fail("Error should occur!"),
         error -> {
           {
-            context.assertEquals("Parameter `params.path`: `/not/supported/path` not supported!", error.getMessage());
+            context.assertEquals(UnsupportedServiceException.class, error.getClass());
             Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
