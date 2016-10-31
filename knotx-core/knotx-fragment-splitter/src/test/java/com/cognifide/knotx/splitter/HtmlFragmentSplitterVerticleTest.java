@@ -79,11 +79,10 @@ public class HtmlFragmentSplitterVerticleTest {
   private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, KnotContextFactory.empty(template).toJson(), ar -> {
+    vertx.vertx().eventBus().<KnotContext>send(ADDRESS, KnotContextFactory.empty(template), ar -> {
       if (ar.succeeded()) {
         Observable
             .just(ar.result().body())
-            .map(KnotContext::new)
             .map(knot -> Pair.of(async, knot))
             .subscribe(pair -> testFunction.call(pair.getRight()),
                 error -> context.fail(error.getMessage()),

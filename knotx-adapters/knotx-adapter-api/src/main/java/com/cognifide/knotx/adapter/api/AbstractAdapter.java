@@ -18,6 +18,8 @@
 package com.cognifide.knotx.adapter.api;
 
 
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import java.io.IOException;
@@ -50,7 +52,7 @@ public abstract class AbstractAdapter<C extends AdapterConfiguration> extends Ab
   public void start() throws IOException, URISyntaxException {
     LOGGER.debug("Registered <{}>", this.getClass().getSimpleName());
 
-    Observable<Message<JsonObject>> observable = vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).toObservable();
+    Observable<Message<AdapterRequest>> observable = vertx.eventBus().<AdapterRequest>consumer(configuration.getAddress()).toObservable();
 
     observable
         .doOnNext(this::traceMessage)
@@ -68,18 +70,17 @@ public abstract class AbstractAdapter<C extends AdapterConfiguration> extends Ab
 
   protected abstract C initConfiguration(JsonObject config);
 
-  protected abstract Observable<JsonObject> processMessage(JsonObject message);
+  protected abstract Observable<AdapterResponse> processMessage(AdapterRequest message);
 
-  private JsonObject getErrorResponse(String message) {
-    return new ClientResponse()
+  private AdapterResponse getErrorResponse(String message) {
+    return new AdapterResponse().setResponse(new ClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR)
-        .setBody(Buffer.buffer(message))
-        .toJson();
+        .setBody(Buffer.buffer(message)));
   }
 
-  private void traceMessage(Message<JsonObject> message) {
+  private void traceMessage(Message<AdapterRequest> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }
   }
 

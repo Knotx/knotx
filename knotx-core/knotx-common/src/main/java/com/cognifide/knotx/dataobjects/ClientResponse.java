@@ -17,9 +17,10 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonArray;
@@ -27,37 +28,16 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
-public class ClientResponse {
+public class ClientResponse extends Codec {
 
   private HttpResponseStatus statusCode;
 
-  private MultiMap headers;
+  private MultiMap headers = MultiMap.caseInsensitiveMultiMap();
 
   private Buffer body;
 
   public ClientResponse() {
-    this.headers = MultiMap.caseInsensitiveMultiMap();
-  }
-
-  /**
-   * Initialise the fields of this instance from the specified JSON
-   *
-   * @param json the JSON
-   */
-  public ClientResponse(JsonObject json) {
-    this.statusCode = HttpResponseStatus.valueOf(json.getInteger("statusCode"));
-
-    if (json.containsKey("body")) {
-      this.body = Buffer.buffer(json.getString("body"));
-    }
-
-    if (json.containsKey("headers")) {
-      this.headers = MultiMap.caseInsensitiveMultiMap();
-      json.getJsonArray("headers").stream()
-          .map(item -> (JsonObject) item)
-          .flatMap(JsonObject::stream)
-          .forEach(entry -> this.headers.add(entry.getKey(), entry.getValue().toString()));
-    }
+    //Empty object
   }
 
   public HttpResponseStatus statusCode() {
@@ -65,10 +45,7 @@ public class ClientResponse {
   }
 
   public MultiMap headers() {
-    MultiMap result = MultiMap.caseInsensitiveMultiMap();
-    headers.names().forEach(name -> result.add(name, headers.get(name)));
-
-    return result;
+    return headers;
   }
 
   public Buffer body() {
@@ -86,7 +63,7 @@ public class ClientResponse {
   }
 
   public ClientResponse setHeaders(MultiMap headers) {
-    this.headers = headers;
+    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) headers.getDelegate());
     return this;
   }
 
@@ -95,18 +72,9 @@ public class ClientResponse {
     return this;
   }
 
-  /**
-   * Convert this to JSON
-   *
-   * @return the JSON
-   */
-  public JsonObject toJson() {
+  public JsonObject toMetadataJson() {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode.code());
-
-    if (body != null) {
-      json.put("body", body.toString());
-    }
 
     json.put("headers", headers.names().stream()
         .map(name -> new JsonObject().put(name, headers.get(name)))
@@ -121,21 +89,38 @@ public class ClientResponse {
     if (!(o instanceof ClientResponse)) return false;
     ClientResponse that = (ClientResponse) o;
     return Objects.equal(statusCode, that.statusCode) &&
-        Objects.equal(headers, that.headers) &&
-        Objects.equal(body, that.body);
+        equalsMultimap(this.headers, that.headers) &&
+        equalsBody(this.body, that.body);
   }
 
   @Override
   public int hashCode() {
-    return headers.names().stream()
-        .mapToInt(name -> Optional.ofNullable(headers.get(name))
-            .map(String::hashCode)
-            .orElse(0))
-        .reduce(Objects.hashCode(statusCode, body), (sum, hash) -> 31 * sum + hash);
+    return 31 * Objects.hashCode(statusCode, body) + multiMapHash(headers);
   }
 
   @Override
   public String toString() {
-    return toJson().toString();
+    return MoreObjects.toStringHelper(this)
+        .add("statusCode", statusCode)
+        .add("headers", toString(headers))
+        .add("body", body)
+        .toString();
+  }
+
+  @Override
+  public void encodeToWire(io.vertx.core.buffer.Buffer buffer) {
+    encodeInt(buffer, statusCode != null ? statusCode.code() : 0);
+    encodeMultiMap(buffer, headers);
+    encodeBuffer(buffer, body);
+  }
+
+  @Override
+  public void decodeFromWire(AtomicInteger position, io.vertx.core.buffer.Buffer buffer) {
+    Integer code = decodeInt(position, buffer);
+    if (code > 0) {
+      statusCode = HttpResponseStatus.valueOf(code);
+    }
+    headers = decodeMultiMap(position, buffer);
+    body = decodeBuffer(position, buffer);
   }
 }

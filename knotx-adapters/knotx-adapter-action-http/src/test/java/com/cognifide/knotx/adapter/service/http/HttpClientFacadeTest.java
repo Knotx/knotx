@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.FileReader;
@@ -85,7 +86,7 @@ public class HttpClientFacadeTest {
 
     // when
     Observable<ClientResponse> result = clientFacade
-        .process(payloadMessage(new JsonObject().put("path", REQUEST_PATH), clientRequest.toJson()), HttpMethod.POST);
+        .process(payloadMessage(new JsonObject().put("path", REQUEST_PATH), clientRequest), HttpMethod.POST);
 
     // then
     result.subscribe(
@@ -111,7 +112,7 @@ public class HttpClientFacadeTest {
     MultiMap requestParams = MultiMap.caseInsensitiveMultiMap().add("dynamicValue", "first");
 
     Observable<ClientResponse> result =
-        clientFacade.process(payloadMessage(new JsonObject().put("path", "/services/mock/{param.dynamicValue}.json"), clientRequest.setParams(requestParams).toJson()), HttpMethod.POST);
+        clientFacade.process(payloadMessage(new JsonObject().put("path", "/services/mock/{param.dynamicValue}.json"), clientRequest.setParams(requestParams)), HttpMethod.POST);
 
     // then
     result.subscribe(
@@ -133,10 +134,8 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
 
     // when
-    Observable<ClientResponse> result = clientFacade.process(new JsonObject()
-            .put("params", new JsonObject())
-            .put("clientRequest", clientRequest.toJson())
-        , HttpMethod.POST);
+    Observable<ClientResponse> result = clientFacade.process(new AdapterRequest()
+        .setParams(new JsonObject()).setRequest(clientRequest), HttpMethod.POST);
 
     // then
     result.subscribe(
@@ -161,7 +160,7 @@ public class HttpClientFacadeTest {
 
     // when
     Observable<ClientResponse> result =
-        clientFacade.process(payloadMessage(new JsonObject().put("path", "/not/supported/path"), clientRequest.toJson()), HttpMethod.POST);
+        clientFacade.process(payloadMessage(new JsonObject().put("path", "/not/supported/path"), clientRequest), HttpMethod.POST);
 
     // then
     result.subscribe(
@@ -180,10 +179,8 @@ public class HttpClientFacadeTest {
     return Vertx.newInstance(vertx.vertx()).createHttpClient();
   }
 
-  private JsonObject payloadMessage(JsonObject params, JsonObject request) {
-    return new JsonObject()
-        .put("params", params)
-        .put("clientRequest", request);
+  private AdapterRequest payloadMessage(JsonObject params, ClientRequest request) {
+    return new AdapterRequest().setParams(params).setRequest(request);
   }
 
   private List<ServiceMetadata> getServiceConfigurations() {

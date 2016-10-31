@@ -17,12 +17,14 @@
  */
 package com.cognifide.knotx.mocks.knot;
 
+import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Optional;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.buffer.Buffer;
@@ -34,19 +36,19 @@ enum KnotContextKeys {
   RESPONSE("clientResponse") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return Optional.of(new JsonObject().put("statusCode", 200));
+      return Optional.of(new ClientResponse().setStatusCode(HttpResponseStatus.OK));
     }
   },
   REQUEST("clientRequest") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return context.clientRequest() != null ? Optional.of(context.clientRequest().toJson()) : Optional.empty();
+      return context.clientRequest() != null ? Optional.of(context.clientRequest()) : Optional.empty();
     }
   },
   FRAGMENTS("fragments") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return context.fragments().isPresent() ? Optional.of(context.toJson().getJsonArray(key())) : Optional.empty();
+      return context.fragments().isPresent() ? Optional.of(context.fragments()) : Optional.empty();
     }
   },
   TRANSITION("transition") {

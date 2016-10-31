@@ -19,8 +19,11 @@ package com.cognifide.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
@@ -41,12 +44,12 @@ import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
@@ -86,7 +89,7 @@ public class HttpClientFacadeTest {
 
     // when
     Observable<ClientResponse> result = clientFacade
-        .process(payloadMessage(REQUEST_PATH, new JsonObject()), HttpMethod.GET);
+        .process(payloadMessage(REQUEST_PATH, new ClientRequest()), HttpMethod.GET);
 
     // then
     result.subscribe(
@@ -107,7 +110,7 @@ public class HttpClientFacadeTest {
     final HttpClient httpClient = PowerMockito.spy(httpClient());
     HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
-    final JsonObject request = new JsonObject().put("params", new JsonArray().add(new JsonObject().put("dynamicValue", "first")));
+    final ClientRequest request = new ClientRequest().setParams(MultiMap.caseInsensitiveMultiMap().add("dynamicValue", "first"));
 
     // when
     Observable<ClientResponse> result =
@@ -133,17 +136,14 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
 
     // when
-    Observable<ClientResponse> result = clientFacade.process(new JsonObject()
-            .put("params", new JsonObject())
-            .put("clientRequest", new JsonObject())
-        , HttpMethod.GET);
+    Observable<ClientResponse> result = clientFacade.process(new AdapterRequest(), HttpMethod.GET);
 
     // then
     result.subscribe(
         response -> context.fail("Error should occur!"),
         error -> {
           {
-            context.assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
+            context.assertEquals(error.getClass().getSimpleName(), AdapterServiceContractException.class.getSimpleName());
             Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
             async.complete();
           }
@@ -161,7 +161,7 @@ public class HttpClientFacadeTest {
 
     // when
     Observable<ClientResponse> result =
-        clientFacade.process(payloadMessage("/not/supported/path", new JsonObject()), HttpMethod.GET);
+        clientFacade.process(payloadMessage("/not/supported/path", new ClientRequest()), HttpMethod.GET);
 
     // then
     result.subscribe(
@@ -180,11 +180,8 @@ public class HttpClientFacadeTest {
     return Vertx.newInstance(vertx.vertx()).createHttpClient();
   }
 
-  private JsonObject payloadMessage(String servicePath, JsonObject request) {
-    return new JsonObject()
-        .put("params", new JsonObject()
-            .put("path", servicePath))
-        .put("clientRequest", request);
+  private AdapterRequest payloadMessage(String servicePath, ClientRequest request) {
+    return new AdapterRequest().setRequest(request).setParams(new JsonObject().put("path", servicePath));
   }
 
   private List<ServiceMetadata> getServiceConfigurations() {

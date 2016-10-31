@@ -20,6 +20,7 @@ package com.cognifide.knotx.adapter.common.http;
 import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -45,8 +46,6 @@ import rx.Observable;
 public class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
-  private static final String REQUEST_KEY = "clientRequest";
-  private static final String PARAMS_KEY = "params";
   private static final String PATH_PROPERTY_KEY = "path";
   private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
@@ -59,7 +58,7 @@ public class HttpClientFacade {
     this.services = services;
   }
 
-  public Observable<ClientResponse> process(JsonObject message, HttpMethod method) {
+  public Observable<ClientResponse> process(AdapterRequest message, HttpMethod method) {
     return Observable.just(message)
         .doOnNext(this::validateContract)
         .map(this::prepareRequest)
@@ -68,24 +67,23 @@ public class HttpClientFacade {
         .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
   }
 
-  private void validateContract(JsonObject message) {
-    final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
-    if (!pathPresent) {
+  private void validateContract(AdapterRequest message) {
+    if (message.params() == null || !message.params().containsKey(PATH_PROPERTY_KEY)) {
       throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
 
-  private Pair<ClientRequest, ServiceMetadata> prepareRequest(JsonObject message) {
+  private Pair<ClientRequest, ServiceMetadata> prepareRequest(AdapterRequest message) {
     final Pair<ClientRequest, ServiceMetadata> serviceRequest;
 
-    final ClientRequest originalRequest = new ClientRequest(message.getJsonObject(REQUEST_KEY));
-    final JsonObject params = message.getJsonObject(PARAMS_KEY);
+    final ClientRequest originalRequest = message.request();
+    final JsonObject params = message.params();
 
     final String servicePath = UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest);
 
     final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
     if (serviceMetadata.isPresent()) {
-      final ClientRequest serviceRequestWrapper = new ClientRequest(originalRequest.toJson());
+      final ClientRequest serviceRequestWrapper = new ClientRequest(originalRequest);
       serviceRequestWrapper.setPath(servicePath);
       serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
     } else {

@@ -20,6 +20,8 @@ package com.cognifide.knotx.knot.action;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.adapter.common.http.MultiMapCollector;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
@@ -61,25 +63,18 @@ import rx.functions.Action1;
 @RunWith(VertxUnitRunner.class)
 public class ActionKnotVerticleTest {
 
+  public static final String EXPECTED_KNOT_TRANSITION = "next";
   private final static String ADDRESS = "knotx.knot.action";
-
   private final static String HIDDEN_INPUT_TAG_NAME = "snippet-identifier";
-
   private static final String FRAGMENT_IDENTIFIER = "data-api-type";
-
   private final static String FRAGMENT_REDIRECT_IDENTIFIER = "someId123";
-
   private final static String FRAGMENT_SELF_IDENTIFIER = "someId456";
-
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
   private final static Fragment LAST_FRAGMENT = Fragment.raw("</body></html>");
-
   private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings()
       .escapeMode(Entities.EscapeMode.xhtml)
       .indentAmount(0)
       .prettyPrint(false);
-  public static final String EXPECTED_KNOT_TRANSITION = "next";
-
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -257,10 +252,10 @@ public class ActionKnotVerticleTest {
   private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext, Action1<KnotContext> onSuccess, Action1<Throwable> onError) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, knotContext.toJson(), ar -> {
+    vertx.vertx().eventBus().<KnotContext>send(ADDRESS, knotContext, ar -> {
       if (ar.succeeded()) {
         Observable
-            .just(new KnotContext(ar.result().body()))
+            .just(ar.result().body())
             .subscribe(
                 onSuccess,
                 onError,
@@ -303,12 +298,12 @@ public class ActionKnotVerticleTest {
 
   private void createKnotConsumer(String adddress, String addToBody, String signal, Map<String, String> headers) {
     EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<JsonObject>consumer(adddress, msg -> {
+    eventBus.<AdapterRequest>consumer(adddress, msg -> {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(HttpResponseStatus.OK);
       response.setBody(Buffer.buffer().appendString(addToBody));
       response.setHeaders(headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
-      msg.reply(new JsonObject().put("clientResponse", response.toJson()).put("signal", signal));
+      msg.reply(new AdapterResponse().setResponse(response).setSignal(signal));
     });
   }
 

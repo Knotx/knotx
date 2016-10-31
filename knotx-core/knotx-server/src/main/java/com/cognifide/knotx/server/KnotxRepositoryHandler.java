@@ -57,9 +57,9 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryEntry.isPresent()) {
-      eventBus.<JsonObject>sendObservable(repositoryEntry.get().address(), knotContext.clientRequest().toJson())
+      eventBus.<ClientResponse>sendObservable(repositoryEntry.get().address(), knotContext.clientRequest())
           .doOnNext(this::traceMessage)
-          .map(msg -> new ClientResponse(msg.body()))
+          .map(Message::body)
           .subscribe(
               repoResponse -> {
                 if (isSuccessResponse(repoResponse)) {
@@ -67,9 +67,10 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                     knotContext.setClientResponse(repoResponse);
                     context.put("knotContext", knotContext);
                     context.next();
+                  } else {
+                    writeHeaders(context.response(), repoResponse.headers());
+                    context.response().setStatusCode(repoResponse.statusCode().code()).end(repoResponse.body());
                   }
-                  writeHeaders(context.response(), repoResponse.headers());
-                  context.response().setStatusCode(repoResponse.statusCode().code()).end(repoResponse.body());
                 } else if (isErrorResponse(repoResponse)) {
                   context.fail(repoResponse.statusCode().code());
                 } else {
@@ -97,9 +98,9 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     return new KnotContext().setClientRequest(new ClientRequest(context.request()));
   }
 
-  private void traceMessage(Message<JsonObject> message) {
+  private void traceMessage(Message<ClientResponse> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <template-repository> with value <{}>", message.body().encodePrettily());
+      LOGGER.trace("Got message from <template-repository> with value <{}>", message.body());
     }
   }
 

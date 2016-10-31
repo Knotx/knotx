@@ -25,6 +25,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
 public class KnotxSplitterHandler implements Handler<RoutingContext> {
@@ -48,8 +49,8 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     KnotContext knotContext = context.get("knotContext");
 
-    eventBus.<JsonObject>sendObservable(configuration.splitterAddress(), knotContext.toJson())
-        .map(msg -> new KnotContext(msg.body()))
+    eventBus.<KnotContext>sendObservable(configuration.splitterAddress(), knotContext)
+        .map(Message::body)
         .doOnNext(this::traceMessage)
         .subscribe(
             ctx -> {
@@ -69,7 +70,7 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
   private void traceMessage(KnotContext ctx) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx.toJson().encodePrettily());
+      LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx);
     }
   }
 }

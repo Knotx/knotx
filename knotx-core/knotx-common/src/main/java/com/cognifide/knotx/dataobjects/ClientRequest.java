@@ -17,13 +17,19 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 
-public class ClientRequest {
+public class ClientRequest extends Codec {
   private String path;
 
   private HttpMethod method;
@@ -38,25 +44,12 @@ public class ClientRequest {
     //Nothing to set by default
   }
 
-  /**
-   * Initialise the fields of this instance from the specified JSON
-   *
-   * @param json the JSON
-   */
-  public ClientRequest(JsonObject json) {
-    this.path = json.getString("path");
-    if (json.containsKey("method")) {
-      this.method = HttpMethod.valueOf(json.getString("method"));
-    }
-    if (json.containsKey("params")) {
-      this.params = fromJsonArray(json.getJsonArray("params"));
-    }
-    if (json.containsKey("formAttributes")) {
-      this.formAttributes = fromJsonArray(json.getJsonArray("formAttributes"));
-    }
-    if (json.containsKey("headers")) {
-      this.headers = fromJsonArray(json.getJsonArray("headers"));
-    }
+  public ClientRequest(ClientRequest request) {
+    this.path = request.path();
+    this.method = request.method();
+    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) request.headers().getDelegate());
+    this.params = MultiMap.newInstance((io.vertx.core.MultiMap) request.params().getDelegate());
+    this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) request.formAttributes().getDelegate());
   }
 
   public ClientRequest(HttpServerRequest serverRequest) {
@@ -112,46 +105,53 @@ public class ClientRequest {
     return this;
   }
 
-  /**
-   * Convert this to JSON
-   *
-   * @return the JSON
-   */
-  public JsonObject toJson() {
-    JsonObject json = new JsonObject();
-    json.put("path", path);
-    if (method != null) {
-      json.put("method", method.name());
-    }
-    if (headers != null && !headers.isEmpty()) {
-      json.put("headers", toJsonArray(headers));
-    }
-    if (params != null && !params.isEmpty()) {
-      json.put("params", toJsonArray(params));
-    }
-    if (formAttributes != null && !formAttributes.isEmpty()) {
-      json.put("formAttributes", toJsonArray(formAttributes));
-    }
-    return json;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ClientRequest)) return false;
+    ClientRequest that = (ClientRequest) o;
+    return Objects.equal(path, that.path) &&
+        Objects.equal(method, that.method) &&
+        equalsMultimap(this.headers, that.headers) &&
+        equalsMultimap(this.params, that.params) &&
+        equalsMultimap(this.formAttributes, that.formAttributes);
   }
 
-  private JsonArray toJsonArray(MultiMap multiMap) {
-    return multiMap.names().stream()
-        .map(name -> new JsonObject().put(name, multiMap.get(name)))
-        .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll);
-  }
-
-  private MultiMap fromJsonArray(JsonArray jsonArray) {
-    MultiMap result = MultiMap.caseInsensitiveMultiMap();
-    jsonArray.stream()
-        .map(item -> (JsonObject) item)
-        .flatMap(JsonObject::stream)
-        .forEach(entry -> result.add(entry.getKey(), entry.getValue().toString()));
-    return result;
+  @Override
+  public int hashCode() {
+    return 41 * Objects.hashCode(path, method) + 37 * multiMapHash(headers) + 31 * multiMapHash(params) + multiMapHash(formAttributes);
   }
 
   @Override
   public String toString() {
-    return toJson().toString();
+    return MoreObjects.toStringHelper(this)
+        .add("path", path)
+        .add("method", method)
+        .add("headers", toString(headers))
+        .add("params", toString(params))
+        .add("formAttributes", toString(formAttributes))
+        .toString();
+  }
+
+  @Override
+  public void encodeToWire(Buffer buffer) {
+    encodeString(buffer, path);
+    encodeString(buffer, method != null ? method.name() : StringUtils.EMPTY);
+    encodeMultiMap(buffer, headers);
+    encodeMultiMap(buffer, params);
+    encodeMultiMap(buffer, formAttributes);
+  }
+
+  @Override
+  public void decodeFromWire(AtomicInteger position, Buffer buffer) {
+    path = decodeString(position, buffer);
+    String decodedMethod = decodeString(position, buffer);
+    if (StringUtils.isNotBlank(decodedMethod)) {
+      method = HttpMethod.valueOf(decodedMethod);
+    }
+    headers = decodeMultiMap(position, buffer);
+    params = decodeMultiMap(position, buffer);
+    formAttributes = decodeMultiMap(position, buffer);
   }
 }
+

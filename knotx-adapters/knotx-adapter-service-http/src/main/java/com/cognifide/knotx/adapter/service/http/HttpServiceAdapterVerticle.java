@@ -21,6 +21,8 @@ package com.cognifide.knotx.adapter.service.http;
 import com.cognifide.knotx.adapter.api.AbstractAdapter;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import io.vertx.core.Context;
@@ -47,10 +49,15 @@ public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpAdapterConfi
   }
 
   @Override
-  protected Observable<JsonObject> processMessage(JsonObject message) {
+  protected Observable<AdapterResponse> processMessage(AdapterRequest message) {
     return httpClientFacade.process(message, HttpMethod.GET)
-        .map(ClientResponse::toJson);
+        .map(this::wrapResponse);
   }
+
+  private AdapterResponse wrapResponse(ClientResponse response) {
+    return new AdapterResponse().setResponse(response);
+  }
+
 
   private HttpClient getHttpClient(HttpAdapterConfiguration configuration) {
     JsonObject clientOptions = configuration.getClientOptions();

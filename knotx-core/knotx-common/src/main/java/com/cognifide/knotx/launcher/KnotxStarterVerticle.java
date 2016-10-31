@@ -17,12 +17,26 @@
  */
 package com.cognifide.knotx.launcher;
 
+import com.cognifide.knotx.codec.AdapterRequestCodec;
+import com.cognifide.knotx.codec.AdapterResponseCodec;
+import com.cognifide.knotx.codec.ClientRequestCodec;
+import com.cognifide.knotx.codec.ClientResponseCodec;
+import com.cognifide.knotx.codec.KnotContextCodec;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
+import com.cognifide.knotx.dataobjects.ClientRequest;
+import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 
+import io.vertx.core.Context;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -32,6 +46,18 @@ import rx.Observable;
 public class KnotxStarterVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
+
+  @Override
+  public void init(Vertx vertx, Context context) {
+    super.init(vertx, context);
+
+    EventBus eventBus = (EventBus) this.vertx.eventBus().getDelegate();
+    eventBus.registerDefaultCodec(AdapterRequest.class, new AdapterRequestCodec());
+    eventBus.registerDefaultCodec(AdapterResponse.class, new AdapterResponseCodec());
+    eventBus.registerDefaultCodec(ClientRequest.class, new ClientRequestCodec());
+    eventBus.registerDefaultCodec(ClientResponse.class, new ClientResponseCodec());
+    eventBus.registerDefaultCodec(KnotContext.class, new KnotContextCodec());
+  }
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {

@@ -45,8 +45,8 @@ public class KnotxServerConfigurationRepositoriesTest {
   public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths() throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get(), equalTo("knotx.repository.filesystem"));
-    assertThat(serverConfig.repositoryForPath("/content/simple.html").get(), equalTo("knotx.repository.http"));
+    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get().address(), equalTo("knotx.repository.filesystem"));
+    assertThat(serverConfig.repositoryForPath("/content/simple.html").get().address(), equalTo("knotx.repository.http"));
   }
 
   @Test
