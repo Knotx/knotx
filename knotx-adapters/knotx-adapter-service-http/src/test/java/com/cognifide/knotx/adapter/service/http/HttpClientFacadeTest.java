@@ -20,6 +20,7 @@ package com.cognifide.knotx.adapter.service.http;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
+import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
 import com.cognifide.knotx.dataobjects.AdapterRequest;

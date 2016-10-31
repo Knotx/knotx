@@ -20,8 +20,11 @@ package com.cognifide.knotx.adapter.common.http;
 import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
-import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
+<<<<<<< HEAD
 import com.cognifide.knotx.dataobjects.AdapterRequest;
+=======
+import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
+>>>>>>> master
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -32,6 +35,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -67,47 +71,66 @@ public class HttpClientFacade {
         .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
   }
 
+<<<<<<< HEAD
+  private void validateContract(AdapterRequest message) {
+    if (message.params() == null || !message.params().containsKey(PATH_PROPERTY_KEY)) {
+=======
   /**
    * Method to validate contract or params JsonObject for the Adapter Service<br/>
    * The contract checks if all required fields exists in the object. throwing AdapterServiceContractException
    * in case of contract violation.<br/>
-   *
    * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params' objects.
    */
-  protected void validateContract(AdapterRequest message) {
-    if (message.params() == null || !message.params().containsKey(PATH_PROPERTY_KEY)) {
+  protected void validateContract(JsonObject message) {
+    final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
+    if (!pathPresent) {
+>>>>>>> master
       throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
 
+<<<<<<< HEAD
+  private Pair<ClientRequest, ServiceMetadata> prepareRequest(AdapterRequest message) {
+    final Pair<ClientRequest, ServiceMetadata> serviceRequest;
+
+    final ClientRequest originalRequest = message.request();
+    final JsonObject params = message.params();
+=======
   /**
    * Method responsible for building request to the service.</br>
    * <br/>
    * The responsibility of the method is to build ClientRequest based on the original Http Request<br/>
-   * - It must set path property of the request based on the params<br/>
-   * - It might set headers of the request if needed.</br>
+   *   - It must set path property of the request based on the params<br/>
+   *   - It might set headers of the request if needed.</br>
    * <br/>
    * In case of headers created modified in this method, ensure that your service configuration
    * allows passing those headers to the target service. See 'allowed.request.headers' section of the configuration
    * </br>
-   *
    * @param originalRequest - ClientRequest representing original request comming to the Knot.x
-   * @param params          - JsonObject of the params to be used to build request.
+   * @param params - JsonObject of the params to be used to build request.
    * @return ClientRequest representing Http request to the target service
    */
   protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
-    return new ClientRequest(originalRequest)
+    return new ClientRequest(originalRequest.toJson())
         .setPath(UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
   }
 
-  private Pair<ClientRequest, ServiceMetadata> prepareRequestData(AdapterRequest adapterRequest) {
+  private Pair<ClientRequest, ServiceMetadata> prepareRequestData(JsonObject message) {
     final Pair<ClientRequest, ServiceMetadata> serviceData;
+>>>>>>> master
 
-    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.request(), adapterRequest.params());
+    final ClientRequest originalRequest = new ClientRequest(message.getJsonObject(REQUEST_KEY));
+    final ClientRequest serviceRequest = buildServiceRequest(originalRequest, message.getJsonObject(PARAMS_KEY));
+
     final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.path());
-
     if (serviceMetadata.isPresent()) {
+<<<<<<< HEAD
+      final ClientRequest serviceRequestWrapper = new ClientRequest(originalRequest);
+      serviceRequestWrapper.setPath(servicePath);
+      serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
+=======
       serviceData = Pair.of(serviceRequest, serviceMetadata.get());
+>>>>>>> master
     } else {
       final String error = String.format("No matching service definition for the requested path '%s'", serviceRequest.path());
       throw new UnsupportedServiceException(error);
