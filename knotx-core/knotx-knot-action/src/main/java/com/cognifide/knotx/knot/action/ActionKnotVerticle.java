@@ -262,9 +262,8 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
   private String getFragmentContent(Fragment fragment, Document scriptContentDocument) {
     Document resultDocument = Jsoup.parse(fragment.getContent(), "UTF-8", Parser.xmlParser());
-    Element scriptTag = resultDocument.child(0);
-    scriptTag.children().remove();
-    scriptContentDocument.children().stream().forEach(scriptTag::appendChild);
+    Element scriptTag = resultDocument.child(0).empty();
+    scriptContentDocument.childNodesCopy().stream().forEach(scriptTag::appendChild);
 
     return resultDocument.html();
   }
