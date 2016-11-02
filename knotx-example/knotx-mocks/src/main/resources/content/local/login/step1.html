@@ -49,7 +49,9 @@
     <div class="col-md-12">
       <script data-api-type="form-1"
               type="text/x-handlebars-template">
-        <p class="bg-danger">{{#if action._result.validationErrors}}Email address does not exists{{/if}}</p>
+        {{#if action._result.validationErrors}}
+        <p class="bg-danger">Email address does not exists</p>
+        {{/if}}
         <p>Please provide your email address</p>
         <form data-knotx-action="step1" data-knotx-on-success="/content/local/login/step2.html" data-knotx-on-error="_self" method="post">
           <input type="email" name="email" value="{{#if action._result.validationError}} {{action._result.form.email}} {{/if}}" />
