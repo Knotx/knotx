@@ -23,6 +23,8 @@ import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
 import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.http.AllowedHeadersFilter;
+import com.cognifide.knotx.http.MultiMapCollector;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,7 +33,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -73,6 +74,7 @@ public class HttpClientFacade {
    * Method to validate contract or params JsonObject for the Adapter Service<br/>
    * The contract checks if all required fields exists in the object. throwing AdapterServiceContractException
    * in case of contract violation.<br/>
+   *
    * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params' objects.
    */
   protected void validateContract(JsonObject message) {
@@ -86,14 +88,15 @@ public class HttpClientFacade {
    * Method responsible for building request to the service.</br>
    * <br/>
    * The responsibility of the method is to build ClientRequest based on the original Http Request<br/>
-   *   - It must set path property of the request based on the params<br/>
-   *   - It might set headers of the request if needed.</br>
+   * - It must set path property of the request based on the params<br/>
+   * - It might set headers of the request if needed.</br>
    * <br/>
    * In case of headers created modified in this method, ensure that your service configuration
    * allows passing those headers to the target service. See 'allowed.request.headers' section of the configuration
    * </br>
+   *
    * @param originalRequest - ClientRequest representing original request comming to the Knot.x
-   * @param params - JsonObject of the params to be used to build request.
+   * @param params          - JsonObject of the params to be used to build request.
    * @return ClientRequest representing Http request to the target service
    */
   protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
@@ -143,7 +146,7 @@ public class HttpClientFacade {
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
   }
 
   private Observable<ClientResponse> wrapResponse(HttpClientResponse response) {
