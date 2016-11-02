@@ -24,6 +24,8 @@ import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
 import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.http.AllowedHeadersFilter;
+import com.cognifide.knotx.http.MultiMapCollector;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -141,7 +143,7 @@ public class HttpClientFacade {
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
   }
 
   private Observable<ClientResponse> wrapResponse(HttpClientResponse response) {

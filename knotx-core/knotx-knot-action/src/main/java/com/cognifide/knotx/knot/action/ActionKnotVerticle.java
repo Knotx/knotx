@@ -17,14 +17,14 @@
  */
 package com.cognifide.knotx.knot.action;
 
-import com.cognifide.knotx.adapter.common.http.AllowedHeadersFilter;
-import com.cognifide.knotx.adapter.common.http.MultiMapCollector;
 import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.http.AllowedHeadersFilter;
+import com.cognifide.knotx.http.MultiMapCollector;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -307,7 +307,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
   }
 
   private void traceMessage(Message<KnotContext> message) {

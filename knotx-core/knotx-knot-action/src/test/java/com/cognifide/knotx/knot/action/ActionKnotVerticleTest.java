@@ -19,12 +19,12 @@ package com.cognifide.knotx.knot.action;
 
 import com.google.common.collect.Lists;
 
-import com.cognifide.knotx.adapter.common.http.MultiMapCollector;
 import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.http.MultiMapCollector;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotContextFactory;
 import com.cognifide.knotx.junit.KnotxConfiguration;
@@ -166,8 +166,8 @@ public class ActionKnotVerticleTest {
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
     String actionAdapterResponse = "{\"success\":\"true\"}";
-    Map<String, String> headers = new HashMap<String, String>() {{
-      put("X-Auth", "x-auth-value");
+    Map<String, List<String>> headers = new HashMap<String, List<String>>() {{
+      put("X-Auth", Lists.newArrayList("x-auth-value"));
     }};
     createKnotConsumer("address-redirect", actionAdapterResponse, "step2", headers);
 
@@ -295,7 +295,7 @@ public class ActionKnotVerticleTest {
     createKnotConsumer(adddress, addToBody, signal, Collections.emptyMap());
   }
 
-  private void createKnotConsumer(String adddress, String addToBody, String signal, Map<String, String> headers) {
+  private void createKnotConsumer(String adddress, String addToBody, String signal, Map<String, List<String>> headers) {
     EventBus eventBus = vertx.vertx().eventBus();
     eventBus.<AdapterRequest>consumer(adddress, msg -> {
       ClientResponse response = new ClientResponse();

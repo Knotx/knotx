@@ -6,34 +6,8 @@
         "displayExceptionDetails": true,
         "allowed.response.headers": [
           "Access-Control-Allow-Origin",
-          "Allow",
-          "Cache-Control",
-          "Content-Disposition",
-          "Content-Encoding",
-          "Content-Language",
-          "Content-Location",
-          "Content-MD5",
-          "Content-Range",
           "Content-Type",
-          "Content-Length",
-          "Content-Security-Policy",
-          "Date",
-          "ETag",
-          "Expires",
-          "Last-Modified",
-          "Location",
-          "Pragma",
-          "Proxy-Authenticate",
-          "Server",
-          "Set-Cookie",
-          "Status",
-          "Vary",
-          "Via",
-          "X-Frame-Options",
-          "X-XSS-Protection",
-          "X-Content-Type-Options",
-          "X-UA-Compatible",
-          "X-Request-ID"
+          "Content-Length"
         ],
         "repositories": [
           {
@@ -43,11 +17,6 @@
           {
             "path": "/content/.*",
             "address": "knotx.core.repository.http"
-          },
-          {
-            "path": "/img/.*",
-            "address": "knotx.core.repository.http",
-            "doProcessing": false
           }
         ],
         "splitter": {
@@ -56,7 +25,7 @@
         "routing": {
           "GET": [
             {
-              "path": "/.*",
+              "path": "/content/.*",
               "address": "knotx.knot.action",
               "onTransition": {
                 "next" : {
@@ -162,34 +131,6 @@
       "config" : {
         "address": "knotx.knot.action",
         "adapters": [
-          {
-            "name": "subscribe-competition",
-            "address": "knotx.adapter.action.http",
-            "params": {
-              "path": "/service/mock/post-competition.json"
-            },
-            "allowed.request.headers": [
-              "Cookie"
-            ],
-            "allowed.response.headers": [
-              "Set-Cookie",
-              "Location"
-            ]
-          },
-          {
-            "name": "subscribe-newsletter",
-            "address": "knotx.adapter.action.http",
-            "params": {
-              "path": "/service/mock/post-newsletter.json"
-            },
-            "allowed.request.headers": [
-              "Cookie"
-            ],
-            "allowed.response.headers": [
-              "Set-Cookie",
-              "Location"
-            ]
-          },
           {
             "name": "step1",
             "address": "knotx.adapter.action.http",

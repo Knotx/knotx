@@ -19,7 +19,7 @@ package com.cognifide.knotx.knot.action;
 
 import com.google.common.base.MoreObjects;
 
-import com.cognifide.knotx.adapter.common.http.StringToPatternFunction;
+import com.cognifide.knotx.http.StringToPatternFunction;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

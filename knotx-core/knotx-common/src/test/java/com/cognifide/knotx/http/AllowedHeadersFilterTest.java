@@ -15,12 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.common.http;
+package com.cognifide.knotx.http;
 
 import com.google.common.collect.Lists;
-
-import com.cognifide.knotx.adapter.common.http.AllowedHeadersFilter;
-import com.cognifide.knotx.adapter.common.http.StringToPatternFunction;
 
 import org.junit.Test;
 
@@ -29,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+
 
 public class AllowedHeadersFilterTest {
 
