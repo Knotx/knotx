@@ -131,11 +131,11 @@ public class ActionKnotVerticleTest {
         error -> context.fail(error.getMessage()));
   }
 
-  @Ignore
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
-  public void callGetWithActionFragmentWithoutIdentifier_expectStatusCode500(TestContext context) throws Exception {
+  public void callGetWithActionFragmentWithoutIdentifier_expectResponseOkWithOneFragmentChanges(TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_no_identifier_in.txt");
+    String expectedFragmentHtml = FileReader.readText("fragment_form_no_identifier_out.txt");
     knotContext.clientRequest().setMethod(HttpMethod.GET);
 
     callActionKnotWithAssertions(context, knotContext,
@@ -162,7 +162,6 @@ public class ActionKnotVerticleTest {
         error -> context.fail(error.getMessage()));
   }
 
-  @Ignore
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {

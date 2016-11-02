@@ -32,7 +32,6 @@ import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 
@@ -60,13 +59,13 @@ import rx.Observable;
 public class ActionKnotVerticle extends AbstractVerticle {
 
   public static final String DEFAULT_TRANSITION = "next";
-  private static final String ACTION_FRAGMENT_IDENTIFIER_REGEXP = "form-([A-Za-z0-9]+)*";
+  public static final String DEFAULT_FORM_IDENTIFIER = "_default_";
+  private static final String ACTION_FRAGMENT_IDENTIFIER = "form";
+  private static final String ACTION_FRAGMENT_IDENTIFIER_REGEXP = "form(-([A-Za-z0-9]+))*";
   private static final Pattern ACTION_FRAGMENT_IDENTIFIER_PATTERN = Pattern.compile(ACTION_FRAGMENT_IDENTIFIER_REGEXP);
   private static final String ACTION_FORM_ATTRIBUTES_PATTERN = "data-knotx-.*";
   private static final String ACTION_FORM_ACTION_ATTRIBUTE = "data-knotx-action";
-
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);
-
   private ActionKnotConfiguration configuration;
 
   @Override
@@ -108,7 +107,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
             .filter(fragment -> isCurrentFormFragment(fragment, knotContext))
             .findFirst())
         .orElseThrow(() -> {
-          String formIdentifier = getFormIdentifier(knotContext).orElse("EMPTY");
+          String formIdentifier = getFormIdentifierFromRequest(knotContext).orElse("EMPTY");
           LOGGER.error("Could not find fragment with id [{}] in fragments [{}]", formIdentifier, knotContext.fragments());
           return new NoSuchElementException("Fragment for [" + formIdentifier + "] not found");
         });
@@ -225,25 +224,34 @@ public class ActionKnotVerticle extends AbstractVerticle {
   }
 
   private boolean isCurrentFormFragment(Fragment fragment, KnotContext knotContext) {
-    return getFormIdentifier(knotContext).map(formId -> "form-" + formId).map(fragmentId -> fragmentId.equals(fragment.getId())).orElse(Boolean.FALSE);
+    return getFormIdentifierFromRequest(knotContext).map(this::buildFragmentId).map(fragmentId -> fragmentId.equals(fragment.getId())).orElse(Boolean.FALSE);
   }
 
-  private Optional<String> getFormIdentifier(KnotContext knotContext) {
+  private String buildFragmentId(String requestedFormId) {
+    if (requestedFormId.equalsIgnoreCase(DEFAULT_FORM_IDENTIFIER)) {
+      return ACTION_FRAGMENT_IDENTIFIER;
+    } else {
+      return new StringBuilder(ACTION_FRAGMENT_IDENTIFIER).append("-").append(requestedFormId).toString();
+    }
+  }
+
+  private Optional<String> getFormIdentifierFromRequest(KnotContext knotContext) {
     return Optional.ofNullable(knotContext.clientRequest().formAttributes().get(configuration.formIdentifierName()));
   }
 
   private void processFragments(List<Fragment> fragments) {
     fragments.stream()
-        .filter(fragment -> fragment.getId().matches(ACTION_FRAGMENT_IDENTIFIER_REGEXP))
+        .filter(fragment -> fragment.getId().startsWith(ACTION_FRAGMENT_IDENTIFIER))
         .forEach(this::processFragment);
   }
 
   private void processFragment(Fragment fragment) {
     Document scriptContentDocument = getScriptContentDocument(fragment);
-    Element actionFormElement = Optional.ofNullable(scriptContentDocument.getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first()).orElseThrow(() -> {
-      LOGGER.error("Attribute {} not found!", ACTION_FORM_ACTION_ATTRIBUTE);
-      return new FormConfigurationException(fragment);
-    });
+    Element actionFormElement = Optional.ofNullable(scriptContentDocument.getElementsByAttribute(ACTION_FORM_ACTION_ATTRIBUTE).first())
+        .orElseThrow(() -> {
+          LOGGER.error("Attribute {} not found!", ACTION_FORM_ACTION_ATTRIBUTE);
+          return new FormConfigurationException(fragment);
+        });
     checkActionFormNameDefinition(fragment, actionFormElement);
 
     LOGGER.trace("Changing fragment [{}]", fragment.getId());
@@ -285,12 +293,12 @@ public class ActionKnotVerticle extends AbstractVerticle {
   private void addHiddenInputTag(Element form, String fragmentIdentifier) {
     Matcher matcher = ACTION_FRAGMENT_IDENTIFIER_PATTERN.matcher(fragmentIdentifier);
     if (matcher.find()) {
-      String formIdentifier = matcher.group(1);
+      String formIdentifier = matcher.group(2);
 
       Attributes attributes = Stream.of(
           new Attribute("type", "hidden"),
           new Attribute("name", configuration.formIdentifierName()),
-          new Attribute("value", formIdentifier))
+          new Attribute("value", StringUtils.isNotBlank(formIdentifier) ? formIdentifier : DEFAULT_FORM_IDENTIFIER))
           .collect(Attributes::new, Attributes::put, Attributes::addAll);
       form.prependChild(new Element(Tag.valueOf("input"), "/", attributes));
     }
