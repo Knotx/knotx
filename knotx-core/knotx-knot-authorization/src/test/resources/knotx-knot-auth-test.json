@@ -1,0 +1,22 @@
+{
+  "verticles": {
+    "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle": {
+      "config": {
+        "address": "knotx.knot.auth",
+        "adapters": [
+          {
+            "name": "auth-handler",
+            "address": "auth-handler",
+            "allowed.request.headers": [
+              "Content-Type",
+              "X-*"
+            ],
+            "allowed.response.headers": [
+              "X-*"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

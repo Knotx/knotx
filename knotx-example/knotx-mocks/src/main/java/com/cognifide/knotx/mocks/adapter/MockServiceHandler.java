@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Optional;
 
 import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.logging.Logger;
@@ -53,6 +54,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     String resourcePath = getFilePath(context);
     String contentType = getContentType(context);
+    String modifiedResponseStatusCode = getStatusCode(context);
 
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
@@ -61,13 +63,18 @@ public class MockServiceHandler implements Handler<RoutingContext> {
           bodyProcessor.call(context, mockData);
         } else {
           context.response().putHeader("Content-Type", contentType);
-          context.response().setStatusCode(200).end(mockData);
+          context.response().setStatusCode(StringUtils.isNotBlank(modifiedResponseStatusCode) ? Integer.valueOf(modifiedResponseStatusCode) : 200).end(mockData);
         }
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
         context.response().setStatusCode(500).end();
       }
     });
+  }
+
+  private String getStatusCode(RoutingContext context) {
+    MultiMap queryParams = context.request().params();
+    return queryParams.get("statusCode");
   }
 
   private String getContentType(RoutingContext context) {

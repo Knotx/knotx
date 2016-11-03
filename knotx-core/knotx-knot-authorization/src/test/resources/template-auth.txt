@@ -1,0 +1,5 @@
+<script data-api-type="auth"
+        data-knotx-auth="auth-handler"
+        data-knotx-on-unauthorized="/content/local/login/step1.html"
+        type="text/x-handlebars-template">
+</script>

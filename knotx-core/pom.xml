@@ -41,5 +41,6 @@
     <module>knotx-standalone</module>
     <module>knotx-knot-action</module>
     <module>knotx-knot-view</module>
+	<module>knotx-knot-authorization</module>
   </modules>
 </project>
