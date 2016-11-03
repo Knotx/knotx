@@ -102,16 +102,32 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
 
   private Observable<HttpClientResponse> requestForTemplate(ClientRequest repoRequest) {
     MultiMap requestHeaders = getFilteredHeaders(repoRequest.headers());
+    String repoUri = buildRepoUri(repoRequest);
+
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("GET Http Repository: http://{}:{}{} with headers [{}]",
           clientDestination.getString("domain"),
           clientDestination.getInteger("port"),
-          repoRequest.path(),
+          repoUri,
           toString(requestHeaders)
       );
     }
     return RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
-        repoRequest.path(), requestHeaders);
+        repoUri, requestHeaders);
+  }
+
+  private String buildRepoUri(ClientRequest repoRequest) {
+    StringBuilder uri = new StringBuilder(repoRequest.path());
+    MultiMap params = repoRequest.params();
+    if (params != null && params.names().size() > 0) {
+      uri.append("?")
+          .append(params.names().stream()
+              .map(name -> new StringBuilder(name).append("=").append(params.get(name)))
+              .collect(Collectors.joining("&"))
+          );
+    }
+
+    return uri.toString();
   }
 
   private Observable<ClientResponse> processResponse(final HttpClientResponse response) {
