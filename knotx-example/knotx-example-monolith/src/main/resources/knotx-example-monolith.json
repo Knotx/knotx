@@ -52,10 +52,15 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.knot.action",
+              "address": "knotx.knot.auth",
               "onTransition": {
-                "next" : {
-                  "address": "knotx.knot.view"
+                "next": {
+                  "address": "knotx.knot.action",
+                  "onTransition": {
+                    "next" : {
+                      "address": "knotx.knot.view"
+                    }
+                  }
                 }
               }
             }
@@ -187,6 +192,27 @@
           }
         ],
         "formIdentifierName": "_frmId"
+      }
+    },
+    "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle" : {
+      "config" : {
+        "address": "knotx.knot.auth",
+        "adapters": [
+          {
+            "name": "auth-handler",
+            "address": "knotx.adapter.service.http",
+            "params": {
+              "path": "/service/mock/auth.json?statusCode={param.statusCode}"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          }
+        ]
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
