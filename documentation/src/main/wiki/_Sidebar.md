@@ -16,6 +16,7 @@
     * [[Service Adapter|ServiceAdapter]]
       * [[Http Service Adapter|HttpServiceAdapter]]
     * [[Action Adapter|ActionAdapter]]
+      * [[Http Action Adapter|HttpActionAdapter]]
   * [[Knot.x Deployment|KnotxDeployment]]
   * [[Dependencies|Dependencies]]
   * [[What's new|WhatsNew]]

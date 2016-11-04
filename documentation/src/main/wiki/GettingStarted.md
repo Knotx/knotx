@@ -32,7 +32,7 @@ Common and reusable system components that may be helpful when creating custom A
 Simple implementation of a [[Service Adapter|HttpServiceAdapter]] that is used for communication between Knot.x ([[View Knot|ViewKnot]]) and external Services using HTTP protocol.
 
 #### knotx-adapter-action-http
-Simple implementation of an [[Action Adapter|ActionAdapter]] that is used for communication between Knot.x ([[Action Knot|ActionKnot]]) and external Services using HTTP protocol.
+Simple implementation of an [[Action Adapter|HttpActionAdapter]] that is used for communication between Knot.x ([[Action Knot|ActionKnot]]) and external Services using HTTP protocol.
 
 ### Core
 The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.
@@ -42,6 +42,18 @@ A module that defines:
 
 - the communication model used to send event-related messages via the Event Bus.
 - Knotx Starter Verticle supporting verticles definition in the given configuration JSON and corresponding Vert.x launcher
+
+#### knotx-fragment-splitter
+A module that contains implementation of a Fragment Splitter that parses template and splits it into fragments.
+
+#### knotx-knot-action
+A module that contains the [[Action Knot|ViewKnot]] implementation.
+
+#### knotx-knot-authorization
+A module that contains the Authorization Knot implementation.
+
+#### knotx-knot-view
+A module that contains the [[View Knot|ViewKnot]] implementation.
 
 #### knotx-repository
 A module that contains submodules for specialized repository [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) imlementations. 
@@ -54,10 +66,6 @@ A module that contains the **server** [verticle](http://vertx.io/docs/apidocs/io
 
 #### knotx-standalone
 A module that contains JSON configuration to start Knot.x as standalone system. It means only following verticles to be started: `server`, `repository` and `template-engine`. It enables one to quickly set up a standalone Knot.x core application.
-
-#### knotx-engine-view
-A module that contains the **engine-view** [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) implementation. View Engine is responsible for processing template snippets, calling external services (only GET requests) for dynamic data and producing final markup with injected data.
-See [[View Engine|ViewEngine]] to learn more.
 
 ### Example
 The *example* module contains the Knot.x application, example template repositories and mock services. Internally, it starts five verticles (Knot.x Repository, Knot.x View Engine, Knot.x Server, Services Mocks and Mocked Remote repository). This module is a perfect fit for those getting started with Knot.x. 
