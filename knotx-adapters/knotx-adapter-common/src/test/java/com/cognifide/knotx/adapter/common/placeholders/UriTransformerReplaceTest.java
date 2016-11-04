@@ -88,7 +88,7 @@ public class UriTransformerReplaceTest {
             "/path/second.html/a."},
         // param
         {"/solr/search/{param.q}", "/c/d/s?q=my search is fetched from static getParams()",
-            "/solr/search/knot.x"},
+            "/solr/search/knot%20%26%20x"},
         // headers
         {"/solr/{header.authorizationId}/", "/c/d/s?q=my action from headers",
             "/solr/486434684345/"},
@@ -104,7 +104,7 @@ public class UriTransformerReplaceTest {
 
   private static MultiMap getParamsMultiMap() {
     MultiMap map = MultiMap.caseInsensitiveMultiMap();
-    map.add("q", "knot.x");
+    map.add("q", "knot & x");
     map.add("action", "/some/action/path");
     return map;
   }

@@ -62,6 +62,11 @@ Available placeholders are:
 * `{slingUri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `html`
 * `{slingUri.suffix}` - is the original requests sling suffix. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/suffix.html`
 
+All placeholders are always substituted with encoded values according to the RFC standard. However, there are two exceptions:
+
+- Space character is substituted by **%20** instead of **+**
+- Slash character **/** remains as it is
+
 How would you use a placeholder within your script:
 ```html
 <script data-api-type="templating" type="text/x-handlebars-template"
