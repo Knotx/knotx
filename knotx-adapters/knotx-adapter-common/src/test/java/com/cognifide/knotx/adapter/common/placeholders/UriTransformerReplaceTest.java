@@ -87,7 +87,7 @@ public class UriTransformerReplaceTest {
         {"/path/second.html/a.{uri.extension}", "/a/b",
             "/path/second.html/a."},
         // param
-        {"/solr/search/{param.q}", "/c/d/s?q=my search is fetched from static getParams()",
+        {"/solr/search/{param.q}", "/c/d/s?q=my search is fetched from static parseQueryString()",
             "/solr/search/knot%20%26%20x"},
         // headers
         {"/solr/{header.authorizationId}/", "/c/d/s?q=my action from headers",

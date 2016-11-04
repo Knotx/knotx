@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.dataobjects;
 
-import com.cognifide.knotx.http.QueryStringParser;
+import com.cognifide.knotx.http.UriHelper;
 
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
@@ -65,7 +65,7 @@ public class ClientRequest {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
     this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.headers().getDelegate());
-    this.params = QueryStringParser.getParams(serverRequest.uri());
+    this.params = UriHelper.parseQueryString(serverRequest.uri());
     this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.formAttributes().getDelegate());
   }
 
