@@ -12,7 +12,7 @@ Configuration of the Server is being supplied in Knot.x configuration JSON as fo
 {
   "http.port": 8080,
   "allowed.response.headers": [ "Content-Type", "Content-Length", "Location", "Set-Cookie" ],
-  "repositories" : {
+  "repositories" : [
     {
       "path": "/content/local/.*\.html",
       "address": "filesystem.repository.eventbus.address"
@@ -21,7 +21,7 @@ Configuration of the Server is being supplied in Knot.x configuration JSON as fo
       "path": "/content/.*\.html",
       "address": "http.repository.eventbus.address"
     }
-  },
+  ],
   "splitter": {
     "address" : "splitter.eventbus.address"
   },
