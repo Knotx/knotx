@@ -66,7 +66,7 @@ public final class UriTransformer {
 
   private static String encodeValue(String value) {
     try {
-      return URLEncoder.encode(value, "UTF-8").replace("+", "%20");
+      return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("%2F", "/");
     } catch (UnsupportedEncodingException var3) {
       throw new UnsupportedCharsetException("UTF-8");
     }
