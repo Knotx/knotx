@@ -25,7 +25,7 @@ import io.vertx.rxjava.core.MultiMap;
 
 public class UriHelper {
 
-  public static MultiMap parseQueryString(String uri) {
+  public static MultiMap getParams(String uri) {
     QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
     Map<String, List<String>> prms = queryStringDecoder.parameters();
     io.vertx.core.MultiMap params = io.vertx.core.MultiMap.caseInsensitiveMultiMap();

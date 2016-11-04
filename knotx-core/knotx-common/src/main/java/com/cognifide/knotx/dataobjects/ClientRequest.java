@@ -65,7 +65,7 @@ public class ClientRequest {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
     this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.headers().getDelegate());
-    this.params = UriHelper.parseQueryString(serverRequest.uri());
+    this.params = UriHelper.getParams(serverRequest.uri());
     this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.formAttributes().getDelegate());
   }
 
