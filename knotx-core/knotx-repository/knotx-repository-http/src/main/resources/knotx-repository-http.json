@@ -8,5 +8,20 @@
   "client.destination": {
     "domain": "localhost",
     "port": 3001
-  }
+  },
+  "allowed.request.headers": [
+    "Accept*",
+    "Authorization",
+    "Connection",
+    "Cookie",
+    "Date",
+    "Host",
+    "If*",
+    "Origin",
+    "Pragma",
+    "Proxy-Authorization",
+    "User-Agent",
+    "Via",
+    "X-*"
+  ]
 }

@@ -19,17 +19,26 @@ package com.cognifide.knotx.repository;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.http.AllowedHeadersFilter;
+import com.cognifide.knotx.http.MultiMapCollector;
+import com.cognifide.knotx.http.StringToPatternFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.RxHelper;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.Message;
@@ -46,6 +55,7 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
   private JsonObject clientOptions;
   private JsonObject clientDestination;
   private HttpClient httpClient;
+  private List<Pattern> allowedRequestHeaders;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -53,6 +63,10 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     address = config().getString("address");
     clientOptions = config().getJsonObject("client.options", new JsonObject());
     clientDestination = config().getJsonObject("client.destination");
+    allowedRequestHeaders = config().getJsonArray("allowed.request.headers", new JsonArray()).stream()
+        .map(object -> (String) object)
+        .map(new StringToPatternFunction())
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -87,8 +101,33 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
   }
 
   private Observable<HttpClientResponse> requestForTemplate(ClientRequest repoRequest) {
+    MultiMap requestHeaders = getFilteredHeaders(repoRequest.headers());
+    String repoUri = buildRepoUri(repoRequest);
+
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("GET Http Repository: http://{}:{}{} with headers [{}]",
+          clientDestination.getString("domain"),
+          clientDestination.getInteger("port"),
+          repoUri,
+          toString(requestHeaders)
+      );
+    }
     return RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
-        repoRequest.path(), repoRequest.headers());
+        repoUri, requestHeaders);
+  }
+
+  private String buildRepoUri(ClientRequest repoRequest) {
+    StringBuilder uri = new StringBuilder(repoRequest.path());
+    MultiMap params = repoRequest.params();
+    if (params != null && params.names().size() > 0) {
+      uri.append("?")
+          .append(params.names().stream()
+              .map(name -> new StringBuilder(name).append("=").append(params.get(name)))
+              .collect(Collectors.joining("&"))
+          );
+    }
+
+    return uri.toString();
   }
 
   private Observable<ClientResponse> processResponse(final HttpClientResponse response) {
@@ -105,9 +144,15 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
         .setBody(buffer);
   }
 
+  private MultiMap getFilteredHeaders(MultiMap headers) {
+    return headers.names().stream()
+        .filter(AllowedHeadersFilter.create(allowedRequestHeaders))
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
+  }
+
   private void traceHttpResponse(HttpClientResponse response) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got response from remote repository {}", response.statusCode());
+      LOGGER.trace("Got response from remote repository status [{}]", response.statusCode());
     }
   }
 
@@ -115,5 +160,16 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
     }
+  }
+
+  private String toString(MultiMap multiMap) {
+    StringBuilder result = new StringBuilder();
+    multiMap.names().forEach(
+        name -> result
+            .append(name)
+            .append("=")
+            .append(multiMap.getAll(name).stream().collect(Collectors.joining(";")))
+            .append(","));
+    return result.toString();
   }
 }

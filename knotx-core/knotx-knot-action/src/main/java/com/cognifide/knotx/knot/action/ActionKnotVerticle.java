@@ -17,12 +17,12 @@
  */
 package com.cognifide.knotx.knot.action;
 
-import com.cognifide.knotx.adapter.common.http.AllowedHeadersFilter;
-import com.cognifide.knotx.adapter.common.http.MultiMapCollector;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.http.AllowedHeadersFilter;
+import com.cognifide.knotx.http.MultiMapCollector;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -97,7 +97,6 @@ public class ActionKnotVerticle extends AbstractVerticle {
     } else {
       handleGetMethod(handler, knotContext);
     }
-
   }
 
   private void handleFormAction(KnotContext knotContext, Handler<JsonObject> handler) {
@@ -134,20 +133,29 @@ public class ActionKnotVerticle extends AbstractVerticle {
           ClientResponse clientResponse = new ClientResponse(msg.body().getJsonObject("clientResponse"));
           String signal = msg.body().getString("signal");
 
+          if (isNotOkStatus(clientResponse)) {
+            knotContext.clientResponse()
+                .setStatusCode(clientResponse.statusCode())
+                .setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+
+            knotContext.clearFragments();
+            handler.handle(knotContext.toJson());
+          }
+
           String redirectLocation = Optional.ofNullable(getScriptContentDocument(currentFragment)
               .getElementsByAttribute("data-knotx-on-" + signal).first())
               .map(element -> element.attr("data-knotx-on-" + signal))
               .orElseThrow(() -> {
-                LOGGER.error("Could not find action adapter name in current fragment [{}].", currentFragment);
-                return new NoSuchElementException("Could not action adapter name");
+                LOGGER.error("Could not find signal name [{}] in fragment [{}].", signal, currentFragment);
+                return new NoSuchElementException("Could not find signal in configuration!");
               });
 
           if (shouldRedirect(redirectLocation)) {
             LOGGER.trace("Request redirected to [{}]", redirectLocation);
             knotContext.clientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY);
-            MultiMap headers = knotContext.clientResponse().headers();
+            MultiMap headers = MultiMap.caseInsensitiveMultiMap();
             headers.addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()));
-            headers.set(HttpHeaders.LOCATION.toString(), redirectLocation);
+            headers.add(HttpHeaders.LOCATION.toString(), redirectLocation);
 
             knotContext.clientResponse().setHeaders(headers);
             knotContext.clearFragments();
@@ -158,7 +166,8 @@ public class ActionKnotVerticle extends AbstractVerticle {
                 .put("_response", clientResponse.clearBody().toJson());
 
             currentFragment.getContext().put("action", actionContext);
-            knotContext.clientResponse().setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
+            knotContext.clientResponse().setHeaders(
+                MultiMap.caseInsensitiveMultiMap().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())));
             knotContext.fragments().ifPresent(this::processFragments);
             knotContext.setTransition(DEFAULT_TRANSITION);
           }
@@ -169,6 +178,10 @@ public class ActionKnotVerticle extends AbstractVerticle {
           handler.handle(knotContext.toJson());
         }
     );
+  }
+
+  private boolean isNotOkStatus(ClientResponse response) {
+    return !HttpResponseStatus.OK.equals(response.statusCode());
   }
 
   private void handleGetMethod(Handler<JsonObject> handler, KnotContext knotContext) {
@@ -249,9 +262,8 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
   private String getFragmentContent(Fragment fragment, Document scriptContentDocument) {
     Document resultDocument = Jsoup.parse(fragment.getContent(), "UTF-8", Parser.xmlParser());
-    Element scriptTag = resultDocument.child(0);
-    scriptTag.children().remove();
-    scriptContentDocument.children().stream().forEach(scriptTag::appendChild);
+    Element scriptTag = resultDocument.child(0).empty();
+    scriptContentDocument.childNodesCopy().stream().forEach(scriptTag::appendChild);
 
     return resultDocument.html();
   }
@@ -284,7 +296,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
   }
 
   private void traceMessage(Message<JsonObject> message) {

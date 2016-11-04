@@ -43,11 +43,15 @@ class HtmlFragmentSplitter implements FragmentSplitter {
       int idx = 0;
       while (matcher.find()) {
         MatchResult matchResult = matcher.toMatchResult();
-        fragments.add(toRaw(html, idx, matchResult.start()));
+        if (idx < matchResult.start()) {
+          fragments.add(toRaw(html, idx, matchResult.start()));
+        }
         fragments.add(toSnippet(matchResult.group(1).intern(), html, matchResult.start(), matchResult.end()));
         idx = matchResult.end();
       }
-      fragments.add(toRaw(html, idx, html.length()));
+      if (idx < html.length()) {
+        fragments.add(toRaw(html, idx, html.length()));
+      }
     } else {
       fragments.add(toRaw(html, 0, html.length()));
     }

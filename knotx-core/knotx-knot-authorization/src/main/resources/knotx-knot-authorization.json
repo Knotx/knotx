@@ -1,0 +1,19 @@
+{
+  "address": "knotx.knot.authorization",
+  "adapters": [
+    {
+      "name": "authorize",
+      "address": "knotx.adapter.service.http",
+      "params": {
+        "path": "/service/mock/auth.json"
+      },
+      "allowed.request.headers": [
+        "Cookie"
+      ],
+      "allowed.response.headers": [
+        "Set-Cookie",
+        "Location"
+      ]
+    }
+  ]
+}

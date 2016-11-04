@@ -20,8 +20,11 @@ package com.cognifide.knotx.adapter.common.http;
 import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractException;
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
+import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.http.AllowedHeadersFilter;
+import com.cognifide.knotx.http.MultiMapCollector;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -30,7 +33,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -62,63 +64,89 @@ public class HttpClientFacade {
   public Observable<ClientResponse> process(JsonObject message, HttpMethod method) {
     return Observable.just(message)
         .doOnNext(this::validateContract)
-        .map(this::prepareRequest)
+        .map(this::prepareRequestData)
         .flatMap(serviceRequest -> callService(serviceRequest, method))
         .flatMap(this::wrapResponse)
         .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
   }
 
-  private void validateContract(JsonObject message) {
+  /**
+   * Method to validate contract or params JsonObject for the Adapter Service<br/>
+   * The contract checks if all required fields exists in the object. throwing AdapterServiceContractException
+   * in case of contract violation.<br/>
+   *
+   * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params' objects.
+   */
+  protected void validateContract(JsonObject message) {
     final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
     if (!pathPresent) {
       throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
 
-  private Pair<ClientRequest, ServiceMetadata> prepareRequest(JsonObject message) {
-    final Pair<ClientRequest, ServiceMetadata> serviceRequest;
+  /**
+   * Method responsible for building request to the service.</br>
+   * <br/>
+   * The responsibility of the method is to build ClientRequest based on the original Http Request<br/>
+   * - It must set path property of the request based on the params<br/>
+   * - It might set headers of the request if needed.</br>
+   * <br/>
+   * In case of headers created modified in this method, ensure that your service configuration
+   * allows passing those headers to the target service. See 'allowed.request.headers' section of the configuration
+   * </br>
+   *
+   * @param originalRequest - ClientRequest representing original request comming to the Knot.x
+   * @param params          - JsonObject of the params to be used to build request.
+   * @return ClientRequest representing Http request to the target service
+   */
+  protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
+    return new ClientRequest(originalRequest.toJson())
+        .setPath(UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
+  }
+
+  private Pair<ClientRequest, ServiceMetadata> prepareRequestData(JsonObject message) {
+    final Pair<ClientRequest, ServiceMetadata> serviceData;
 
     final ClientRequest originalRequest = new ClientRequest(message.getJsonObject(REQUEST_KEY));
-    final JsonObject params = message.getJsonObject(PARAMS_KEY);
+    final ClientRequest serviceRequest = buildServiceRequest(originalRequest, message.getJsonObject(PARAMS_KEY));
 
-    final String servicePath = UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest);
-
-    final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(servicePath);
+    final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.path());
     if (serviceMetadata.isPresent()) {
-      final ClientRequest serviceRequestWrapper = new ClientRequest(originalRequest.toJson());
-      serviceRequestWrapper.setPath(servicePath);
-      serviceRequest = Pair.of(serviceRequestWrapper, serviceMetadata.get());
+      serviceData = Pair.of(serviceRequest, serviceMetadata.get());
     } else {
-      final String error = String.format("Parameter `params.path`: `%s` not supported!", servicePath);
+      final String error = String.format("No matching service definition for the requested path '%s'", serviceRequest.path());
       throw new UnsupportedServiceException(error);
     }
-
-    return serviceRequest;
+    return serviceData;
   }
 
   private Optional<ServiceMetadata> findServiceMetadata(String servicePath) {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Observable<HttpClientResponse> callService(Pair<ClientRequest, ServiceMetadata> serviceRequest, HttpMethod method) {
-    final ClientRequest requestWrapper = serviceRequest.getLeft();
-    final ServiceMetadata serviceMetadata = serviceRequest.getRight();
+  private Observable<HttpClientResponse> callService(Pair<ClientRequest, ServiceMetadata> serviceData, HttpMethod method) {
+    final ClientRequest serviceRequest = serviceData.getLeft();
+    final ServiceMetadata serviceMetadata = serviceData.getRight();
 
     return Observable.create(subscriber -> {
-      HttpClientRequest request = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), requestWrapper.path());
-      Observable<HttpClientResponse> resp = request.toObservable();
+      HttpClientRequest httpRequest = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), serviceRequest.path());
+      Observable<HttpClientResponse> resp = httpRequest.toObservable();
       resp.subscribe(subscriber);
-      request.headers().addAll(getFilteredHeaders(requestWrapper.headers(), serviceMetadata.getAllowedRequestHeaderPatterns()));
-      request.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
 
-      request.end();
+      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns());
+      filteredHeaders.names().forEach(headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
+      if (!serviceRequest.formAttributes().isEmpty()) {
+        httpRequest.end(FormBodyBuilder.createBody(serviceRequest.formAttributes()));
+      } else {
+        httpRequest.end();
+      }
     });
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::get));
+        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
   }
 
   private Observable<ClientResponse> wrapResponse(HttpClientResponse response) {

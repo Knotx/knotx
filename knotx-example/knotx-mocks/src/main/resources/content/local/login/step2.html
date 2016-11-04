@@ -1,3 +1,8 @@
+<script data-api-type="auth"
+        data-knotx-auth="auth-handler"
+        data-knotx-on-unauthorized="/content/local/login/step1.html"
+        type="text/x-handlebars-template">
+</script>
 <!--
 
     Knot.x - Mocked services for sample app
@@ -49,7 +54,9 @@
     <div class="col-md-12">
       <script data-api-type="form-1"
               type="text/x-handlebars-template">
-        <p class="bg-danger">{{#if action._result.validationErrors}}Invalid credentials{{/if}}</p>
+        {{#if action._result.validationErrors}}
+        <p class="bg-danger">Invalid credentials</p>
+        {{/if}}
         <p>Please provide your password</p>
         <form data-knotx-action="step2" data-knotx-on-success="/content/local/simple.html"
               data-knotx-on-error="_self" method="post">

@@ -18,6 +18,7 @@
 package com.cognifide.knotx.adapter.common.http;
 
 import com.cognifide.knotx.adapter.api.AdapterConfiguration;
+import com.cognifide.knotx.http.StringToPatternFunction;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-public class HttpAdapterConfiguration extends AdapterConfiguration{
+public class HttpAdapterConfiguration extends AdapterConfiguration {
 
   private List<ServiceMetadata> services;
 
@@ -40,7 +41,7 @@ public class HttpAdapterConfiguration extends AdapterConfiguration{
           metadata.path = item.getString("path");
           metadata.domain = item.getString("domain");
           metadata.port = item.getInteger("port");
-          metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.clientRequest.headers", new JsonArray()).stream()
+          metadata.allowedRequestHeaderPatterns = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
               .map(object -> (String) object)
               .map(new StringToPatternFunction())
               .collect(Collectors.toList());
