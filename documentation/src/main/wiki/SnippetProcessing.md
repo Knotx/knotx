@@ -1,10 +1,13 @@
 #Snippet processing
 ##Overview
-In order to fetch the data for snippet different services can be called. Decision which services to call is made depends on service path data attribute and incoming request method.
-The result of the call is always available in **_result** context and it contains the exactly same structure as the response from the service - it might be JSON Object or Array.
+In order to fetch the data for snippet different services can be called. Decision which services to 
+call is made depends on service path data attribute and incoming request method.
+The result of the call is always available in **_result** context and it contains the exactly 
+same structure as the response from the service - it might be JSON Object or Array.
 
 ###Caching service calls
-Snippet might consists of more than one service call. It's also possible that there are multiple snippets on the page, each using same services. Knot.x does caching results of service calls to avoid multiple calls for the same data.
+Snippet might consists of more than one service call. It's also possible that there are multiple 
+snippets on the page, each using same services. Knot.x does caching results of service calls to avoid multiple calls for the same data.
 Caching is performed within one request only. It means second request will not get cached data.
 
 ###Parametrized services calls
@@ -40,7 +43,9 @@ How would you use a placeholder within your script:
 
 
 ##### Routing request basing on request type
-Knot.x provides a mechanism that causes different approach to HTTP request and XmlHttpRequest. When Knot.x is requested with HTTP default processing path is started and flow works as usually. When Knot.x is requested with XHR only requested part of a template is processed and returned.
+Knot.x provides a mechanism that causes different approach to HTTP request and XmlHttpRequest. 
+When Knot.x is requested with HTTP default processing path is started and flow works as usually. 
+When Knot.x is requested with XHR only requested part of a template is processed and returned.
 
 **Example:**
 
@@ -61,10 +66,10 @@ Service response status code can be used in snippets e.g. as condition to displa
 ```html
 <script data-api-type="templating"
     type="text/x-handlebars-template"
-    data-uri-post-formResponse="/service/formSubmit">
+    data-service-myservice="/service/myService">
   <h1>Welcome!</h1>
 
-  {{#if formResponse._response.statusCode == 503
+  {{#if myservice._response.statusCode == 503
     <p>Failed. Service was unavailable.</p>
   {{else}}
     <p>Success.</p>
