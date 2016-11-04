@@ -9,14 +9,14 @@
   * [[Server|Server]]
   * [[Repository|Repository]]
   * [[Splitter|Splitter]]
-  * [[Knot|Knot]] (Describe what's Knot, it's API - KnotContext, how to build your own knot, and links to Knot.x shipped Knots as below)
+  * [[Knot|Knot]]
     * [[Action Knot|ActionKnot]]
     * [[View Knot|ViewKnot]]
   * [[Adapter|Adapter]]
-    * [[Service Adapter|ServiceAdapter]] (Describe what's Service Adapter, it's API, how to build your own service adapter, and links to Knot.x shipped adapters as below)
+    * [[Service Adapter|ServiceAdapter]]
       * [[Http Service Adapter|HttpServiceAdapter]]
-    * [[Action Adapter|ActionAdapter]]  (Describe what's Action Adapter, it's API, how to build your own action adapter)
-  * [[Knot.x Deployment|KnotxDeployment]] (Describe how to configure knot.x as a whole, recommended approach for deployment - as it's now, logging config etc.)
+    * [[Action Adapter|ActionAdapter]]
+  * [[Knot.x Deployment|KnotxDeployment]]
   * [[Dependencies|Dependencies]]
   * [[What's new|WhatsNew]]
 

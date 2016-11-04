@@ -26,3 +26,7 @@ To deploy verticle with advanced options use following properties:
 - **isolatedClasses** - array of isolated classes.
 
 Read more about [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html)
+
+
+# TODO
+Describe how to configure knot.x as a whole, recommended approach for deployment - as it's now, logging config etc.
