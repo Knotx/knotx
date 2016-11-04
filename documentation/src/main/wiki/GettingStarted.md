@@ -7,7 +7,7 @@ Very efficient, high-performance and scalable platform which assembles static an
 ## What are base concepts of Knot.x?
 Knot.x uses asynchronous programming principles which allows it to process a large number of requests using a single thread.
 Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
-The platform stays responsive under heavy and varying load.
+The platform stays responsive under heavy and varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
 
 ## Requirements
@@ -18,6 +18,21 @@ To build it you also need Maven (version 3.3.1 or higher).
 
 ## Modules
 The Knot.x project has two main Maven modules: **knotx-core** and **knotx-example**.
+
+### Adapters
+The *adapters* module contains the Knot.x [adapters verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) that are used by Knot.x to communicate with external Services.
+
+#### knotx-adapter-api
+API containing abstract Adapter and Configuration that can be used to implement project-specific Adapter.
+
+#### knotx-adapter-common
+Common and reusable system components that may be helpful when creating custom Adapter.
+
+#### knotx-adapter-service-http
+Simple implementation of a [[Service Adapter|HttpServiceAdapter]] that is used for communication between Knot.x ([[View Knot|ViewKnot]]) and external Services using HTTP protocol.
+
+#### knotx-adapter-action-http
+Simple implementation of an [[Action Adapter|ActionAdapter]] that is used for communication between Knot.x ([[Action Knot|ActionKnot]]) and external Services using HTTP protocol.
 
 ### Core
 The *core* module contains the Knot.x [verticles](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) without any example data or mock endpoints. See the [Configuration section](#configuration-1) for instructions on how to deploy the Knot.x core module.

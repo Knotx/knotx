@@ -1,8 +1,8 @@
-[TO REVIEW]
 #Architecture
 
-Knot.x can be treated as tool which fetches requested templates from Repository and processes those 
-templates. So requests from site visitor are first seen by Knot.x. Then Knot.x calls Repository for 
+A simplified description of Knot.x can be `a tool which converts a static page (template) into 
+dynamic page driven by data provided by microservices`.
+Page visitor requests are directed to Knot.x. Then Knot.x calls Repository for 
 the template, split this template to static / dynamic fragments and process those fragments. Finally 
 it calls external services if required.
 
@@ -10,6 +10,6 @@ The diagram below depicts Knot.x request flow at very high level point of view.
 
 [[assets/knotx-overview.png|alt=Knot.x Overview]]
 
-Knot.x can be easily extensible by custom integration implementations. So Knot.x can easily adapt 
-responses with different formats to required one. Additionally Knot.x does not concentrate on HTTP
-protocol so even custom protocols can be used if required.
+Thanks to modular nature, Knot.x can be easily extended by project-specific mechanics (see [[Knots|Knot]]).
+Knot.x can easily adapt responses with different formats to required one (see e.g. [[Service Adapters|ServiceAdapter]]).
+Additionally Knot.x does not concentrate on HTTP protocol so even custom protocols can be used if required.
