@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Action Knot Verticle
+ * Knot.x - Reactive microservice assembler - Auhtorization Knot Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -95,7 +95,6 @@ class AuthorizationKnotConfiguration {
     public List<Pattern> getAllowedRequestHeaders() {
       return allowedRequestHeaders;
     }
-
 
     public List<Pattern> getAllowedResponseHeaders() {
       return allowedResponseHeaders;

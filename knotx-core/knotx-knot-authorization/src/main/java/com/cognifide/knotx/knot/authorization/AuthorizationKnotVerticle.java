@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Action Knot Verticle
+ * Knot.x - Reactive microservice assembler - Auhtorization Knot Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -47,16 +47,14 @@ import rx.Observable;
 
 public class AuthorizationKnotVerticle extends AbstractVerticle {
 
-  public static final String DEFAULT_TRANSITION = "next";
+  private static final String DEFAULT_TRANSITION = "next";
   private static final String AUTH_FRAGMENT_ID = "auth";
-
   private static final String DATA_KNOTX_ON_UNAUTHORIZED = "data-knotx-on-unauthorized";
   private static final String AUTH_SERVICE_ATTRIBUTE = "data-knotx-auth";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationKnotVerticle.class);
 
   private AuthorizationKnotConfiguration configuration;
-  private MultiMap headers;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -74,7 +72,7 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
             .subscribe(
                 result -> doAuthorization(result, message::reply),
                 error -> {
-                  LOGGER.error("Error occured in Authorization Knot.", error);
+                  LOGGER.error("Error occurred in Authorization Knot.", error);
                   message.reply(processError(new KnotContext(message.body()), error).toJson());
                 }
             ));
@@ -83,7 +81,7 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
   private void doAuthorization(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
     final KnotContext knotContext = new KnotContext(jsonObject.body());
     LOGGER.trace("Process authorization for {} ", knotContext);
-    Optional<Fragment> authFragment = findAuthFragment(knotContext);
+    Optional<Fragment> authFragment = findAndRemoveAuthFragment(knotContext);
 
     if (authFragment.isPresent()) {
       AuthorizationKnotConfiguration.AdapterMetadata adapterMetadata = findAdapter(authFragment.get());
@@ -115,7 +113,7 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     }
   }
 
-  private Optional<Fragment> findAuthFragment(KnotContext knotContext) {
+  private Optional<Fragment> findAndRemoveAuthFragment(KnotContext knotContext) {
     Optional<Fragment> authFragment = knotContext.fragments()
         .flatMap(fragments -> fragments.stream()
             .filter(fragment -> fragment.getId().equals(AUTH_FRAGMENT_ID))
@@ -201,7 +199,7 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     }
   }
 
-  public MultiMap prepareRedirectHeaders(MultiMap responseHeaders, String redirectLocation) {
+  private MultiMap prepareRedirectHeaders(MultiMap responseHeaders, String redirectLocation) {
     MultiMap headers = MultiMap.caseInsensitiveMultiMap();
     headers.addAll(responseHeaders);
     headers.add(HttpHeaders.LOCATION.toString(), redirectLocation);
