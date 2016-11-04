@@ -25,6 +25,9 @@ import com.cognifide.knotx.http.StringToPatternFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -122,12 +125,21 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     if (params != null && params.names().size() > 0) {
       uri.append("?")
           .append(params.names().stream()
-              .map(name -> new StringBuilder(name).append("=").append(params.get(name)))
+              .map(name -> new StringBuilder(name).append("=").append(encodeParamValue(params.get(name))))
               .collect(Collectors.joining("&"))
           );
     }
 
     return uri.toString();
+  }
+
+  private static String encodeParamValue(String value) {
+    try {
+      return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("%2F", "/");
+    } catch (UnsupportedEncodingException ex) {
+      LOGGER.fatal("Unexpected Exception - Unsupported encoding UTF-8", ex);
+      throw new UnsupportedCharsetException("UTF-8");
+    }
   }
 
   private Observable<ClientResponse> processResponse(final HttpClientResponse response) {
