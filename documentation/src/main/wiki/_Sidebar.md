@@ -6,6 +6,7 @@
     * [[Core Architecture|CoreArchitecture]]
     * [[Communication Flow|CommunicationFlow]]
     * [[Knot Routing|KnotRouting]]
+    * [[Snippet Processing|SnippetProcessing]]
   * [[Server|Server]]
   * [[Repository|Repository]]
   * [[Splitter|Splitter]]
