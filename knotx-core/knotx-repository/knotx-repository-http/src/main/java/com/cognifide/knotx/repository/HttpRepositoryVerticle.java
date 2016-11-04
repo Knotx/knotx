@@ -133,7 +133,7 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     return uri.toString();
   }
 
-  private static String encodeParamValue(String value) {
+  private String encodeParamValue(String value) {
     try {
       return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("%2F", "/");
     } catch (UnsupportedEncodingException ex) {
