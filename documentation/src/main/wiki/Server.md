@@ -59,35 +59,35 @@ Main server options available.
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
 | `http.port`                 | `Number (int)`                      | &#10004;       | HTTP Port |
-| `displayExceptionDetails`   | `Boolean`                           |         | (Debuging only) Displays exception stacktrace on error page. **False** is not set.|
+| `displayExceptionDetails`   | `Boolean`                           |         | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `allowed.response.headers`  | `Array of String`                   |         | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `repositories`              | `Array of RepositoryEntry`          | &#10004;       | Array of repositories configurations |
-| `splitter`                  | `SplitterEntry`                     | &#10004;       | [[Splitter|Splitter]] communication options |
-| `routing`                   | `Object of Method to RoutingEntry`  | &#10004;       | Set of HTTP method based routing entries, describing communication between [[Knots|Knot]]<br/>`"routing": {"GET": {}, "POST": {}}` |
+| `splitter`                  | `SplitterEntry`                     | &#10004;       | **Splitter** communication options |
+| `routing`                   | `Object of Method to RoutingEntry`  | &#10004;       | Set of HTTP method based routing entries, describing communication between **Knots**<br/>`"routing": {"GET": {}, "POST": {}}` |
 
 ### RepositoryEntry options
 
 | Name  | Type  | Mandatory | Description  |
 |-------:|:-------:|:-------:  |-------|
 | `path`      | `String`  | &#10004;       | Regular expression of the HTTP Request path |
-| `address`   | `String`  | &#10004;       | Event bus address of the [[Repository|Repository]] verticle, that should deliver content for the requested path matching the regexp in `path` |
+| `address`   | `String`  | &#10004;       | Event bus address of the **Repository|Repository** verticle, that should deliver content for the requested path matching the regexp in `path` |
 
 ### SplitterEntry options
 
 | Name  | Type  | Mandatory | Description  |
 |-------:|:-------:|:-------:  |-------|
-| `address`  | `String`  | &#10004;       | Sets the event bus address of the [[Splitter|Splitter]] verticle |
+| `address`  | `String`  | &#10004;       | Sets the event bus address of the **Splitter** verticle |
 
 ### RoutingEntry options
 | Name  | Type  | Mandatory | Description  |
 |-------:|:-------:|:-------:  |-------|
 | `path`           | `String`                               | &#10004;       | Regular expression of HTTP Request path |
-| `address`        | `String`                               | &#10004;       | Event bus address of the [[Knot|Knot]] verticle, that should process the message, for the requested path matching the regexp in `path` |
+| `address`        | `String`                               | &#10004;       | Event bus address of the **Knot** verticle, that should process the message, for the requested path matching the regexp in `path` |
 | `onTransition`   | `Object of Strings to TransitionEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/> `"onTransition": { "go-a": {}, "go-b": {} }` |
 
 ### KnotRouteEntry options
 | Name  | Type  | Mandatory | Description  |
 |-------:|:-------:|:-------:  |-------|
-| `address`      | `String`         | &#10004;       | Event bus address of the [[Knot|Knot]] verticle |
+| `address`      | `String`         | &#10004;       | Event bus address of the **Knot** verticle |
 | `onTransition` | `KnotRouteEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/>`"onTransition": { "go-d": {}, "go-e": {} }` |
 
