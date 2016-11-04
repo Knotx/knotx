@@ -115,7 +115,8 @@ http://localhost:8092/content/remote/multiple-forms.html
 
 The Knot.x Sample application consists of multiple verticles, each requiring a dedicated configuration entry.
 Here's how JSON configuration files look:
-### 1. knotx-example-monolith.json
+
+### knotx-example-monolith.json
 ```json
 {
   "verticles" : {  
@@ -165,7 +166,7 @@ Here's how JSON configuration files look:
 The configuration consists of **verticles** object containing set of configurations for verticles that are going to be deployed(started). Each object in a set should have name of class name of the **Verticle** that are going to be deployed.
 
 
-#### 1.5 MockRepo section
+#### MockRepo
 ```json
 {
     ... 
@@ -182,7 +183,7 @@ This section configures the Remote repository mock used by the example applicati
 - **mock.data.root** - a path (relative to `knotx-mocks/src/main/resources`) where mocked HTML responses are located on local storage,
 - **http.port** - HTTP Port the mock service is listening to.
 
-#### 1.6 MockService section
+#### MockService
 ```json
 {
   ..., 

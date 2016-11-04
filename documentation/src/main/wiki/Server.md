@@ -1,4 +1,4 @@
-#### 1.4. HTTP Server section
+# Server
 ```json
 {
   ...
