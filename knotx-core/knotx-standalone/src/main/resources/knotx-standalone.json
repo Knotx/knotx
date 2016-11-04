@@ -178,7 +178,8 @@
         "address": "knotx.adapter.service.http",
         "client.options": {
           "maxPoolSize": 1000,
-          "keepAlive": false
+          "keepAlive": false,
+          "logActivity": true
         },
         "services": [
           {
