@@ -26,6 +26,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
@@ -79,7 +80,7 @@ public class ServiceEngine {
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
     } else if (rawData.charAt(0) == '{') {
-      object.put(RESULT_NAMESPACE_KEY, response.toJson());
+      object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
