@@ -19,7 +19,7 @@ The context can be omitted at this moment.
 At the end Splitter updates the Knot context with the list of fragments and returns it to further processing.
 
 ##How to configure?
-Splitter is deployed as separate verticle. It listens to communication bus events on a dedicated address.
+Splitter is deployed as separate verticle. It listens to communication bus events on a configured address.
 ```json
 "com.cognifide.knotx.splitter.FragmentSplitterVerticle": {
   "config": {
@@ -27,13 +27,9 @@ Splitter is deployed as separate verticle. It listens to communication bus event
   }
 }
 ```
-This address can be easily changed in JSON config. Remember to update server configuration after modification:
-```json
-"com.cognifide.knotx.server.KnotxServerVerticle": {
-  ..
-  "splitter": {
-    "address": "knotx.core.splitter"
-  },
-  ...
-}
-```
+
+####Splitter options
+
+| Name                        | Type                                | Mandatory | Description  |
+|-------:                     |:-------:                            |:-------:  |-------|
+| `address`                 | `String`                      | &#10004;       | Address on which Splitter will listen for events |
