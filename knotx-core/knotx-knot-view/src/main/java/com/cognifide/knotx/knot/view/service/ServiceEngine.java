@@ -80,18 +80,11 @@ public class ServiceEngine {
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
     } else if (rawData.charAt(0) == '{') {
-      object.put(RESULT_NAMESPACE_KEY, response.toJson());
+      object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESULT_NAMESPACE_KEY, new JsonObject(response.toJson().getString("body")));
     object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode().codeAsText()));
     return object;
-  }
-
-  private void traceServiceCall(Buffer results, ServiceEntry entry) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getParams());
-    }
   }
 }
