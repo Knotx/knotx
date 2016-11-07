@@ -58,7 +58,7 @@ Main server options available.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
-| `http.port`                 | `Number (int)`                      | &#10004;       | HTTP Port |
+| `http.port`                 | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
 | `displayExceptionDetails`   | `Boolean`                           |         | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `allowed.response.headers`  | `Array of String`                   |         | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `repositories`              | `Array of RepositoryEntry`          | &#10004;       | Array of repositories configurations |
