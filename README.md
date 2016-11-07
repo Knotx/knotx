@@ -9,9 +9,10 @@
          alt="Knot.x"/>
 </p>
 
-Knot.x is a lightweight and high-performance **reactive template assembler**. It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
+Knot.x is a very **efficient, high-performance and scalable platform** which assembles static and dynamic content from multiple sources.
+It allows you to get rid of all the dynamic data from your content repository and put it into a fast and scalable world of microservices.
 
-![Flow diagram](icons/architecture/flow-diagram.png)
+![Flow diagram](icons/architecture/knotx-overview.png)
 
 We care a lot about speed and that is why we built it on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
