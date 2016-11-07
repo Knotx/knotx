@@ -26,7 +26,6 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
@@ -84,14 +83,7 @@ public class ServiceEngine {
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESULT_NAMESPACE_KEY, new JsonObject(response.toJson().getString("body")));
     object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode().codeAsText()));
     return object;
-  }
-
-  private void traceServiceCall(Buffer results, ServiceEntry entry) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getParams());
-    }
   }
 }
