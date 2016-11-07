@@ -1,6 +1,7 @@
 ### Wiki
 * [[Home|Home]]
   * [[Getting started|GettingStarted]]
+    * [[Running The Demo|RunningTheDemo]]
   * [[Architecture|Architecture]]
     * [[High Level Architecture|HighLevelArchitecture]]
     * [[Core Architecture|CoreArchitecture]]
