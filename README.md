@@ -41,7 +41,7 @@ servers
 </p>
 
 - **Knot.x** can combine several template (page) sources thanks to its [Repository](https://github.com/Cognifide/knotx/wiki/Repository) feature. It allows to have one entry point to different content platforms.
-- **Knot.x** can render dynamic page that requires data from multiple external sources (e.g. microservices) thanks to [View Knot](https://github.com/Cognifide/knotx/wiki/ViewKnot) feature.
+- **Knot.x** can assemble dynamic page that requires data from multiple external sources (e.g. microservices) thanks to [View Knot](https://github.com/Cognifide/knotx/wiki/ViewKnot) feature.
 - With fast and scalable heart of an architecture - [Vert.x](http://vertx.io/) engine - **Knot.x** can significantly boost platform's performance. Learn more about [Knot.x Architecture](https://github.com/Cognifide/knotx/wiki/Architecture).
 - **Knot.x** supports forms submission including multi-step forms. Find out more about this topic reading about [Action Knot](https://github.com/Cognifide/knotx/wiki/ActionKnot).
 
