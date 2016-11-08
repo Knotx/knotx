@@ -1,7 +1,7 @@
 # Getting started
 
 ## Getting Binaries
-Knot.x provides binaries and default JSON configuration files at [[Releases | https://github.com/Cognifide/knotx/releases]].
+Knot.x provides binaries and default JSON configuration files at [Releases](https://github.com/Cognifide/knotx/releases).
 Binaries are packaged in *fat jars*. A fat jar is a standalone executable Jar file containing all 
 the dependencies required to run the application. It make those jars easy to execute.
 
@@ -10,10 +10,10 @@ To run Knot.x you need Java 8.
 ## Hello world!
 First download Knot.x sample app:
 
-```
-[[knotx-example-monolith-0.4.1-fat.jar|https://github.com/Cognifide/knotx/releases/download/0.4.1/knotx-example-monolith-0.4.1-fat.jar]]
-[[knotx-example-monolith.json|https://github.com/Cognifide/knotx/releases/download/0.4.1/knotx-example-monolith.json]]
-```
+[knotx-example-monolith-0.4.1-fat.jar](https://github.com/Cognifide/knotx/releases/download/0.4.1/knotx-example-monolith-0.4.1-fat.jar)
+
+[knotx-example-monolith.json](https://github.com/Cognifide/knotx/releases/download/0.4.1/knotx-example-monolith.json)
+
 
 Now you can run Knot.x:
 
