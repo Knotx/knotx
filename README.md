@@ -29,7 +29,7 @@ loose coupling, isolation and location transparency. Base **Knot.x** component i
 ### Scalability
 Various scaling options are available to suit client needs and help in cost optimization. Using a 
 simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of 
-servers
+servers.
 
 
 ## What problems does Knot.x solve?
