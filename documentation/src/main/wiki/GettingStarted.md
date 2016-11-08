@@ -22,9 +22,9 @@ java -jar knotx-example-monolith-0.4.1-fat.jar -conf knotx-example-monolith.json
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 
-You should see page which is served from local repository and contains example data from mock services.
+You should see a page which is served from a local repository and contains example data from mock services.
 
-Page should look like:
+The page should look like:
 
 [[assets/knotx-example-simple.png|alt=Example simple page]]
 
