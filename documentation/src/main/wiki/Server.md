@@ -4,7 +4,8 @@ Server is essentially a "heart", a main [Verticle](http://vertx.io/docs/vertx-co
 It creates HTTP Server, listening for browser requests, and is responsible for coordination of communication between [[Repository|Repository]], [[Splitter|Splitter]] and all deployed [[Knots|Knot]].
 
 ## How it works
-[TBD]
+[TBD Description]
+[[assets/knotx-server.png|alt=Knot.x Server How it Works flow diagram]]
 
 ## Configuration
 Configuration of the Server is being supplied in Knot.x configuration JSON as for other verticles. The `config` section looks like the one below
@@ -30,11 +31,11 @@ Configuration of the Server is being supplied in Knot.x configuration JSON as fo
       "path": "/.*\.html",
       "address": "first.knot.eventbus.address",
       "onTransition": {
-        "go-next": {
+        "go-second": {
           "address": "second.knot.eventbus.address",
           "onTransition": {
-            "go-more": {
-              "address": "more.knots.eventbus.address"
+            "go-third": {
+              "address": "third.knots.eventbus.address"
             }
           }
         },
