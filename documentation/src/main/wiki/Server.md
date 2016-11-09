@@ -3,12 +3,26 @@
 Server is essentially a "heart", a main [Verticle](http://vertx.io/docs/vertx-core/java/#_verticles) of Knot.x.
 It creates HTTP Server, listening for browser requests, and is responsible for coordination of communication between [[Repository|Repository]], [[Splitter|Splitter]] and all deployed [[Knots|Knot]].
 
-## How it works
-[TBD Description]
+## How does it work?
+Once the HTTP request from the browser come to the Knot.x, it comes to the **Server** verticle. The server does:
+
+- Verifies if request **method** is configured in `routing` (see confg below), and sends **Method Not Allowed** response if not matches
+- Search for the **repository** address in `repositories` configuration, by matching the requested path with the regexp from config, and sends **Not Found** response if none is matched.
+- Calls the matching **repository** address with the original request
+- Calls the **splitter** address with the template got from **repository**
+- Builds **KnotContext** communication model (that consists of original request, response from repository & split HTML fragments)
+- Calls **[[Knots|Knot]]** according to the [[routing||#_Routing]] configuration, with the **KnotContext**
+- Once the last Knot returns processed **KnotContext**, server creates HTTP Response based on data from the KnotContext
+- Filters the response headers according to the `allowed.response.headers` configuration and returns to the browser.
+
+The diagram below depicts flow of data coordinated by the **Server** based on the hypotetical configuration of routing (as described in next section).
 [[assets/knotx-server.png|alt=Knot.x Server How it Works flow diagram]]
 
-## Configuration
-Configuration of the Server is being supplied in Knot.x configuration JSON as for other verticles. The `config` section looks like the one below
+### Routing
+[TBD]
+
+## How to configure?
+Server is deployed as a separate Verticle, depending on how it's deployed. You need to supply **Server** configuration as JSON below if deployed as Server Verticle fat jar.
 ```json
 {
   "http.port": 8080,
@@ -50,6 +64,19 @@ Configuration of the Server is being supplied in Knot.x configuration JSON as fo
     }
   }
 }
+```
+
+Or, above configuration wrapped in the JSON `config` section as shown below, if deployed using Knot.x starter verticle.
+```json
+  "verticles": {
+    ...,
+    "com.cognifide.knotx.server.KnotxServerVerticle": {
+      "config": {
+         "PUT YOUR CONFIG HERE"
+      }
+    },
+    ...,
+  }
 ```
 
 Detailed description of each configuration option is described in next section.
