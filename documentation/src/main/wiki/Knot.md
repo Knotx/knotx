@@ -1,13 +1,14 @@
 #Knot
-Knot is a module which defines custom step during [[request routing|KnotRouting]]. It can process custom
-fragments, invoke Adapters and redirect site visitors to a new site or an error page.
+Knot is a module which defines a custom step during a [[request routing|KnotRouting]]. It can process 
+a markup [[fragments|Splitter]], invoke [[Adapters|Adapter]] and redirect a site visitor depending on an
+Adapter response.
 
 ##How does it work?
-Knot module gets Knot Context, does his job and responds with Knot Context. This is a very simple but 
+Knot gets [Knot Context](#knot-context), does his job and responds with Knot Context. This is a very simple but 
 powerful contract which makes Knot easy to integrate and develop.
 
-Knot registers to Event Bus with an unique address and listens for Knot Context events. Each Knot is deployed
-as a separate verticle and is triggered during [[request routing|KnotRouting]].
+Knot registers to Event Bus with an unique address and listens for [Knot Context events](#knot-request). 
+Each Knot is deployed as a separate verticle and is triggered during [[request routing|KnotRouting]].
 
 To understand what Knots really do we need to know what Knot Context is.
 
@@ -23,20 +24,24 @@ Knot Context contains:
 * [[fragments|Splitter]]
 * transition
 
-Client request contains such information like site visitor path (requested URL), HTTP headers, form 
-attributes (for POST requests) and request query parameters.
+A client request includes a site visitor path (requested URL), HTTP headers, form attributes 
+(for POST requests) and request query parameters.
 
-Client response has body (which represents final response body), HTTP headers (which are narrowed finally
+A client response includes a body (which represents final response body), HTTP headers (which are narrowed finally
 by Server) and HTTP status code.
 
-What fragments are and how they are produced is described in [[Splitter|Splitter]] section. Fragments
-keeps both a content and their context. Knots can for example process a particular fragment content, 
-call required Adapters and put responses from Adapters to a fragment context (which is JSON object).
+What fragments are and how they are produced is described in a [[Splitter|Splitter]] section. Fragments
+contain a template fragment content and a context. Knots can process a configured fragment content, 
+call required Adapters and put responses from Adapters to a fragment context (fragment context is JSON 
+object).
 
-Transition is simple text value which determines next step in [[request routing|KnotRouting]].
+Transition is a text value which determines next step in [[request routing|KnotRouting]].
 
-#### Knot request model
-Table below represents Knot Context which is sent from Server to Knot.
+#### Knot Request
+A table below represents an event model consumed by Knot. First rows relates to client request attributes
+which are not modifiable within Knots. Next rows are connected with client response attributes and 
+transition.  Those rows are modified by Knots according to a required behaviour (continue routing, redirect
+to an other url, return an error response).
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
@@ -45,45 +50,67 @@ Table below represents Knot Context which is sent from Server to Knot.
 | `clientRequest.headers`                 | `MultiMap`                      | &#10004;       | client request headers |
 | `clientRequest.params`                 | `MultiMap`                      | &#10004;       | client request parameters |
 | `clientRequest.formAttributes`                 | `MultiMap`                      |       | form attributes, relevant to POST requests |
-| `clientResponse.statusCode`                 | `HttpResponseStatus`                      |   &#10004;    | `OK` status |
+| `clientResponse.statusCode`                 | `HttpResponseStatus`                      |   &#10004;    | `HttpResponseStatus.OK` |
 | `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response headers |
-| `clientResponse.body`                 | `Buffer`                      |        | response body, can be empty at some routing steps (Knots), finally produced based on fragments |
-| `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created with Splitter module |
+| `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last View Knot |
+| `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created by Splitter |
 | `transition`                 | `String`                      |        | empty |
 
 
-#### Knot response model
-Table below represents Knot Context response.
+#### Knot Response 
+Knot responds with Knot Context. So Knot Context from a request is consumed and updated according to a
+required behaviour.
+
+Knots are designed to process Knot Context and finally decides what a next step in routing is valid.
+It is a default Knot behaviour. Knots can also beak a routing and decide to return an error or redirect 
+response to a client.
+
+A table below represents Knot response values.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
 | `clientRequest.path`                 | `String`                      | &#10004;       | client request url |
-| `clientRequest.method`                 | `HttpMethod`                      | &#10004;       | client request HTTP method |
-| `clientRequest.headers`                 | `MultiMap`                      | &#10004;       | client request HTTP headers |
+| `clientRequest.method`                 | `HttpMethod`                      | &#10004;       | client request method |
+| `clientRequest.headers`                 | `MultiMap`                      | &#10004;       | client request headers |
 | `clientRequest.params`                 | `MultiMap`                      | &#10004;       | client request parameters |
 | `clientRequest.formAttributes`                 | `MultiMap`                      |       | form attributes, relevant to POST requests |
-| `clientResponse.statusCode`               | `HttpResponseStatus`                      |    &#10004;    | `OK` to process routing, other to beak routing  |
-| `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response HTTP headers, can be updated by Knot |
-| `clientResponse.body`                 | `Buffer`                      |        | response body for client, can be empty for some routing steps (Knots), finally produced based on fragments |
-| `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created with Splitter module |
-| `transition`                 | `String`                      |        | defines next routing step (Knot), empty for redirects, errors and last routing steps |
+| `clientResponse.statusCode`               | `HttpResponseStatus`                      |    &#10004;    | `HttpResponseStatus.OK` to process routing, other to beak routing  |
+| `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response headers, can be updated by Knot |
+| `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last View Knot |
+| `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created by Splitter |
+| `transition`                 | `String`                      |        | defines next routing step (Knot), empty for redirects, errors and last routing step |
 
+##### Example Knot Responses
+Knots can decide what a next routing step is valid. They can also break a routing. This section shows
+example responses.
 
-##### Next routing step response
+*Next Routing Step*
+
+Knot decides that routing should be continued. It sets Transition to `next` and then Server continues 
+a routing according to its [[configuration|Server]].
 
 | Name | Value
 |-------:                     | :-------  
 | `clientResponse.statusCode`| `HttpResponseStatus.OK`
 | `transition`| `next` 
 
-##### Redirect response
+*Redirect response*
+
+Knot finds out that a client must be redirected to an other URL.
+
+
 | Name | Value
 |-------:                     | :-------  
 | `clientResponse.statusCode`| `HttpResponseStatus.MOVED_PERMANENTLY`
-| `clientResponse.headers`| `location: /new/location`
+| `clientResponse.headers`| `location: /new/location.html`
 | `transition`| EMPTY 
 
-##### Error response
+*Error response*
+
+Knot calls Adapter Service and gets HttpResponseStatus.INTERNAL_SERVER_ERROR. Knot is not
+aware how this error should be processed so it sets clientResponse.statusCode to HttpResponseStatus.INTERNAL_SERVER_ERROR.
+Server beaks a routing and responds with HttpResponseStatus.INTERNAL_SERVER_ERROR to a client.
+
 | Name | Value
 |-------:                     | :-------  
 | `clientResponse.statusCode`| `HttpResponseStatus.NOT_FOUND`
@@ -92,8 +119,9 @@ Table below represents Knot Context response.
 
 
 ##How to configure?
-Configuration options.
-#TODO:
-Describe what's Knot, it's API - KnotContext, how to build your own knot, and links to Knot.x shipped Knots as below
+
+Requires https://github.com/Cognifide/knotx/issues/121.
+
 ##How to extend?
-How to extend if possible.
+
+Requires https://github.com/Cognifide/knotx/issues/121.
