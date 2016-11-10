@@ -1,17 +1,17 @@
 # Adapters
-
 Adapter is a module that is responsible for communication between Knot.x (exactly [[Knots|Knot]]) and external services.
 
 [[assets/knotx-adapters.png|alt=Adapters]]
 
+
+## How does it work?
 Adapters are thought as project specific logic and we recommend to create dedicated Adapter
 every time some business logic or adapting service response to other format is required.
 
 Each Knot that its contract that adapter must meet. Find out more about [[Knot contracts|Knot#how-does-it-work]].
 
 
-## Types of adapters
-
+### Types of adapters
 There are two types of Adapters that Knot.x core can communicate with:
 - [[Service Adapter|ServiceAdapter]] for [[Action Knot|ActionKnot]],
 - [[Action Adapter|ActionAdapter]] for [[View Knot|ViewKnot]].
@@ -21,7 +21,11 @@ services using HTTP Protocol. See [[Http Service Adapter|HttpServiceAdapter]] fo
 Please note, that this implementation is very generic and we recommend to create project-specific 
 adapters for any custom solution.
 
-## How to write a custom adapter
+## How to configure?
+Adapter may have its configuration in form of JSON object entry. 
+Please see example configuration for [[Http Service Adapter|HttpServiceAdapter#how-to-configure]]
+
+## How to extend?
 | ! Note |
 |:------ |
 | Please note that this section explains how to write custom adapter using Java. But this is not the only way to connect with Knot.x thanks to [Vert.x polyglotism](http://vertx.io/). |
@@ -50,7 +54,6 @@ You may read more about example configuration for `HttpServiceAdapterVerticle` i
 For many useful and reusable Adapters concept, please check our [knotx-adapter-common](https://github.com/Cognifide/knotx/tree/master/knotx-adapters/knotx-adapter-common)
 module. You will find there support for `placeholders` and `http connectivity`. 
 
-## How to run a custom adapter with Knot.x
-
+### How to run a custom adapter with Knot.x
 Please refer to [[Deployment|KnotxDeployment]] section to find out more about deploying and running 
 a custom adapter with Knot.x.

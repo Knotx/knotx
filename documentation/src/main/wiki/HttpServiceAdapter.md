@@ -1,9 +1,46 @@
 # Http Service Adapter
-
 Http Service Adapter is an example of Adapter implementation embedded in Knot.x.
 It enables communication between [[View Knot|ViewKnot]] and external services via HTTP.
 
-## Example configuration
+## How does it work?
+When Http Service Adapter starts processing a message from Event Bus, it expects following input:
+- `clientRequest` - JSON object that contains original client request (contains e.g. headers, params, formAttributes etc.).
+- `params` - JSON object that contains additional parameters, among those parameter mandatory `path` parameter should be defined.
+
+### Service path
+`path` parameter is a mandatory parameter that must be passed to Http Service Adapter. 
+It defines request path and may contain [placeholders](#parametrized-service-calls).
+
+### Parametrized services calls
+When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the current http request (data from `clientRequest`).
+Available placeholders are:
+* `{header.x}` - is the original requests header value where `x` is the header name
+* `{param.x}` - is the original requests query parameter value. For `x` = q from `/a/b/c.html?q=knot` it will produce `knot`
+* `{uri.path}` - is the original requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c.sel.it.html/suffix.html`
+* `{uri.pathpart[x]}` - is the original requests `x`th sling path part. For `x` = 2 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `c.sel.it.html`
+* `{uri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `xml`
+* `{slingUri.path}` - is the original requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c`
+* `{slingUri.pathpart[x]}` - is the original requests `x`th sling path part. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `b`
+* `{slingUri.selectorstring}` - is the original requests sling selector string. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `sel.it`
+* `{slingUri.selector[x]}` - is the original requests `x`th sling selector. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `it`
+* `{slingUri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `html`
+* `{slingUri.suffix}` - is the original requests sling suffix. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/suffix.html`
+
+All placeholders are always substituted with encoded values according to the RFC standard. However, there are two exceptions:
+
+- Space character is substituted by `%20` instead of `+`.
+- Slash character `/` remains as it is.
+
+### Adapter Response
+Http Service Adapter replies with `ClientResponse` that contains:
+
+| Parameter       | Type                      |  Description  |
+|-------:         |:-------:                  |-------|
+| `statusCode`    | `Number`                  | status code of a response from external service (e.g. `200`) |
+| `headers`       | `MultiMap`                | external service response headers |
+| `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
+
+## How to configure?
 Http Service Adapter can be configured to support multiple external `services`, see example configuration:
 
 ```json
@@ -34,7 +71,6 @@ Http Service Adapter can be configured to support multiple external `services`, 
     }
   ]
 }
-
 ```
 
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
@@ -47,48 +83,10 @@ Any HttpClientOption may be defined in this section, at this example two options
 In example above, two services are configured:
   - `/service/mock/.*` that will call `http://localhost:3000` domain with defined [path](#service-path),
   - `/service/.*` that will call `http://localhost:8080` domain with defined [path](#service-path).
-  
-## Adapter Request
-When Http Service Adapter starts processing a message from Event Bus, it expects following input:
-- `clientRequest` - JSON object that contains original client request (contains e.g. headers, params, formAttributes etc.).
-- `params` - JSON object that contains additional parameters, among those parameter mandatory `path` parameter should be defined.
 
-### Service path
-`path` parameter is a mandatory parameter that must be passed to Http Service Adapter. 
-It defines request path and may contain [placeholders](#parametrized-service-calls).
-
-### Parametrized services calls
-When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the current http request (data from `clientRequest`).
-Available placeholders are:
-* `{header.x}` - is the original requests header value where `x` is the header name
-* `{param.x}` - is the original requests query parameter value. For `x` = q from `/a/b/c.html?q=knot` it will produce `knot`
-* `{uri.path}` - is the original requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c.sel.it.html/suffix.html`
-* `{uri.pathpart[x]}` - is the original requests `x`th sling path part. For `x` = 2 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `c.sel.it.html`
-* `{uri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `xml`
-* `{slingUri.path}` - is the original requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c`
-* `{slingUri.pathpart[x]}` - is the original requests `x`th sling path part. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `b`
-* `{slingUri.selectorstring}` - is the original requests sling selector string. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `sel.it`
-* `{slingUri.selector[x]}` - is the original requests `x`th sling selector. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `it`
-* `{slingUri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `html`
-* `{slingUri.suffix}` - is the original requests sling suffix. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/suffix.html`
-
-All placeholders are always substituted with encoded values according to the RFC standard. However, there are two exceptions:
-
-- Space character is substituted by `%20` instead of `+`.
-- Slash character `/` remains as it is.
-
-## Adapter Response
-Http Service Adapter replies with `ClientResponse` that contains:
-
-| Parameter       | Type                      |  Description  |
-|-------:         |:-------:                  |-------|
-| `statusCode`    | `Number`                  | status code of a response from external service (e.g. `200`) |
-| `headers`       | `MultiMap`                | external service response headers |
-| `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
 ## Example
-
-Assuming, that Http Service Adapter was configured as presented in [Example configuration](#example-configuration) and:
+Assuming, that Http Service Adapter was configured as presented in [Example configuration](#how-to-configure) and:
 
 #### View Knot configuration
 Example configuration of a [[View Knot|ViewKnot]]:
@@ -142,7 +140,7 @@ Example html snippet in template:
 ### Processing
 When Knot.x resolves this request, Http Service Adapter will be called twice when example snipped is processed:
 
-#### search service
+##### search service
 Http Service Adapter request parameters should look like:
 
 ```json
@@ -163,7 +161,7 @@ Http Service Adapter request parameters should look like:
 }
 ```
 
-Http Service Adapter will lookup if `params.path` is supported and 2nd service from [Example configuration](#example-configuration) `services` will be a match.
+Http Service Adapter will lookup if `params.path` is supported and 2nd service from [Example configuration](#how-to-configure) `services` will be a match.
 Next, `params.path` placeholders are resolved, and request to `http://localhost:8080/service/solr/search?q=hello` is made.
 In response, external service returns: 
 
@@ -179,7 +177,7 @@ In response, external service returns:
 
 which is finally wrapped into [Adapter Response](#adapter-response).
 
-#### twitter service
+##### twitter service
 Http Service Adapter request parameters should look like:
 
 ```json
@@ -200,7 +198,7 @@ Http Service Adapter request parameters should look like:
 }
 ```
 
-Http Service Adapter will lookup if `params.path` is supported and 2nd service from [Example configuration](#example-configuration) `services` will be a match.
+Http Service Adapter will lookup if `params.path` is supported and 2nd service from [Example configuration](#how-to-configure) `services` will be a match.
 Next, `params.path` placeholders are resolved, and request to `http://localhost:8080/service/twitter/user/johnDoe` is made.
 In response, external service returns: 
 
