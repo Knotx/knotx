@@ -16,11 +16,10 @@ There are two types of Adapters that Knot.x core can communicate with:
 - [[Service Adapter|ServiceAdapter]] for [[Action Knot|ActionKnot]],
 - [[Action Adapter|ActionAdapter]] for [[View Knot|ViewKnot]].
 
-Knot.x comes with implementations each of those adapters types, that enables communication with external 
-services using HTTP Protocol.
-See [[Http Service Adapter|HttpServiceAdapter]] and [[Http Action Adapter|HttpActionAdapter]] for more information.
-Please note, that implementation of these adapters is very naive and we recommend to create 
-project-specific adapters for any custom solution.
+Knot.x comes with implementation of a [[Service Adapter|ServiceAdapter]], that enables communication with external 
+services using HTTP Protocol. See [[Http Service Adapter|HttpServiceAdapter]] for more information.
+Please note, that this implementation is very generic and we recommend to create project-specific 
+adapters for any custom solution.
 
 ## How to write a custom adapter
 | ! Note |

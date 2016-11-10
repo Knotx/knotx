@@ -66,7 +66,7 @@ This example app simulates Vert.x based application running Knot.x core verticle
  - [[Action Knot|ActionKnot]],
  - [[View Knot|ViewKnot]],
  - [[Http Service Adapter|HttpServiceAdapter]], 
- - [[Http Action Adapter|HttpActionAdapter]]
+ - example Action Adapter,
  - example Authorization Knot.
  
 Besides Knot.x, mock verticles are started:
