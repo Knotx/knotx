@@ -58,6 +58,7 @@
     <module>documentation</module>
     <module>knotx-core</module>
     <module>knotx-adapters</module>
+    <module>knotx-knots</module>
     <module>knotx-example</module>
   </modules>
 
