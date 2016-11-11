@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+
+import com.cognifide.knotx.http.UriHelper;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -56,7 +58,7 @@ public class ClientRequest extends Codec {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
     this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.headers().getDelegate());
-    this.params = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.params().getDelegate());
+    this.params = UriHelper.getParams(serverRequest.uri());
     this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.formAttributes().getDelegate());
   }
 

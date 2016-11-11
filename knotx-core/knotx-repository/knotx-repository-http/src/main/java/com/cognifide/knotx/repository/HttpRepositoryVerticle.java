@@ -25,6 +25,9 @@ import com.cognifide.knotx.http.StringToPatternFunction;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -102,16 +105,41 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
 
   private Observable<HttpClientResponse> requestForTemplate(ClientRequest repoRequest) {
     MultiMap requestHeaders = getFilteredHeaders(repoRequest.headers());
+    String repoUri = buildRepoUri(repoRequest);
+
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("GET Http Repository: http://{}:{}{} with headers [{}]",
           clientDestination.getString("domain"),
           clientDestination.getInteger("port"),
-          repoRequest.path(),
+          repoUri,
           toString(requestHeaders)
       );
     }
     return RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
-        repoRequest.path(), requestHeaders);
+        repoUri, requestHeaders);
+  }
+
+  private String buildRepoUri(ClientRequest repoRequest) {
+    StringBuilder uri = new StringBuilder(repoRequest.path());
+    MultiMap params = repoRequest.params();
+    if (params != null && params.names().size() > 0) {
+      uri.append("?")
+          .append(params.names().stream()
+              .map(name -> new StringBuilder(name).append("=").append(encodeParamValue(params.get(name))))
+              .collect(Collectors.joining("&"))
+          );
+    }
+
+    return uri.toString();
+  }
+
+  private String encodeParamValue(String value) {
+    try {
+      return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("%2F", "/");
+    } catch (UnsupportedEncodingException ex) {
+      LOGGER.fatal("Unexpected Exception - Unsupported encoding UTF-8", ex);
+      throw new UnsupportedCharsetException("UTF-8");
+    }
   }
 
   private Observable<ClientResponse> processResponse(final HttpClientResponse response) {

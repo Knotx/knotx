@@ -1,3 +1,5 @@
-# What's new in 0.6.0
+# What's new
 
-* 
+* Fully [Event-Bus driven architecture](https://github.com/Cognifide/knotx/issues/63).
+* Knot.x is now modular (see [[Knot|Knot]]).
+* Multiple fixes and examples.

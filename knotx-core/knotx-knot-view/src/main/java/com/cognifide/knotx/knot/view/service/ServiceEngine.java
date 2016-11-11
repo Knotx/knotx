@@ -85,10 +85,4 @@ public class ServiceEngine {
     object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", adapterResponse.response().statusCode().codeAsText()));
     return object;
   }
-
-  private void traceServiceCall(Buffer results, ServiceEntry entry) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}> <{}> <{}>", results.toString(), entry.getAddress(), entry.getParams());
-    }
-  }
 }

@@ -56,11 +56,16 @@
         "routing": {
           "GET": [
             {
-              "path": "/.*",
-              "address": "knotx.knot.action",
+              "path": "/content/.*",
+              "address": "knotx.knot.auth",
               "onTransition": {
-                "next" : {
-                  "address": "knotx.knot.view"
+                "next": {
+                  "address": "knotx.knot.action",
+                  "onTransition": {
+                    "next" : {
+                      "address": "knotx.knot.view"
+                    }
+                  }
                 }
               }
             }
@@ -222,12 +227,34 @@
         "formIdentifierName": "_frmId"
       }
     },
+    "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle" : {
+      "config" : {
+        "address": "knotx.knot.auth",
+        "adapters": [
+          {
+            "name": "auth-handler",
+            "address": "knotx.adapter.service.http",
+            "params": {
+              "path": "/service/mock/auth.json?statusCode={param.statusCode}"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          }
+        ]
+      }
+    },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
       "config": {
         "address": "knotx.adapter.service.http",
         "client.options": {
           "maxPoolSize": 1000,
-          "keepAlive": false
+          "keepAlive": false,
+          "logActivity": true
         },
         "services": [
           {
@@ -236,6 +263,7 @@
             "port": 3000,
             "allowed.request.headers": [
               "Content-Type",
+              "Cookie",
               "X-*"
             ]
           },

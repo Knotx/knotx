@@ -160,7 +160,7 @@ public class HttpClientFacade {
 
   private void traceServiceCall(Buffer results) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Service call returned <{}>", results.toJsonObject().encodePrettily());
+      LOGGER.trace("Service call returned <{}>", results.toString());
     }
   }
 }

@@ -21,11 +21,19 @@ import com.cognifide.knotx.dataobjects.ClientRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 public final class UriTransformer {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(UriTransformer.class);
 
   private static List<PlaceholderSubstitutor> placeholderSubstitutors =
       Arrays.asList(new RequestPlaceholderSubstitutor(), new UriPlaceholderSubstitutor());
@@ -40,7 +48,7 @@ public final class UriTransformer {
 
     for (String placeholder : placeholders) {
       serviceUri = serviceUri.replace("{" + placeholder + "}",
-          getPlaceholderValue(request, placeholder));
+          encodeValue(getPlaceholderValue(request, placeholder)));
     }
 
     return serviceUri;
@@ -59,5 +67,14 @@ public final class UriTransformer {
         .filter(str -> str != null)
         .findFirst()
         .orElse("");
+  }
+
+  private static String encodeValue(String value) {
+    try {
+      return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("%2F", "/");
+    } catch (UnsupportedEncodingException ex) {
+      LOGGER.fatal("Unexpected Exception - Unsupported encoding UTF-8", ex);
+      throw new UnsupportedCharsetException("UTF-8");
+    }
   }
 }
