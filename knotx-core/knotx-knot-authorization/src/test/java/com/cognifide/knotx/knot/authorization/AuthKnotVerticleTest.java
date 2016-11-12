@@ -19,6 +19,7 @@ package com.cognifide.knotx.knot.authorization;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
@@ -132,10 +133,10 @@ public class AuthKnotVerticleTest {
   private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext, Action1<KnotContext> onSuccess, Action1<Throwable> onError) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, knotContext.toJson(), ar -> {
+    vertx.vertx().eventBus().<KnotContext>send(ADDRESS, knotContext, ar -> {
       if (ar.succeeded()) {
         Observable
-            .just(new KnotContext(ar.result().body()))
+            .just(ar.result().body())
             .subscribe(
                 onSuccess,
                 onError,
@@ -166,7 +167,7 @@ public class AuthKnotVerticleTest {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(statusCode);
       response.setHeaders(MultiMap.caseInsensitiveMultiMap());
-      msg.reply(response.toJson());
+      msg.reply(response);
     });
   }
 
