@@ -23,6 +23,7 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
+import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -45,7 +46,7 @@ import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
-public class AuthorizationKnotVerticle extends AbstractVerticle {
+public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotConfiguration> {
 
   private static final String DEFAULT_TRANSITION = "next";
   private static final String AUTH_FRAGMENT_ID = "auth";
@@ -54,31 +55,17 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationKnotVerticle.class);
 
-  private AuthorizationKnotConfiguration configuration;
-
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    configuration = new AuthorizationKnotConfiguration(config());
   }
 
   @Override
-  public void start() throws Exception {
-    LOGGER.debug("Starting <{}>", this.getClass().getName());
-
-    vertx.eventBus().<JsonObject>consumer(configuration.address())
-        .handler(message -> Observable.just(message)
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                result -> doAuthorization(result, message::reply),
-                error -> {
-                  LOGGER.error("Error occurred in Authorization Knot.", error);
-                  message.reply(processError(new KnotContext(message.body()), error).toJson());
-                }
-            ));
+  protected AuthorizationKnotConfiguration initConfiguration(JsonObject config) {
+    return new AuthorizationKnotConfiguration(config);
   }
 
-  private void doAuthorization(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
+  protected void handle(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
     final KnotContext knotContext = new KnotContext(jsonObject.body());
     LOGGER.trace("Process authorization for {} ", knotContext);
     Optional<Fragment> authFragment = findAndRemoveAuthFragment(knotContext);
@@ -168,7 +155,7 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
         .put("params", new JsonObject(metadata.getParams()));
   }
 
-  private KnotContext processError(KnotContext context, Throwable error) {
+  protected KnotContext processError(KnotContext context, Throwable error) {
     HttpResponseStatus statusCode;
     if (error instanceof NoSuchElementException) {
       statusCode = HttpResponseStatus.NOT_FOUND;
@@ -191,12 +178,6 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
         .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
-  }
-
-  private void traceMessage(Message<JsonObject> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
-    }
   }
 
   private MultiMap prepareRedirectHeaders(MultiMap responseHeaders, String redirectLocation) {

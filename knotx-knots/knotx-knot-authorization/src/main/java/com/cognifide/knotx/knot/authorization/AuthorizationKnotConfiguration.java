@@ -20,6 +20,7 @@ package com.cognifide.knotx.knot.authorization;
 import com.google.common.base.MoreObjects;
 
 import com.cognifide.knotx.http.StringToPatternFunction;
+import com.cognifide.knotx.knot.api.KnotConfiguration;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -32,14 +33,12 @@ import java.util.stream.Collectors;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-class AuthorizationKnotConfiguration {
-
-  private final String address;
+class AuthorizationKnotConfiguration extends KnotConfiguration{
 
   private final List<AdapterMetadata> adapterMetadataList;
 
   AuthorizationKnotConfiguration(JsonObject config) {
-    this.address = config.getString("address");
+    super(config);
     this.adapterMetadataList = config.getJsonArray("adapters").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
@@ -57,10 +56,6 @@ class AuthorizationKnotConfiguration {
               .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
-  }
-
-  public String address() {
-    return address;
   }
 
   public List<AdapterMetadata> adapterMetadatas() {

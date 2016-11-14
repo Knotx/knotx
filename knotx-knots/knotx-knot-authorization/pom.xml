@@ -43,10 +43,17 @@
       <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-adapter-common</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-knot-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
