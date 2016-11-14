@@ -1,5 +1,5 @@
 # View Knot
-View Knot is [[Knot|Knot]] implementation responsible for asynchronous Adapter calls and a handlebars 
+View Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adapter calls and handlebars 
 template processing.
 
 ##How does it work?
@@ -10,7 +10,7 @@ its Java port - [Handlebars.java](https://github.com/jknack/handlebars.java) to 
 templates.
 
 View Knot retrieves all [[dynamic fragments|Splitter]] from [[Knot Context|Knot]]. Then for each fragment
-it evaluate Handlebars template fragment using fragment context. In this way data from other [[Knots|Knot]]
+it evaluates Handlebars template fragment using fragment context. In this way data from other [[Knots|Knot]]
 can be applied to Handlebars snippets.
 Handlebars template evaluation process uses also responses from Adapter calls. Those calls are described
 in the next section.
@@ -22,10 +22,13 @@ Adapters are invoked with following example.
 
 Adapters calls are defined both on template and Knot configuration layers:
 
-First Knot View collects `data-service-{NAMESPACE}={ADAPTERNAME}` attributes which defines Adapter name
-and namespace with which Adapter response will be available. Additionally with every Adapter attribute
-can be defined `data-params-{NAMESPACE}={JSON DATA}` attribute which specifies parameters for Adapter call.
-So an example `script` definition can look like:
+First Knot View collects `data-service-{NAMESPACE}={ADAPTERNAME}` attributes which define accordingly:
+ - namespace under which Adapter response will be available,
+ - name of the Adapter tha will be called during snippet processing. 
+
+Additionally with every Adapter `data-params-{NAMESPACE}={JSON DATA}` attribute can be defined 
+which specifies parameters for Adapter call. An example `script` definition can look like:
+
 ```html
 <script data-api-type="templating"
   data-service="first-service"
@@ -33,7 +36,7 @@ So an example `script` definition can look like:
   data-params-second="{'path':'/overridden/path'}"
   type="text/x-handlebars-template">
 ```
-View Knot will call two Adapters with names: first-service, second-service.
+View Knot will call two Adapters with names: `first-service` and `second-service`.
 
 Now we need to combine the service name with Adapter service address. This link is configured within
 Knot View configuration in `services` part. See example below:
@@ -57,8 +60,9 @@ Knot View configuration in `services` part. See example below:
 ]
 ```
 The configuration contains also params attribute which defines default parameter value which is passed
-to Adapter. It can be overridden at template layer what in the example is configured for
-*second-service* Adapter.
+to Adapter. It can be overridden at template layer like in the example above. When `second-service`
+Adapter will be called it will get `path` parameter from `params` with overridden value `{'path':'/overridden/path'}`
+instead of default `"path": "/service/mock/second.json"`.
 
 Now all Adapter calls are ready to perform. Knot.x fully uses asynchronous programming principles so
 those calls have also asynchronous natures. It is visualized on diagram below.
@@ -78,17 +82,18 @@ Example Adapters responses for Handlebars template evaluation have the following
   "second": { 
     "_result": {
       "message":"this is webservice no. 2",
-	  ...
-	},
-	"_response": { 
-	  "statusCode":"200"
-	}
+    ...
+    },
+    "_response": { 
+      "statusCode":"200"
+    }
   }
 }
 ```
+The `first-service` Adapter call has no namespace - its data is available directly (without namespace).
 The `second-service` Adapter call has *second* namespace defined in template so its results are 
 wrapped with appropriate JSON node. Each Adapter call contains a `_result` part with the Adapter response 
-and a `_response` part with the Adapter response status code.
+(JSON object or array) and a `_response` part with the Adapter response status code.
 
 This final Adapter results format is reflected in Handlebars templates:
 ```html
@@ -105,7 +110,7 @@ This final Adapter results format is reflected in Handlebars templates:
 Template might consists of more than one Adapter call. It's also possible that there are multiple 
 fragments on the page, each using same Adapter call. Knot.x does caching results of Adapter calls 
 to avoid multiple calls for the same data.
-Caching is performed within one request only. It means second request will not get cached data.
+Caching is performed within page request scope, this means another request will not get cached data.
 
 ## How to configure?
 
