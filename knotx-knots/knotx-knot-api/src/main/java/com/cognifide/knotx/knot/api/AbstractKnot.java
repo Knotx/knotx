@@ -17,7 +17,6 @@
  */
 package com.cognifide.knotx.knot.api;
 
-import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 
 import io.vertx.core.Context;
@@ -55,7 +54,7 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
             .subscribe(
                 result -> handle(result, message::reply),
                 error -> {
-                  LOGGER.error("Error occurred in Authorization Knot.", error);
+                  LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
                   message.reply(processError(new KnotContext(message.body()), error).toJson());
                 }
             ));

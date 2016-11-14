@@ -23,6 +23,7 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
+import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -49,12 +50,11 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
-public class ActionKnotVerticle extends AbstractVerticle {
+public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
 
   public static final String DEFAULT_TRANSITION = "next";
   private static final String ACTION_FRAGMENT_IDENTIFIER_REGEXP = "form-([A-Za-z0-9]+)*";
@@ -64,8 +64,6 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);
 
-  private ActionKnotConfiguration configuration;
-
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
@@ -73,24 +71,26 @@ public class ActionKnotVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start() throws Exception {
-    LOGGER.debug("Starting <{}>", this.getClass().getName());
-
-    vertx.eventBus().<JsonObject>consumer(configuration.address())
-        .handler(message -> Observable.just(message)
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                result -> {
-                  handle(result, message::reply);
-                },
-                error -> {
-                  LOGGER.error("Error occured in Action Knot.", error);
-                  message.reply(processError(new KnotContext(message.body()), error).toJson());
-                }
-            ));
+  protected ActionKnotConfiguration initConfiguration(JsonObject config) {
+    return new ActionKnotConfiguration(config);
   }
 
-  private void handle(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
+  protected KnotContext processError(KnotContext context, Throwable error) {
+    HttpResponseStatus statusCode;
+    if (error instanceof NoSuchElementException) {
+      statusCode = HttpResponseStatus.NOT_FOUND;
+    } else if (error instanceof FormConfigurationException) {
+      LOGGER.error("Form incorrectly configured [{}]", context.clientRequest());
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    } else {
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    context.clientResponse().setStatusCode(statusCode);
+    context.setFragments(null);
+    return context;
+  }
+
+  protected void handle(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
     KnotContext knotContext = new KnotContext(jsonObject.body());
     if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
       handleFormAction(knotContext, handler);
@@ -202,21 +202,6 @@ public class ActionKnotVerticle extends AbstractVerticle {
         .put("params", new JsonObject(metadata.getParams()));
   }
 
-  private KnotContext processError(KnotContext context, Throwable error) {
-    HttpResponseStatus statusCode;
-    if (error instanceof NoSuchElementException) {
-      statusCode = HttpResponseStatus.NOT_FOUND;
-    } else if (error instanceof FormConfigurationException) {
-      LOGGER.error("Form incorrectly configured [{}]", context.clientRequest());
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    } else {
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    }
-    context.clientResponse().setStatusCode(statusCode);
-    context.setFragments(null);
-    return context;
-  }
-
   private boolean shouldRedirect(String signal) {
     return StringUtils.isNotEmpty(signal) && !"_self".equals(signal);
   }
@@ -297,11 +282,5 @@ public class ActionKnotVerticle extends AbstractVerticle {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
         .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
-  }
-
-  private void traceMessage(Message<JsonObject> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
-    }
   }
 }
