@@ -7,9 +7,7 @@ It provides also a service error handling mechanism.
 Action Knot is used with default Knot.x settings while both GET and POST client request processing. 
 It transforms a form template to Knot.x agnostic one for GET requests. When client submits the form 
 Action Knot calls configured [[Adapter|Adapter]] and based on its response redirect the client to a 
-successful / error / next step page. 
-It is worth to mention that Action Knot does not support current step validation. That functionality 
-may be achieved by implementing a custom step authorization [[Knot|Knot]].
+successful / error / next step page.
 
 Let's describe Action Knot behaviour with following example.
 
@@ -64,12 +62,13 @@ Following data attributes are available in the `<form>` tag with described purpo
 It is similar concept as `data-service-{NAME}` in [[View Knot|ViewKnot]]. In the example, 
 Action Handler registered under name `step1` will handle this form data submission.
 - `data-knotx-on-{SIGNAL}` - name of a [Signal](#Signal) that should be applied. In the example 
-there is only one signal success with the value `'_self'` which means that after correct response 
+there is one signal success with the value `'/content/local/login/step2.html'` and one signal error 
+with the value `'_self'`. Signal `'_self'` means that after error response (error signal returned) 
 the client will stay on the same page.
 
 ### Signal
 Signal is basically a decision about further request processing. Value of the signal can be either:
-- `url` of a page that user should be redirected to after processing form submit,
+- `path` of a page that user should be redirected to after processing form submit,
 - `_self` - that indicates that there will not be redirect, instead current page will be processed (generated view for instance). 
 In other words, the page processing will be delegated to next [[Knot|Knot]] in the graph.
 
