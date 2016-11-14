@@ -72,17 +72,32 @@ Splitter divides page into 3 following fragments:
 ```
 
 ##How to configure?
-Splitter is deployed as a separate verticle. It listens for communication bus events on a configured address.
+Splitter is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
+depending on how it's deployed. You need to supply **Splitter** configuration.
+
+JSON presented below is an example how to configure Splitter deployed as standalone fat jar:
 ```json
-"com.cognifide.knotx.splitter.FragmentSplitterVerticle": {
-  "config": {
-    "address": "knotx.core.splitter"
-  }
+{
+  "address": "knotx.core.splitter"
 }
 ```
+When deploying **Splitter** using Knot.x starter verticle, configuration presented above should 
+be wrapped in the JSON `config` section:
+```json
+"verticles" : {
+  ...,
+  "com.cognifide.knotx.splitter.FragmentSplitterVerticle": {
+    "config": {
+      "PUT YOUR CONFIG HERE"
+    }
+  },
+  ...,
+}
+```
+Detailed description of each configuration option is described in the next subsection.
 
-####Splitter options
+### Splitter options
 
-| Name                        | Type                                | Mandatory | Description  |
-|-------:                     |:-------:                            |:-------:  |-------|
-| `address`                 | `String`                      | &#10004;       | Address on which Splitter will listen for events |
+| Name                        | Type                                | Mandatory      | Description  |
+|-------:                     |:-------:                            |:-------:       |-------|
+| `address`                   | `String`                            | &#10004;       | Event bus address of the Splitter verticle. |
