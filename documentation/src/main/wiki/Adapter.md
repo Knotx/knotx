@@ -1,50 +1,61 @@
 # Adapters
-Adapter is a module that is responsible for communication between Knot.x (exactly [[Knots|Knot]]) and external services.
+Adapters are a modules which are responsible for communication between Knot.x (exactly [[Knots|Knot]]) 
+and external services.
 
 [[assets/knotx-adapters.png|alt=Adapters]]
 
 
 ## How does it work?
-Adapters are thought as project specific logic and we recommend to create dedicated Adapter
-every time some business logic or adapting service response to other format is required.
+Adapters can be thought as extension points where project specific logic appears. With custom [[Knots|Knot]] 
+they provides very flexible mechanism to inject project specific requirements.
 
-Each Knot that its contract that Adapter must meet. Find out more about [[Knot contracts|Knot#how-does-it-work]].
+We recommend to create dedicated Adapter every time some service-level business logic or service 
+response adaption to other format is required.
 
 
 ### Types of adapters
-There are two types of Adapters that Knot.x core can communicate with:
+Knot.x Core by default introduces two types of Adapters connected with Knot implementations:
 - [[Service Adapter|ServiceAdapter]] for [[Action Knot|ActionKnot]],
-- [[Action Adapter|ActionAdapter]] for [[View Knot|ViewKnot]].
+- [[Action Adapter|ActionAdapter]] for [[View Knot|ViewKnot]]
 
-Knot.x comes with implementation of a [[Service Adapter|ServiceAdapter]], that enables communication with external 
-services using HTTP Protocol. See [[Http Service Adapter|HttpServiceAdapter]] for more information.
-Please note, that this implementation is very generic and we recommend to create project-specific 
-Adapters for any custom solution.
+Knot.x comes with a generic implementation of [[Service Adapter|ServiceAdapter]], that enables communication 
+with external services using HTTP Protocol (only GET requests). See [[Http Service Adapter|HttpServiceAdapter]] 
+for more information. Please note, that this implementation is very generic and we recommend to create 
+project-specific Adapters for any custom requirements.
+
+Action Adapters are project specific in terms of error handling and redirection mechanisms. Knot.x Core
+is not going to provide any generic Action Adapters.
+
+For custom Knots we can introduce custom Adapter types. As far as Knots must follow [[Knot contract|Knot#how-does-it-work]],
+Adapters are coupled with Knot directly so they can define their custom request, response or 
+configuration. The communication between Knot and Adapter can be custom too. 
 
 ## How to configure?
-Adapter may have its configuration in form of JSON object entry. 
+Adapter API specifies abstract `AdapterConfiguration` class to handle JSON configuration support. This
+abstraction can be used while custom Adapter implementation but it is not required. Every Adapters must be
+exposed with unique Event Bus address - that's only one obligation.
 Please see example configuration for [[Http Service Adapter|HttpServiceAdapter#how-to-configure]]
 
 ## How to extend?
-| ! Note |
-|:------ |
-| Please note that this section explains how to write custom Adapter using Java. But this is not the only way to connect with Knot.x thanks to [Vert.x polyglotism](http://vertx.io/). |
-
-When writing a custom Adapter you may find very useful to extend existing abstract 
+First we need to extend abstract 
 [com.cognifide.knotx.adapter.api.AbstractAdapter](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AbstractAdapter.java)
-from `knotx-adapters/knotx-adapter-api`. This abstract parent does the part with [EventBus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html) 
-and lets you simply focus on Adapter logic:
+class from `knotx-adapters/knotx-adapter-api`. AbstractAdapter hides Event Bus communication and JSON configuration reading parts
+and lets you to focus on Adapter logic:
 
-- `initConfiguration` method that init Adapter with `JsonObject` configuration read from configuration file.
-- `processMessage` method that consumes message from [[Knot|Knot]] and returns message that will be send as Adapter response.
+- `initConfiguration` method that init Adapter configuration with `JsonObject` model.
+- `processMessage` method that consumes `JsonObject` messages from [[Knot|Knot]] and returns `JsonObject` messages 
+with Adapter responses.
 
-To deal with configuration model you may want to extend existing 
-[com.cognifide.knotx.adapter.api.AdapterConfiguration](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AdapterConfiguration.java)
+To deal with configuration model you may extend
+[com.cognifide.knotx.adapter.api.AdapterConfiguration](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AdapterConfiguration.java) class
 from `knotx-adapters/knotx-adapter-api`.
 
-Example implementation of `com.cognifide.knotx.adapter.api.AbstractAdapter` is [[Http Service Adapter|HttpServiceAdapter]] which
-logic can be found in module `knotx-adapters/knotx-adapter-service-http`
-in [com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-service-http/src/main/java/com/cognifide/knotx/adapter/service/http/HttpServiceAdapterVerticle.java).
+Reference implementation of `com.cognifide.knotx.adapter.api.AbstractAdapter` is [[Http Service Adapter|HttpServiceAdapter]] from
+`knotx-adapters/knotx-adapter-service-http` module.
+
+| ! Note |
+|:------ |
+| Please note that this section focused on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using language you like. |
 
 ### Configuration file
 Adapter could have its JSON configuration file that will be passed to `initConfiguration` method in form of `JsonObject`.
@@ -54,6 +65,6 @@ You may read more about example configuration for `HttpServiceAdapterVerticle` i
 For many useful and reusable Adapters concept, please check our [knotx-adapter-common](https://github.com/Cognifide/knotx/tree/master/knotx-adapters/knotx-adapter-common)
 module. You will find there support for `placeholders` and `http connectivity`. 
 
-### How to run a custom adapter with Knot.x
+### How to run a custom Adapter with Knot.x
 Please refer to [[Deployment|KnotxDeployment]] section to find out more about deploying and running 
-a custom adapter with Knot.x.
+a custom Adapters with Knot.x.
