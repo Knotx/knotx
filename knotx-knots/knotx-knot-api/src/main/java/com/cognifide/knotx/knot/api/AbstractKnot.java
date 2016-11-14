@@ -66,7 +66,6 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
 
   protected abstract C initConfiguration(JsonObject config);
 
-
   protected void traceMessage(Message<JsonObject> message) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Processing message {}", message.body().encodePrettily());

@@ -41,10 +41,8 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
-import rx.Observable;
 
 public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotConfiguration> {
 

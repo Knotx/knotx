@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-class ActionKnotConfiguration  extends KnotConfiguration {
+class ActionKnotConfiguration extends KnotConfiguration {
 
   private final List<AdapterMetadata> adapterMetadataList;
 
@@ -88,7 +88,6 @@ class ActionKnotConfiguration  extends KnotConfiguration {
     public String getAddress() {
       return address;
     }
-
 
     public Map<String, Object> getParams() {
       return params;
