@@ -8,7 +8,7 @@ Adapter is a module that is responsible for communication between Knot.x (exactl
 Adapters are thought as project specific logic and we recommend to create dedicated Adapter
 every time some business logic or adapting service response to other format is required.
 
-Each Knot that its contract that adapter must meet. Find out more about [[Knot contracts|Knot#how-does-it-work]].
+Each Knot that its contract that Adapter must meet. Find out more about [[Knot contracts|Knot#how-does-it-work]].
 
 
 ### Types of adapters
@@ -19,7 +19,7 @@ There are two types of Adapters that Knot.x core can communicate with:
 Knot.x comes with implementation of a [[Service Adapter|ServiceAdapter]], that enables communication with external 
 services using HTTP Protocol. See [[Http Service Adapter|HttpServiceAdapter]] for more information.
 Please note, that this implementation is very generic and we recommend to create project-specific 
-adapters for any custom solution.
+Adapters for any custom solution.
 
 ## How to configure?
 Adapter may have its configuration in form of JSON object entry. 
@@ -28,9 +28,9 @@ Please see example configuration for [[Http Service Adapter|HttpServiceAdapter#h
 ## How to extend?
 | ! Note |
 |:------ |
-| Please note that this section explains how to write custom adapter using Java. But this is not the only way to connect with Knot.x thanks to [Vert.x polyglotism](http://vertx.io/). |
+| Please note that this section explains how to write custom Adapter using Java. But this is not the only way to connect with Knot.x thanks to [Vert.x polyglotism](http://vertx.io/). |
 
-When writing a custom adapter you may find very useful to extend existing abstract 
+When writing a custom Adapter you may find very useful to extend existing abstract 
 [com.cognifide.knotx.adapter.api.AbstractAdapter](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AbstractAdapter.java)
 from `knotx-adapters/knotx-adapter-api`. This abstract parent does the part with [EventBus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html) 
 and lets you simply focus on Adapter logic:
