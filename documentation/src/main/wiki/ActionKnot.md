@@ -1,14 +1,15 @@
 # Action Knot
-Action Knot is a [[Knot|Knot]] implementation responsible for forms submissions handling. It supports simple 
-forms with / without a redirection to successful pages and multi-step forms flows. It provides also 
-a service error handling mechanism. 
+Action Knot is an [[Knot|Knot]] implementation responsible for forms submissions handling. It supports 
+simple (without file upload) forms including redirection to successful pages and multi-step forms flows. 
+It provides also a service error handling mechanism. 
 
 ##How does it work?
-Action Knot is used while both GET and POST client request processing. It transforms a form template 
-to Knot.x agnostic one for GET requests. When client submits the form it calls configured [[Adapter|Adapter]]
-and based on its response redirect the client to a successful / error / next step page. It worth to 
-mention that Action Knot does not support a current step validation. That functionality should be 
-provided with an custom step authorization Knot.
+Action Knot is used with default Knot.x settings while both GET and POST client request processing. 
+It transforms a form template to Knot.x agnostic one for GET requests. When client submits the form 
+Action Knot calls configured [[Adapter|Adapter]] and based on its response redirect the client to a 
+successful / error / next step page. 
+It is worth to mention that Action Knot does not support current step validation. That functionality 
+may be achieved by implementing a custom step authorization [[Knot|Knot]].
 
 Let's describe Action Knot behaviour with following example.
 
@@ -17,7 +18,8 @@ ActionKnot processes only those fragments that `<script>` tag has defined `data-
 where `{NAME}` is a unique name of a form (assuming there may be more than one form on a single page 
 it is used to distinguish a requested snippet).
 
-The client opens a `/content/local/login/step1.html` page. A final form markup returned by Knot.x looks like:
+The client opens a `/content/local/login/step1.html` page. The final form markup returned by Knot.x looks like:
+
 ```html
 <!-- start compiled snippet -->  
 <form method="post">
@@ -31,9 +33,11 @@ The client opens a `/content/local/login/step1.html` page. A final form markup r
  </div>
  <!-- end compiled snippet -->
 ```
-There are no Knot.x specific attributes in a final markup besides one hidden input tag. 
 
-So let's see how this form looks in Repository.
+There are no Knot.x specific attributes in a final markup besides one **hidden input tag**. 
+
+This is how form looks in the repository:
+
 ```html
 <script data-api-type="form-1" type="text/x-handlebars-template">
   {{#if action._result.validationErrors}}
@@ -49,18 +53,19 @@ So let's see how this form looks in Repository.
   </div>
 </script>
 ```
+
 Now we can explain how and why this additional hidden input `_frmId` with a value `1` appears . It
-is automatically added by Action Knot and is used to distinguish a requested form while a submission process 
-(there could be more than one form at the same template). Its value comes from a script `data-api-type`
-attribute - it retrieve {NAME} value (`data-api-type="form-{NAME}"`).
+is automatically added by Action Knot and is used to distinguish a requested form during submission process 
+(there could be more than one form at the same template). Its value comes from a script's `data-api-type`
+attribute - it retrieve a `{NAME}` value from `data-api-type="form-{NAME}"`.
 
 Following data attributes are available in the `<form>` tag with described purpose:
 - `data-knotx-action` - this is a name of an [[Action Adapter|ActionAdapter]] that will be used to handle submitted data. 
 It is similar concept as `data-service-{NAME}` in [[View Knot|ViewKnot]]. In the example, 
-Action Handler registered under name `step1` will handle this form data submit.
+Action Handler registered under name `step1` will handle this form data submission.
 - `data-knotx-on-{SIGNAL}` - name of a [Signal](#Signal) that should be applied. In the example 
-there is only one signal success with value `'_self'` which means that after correct response the client
-will stay on the same page.
+there is only one signal success with the value `'_self'` which means that after correct response 
+the client will stay on the same page.
 
 ### Signal
 Signal is basically a decision about further request processing. Value of the signal can be either:
@@ -69,8 +74,10 @@ Signal is basically a decision about further request processing. Value of the si
 In other words, the page processing will be delegated to next [[Knot|Knot]] in the graph.
 
 ##How to configure?
-Action Knot is deployed as a separate verticle, depending on how it's deployed. You need to supply 
-**Action Knot** configuration as JSON below if deployed as Action Knot fat jar.
+Action Knot is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
+depending on how it's deployed. You need to supply **Action Knot** configuration.
+
+JSON presented below is an example how to configure Action Knot deployed as standalone fat jar:
 ```json
 {
   "address": "knotx.knot.action",
@@ -107,8 +114,8 @@ Action Knot is deployed as a separate verticle, depending on how it's deployed. 
   "formIdentifierName": "_frmId"
 }
 ```
-Or, above configuration wrapped in the JSON `config` section as shown below, if deployed using Knot.x 
-starter verticle.
+When deploying **Action Knot** using Knot.x starter verticle, configuration presented above should 
+be wrapped in the JSON `config` section:
 ```json
 "verticles" : {
   ...,
@@ -120,7 +127,7 @@ starter verticle.
   ...,
 }
 ```
-Detailed description of each configuration option is described in next subsection.
+Detailed description of each configuration option is described in the next subsection.
 
 ### Action Knot options
 
@@ -130,12 +137,13 @@ Main Action Knot options available.
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | HTTP Port on which Knot.x will listen for browser requests. |
 | `adapters`                  | `Array of AdapterMetadata`          | &#10004;       | Event bus address of the Action Knot verticle.|
-| `formIdentifierName`        | `String`                            | &#10004;       | Name of hidden input tag which is added by Action Knot. |
+| `formIdentifierName`        | `String`                            | &#10004;       | Name of the hidden input tag which is added by Action Knot. |
 
 Adapter metadata options available. Take into consideration that Adapters are used only for POST requests.
+
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
-| `name`                      | `String`                            | &#10004;       | Name of Adapter which is referenced in `data-knotx-action`. |
+| `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-knotx-action`. |
 | `address`                   | `Array of AdapterMetadata`          | &#10004;       | Event bus address of the **Adapter** verticle, that should be called via Action Knot. |
 | `params`                    | `JSON object`                       | &#10004;       | Default params which are sent to Adapter. |
 | `allowed.request.headers`   | `String`                            | &#10004;       | Array of HTTP client request headers that are allowed to be passed to Adapter. **No** request headers are allowed if not set. |
