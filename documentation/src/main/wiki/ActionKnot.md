@@ -134,8 +134,8 @@ Main Action Knot options available.
 
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | HTTP Port on which Knot.x will listen for browser requests. |
-| `adapters`                  | `Array of AdapterMetadata`          | &#10004;       | Event bus address of the Action Knot verticle.|
+| `address`                   | `String`                            | &#10004;       | Event bus address of the Action Knot verticle. |
+| `adapters`                  | `Array of AdapterMetadata`          | &#10004;       | Array if [AdapterMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-action/src/main/java/com/cognifide/knotx/knot/action/ActionKnotConfiguration.java) |
 | `formIdentifierName`        | `String`                            | &#10004;       | Name of the hidden input tag which is added by Action Knot. |
 
 Adapter metadata options available. Take into consideration that Adapters are used only for POST requests.
@@ -143,7 +143,7 @@ Adapter metadata options available. Take into consideration that Adapters are us
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-knotx-action`. |
-| `address`                   | `Array of AdapterMetadata`          | &#10004;       | Event bus address of the **Adapter** verticle, that should be called via Action Knot. |
+| `address`                   | `Array of AdapterMetadata`          | &#10004;       | Event bus address of the **Adapter** verticle |
 | `params`                    | `JSON object`                       | &#10004;       | Default params which are sent to Adapter. |
 | `allowed.request.headers`   | `String`                            | &#10004;       | Array of HTTP client request headers that are allowed to be passed to Adapter. **No** request headers are allowed if not set. |
 | `allowed.response.headers`  | `String`                            | &#10004;       | Array of HTTP response headers that are allowed to be sent in a client response. **No** response headers are allowed if not set. |

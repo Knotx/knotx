@@ -113,23 +113,66 @@ to avoid multiple calls for the same data.
 Caching is performed within page request scope, this means another request will not get cached data.
 
 ## How to configure?
+View Knot is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
+depending on how it's deployed. You need to supply **View Knot** configuration.
 
-This section configures the Knot.x View Knot responsible for rendering page consists of Handlebars template using data from corresponding services. The config node consists of:
-- **address** - event bus address of the verticle it listens on,
-- **template.debug** - boolean flag to enable/disable rendering HTML comment entities around dynamic snippets,
-- **client.options** - contains json representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html), 
-- **services** - an array of definitions of all service endpoints used by dynamic snippets.
+JSON presented below is an example how to configure Action Knot deployed as standalone fat jar:
+```json
+{
+  "address": "knotx.knot.view",
+  "template.debug": true,
+  "client.options": {
+    "maxPoolSize": 1000,
+    "keepAlive": false
+  },
+  "services": [
+    {
+      "name" : "mock",
+      "address" : "mock-service-adapter",
+      "config": {
+        "path": "/service/mock/.*"
+      }
+    }
+  ]
+}
+```
+When deploying **View Knot** using Knot.x starter verticle, configuration presented above should 
+be wrapped in the JSON `config` section:
+```json
+"verticles" : {
+  ...,
+  "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+    "config": {
+      "PUT YOUR CONFIG HERE"
+    }
+  },
+  ...,
+}
+```
+Detailed description of each configuration option is described in the next subsection.
 
-There are two groups of services defined. Each one will be handled by a different server, i.e. all service requests which match the regular expression:
-- `/service/mock/.*` will by handled by `localhost:3000`
-- `/service/.*` will be handled by `localhost:8080`
+### View Knot options
 
-The first matched service will handle the request or, if there's no service matched, the corresponding template's script block will be empty. Please note that in the near future it will be improved to define fallbacks in the template for cases when the service does not respond or cannot be matched.
+Main View Knot options available.
+
+| Name                        | Type                                | Mandatory      | Description  |
+|-------:                     |:-------:                            |:-------:       |-------|
+| `address`                   | `String`                            | &#10004;       | Event bus address of the Action Knot verticle. |
+| `template.debug`            | `Boolean`                           | &#10004;       | Template debug enabled option.|
+| `client.options`            | `String`                            | &#10004;       | JSON representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html) |
+| `services`                  | `Array of ServiceMetadata`          | &#10004;       | Array of [ServiceMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-view/src/main/java/com/cognifide/knotx/knot/view/ViewKnotConfiguration.java).|
+
+Service (Adapter) metadata options available.
+
+| Name                        | Type                                | Mandatory      | Description  |
+|-------:                     |:-------:                            |:-------:       |-------|
+| `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-service-{NAMESPACE}={ADAPTERNAME}`. |
+| `address`                   | `String`                            | &#10004;       | Event bus address of the **Adapter** verticle. |
+| `params`                    | `JSON object`                       | &#10004;       | Default params which are sent to Adapter. |
+| `cacheKey`                  | `String`                            |                | Cache key which is used for Adapters calls caching. **No** means that cache key has value `{NAME}|{PARAMS}` |
 
 
 ## How to extend?
-
-#TODO Finish configuration
 
 ### Extending handlebars with custom helpers
 
