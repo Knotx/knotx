@@ -4,7 +4,7 @@ It enables communication between [[View Knot|ViewKnot]] and external services vi
 
 ## How does it work?
 When Http Service Adapter starts processing a message from Event Bus, it expects following input:
-- `clientRequest` - JSON object that contains original client request (contains e.g. headers, params, formAttributes etc.).
+- `clientRequest` - JSON object that contains client request (contains e.g. headers, params, formAttributes etc.).
 - `params` - JSON object that contains additional parameters, among those parameter mandatory `path` parameter should be defined.
 
 ### Service path
@@ -12,19 +12,19 @@ When Http Service Adapter starts processing a message from Event Bus, it expects
 It defines request path and may contain [placeholders](#parametrized-service-calls).
 
 ### Parametrized services calls
-When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the current http request (data from `clientRequest`).
-Available placeholders are:
-* `{header.x}` - is the original requests header value where `x` is the header name
-* `{param.x}` - is the original requests query parameter value. For `x` = q from `/a/b/c.html?q=knot` it will produce `knot`
-* `{uri.path}` - is the original requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c.sel.it.html/suffix.html`
-* `{uri.pathpart[x]}` - is the original requests `x`th sling path part. For `x` = 2 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `c.sel.it.html`
-* `{uri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `xml`
-* `{slingUri.path}` - is the original requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c`
-* `{slingUri.pathpart[x]}` - is the original requests `x`th sling path part. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `b`
-* `{slingUri.selectorstring}` - is the original requests sling selector string. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `sel.it`
-* `{slingUri.selector[x]}` - is the original requests `x`th sling selector. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `it`
-* `{slingUri.extension}` - is the original requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `html`
-* `{slingUri.suffix}` - is the original requests sling suffix. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/suffix.html`
+When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the 
+current http request (data from `clientRequest`). Available placeholders are:
+* `{header.x}` - is the client requests header value where `x` is the header name
+* `{param.x}` - is the client requests query parameter value. For `x` = q from `/a/b/c.html?q=knot` it will produce `knot`
+* `{uri.path}` - is the client requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c.sel.it.html/suffix.html`
+* `{uri.pathpart[x]}` - is the client requests `x`th sling path part. For `x` = 2 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `c.sel.it.html`
+* `{uri.extension}` - is the client requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `xml`
+* `{slingUri.path}` - is the client requests sling path. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/a/b/c`
+* `{slingUri.pathpart[x]}` - is the client requests `x`th sling path part. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `b`
+* `{slingUri.selectorstring}` - is the client requests sling selector string. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `sel.it`
+* `{slingUri.selector[x]}` - is the client requests `x`th sling selector. For `x` = 1 from `/a/b/c.sel.it.html/suffix.html?query` it will produce `it`
+* `{slingUri.extension}` - is the client requests sling extension. From `/a/b/c.sel.it.html/suffix.xml?query` it will produce `html`
+* `{slingUri.suffix}` - is the client requests sling suffix. From `/a/b/c.sel.it.html/suffix.html?query` it will produce `/suffix.html`
 
 All placeholders are always substituted with encoded values according to the RFC standard. However, there are two exceptions:
 
@@ -36,11 +36,13 @@ Http Service Adapter replies with `ClientResponse` that contains:
 
 | Parameter       | Type                      |  Description  |
 |-------:         |:-------:                  |-------|
-| `statusCode`    | `Number`                  | status code of a response from external service (e.g. `200`) |
+| `statusCode`    | `HttpResponseStatus       | status code of a response from external service (e.g. `200 OK`) |
 | `headers`       | `MultiMap`                | external service response headers |
 | `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
 ## How to configure?
+Http Service Adapter is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
+depending on how it's deployed.
 Http Service Adapter can be configured to support multiple external `services`, see example configuration:
 
 ```json

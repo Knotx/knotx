@@ -1,5 +1,5 @@
 # Adapters
-Adapters are a modules which are responsible for communication between Knot.x (exactly [[Knots|Knot]]) 
+Adapters are modules which are responsible for communication between Knot.x (exactly [[Knots|Knot]]) 
 and external services.
 
 [[assets/knotx-adapters.png|alt=Adapters]]
