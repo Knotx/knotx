@@ -88,9 +88,9 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     if (authFragment.isPresent()) {
       AuthorizationKnotConfiguration.AdapterMetadata adapterMetadata = findAdapter(authFragment.get());
 
-      vertx.eventBus().<ClientResponse>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
+      vertx.eventBus().<AdapterResponse>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
           msg -> {
-            ClientResponse clientResponse = msg.body();
+            ClientResponse clientResponse = msg.body().response();
 
             if (isAuthorized(clientResponse)) {
               LOGGER.trace("Request authorized. Trigger transition to [{}]", DEFAULT_TRANSITION);

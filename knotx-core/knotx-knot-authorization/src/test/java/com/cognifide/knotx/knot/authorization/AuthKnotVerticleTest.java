@@ -164,10 +164,12 @@ public class AuthKnotVerticleTest {
   private void createKnotConsumer(String address, HttpResponseStatus statusCode) {
     EventBus eventBus = vertx.vertx().eventBus();
     eventBus.<JsonObject>consumer(address, msg -> {
-      ClientResponse response = new ClientResponse();
-      response.setStatusCode(statusCode);
-      response.setHeaders(MultiMap.caseInsensitiveMultiMap());
-      msg.reply(response);
+      ClientResponse serviceResponse = new ClientResponse();
+      serviceResponse.setStatusCode(statusCode);
+      serviceResponse.setHeaders(MultiMap.caseInsensitiveMultiMap());
+      final AdapterResponse adapterResponse = new AdapterResponse();
+      adapterResponse.setResponse(serviceResponse);
+      msg.reply(adapterResponse);
     });
   }
 
