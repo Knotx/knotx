@@ -1,11 +1,10 @@
-[WORKING IN PROGRESS]
 # Repository
 
 ##Overview
 Knot.x gets templates from one or more repositories, processes them and serves to end users. Repositories
 are not part of Knot.x itself, they are stores where templates live. The diagram below depicts how Knot.x uses
 repositories.
- 
+
 [[assets/knotx-overview.png|alt=Knot.x Overview]]
 
 Mapping between incoming request and repository is defined in a Server configuration section. It specifies
@@ -25,8 +24,8 @@ which requests should go to which repository address.
 ```
 
 ## Repositories Connectors
-Knot.x supports by default two repository types: HTTP repository and Filesystem repository. Both Http 
-Repository and Filesystem Repository connectors handle template requests using the Vertx Event Bus. This 
+Knot.x supports by default two repository types: HTTP repository and Filesystem repository. Both Http
+Repository and Filesystem Repository connectors handle template requests using the Vertx Event Bus. This
 communication model allows to add custom repositories connectors easily.
 
 ### HTTP Repository Connector section
