@@ -10,15 +10,15 @@ To run Knot.x you need Java 8.
 ## Hello world!
 First download Knot.x sample app:
 
-[knotx-example-monolith-0.4.1-fat.jar](https://github.com/Cognifide/knotx/releases/download/0.4.1/knotx-example-monolith-0.4.1-fat.jar)
+[knotx-example-monolith-X.X.X-fat.jar](https://github.com/Cognifide/knotx/releases/download/)
 
-[knotx-example-monolith.json](https://github.com/Cognifide/knotx/releases/download/0.4.1/knotx-example-monolith.json)
+[knotx-example-monolith.json](https://github.com/Cognifide/knotx/releases/download/)
 
 
 Now you can run Knot.x:
 
 ```
-java -jar knotx-example-monolith-0.4.1-fat.jar -conf knotx-example-monolith.json
+java -jar knotx-example-monolith-X.X.X-fat.jar -conf knotx-example-monolith.json
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 
