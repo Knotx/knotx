@@ -27,6 +27,7 @@ import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -57,9 +58,7 @@ public class ViewKnotVerticle extends AbstractKnot<ViewKnotConfiguration> {
                   KnotContext inputContext = msg.body();
                   return templateEngine.process(inputContext)
                       .map(renderedData -> createSuccessResponse(inputContext, renderedData))
-                      .onErrorReturn(error -> {
-                        return processError(inputContext, error);
-                      });
+                      .onErrorReturn(error -> processError(inputContext, error));
                 }
             ).subscribe(
                 message::reply,
@@ -84,18 +83,8 @@ public class ViewKnotVerticle extends AbstractKnot<ViewKnotConfiguration> {
     ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
     return new KnotContext()
-        .setClientRequest(inputContext.clientRequest())
+        .setClientRequest(knotContext.clientRequest())
         .setClientResponse(errorResponse);
-  }
-
-  @Override
-  protected ViewKnotConfiguration initConfiguration(JsonObject config) {
-    return new ViewKnotConfiguration(config);
-  }
-
-  @Override
-  protected void handle(Message result, Handler handler) {
-    //Not used in this knot
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {

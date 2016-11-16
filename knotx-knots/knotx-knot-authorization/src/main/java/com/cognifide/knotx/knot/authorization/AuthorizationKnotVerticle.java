@@ -17,12 +17,15 @@
  */
 package com.cognifide.knotx.knot.authorization;
 
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
+import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -40,12 +43,10 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
-import rx.Observable;
 
-public class AuthorizationKnotVerticle extends AbstractVerticle {
+public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotConfiguration> {
 
   private static final String DEFAULT_TRANSITION = "next";
   private static final String AUTH_FRAGMENT_ID = "auth";
@@ -64,6 +65,7 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     return new AuthorizationKnotConfiguration(config);
   }
 
+  @Override
   protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
     final KnotContext knotContext = message.body();
     LOGGER.trace("Process authorization for {} ", knotContext);
@@ -97,6 +99,22 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
       knotContext.setTransition(DEFAULT_TRANSITION);
       handler.handle(knotContext);
     }
+  }
+
+  @Override
+  protected KnotContext processError(KnotContext context, Throwable error) {
+    HttpResponseStatus statusCode;
+    if (error instanceof NoSuchElementException) {
+      statusCode = HttpResponseStatus.NOT_FOUND;
+    } else if (error instanceof AuthorizationConfigurationException) {
+      LOGGER.error("Form incorrectly configured [{}]", context.clientRequest());
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    } else {
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    context.clientResponse().setStatusCode(statusCode);
+    context.setFragments(null);
+    return context;
   }
 
   private Optional<Fragment> findAndRemoveAuthFragment(KnotContext knotContext) {
@@ -153,21 +171,6 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     return new AdapterRequest().setRequest(request).setParams(new JsonObject(metadata.getParams()));
   }
 
-  private KnotContext processError(KnotContext context, Throwable error) {
-    HttpResponseStatus statusCode;
-    if (error instanceof NoSuchElementException) {
-      statusCode = HttpResponseStatus.NOT_FOUND;
-    } else if (error instanceof AuthorizationConfigurationException) {
-      LOGGER.error("Form incorrectly configured [{}]", context.clientRequest());
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    } else {
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    }
-    context.clientResponse().setStatusCode(statusCode);
-    context.setFragments(null);
-    return context;
-  }
-
   private Element getScriptTag(Fragment fragment) {
     return Jsoup.parseBodyFragment(fragment.getContent()).body().child(0);
   }
@@ -176,12 +179,6 @@ public class AuthorizationKnotVerticle extends AbstractVerticle {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
         .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
-  }
-
-  private void traceMessage(Message<JsonObject> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
-    }
   }
 
   private MultiMap prepareRedirectHeaders(MultiMap responseHeaders, String redirectLocation) {

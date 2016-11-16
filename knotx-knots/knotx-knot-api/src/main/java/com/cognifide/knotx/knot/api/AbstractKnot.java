@@ -48,27 +48,28 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
   public void start() throws Exception {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    vertx.eventBus().<JsonObject>consumer(configuration.getAddress())
+    vertx.eventBus().<KnotContext>consumer(configuration.getAddress())
         .handler(message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .subscribe(
                 result -> handle(result, message::reply),
                 error -> {
                   LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
-                  message.reply(processError(new KnotContext(message.body()), error).toJson());
+                  message.reply(processError(message.body(), error));
                 }
             ));
   }
 
-  protected abstract void handle(Message<JsonObject> result, Handler<JsonObject> handler);
+  protected abstract void handle(Message<KnotContext> result, Handler<KnotContext> handler);
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
   protected abstract C initConfiguration(JsonObject config);
 
-  protected void traceMessage(Message<JsonObject> message) {
+  protected void traceMessage(Message<KnotContext> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Processing message {}", message.body().encodePrettily());
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }
   }
+
 }

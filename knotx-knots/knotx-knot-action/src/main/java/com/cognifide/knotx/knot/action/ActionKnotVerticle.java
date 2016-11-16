@@ -57,8 +57,8 @@ import io.vertx.rxjava.core.eventbus.Message;
 
 public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
 
-  public static final String DEFAULT_TRANSITION = "next";
-  public static final String DEFAULT_FORM_IDENTIFIER = "_default_";
+  private static final String DEFAULT_TRANSITION = "next";
+  private static final String DEFAULT_FORM_IDENTIFIER = "_default_";
   private static final String ACTION_FRAGMENT_IDENTIFIER = "form";
   private static final String ACTION_FRAGMENT_IDENTIFIER_REGEXP = "form(-([A-Za-z0-9]+))*";
   private static final Pattern ACTION_FRAGMENT_IDENTIFIER_PATTERN = Pattern.compile(ACTION_FRAGMENT_IDENTIFIER_REGEXP);
@@ -79,6 +79,18 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
     return new ActionKnotConfiguration(config);
   }
 
+  @Override
+  protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
+    KnotContext knotContext = message.body();
+    if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
+      handleFormAction(knotContext, handler);
+    } else {
+      handleGetMethod(handler, knotContext);
+    }
+
+  }
+
+  @Override
   protected KnotContext processError(KnotContext context, Throwable error) {
     KnotContext errorResponse = new KnotContext().setClientResponse(context.clientResponse());
     HttpResponseStatus statusCode;
@@ -92,16 +104,6 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
     }
     errorResponse.clientResponse().setStatusCode(statusCode);
     return errorResponse;
-  }
-
-  private void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
-    KnotContext knotContext = message.body();
-    if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
-      handleFormAction(knotContext, handler);
-    } else {
-      handleGetMethod(handler, knotContext);
-    }
-
   }
 
   private void handleFormAction(KnotContext knotContext, Handler<KnotContext> handler) {
@@ -220,7 +222,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
     if (requestedFormId.equalsIgnoreCase(DEFAULT_FORM_IDENTIFIER)) {
       return ACTION_FRAGMENT_IDENTIFIER;
     } else {
-      return new StringBuilder(ACTION_FRAGMENT_IDENTIFIER).append("-").append(requestedFormId).toString();
+      return ACTION_FRAGMENT_IDENTIFIER + "-" + requestedFormId;
     }
   }
 
@@ -263,7 +265,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
   private String getFragmentContent(Fragment fragment, Document scriptContentDocument) {
     Document resultDocument = Jsoup.parse(fragment.getContent(), "UTF-8", Parser.xmlParser());
     Element scriptTag = resultDocument.child(0).empty();
-    scriptContentDocument.childNodesCopy().stream().forEach(scriptTag::appendChild);
+    scriptContentDocument.childNodesCopy().forEach(scriptTag::appendChild);
 
     return resultDocument.html();
   }
@@ -299,9 +301,4 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
         .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
   }
 
-  private void traceMessage(Message<KnotContext> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
-    }
-  }
 }
