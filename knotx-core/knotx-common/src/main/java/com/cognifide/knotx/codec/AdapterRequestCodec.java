@@ -19,40 +19,20 @@ package com.cognifide.knotx.codec;
 
 import com.cognifide.knotx.dataobjects.AdapterRequest;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public class AdapterRequestCodec extends AbstractMessageCodec<AdapterRequest> {
 
-import io.vertx.core.eventbus.MessageCodec;
-
-public class AdapterRequestCodec implements MessageCodec<AdapterRequest, AdapterRequest> {
+  private AdapterRequestCodecFactory factory = new AdapterRequestCodecFactory();
 
   @Override
-  public void encodeToWire(io.vertx.core.buffer.Buffer buffer, AdapterRequest request) {
-    request.encodeToWire(buffer);
+  protected AdapterRequestCodecFactory getFactory() {
+    return factory;
   }
 
-  @Override
-  public AdapterRequest decodeFromWire(int pos, io.vertx.core.buffer.Buffer buffer) {
-    AdapterRequest request = new AdapterRequest();
-    request.decodeFromWire(new AtomicInteger(pos), buffer);
-
-    return request;
+  private class AdapterRequestCodecFactory extends AbstractMessageCodec.CodecFactory {
+    @Override
+    AdapterRequest newInstance() {
+      return new AdapterRequest();
+    }
   }
-
-
-  @Override
-  public AdapterRequest transform(AdapterRequest request) {
-    return request;
-  }
-
-  @Override
-  public String name() {
-    return this.getClass().getSimpleName();
-  }
-
-  @Override
-  public byte systemCodecID() {
-    return -1;
-  }
-
 
 }

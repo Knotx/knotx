@@ -19,40 +19,20 @@ package com.cognifide.knotx.codec;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public class ClientResponseCodec extends AbstractMessageCodec<ClientResponse> {
 
-import io.vertx.core.eventbus.MessageCodec;
-
-public class ClientResponseCodec implements MessageCodec<ClientResponse, ClientResponse> {
+  private ClientResponseCodecFactory factory = new ClientResponseCodecFactory();
 
   @Override
-  public void encodeToWire(io.vertx.core.buffer.Buffer buffer, ClientResponse response) {
-    response.encodeToWire(buffer);
+  protected ClientResponseCodecFactory getFactory() {
+    return factory;
   }
 
-  @Override
-  public ClientResponse decodeFromWire(int pos, io.vertx.core.buffer.Buffer buffer) {
-    ClientResponse response = new ClientResponse();
-    response.decodeFromWire(new AtomicInteger(pos), buffer);
-
-    return response;
+  private class ClientResponseCodecFactory extends AbstractMessageCodec.CodecFactory {
+    @Override
+    ClientResponse newInstance() {
+      return new ClientResponse();
+    }
   }
-
-
-  @Override
-  public ClientResponse transform(ClientResponse response) {
-    return response;
-  }
-
-  @Override
-  public String name() {
-    return this.getClass().getSimpleName();
-  }
-
-  @Override
-  public byte systemCodecID() {
-    return -1;
-  }
-
 
 }

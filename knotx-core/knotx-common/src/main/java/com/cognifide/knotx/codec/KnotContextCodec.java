@@ -19,40 +19,19 @@ package com.cognifide.knotx.codec;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public class KnotContextCodec extends AbstractMessageCodec<KnotContext> {
 
-import io.vertx.core.eventbus.MessageCodec;
-
-public class KnotContextCodec implements MessageCodec<KnotContext, KnotContext> {
+  private KnotContextCodecFactory factory = new KnotContextCodecFactory();
 
   @Override
-  public void encodeToWire(io.vertx.core.buffer.Buffer buffer, KnotContext knotContext) {
-    knotContext.encodeToWire(buffer);
+  protected KnotContextCodecFactory getFactory() {
+    return factory;
   }
 
-  @Override
-  public KnotContext decodeFromWire(int pos, io.vertx.core.buffer.Buffer buffer) {
-    KnotContext knotContext = new KnotContext();
-    knotContext.decodeFromWire(new AtomicInteger(pos), buffer);
-
-    return knotContext;
+  private class KnotContextCodecFactory extends AbstractMessageCodec.CodecFactory {
+    @Override
+    KnotContext newInstance() {
+      return new KnotContext();
+    }
   }
-
-
-  @Override
-  public KnotContext transform(KnotContext knotContext) {
-    return knotContext;
-  }
-
-  @Override
-  public String name() {
-    return this.getClass().getSimpleName();
-  }
-
-  @Override
-  public byte systemCodecID() {
-    return -1;
-  }
-
-
 }
