@@ -23,7 +23,6 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
-import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -41,10 +40,12 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
+import rx.Observable;
 
-public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotConfiguration> {
+public class AuthorizationKnotVerticle extends AbstractVerticle {
 
   private static final String DEFAULT_TRANSITION = "next";
   private static final String AUTH_FRAGMENT_ID = "auth";
@@ -63,17 +64,17 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
     return new AuthorizationKnotConfiguration(config);
   }
 
-  protected void handle(Message<JsonObject> jsonObject, Handler<JsonObject> handler) {
-    final KnotContext knotContext = new KnotContext(jsonObject.body());
+  protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
+    final KnotContext knotContext = message.body();
     LOGGER.trace("Process authorization for {} ", knotContext);
     Optional<Fragment> authFragment = findAndRemoveAuthFragment(knotContext);
 
     if (authFragment.isPresent()) {
       AuthorizationKnotConfiguration.AdapterMetadata adapterMetadata = findAdapter(authFragment.get());
 
-      vertx.eventBus().<JsonObject>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
+      vertx.eventBus().<AdapterResponse>sendObservable(adapterMetadata.getAddress(), prepareRequest(knotContext, adapterMetadata)).subscribe(
           msg -> {
-            ClientResponse clientResponse = new ClientResponse(msg.body());
+            ClientResponse clientResponse = msg.body().response();
 
             if (isAuthorized(clientResponse)) {
               LOGGER.trace("Request authorized. Trigger transition to [{}]", DEFAULT_TRANSITION);
@@ -85,16 +86,16 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
               knotContext.clearFragments();
               LOGGER.debug("Request Unauthorized. Redirect to [{}]", redirectLocation);
             }
-            handler.handle(knotContext.toJson());
+            handler.handle(knotContext);
           },
           err -> {
             knotContext.clientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-            handler.handle(knotContext.toJson());
+            handler.handle(knotContext);
           }
       );
     } else {
       knotContext.setTransition(DEFAULT_TRANSITION);
-      handler.handle(knotContext.toJson());
+      handler.handle(knotContext);
     }
   }
 
@@ -141,19 +142,18 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
     return HttpResponseStatus.OK.equals(response.statusCode());
   }
 
-  private JsonObject prepareRequest(KnotContext knotContext, AuthorizationKnotConfiguration.AdapterMetadata metadata) {
-    ClientRequest cr = knotContext.clientRequest();
-    return new JsonObject()
-        .put("clientRequest", new ClientRequest()
-            .setPath(cr.path())
-            .setMethod(cr.method())
-            .setFormAttributes(cr.formAttributes())
-            .setParams(cr.params())
-            .setHeaders(getFilteredHeaders(knotContext.clientRequest().headers(), metadata.getAllowedRequestHeaders())).toJson())
-        .put("params", new JsonObject(metadata.getParams()));
+  private AdapterRequest prepareRequest(KnotContext knotContext, AuthorizationKnotConfiguration.AdapterMetadata metadata) {
+    ClientRequest request = new ClientRequest()
+        .setPath(knotContext.clientRequest().path())
+        .setMethod(knotContext.clientRequest().method())
+        .setFormAttributes(knotContext.clientRequest().formAttributes())
+        .setParams(knotContext.clientRequest().params())
+        .setHeaders(getFilteredHeaders(knotContext.clientRequest().headers(), metadata.getAllowedRequestHeaders()));
+
+    return new AdapterRequest().setRequest(request).setParams(new JsonObject(metadata.getParams()));
   }
 
-  protected KnotContext processError(KnotContext context, Throwable error) {
+  private KnotContext processError(KnotContext context, Throwable error) {
     HttpResponseStatus statusCode;
     if (error instanceof NoSuchElementException) {
       statusCode = HttpResponseStatus.NOT_FOUND;
@@ -176,6 +176,12 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
         .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
+  }
+
+  private void traceMessage(Message<JsonObject> message) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+    }
   }
 
   private MultiMap prepareRedirectHeaders(MultiMap responseHeaders, String redirectLocation) {

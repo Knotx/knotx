@@ -39,7 +39,7 @@ public class KnotxServerConfiguration {
 
   private Set<String> allowedResponseHeaders;
 
-  private Map<String, String> repositoryAddressMapping;
+  private Map<String, RepositoryEntry> repositoryAddressMapping;
 
   private String splitterAddress;
 
@@ -58,7 +58,8 @@ public class KnotxServerConfiguration {
     repositoryAddressMapping = Maps.newHashMap();
     config.getJsonArray("repositories").stream()
         .map(item -> (JsonObject) item)
-        .forEach(object -> repositoryAddressMapping.put(object.getString("path"), object.getString("address")));
+        .forEach(object -> repositoryAddressMapping.put(object.getString("path"),
+            new RepositoryEntry(object.getString("address"), object.getBoolean("doProcessing", true))));
 
     allowedResponseHeaders = config.getJsonArray("allowed.response.headers").stream()
         .map(item -> ((String) item).toLowerCase())
@@ -77,7 +78,7 @@ public class KnotxServerConfiguration {
     return httpPort;
   }
 
-  public Optional<String> repositoryForPath(final String path) {
+  public Optional<RepositoryEntry> repositoryForPath(final String path) {
     return repositoryAddressMapping.entrySet().stream()
         .filter(mapping -> path.matches(mapping.getKey()))
         .findFirst().map(matching -> matching.getValue());
@@ -125,5 +126,23 @@ public class KnotxServerConfiguration {
     }
 
     return routingEntries;
+  }
+
+  public class RepositoryEntry {
+    private String address;
+    private boolean doProcessing;
+
+    public RepositoryEntry(String address, boolean doProcessing) {
+      this.address = address;
+      this.doProcessing = doProcessing;
+    }
+
+    public String address() {
+      return address;
+    }
+
+    public boolean doProcessing() {
+      return doProcessing;
+    }
   }
 }

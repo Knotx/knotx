@@ -33,7 +33,7 @@ which specifies parameters for Adapter call. An example `script` definition can 
 <script data-api-type="templating"
   data-service="first-service"
   data-service-second="second-service"
-  data-params-second="{'path':'/overridden/path'}"
+  data-params-second='{"path":"/overridden/path"}'
   type="text/x-handlebars-template">
 ```
 View Knot will call two Adapters with names: `first-service` and `second-service`.

@@ -27,7 +27,6 @@ import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
@@ -51,22 +50,32 @@ public class ViewKnotVerticle extends AbstractKnot<ViewKnotConfiguration> {
   public void start() throws Exception {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).handler(
+    vertx.eventBus().<KnotContext>consumer(configuration.getAddress()).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .flatMap(msg -> {
-                  KnotContext inputContext = new KnotContext(msg.body());
+                  KnotContext inputContext = msg.body();
                   return templateEngine.process(inputContext)
-                      .map(renderedData -> createSuccessResponse(inputContext, renderedData).toJson())
+                      .map(renderedData -> createSuccessResponse(inputContext, renderedData))
                       .onErrorReturn(error -> {
-                        return processError(inputContext, error).toJson();
+                        return processError(inputContext, error);
                       });
                 }
             ).subscribe(
                 message::reply,
-                error -> message.reply(processError(new KnotContext(message.body()), error).toJson())
+                error -> message.reply(processError(message.body(), error))
             )
     );
+  }
+
+  @Override
+  protected ViewKnotConfiguration initConfiguration(JsonObject config) {
+    return new ViewKnotConfiguration(config);
+  }
+
+  @Override
+  protected void handle(Message result, Handler handler) {
+    //Not used in this knot
   }
 
   @Override
@@ -75,7 +84,7 @@ public class ViewKnotVerticle extends AbstractKnot<ViewKnotConfiguration> {
     ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
     return new KnotContext()
-        .setClientRequest(knotContext.clientRequest())
+        .setClientRequest(inputContext.clientRequest())
         .setClientResponse(errorResponse);
   }
 

@@ -25,7 +25,7 @@
   <parent>
     <groupId>com.cognifide.knotx</groupId>
     <artifactId>knotx-knots</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>knotx-knot-authorization</artifactId>
@@ -46,14 +46,14 @@
 
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-adapter-common</artifactId>
+      <artifactId>knotx-knot-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-api</artifactId>
-      <version>${project.version}</version>
+      <artifactId>knotx-adapter-common</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

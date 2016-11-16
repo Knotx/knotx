@@ -17,13 +17,17 @@
  */
 package com.cognifide.knotx.knot.view.impl;
 
+import com.cognifide.knotx.codec.AdapterRequestCodec;
+import com.cognifide.knotx.codec.AdapterResponseCodec;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.knot.view.ViewKnotConfiguration;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.Logback;
+import com.cognifide.knotx.knot.view.ViewKnotConfiguration;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -73,15 +77,16 @@ public class TemplateEngineTest {
       .prettyPrint(false);
 
   private RunTestOnContext runTestOnContext = new RunTestOnContext();
-  private Vertx vertx;
-
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(runTestOnContext);
+  private Vertx vertx;
 
   @Before
   public void setUp() throws Exception {
     vertx = Vertx.newInstance(runTestOnContext.vertx());
-    vertx.eventBus().<JsonObject>consumer("knotx.mock.service-adapter").handler(this::mockServiceAdapter);
+    ((io.vertx.core.eventbus.EventBus)vertx.eventBus().getDelegate()).registerDefaultCodec(AdapterRequest.class, new AdapterRequestCodec());
+    ((io.vertx.core.eventbus.EventBus)vertx.eventBus().getDelegate()).registerDefaultCodec(AdapterResponse.class, new AdapterResponseCodec());
+    vertx.eventBus().<AdapterRequest>consumer("knotx.mock.service-adapter").handler(this::mockServiceAdapter);
   }
 
   @SuppressWarnings("unchecked")
@@ -186,19 +191,19 @@ public class TemplateEngineTest {
         .trim();
   }
 
-  private void mockServiceAdapter(Message<JsonObject> message) {
+  private void mockServiceAdapter(Message<AdapterRequest> message) {
     Observable.just(message.body())
         .subscribe(
             req -> {
-              final String resourcePath = req.getJsonObject("params").getString("path");
+              final String resourcePath = req.params().getString("path");
               try {
                 final String responseBody = FileReader.readText(resourcePath);
-                message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.OK).setBody(Buffer.buffer(responseBody)).toJson());
+                message.reply(new AdapterResponse().setResponse(new ClientResponse().setStatusCode(HttpResponseStatus.OK).setBody(Buffer.buffer(responseBody))));
               } catch (Exception e) {
-                message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND).toJson());
+                message.reply(new AdapterResponse().setResponse(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND)));
               }
             },
-            error -> message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND).toJson())
+            error -> message.reply(new AdapterResponse().setResponse(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND)))
         );
   }
 }

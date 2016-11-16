@@ -16,21 +16,23 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.fragments.Fragment;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import rx.Observable;
 
-public class KnotContext {
+public class KnotContext extends Codec {
 
   private String transition;
 
@@ -44,23 +46,6 @@ public class KnotContext {
 
   public KnotContext() {
     //Nothing to set by default
-  }
-
-  /**
-   * Initialise the fields of this instance from the specified JSON
-   *
-   * @param json the JSON
-   */
-  public KnotContext(JsonObject json) {
-    this.transition = json.getString("transition");
-    this.clientRequest = new ClientRequest(json.getJsonObject("clientRequest"));
-    this.clientResponse = new ClientResponse(json.getJsonObject("clientResponse"));
-    if (json.containsKey("fragments")) {
-      this.fragments = json.getJsonArray("fragments").stream()
-          .map(item -> (JsonObject) item)
-          .map(Fragment::new)
-          .collect(Collectors.toList());
-    }
   }
 
   public KnotContext setClientRequest(ClientRequest request) {
@@ -108,22 +93,6 @@ public class KnotContext {
     return cache;
   }
 
-  /**
-   * Convert this to JSON
-   *
-   * @return the JSON
-   */
-  public JsonObject toJson() {
-    JsonObject json = new JsonObject();
-    json.put("clientRequest", clientRequest.toJson());
-    json.put("clientResponse", clientResponse.toJson());
-    transition().ifPresent(value -> json.put("transition", value));
-    fragments().ifPresent(value -> json.put("fragments", value.stream()
-        .map(Fragment::toJson)
-        .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll)));
-    return json;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -142,7 +111,59 @@ public class KnotContext {
 
   @Override
   public String toString() {
-    return toJson().toString();
+    return MoreObjects.toStringHelper(this)
+        .add("transition", transition)
+        .add("clientRequest", clientRequest)
+        .add("clientResponse", clientResponse)
+        .add("fragments", fragments)
+        .toString();
+  }
+
+  @Override
+  public void encodeToWire(Buffer buffer) {
+    encodeString(buffer, transition);
+    if (clientRequest != null) {
+      encodeInt(buffer, 1);
+      clientRequest.encodeToWire(buffer);
+    } else {
+      encodeInt(buffer, 0);
+    }
+    if (clientResponse != null) {
+      encodeInt(buffer, 1);
+      clientResponse.encodeToWire(buffer);
+    } else {
+      encodeInt(buffer, 0);
+    }
+    if (fragments == null || fragments.isEmpty()) {
+      encodeInt(buffer, 0);
+    } else {
+      encodeInt(buffer, fragments.size());
+      for (Fragment item : fragments) {
+        encodeString(buffer, item.toJson().encode());
+      }
+    }
+  }
+
+  @Override
+  public void decodeFromWire(AtomicInteger position, Buffer buffer) {
+    transition = decodeString(position, buffer);
+    int exists = decodeInt(position, buffer);
+    if (exists == 1) {
+      clientRequest = new ClientRequest();
+      clientRequest.decodeFromWire(position, buffer);
+    }
+    exists = decodeInt(position, buffer);
+    if (exists == 1) {
+      clientResponse = new ClientResponse();
+      clientResponse.decodeFromWire(position, buffer);
+    }
+    int fragmentsAmount = decodeInt(position, buffer);
+    if (fragmentsAmount > 0) {
+      fragments = Lists.newArrayList();
+      for (int fragIdx = fragmentsAmount; fragIdx > 0; fragIdx--) {
+        fragments.add(new Fragment(new JsonObject(decodeString(position, buffer))));
+      }
+    }
   }
 }
 

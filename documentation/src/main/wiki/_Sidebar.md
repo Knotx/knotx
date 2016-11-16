@@ -16,14 +16,14 @@
     * [[View Knot|ViewKnot]]
   * [[Adapter|Adapter]]
     * [[Service Adapter|ServiceAdapter]]
-      * [[Http Service Adapter|HttpServiceAdapter]]
     * [[Action Adapter|ActionAdapter]]
-      * [[Http Action Adapter|HttpActionAdapter]]
+    * [[Http Service Adapter|HttpServiceAdapter]]
   * [[Knot.x Deployment|KnotxDeployment]]
   * [[Dependencies|Dependencies]]
   * [[What's new|WhatsNew]]
 
 ### Released
+* [[1.0.0-RC1|Documentation-1.0.0-RC1]]
 * [[0.4.0|Documentation-0.4.0]]
 * [[0.3.0|Documentation-0.3.0]]
 * [[0.2.0|Documentation-0.2.0]]

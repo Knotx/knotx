@@ -21,6 +21,7 @@ import com.cognifide.knotx.adapter.common.exception.AdapterServiceContractExcept
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
 import com.cognifide.knotx.adapter.common.post.FormBodyBuilder;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
@@ -47,8 +48,6 @@ import rx.Observable;
 public class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
-  private static final String REQUEST_KEY = "clientRequest";
-  private static final String PARAMS_KEY = "params";
   private static final String PATH_PROPERTY_KEY = "path";
   private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
@@ -61,7 +60,7 @@ public class HttpClientFacade {
     this.services = services;
   }
 
-  public Observable<ClientResponse> process(JsonObject message, HttpMethod method) {
+  public Observable<ClientResponse> process(AdapterRequest message, HttpMethod method) {
     return Observable.just(message)
         .doOnNext(this::validateContract)
         .map(this::prepareRequestData)
@@ -77,9 +76,8 @@ public class HttpClientFacade {
    *
    * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params' objects.
    */
-  protected void validateContract(JsonObject message) {
-    final boolean pathPresent = message.getJsonObject(PARAMS_KEY).containsKey(PATH_PROPERTY_KEY);
-    if (!pathPresent) {
+  protected void validateContract(AdapterRequest message) {
+    if (message.params() == null || !message.params().containsKey(PATH_PROPERTY_KEY)) {
       throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
@@ -100,17 +98,16 @@ public class HttpClientFacade {
    * @return ClientRequest representing Http request to the target service
    */
   protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
-    return new ClientRequest(originalRequest.toJson())
+    return new ClientRequest(originalRequest)
         .setPath(UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
   }
 
-  private Pair<ClientRequest, ServiceMetadata> prepareRequestData(JsonObject message) {
+  private Pair<ClientRequest, ServiceMetadata> prepareRequestData(AdapterRequest adapterRequest) {
     final Pair<ClientRequest, ServiceMetadata> serviceData;
 
-    final ClientRequest originalRequest = new ClientRequest(message.getJsonObject(REQUEST_KEY));
-    final ClientRequest serviceRequest = buildServiceRequest(originalRequest, message.getJsonObject(PARAMS_KEY));
-
+    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.request(), adapterRequest.params());
     final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.path());
+
     if (serviceMetadata.isPresent()) {
       serviceData = Pair.of(serviceRequest, serviceMetadata.get());
     } else {

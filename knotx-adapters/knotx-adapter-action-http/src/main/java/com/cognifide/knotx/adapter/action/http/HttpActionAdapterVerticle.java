@@ -21,6 +21,8 @@ package com.cognifide.knotx.adapter.action.http;
 import com.cognifide.knotx.adapter.api.AbstractAdapter;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -49,7 +51,7 @@ public class HttpActionAdapterVerticle extends AbstractAdapter<HttpAdapterConfig
   }
 
   @Override
-  protected Observable<JsonObject> processMessage(JsonObject message) {
+  protected Observable<AdapterResponse> processMessage(AdapterRequest message) {
     return httpClientFacade.process(message, HttpMethod.POST)
         .map(this::prepareResponse);
   }
@@ -60,17 +62,17 @@ public class HttpActionAdapterVerticle extends AbstractAdapter<HttpAdapterConfig
         vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
-  private JsonObject prepareResponse(ClientResponse response) {
-    JsonObject result = new JsonObject();
+  private AdapterResponse prepareResponse(ClientResponse response) {
+    AdapterResponse result = new AdapterResponse();
 
     if (response.statusCode() == HttpResponseStatus.OK) {
       if (isJsonBody(response.body()) && response.body().toJsonObject().containsKey("validationErrors")) {
-        result.put("signal", "error");
+        result.setSignal("error");
       } else {
-        result.put("signal", "success");
+        result.setSignal("success");
       }
     }
-    result.put("clientResponse", response.toJson());
+    result.setResponse(response);
 
     return result;
   }
