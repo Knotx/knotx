@@ -40,6 +40,11 @@
     {
       "path": "/content/.*",
       "address": "knotx.core.repository.http"
+    },
+    {
+      "path": "/.*",
+      "address": "knotx.core.repository.http",
+      "doProcessing": false
     }
   ],
   "splitter": {

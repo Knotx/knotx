@@ -19,6 +19,8 @@ package com.cognifide.knotx.knot.action;
 
 import com.google.common.collect.Lists;
 
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
@@ -129,18 +131,23 @@ public class ActionKnotVerticleTest {
         error -> context.fail(error.getMessage()));
   }
 
-  @Ignore
   @Test
   @KnotxConfiguration("knotx-knot-action-test.json")
-  public void callGetWithActionFragmentWithoutIdentifier_expectStatusCode500(TestContext context) throws Exception {
+  public void callGetWithActionFragmentWithoutIdentifier_expectResponseOkWithOneFragmentChanges(TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_no_identifier_in.txt");
+    String expectedFragmentHtml = FileReader.readText("fragment_form_no_identifier_out.txt");
     knotContext.clientRequest().setMethod(HttpMethod.GET);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR, clientResponse.clientResponse().statusCode());
-          context.assertFalse(clientResponse.transition().isPresent());
-          context.assertFalse(clientResponse.fragments().isPresent());
+          context.assertEquals(HttpResponseStatus.OK, clientResponse.clientResponse().statusCode());
+          context.assertTrue(clientResponse.transition().isPresent());
+          context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.transition().get());
+          context.assertTrue(clientResponse.fragments().isPresent());
+
+          List<Fragment> fragments = clientResponse.fragments().get();
+          context.assertEquals(fragments.size(), 1);
+          context.assertEquals(clean(expectedFragmentHtml), clean(fragments.get(0).getContent()));
         },
         error -> context.fail(error.getMessage()));
   }
@@ -156,43 +163,6 @@ public class ActionKnotVerticleTest {
           context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR, clientResponse.clientResponse().statusCode());
           context.assertFalse(clientResponse.transition().isPresent());
           context.assertFalse(clientResponse.fragments().isPresent());
-        },
-        error -> context.fail(error.getMessage()));
-  }
-
-  @Ignore
-  @Test
-  @KnotxConfiguration("knotx-knot-action-test.json")
-  public void callPostWithTwoActionFragments_expectResponseOkWithServiceContextNoTransition(TestContext context) throws Exception {
-    String actionAdapterResponse = "{\"success\":\"true\"}";
-    Map<String, List<String>> headers = new HashMap<String, List<String>>() {{
-      put("X-Auth", Lists.newArrayList("x-auth-value"));
-    }};
-    createKnotConsumer("address-redirect", actionAdapterResponse, "step2", headers);
-
-    String expectedFirstFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
-    String expectedSecondFormFragment = FileReader.readText("fragment_form_self_out.txt");
-    KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
-    knotContext.clientRequest()
-        .setMethod(HttpMethod.POST)
-        .setFormAttributes(MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, FRAGMENT_SELF_IDENTIFIER));
-
-    callActionKnotWithAssertions(context, knotContext,
-        response -> {
-          context.assertEquals(HttpResponseStatus.OK, response.clientResponse().statusCode());
-          context.assertTrue(response.transition().isPresent());
-          context.assertEquals(EXPECTED_KNOT_TRANSITION, response.transition().get());
-          context.assertTrue(response.fragments().isPresent());
-
-          Optional<Fragment> selfFragment = response.fragments().get().stream().filter(item -> item.getId().equals("form-" + FRAGMENT_SELF_IDENTIFIER)).findFirst();
-
-          context.assertTrue(selfFragment.isPresent());
-          context.assertEquals(new JsonObject(actionAdapterResponse), selfFragment.get().getContext().getJsonObject("_response"));
-          context.assertEquals("x-auth-value", response.clientResponse().headers().get("X-Auth"));
-
-          List<Fragment> fragments = response.fragments().get();
-          context.assertEquals(clean(expectedFirstFormFragment), clean(fragments.get(0).getContent()));
-          context.assertEquals(clean(expectedSecondFormFragment), clean(fragments.get(1).getContent()));
         },
         error -> context.fail(error.getMessage()));
   }
@@ -250,10 +220,10 @@ public class ActionKnotVerticleTest {
   private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext, Action1<KnotContext> onSuccess, Action1<Throwable> onError) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<JsonObject>send(ADDRESS, knotContext.toJson(), ar -> {
+    vertx.vertx().eventBus().<KnotContext>send(ADDRESS, knotContext, ar -> {
       if (ar.succeeded()) {
         Observable
-            .just(new KnotContext(ar.result().body()))
+            .just(ar.result().body())
             .subscribe(
                 onSuccess,
                 onError,
@@ -296,12 +266,12 @@ public class ActionKnotVerticleTest {
 
   private void createKnotConsumer(String adddress, String addToBody, String signal, Map<String, List<String>> headers) {
     EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<JsonObject>consumer(adddress, msg -> {
+    eventBus.<AdapterRequest>consumer(adddress, msg -> {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(HttpResponseStatus.OK);
       response.setBody(Buffer.buffer().appendString(addToBody));
       response.setHeaders(headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
-      msg.reply(new JsonObject().put("clientResponse", response.toJson()).put("signal", signal));
+      msg.reply(new AdapterResponse().setResponse(response).setSignal(signal));
     });
   }
 

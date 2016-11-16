@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.mocks.adapter;
 
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -38,7 +40,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
-public class MockAdapterHandler implements Handler<Message<JsonObject>> {
+public class MockAdapterHandler implements Handler<Message<AdapterRequest>> {
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
@@ -53,32 +55,32 @@ public class MockAdapterHandler implements Handler<Message<JsonObject>> {
   }
 
   @Override
-  public void handle(Message<JsonObject> message) {
-    ClientRequest request = new ClientRequest(message.body().getJsonObject("clientRequest"));
-    JsonObject params = message.body().getJsonObject("params");
+  public void handle(Message<AdapterRequest> message) {
+    ClientRequest request = message.body().request();
+    JsonObject params = message.body().params();
 
     String resourcePath = getFilePath(params.getString("path"));
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
         String mockData = ar.result().toString();
-        message.reply(okResponse(request, mockData).toJson());
+        message.reply(okResponse(request, mockData));
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
-        message.reply(errorResponse().toJson());
+        message.reply(errorResponse());
       }
     });
   }
 
-  private ClientResponse okResponse(ClientRequest request, String data) {
-    return new ClientResponse()
+  private AdapterResponse okResponse(ClientRequest request, String data) {
+    return new AdapterResponse().setResponse(new ClientResponse()
         .setHeaders(headers(request, data))
         .setStatusCode(HttpResponseStatus.OK)
-        .setBody(Buffer.buffer(data));
+        .setBody(Buffer.buffer(data)));
   }
 
-  protected ClientResponse errorResponse() {
-    return new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+  protected AdapterResponse errorResponse() {
+    return new AdapterResponse().setResponse(new ClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
   }
 
   protected String getContentType(ClientRequest request) {

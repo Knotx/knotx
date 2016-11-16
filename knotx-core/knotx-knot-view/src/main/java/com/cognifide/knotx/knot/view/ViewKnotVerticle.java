@@ -25,7 +25,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -53,21 +52,21 @@ public class ViewKnotVerticle extends AbstractVerticle {
   public void start() throws Exception {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    vertx.eventBus().<JsonObject>consumer(configuration.getAddress()).handler(
+    vertx.eventBus().<KnotContext>consumer(configuration.getAddress()).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .flatMap(msg -> {
-                  KnotContext inputContext = new KnotContext(msg.body());
+                  KnotContext inputContext = msg.body();
                   return templateEngine.process(inputContext)
-                      .map(renderedData -> createSuccessResponse(inputContext, renderedData).toJson())
+                      .map(renderedData -> createSuccessResponse(inputContext, renderedData))
                       .onErrorReturn(error -> {
                         LOGGER.error("Error happened during Template processing", error);
-                        return createErrorResponse(inputContext).toJson();
+                        return createErrorResponse(inputContext);
                       });
                 }
             ).subscribe(
                 message::reply,
-                error -> message.reply(createErrorResponse(new KnotContext(message.body())).toJson())
+                error -> message.reply(createErrorResponse(message.body()))
             )
     );
   }
@@ -91,9 +90,9 @@ public class ViewKnotVerticle extends AbstractVerticle {
         .setClientResponse(errorResponse);
   }
 
-  private void traceMessage(Message<JsonObject> message) {
+  private void traceMessage(Message<KnotContext> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Processing message {}", message.body().encodePrettily());
+      LOGGER.trace("Processing message {}", message.body());
     }
   }
 }

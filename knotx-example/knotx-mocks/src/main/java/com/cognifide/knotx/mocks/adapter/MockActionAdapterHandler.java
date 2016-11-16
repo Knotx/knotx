@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.mocks.adapter;
 
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 
@@ -28,7 +30,6 @@ import java.util.Optional;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.file.FileSystem;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -45,18 +46,18 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
   }
 
   @Override
-  public void handle(Message<JsonObject> message) {
-    ClientRequest request = new ClientRequest(message.body().getJsonObject("clientRequest"));
-    JsonObject params = message.body().getJsonObject("params");
+  public void handle(Message<AdapterRequest> message) {
+    ClientRequest request = message.body().request();
+    JsonObject params = message.body().params();
 
     String resourcePath = getFilePath(params.getString("step"));
     fileSystem.readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
         final JsonObject transitions = ar.result().toJsonObject();
-        message.reply(transitionResponse(request, transitions));
+        message.reply(replyTransition(request, transitions));
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
-        message.reply(getErrorResponse());
+        message.reply(errorResponse());
       }
     });
   }
@@ -66,12 +67,7 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     return super.getFilePath(step) + ".json";
   }
 
-  private Pair<Optional<String>, JsonObject> getErrorResponse() {
-    return Pair.of(Optional.empty(),
-        new JsonObject().put("clientResponse", errorResponse().toJson()));
-  }
-
-  private JsonObject transitionResponse(ClientRequest request, JsonObject transitions) {
+  private AdapterResponse replyTransition(ClientRequest request, JsonObject transitions) {
     final Pair<Optional<String>, JsonObject> result = getTransitionResult(request, transitions);
 
     final JsonObject resultBody = result.getRight().put("form", toJsonObject(request.formAttributes()));
@@ -82,12 +78,12 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
         .setStatusCode(HttpResponseStatus.OK)
         .setBody(Buffer.buffer(data));
 
-    final JsonObject response = new JsonObject()
-        .put("clientResponse", clientResponse.toJson());
+    final AdapterResponse response = new AdapterResponse()
+        .setResponse(clientResponse);
 
     final Optional<String> transition = result.getLeft();
     if (transition.isPresent()) {
-      response.put("signal", transition.get());
+      response.setSignal(transition.get());
     }
     return response;
   }
@@ -101,6 +97,11 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
 
   private Pair<Optional<String>, JsonObject> toTransitionPair(Map.Entry<String, Object> entry) {
     return Pair.of(Optional.of(entry.getKey()), ((JsonObject) entry.getValue()).getJsonObject("response"));
+  }
+
+  private Pair<Optional<String>, JsonObject> getErrorResponse() {
+    return Pair.of(Optional.empty(),
+        new JsonObject().put("clientResponse", errorResponse().response().toMetadataJson()));
   }
 
   private boolean matchRequest(ClientRequest request, Map.Entry<String, Object> transition) {

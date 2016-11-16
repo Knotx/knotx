@@ -31,13 +31,11 @@ import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.impl.MimeMapping;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
@@ -62,24 +60,23 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
   public void start() throws Exception {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
 
-    vertx.eventBus().<JsonObject>consumer(address).handler(
+    vertx.eventBus().<ClientRequest>consumer(address).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .flatMap(this::getTemplateContent, Pair::of)
             .subscribe(
-                response -> response.getLeft().reply(response.getRight().toJson()),
+                response -> response.getLeft().reply(response.getRight()),
                 error -> {
                   LOGGER.error(ERROR_MESSAGE, error);
-                  message.reply(processError(error).toJson());
+                  message.reply(processError(error));
                 }
             )
     );
   }
 
-  private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
+  private Observable<ClientResponse> getTemplateContent(final Message<ClientRequest> repoMessage) {
     FileSystem fileSystem = vertx.fileSystem();
-
-    ClientRequest repoRequest = new ClientRequest(repoMessage.body());
+    ClientRequest repoRequest = repoMessage.body();
 
     final String localFilePath = catalogue + StringUtils.stripStart(repoRequest.path(), "/");
     final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
@@ -116,9 +113,9 @@ public class FilesystemRepositoryVerticle extends AbstractVerticle {
     return new ClientResponse().setStatusCode(statusCode);
   }
 
-  private void traceMessage(Message<JsonObject> message) {
+  private void traceMessage(Message<ClientRequest> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }
   }
 }

@@ -43,6 +43,11 @@
           {
             "path": "/content/.*",
             "address": "knotx.core.repository.http"
+          },
+          {
+            "path": "/img/.*",
+            "address": "knotx.core.repository.http",
+            "doProcessing": false
           }
         ],
         "splitter": {
@@ -162,6 +167,34 @@
       "config" : {
         "address": "knotx.knot.action",
         "adapters": [
+          {
+            "name": "subscribe-competition",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-competition.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          },
+          {
+            "name": "subscribe-newsletter",
+            "address": "knotx.adapter.action.http",
+            "params": {
+              "path": "/service/mock/post-newsletter.json"
+            },
+            "allowed.request.headers": [
+              "Cookie"
+            ],
+            "allowed.response.headers": [
+              "Set-Cookie",
+              "Location"
+            ]
+          },
           {
             "name": "step1",
             "address": "knotx.adapter.action.http",

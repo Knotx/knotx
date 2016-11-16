@@ -77,15 +77,15 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     LOGGER.info("Registered <{}>", this.getClass().getSimpleName());
     httpClient = createHttpClient();
 
-    vertx.eventBus().<JsonObject>consumer(address).handler(
+    vertx.eventBus().<ClientRequest>consumer(address).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .flatMap(this::getTemplateContent, Pair::of)
             .subscribe(
-                response -> response.getLeft().reply(response.getRight().toJson()),
+                response -> response.getLeft().reply(response.getRight()),
                 error -> {
                   LOGGER.error(ERROR_MESSAGE, error);
-                  message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR).toJson());
+                  message.reply(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
                 }
             )
     );
@@ -95,8 +95,8 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     return clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
   }
 
-  private Observable<ClientResponse> getTemplateContent(final Message<JsonObject> repoMessage) {
-    final ClientRequest repoRequest = new ClientRequest(repoMessage.body());
+  private Observable<ClientResponse> getTemplateContent(final Message<ClientRequest> repoMessage) {
+    final ClientRequest repoRequest = repoMessage.body();
 
     return requestForTemplate(repoRequest)
         .doOnNext(this::traceHttpResponse)
@@ -168,9 +168,9 @@ public class HttpRepositoryVerticle extends AbstractVerticle {
     }
   }
 
-  private void traceMessage(Message<JsonObject> message) {
+  private void traceMessage(Message<ClientRequest> message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body().encodePrettily());
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }
   }
 

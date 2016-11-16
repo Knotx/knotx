@@ -55,19 +55,19 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
     EventBus eventBus = vertx.eventBus();
 
-    eventBus.<JsonObject>consumer(configuration.getAddress()).handler(
+    eventBus.<KnotContext>consumer(configuration.getAddress()).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .subscribe(
                 response -> {
-                  KnotContext context = new KnotContext(response.body());
+                  KnotContext context = response.body();
                   context.setFragments(splitter.split(context.clientResponse().body().toString()));
                   context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
-                  response.reply(context.toJson());
+                  response.reply(context);
                 },
                 error -> {
                   LOGGER.error("Exception happened during HTML splitting.", error);
-                  message.reply(processError(new KnotContext(message.body()), error).toJson());
+                  message.reply(processError(message.body(), error));
                 }
             )
     );
@@ -84,7 +84,7 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
     return context;
   }
 
-  private void traceMessage(Message<JsonObject> message) {
+  private void traceMessage(Message<KnotContext> message) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }

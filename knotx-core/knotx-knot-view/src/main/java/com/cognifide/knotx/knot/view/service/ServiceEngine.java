@@ -17,6 +17,8 @@
  */
 package com.cognifide.knotx.knot.view.service;
 
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.view.ViewKnotConfiguration;
@@ -48,16 +50,12 @@ public class ServiceEngine {
 
   public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
                                               KnotContext knotContext) {
-    JsonObject serviceMessage = new JsonObject();
-    serviceMessage.put("clientRequest", knotContext.clientRequest().toJson());
-    serviceMessage.put("params", serviceEntry.getParams());
+    AdapterRequest adapterRequest = new AdapterRequest()
+        .setRequest(knotContext.clientRequest())
+        .setParams(serviceEntry.getParams());
 
-    return eventBus.<JsonObject>sendObservable(serviceEntry.getAddress(), serviceMessage)
-        .compose(transformResponse());
-  }
-
-  private Observable.Transformer<Message<JsonObject>, JsonObject> transformResponse() {
-    return messageObs -> messageObs.map(msg -> new ClientResponse(msg.body()))
+    return eventBus.<AdapterResponse>sendObservable(serviceEntry.getAddress(), adapterRequest)
+        .map(Message::body)
         .map(this::buildResultObject);
   }
 
@@ -72,10 +70,10 @@ public class ServiceEngine {
         .get();
   }
 
-  private JsonObject buildResultObject(ClientResponse response) {
+  private JsonObject buildResultObject(AdapterResponse adapterResponse) {
     JsonObject object = new JsonObject();
 
-    String rawData = response.body().toString().trim();
+    String rawData = adapterResponse.response().body().toString().trim();
 
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
@@ -84,7 +82,7 @@ public class ServiceEngine {
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", response.statusCode().codeAsText()));
+    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", adapterResponse.response().statusCode().codeAsText()));
     return object;
   }
 }

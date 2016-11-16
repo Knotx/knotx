@@ -18,11 +18,16 @@
 package com.cognifide.knotx.server;
 
 
+import com.cognifide.knotx.codec.AdapterRequestCodec;
+import com.cognifide.knotx.codec.AdapterResponseCodec;
+import com.cognifide.knotx.dataobjects.AdapterRequest;
+import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -70,41 +75,46 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
+    createDummySplitter();
     createKnotConsumer("A-engine", "+A", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testGetRequest(context, "/content/local/simple.html", "+A+C");
+    testGetRequest(context, "/content/local/simple.html", "local+A+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
+    createDummySplitter();
     createKnotConsumer("C-engine", "+C", null);
-    testGetRequest(context, "/content/simple.html", "+C");
+    testGetRequest(context, "/content/simple.html", "global+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(TestContext context) {
+    createDummySplitter();
     createKnotConsumer("A-post-engine", "+Apost", "go-b");
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testPostRequest(context, "/content/local/simple.html", "+Apost+B+C");
+    testPostRequest(context, "/content/local/simple.html", "local+Apost+B+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
+    createDummySplitter();
     createKnotConsumer("A-post-engine", "+Apost", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testPostRequest(context, "/content/local/simple.html", "+Apost+C");
+    testPostRequest(context, "/content/local/simple.html", "local+Apost+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
+    createDummySplitter();
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
-    testPostRequest(context, "/content/simple.html", "+B+C");
+    testPostRequest(context, "/content/simple.html", "global+B+C");
   }
 
   private void testPostRequest(TestContext context, String url, String expectedResult) {
@@ -146,14 +156,19 @@ public class KnotxServerRoutingTest {
         }));
   }
 
+  private void createDummySplitter() {
+    EventBus eventBus = vertx.vertx().eventBus();
+    eventBus.<KnotContext>consumer("test-splitter", msg -> msg.reply(msg.body()));
+  }
+
   private void createKnotConsumer(String adddress, String addToBody, String transition) {
     EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<JsonObject>consumer(adddress, msg -> {
-      KnotContext knotContext = new KnotContext(msg.body());
+    eventBus.<KnotContext>consumer(adddress, msg -> {
+      KnotContext knotContext = msg.body();
       Buffer inBody = knotContext.clientResponse().body();
       knotContext.clientResponse().setBody(inBody.appendString(addToBody));
       knotContext.setTransition(transition);
-      msg.reply(knotContext.toJson());
+      msg.reply(knotContext);
     });
   }
 }

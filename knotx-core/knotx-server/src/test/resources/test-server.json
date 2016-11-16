@@ -50,7 +50,7 @@
           }
         ],
         "splitter": {
-          "address": "knotx.core.splitter"
+          "address": "test-splitter"
         },
         "routing": {
           "GET": [
@@ -97,11 +97,6 @@
             }
           ]
         }
-      }
-    },
-    "com.cognifide.knotx.splitter.FragmentSplitterVerticle": {
-      "config": {
-        "address": "knotx.core.splitter"
       }
     },
     "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {

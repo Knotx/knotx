@@ -63,6 +63,16 @@ public class SampleApplicationTest {
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
+  }
+
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
@@ -81,26 +91,17 @@ public class SampleApplicationTest {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
-  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
-  @Ignore
   @Test
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
-  }
-
-  @Ignore
-  @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
-  public void whenRequestingWithXhrAndPostAForm_expectOnlyRenderedSnippetWithFormReturned(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithAjaxPostResult.html", true);
   }
 
   private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
@@ -138,8 +139,8 @@ public class SampleApplicationTest {
         resp -> resp.bodyHandler(body -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
           try {
-            context.assertEquals(Jsoup.parse(body.toString()).html(),
-                Jsoup.parse(FileReader.readText(expectedResponseFile)).html());
+            context.assertEquals(Jsoup.parse(body.toString()).body().html().trim(),
+                Jsoup.parse(FileReader.readText(expectedResponseFile)).body().html().trim());
           } catch (Exception e) {
             context.fail(e);
           }
@@ -150,30 +151,19 @@ public class SampleApplicationTest {
 
   private Map<String, String> getFirstTestFormData() {
     Map<String, String> data = Maps.newHashMap();
-    data.put("name", "John");
-    data.put("email", "email@com.pl");
-    data.put("_id", "competition-form");
+    data.put("name", "test");
+    data.put("email", "email@example.com");
+    data.put("_frmId", "competition");
 
     return data;
   }
 
   private Map<String, String> getSecondTestFormData() {
     Map<String, String> data = Maps.newHashMap();
-    data.put("name", "Andrew");
-    data.put("email", "other@example.com");
-    data.put("_id", "competition-form");
+    data.put("name", "test");
+    data.put("email", "email@example.com");
+    data.put("_frmId", "competition");
 
     return data;
   }
-
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
-    });
-  }
-
 }

@@ -30,6 +30,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
@@ -65,8 +66,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private void handleRoute(final RoutingContext context, final String address, final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get("knotContext");
 
-    eventBus.<JsonObject>sendObservable(address, knotContext.toJson())
-        .map(msg -> new KnotContext(msg.body()))
+    eventBus.<KnotContext>sendObservable(address, knotContext)
+        .map(Message::body)
         .doOnNext(ctx -> context.put("knotContext", ctx))
         .subscribe(
             ctx -> OptionalAction.of(ctx.transition())
@@ -100,14 +101,6 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
       writeHeaders(context.response(), clientResponse);
       context.response().setStatusCode(clientResponse.statusCode().code()).end(clientResponse.body());
     }
-  }
-
-  private JsonObject knotContext(final RoutingContext context) {
-    return new KnotContext()
-        .setClientRequest(context.get("clientRequest"))
-        .setClientResponse(context.get("clientResponse"))
-        .setFragments(context.get("fragments"))
-        .toJson();
   }
 
   private void writeHeaders(final HttpServerResponse response, final ClientResponse clientResponse) {
