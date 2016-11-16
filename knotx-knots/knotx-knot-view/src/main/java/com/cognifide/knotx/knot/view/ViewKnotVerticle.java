@@ -48,33 +48,23 @@ public class ViewKnotVerticle extends AbstractKnot<ViewKnotConfiguration> {
   }
 
   @Override
-  public void start() throws Exception {
-    LOGGER.debug("Starting <{}>", this.getClass().getName());
-
-    vertx.eventBus().<KnotContext>consumer(configuration.getAddress()).handler(
-        message -> Observable.just(message)
-            .doOnNext(this::traceMessage)
-            .flatMap(msg -> {
-                  KnotContext inputContext = msg.body();
-                  return templateEngine.process(inputContext)
-                      .map(renderedData -> createSuccessResponse(inputContext, renderedData))
-                      .onErrorReturn(error -> processError(inputContext, error));
-                }
-            ).subscribe(
-                message::reply,
-                error -> message.reply(processError(message.body(), error))
-            )
-    );
-  }
-
-  @Override
   protected ViewKnotConfiguration initConfiguration(JsonObject config) {
     return new ViewKnotConfiguration(config);
   }
 
   @Override
-  protected void handle(Message result, Handler handler) {
-    //Not used in this knot
+  protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
+    Observable.just(message)
+        .flatMap(msg -> {
+              KnotContext inputContext = msg.body();
+              return templateEngine.process(inputContext)
+                  .map(renderedData -> createSuccessResponse(inputContext, renderedData))
+                  .onErrorReturn(error -> processError(inputContext, error));
+            }
+        ).subscribe(
+        handler::handle,
+        error -> message.reply(processError(message.body(), error))
+    );
   }
 
   @Override

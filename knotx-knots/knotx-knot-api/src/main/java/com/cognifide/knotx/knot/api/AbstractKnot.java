@@ -60,7 +60,7 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
             ));
   }
 
-  protected abstract void handle(Message<KnotContext> result, Handler<KnotContext> handler);
+  protected abstract void handle(Message<KnotContext> message, Handler<KnotContext> handler);
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
