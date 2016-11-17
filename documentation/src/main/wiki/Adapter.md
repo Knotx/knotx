@@ -32,8 +32,8 @@ configuration. The communication between Knot and Adapter can be custom too.
 
 ## How to configure?
 Adapter API specifies abstract `AdapterConfiguration` class to handle JSON configuration support. This
-abstraction can be used while custom Adapter implementation but it is not required. Every Adapters must be
-exposed with unique Event Bus address - that's only one obligation.
+abstraction can be used while custom Adapter implementation but it is not required. Every Adapter must be
+exposed with unique Event Bus address - that's only one obligation (the same like for Knots).
 Please see example configuration for [[Http Service Adapter|HttpServiceAdapter#how-to-configure]]
 
 ## How to extend?
@@ -42,9 +42,8 @@ First we need to extend abstract
 class from `knotx-adapters/knotx-adapter-api`. AbstractAdapter hides Event Bus communication and JSON configuration reading parts
 and lets you to focus on Adapter logic:
 
-- `initConfiguration` method that init Adapter configuration with `JsonObject` model.
-- `processMessage` method that consumes `JsonObject` messages from [[Knot|Knot]] and returns `JsonObject` messages 
-with Adapter responses.
+- `initConfiguration` method that initialize Adapter with `JsonObject` model
+- `processMessage` method that consumes `AdapterRequest` messages from [[Knot|Knot]] and returns `AdapterResponse` messages
 
 To deal with configuration model you may extend
 [com.cognifide.knotx.adapter.api.AdapterConfiguration](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AdapterConfiguration.java) class
