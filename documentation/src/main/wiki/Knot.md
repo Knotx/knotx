@@ -118,7 +118,7 @@ Server beaks routing and responds with HttpResponseStatus.INTERNAL_SERVER_ERROR 
 ##How to configure?
 Knot API specifies abstract `KnotConfiguration` class to handle JSON configuration support. This
 abstraction can be used while custom Knot implementation but it is not required. Every Knot must be
-exposed with unique Event Bus address - that's only one obligation (the same like for Adapters).
+exposed with unique Event Bus address - that's the only obligation (the same like for Adapters).
 Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
 [[View Knot|ViewKnot#how-to-configure]].
 
@@ -134,4 +134,4 @@ and lets you to focus on Knot logic:
 
 | ! Note |
 |:------ |
-| Please note that this section focused on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using language you like. |
+| Please note that this section focuses on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using other languages. |

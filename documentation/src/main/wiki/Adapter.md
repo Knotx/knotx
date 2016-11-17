@@ -33,7 +33,7 @@ configuration. The communication between Knot and Adapter can be custom too.
 ## How to configure?
 Adapter API specifies abstract `AdapterConfiguration` class to handle JSON configuration support. This
 abstraction can be used while custom Adapter implementation but it is not required. Every Adapter must be
-exposed with unique Event Bus address - that's only one obligation (the same like for Knots).
+exposed with unique Event Bus address - that's the only obligation (the same like for Knots).
 Please see example configuration for [[Http Service Adapter|HttpServiceAdapter#how-to-configure]]
 
 ## How to extend?
