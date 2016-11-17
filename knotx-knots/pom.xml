@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Core Root POM
+    Knot.x - Reactive microservice assembler - HTTP Service Adapter
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -18,9 +18,9 @@
     limitations under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
@@ -28,16 +28,16 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-core</artifactId>
+  <artifactId>knotx-knots</artifactId>
   <packaging>pom</packaging>
 
-  <name>Knot.x - Reactive microservice assembler - Core Root POM</name>
+  <name>Knot.x - Reactive microservice assembler - Knot Root</name>
 
   <modules>
-    <module>knotx-common</module>
-    <module>knotx-repository</module>
-    <module>knotx-fragment-splitter</module>
-    <module>knotx-server</module>
-    <module>knotx-standalone</module>
+    <module>knotx-knot-api</module>
+    <module>knotx-knot-view</module>
+    <module>knotx-knot-action</module>
+    <module>knotx-knot-authorization</module>
   </modules>
+
 </project>

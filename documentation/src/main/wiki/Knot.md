@@ -116,9 +116,22 @@ Server beaks routing and responds with HttpResponseStatus.INTERNAL_SERVER_ERROR 
 
 
 ##How to configure?
-
-Requires https://github.com/Cognifide/knotx/issues/121.
+Knot API specifies abstract `KnotConfiguration` class to handle JSON configuration support. This
+abstraction can be used while custom Knot implementation but it is not required. Every Knot must be
+exposed with unique Event Bus address - that's the only obligation (the same like for Adapters).
+Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
+[[View Knot|ViewKnot#how-to-configure]].
 
 ##How to extend?
+We need to extend abstract 
+[com.cognifide.knotx.knot.api.AbstractKnot](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
+class from `knotx-knots/knotx-knot-api`. AbstractKnot hides Event Bus communication and JSON configuration initialization parts
+and lets you to focus on Knot logic:
 
-Requires https://github.com/Cognifide/knotx/issues/121.
+- `initConfiguration` method that initialize Knot with `JsonObject` model
+- `handle` method that consumes `KnotContext` messages from [[Server|Server]] and returns modified `KnotContext` messages
+- `processError` method which handle particular Exception and prepare response for Server
+
+| ! Note |
+|:------ |
+| Please note that this section focuses on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using other languages. |
