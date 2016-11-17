@@ -141,7 +141,7 @@ be wrapped in the JSON `config` section:
 ```json
 "verticles" : {
   ...,
-  "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+  "com.cognifide.knotx.knot.view.ServiceKnotVerticle": {
     "config": {
       "PUT YOUR CONFIG HERE"
     }

@@ -63,7 +63,7 @@
                   "address": "knotx.knot.action",
                   "onTransition": {
                     "next" : {
-                      "address": "knotx.knot.view"
+                      "address": "knotx.knot.service"
                     }
                   }
                 }
@@ -76,7 +76,7 @@
               "address": "knotx.knot.action",
               "onTransition": {
                 "next" : {
-                  "address": "knotx.knot.view"
+                  "address": "knotx.knot.service"
                 }
               }
             }
@@ -124,9 +124,9 @@
         "address": "knotx.core.splitter"
       }
     },
-    "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+    "com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
       "config": {
-        "address": "knotx.knot.view",
+        "address": "knotx.knot.service",
         "template.debug": true,
         "client.options": {
           "maxPoolSize": 1000,

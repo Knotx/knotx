@@ -93,7 +93,7 @@ Assuming, that Http Service Adapter was configured as presented in [Example conf
 #### View Knot configuration
 Example configuration of a [[View Knot|ViewKnot]]:
 ```json
-"com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+"com.cognifide.knotx.knot.view.ServiceKnotVerticle": {
   "config": {
     "address": "knotx.knot.view",
     "template.debug": true,

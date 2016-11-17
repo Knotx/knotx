@@ -233,7 +233,7 @@ You will see output similar to the following:
 2016-11-07 14:05:42 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
 2016-11-07 14:05:42 [vert.x-eventloop-thread-6] DEBUG c.c.k.knot.action.ActionKnotVerticle - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
 2016-11-07 14:05:42 [vert.x-eventloop-thread-5] INFO  c.c.k.knot.view.impl.TemplateEngine - Registered custom Handlebars helper: bold
-2016-11-07 14:05:42 [vert.x-eventloop-thread-5] DEBUG c.c.knotx.knot.view.ViewKnotVerticle - Starting <com.cognifide.knotx.knot.view.ViewKnotVerticle>
+2016-11-07 14:05:42 [vert.x-eventloop-thread-5] DEBUG c.c.knotx.knot.view.ViewKnotVerticle - Starting <com.cognifide.knotx.knot.view.ServiceKnotVerticle>
 2016-11-07 14:05:42 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
 2016-11-07 14:05:43 [vert.x-eventloop-thread-0] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpActionAdapterVerticle>
 2016-11-07 14:05:43 [vert.x-eventloop-thread-7] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
@@ -247,7 +247,7 @@ You will see output similar to the following:
 		Deployed 32f23829-942d-49e1-88a7-c0111a29bed2 [com.cognifide.knotx.repository.FilesystemRepositoryVerticle]
 		Deployed d0d5e85b-eedb-4d1e-b916-8bc25d9f824c [com.cognifide.knotx.mocks.MockServiceAdapterVerticle]
 		Deployed 077e72f6-2729-416d-9088-1b2fbab24ab9 [com.cognifide.knotx.knot.action.ActionKnotVerticle]
-		Deployed e97ec584-fe35-43dd-b701-6fe29e2081d1 [com.cognifide.knotx.knot.view.ViewKnotVerticle]
+		Deployed e97ec584-fe35-43dd-b701-6fe29e2081d1 [com.cognifide.knotx.knot.view.ServiceKnotVerticle]
 		Deployed 7ae8c292-1c50-4894-b5fa-fb17f099af5b [com.cognifide.knotx.repository.HttpRepositoryVerticle]
 		Deployed a9249d7d-daad-4f4d-b253-7ebbe70525b3 [com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle]
 		Deployed 08133c37-8d6e-4b38-a43a-a56df9823137 [com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle]
@@ -1277,7 +1277,7 @@ be wrapped in the JSON `config` section:
 ```json
 "verticles" : {
   ...,
-  "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+  "com.cognifide.knotx.knot.view.ServiceKnotVerticle": {
     "config": {
       "PUT YOUR CONFIG HERE"
     }
@@ -1296,7 +1296,7 @@ Main View Knot options available.
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Action Knot verticle. |
 | `template.debug`            | `Boolean`                           | &#10004;       | Template debug enabled option.|
 | `client.options`            | `String`                            | &#10004;       | JSON representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html) |
-| `services`                  | `Array of ServiceMetadata`          | &#10004;       | Array of [ServiceMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-view/src/main/java/com/cognifide/knotx/knot/view/ViewKnotConfiguration.java).|
+| `services`                  | `Array of ServiceMetadata`          | &#10004;       | Array of [ServiceMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-service/src/main/java/com/cognifide/knotx/knot/service/ServiceKnotConfiguration.java).|
 
 Service (Adapter) metadata options available.
 
@@ -1561,7 +1561,7 @@ Assuming, that Http Service Adapter was configured as presented in [Example conf
 #### View Knot configuration
 Example configuration of a [[View Knot|ViewKnot]]:
 ```json
-"com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+"com.cognifide.knotx.knot.view.ServiceKnotVerticle": {
   "config": {
     "address": "knotx.knot.view",
     "template.debug": true,
