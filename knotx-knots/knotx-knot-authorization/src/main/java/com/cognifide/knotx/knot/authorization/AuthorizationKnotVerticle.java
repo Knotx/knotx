@@ -66,7 +66,7 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
   }
 
   @Override
-  protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
+  protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
     final KnotContext knotContext = message.body();
     LOGGER.trace("Process authorization for {} ", knotContext);
     Optional<Fragment> authFragment = findAndRemoveAuthFragment(knotContext);
@@ -82,7 +82,7 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
               LOGGER.trace("Request authorized. Trigger transition to [{}]", DEFAULT_TRANSITION);
               knotContext.setTransition(DEFAULT_TRANSITION);
             } else {
-              String redirectLocation = findRedirectLocation(authFragment);
+              String redirectLocation = findRedirectLocation(authFragment.get());
               knotContext.clientResponse().setStatusCode(HttpResponseStatus.TEMPORARY_REDIRECT);
               knotContext.clientResponse().setHeaders(prepareRedirectHeaders(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()), redirectLocation));
               knotContext.clearFragments();
@@ -123,7 +123,7 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
             .filter(fragment -> fragment.getId().equals(AUTH_FRAGMENT_ID))
             .findFirst());
 
-    authFragment.ifPresent(fragment -> knotContext.fragments().get().remove(fragment));
+    authFragment.ifPresent(fragment -> knotContext.fragments().ifPresent(fragments -> fragments.remove(fragment)));
 
     return authFragment;
   }
@@ -136,19 +136,17 @@ public class AuthorizationKnotVerticle extends AbstractKnot<AuthorizationKnotCon
           return new NoSuchElementException("Could not find " + AUTH_SERVICE_ATTRIBUTE + " attribute");
         });
 
-    AuthorizationKnotConfiguration.AdapterMetadata adapterMetadata = configuration.adapterMetadatas().stream()
+    return configuration.adapterMetadatas().stream()
         .filter(item -> item.getName().equals(actionAdapterName))
         .findFirst()
         .orElseThrow(() -> {
           LOGGER.error("Could not find adapter name [{}] in configuration [{}]", actionAdapterName, configuration.adapterMetadatas());
           return new NoSuchElementException("Auth adapter not found!");
         });
-
-    return adapterMetadata;
   }
 
-  private String findRedirectLocation(Optional<Fragment> authFragment) {
-    return Optional.ofNullable(getScriptTag(authFragment.get()).getElementsByAttribute(DATA_KNOTX_ON_UNAUTHORIZED).first())
+  private String findRedirectLocation(Fragment authFragment) {
+    return Optional.ofNullable(getScriptTag(authFragment).getElementsByAttribute(DATA_KNOTX_ON_UNAUTHORIZED).first())
         .map(element -> element.attr(DATA_KNOTX_ON_UNAUTHORIZED))
         .orElseThrow(() -> {
           LOGGER.error("Could not find Unauthorized signal in fragment [{}].", authFragment);

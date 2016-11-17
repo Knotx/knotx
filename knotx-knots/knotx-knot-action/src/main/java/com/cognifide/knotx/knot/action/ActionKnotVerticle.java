@@ -80,14 +80,13 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
   }
 
   @Override
-  protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
+  protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
     KnotContext knotContext = message.body();
     if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
       handleFormAction(knotContext, handler);
     } else {
       handleGetMethod(handler, knotContext);
     }
-
   }
 
   @Override

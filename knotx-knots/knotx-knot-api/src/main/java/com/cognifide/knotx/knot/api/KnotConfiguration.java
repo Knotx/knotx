@@ -30,11 +30,11 @@ public abstract class KnotConfiguration {
     this.address = extractAddress(config);
   }
 
-  protected String extractAddress(JsonObject config) {
-    return config.getString("address");
-  }
-
   public String getAddress() {
     return address;
+  }
+
+  private String extractAddress(JsonObject config) {
+    return config.getString("address");
   }
 }

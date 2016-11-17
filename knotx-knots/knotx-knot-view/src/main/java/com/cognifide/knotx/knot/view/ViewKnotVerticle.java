@@ -53,7 +53,7 @@ public class ViewKnotVerticle extends AbstractKnot<ViewKnotConfiguration> {
   }
 
   @Override
-  protected void handle(Message<KnotContext> message, Handler<KnotContext> handler) {
+  protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
     Observable.just(message)
         .flatMap(msg -> {
               KnotContext inputContext = msg.body();

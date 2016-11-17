@@ -29,8 +29,6 @@ import io.vertx.core.json.JsonObject;
 
 public class ViewKnotConfiguration extends KnotConfiguration {
 
-  private String address;
-
   private List<ServiceMetadata> services;
 
   private boolean templateDebug;

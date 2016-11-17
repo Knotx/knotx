@@ -52,7 +52,7 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
         .handler(message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .subscribe(
-                result -> handle(result, message::reply),
+                result -> process(result, message::reply),
                 error -> {
                   LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
                   message.reply(processError(message.body(), error));
@@ -60,13 +60,13 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
             ));
   }
 
-  protected abstract void handle(Message<KnotContext> message, Handler<KnotContext> handler);
+  protected abstract void process(Message<KnotContext> message, Handler<KnotContext> handler);
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
   protected abstract C initConfiguration(JsonObject config);
 
-  protected void traceMessage(Message<KnotContext> message) {
+  private void traceMessage(Message<KnotContext> message) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
     }
