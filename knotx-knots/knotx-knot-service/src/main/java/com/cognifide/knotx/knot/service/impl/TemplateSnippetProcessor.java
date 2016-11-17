@@ -33,7 +33,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import rx.Observable;
 
-class TemplateSnippetProcessor {
+public class TemplateSnippetProcessor {
   private static final Logger LOGGER = LoggerFactory.getLogger(TemplateSnippetProcessor.class);
 
   private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start compiled snippet -->";
@@ -45,12 +45,12 @@ class TemplateSnippetProcessor {
   private final boolean templateDebug;
 
 
-  TemplateSnippetProcessor(EventBus eventBus, ServiceKnotConfiguration configuration) {
+  public TemplateSnippetProcessor(EventBus eventBus, ServiceKnotConfiguration configuration) {
     this.serviceEngine = new ServiceEngine(eventBus, configuration);
     this.templateDebug = configuration.templateDebug();
   }
 
-  Observable<String> processSnippet(final HtmlFragment htmlFragment, KnotContext request) {
+  public Observable<HtmlFragment> processSnippet(final HtmlFragment htmlFragment, KnotContext request) {
     LOGGER.debug("Processing Handlebars snippet {}", htmlFragment.getFragment());
     return Observable.just(htmlFragment)
         .flatMap(HtmlFragment::getServices)
@@ -60,8 +60,7 @@ class TemplateSnippetProcessor {
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new JsonObject(), JsonObject::mergeIn)
-        .map(results -> applyData(htmlFragment, results))
-        .defaultIfEmpty(htmlFragment.getFragment().getContent());
+        .map(results -> applyData(htmlFragment, results));
   }
 
   private Observable<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
@@ -74,11 +73,15 @@ class TemplateSnippetProcessor {
     }
   }
 
-  private String applyData(final HtmlFragment snippet, JsonObject serviceResult) {
+  private HtmlFragment applyData(final HtmlFragment snippet, JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", snippet);
-    return startComment() +
-        snippet.getContentWithContext(serviceResult) +
-        endComment();
+
+    snippet.getFragment().getContext().mergeIn(serviceResult);
+
+    return snippet;
+//    return startComment() +
+//        snippet.getContentWithContext(serviceResult) +
+//        endComment();
   }
 
 

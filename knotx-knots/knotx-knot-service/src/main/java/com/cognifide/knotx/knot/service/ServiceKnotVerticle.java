@@ -19,19 +19,21 @@ package com.cognifide.knotx.knot.service;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.knot.api.AbstractKnot;
 import com.cognifide.knotx.knot.service.impl.TemplateEngine;
+import com.cognifide.knotx.knot.service.impl.TemplateSnippetProcessor;
+import com.cognifide.knotx.knot.service.parser.HtmlFragment;
+import com.cognifide.knotx.knot.service.parser.RawHtmlFragment;
+import com.cognifide.knotx.knot.service.parser.TemplateHtmlFragment;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
@@ -39,12 +41,12 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
-  private TemplateEngine templateEngine;
+  private TemplateSnippetProcessor snippetProcessor;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    templateEngine = new TemplateEngine(this.vertx.eventBus(), configuration);
+    this.snippetProcessor = new TemplateSnippetProcessor(this.vertx.eventBus(), configuration);
   }
 
   @Override
@@ -54,17 +56,17 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   @Override
   protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
-    Observable.just(message)
-        .flatMap(msg -> {
-              KnotContext inputContext = msg.body();
-              return templateEngine.process(inputContext)
-                  .map(renderedData -> createSuccessResponse(inputContext, renderedData))
-                  .onErrorReturn(error -> processError(inputContext, error));
-            }
-        ).subscribe(
-        handler::handle,
-        error -> message.reply(processError(message.body(), error))
-    );
+    KnotContext inputContext = message.body();
+    inputContext.fragments()
+        .map(fragments -> Observable.from(fragments)
+//            .filter(fragment -> fragment.getId().matches("templating|form.*"))
+            .doOnNext(this::traceFragment)
+            .flatMap(this::compileHtmlFragment)
+            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, inputContext))
+            .subscribe(next -> {
+                },
+                error -> message.reply(processError(inputContext, error)),
+                () -> handler.handle(createSuccessResponse(inputContext))));
   }
 
   @Override
@@ -77,15 +79,29 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
         .setClientResponse(errorResponse);
   }
 
-  private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
+  private KnotContext createSuccessResponse(KnotContext inputContext) {
     ClientResponse clientResponse = inputContext.clientResponse();
-    MultiMap headers = clientResponse.headers();
-    headers.set(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(renderedContent.length()));
-    clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
 
     return new KnotContext()
         .setClientRequest(inputContext.clientRequest())
         .setClientResponse(clientResponse);
+  }
+
+  private Observable<HtmlFragment> compileHtmlFragment(Fragment fragment) {
+    if (!fragment.isRaw()) {
+      return Observable.create(subscriber -> {
+        subscriber.onNext(new TemplateHtmlFragment(fragment));
+        subscriber.onCompleted();
+      });
+    } else {
+      return Observable.just(new RawHtmlFragment(fragment));
+    }
+  }
+
+  private void traceFragment(Fragment fragment) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Processing fragment {}", fragment.toJson().encodePrettily());
+    }
   }
 
 }

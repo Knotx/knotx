@@ -98,9 +98,4 @@ public class TemplateHtmlFragment implements HtmlFragment {
     return Observable.from(services);
   }
 
-  public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
-    this.compiledFragment = handlebars.compileInline(unwrappedContent);
-    return this;
-  }
-
 }

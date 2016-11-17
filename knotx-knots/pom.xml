@@ -35,8 +35,9 @@
 
   <modules>
     <module>knotx-knot-api</module>
-    <module>knotx-knot-service</module>
     <module>knotx-knot-action</module>
+    <module>knotx-knot-service</module>
+    <module>knotx-knot-handlebars</module>
     <module>knotx-knot-authorization</module>
   </modules>
 
