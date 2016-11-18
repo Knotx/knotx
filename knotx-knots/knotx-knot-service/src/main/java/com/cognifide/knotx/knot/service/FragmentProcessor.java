@@ -15,15 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.service.impl;
+package com.cognifide.knotx.knot.service;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
-import com.cognifide.knotx.knot.service.parser.HtmlFragment;
 import com.cognifide.knotx.knot.service.service.ServiceEngine;
 import com.cognifide.knotx.knot.service.service.ServiceEntry;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.ExecutionException;
 
@@ -33,34 +29,27 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import rx.Observable;
 
-public class TemplateSnippetProcessor {
-  private static final Logger LOGGER = LoggerFactory.getLogger(TemplateSnippetProcessor.class);
+public class FragmentProcessor {
 
-  private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start compiled snippet -->";
-
-  private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end compiled snippet -->";
+  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentProcessor.class);
 
   private final ServiceEngine serviceEngine;
 
-  private final boolean templateDebug;
-
-
-  public TemplateSnippetProcessor(EventBus eventBus, ServiceKnotConfiguration configuration) {
+  public FragmentProcessor(EventBus eventBus, ServiceKnotConfiguration configuration) {
     this.serviceEngine = new ServiceEngine(eventBus, configuration);
-    this.templateDebug = configuration.templateDebug();
   }
 
-  public Observable<HtmlFragment> processSnippet(final HtmlFragment htmlFragment, KnotContext request) {
-    LOGGER.debug("Processing Handlebars snippet {}", htmlFragment.getFragment());
-    return Observable.just(htmlFragment)
-        .flatMap(HtmlFragment::getServices)
+  public Observable<FragmentContext> processSnippet(final FragmentContext fragmentContext, KnotContext request) {
+    LOGGER.debug("Processing Handlebars snippet {}", fragmentContext.fragment());
+    return Observable.just(fragmentContext)
+        .flatMap(FragmentContext::services)
         .map(serviceEngine::mergeWithConfiguration)
         .doOnNext(this::traceService)
         .flatMap(serviceEntry ->
             fetchServiceData(serviceEntry, request)
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new JsonObject(), JsonObject::mergeIn)
-        .map(results -> applyData(htmlFragment, results));
+        .map(results -> applyData(fragmentContext, results));
   }
 
   private Observable<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
@@ -73,32 +62,10 @@ public class TemplateSnippetProcessor {
     }
   }
 
-  private HtmlFragment applyData(final HtmlFragment snippet, JsonObject serviceResult) {
-    LOGGER.trace("Applying data to snippet {}", snippet);
-
-    snippet.getFragment().getContext().mergeIn(serviceResult);
-
-    return snippet;
-//    return startComment() +
-//        snippet.getContentWithContext(serviceResult) +
-//        endComment();
-  }
-
-
-  private String startComment() {
-    return snippetComment(START_WEBSERVICE_CALL_DEBUG_MARKER);
-  }
-
-  private String endComment() {
-    return snippetComment(END_WEBSERVICE_CALL_DEBUG_MARKER);
-  }
-
-  private String snippetComment(String commentTemplate) {
-    String debugLine = StringUtils.EMPTY;
-    if (templateDebug) {
-      debugLine = commentTemplate;
-    }
-    return debugLine;
+  private FragmentContext applyData(final FragmentContext fragmentContext, JsonObject serviceResult) {
+    LOGGER.trace("Applying data to snippet {}", fragmentContext);
+    fragmentContext.fragment().getContext().mergeIn(serviceResult);
+    return fragmentContext;
   }
 
   private void traceService(ServiceEntry serviceEntry) {

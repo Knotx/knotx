@@ -15,15 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.service.parser;
+package com.cognifide.knotx.templating.wrappers;
 
-import com.cognifide.knotx.knot.service.service.ServiceEntry;
 import com.cognifide.knotx.fragments.Fragment;
 
 import io.vertx.core.json.JsonObject;
-import rx.Observable;
 
 public class RawHtmlFragment implements HtmlFragment {
+
 
   private final Fragment fragment;
 
@@ -39,16 +38,6 @@ public class RawHtmlFragment implements HtmlFragment {
   @Override
   public Fragment getFragment() {
     return fragment;
-  }
-
-  @Override
-  public boolean hasHandlebarsTemplate() {
-    return false;
-  }
-
-  @Override
-  public Observable<ServiceEntry> getServices() {
-    return Observable.empty();
   }
 
 }

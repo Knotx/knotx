@@ -15,15 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.service.parser;
+package com.cognifide.knotx.templating.wrappers;
 
-import com.cognifide.knotx.knot.service.service.ServiceEntry;
 import com.cognifide.knotx.fragments.Fragment;
 
 import io.vertx.core.json.JsonObject;
-import rx.Observable;
 
 public interface HtmlFragment {
+
   /**
    * Returns the Fragment content with applied context data. Only have effect if fragment
    * is using templating language (e.g. Handlebars)
@@ -37,15 +36,5 @@ public interface HtmlFragment {
    * Gets the raw HTML content of the fragment
    */
   Fragment getFragment();
-
-  /**
-   * Checks if the fragment is Handlebars template or not
-   */
-  boolean hasHandlebarsTemplate();
-
-  /**
-   * Gets Observable emitting Service Entries for given fragment
-   */
-  Observable<ServiceEntry> getServices();
 
 }

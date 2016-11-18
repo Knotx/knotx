@@ -63,7 +63,12 @@
                   "address": "knotx.knot.action",
                   "onTransition": {
                     "next" : {
-                      "address": "knotx.knot.service"
+                      "address": "knotx.knot.service",
+                      "onTransition": {
+                        "next": {
+                          "address": "knotx.knot.handlebars"
+                        }
+                      }
                     }
                   }
                 }
@@ -76,7 +81,12 @@
               "address": "knotx.knot.action",
               "onTransition": {
                 "next" : {
-                  "address": "knotx.knot.service"
+                  "address": "knotx.knot.service",
+                  "onTransition": {
+                    "next": {
+                      "address": "knotx.knot.handlebars"
+                    }
+                  }
                 }
               }
             }
@@ -225,6 +235,12 @@
           }
         ],
         "formIdentifierName": "_frmId"
+      }
+    },
+    "com.cognifide.knotx.templating.HandlebarsKnotVerticle": {
+      "config": {
+        "address": "knotx.knot.handlebars",
+        "template.debug": true
       }
     },
     "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle" : {

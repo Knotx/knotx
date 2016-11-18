@@ -31,8 +31,6 @@ public class ServiceKnotConfiguration extends KnotConfiguration {
 
   private List<ServiceMetadata> services;
 
-  private boolean templateDebug;
-
   public ServiceKnotConfiguration(JsonObject config) {
     super(config);
     services = config.getJsonArray("services").stream()
@@ -45,15 +43,10 @@ public class ServiceKnotConfiguration extends KnotConfiguration {
           metadata.cacheKey = item.getString("cacheKey");
           return metadata;
         }).collect(Collectors.toList());
-    templateDebug = config.getBoolean("template.debug", false);
   }
 
   public List<ServiceMetadata> getServices() {
     return services;
-  }
-
-  public boolean templateDebug() {
-    return templateDebug;
   }
 
   public static class ServiceMetadata {

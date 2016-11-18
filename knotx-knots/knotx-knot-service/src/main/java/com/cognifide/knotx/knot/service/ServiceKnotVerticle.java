@@ -21,11 +21,8 @@ import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.knot.api.AbstractKnot;
-import com.cognifide.knotx.knot.service.impl.TemplateEngine;
-import com.cognifide.knotx.knot.service.impl.TemplateSnippetProcessor;
-import com.cognifide.knotx.knot.service.parser.HtmlFragment;
-import com.cognifide.knotx.knot.service.parser.RawHtmlFragment;
-import com.cognifide.knotx.knot.service.parser.TemplateHtmlFragment;
+
+import java.util.Collections;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -41,12 +38,12 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
-  private TemplateSnippetProcessor snippetProcessor;
+  private FragmentProcessor snippetProcessor;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.snippetProcessor = new TemplateSnippetProcessor(this.vertx.eventBus(), configuration);
+    this.snippetProcessor = new FragmentProcessor(this.vertx.eventBus(), configuration);
   }
 
   @Override
@@ -59,14 +56,15 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
     KnotContext inputContext = message.body();
     inputContext.fragments()
         .map(fragments -> Observable.from(fragments)
-//            .filter(fragment -> fragment.getId().matches("templating|form.*"))
+            .filter(fragment -> !fragment.isRaw())
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
-            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, inputContext))
-            .subscribe(next -> {
-                },
-                error -> message.reply(processError(inputContext, error)),
-                () -> handler.handle(createSuccessResponse(inputContext))));
+            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, inputContext)))
+        .orElse(Observable.just(FragmentContext.empty()))
+        .subscribe(next -> {
+            },
+            error -> message.reply(processError(inputContext, error)),
+            () -> handler.handle(createSuccessResponse(inputContext)));
   }
 
   @Override
@@ -80,22 +78,18 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext) {
-    ClientResponse clientResponse = inputContext.clientResponse();
-
     return new KnotContext()
         .setClientRequest(inputContext.clientRequest())
-        .setClientResponse(clientResponse);
+        .setClientResponse(inputContext.clientResponse())
+        .setFragments(inputContext.fragments().orElse(Collections.emptyList()))
+        .setTransition("next");
   }
 
-  private Observable<HtmlFragment> compileHtmlFragment(Fragment fragment) {
-    if (!fragment.isRaw()) {
-      return Observable.create(subscriber -> {
-        subscriber.onNext(new TemplateHtmlFragment(fragment));
-        subscriber.onCompleted();
-      });
-    } else {
-      return Observable.just(new RawHtmlFragment(fragment));
-    }
+  private Observable<FragmentContext> compileHtmlFragment(Fragment fragment) {
+    return Observable.create(subscriber -> {
+      subscriber.onNext(FragmentContext.from(fragment));
+      subscriber.onCompleted();
+    });
   }
 
   private void traceFragment(Fragment fragment) {

@@ -21,10 +21,16 @@ import com.cognifide.knotx.knot.api.KnotConfiguration;
 
 import io.vertx.core.json.JsonObject;
 
-public class HandlebarsKnotConfiguration extends KnotConfiguration {
+class HandlebarsKnotConfiguration extends KnotConfiguration {
 
-  protected HandlebarsKnotConfiguration(JsonObject config) {
+  private boolean templateDebug;
+
+  HandlebarsKnotConfiguration(JsonObject config) {
     super(config);
+    templateDebug = config.getBoolean("template.debug", false);
   }
 
+  boolean templateDebug() {
+    return templateDebug;
+  }
 }
