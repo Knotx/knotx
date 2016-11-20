@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.templating.helpers;
+package com.cognifide.knotx.knot.templating.helpers;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - View Knot
+    Knot.x - Reactive microservice assembler - Service Knot
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -30,7 +30,7 @@
 
   <artifactId>knotx-knot-service</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - View Knot</name>
+  <name>Knot.x - Reactive microservice assembler - Service Knot</name>
 
   <properties>
     <!-- the main verticle class name -->

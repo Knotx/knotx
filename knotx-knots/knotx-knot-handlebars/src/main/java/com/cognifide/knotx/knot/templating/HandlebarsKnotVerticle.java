@@ -15,17 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.templating;
+package com.cognifide.knotx.knot.templating;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.cognifide.knotx.knot.api.AbstractKnot;
-import com.cognifide.knotx.templating.helpers.DefaultHandlebarsHelpers;
-import com.cognifide.knotx.templating.wrappers.HtmlFragment;
-import com.cognifide.knotx.templating.wrappers.RawHtmlFragment;
-import com.cognifide.knotx.templating.wrappers.TemplateHtmlFragment;
+import com.cognifide.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
+import com.cognifide.knotx.knot.templating.wrappers.HtmlFragment;
+import com.cognifide.knotx.knot.templating.wrappers.RawHtmlFragment;
+import com.cognifide.knotx.knot.templating.wrappers.TemplateHtmlFragment;
 import com.github.jknack.handlebars.Handlebars;
 
 import org.apache.commons.lang3.StringUtils;

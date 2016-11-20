@@ -46,33 +46,37 @@ You should see:
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO]
-[INFO] Knot.x ............................................. SUCCESS [  1.806 s]
-[INFO] Knot.x - Reactive microservice assembler - documentation SUCCESS [  0.083 s]
-[INFO] Knot.x - Reactive microservice assembler - Core Root POM SUCCESS [  0.181 s]
-[INFO] Knot.x - Reactive microservice assembler - Common .. SUCCESS [  6.460 s]
-[INFO] Knot.x - Reactive microservice assembler - Repository Verticle SUCCESS [  0.079 s]
-[INFO] Knot.x - Reactive microservice assembler - Specialized Filesysten Repository Verticle SUCCESS [  3.380 s]
-[INFO] Knot.x - Reactive microservice assembler - Specialized Http Repository Verticle SUCCESS [  2.962 s]
-[INFO] Knot.x - Reactive microservice assembler - HTML Fragment Splitter SUCCESS [  5.468 s]
-[INFO] Knot.x - Reactive microservice assembler - HTTP Server SUCCESS [  7.419 s]
-[INFO] Knot.x - Reactive microservice assembler - View Knot SUCCESS [  8.251 s]
-[INFO] Knot.x - Reactive microservice assembler - Adapter Root SUCCESS [  0.101 s]
-[INFO] Knot.x - Reactive microservice assembler - Adapter API SUCCESS [  0.497 s]
-[INFO] Knot.x - Reactive microservice assembler - Adapter Common SUCCESS [  1.591 s]
-[INFO] Knot.x - Reactive microservice assembler - Action Knot Verticle SUCCESS [  5.725 s]
-[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [  0.047 s]
-[INFO] Knot.x - Mocked services for sample app ............ SUCCESS [  2.079 s]
-[INFO] Knot.x - Reactive microservice assembler - HTTP Service Adapter SUCCESS [  6.607 s]
-[INFO] Knot.x - Reactive microservice assembler - HTTP Action Adapter SUCCESS [  5.988 s]
-[INFO] Knot.x - Reactive microservice assembler - Auhtorization Knot Verticle SUCCESS [  5.128 s]
-[INFO] Knot.x - Reactive microservice assembler - Standalone Knot.x SUCCESS [  2.235 s]
-[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [  6.488 s]
+[INFO] Knot.x ............................................. SUCCESS [  2.747 s]
+[INFO] Knot.x - Reactive microservice assembler - documentation SUCCESS [  0.091 s]
+[INFO] Knot.x - Reactive microservice assembler - Core Root POM SUCCESS [  0.159 s]
+[INFO] Knot.x - Reactive microservice assembler - Common .. SUCCESS [  5.713 s]
+[INFO] Knot.x - Reactive microservice assembler - Repository Verticle SUCCESS [  0.071 s]
+[INFO] Knot.x - Reactive microservice assembler - Specialized Filesysten Repository Verticle SUCCESS [  4.622 s
+]
+[INFO] Knot.x - Reactive microservice assembler - Specialized Http Repository Verticle SUCCESS [  4.670 s]
+[INFO] Knot.x - Reactive microservice assembler - HTML Fragment Splitter SUCCESS [  7.849 s]
+[INFO] Knot.x - Reactive microservice assembler - HTTP Server SUCCESS [  7.902 s]
+[INFO] Knot.x - Reactive microservice assembler - Knot Root SUCCESS [  0.109 s]
+[INFO] Knot.x - Reactive microservice assembler - Knot API  SUCCESS [  0.414 s]
+[INFO] Knot.x - Reactive microservice assembler - Service Knot SUCCESS [  4.563 s]
+[INFO] Knot.x - Reactive microservice assembler - Adapter Root SUCCESS [  0.100 s]
+[INFO] Knot.x - Reactive microservice assembler - Adapter API SUCCESS [  0.405 s]
+[INFO] Knot.x - Reactive microservice assembler - Adapter Common SUCCESS [  1.866 s]
+[INFO] Knot.x - Reactive microservice assembler - Action Knot Verticle SUCCESS [  6.901 s]
+[INFO] Knot.x - Reactive microservice assembler - Handlebars Knot SUCCESS [  3.623 s]
+[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [  0.305 s]
+[INFO] Knot.x - Mocked services for sample app ............ SUCCESS [  2.894 s]
+[INFO] Knot.x - Reactive microservice assembler - HTTP Service Adapter SUCCESS [ 10.189 s]
+[INFO] Knot.x - Reactive microservice assembler - HTTP Action Adapter SUCCESS [  9.619 s]
+[INFO] Knot.x - Reactive microservice assembler - Auhtorization Knot Verticle SUCCESS [ 10.165 s]
+[INFO] Knot.x - Reactive microservice assembler - Standalone Knot.x SUCCESS [  2.779 s]
+[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [ 11.764 s]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 01:13 min
-[INFO] Finished at: 2016-11-08T11:47:35+01:00
-[INFO] Final Memory: 156M/837M
+[INFO] Total time: 01:40 min
+[INFO] Finished at: 2016-11-20T15:32:38+01:00
+[INFO] Final Memory: 166M/1491M
 [INFO] ------------------------------------------------------------------------
 ```
 

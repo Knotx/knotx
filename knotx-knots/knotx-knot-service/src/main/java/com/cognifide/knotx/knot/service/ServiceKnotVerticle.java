@@ -38,6 +38,8 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
+  private static final String DEFAULT_TEMPLATING_KNOT = "handlebars";
+
   private FragmentProcessor snippetProcessor;
 
   @Override
@@ -82,7 +84,7 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
         .setClientRequest(inputContext.clientRequest())
         .setClientResponse(inputContext.clientResponse())
         .setFragments(inputContext.fragments().orElse(Collections.emptyList()))
-        .setTransition("next");
+        .setTransition(DEFAULT_TEMPLATING_KNOT);
   }
 
   private Observable<FragmentContext> compileHtmlFragment(Fragment fragment) {

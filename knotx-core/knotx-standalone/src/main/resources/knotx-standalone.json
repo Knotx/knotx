@@ -54,7 +54,7 @@
               "path": "/content/.*",
               "address": "knotx.knot.service",
               "onTransition": {
-                "next": {
+                "handlebars": {
                   "address": "knotx.knot.handlebars"
                 }
               }

@@ -59,7 +59,7 @@ attribute - it retrieve a `{NAME}` value from `data-api-type="form-{NAME}"`.
 
 Following data attributes are available in the `<form>` tag with described purpose:
 - `data-knotx-action` - this is a name of an [[Action Adapter|ActionAdapter]] that will be used to handle submitted data. 
-It is similar concept as `data-service-{NAME}` in [[View Knot|ViewKnot]]. In the example, 
+It is similar concept as `data-service-{NAME}` in [[Service Knot|ServiceKnot]]. In the example, 
 Action Handler registered under name `step1` will handle this form data submission.
 - `data-knotx-on-{SIGNAL}` - name of a [Signal](#Signal) that should be applied. In the example 
 there is one signal success with the value `'/content/local/login/step2.html'` and one signal error 

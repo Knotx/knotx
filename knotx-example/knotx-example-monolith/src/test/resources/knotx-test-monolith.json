@@ -29,7 +29,12 @@
               "address": "knotx.knot.action",
               "onTransition": {
                 "next" : {
-                  "address": "knotx.knot.service"
+                  "address": "knotx.knot.service",
+                  "onTransition": {
+                    "handlebars": {
+                      "address": "knotx.knot.handlebars"
+                    }
+                  }
                 }
               }
             }
@@ -40,7 +45,12 @@
               "address": "knotx.knot.action",
               "onTransition": {
                 "next" : {
-                  "address": "knotx.knot.service"
+                  "address": "knotx.knot.service",
+                  "onTransition": {
+                    "handlebars": {
+                      "address": "knotx.knot.handlebars"
+                    }
+                  }
                 }
               }
             }
@@ -125,6 +135,12 @@
             "params": {}
           }
         ]
+      }
+    },
+    "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle": {
+      "config": {
+        "address": "knotx.knot.handlebars",
+        "template.debug": true
       }
     },
     "com.cognifide.knotx.knot.action.ActionKnotVerticle" : {

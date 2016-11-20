@@ -1,6 +1,6 @@
 # Http Service Adapter
 Http Service Adapter is an example of Adapter implementation embedded in Knot.x.
-It enables communication between [[View Knot|ViewKnot]] and external services via HTTP.
+It enables communication between [[Service Knot|ServiceKnot]] and external services via HTTP.
 
 ## How does it work?
 When Http Service Adapter starts processing a message from Event Bus, it expects following input:
@@ -90,12 +90,12 @@ In example above, two services are configured:
 ## Example
 Assuming, that Http Service Adapter was configured as presented in [Example configuration](#how-to-configure) and:
 
-#### View Knot configuration
-Example configuration of a [[View Knot|ViewKnot]]:
+#### Service Knot configuration
+Example configuration of a [[Service Knot|ServiceKnot]]:
 ```json
-"com.cognifide.knotx.knot.view.ServiceKnotVerticle": {
+"com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
   "config": {
-    "address": "knotx.knot.view",
+    "address": "knotx.knot.service",
     "template.debug": true,
     "client.options": {
       "maxPoolSize": 1000,

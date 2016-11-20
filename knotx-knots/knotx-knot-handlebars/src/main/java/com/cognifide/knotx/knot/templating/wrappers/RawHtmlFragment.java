@@ -15,26 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.templating.wrappers;
+package com.cognifide.knotx.knot.templating.wrappers;
 
 import com.cognifide.knotx.fragments.Fragment;
 
 import io.vertx.core.json.JsonObject;
 
-public interface HtmlFragment {
+public class RawHtmlFragment implements HtmlFragment {
 
-  /**
-   * Returns the Fragment content with applied context data. Only have effect if fragment
-   * is using templating language (e.g. Handlebars)
-   *
-   * @param model - Model data
-   * @return String - html fragment with applied cotext data
-   */
-  String getContentWithContext(JsonObject model);
 
-  /**
-   * Gets the raw HTML content of the fragment
-   */
-  Fragment getFragment();
+  private final Fragment fragment;
+
+  public RawHtmlFragment(Fragment fragment) {
+    this.fragment = fragment;
+  }
+
+  @Override
+  public String getContentWithContext(JsonObject model) {
+    return fragment.getContent();
+  }
+
+  @Override
+  public Fragment getFragment() {
+    return fragment;
+  }
 
 }

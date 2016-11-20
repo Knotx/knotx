@@ -65,7 +65,7 @@
                     "next" : {
                       "address": "knotx.knot.service",
                       "onTransition": {
-                        "next": {
+                        "handlebars": {
                           "address": "knotx.knot.handlebars"
                         }
                       }
@@ -83,7 +83,7 @@
                 "next" : {
                   "address": "knotx.knot.service",
                   "onTransition": {
-                    "next": {
+                    "handlebars": {
                       "address": "knotx.knot.handlebars"
                     }
                   }
@@ -237,7 +237,7 @@
         "formIdentifierName": "_frmId"
       }
     },
-    "com.cognifide.knotx.templating.HandlebarsKnotVerticle": {
+    "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle": {
       "config": {
         "address": "knotx.knot.handlebars",
         "template.debug": true
