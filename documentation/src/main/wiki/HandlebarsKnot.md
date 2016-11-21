@@ -2,7 +2,7 @@
 Handlebars Knot is a [[Knot|Knot]] implementation responsible for handlebars template processing.
 
 ##How does it work?
-Handlebars Knot lies [Handlebars.js](http://handlebarsjs.com/) - it utilizes
+Handlebars Knot uses [Handlebars.js](http://handlebarsjs.com/) templating engine. More specifically it utilizes
 Handlebars Java port - [Handlebars.java](https://github.com/jknack/handlebars.java) to compile and evaluate
 templates.
 
