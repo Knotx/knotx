@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Repository Verticle
+    Knot.x - Reactive microservice assembler - Filesystem Repository Connector Verticle
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -28,13 +28,13 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-repository-http</artifactId>
+  <artifactId>knotx-repository-connector-filesystem</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Specialized Http Repository Verticle</name>
+  <name>Knot.x - Reactive microservice assembler - Filesystem Repository Connector Verticle</name>
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.repository.HttpRepositoryVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.repository.FilesystemRepositoryConnectorVerticle</main.verticle>
   </properties>
 
   <dependencies>

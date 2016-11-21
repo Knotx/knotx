@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Repository Verticle
+    Knot.x - Reactive microservice assembler - Repositories Connectors
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -31,10 +31,10 @@
   <artifactId>knotx-repository</artifactId>
   <packaging>pom</packaging>
 
-  <name>Knot.x - Reactive microservice assembler - Repository Verticle</name>
+  <name>Knot.x - Reactive microservice assembler - Repositories Connectors</name>
 
   <modules>
-	<module>knotx-repository-filesystem</module>
-	<module>knotx-repository-http</module>
+	<module>knotx-repository-connector-filesystem</module>
+	<module>knotx-repository-connector-http</module>
   </modules>
 </project>

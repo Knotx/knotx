@@ -99,7 +99,7 @@
         }
       }
     },
-    "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
+    "com.cognifide.knotx.repository.FilesystemRepositoryConnectorVerticle": {
       "config": {
         "address": "knotx.repository.filesystem",
         "catalogue": "src/test/resources/"

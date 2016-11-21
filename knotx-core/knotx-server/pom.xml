@@ -50,7 +50,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-repository-filesystem</artifactId>
+      <artifactId>knotx-repository-connector-filesystem</artifactId>
       <version>${project.version}</version>
     </dependency>
 

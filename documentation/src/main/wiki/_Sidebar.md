@@ -10,6 +10,8 @@
     * [[Snippet Processing|SnippetProcessing]]
   * [[Server|Server]]
   * [[Repository|Repository]]
+    * [[Http Repository Connector|HttpRepositoryConnector]]
+    * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
   * [[Splitter|Splitter]]
   * [[Knot|Knot]]
     * [[Action Knot|ActionKnot]]

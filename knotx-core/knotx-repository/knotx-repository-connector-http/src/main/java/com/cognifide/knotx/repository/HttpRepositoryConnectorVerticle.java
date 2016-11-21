@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Repository Verticle
+ * Knot.x - Reactive microservice assembler - Http Repository Connector Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -49,9 +49,9 @@ import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientResponse;
 import rx.Observable;
 
-public class HttpRepositoryVerticle extends AbstractVerticle {
+public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryConnectorVerticle.class);
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
   private String address;
