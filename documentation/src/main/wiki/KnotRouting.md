@@ -29,7 +29,7 @@ Routes entries example configuration:
     },
     {
       "path": "/view/.*",
-      "address": "knotx.knot.view",
+      "address": "knotx.knot.service",
       ...
     }
   ],
@@ -55,13 +55,18 @@ called transitions. Example graph configuration can look like:
   "address": "knotx.knot.authorization",
   "onTransition": {
     "view": {
-      "address": "knotx.knot.view"
+      "address": "knotx.knot.service",
+      "onTransition": {
+        "next": {
+          "address": "knotx.knot.handlebars"
+        }
+      }
     },
     "next": {
       "address": "knotx.knot.action"
       "onTransition": {
         "next": {
-          "address": "knotx.knot.view"
+          "address": "knotx.knot.handlebars"
         }
       }
     }

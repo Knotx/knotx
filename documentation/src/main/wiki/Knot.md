@@ -52,7 +52,7 @@ to another url, return an error response).
 | `clientRequest.formAttributes`                 | `MultiMap`                      |       | form attributes, relevant to POST requests |
 | `clientResponse.statusCode`                 | `HttpResponseStatus`                      |   &#10004;    | `HttpResponseStatus.OK` |
 | `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response headers |
-| `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last View Knot |
+| `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last Handlebars Knot |
 | `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created by Splitter |
 | `transition`                 | `String`                      |        | empty |
 
@@ -75,7 +75,7 @@ A table below represents Knot response values.
 | `clientRequest.formAttributes`                 | `MultiMap`                      |       | form attributes, relevant to POST requests |
 | `clientResponse.statusCode`               | `HttpResponseStatus`                      |    &#10004;    | `HttpResponseStatus.OK` to process routing, other to beak routing  |
 | `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response headers, can be updated by Knot |
-| `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last View Knot |
+| `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last Handlebars Knot |
 | `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created by Splitter |
 | `transition`                 | `String`                      |        | defines next routing step (Knot), empty for redirects, errors and last routing step |
 
@@ -120,7 +120,7 @@ Knot API specifies abstract `KnotConfiguration` class to handle JSON configurati
 abstraction can be used while custom Knot implementation but it is not required. Every Knot must be
 exposed with unique Event Bus address - that's the only obligation (the same like for Adapters).
 Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
-[[View Knot|ViewKnot#how-to-configure]].
+[[Service Knot|ServiceKnot#how-to-configure]].
 
 ##How to extend?
 We need to extend abstract 

@@ -15,8 +15,8 @@ response adaption to other format is required.
 
 ### Types of adapters
 Knot.x Core by default introduces two types of Adapters connected with Knot implementations:
-- [[Service Adapter|ServiceAdapter]] for [[Action Knot|ActionKnot]],
-- [[Action Adapter|ActionAdapter]] for [[View Knot|ViewKnot]]
+- [[Service Adapter|ServiceAdapter]] for [[Service Knot|ServiceKnot]],
+- [[Action Adapter|ActionAdapter]] for [[Action Knot|ActionKnot]]
 
 Knot.x comes with a generic implementation of [[Service Adapter|ServiceAdapter]], that enables communication 
 with external services using HTTP Protocol (only GET requests). See [[Http Service Adapter|HttpServiceAdapter]] 

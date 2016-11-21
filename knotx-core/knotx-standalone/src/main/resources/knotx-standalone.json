@@ -52,7 +52,12 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.knot.view"
+              "address": "knotx.knot.service",
+              "onTransition": {
+                "next": {
+                  "address": "knotx.knot.handlebars"
+                }
+              }
             }
           ]
         }
@@ -98,10 +103,9 @@
         "address": "knotx.core.splitter"
       }
     },
-    "com.cognifide.knotx.knot.view.ViewKnotVerticle": {
+    "com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
       "config": {
-        "address": "knotx.knot.view",
-        "template.debug": true,
+        "address": "knotx.knot.service",
         "client.options": {
           "maxPoolSize": 1000,
           "keepAlive": false
@@ -171,6 +175,12 @@
           }
         ],
         "formIdentifierName": "_frmId"
+      }
+    },
+    "com.cognifide.knotx.templating.HandlebarsKnotVerticle": {
+      "config": {
+        "address": "knotx.knot.handlebars",
+        "template.debug": true
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle": {

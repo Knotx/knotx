@@ -17,6 +17,6 @@ implementation - Server still follows the asynchronous programming principles.
 [[Knots|Knot]] can communicate with services using Adapters. When using Knot.x our recommendation is to write
  custom Adapters for cases when a service response must be adapted to required format or when one service call depends on another call. 
 
-Knots can perform their jobs both synchronously and asynchronously. Service Adapters calls in View Knot 
+Knots can perform their jobs both synchronously and asynchronously. Service Adapters calls in Service Knot 
 are asynchronously - GET service calls are independent so there is no reason to wait for a service response 
 before the next call.
