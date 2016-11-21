@@ -129,7 +129,7 @@ class from `knotx-knots/knotx-knot-api`. AbstractKnot hides Event Bus communicat
 and lets you to focus on Knot logic:
 
 - `initConfiguration` method that initialize Knot with `JsonObject` model
-- `handle` method that consumes `KnotContext` messages from [[Server|Server]] and returns modified `KnotContext` messages
+- `process` method that consumes `KnotContext` messages from [[Server|Server]] and returns modified `KnotContext` messages
 - `processError` method which handle particular Exception and prepare response for Server
 
 | ! Note |
