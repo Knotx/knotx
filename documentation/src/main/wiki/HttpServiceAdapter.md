@@ -96,7 +96,6 @@ Example configuration of a [[Service Knot|ServiceKnot]]:
 "com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
   "config": {
     "address": "knotx.knot.service",
-    "template.debug": true,
     "client.options": {
       "maxPoolSize": 1000,
       "keepAlive": false

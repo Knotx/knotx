@@ -1,6 +1,6 @@
 # Service Knot
-Service Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adapter calls and handlebars 
-template processing.
+Service Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adapter calls to fetch the
+data that will be later used to compose page final markup with [[Handlebars Knot|HandlebarsKnot]].
 
 ##How does it work?
 Service Knot retrieves [[dynamic fragments|Splitter]] from [[Knot Context|Knot]]. Then for every dynamic
@@ -71,7 +71,6 @@ JSON presented below is an example how to configure Service Knot deployed as sta
 ```json
 {
   "address": "knotx.knot.service",
-  "template.debug": true,
   "client.options": {
     "maxPoolSize": 1000,
     "keepAlive": false
@@ -109,7 +108,6 @@ Main Service Knot options available.
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Service Knot verticle. |
-| `template.debug`            | `Boolean`                           | &#10004;       | Template debug enabled option.|
 | `client.options`            | `String`                            | &#10004;       | JSON representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html) |
 | `services`                  | `Array of ServiceMetadata`          | &#10004;       | Array of [ServiceMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-view/src/main/java/com/cognifide/knotx/knot/service/ServiceKnotConfiguration.java).|
 
