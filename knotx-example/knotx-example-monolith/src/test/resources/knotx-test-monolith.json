@@ -31,7 +31,7 @@
                 "next" : {
                   "address": "knotx.knot.service",
                   "onTransition": {
-                    "handlebars": {
+                    "next": {
                       "address": "knotx.knot.handlebars"
                     }
                   }
@@ -47,7 +47,7 @@
                 "next" : {
                   "address": "knotx.knot.service",
                   "onTransition": {
-                    "handlebars": {
+                    "next": {
                       "address": "knotx.knot.handlebars"
                     }
                   }

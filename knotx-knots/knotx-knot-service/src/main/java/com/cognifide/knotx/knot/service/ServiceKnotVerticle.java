@@ -38,7 +38,7 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
-  private static final String DEFAULT_TEMPLATING_KNOT = "handlebars";
+  private static final String DEFAULT_TEMPLATING_KNOT = "next";
 
   private FragmentProcessor snippetProcessor;
 

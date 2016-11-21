@@ -57,7 +57,7 @@ called transitions. Example graph configuration can look like:
     "view": {
       "address": "knotx.knot.service",
       "onTransition": {
-        "handlebars": {
+        "next": {
           "address": "knotx.knot.handlebars"
         }
       }
@@ -65,7 +65,7 @@ called transitions. Example graph configuration can look like:
     "next": {
       "address": "knotx.knot.action"
       "onTransition": {
-        "handlebars": {
+        "next": {
           "address": "knotx.knot.handlebars"
         }
       }
