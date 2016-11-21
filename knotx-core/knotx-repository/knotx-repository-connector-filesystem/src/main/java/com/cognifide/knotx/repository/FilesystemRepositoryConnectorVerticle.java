@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Repository Verticle
+ * Knot.x - Reactive microservice assembler - Filesystem Repository Connector Verticle
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -41,9 +41,9 @@ import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
 import rx.Observable;
 
-public class FilesystemRepositoryVerticle extends AbstractVerticle {
+public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorVerticle.class);
   private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
   private String catalogue;

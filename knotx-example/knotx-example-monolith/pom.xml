@@ -47,12 +47,12 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-repository-http</artifactId>
+      <artifactId>knotx-repository-connector-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-repository-filesystem</artifactId>
+      <artifactId>knotx-repository-connector-filesystem</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

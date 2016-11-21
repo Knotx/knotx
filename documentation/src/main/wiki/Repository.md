@@ -38,7 +38,7 @@ depicts Knot.x modules and request flow in more details.
 Http Repository Connector configuration options:
 ```json
 {
-  "com.cognifide.knotx.repository.HttpRepositoryVerticle": {
+  "com.cognifide.knotx.repository.HttpRepositoryConnectorVerticle": {
     "config": {
       "address": "knotx.core.repository.http",
       "client.options": {
@@ -73,7 +73,7 @@ depicts Knot.x modules and request flow in more details.
 Filesystem Repository Connector configuration options:
 ```json
 {
-  "com.cognifide.knotx.repository.FilesystemRepositoryVerticle": {
+  "com.cognifide.knotx.repository.FilesystemRepositoryConnectorVerticle": {
     "config": {
       "address": "knotx.core.repository.filesystem",
       "catalogue": ""
