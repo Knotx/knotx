@@ -21,12 +21,13 @@ import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
-
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
+import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
 public class ServiceEngine {
@@ -67,8 +68,12 @@ public class ServiceEngine {
 
   private JsonObject buildResultObject(AdapterResponse adapterResponse) {
     JsonObject object = new JsonObject();
+    String rawData = StringUtils.EMPTY;
 
-    String rawData = adapterResponse.response().body().toString().trim();
+    Buffer body = adapterResponse.response().body();
+    if (body != null) {
+      rawData = body.toString().trim();
+    }
 
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
