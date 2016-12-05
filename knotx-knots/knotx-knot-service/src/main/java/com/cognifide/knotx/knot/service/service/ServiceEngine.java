@@ -25,7 +25,7 @@ import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
-+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;

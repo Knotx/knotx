@@ -17,22 +17,11 @@
  */
 package com.cognifide.knotx.example.monolith;
 
-import com.google.common.collect.Maps;
-
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.junit.TestVertxDeployer;
-
-import org.jsoup.Jsoup;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-
-import java.util.Map;
-
+import com.google.common.collect.Maps;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
@@ -43,8 +32,15 @@ import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
+import org.jsoup.Jsoup;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 import rx.Observable;
 import rx.functions.Action1;
+
+import java.util.Map;
 
 
 @RunWith(VertxUnitRunner.class)
@@ -52,6 +48,7 @@ public class SampleApplicationTest {
 
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
   private static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
+  private static final String MISSING_SERVICE_CONFIG_REQUEST_URI = "/content/local/missingServiceConfig.html";
   private static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
   private static final int KNOTX_SERVER_PORT = 8092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
@@ -77,6 +74,12 @@ public class SampleApplicationTest {
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-example-monolith.json")
+  public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(TestContext context) {
+    testGetServerError(context, MISSING_SERVICE_CONFIG_REQUEST_URI);
   }
 
   @Test
@@ -147,6 +150,17 @@ public class SampleApplicationTest {
           client.close();
           async.complete();
         }));
+  }
+
+  private void testGetServerError(TestContext context, String url) {
+    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    Async async = context.async();
+    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
+            resp -> resp.bodyHandler(body -> {
+              context.assertEquals(resp.statusCode(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+              client.close();
+              async.complete();
+            }));
   }
 
   private Map<String, String> getFirstTestFormData() {
