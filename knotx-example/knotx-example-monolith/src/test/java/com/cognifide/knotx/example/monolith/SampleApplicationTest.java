@@ -152,17 +152,6 @@ public class SampleApplicationTest {
         }));
   }
 
-  private void testGetServerError(TestContext context, String url) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
-    Async async = context.async();
-    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
-            resp -> resp.bodyHandler(body -> {
-              context.assertEquals(resp.statusCode(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-              client.close();
-              async.complete();
-            }));
-  }
-
   private Map<String, String> getFirstTestFormData() {
     Map<String, String> data = Maps.newHashMap();
     data.put("name", "test");
