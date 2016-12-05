@@ -30,8 +30,6 @@ import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
-import java.util.Optional;
-
 public class ServiceEngine {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
@@ -60,19 +58,14 @@ public class ServiceEngine {
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
-    Optional<ServiceKnotConfiguration.ServiceMetadata> serviceMetadata = configuration.getServices().stream()
+    return configuration.getServices().stream()
             .filter(service -> serviceEntry.getName().matches(service.getName()))
-            .findFirst();
-    if (serviceMetadata.isPresent()) {
-      return serviceMetadata.map(metadata ->
-              serviceEntry.setAddress(metadata.getAddress())
-                      .mergeParams(metadata.getParams())
-                      .overrideCacheKey(metadata.getCacheKey())
-      ).get();
-    } else {
-      LOGGER.error("Missing body section in JSON response in: {}", serviceEntry.getName());
-      throw new DecodeException("Missing body section in response JSON");
-    }
+            .findFirst().map(metadata ->
+                    serviceEntry.setAddress(metadata.getAddress())
+                            .mergeParams(metadata.getParams())
+                            .overrideCacheKey(metadata.getCacheKey())
+            )
+            .get();
   }
 
   private JsonObject buildResultObject(AdapterResponse adapterResponse) {

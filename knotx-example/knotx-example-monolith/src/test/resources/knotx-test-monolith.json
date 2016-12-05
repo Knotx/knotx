@@ -129,6 +129,13 @@
             }
           },
           {
+            "name" : "fourth-service",
+            "address" : "knotx.adapter.service.http",
+            "params": {
+              "path": "/service/mock/fourth.json"
+            }
+          },
+          {
             "name" : "labelsRepository",
             "address" : "knotx.adapter.service.http",
             "params": {}

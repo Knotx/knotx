@@ -77,9 +77,9 @@ public class SampleApplicationTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
-  public void whenRequestingLocalPageWhereInServiceIsMissingResponse_expectError(TestContext context) {
-    testGetServerError(context, LOCAL_NO_BODY_REQUEST_URI);
+  @KnotxConfiguration("knotx-test-monolith.json")
+  public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(TestContext context) {
+    testGetRequest(context, LOCAL_NO_BODY_REQUEST_URI, "noBody.html");
   }
 
   @Test
