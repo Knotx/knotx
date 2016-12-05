@@ -24,15 +24,11 @@ import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
 public class ServiceEngine {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
 
   private static final String RESULT_NAMESPACE_KEY = "_result";
   private static final String RESPONSE_NAMESPACE_KEY = "_response";
