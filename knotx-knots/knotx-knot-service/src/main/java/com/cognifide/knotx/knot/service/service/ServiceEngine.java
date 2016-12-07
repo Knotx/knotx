@@ -55,13 +55,13 @@ public class ServiceEngine {
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
     return configuration.getServices().stream()
-            .filter(service -> serviceEntry.getName().matches(service.getName()))
-            .findFirst().map(metadata ->
-                    serviceEntry.setAddress(metadata.getAddress())
-                            .mergeParams(metadata.getParams())
-                            .overrideCacheKey(metadata.getCacheKey())
-            )
-            .get();
+        .filter(service -> serviceEntry.getName().matches(service.getName()))
+        .findFirst().map(metadata ->
+            serviceEntry.setAddress(metadata.getAddress())
+                .mergeParams(metadata.getParams())
+                .overrideCacheKey(metadata.getCacheKey())
+        )
+        .get();
   }
 
   private JsonObject buildResultObject(AdapterResponse adapterResponse) {
