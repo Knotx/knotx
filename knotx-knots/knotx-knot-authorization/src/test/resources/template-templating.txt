@@ -1,3 +1,0 @@
-<script data-api-type="templating"
-        type="text/x-handlebars-template">
-</script>
