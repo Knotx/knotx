@@ -57,18 +57,13 @@
           "GET": [
             {
               "path": "/content/.*",
-              "address": "knotx.knot.auth",
+              "address": "knotx.knot.action",
               "onTransition": {
                 "next": {
-                  "address": "knotx.knot.action",
+                  "address": "knotx.knot.service",
                   "onTransition": {
                     "next" : {
-                      "address": "knotx.knot.service",
-                      "onTransition": {
-                        "next": {
-                          "address": "knotx.knot.handlebars"
-                        }
-                      }
+                      "address": "knotx.knot.handlebars"
                     }
                   }
                 }
