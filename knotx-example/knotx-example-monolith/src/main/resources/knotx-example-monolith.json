@@ -242,27 +242,6 @@
         "template.debug": true
       }
     },
-    "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle" : {
-      "config" : {
-        "address": "knotx.knot.auth",
-        "adapters": [
-          {
-            "name": "auth-handler",
-            "address": "knotx.adapter.service.http",
-            "params": {
-              "path": "/service/mock/auth.json?statusCode={param.statusCode}"
-            },
-            "allowed.request.headers": [
-              "Cookie"
-            ],
-            "allowed.response.headers": [
-              "Set-Cookie",
-              "Location"
-            ]
-          }
-        ]
-      }
-    },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
       "config": {
         "address": "knotx.adapter.service.http",
