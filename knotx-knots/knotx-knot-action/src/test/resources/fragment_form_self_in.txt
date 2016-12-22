@@ -1,4 +1,4 @@
-<script data-api-type="form-someId456" data-service="some-service" type="text/x-handlebars-template">
+<script data-knot-types="form-someId456,services,handlebars" data-service="some-service" type="text/x-handlebars-template">
     <form data-knotx-action="action-self">
         {{someValue}}
         <div class="form-group">

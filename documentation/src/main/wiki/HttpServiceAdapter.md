@@ -124,7 +124,7 @@ Example configuration of a [[Service Knot|ServiceKnot]]:
 Example html snippet in template:
 
 ```html
-<script data-api-type="templating" type="text/x-handlebars-template"
+<script data-knot-types="services,handlebars" type="text/x-handlebars-template"
     data-service-search="search"
     data-service-twitter="twitter">
         <h1>Welcome</h1>

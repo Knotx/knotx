@@ -30,11 +30,11 @@ import java.util.regex.Pattern;
 class HtmlFragmentSplitter implements FragmentSplitter {
 
 
-  private static final String SNIPPET_IDENTIFIER_NAME = "data-api-type";
+  private static final String SNIPPET_IDENTIFIER_NAME = "data-knot-types";
 
   private static final String ANY_SNIPPET_PATTERN = "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
   private static final Pattern SNIPPET_PATTERN =
-      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME + "\\s*=\\s*\"([A-Za-z0-9-]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
+      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
   private static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
   @Override

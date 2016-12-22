@@ -18,7 +18,7 @@ Additionally with every Adapter `data-params-{NAMESPACE}={JSON DATA}` attribute 
 which specifies parameters for Adapter call. An example `script` definition can look like:
 
 ```html
-<script data-api-type="templating"
+<script data-knot-types="services,handlebars"
   data-service="first-service"
   data-service-second="second-service"
   data-params-second='{"path":"/overridden/path"}'

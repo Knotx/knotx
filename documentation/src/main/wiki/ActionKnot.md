@@ -12,7 +12,7 @@ successful / error / next step page.
 Let's describe Action Knot behaviour with following example.
 
 ### Example
-ActionKnot processes only those fragments that `<script>` tag has defined `data-api-type="form-{NAME}"` parameter, 
+ActionKnot processes only those fragments which `data-knot-types` parameter contains "form-{NAME}", 
 where `{NAME}` is a unique name of a form (assuming there may be more than one form on a single page 
 it is used to distinguish a requested snippet).
 
@@ -37,7 +37,7 @@ There are no Knot.x specific attributes in a final markup besides one **hidden i
 This is how form looks in the repository:
 
 ```html
-<script data-api-type="form-1" type="text/x-handlebars-template">
+<script data-knot-types="form-1" type="text/x-handlebars-template">
   {{#if action._result.validationErrors}}
   <p class="bg-danger">Email address does not exists</p>
   {{/if}}
@@ -54,8 +54,8 @@ This is how form looks in the repository:
 
 Now we can explain how and why this additional hidden input `_frmId` with a value `1` appears . It
 is automatically added by Action Knot and is used to distinguish a requested form during submission process 
-(there could be more than one form at the same template). Its value comes from a script's `data-api-type`
-attribute - it retrieve a `{NAME}` value from `data-api-type="form-{NAME}"`.
+(there could be more than one form at the same template). Its value comes from a script's `data-knot-types`
+attribute - it retrieve a `{NAME}` value from `data-knot-types="form-{NAME}"`.
 
 Following data attributes are available in the `<form>` tag with described purpose:
 - `data-knotx-action` - this is a name of an [[Action Adapter|ActionAdapter]] that will be used to handle submitted data. 

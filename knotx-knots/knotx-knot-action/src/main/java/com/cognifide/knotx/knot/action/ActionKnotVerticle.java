@@ -213,7 +213,10 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
   }
 
   private boolean isCurrentFormFragment(Fragment fragment, KnotContext knotContext) {
-    return getFormIdentifierFromRequest(knotContext).map(this::buildFragmentId).map(fragmentId -> fragment.identifiers().contains(fragmentId)).orElse(Boolean.FALSE);
+    return getFormIdentifierFromRequest(knotContext)
+        .map(this::buildFragmentId)
+        .map(fragmentId -> fragment.identifiers().contains(fragmentId))
+        .orElse(Boolean.FALSE);
   }
 
   private String buildFragmentId(String requestedFormId) {

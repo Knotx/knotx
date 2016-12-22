@@ -46,7 +46,7 @@ public class HtmlFragmentSplitterTest {
 
   private String TEST_MANY_SNIPPETS_HTML = "test-many-fragments.html";
 
-  private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating-X\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
+  private String EXPECTED_ONE_FRAGMENT = "<script data-knot-types=\"templating-X\" data-service=\"first-service\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
 
   private List<Fragment> testNoSnippets;
   private List<Fragment> testOneSnippetBegin;
