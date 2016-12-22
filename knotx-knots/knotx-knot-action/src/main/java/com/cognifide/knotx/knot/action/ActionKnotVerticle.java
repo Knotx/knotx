@@ -143,7 +143,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
               if (isNotOkStatus(clientResponse)) {
                 knotContext.clientResponse()
                     .setStatusCode(clientResponse.statusCode())
-                    .setHeaders(clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())))
+                    .setHeaders(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()))
                     .setBody(null);
                 knotContext.clearFragments();
 
@@ -174,8 +174,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
                     .put("_response", clientResponse.toMetadataJson());
 
                 currentFragment.getContext().put("action", actionContext);
-                knotContext.clientResponse().setHeaders(
-                    clientResponse.headers().addAll(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders()))
+                knotContext.clientResponse().setHeaders(getFilteredHeaders(clientResponse.headers(), adapterMetadata.getAllowedResponseHeaders())
                 );
                 knotContext.fragments().ifPresent(this::processFragments);
                 knotContext.setTransition(DEFAULT_TRANSITION);

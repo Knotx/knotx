@@ -82,11 +82,6 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-authorization</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-server</artifactId>
       <version>${project.version}</version>
     </dependency>
