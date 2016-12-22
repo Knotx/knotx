@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.fragments.Fragment;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -31,9 +32,10 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private static final String SNIPPET_IDENTIFIER_NAME = "data-api-type";
 
-  private final static String ANY_SNIPPET_PATTERN = "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
-  private final static Pattern SNIPPET_PATTERN =
+  private static final String ANY_SNIPPET_PATTERN = "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
+  private static final Pattern SNIPPET_PATTERN =
       Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME + "\\s*=\\s*\"([A-Za-z0-9-]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
+  private static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
   @Override
   public List<Fragment> split(String html) {
@@ -46,7 +48,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
         if (idx < matchResult.start()) {
           fragments.add(toRaw(html, idx, matchResult.start()));
         }
-        fragments.add(toSnippet(matchResult.group(1).intern(), html, matchResult.start(), matchResult.end()));
+        fragments.add(toSnippet(matchResult.group(1).intern().split(FRAGMENT_IDENTIFIERS_SEPARATOR), html, matchResult.start(), matchResult.end()));
         idx = matchResult.end();
       }
       if (idx < html.length()) {
@@ -62,7 +64,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     return Fragment.raw(html.substring(startIdx, endIdx));
   }
 
-  private Fragment toSnippet(String id, String html, int startIdx, int endIdx) {
-    return Fragment.snippet(id, html.substring(startIdx, endIdx));
+  private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
+    return Fragment.snippet(Arrays.asList(ids), html.substring(startIdx, endIdx));
   }
 }

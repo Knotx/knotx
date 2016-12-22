@@ -213,7 +213,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
   }
 
   private boolean isCurrentFormFragment(Fragment fragment, KnotContext knotContext) {
-    return getFormIdentifierFromRequest(knotContext).map(this::buildFragmentId).map(fragmentId -> fragmentId.equals(fragment.getId())).orElse(Boolean.FALSE);
+    return getFormIdentifierFromRequest(knotContext).map(this::buildFragmentId).map(fragmentId -> fragment.identifiers().contains(fragmentId)).orElse(Boolean.FALSE);
   }
 
   private String buildFragmentId(String requestedFormId) {
@@ -230,7 +230,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
 
   private void processFragments(List<Fragment> fragments) {
     fragments.stream()
-        .filter(fragment -> fragment.getId().startsWith(ACTION_FRAGMENT_IDENTIFIER))
+        .filter(fragment -> fragment.identifiers().stream().filter(id -> id.startsWith(ACTION_FRAGMENT_IDENTIFIER)).findFirst().isPresent())
         .forEach(this::processFragment);
   }
 
@@ -243,8 +243,8 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
         });
     checkActionFormNameDefinition(fragment, actionFormElement);
 
-    LOGGER.trace("Changing fragment [{}]", fragment.getId());
-    addHiddenInputTag(actionFormElement, fragment.getId());
+    LOGGER.trace("Changing fragment [{}]", fragment.identifiers());
+    addHiddenInputTag(actionFormElement, fragment.identifiers());
     clearFromActionAttributes(actionFormElement);
     fragment.setContent(getFragmentContent(fragment, scriptContentDocument));
   }
@@ -279,18 +279,20 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
         .forEach(attr -> item.removeAttr(attr.getKey()));
   }
 
-  private void addHiddenInputTag(Element form, String fragmentIdentifier) {
-    Matcher matcher = ACTION_FRAGMENT_IDENTIFIER_PATTERN.matcher(fragmentIdentifier);
-    if (matcher.find()) {
-      String formIdentifier = matcher.group(2);
+  private void addHiddenInputTag(Element form, List<String> fragmentIdentifiers) {
+    fragmentIdentifiers.stream().filter(id -> id.startsWith(ACTION_FRAGMENT_IDENTIFIER)).findFirst().ifPresent(fragmentIdentifier -> {
+      Matcher matcher = ACTION_FRAGMENT_IDENTIFIER_PATTERN.matcher(fragmentIdentifier);
+      if (matcher.find()) {
+        String formIdentifier = matcher.group(2);
 
-      Attributes attributes = Stream.of(
-          new Attribute("type", "hidden"),
-          new Attribute("name", configuration.formIdentifierName()),
-          new Attribute("value", StringUtils.isNotBlank(formIdentifier) ? formIdentifier : DEFAULT_FORM_IDENTIFIER))
-          .collect(Attributes::new, Attributes::put, Attributes::addAll);
-      form.prependChild(new Element(Tag.valueOf("input"), "/", attributes));
-    }
+        Attributes attributes = Stream.of(
+            new Attribute("type", "hidden"),
+            new Attribute("name", configuration.formIdentifierName()),
+            new Attribute("value", StringUtils.isNotBlank(formIdentifier) ? formIdentifier : DEFAULT_FORM_IDENTIFIER))
+            .collect(Attributes::new, Attributes::put, Attributes::addAll);
+        form.prependChild(new Element(Tag.valueOf("input"), "/", attributes));
+      }
+    });
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {

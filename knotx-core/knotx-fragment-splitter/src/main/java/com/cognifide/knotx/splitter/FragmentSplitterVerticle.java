@@ -22,12 +22,10 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;

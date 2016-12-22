@@ -24,7 +24,7 @@ public class FormConfigurationException extends RuntimeException {
   private Fragment fragment;
 
   public FormConfigurationException(Fragment fragment) {
-    super("Form not configured correctly " + fragment.getId());
+    super("Form not configured correctly " + fragment.identifiers());
   }
 
   public Fragment getFragment() {

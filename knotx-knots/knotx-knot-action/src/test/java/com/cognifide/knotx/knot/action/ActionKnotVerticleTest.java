@@ -35,14 +35,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.jsoup.parser.Parser;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,7 +48,6 @@ import java.util.Optional;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
@@ -245,7 +242,7 @@ public class ActionKnotVerticleTest {
     for (String file : snippetFilenames) {
       String fileContent = FileReader.readText(file);
       String fragmentIdentifier = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_IDENTIFIER).attr(FRAGMENT_IDENTIFIER);
-      fragments.add(Fragment.snippet(fragmentIdentifier, fileContent));
+      fragments.add(Fragment.snippet(Collections.singletonList(fragmentIdentifier), fileContent));
     }
     Optional.ofNullable(lastFragment).ifPresent(fragments::add);
 
