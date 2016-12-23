@@ -25,7 +25,6 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
-import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -52,10 +51,12 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.eventbus.Message;
+import rx.Observable;
 
-public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
+public class ActionKnotVerticle extends AbstractVerticle {
 
   private static final String DEFAULT_TRANSITION = "next";
   private static final String DEFAULT_FORM_IDENTIFIER = "_default_";
@@ -75,12 +76,22 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
   }
 
   @Override
-  protected ActionKnotConfiguration initConfiguration(JsonObject config) {
-    return new ActionKnotConfiguration(config);
+  public void start() throws Exception {
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
+
+    vertx.eventBus().<KnotContext>consumer(configuration.getAddress())
+        .handler(message -> Observable.just(message)
+            .doOnNext(this::traceMessage)
+            .subscribe(
+                result -> process(result, message::reply),
+                error -> {
+                  LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
+                  message.reply(processError(message.body(), error));
+                }
+            ));
   }
 
-  @Override
-  protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
+  private void process(Message<KnotContext> message, Handler<KnotContext> handler) {
     KnotContext knotContext = message.body();
     if (HttpMethod.POST.equals(knotContext.clientRequest().method())) {
       handleFormAction(knotContext, handler);
@@ -89,8 +100,7 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
     }
   }
 
-  @Override
-  protected KnotContext processError(KnotContext context, Throwable error) {
+  private KnotContext processError(KnotContext context, Throwable error) {
     KnotContext errorResponse = new KnotContext().setClientResponse(context.clientResponse());
     HttpResponseStatus statusCode;
     if (error instanceof NoSuchElementException) {
@@ -103,6 +113,12 @@ public class ActionKnotVerticle extends AbstractKnot<ActionKnotConfiguration> {
     }
     errorResponse.clientResponse().setStatusCode(statusCode);
     return errorResponse;
+  }
+
+  private void traceMessage(Message<KnotContext> message) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
+    }
   }
 
   private void handleFormAction(KnotContext knotContext, Handler<KnotContext> handler) {

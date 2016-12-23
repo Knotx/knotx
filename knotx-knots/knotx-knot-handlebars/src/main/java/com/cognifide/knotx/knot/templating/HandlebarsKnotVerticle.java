@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.ServiceLoader;
 
 import io.vertx.core.Context;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
@@ -42,7 +41,6 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
 public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfiguration> {
@@ -62,9 +60,8 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
   }
 
   @Override
-  protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
-    final KnotContext inputContext = message.body();
-    inputContext.fragments()
+  protected Observable<KnotContext> process(KnotContext message) {
+    return message.fragments()
         .map(
             fragments -> Observable.from(fragments)
                 .flatMap(this::compileHtmlFragment)
@@ -74,8 +71,8 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
                 .map(StringBuilder::toString)
 
         ).orElse(Observable.just(StringUtils.EMPTY))
-        .subscribe(result -> handler.handle(createSuccessResponse(inputContext, result)),
-            error -> handler.handle(processError(inputContext, error)));
+        .map(result -> createSuccessResponse(message, result))
+        .onErrorReturn(error -> processError(message, error));
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
