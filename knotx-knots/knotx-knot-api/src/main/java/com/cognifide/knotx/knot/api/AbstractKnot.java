@@ -20,7 +20,6 @@ package com.cognifide.knotx.knot.api;
 import com.cognifide.knotx.dataobjects.KnotContext;
 
 import io.vertx.core.Context;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -48,19 +47,21 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
   public void start() throws Exception {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    vertx.eventBus().<KnotContext>consumer(configuration.getAddress())
-        .handler(message -> Observable.just(message)
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                result -> process(result, message::reply),
-                error -> {
-                  LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
-                  message.reply(processError(message.body(), error));
-                }
-            ));
+    Observable<Message<KnotContext>> observable = vertx.eventBus().<KnotContext>consumer(configuration.getAddress()).toObservable();
+    observable
+        .doOnNext(this::traceMessage)
+        .subscribe(
+            msg -> process(msg.body())
+                .subscribe(
+                    msg::reply,
+                    error -> {
+                      LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
+                      msg.reply(processError(msg.body(), error));
+                    })
+        );
   }
 
-  protected abstract void process(Message<KnotContext> message, Handler<KnotContext> handler);
+  protected abstract rx.Observable<KnotContext> process(KnotContext message);
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
