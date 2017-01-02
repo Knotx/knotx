@@ -27,7 +27,7 @@ class HandlebarsKnotConfiguration extends KnotConfiguration {
 
   HandlebarsKnotConfiguration(JsonObject config) {
     super(config);
-    templateDebug = config.getBoolean("template.debug", false);
+    templateDebug = config.getBoolean("templateDebug", false);
   }
 
   boolean templateDebug() {

@@ -1,0 +1,21 @@
+{
+  "main": "com.cognifide.knotx.knot.service.ServiceKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.service",
+      "client.options": {
+        "maxPoolSize": 100,
+        "keepAlive": false
+      },
+      "services": [
+        {
+          "name": "mock",
+          "address": "mock-service-adapter",
+          "config": {
+            "path": "/service/mock/.*"
+          }
+        }
+      ]
+    }
+  }
+}

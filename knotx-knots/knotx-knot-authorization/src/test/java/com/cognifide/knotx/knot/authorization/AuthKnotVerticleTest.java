@@ -23,11 +23,8 @@ import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
-import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotContextFactory;
-import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.jsoup.Jsoup;
 import org.junit.Rule;
@@ -69,7 +66,6 @@ public class AuthKnotVerticleTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-knot-auth-test.json")
   public void callGetWithoutAuthFragment_expectPassThroughWithTheSameAsInput(TestContext context) throws Exception {
     String expectedTemplatingFragment = FileReader.readText("template-templating.txt");
     KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT, "template-templating.txt");
@@ -91,7 +87,6 @@ public class AuthKnotVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-knot-auth-test.json")
   public void callGetWithAuthAndUnuathorizedResponse_expectRedirect(TestContext context) throws Exception {
     createKnotConsumer("auth-handler", HttpResponseStatus.UNAUTHORIZED);
     KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT, "template-auth.txt", "template-templating.txt");
@@ -108,7 +103,6 @@ public class AuthKnotVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-knot-auth-test.json")
   public void callGetWithAuthAndAuthorizedResponse_expectPassThrough(TestContext context) throws Exception {
     createKnotConsumer("auth-handler", HttpResponseStatus.OK);
     KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT, "template-auth.txt", "template-templating.txt");

@@ -20,10 +20,7 @@ package com.cognifide.knotx.adapter.service.http;
 import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
-import com.cognifide.knotx.junit.FileReader;
-import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,7 +52,6 @@ public class HttpServiceAdapterTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void callNonExistingService_expectBadRequestResponse(TestContext context) {
     callAdapterServiceWithAssertions(context, "not/existing/service/address",
         adapterResponse -> context.assertTrue(adapterResponse.response().statusCode().equals(HttpResponseStatus.INTERNAL_SERVER_ERROR)),
@@ -64,7 +60,6 @@ public class HttpServiceAdapterTest {
 
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void callExistingService_expectOKResponseWithServiceDataProvidedByService1(TestContext context) throws Exception {
     final String expected = FileReader.readText("first-response.json");
 

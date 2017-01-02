@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.junit;
+package com.cognifide.knotx.launcher.junit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

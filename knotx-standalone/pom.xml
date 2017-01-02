@@ -24,18 +24,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knotx-core</artifactId>
+    <artifactId>knotx-root</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>knotx-standalone</artifactId>
 
   <name>Knot.x - Reactive microservice assembler - Standalone Knot.x</name>
-
-  <properties>
-    <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</main.verticle>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -66,6 +61,11 @@
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-launcher</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -130,10 +130,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

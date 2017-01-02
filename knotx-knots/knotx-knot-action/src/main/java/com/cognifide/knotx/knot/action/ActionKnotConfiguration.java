@@ -49,11 +49,11 @@ class ActionKnotConfiguration extends KnotConfiguration {
           metadata.name = item.getString("name");
           metadata.address = item.getString("address");
           metadata.params = item.getJsonObject("params", new JsonObject()).getMap();
-          metadata.allowedRequestHeaders = item.getJsonArray("allowed.request.headers", new JsonArray()).stream()
+          metadata.allowedRequestHeaders = item.getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
               .map(new StringToPatternFunction())
               .collect(Collectors.toList());
-          metadata.allowedResponseHeaders = item.getJsonArray("allowed.response.headers", new JsonArray()).stream()
+          metadata.allowedResponseHeaders = item.getJsonArray("allowedResponseHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
               .map(new StringToPatternFunction())
               .collect(Collectors.toList());

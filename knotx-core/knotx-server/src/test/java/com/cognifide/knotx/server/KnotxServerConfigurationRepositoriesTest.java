@@ -17,15 +17,9 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.junit.FileReader;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.EnumMap;
-import java.util.List;
-
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 
 import static org.hamcrest.CoreMatchers.equalTo;

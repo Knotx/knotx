@@ -18,16 +18,9 @@
 package com.cognifide.knotx.server;
 
 
-import com.cognifide.knotx.codec.AdapterRequestCodec;
-import com.cognifide.knotx.codec.AdapterResponseCodec;
-import com.cognifide.knotx.dataobjects.AdapterRequest;
-import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.junit.TestVertxDeployer;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -36,7 +29,6 @@ import org.junit.runner.RunWith;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
@@ -73,7 +65,6 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     createDummySplitter();
     createKnotConsumer("A-engine", "+A", "go-c");
@@ -82,7 +73,6 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
     createDummySplitter();
     createKnotConsumer("C-engine", "+C", null);
@@ -90,7 +80,6 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(TestContext context) {
     createDummySplitter();
     createKnotConsumer("A-post-engine", "+Apost", "go-b");
@@ -100,7 +89,6 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
     createDummySplitter();
     createKnotConsumer("A-post-engine", "+Apost", "go-c");
@@ -109,7 +97,6 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
     createDummySplitter();
     createKnotConsumer("B-engine", "+B", "go-c");

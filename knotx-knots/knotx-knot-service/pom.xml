@@ -32,15 +32,15 @@
 
   <name>Knot.x - Reactive microservice assembler - Service Knot</name>
 
-  <properties>
-    <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.knot.service.ServiceKnotVerticle</main.verticle>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-launcher</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -128,11 +128,6 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -151,10 +146,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

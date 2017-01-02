@@ -17,12 +17,9 @@
  */
 package com.cognifide.knotx.example.monolith;
 
-import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.junit.TestVertxDeployer;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -60,7 +57,6 @@ public class SampleApplicationHeadersTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
   public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI);
   }

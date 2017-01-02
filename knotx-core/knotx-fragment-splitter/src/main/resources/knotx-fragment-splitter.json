@@ -1,3 +1,5 @@
 {
-  "address": "knotx.core.splitter"
+  "services": [
+    "io.knotx.FragmentSplitter"
+  ]
 }
