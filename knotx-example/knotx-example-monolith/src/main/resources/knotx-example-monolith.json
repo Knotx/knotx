@@ -7,7 +7,6 @@
     "io.knotx.HandlebarsKnot",
     "example.io.knotx.ServiceKnot",
     "example.io.knotx.ActionKnot",
-    "example.io.knotx.AuthorizationKnot",
     "example.io.knotx.HttpServiceAdapter",
     "example.io.knotx.HttpActionAdapter",
     "io.knotx.RemoteRepositoryMock",

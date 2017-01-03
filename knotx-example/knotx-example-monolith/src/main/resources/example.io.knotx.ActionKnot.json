@@ -1,7 +1,7 @@
 {
   "main": "com.cognifide.knotx.knot.action.ActionKnotVerticle",
   "options": {
-    "config": {
+    "config" : {
       "address": "knotx.knot.action",
       "adapters": [
         {

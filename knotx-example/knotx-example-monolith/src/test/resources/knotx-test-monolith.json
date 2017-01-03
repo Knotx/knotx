@@ -6,7 +6,7 @@
     "io.knotx.FragmentSplitter",
     "io.knotx.HandlebarsKnot",
     "example.io.knotx.ServiceKnot",
-    "test.io.knotx.ActionKnot",
+    "example.io.knotx.ActionKnot",
     "example.io.knotx.HttpServiceAdapter",
     "example.io.knotx.HttpActionAdapter",
     "io.knotx.RemoteRepositoryMock",
