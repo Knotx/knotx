@@ -20,18 +20,19 @@ package com.cognifide.knotx.splitter;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.junit.KnotContextFactory;
 import com.cognifide.knotx.junit.Logback;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-
+import com.cognifide.knotx.launcher.junit.FileReader;
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -53,6 +54,7 @@ public class HtmlFragmentSplitterVerticleTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
+  @KnotxConfiguration("knotx-fragment-splitter-test.json")
   public void callSplitterWithManySnippets_expectNoFragments(TestContext context) throws Exception {
     callFragmentSplitterWithAssertions(context, "",
         knotContext -> {
@@ -62,6 +64,7 @@ public class HtmlFragmentSplitterVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-fragment-splitter-test.json")
   public void callSplitterEmptyBody_expectErrorReponse(TestContext context) throws Exception {
     callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
         knotContext -> {

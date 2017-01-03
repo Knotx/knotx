@@ -17,6 +17,9 @@
  */
 package com.cognifide.knotx.adapter.service.http;
 
+import com.cognifide.knotx.launcher.junit.FileReader;
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
@@ -74,6 +77,7 @@ public class HttpClientFacadeTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
+  @KnotxConfiguration("knotx-action-adapter-http-test.json")
   public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
     Async async = context.async();
     // given
@@ -97,6 +101,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-action-adapter-http-test.json")
   public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
     Async async = context.async();
     // given
@@ -122,6 +127,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-action-adapter-http-test.json")
   public void whenServiceRequestedWithoutPathParam_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
     Async async = context.async();
     // given
@@ -146,6 +152,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-action-adapter-http-test.json")
   public void whenUnsupportedPathServiceRequested_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
     Async async = context.async();
     // given

@@ -17,6 +17,9 @@
  */
 package com.cognifide.knotx.knot.action;
 
+import com.cognifide.knotx.launcher.junit.FileReader;
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
 import com.google.common.collect.Lists;
 
 import com.cognifide.knotx.dataobjects.AdapterRequest;
@@ -80,6 +83,7 @@ public class ActionKnotVerticleTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callGetWithNoActionFragments_expectResponseOkNoFragmentChanges(TestContext context) throws Exception {
     String expectedTemplatingFragment = FileReader.readText("fragment_templating_out.txt");
     KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT, "fragment_templating_in.txt");
@@ -101,6 +105,7 @@ public class ActionKnotVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callGetWithTwoActionFragments_expectResponseOkTwoFragmentChanges(TestContext context) throws Exception {
     String expectedRedirectFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
     String expectedSelfFormFragment = FileReader.readText("fragment_form_self_out.txt");
@@ -124,6 +129,7 @@ public class ActionKnotVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callGetWithActionFragmentWithoutIdentifier_expectResponseOkWithOneFragmentChanges(TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_no_identifier_in.txt");
     String expectedFragmentHtml = FileReader.readText("fragment_form_no_identifier_out.txt");
@@ -144,6 +150,7 @@ public class ActionKnotVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callGetWithActionFragmentActionHandlerNotExists_expectStatusCode500(TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_actionhandler_not_exists_in.txt");
     knotContext.clientRequest().setMethod(HttpMethod.GET);
@@ -158,6 +165,7 @@ public class ActionKnotVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(TestContext context) throws Exception {
     createKnotConsumer("address-redirect", "", "step2");
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
@@ -176,6 +184,7 @@ public class ActionKnotVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callPostWithActionFragmentWithoutRequestedFragmentIdentifier_expectStatusCode500(TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_incorrect_identifier_in.txt");
     knotContext.clientRequest().setMethod(HttpMethod.POST);
@@ -190,6 +199,7 @@ public class ActionKnotVerticleTest {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test.json")
   public void callPostWithActionFragmentWithIncorrectSnippetId_expectStatusCode500(TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt");
     knotContext.clientRequest().setMethod(HttpMethod.POST)

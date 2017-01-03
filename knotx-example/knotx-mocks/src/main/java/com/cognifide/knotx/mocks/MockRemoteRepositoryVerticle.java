@@ -20,6 +20,7 @@ package com.cognifide.knotx.mocks;
 
 import com.cognifide.knotx.mocks.adapter.MockRemoteRepositoryHandler;
 
+import io.vertx.core.Future;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -41,15 +42,24 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    mockRemoteRepositoryHandler = new MockRemoteRepositoryHandler(config().getString("mock.data.root"));
+    mockRemoteRepositoryHandler = new MockRemoteRepositoryHandler(config().getString("mockDataRoot"));
   }
 
   @Override
-  public void start() throws IOException, URISyntaxException {
+  public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();
-    httpServer.requestHandler(mockRemoteRepositoryHandler)
-        .listen(config().getInteger("http.port"));
+    httpServer.requestHandler(mockRemoteRepositoryHandler).listen(
+        config().getInteger("httpPort"),
+        result -> {
+          if (result.succeeded()) {
+            LOGGER.info("Mock Remote Repository server started. Listening on port {}", config().getInteger("httpPort"));
+            fut.complete();
+          } else {
+            LOGGER.error("Unable to start Mock Remote Repository server.", result.cause());
+            fut.fail(result.cause());
+          }
+        });
   }
 
   @Override

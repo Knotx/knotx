@@ -1,36 +1,6 @@
 {
-  "verticles": {
-    "com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle": {
-      "config": {
-        "address": "knotx.adapter.action.http",
-        "client.options": {
-          "maxPoolSize": 1000,
-          "keepAlive": false
-        },
-        "services": [
-          {
-            "path": "/service/mock/.*",
-            "domain": "localhost",
-            "port": 3000,
-            "allowed.request.headers": [
-              "Content-Type",
-              "X-*"
-            ]
-          },
-          {
-            "path": "/service/.*",
-            "domain": "localhost",
-            "port": 8080
-          }
-        ]
-      }
-    },
-    "com.cognifide.knotx.mocks.MockServiceVerticle": {
-      "config": {
-        "mock.data.root": "mock/service",
-        "bouncing" : true,
-        "http.port": 3000
-      }
-    }
-  }
+  "services": [
+    "test.io.knotx.HttpActionAdapter",
+    "test.io.knotx.MockService"
+  ]
 }

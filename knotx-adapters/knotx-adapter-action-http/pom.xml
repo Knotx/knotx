@@ -131,6 +131,13 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-launcher</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
 
     <!-- TODO remove this dependency - move tests that require it to separate module with integration tests -->
     <dependency>

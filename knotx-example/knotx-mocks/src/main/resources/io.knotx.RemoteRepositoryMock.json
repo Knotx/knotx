@@ -1,0 +1,9 @@
+{
+  "main": "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle",
+  "options": {
+    "config": {
+      "mockDataRoot": "mock/repository",
+      "httpPort": 3001
+    }
+  }
+}

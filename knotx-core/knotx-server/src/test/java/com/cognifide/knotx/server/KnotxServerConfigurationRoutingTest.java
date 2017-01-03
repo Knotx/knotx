@@ -17,6 +17,7 @@
  */
 package com.cognifide.knotx.server;
 
+import com.cognifide.knotx.launcher.junit.FileReader;
 import org.junit.Before;
 import org.junit.Test;
 

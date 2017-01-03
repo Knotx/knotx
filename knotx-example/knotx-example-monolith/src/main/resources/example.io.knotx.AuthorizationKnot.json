@@ -1,0 +1,24 @@
+{
+  "main": "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.auth",
+      "adapters": [
+        {
+          "name": "auth-handler",
+          "address": "knotx.adapter.service.http",
+          "params": {
+            "path": "/service/mock/auth.json?statusCode={param.statusCode}"
+          },
+          "allowedRequestHeaders": [
+            "Cookie"
+          ],
+          "allowedResponseHeaders": [
+            "Set-Cookie",
+            "Location"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "main": "com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.adapter.action.http",
+      "clientOptions": {
+        "maxPoolSize": 1000,
+        "keepAlive": false
+      },
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 3000,
+          "allowedRequestHeaders": [
+            "Cookie"
+          ]
+        }
+      ]
+    }
+  }
+}

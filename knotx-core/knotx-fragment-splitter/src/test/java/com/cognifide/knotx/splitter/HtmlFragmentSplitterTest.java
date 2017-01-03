@@ -18,18 +18,17 @@
 package com.cognifide.knotx.splitter;
 
 
-import com.cognifide.knotx.fragments.Fragment;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.launcher.junit.FileReader;
+import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 //FIXME: rename tests to meet naming convention
 public class HtmlFragmentSplitterTest {

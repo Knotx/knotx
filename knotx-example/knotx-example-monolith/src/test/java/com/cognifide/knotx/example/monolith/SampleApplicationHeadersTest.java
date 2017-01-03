@@ -18,13 +18,8 @@
 package com.cognifide.knotx.example.monolith;
 
 import com.cognifide.knotx.junit.Logback;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
@@ -32,35 +27,41 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationHeadersTest {
-
+  
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
   private static final int KNOTX_SERVER_PORT = 8092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
-
+  
   private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
-
+  
   private RunTestOnContext vertx = new RunTestOnContext();
-
+  
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
+  
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
-
+  
   @Before
   public void before() {
     expectedHeaders.add("Access-Control-Allow-Origin", "*");
     expectedHeaders.add("Content-Type", "text/html; charset=UTF-8");
     expectedHeaders.add("content-length", "3645");
   }
-
+  
   @Test
+  @KnotxConfiguration("knotx-test-monolith.json")
   public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI);
   }
-
+  
   private void testGetRequest(TestContext context, String url) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();

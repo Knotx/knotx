@@ -1,0 +1,41 @@
+{
+  "main": "com.cognifide.knotx.knot.service.ServiceKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.service",
+      "clientOptions": {
+        "maxPoolSize": 1000,
+        "keepAlive": false
+      },
+      "services": [
+        {
+          "name": "first-service",
+          "address": "knotx.adapter.service.http",
+          "params": {
+            "path": "/service/mock/first.json"
+          },
+          "cacheKey": "first"
+        },
+        {
+          "name": "second-service",
+          "address": "knotx.adapter.service.http",
+          "params": {
+            "path": "/service/mock/second.json"
+          }
+        },
+        {
+          "name": "third-service",
+          "address": "knotx.adapter.service.http",
+          "params": {
+            "path": "/service/mock/third.json"
+          }
+        },
+        {
+          "name": "labelsRepository",
+          "address": "knotx.adapter.service.http",
+          "params": {}
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "main": "com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.auth",
+      "adapters": [
+        {
+          "name": "auth-handler",
+          "address": "auth-handler",
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ],
+          "allowedResponseHeaders": [
+            "X-*"
+          ]
+        }
+      ]
+    }
+  }
+}
