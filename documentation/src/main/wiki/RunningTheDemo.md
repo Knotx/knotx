@@ -27,37 +27,38 @@ $ java -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/
 You will see output similar to the following:
 ```
 ...
-2016-12-21 15:14:23 [vert.x-eventloop-thread-2] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Registered <FilesystemRepositoryConnectorVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-3] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-5] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-6] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-2] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-4] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
-2016-12-21 15:14:23 [vert.x-eventloop-thread-4] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-4] INFO  c.c.k.r.HttpRepositoryConnectorVerticle - Registered <HttpRepositoryConnectorVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-0] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpActionAdapterVerticle>
-2016-12-21 15:14:23 [vert.x-eventloop-thread-7] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
-2016-12-21 15:14:24 [vert.x-eventloop-thread-1] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
-2016-12-21 15:14:24 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
-2016-12-21 15:14:24 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED 
+2017-01-03 12:25:31 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryConnectorVerticle - Registered <HttpRepositoryConnectorVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Registered <FilesystemRepositoryConnectorVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-4] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-7] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-4] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
+2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-0] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-1] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpActionAdapterVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
+2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
+2017-01-03 12:25:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2017-01-03 12:25:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
-		Deployed 0e136ce8-4d54-4288-bbc1-40a19b2a3fac [com.cognifide.knotx.splitter.FragmentSplitterVerticle]
-		Deployed 7ffc7c76-06ed-4561-8c80-f8cd3bd8b34d [com.cognifide.knotx.knot.service.ServiceKnotVerticle]
-		Deployed 305e9c5d-6fb0-4d94-ace7-61ce18ca94bb [com.cognifide.knotx.repository.FilesystemRepositoryConnectorVerticle]
-		Deployed 69ad36e8-ff6a-4086-b075-46818e23c221 [com.cognifide.knotx.knot.action.ActionKnotVerticle]
-		Deployed 6bfa2358-1666-499d-bc12-a8a093737b43 [com.cognifide.knotx.mocks.MockServiceAdapterVerticle]
-		Deployed 5da35f2a-a55e-4867-9559-3229172cfcfd [com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle]
-		Deployed 2fc35934-3a74-4738-a95e-d36723b37864 [com.cognifide.knotx.repository.HttpRepositoryConnectorVerticle]
-		Deployed 8eee1b27-b7c7-4359-ad0f-99327a98cbc4 [com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle]
-		Deployed 41e46bd3-bea8-4117-9161-a707625c10c3 [com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle]
-		Deployed ddf77771-e83f-4a48-b68c-2f13cf820d40 [com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle]
-		Deployed 98c5d75d-557b-42ee-bc60-edb33ca9148b [com.cognifide.knotx.mocks.MockServiceVerticle]
-		Deployed dce03c9f-a630-43af-842a-e6d0e5729e76 [com.cognifide.knotx.mocks.MockActionAdapterVerticle]
-		Deployed 7d5d4a11-4f2b-40a4-8189-1f14d3f10ac7 [com.cognifide.knotx.server.KnotxServerVerticle]
-
+                Deployed 2c037987-b4ad-4609-9080-f51e09609564 [knot:io.knotx.FilesystemRepositoryConnector]
+                Deployed cf16eae3-ebd9-451f-9795-e07ba38ecf82 [knot:io.knotx.FragmentSplitter]
+                Deployed 6ad50647-f6da-46d7-9522-ada87fa964c8 [knot:example.io.knotx.ActionKnot]
+                Deployed 889de10e-701f-4a67-872a-85a2a98d5c4e [knot:example.io.knotx.ServiceKnot]
+                Deployed fa9e552b-7ed2-423c-94f7-be2f7ed22340 [knot:io.knotx.ServiceAdapterMock]
+                Deployed 1b32ea8c-0c16-410e-97b3-347613890db8 [knot:io.knotx.HandlebarsKnot]
+                Deployed 6adcb862-057c-4f68-886c-35ca6a5b509f [knot:io.knotx.ActionAdapterMock]
+                Deployed a3e1617e-61b0-4862-b49e-3b94063af755 [knot:io.knotx.HttpRepositoryConnector]
+                Deployed 7b564688-d1eb-48a1-8e14-0d437630e9d7 [knot:example.io.knotx.HttpServiceAdapter]
+                Deployed 6b460934-3914-4b28-8685-45ee3af11cf6 [knot:example.io.knotx.HttpActionAdapter]
+                Deployed 2a6d2769-2dad-4dc2-a5d4-ac23dbdeb781 [knot:io.knotx.ServiceMock]
+                Deployed e7c0d7f3-9f67-49bb-8eac-a381550050b0 [knot:example.io.knotx.KnotxServer]
+                Deployed 94c4ddac-656b-487e-b471-a0c7844593f7 [knot:io.knotx.RemoteRepositoryMock]
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:
@@ -69,7 +70,6 @@ This example app simulates Vert.x based application running Knot.x core verticle
  - [[Handlebars Knot|HandlebarsKnot]],
  - [[Http Service Adapter|HttpServiceAdapter]], 
  - example Action Adapter,
- - example Authorization Knot.
  
 Besides Knot.x, mock verticles are started:
  - Mock Service  -> simulates services used by View Engine feeding the Handlebars snippets

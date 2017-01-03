@@ -10,10 +10,10 @@
           "params": {
             "example": "example-value"
           },
-          "allowed.request.headers": [
+          "allowedRequestHeaders": [
             "Cookie"
           ],
-          "allowed.response.headers": [
+          "allowedResponseHeaders": [
             "Set-Cookie"
           ]
         }
