@@ -5,13 +5,59 @@
     "knot:io.knotx.FilesystemRepositoryConnector",
     "knot:io.knotx.FragmentSplitter",
     "knot:io.knotx.HandlebarsKnot",
-    "knot:example.io.knotx.ServiceKnot",
+    "knot:io.knotx.ServiceKnot",
     "knot:example.io.knotx.ActionKnot",
-    "knot:example.io.knotx.HttpServiceAdapter",
-    "knot:example.io.knotx.HttpActionAdapter",
+    "knot:io.knotx.HttpServiceAdapter",
+    "knot:io.knotx.HttpActionAdapter",
     "knot:io.knotx.RemoteRepositoryMock",
     "knot:io.knotx.ServiceMock",
     "knot:io.knotx.ServiceAdapterMock",
     "knot:io.knotx.ActionAdapterMock"
-  ]
+  ],
+  "config": {
+    "knot:io.knotx.ServiceKnot": {
+      "options": {
+        "config": {
+          "services": [
+            {
+              "name": "first-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/first.json"
+              },
+              "cacheKey": "first"
+            },
+            {
+              "name": "second-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/second.json"
+              }
+            },
+            {
+              "name": "third-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/third.json"
+              }
+            },
+            {
+              "name": "labelsRepository",
+              "address": "knotx.adapter.service.http",
+              "params": {}
+            }
+          ]
+        }
+      }
+    },
+    "knot:io.knotx.HttpActionAdapter": {
+      "options": {
+        "config": {
+          "allowedRequestHeaders": [
+            "Cookie"
+          ]
+        }
+      }
+    }
+  }
 }

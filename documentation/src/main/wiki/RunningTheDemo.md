@@ -23,6 +23,8 @@ Run example app:
 $ cd knotx-example/knotx-example-monolith
 $ java -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/resources/knotx-example-monolith.json
 ```
+Where:
+- `knotx-example-monolith.json` file is **starter** JSON of Knot.x. This file simply defines what Knot.x services (Verticles) should be started. It's also possible to amend default configuration of Knot.x in this file.
 
 You will see output similar to the following:
 ```
@@ -87,3 +89,99 @@ http://localhost:8092/content/remote/multiple-forms.html
 - second serves HTML template from local storage
 - third one serves HTML template with multiple forms on the page, one is AJAX based - served from local storage
 - last one serves HTML template with multiple forms on the page, one is AJAX based - served from remote repository
+
+## Reconfigure demo
+You can play with the demo in order to get familiar with the ways how to configure Knot.x based application.
+
+### Use starter JSON
+1. Let's start with the starter JSON, the file which defines what Verticles Knot.x is composed of. Let's check the one from our demo application
+[knotx-example-monolith.json](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-monolith/src/main/resources/knotx-example-monolith.json)
+2. Copy the file to computer that's running Demo app and make it new name for it, e.g.: `knotx-example-experiments.json`
+3. Inside that JSON add new object `config` and configure KnotxServer service (take service name from `services` section), 
+but change `httpPort` property only. Let's set it to `9999`.
+```json
+{
+  "services": [
+    "knot:example.io.knotx.KnotxServer",
+    "knot:io.knotx.HttpRepositoryConnector",
+    "knot:io.knotx.FilesystemRepositoryConnector",
+    "knot:io.knotx.FragmentSplitter",
+    "knot:io.knotx.HandlebarsKnot",
+    "knot:io.knotx.ServiceKnot",
+    "knot:example.io.knotx.ActionKnot",
+    "knot:io.knotx.HttpServiceAdapter",
+    "knot:io.knotx.HttpActionAdapter",
+    "knot:io.knotx.RemoteRepositoryMock",
+    "knot:io.knotx.ServiceMock",
+    "knot:io.knotx.ServiceAdapterMock",
+    "knot:io.knotx.ActionAdapterMock"
+  ],
+  "config": {
+    "knot:example.io.knotx.KnotxServer": {
+      "options": {
+        "config": {
+          "httpPort": 9999
+        }
+      }
+    }
+  }
+}
+```
+4. Start Knot.x with your new configuration. Notice in the console, the HTTP Server is now listening on port 9999
+```
+...
+2017-01-03 12:25:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 9999
+2017-01-03 12:25:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+...
+```
+
+### Use JVM properties
+Knot.x can be also reconfigured using JVM properties. With this method, you can set simple values through JVM properties, or provide JSON with the more complex object you want to use to override configuration.
+The syntax of the property is as follows:
+`-D<service-name>.<json-obj-path>=<value>`
+Where:
+- `<service-name>` is the name of the Knot.x service without `knot:` prefix, e.g.: io.knotx.ServiceKnot, etc.
+- `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.httpPort`
+- `<value>` can be simply a value to be set on JSON property, or `file:/path/to/file.json`. Latter type of value, is the json file with JSON Object, that should be used to merge with the object pointed by `<json-obj-path>`.
+  
+E.g.`-Dexample.io.knotx.KnotxServer.options.config.httpPort=7777`
+Or,`-Dexample.io.knotx.KnotxServer.options.config=file:test.json`
+
+Let's modify `httpPort` once again, but this time using JVM property.
+1. Restart Knot.x with your previous config, but this time start java with additional command line option:
+```
+$ java -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/resources/knotx-example-experiments.json
+```
+2. Notice that HTTP Server is listening on port **7777* now, so starter JSON configuration is overwritten.
+```
+...
+2017-01-03 12:35:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777
+2017-01-03 12:35:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+...
+```
+3. Now, create new file on your computer, e.g. `server-options.json` which will have JSON object that should be merged with `options` object of the KnotxServer service.
+In this case, the object will specify how many instances to start. (This can be supplied by simple value instead of JSON file, but for demonstration purposes let do it as below)
+```json
+{
+  "instances": 2
+}
+```
+4. Start Knot.x once again, but this time with new JVM property
+```
+$ java -Dexample.io.knotx.KnotxServer.options=file:server-options.json -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/resources/knotx-example-experiments.json
+```
+5. Notice that Knot.x is started on port **7777* but two instances of KnotxServer where started.
+```
+...
+2017-01-03 12:35:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777
+2017-01-03 12:35:31 [vert.x-eventloop-thread-2] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777
+2017-01-03 12:35:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+...
+```
+
+### Conclusions
+- You can configure Knot.x using starter JSON by providing properties that should be added, or modified.
+- You can configure Knot.x using JVM properties
+- On JVM property, you can specify service and path to the property in service configuration and the value to be set on it
+- On JVM property, instead of the simple value, you can provide JSON file that will be put into the service JSON at appropriate property
+- JVM properties have highest priority

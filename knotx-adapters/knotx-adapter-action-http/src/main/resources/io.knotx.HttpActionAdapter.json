@@ -3,7 +3,7 @@
   "options": {
     "config": {
       "address": "knotx.adapter.action.http",
-      "client.options": {
+      "clientOptions": {
         "maxPoolSize": 1000,
         "keepAlive": false
       },
@@ -12,7 +12,7 @@
           "path": "/service/mock/.*",
           "domain": "localhost",
           "port": 3000,
-          "allowed.request.headers": [
+          "allowedRequestHeaders": [
             "Content-Type",
             "X-*"
           ]
@@ -21,7 +21,7 @@
           "path": "/service/.*",
           "domain": "localhost",
           "port": 8080,
-          "allowed.request.headers": [
+          "allowedRequestHeaders": [
             "Content-Type",
             "X-*"
           ]
