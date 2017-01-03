@@ -8,35 +8,6 @@
     "knot:io.knotx.ActionKnot",
     "knot:io.knotx.HandlebarsKnot",
     "knot:io.knotx.HttpServiceAdapter"
-  ],
-  "config": {
-    "knot:io.knotx.KnotxServer": {
-      "options": {
-        "config": {
-          "httpPort": 9999,
-          "allowedResponseHeaders": [
-            "Access-Control-Allow-Origin",
-            "Allow"
-          ]
-        },
-        "instances": 2
-      }
-    },
-    "knot:io.knotx.ServiceKnot": {
-      "options": {
-        "config": {
-          "services": [
-            {
-              "name": "mock",
-              "address": "mock-service-adapter",
-              "config": {
-                "path": "/service/mock/.*"
-              }
-            }
-          ]
-        }
-      }
-    }
-  }
+  ]
 }
 
