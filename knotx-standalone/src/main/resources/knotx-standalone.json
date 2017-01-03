@@ -1,55 +1,28 @@
 {
   "services": [
-    "io.knotx.KnotxServer",
-    "io.knotx.HttpRepositoryConnector",
-    "io.knotx.FilesystemRepositoryConnector",
-    "io.knotx.FragmentSplitter",
-    "io.knotx.ServiceKnot",
-    "io.knotx.ActionKnot",
-    "io.knotx.HandlebarsKnot",
-    "io.knotx.HttpServiceAdapter"
+    "knot:io.knotx.KnotxServer",
+    "knot:io.knotx.HttpRepositoryConnector",
+    "knot:io.knotx.FilesystemRepositoryConnector",
+    "knot:io.knotx.FragmentSplitter",
+    "knot:io.knotx.ServiceKnot",
+    "knot:io.knotx.ActionKnot",
+    "knot:io.knotx.HandlebarsKnot",
+    "knot:io.knotx.HttpServiceAdapter"
   ],
   "config": {
-    "io.knotx.KnotxServer": {
+    "knot:io.knotx.KnotxServer": {
       "options": {
         "config": {
           "httpPort": 9999,
           "allowedResponseHeaders": [
             "Access-Control-Allow-Origin",
-            "Allow",
-            "Cache-Control",
-            "Content-Disposition",
-            "Content-Encoding",
-            "Content-Language",
-            "Content-Location",
-            "Content-MD5",
-            "Content-Range",
-            "Content-Type",
-            "Content-Length",
-            "Content-Security-Policy",
-            "Date",
-            "ETag",
-            "Expires",
-            "Last-Modified",
-            "Location",
-            "Pragma",
-            "Proxy-Authenticate",
-            "Server",
-            "Set-Cookie",
-            "Status",
-            "Vary",
-            "Via",
-            "X-Frame-Options",
-            "X-XSS-Protection",
-            "X-Content-Type-Options",
-            "X-UA-Compatible",
-            "X-Request-ID"
+            "Allow"
           ]
-        }
-      },
-      "instances": 2
+        },
+        "instances": 2
+      }
     },
-    "io.knotx.ServiceKnot": {
+    "knot:io.knotx.ServiceKnot": {
       "options": {
         "config": {
           "services": [

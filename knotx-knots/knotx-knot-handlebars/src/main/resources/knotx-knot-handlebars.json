@@ -1,5 +1,5 @@
 {
   "services": [
-    "io.knotx.HandlebarsKnot"
+    "knot:io.knotx.HandlebarsKnot"
   ]
 }

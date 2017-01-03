@@ -1,6 +1,6 @@
 {
   "services": [
-    "test.io.knotx.HttpActionAdapter",
-    "test.io.knotx.MockService"
+    "knot:test.io.knotx.HttpActionAdapter",
+    "knot:test.io.knotx.MockService"
   ]
 }

@@ -1,17 +1,17 @@
 {
   "services": [
-    "test.io.knotx.KnotxServer",
-    "io.knotx.HttpRepositoryConnector",
-    "io.knotx.FilesystemRepositoryConnector",
-    "io.knotx.FragmentSplitter",
-    "io.knotx.HandlebarsKnot",
-    "example.io.knotx.ServiceKnot",
-    "example.io.knotx.ActionKnot",
-    "example.io.knotx.HttpServiceAdapter",
-    "example.io.knotx.HttpActionAdapter",
-    "io.knotx.RemoteRepositoryMock",
-    "io.knotx.ServiceMock",
-    "io.knotx.ServiceAdapterMock",
-    "io.knotx.ActionAdapterMock"
+    "knot:test.io.knotx.KnotxServer",
+    "knot:io.knotx.HttpRepositoryConnector",
+    "knot:io.knotx.FilesystemRepositoryConnector",
+    "knot:io.knotx.FragmentSplitter",
+    "knot:io.knotx.HandlebarsKnot",
+    "knot:example.io.knotx.ServiceKnot",
+    "knot:example.io.knotx.ActionKnot",
+    "knot:example.io.knotx.HttpServiceAdapter",
+    "knot:example.io.knotx.HttpActionAdapter",
+    "knot:io.knotx.RemoteRepositoryMock",
+    "knot:io.knotx.ServiceMock",
+    "knot:io.knotx.ServiceAdapterMock",
+    "knot:io.knotx.ActionAdapterMock"
   ]
 }

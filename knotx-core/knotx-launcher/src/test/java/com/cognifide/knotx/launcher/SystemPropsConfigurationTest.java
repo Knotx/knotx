@@ -88,8 +88,7 @@ public class SystemPropsConfigurationTest {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
     
-    JsonObject descriptor = getDescriptor();
-    systemPropsConfiguration.updateJsonObject(descriptor);
+    JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptor());
     
     assertEquals(3, descriptor.getJsonObject("options").getJsonObject("config").size());
     assertEquals("value", descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
@@ -104,8 +103,7 @@ public class SystemPropsConfigurationTest {
     System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfig.json");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
     
-    JsonObject descriptor = getDescriptor();
-    systemPropsConfiguration.updateJsonObject(descriptor);
+    JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptor());
     
     assertEquals(7, descriptor.getJsonObject("options").getJsonObject("config").size());
   
@@ -135,8 +133,7 @@ public class SystemPropsConfigurationTest {
     System.setProperty("io.knotx.KnotxServer.options.config.someData", "file:src/test/resources/sampleConfig.json");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
     
-    JsonObject descriptor = getDescriptor();
-    systemPropsConfiguration.updateJsonObject(descriptor);
+    JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptor());
     
     assertEquals("default", descriptor.getJsonObject("options").getString("haGroup"));
     
@@ -163,8 +160,7 @@ public class SystemPropsConfigurationTest {
     System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfigArray.json");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
   
-    JsonObject descriptor = getDescriptorArray();
-    systemPropsConfiguration.updateJsonObject(descriptor);
+    JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptorArray());
   
     assertEquals(6, descriptor.getJsonObject("options").getJsonObject("config").size());
     assertEquals("value", descriptor.getJsonObject("options").getJsonObject("config").getString("address"));

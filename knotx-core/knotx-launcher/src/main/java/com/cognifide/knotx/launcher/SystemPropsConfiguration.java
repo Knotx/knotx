@@ -55,11 +55,18 @@ public class SystemPropsConfiguration {
         ));
   }
   
-  public void updateJsonObject(JsonObject descriptor) {
+  /**
+   * Update given JsonObject with the data provided in system property during Knotx start.
+   * In order to provide such overrides you can use two approches:
+   * - -Dio.knotx.KnotxServer.httpPort=9999, -Dio.knotx.KnotxServer.splitter.address=other-address -> this will override one property with the value given after '='
+   * - -Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json file from the field specified
+   */
+  public JsonObject updateJsonObject(JsonObject descriptor) {
+    final JsonObject object = descriptor.copy();
     envConfig.entrySet().forEach(
         entry -> {
           String[] path = StringUtils.split(entry.getKey(), ".");
-          JsonObject element = descriptor;
+          JsonObject element = object;
           for (int idx = 0; idx < path.length; idx++) {
             if (idx < path.length - 1) {
               element = element.getJsonObject(path[idx]);
@@ -73,6 +80,7 @@ public class SystemPropsConfiguration {
           }
         }
     );
+    return object;
   }
   
   

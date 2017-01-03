@@ -28,9 +28,11 @@ import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import io.vertx.core.Context;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
@@ -40,6 +42,8 @@ import rx.Observable;
 public class KnotxStarterVerticle extends AbstractVerticle {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
+  public static final String CONFIG_OVERRIDE = "config";
+  public static final String SERVICE_OPTIONS = "options";
   
   @Override
   public void init(Vertx vertx, Context context) {
@@ -58,7 +62,6 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> startFuture) throws Exception {
     Observable.from(config().getJsonArray("services"))
-        .map(service -> "knot:" + service)
         .flatMap(this::deployVerticle)
         .compose(joinDeployments())
         .subscribe(
@@ -73,9 +76,20 @@ public class KnotxStarterVerticle extends AbstractVerticle {
         );
   }
   
-  private Observable<Pair<String, String>> deployVerticle(final String service) {
-    return vertx.deployVerticleObservable(service)
-        .map(deploymentID -> Pair.of(service, deploymentID));
+  private Observable<Pair<String, String>> deployVerticle(final Object service) {
+    return vertx.deployVerticleObservable((String) service, getServiceOptions((String) service))
+        .map(deploymentID -> Pair.of((String) service, deploymentID));
+  }
+  
+  private DeploymentOptions getServiceOptions(final String service) {
+    DeploymentOptions deploymentOptions = new DeploymentOptions();
+    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE).containsKey(service)) {
+      JsonObject serviceConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(service);
+      if (serviceConfig.containsKey(SERVICE_OPTIONS)) {
+        deploymentOptions.fromJson(serviceConfig.getJsonObject(SERVICE_OPTIONS));
+      }
+    }
+    return deploymentOptions;
   }
   
   private Observable.Transformer<Pair<String, String>, String> joinDeployments() {

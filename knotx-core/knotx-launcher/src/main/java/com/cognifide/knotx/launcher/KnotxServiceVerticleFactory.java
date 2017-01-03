@@ -45,24 +45,27 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
       String main = readVerticleMainClass(descriptor, descriptorFile);
       
       // Any options specified in the service config will override anything specified at deployment time
-      // With the exception of config which can be overridden with config provided at deployment time
+      // Options and Config specified in knotx starter JSON will override those configurations
       JsonObject depOptions = deploymentOptions.toJson();
       JsonObject depConfig = depOptions.getJsonObject("config", new JsonObject());
       
-      //Updates JSON descriptor with values provided as env variables
-      // -Dio.knotx.KnotxServer.httpPort=9999
-      // -Dio.knotx.KnotxServer.splitter.address=other-address
-      // -Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json
-      SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(identifier);
-      systemPropsConfiguration.updateJsonObject(descriptor);
-      
       JsonObject knotOptions = descriptor.getJsonObject("options", new JsonObject());
       JsonObject knotConfig = knotOptions.getJsonObject("config", new JsonObject());
-      
       depOptions.mergeIn(knotOptions);
       knotConfig.mergeIn(depConfig);
-      depOptions.put("config", knotConfig);
       
+      // Any options or config provided by system properites will override anything specified
+      // at deployment time and on starter Json config
+      SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(identifier);
+      if (!systemPropsConfiguration.envConfig().isEmpty()) {
+        JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
+        JsonObject updatedKnotOptions = updatedDescriptor.getJsonObject("options", new JsonObject());
+        JsonObject updatedKnotConfig = updatedKnotOptions.getJsonObject("config", new JsonObject());
+        depOptions.mergeIn(updatedKnotOptions);
+        knotConfig.mergeIn(updatedKnotConfig);
+      }
+      
+      depOptions.put("config", knotConfig);
       deploymentOptions.fromJson(depOptions);
       resolution.complete(main);
     } catch (Exception e) {
