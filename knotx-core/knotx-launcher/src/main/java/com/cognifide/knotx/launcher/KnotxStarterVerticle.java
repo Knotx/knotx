@@ -40,25 +40,25 @@ import org.apache.commons.lang3.tuple.Pair;
 import rx.Observable;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
-  
-  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
+
   public static final String CONFIG_OVERRIDE = "config";
   public static final String SERVICE_OPTIONS = "options";
-  
+  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
+
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    
+
     EventBus eventBus = (EventBus) this.vertx.eventBus().getDelegate();
     eventBus.registerDefaultCodec(AdapterRequest.class, new AdapterRequestCodec());
     eventBus.registerDefaultCodec(AdapterResponse.class, new AdapterResponseCodec());
     eventBus.registerDefaultCodec(ClientRequest.class, new ClientRequestCodec());
     eventBus.registerDefaultCodec(ClientResponse.class, new ClientResponseCodec());
     eventBus.registerDefaultCodec(KnotContext.class, new KnotContextCodec());
-    
+
     vertx.registerVerticleFactory(new KnotxServiceVerticleFactory());
   }
-  
+
   @Override
   public void start(Future<Void> startFuture) throws Exception {
     Observable.from(config().getJsonArray("services"))
@@ -75,12 +75,12 @@ public class KnotxStarterVerticle extends AbstractVerticle {
             }
         );
   }
-  
+
   private Observable<Pair<String, String>> deployVerticle(final Object service) {
     return vertx.deployVerticleObservable((String) service, getServiceOptions((String) service))
         .map(deploymentID -> Pair.of((String) service, deploymentID));
   }
-  
+
   private DeploymentOptions getServiceOptions(final String service) {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
     if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE).containsKey(service)) {
@@ -91,13 +91,13 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     }
     return deploymentOptions;
   }
-  
+
   private Observable.Transformer<Pair<String, String>, String> joinDeployments() {
     return observable ->
         observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()), this::collectDeployment)
             .map(StringBuilder::toString);
   }
-  
+
   private StringBuilder collectDeployment(StringBuilder accumulator, Pair<String, String> deploymentId) {
     return accumulator
         .append(String.format("\t\tDeployed %s [%s]", deploymentId.getRight(), deploymentId.getLeft()))

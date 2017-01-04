@@ -17,11 +17,6 @@
  */
 package com.cognifide.knotx.adapter.service.http;
 
-import com.cognifide.knotx.launcher.junit.FileReader;
-import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
-import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
-import com.google.common.collect.Lists;
-
 import com.cognifide.knotx.adapter.common.exception.UnsupportedServiceException;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.adapter.common.http.ServiceMetadata;
@@ -29,19 +24,10 @@ import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.junit.Logback;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
-
+import com.cognifide.knotx.launcher.junit.FileReader;
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.google.common.collect.Lists;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -52,6 +38,16 @@ import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import rx.Observable;
 
 @RunWith(VertxUnitRunner.class)
@@ -60,7 +56,7 @@ public class HttpClientFacadeTest {
   // Configuration
 
   private static final Integer PORT = 3000;
-  
+
   private static final String DOMAIN = "localhost";
 
   private static final String PATH = "/services/mock.*";
@@ -113,7 +109,9 @@ public class HttpClientFacadeTest {
     MultiMap requestParams = MultiMap.caseInsensitiveMultiMap().add("dynamicValue", "first");
 
     Observable<ClientResponse> result =
-        clientFacade.process(payloadMessage(new JsonObject().put("path", "/services/mock/{param.dynamicValue}.json"), clientRequest.setParams(requestParams)), HttpMethod.POST);
+        clientFacade
+            .process(payloadMessage(new JsonObject().put("path", "/services/mock/{param.dynamicValue}.json"), clientRequest.setParams(requestParams)),
+                HttpMethod.POST);
 
     // then
     result.subscribe(

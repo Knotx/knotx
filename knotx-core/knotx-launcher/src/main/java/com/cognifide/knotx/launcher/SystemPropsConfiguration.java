@@ -28,11 +28,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class SystemPropsConfiguration {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SystemPropsConfiguration.class);
-  
+
   private Map<String, Value> envConfig = Maps.newHashMap();
-  
+
   public SystemPropsConfiguration(String identifier) {
     envConfig = System.getProperties()
         .entrySet()
@@ -54,12 +54,12 @@ public class SystemPropsConfiguration {
             entry -> new Value(((String) entry.getValue()))
         ));
   }
-  
+
   /**
-   * Update given JsonObject with the data provided in system property during Knotx start.
-   * In order to provide such overrides you can use two approches:
-   * - -Dio.knotx.KnotxServer.httpPort=9999, -Dio.knotx.KnotxServer.splitter.address=other-address -> this will override one property with the value given after '='
-   * - -Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json file from the field specified
+   * Update given JsonObject with the data provided in system property during Knotx start. In order to provide such overrides you can use two
+   * approches: - -Dio.knotx.KnotxServer.httpPort=9999, -Dio.knotx.KnotxServer.splitter.address=other-address -> this will override one property with
+   * the value given after '=' - -Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json file from the field
+   * specified
    */
   public JsonObject updateJsonObject(JsonObject descriptor) {
     final JsonObject object = descriptor.copy();
@@ -82,17 +82,17 @@ public class SystemPropsConfiguration {
     );
     return object;
   }
-  
-  
+
+
   public Map<String, Value> envConfig() {
     return envConfig;
   }
-  
+
   protected class Value {
-    
+
     private static final String FILE_PREFIX = "file:";
     private Object var;
-    
+
     public Value(String value) {
       if ("true".equals(value) || "false".equals(value)) {
         var = Boolean.valueOf(value);
@@ -109,7 +109,7 @@ public class SystemPropsConfiguration {
         var = value;
       }
     }
-    
+
     public Object getObject() {
       return var;
     }

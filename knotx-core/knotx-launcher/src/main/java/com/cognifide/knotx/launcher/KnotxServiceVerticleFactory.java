@@ -29,12 +29,12 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class KnotxServiceVerticleFactory implements VerticleFactory {
-  
+
   @Override
   public boolean requiresResolve() {
     return true;
   }
-  
+
   @Override
   public void resolve(String id, DeploymentOptions deploymentOptions, ClassLoader classLoader,
       Future<String> resolution) {
@@ -43,17 +43,17 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
     try {
       JsonObject descriptor = readDescriptor(classLoader, descriptorFile);
       String main = readVerticleMainClass(descriptor, descriptorFile);
-      
+
       // Any options specified in the service config will override anything specified at deployment time
       // Options and Config specified in knotx starter JSON will override those configurations
       JsonObject depOptions = deploymentOptions.toJson();
       JsonObject depConfig = depOptions.getJsonObject("config", new JsonObject());
-      
+
       JsonObject knotOptions = descriptor.getJsonObject("options", new JsonObject());
       JsonObject knotConfig = knotOptions.getJsonObject("config", new JsonObject());
       depOptions.mergeIn(knotOptions);
       knotConfig.mergeIn(depConfig);
-      
+
       // Any options or config provided by system properites will override anything specified
       // at deployment time and on starter Json config
       SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(identifier);
@@ -64,7 +64,7 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
         depOptions.mergeIn(updatedKnotOptions);
         knotConfig.mergeIn(updatedKnotConfig);
       }
-      
+
       depOptions.put("config", knotConfig);
       deploymentOptions.fromJson(depOptions);
       resolution.complete(main);
@@ -72,12 +72,12 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
       resolution.fail(e);
     }
   }
-  
+
   @Override
   public String prefix() {
     return "knotx";
   }
-  
+
   private String readVerticleMainClass(JsonObject descriptor, String descriptorFile) {
     String main = descriptor.getString("main");
     if (main == null) {
@@ -85,12 +85,12 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
     }
     return main;
   }
-  
+
   @Override
   public Verticle createVerticle(String verticleName, ClassLoader classLoader) throws Exception {
     throw new IllegalStateException("Shouldn't be called");
   }
-  
+
   private JsonObject readDescriptor(ClassLoader classLoader, String descriptorFile) throws IOException {
     JsonObject descriptor;
     try (InputStream is = classLoader.getResourceAsStream(descriptorFile)) {
@@ -107,8 +107,8 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
         throw new IllegalArgumentException(descriptorFile + " contains invalid json");
       }
     }
-    
+
     return descriptor;
   }
-  
+
 }
