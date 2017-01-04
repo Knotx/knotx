@@ -1,5 +1,5 @@
 {
   "services": [
-    "knot:io.knotx.HttpRepositoryConnector"
+    "knotx:io.knotx.HttpRepositoryConnector"
   ]
 }

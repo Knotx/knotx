@@ -75,7 +75,7 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
   
   @Override
   public String prefix() {
-    return "knot";
+    return "knotx";
   }
   
   private String readVerticleMainClass(JsonObject descriptor, String descriptorFile) {

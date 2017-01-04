@@ -1,8 +1,8 @@
 {
   "services": [
-    "knot:io.knotx.RemoteRepositoryMock",
-    "knot:io.knotx.ServiceMock",
-    "knot:io.knotx.ServiceAdapterMock",
-    "knot:io.knotx.ActionAdapterMock"
+    "knotx:io.knotx.RemoteRepositoryMock",
+    "knotx:io.knotx.ServiceMock",
+    "knotx:io.knotx.ServiceAdapterMock",
+    "knotx:io.knotx.ActionAdapterMock"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "services": [
-    "knot:test.io.knotx.KnotxServer",
-    "knot:test.io.knotx.FileSystemConnector"
+    "knotx:test.io.knotx.KnotxServer",
+    "knotx:test.io.knotx.FileSystemConnector"
   ]
 }

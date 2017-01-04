@@ -1,5 +1,5 @@
 {
   "services": [
-    "knot:io.knotx.KnotxServer"
+    "knotx:io.knotx.KnotxServer"
   ]
 }

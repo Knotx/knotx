@@ -1,5 +1,5 @@
 {
   "services": [
-    "knot:io.knotx.HttpServiceAdapter"
+    "knotx:io.knotx.HttpServiceAdapter"
   ]
 }

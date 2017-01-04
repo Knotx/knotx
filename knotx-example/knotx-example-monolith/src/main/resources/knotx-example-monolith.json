@@ -1,21 +1,21 @@
 {
   "services": [
-    "knot:example.io.knotx.KnotxServer",
-    "knot:io.knotx.HttpRepositoryConnector",
-    "knot:io.knotx.FilesystemRepositoryConnector",
-    "knot:io.knotx.FragmentSplitter",
-    "knot:io.knotx.HandlebarsKnot",
-    "knot:io.knotx.ServiceKnot",
-    "knot:example.io.knotx.ActionKnot",
-    "knot:io.knotx.HttpServiceAdapter",
-    "knot:io.knotx.HttpActionAdapter",
-    "knot:io.knotx.RemoteRepositoryMock",
-    "knot:io.knotx.ServiceMock",
-    "knot:io.knotx.ServiceAdapterMock",
-    "knot:io.knotx.ActionAdapterMock"
+    "knotx:example.io.knotx.KnotxServer",
+    "knotx:io.knotx.HttpRepositoryConnector",
+    "knotx:io.knotx.FilesystemRepositoryConnector",
+    "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.ServiceKnot",
+    "knotx:example.io.knotx.ActionKnot",
+    "knotx:io.knotx.HttpServiceAdapter",
+    "knotx:io.knotx.HttpActionAdapter",
+    "knotx:io.knotx.RemoteRepositoryMock",
+    "knotx:io.knotx.ServiceMock",
+    "knotx:io.knotx.ServiceAdapterMock",
+    "knotx:io.knotx.ActionAdapterMock"
   ],
   "config": {
-    "knot:io.knotx.ServiceKnot": {
+    "knotx:io.knotx.ServiceKnot": {
       "options": {
         "config": {
           "services": [
@@ -50,7 +50,7 @@
         }
       }
     },
-    "knot:io.knotx.HttpActionAdapter": {
+    "knotx:io.knotx.HttpActionAdapter": {
       "options": {
         "config": {
           "allowedRequestHeaders": [

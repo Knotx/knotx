@@ -1,5 +1,5 @@
 {
   "services": [
-    "knot:test.io.knotx.ActionKnot"
+    "knotx:test.io.knotx.ActionKnot"
   ]
 }

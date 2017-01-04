@@ -43,14 +43,14 @@ As mentioned above, the knotx-starter.json is the main configuration file descri
 ```json
 {
   "services": [
-    "knot:io.knotx.KnotxServer",
-    "knot:io.knotx.HttpRepositoryConnector",
-    "knot:io.knotx.FilesystemRepositoryConnector",
-    "knot:io.knotx.FragmentSplitter",
-    "knot:io.knotx.ServiceKnot",
-    "knot:io.knotx.ActionKnot",
-    "knot:io.knotx.HandlebarsKnot",
-    "knot:io.knotx.HttpServiceAdapter"
+    "knotx:io.knotx.KnotxServer",
+    "knotx:io.knotx.HttpRepositoryConnector",
+    "knotx:io.knotx.FilesystemRepositoryConnector",
+    "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.ServiceKnot",
+    "knotx:io.knotx.ActionKnot",
+    "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.HttpServiceAdapter"
   ]
 }
 ```
@@ -69,17 +69,17 @@ For instance, you want to modify configuration of KnotxServer service, you can d
 ```json
 {
   "services": [
-    "knot:io.knotx.KnotxServer",
-    "knot:io.knotx.HttpRepositoryConnector",
-    "knot:io.knotx.FilesystemRepositoryConnector",
-    "knot:io.knotx.FragmentSplitter",
-    "knot:io.knotx.ServiceKnot",
-    "knot:io.knotx.ActionKnot",
-    "knot:io.knotx.HandlebarsKnot",
-    "knot:io.knotx.HttpServiceAdapter"
+    "knotx:io.knotx.KnotxServer",
+    "knotx:io.knotx.HttpRepositoryConnector",
+    "knotx:io.knotx.FilesystemRepositoryConnector",
+    "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.ServiceKnot",
+    "knotx:io.knotx.ActionKnot",
+    "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.HttpServiceAdapter"
   ],
   "config": {
-    "knot:io.knotx.KnotxServer" : {
+    "knotx:io.knotx.KnotxServer" : {
       "options": {
         "config": {
           "httpPort": 9999
@@ -152,11 +152,11 @@ Next step, is to use your new service in `knotx-starter.json`.
 ```json
 {
   "services": [
-    "knot:my.KnotxServer",
+    "knotx:my.KnotxServer",
     "......"
   ],
   "config": {
-    "knot:my.KnotxServer": {
+    "knotx:my.KnotxServer": {
       "options": {
         "config": {
         

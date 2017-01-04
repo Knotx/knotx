@@ -1,5 +1,5 @@
 {
   "services": [
-    "knot:io.knotx.FragmentSplitter"
+    "knotx:io.knotx.FragmentSplitter"
   ]
 }

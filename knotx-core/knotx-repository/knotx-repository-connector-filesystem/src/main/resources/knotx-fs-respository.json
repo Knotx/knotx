@@ -1,5 +1,5 @@
 {
   "services": [
-    "knot:io.knotx.FilesystemRepositoryConnector"
+    "knotx:io.knotx.FilesystemRepositoryConnector"
   ]
 }

@@ -48,19 +48,19 @@ You will see output similar to the following:
 2017-01-03 12:25:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
 2017-01-03 12:25:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
-                Deployed 2c037987-b4ad-4609-9080-f51e09609564 [knot:io.knotx.FilesystemRepositoryConnector]
-                Deployed cf16eae3-ebd9-451f-9795-e07ba38ecf82 [knot:io.knotx.FragmentSplitter]
-                Deployed 6ad50647-f6da-46d7-9522-ada87fa964c8 [knot:example.io.knotx.ActionKnot]
-                Deployed 889de10e-701f-4a67-872a-85a2a98d5c4e [knot:example.io.knotx.ServiceKnot]
-                Deployed fa9e552b-7ed2-423c-94f7-be2f7ed22340 [knot:io.knotx.ServiceAdapterMock]
-                Deployed 1b32ea8c-0c16-410e-97b3-347613890db8 [knot:io.knotx.HandlebarsKnot]
-                Deployed 6adcb862-057c-4f68-886c-35ca6a5b509f [knot:io.knotx.ActionAdapterMock]
-                Deployed a3e1617e-61b0-4862-b49e-3b94063af755 [knot:io.knotx.HttpRepositoryConnector]
-                Deployed 7b564688-d1eb-48a1-8e14-0d437630e9d7 [knot:example.io.knotx.HttpServiceAdapter]
-                Deployed 6b460934-3914-4b28-8685-45ee3af11cf6 [knot:example.io.knotx.HttpActionAdapter]
-                Deployed 2a6d2769-2dad-4dc2-a5d4-ac23dbdeb781 [knot:io.knotx.ServiceMock]
-                Deployed e7c0d7f3-9f67-49bb-8eac-a381550050b0 [knot:example.io.knotx.KnotxServer]
-                Deployed 94c4ddac-656b-487e-b471-a0c7844593f7 [knot:io.knotx.RemoteRepositoryMock]
+                Deployed 2c037987-b4ad-4609-9080-f51e09609564 [knotx:io.knotx.FilesystemRepositoryConnector]
+                Deployed cf16eae3-ebd9-451f-9795-e07ba38ecf82 [knotx:io.knotx.FragmentSplitter]
+                Deployed 6ad50647-f6da-46d7-9522-ada87fa964c8 [knotx:example.io.knotx.ActionKnot]
+                Deployed 889de10e-701f-4a67-872a-85a2a98d5c4e [knotx:example.io.knotx.ServiceKnot]
+                Deployed fa9e552b-7ed2-423c-94f7-be2f7ed22340 [knotx:io.knotx.ServiceAdapterMock]
+                Deployed 1b32ea8c-0c16-410e-97b3-347613890db8 [knotx:io.knotx.HandlebarsKnot]
+                Deployed 6adcb862-057c-4f68-886c-35ca6a5b509f [knotx:io.knotx.ActionAdapterMock]
+                Deployed a3e1617e-61b0-4862-b49e-3b94063af755 [knotx:io.knotx.HttpRepositoryConnector]
+                Deployed 7b564688-d1eb-48a1-8e14-0d437630e9d7 [knotx:example.io.knotx.HttpServiceAdapter]
+                Deployed 6b460934-3914-4b28-8685-45ee3af11cf6 [knotx:example.io.knotx.HttpActionAdapter]
+                Deployed 2a6d2769-2dad-4dc2-a5d4-ac23dbdeb781 [knotx:io.knotx.ServiceMock]
+                Deployed e7c0d7f3-9f67-49bb-8eac-a381550050b0 [knotx:example.io.knotx.KnotxServer]
+                Deployed 94c4ddac-656b-487e-b471-a0c7844593f7 [knotx:io.knotx.RemoteRepositoryMock]
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:
@@ -102,22 +102,22 @@ but change `httpPort` property only. Let's set it to `9999`.
 ```json
 {
   "services": [
-    "knot:example.io.knotx.KnotxServer",
-    "knot:io.knotx.HttpRepositoryConnector",
-    "knot:io.knotx.FilesystemRepositoryConnector",
-    "knot:io.knotx.FragmentSplitter",
-    "knot:io.knotx.HandlebarsKnot",
-    "knot:io.knotx.ServiceKnot",
-    "knot:example.io.knotx.ActionKnot",
-    "knot:io.knotx.HttpServiceAdapter",
-    "knot:io.knotx.HttpActionAdapter",
-    "knot:io.knotx.RemoteRepositoryMock",
-    "knot:io.knotx.ServiceMock",
-    "knot:io.knotx.ServiceAdapterMock",
-    "knot:io.knotx.ActionAdapterMock"
+    "knotx:example.io.knotx.KnotxServer",
+    "knotx:io.knotx.HttpRepositoryConnector",
+    "knotx:io.knotx.FilesystemRepositoryConnector",
+    "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.ServiceKnot",
+    "knotx:example.io.knotx.ActionKnot",
+    "knotx:io.knotx.HttpServiceAdapter",
+    "knotx:io.knotx.HttpActionAdapter",
+    "knotx:io.knotx.RemoteRepositoryMock",
+    "knotx:io.knotx.ServiceMock",
+    "knotx:io.knotx.ServiceAdapterMock",
+    "knotx:io.knotx.ActionAdapterMock"
   ],
   "config": {
-    "knot:example.io.knotx.KnotxServer": {
+    "knotx:example.io.knotx.KnotxServer": {
       "options": {
         "config": {
           "httpPort": 9999
@@ -140,7 +140,7 @@ Knot.x can be also reconfigured using JVM properties. With this method, you can 
 The syntax of the property is as follows:
 `-D<service-name>.<json-obj-path>=<value>`
 Where:
-- `<service-name>` is the name of the Knot.x service without `knot:` prefix, e.g.: io.knotx.ServiceKnot, etc.
+- `<service-name>` is the name of the Knot.x service without `knotx:` prefix, e.g.: io.knotx.ServiceKnot, etc.
 - `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.httpPort`
 - `<value>` can be simply a value to be set on JSON property, or `file:/path/to/file.json`. Latter type of value, is the json file with JSON Object, that should be used to merge with the object pointed by `<json-obj-path>`.
   
