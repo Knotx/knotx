@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Http Repository Connector Verticle
+ * Knot.x - Reactive microservice assembler - Launcher
  *
  * Copyright (C) 2016 Cognifide Limited
  *

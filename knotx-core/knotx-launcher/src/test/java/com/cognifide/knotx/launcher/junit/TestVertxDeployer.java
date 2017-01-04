@@ -1,5 +1,5 @@
 /*
- * Knot.x - Sample App with Mock service
+ * Knot.x - Reactive microservice assembler - Launcher
  *
  * Copyright (C) 2016 Cognifide Limited
  *
