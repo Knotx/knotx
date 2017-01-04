@@ -1,0 +1,24 @@
+{
+  "main": "com.cognifide.knotx.knot.action.ActionKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.action",
+      "adapters": [
+        {
+          "name": "action-self",
+          "address": "test",
+          "params": {
+            "example": "example-value"
+          },
+          "allowedRequestHeaders": [
+            "Cookie"
+          ],
+          "allowedResponseHeaders": [
+            "Set-Cookie"
+          ]
+        }
+      ],
+      "formIdentifierName": "snippet-identifier"
+    }
+  }
+}

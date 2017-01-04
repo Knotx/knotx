@@ -59,6 +59,6 @@ public class MockActionAdapterVerticle extends AbstractVerticle {
   }
 
   private MockActionAdapterHandler createHandler() {
-    return new MockActionAdapterHandler(config().getString("mock.data.root"), vertx.fileSystem());
+    return new MockActionAdapterHandler(config().getString("mockDataRoot"), vertx.fileSystem());
   }
 }

@@ -8,32 +8,49 @@ The diagram below depicts Knot.x modules and request flow in more details.
 [[assets/knotx-http-repository.png|alt=Http Repository Connector]]
 
 ## How to configure?
-Http Repository Connector is deployed as a separate Verticle, depending on how it's deployed. 
-You need to supply **Http Repository Connector** configuration as JSON below if deployed as Http Repository Connector Verticle fat jar.
+Http Repository Connector is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+
+Default configuration shipped with the verticle as `io.knotx.HttpRepositoryConnector.json` file available in classpath.
+
 ```json
-"address": "knotx.core.repository.http",
-"client.options": {
-  "maxPoolSize": 1000,
-  "keepAlive": false,
-  "tryUseCompression": true
-},
-"client.destination" : {
-  "domain": "localhost",
-  "port": 3001
+{
+  "main": "com.cognifide.knotx.repository.HttpRepositoryConnectorVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.core.repository.http",
+      "clientOptions": {
+        "maxPoolSize": 1000,
+        "keepAlive": false,
+        "tryUseCompression": true
+      },
+      "clientDestination": {
+        "domain": "localhost",
+        "port": 3001
+      },
+      "allowedRequestHeaders": [
+        "Accept*",
+        "Authorization",
+        "Connection",
+        "Cookie",
+        "Date",
+        "Host",
+        "If*",
+        "Origin",
+        "Pragma",
+        "Proxy-Authorization",
+        "User-Agent",
+        "Via",
+        "X-*"
+      ]
+    }
+  }
 }
 ```
-Or, above configuration wrapped in the JSON `config` section as shown below, if deployed using Knot.x starter verticle.
-```json
-  "verticles": {
-    ...,
-    "com.cognifide.knotx.repository.HttpRepositoryConnectorVerticle": {
-      "config": {
-         "PUT YOUR CONFIG HERE"
-      }
-    },
-    ...,
-  }
-```
+In general, it:
+- Listens on event bus address `knotx.core.repository.http` for requests to the repository
+- It uses certain HTTP Client options while communicating with the remote repository
+- It defines destination of the remote repository
+- And specifies certain request headers from client request that are being passed to the remote repository
 
 Detailed description of each configuration option is described in next section.
 
@@ -43,8 +60,8 @@ Main options available.
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
 | `address`                   | `String`                            | &#10004;       | Event Bus address of Http Repository Connector Verticle |
-| `client.options`            | `HttpClientOptions`                 | &#10004;       | HTTP Client options used when communicating with the destination repository. See [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) to get all options supported.|
-| `client.destination`        | `JsonObject`                        | &#10004;       | Allows to specify **domain** and **port** of the HTTP Repository endpoint |
+| `clientOptions`             | `HttpClientOptions`                 | &#10004;       | HTTP Client options used when communicating with the destination repository. See [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) to get all options supported.|
+| `clientDestination`         | `JsonObject`                        | &#10004;       | Allows to specify **domain** and **port** of the HTTP Repository endpoint |
 
 ### Destination options
 

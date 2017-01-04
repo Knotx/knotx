@@ -19,8 +19,8 @@ package com.cognifide.knotx.knot.service.service;
 
 
 import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
-import com.cognifide.knotx.junit.FileReader;
 
+import com.cognifide.knotx.launcher.junit.FileReader;
 import org.jsoup.nodes.Attribute;
 import org.junit.Assert;
 import org.junit.Before;
