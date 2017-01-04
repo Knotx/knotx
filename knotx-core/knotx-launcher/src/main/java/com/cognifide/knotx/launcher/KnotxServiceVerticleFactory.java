@@ -22,6 +22,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Verticle;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.VerticleFactory;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +31,8 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class KnotxServiceVerticleFactory implements VerticleFactory {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServiceVerticleFactory.class);
 
   @Override
   public boolean requiresResolve() {
@@ -56,13 +60,17 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
 
       // Any options or config provided by system properites will override anything specified
       // at deployment time and on starter Json config
-      SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(identifier);
-      if (!systemPropsConfiguration.envConfig().isEmpty()) {
-        JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
-        JsonObject updatedKnotOptions = updatedDescriptor.getJsonObject("options", new JsonObject());
-        JsonObject updatedKnotConfig = updatedKnotOptions.getJsonObject("config", new JsonObject());
-        depOptions.mergeIn(updatedKnotOptions);
-        knotConfig.mergeIn(updatedKnotConfig);
+      try {
+        SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(identifier);
+        if (!systemPropsConfiguration.envConfig().isEmpty()) {
+          JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
+          JsonObject updatedKnotOptions = updatedDescriptor.getJsonObject("options", new JsonObject());
+          JsonObject updatedKnotConfig = updatedKnotOptions.getJsonObject("config", new JsonObject());
+          depOptions.mergeIn(updatedKnotOptions);
+          knotConfig.mergeIn(updatedKnotConfig);
+        }
+      } catch (IllegalArgumentException ex) {
+        LOGGER.warn("Unable to parse given system properties due to exception", ex);
       }
 
       depOptions.put("config", knotConfig);

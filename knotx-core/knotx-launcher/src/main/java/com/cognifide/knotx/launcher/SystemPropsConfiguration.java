@@ -109,6 +109,7 @@ public class SystemPropsConfiguration {
           var = new JsonObject(FileUtils.readFileToString(new File(objectPath), "UTF-8"));
         } catch (Exception e) {
           LOGGER.error("Unable to read/parse Json Object from the given path: {}", objectPath);
+          throw new IllegalArgumentException(e);
         }
       } else {
         var = value;
