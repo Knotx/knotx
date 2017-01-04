@@ -110,7 +110,7 @@ In general, it:
   - It pass the example parameter to the adapter
   - It pass `Cookie` request header to the adapter
   - It returns `Set-Cookie` response header from adapter
-- It uses `snippet-identifier` value as hidden field of form identifier
+- It uses `snippet-identifier` value as hidden field name that's used by Action Knot to identify form that sent POST request
 
 Detailed description of each configuration option is described in the next subsection.
 

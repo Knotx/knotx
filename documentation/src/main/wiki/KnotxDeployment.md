@@ -56,12 +56,12 @@ As mentioned above, the knotx-starter.json is the main configuration file descri
 ```
 As you see, it simply have list of services (verticles) that Knot.x should start. Out of the box, no other configuration is required as each verticle is shipped with default config.
 
-However, it the production environment you must alter the configuration parameters such as http Port HTTP server listens on, or HTTP headers that are being passed, or finally addresses to the client services that are going to be used for rendering dynamic content.
+However, at the production environment you must alter the configuration parameters such as http Port HTTP server listens on, or HTTP headers that are being passed, or finally addresses to the client services that are going to be used for rendering dynamic content.
 
-Thanks, to the Knot.x capabilities you can provide your configurations that modifies defaults. There are two ways:
+Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are two ways:
 - in your `knotx-starter.json` file add `config` section where you can put configuration for each verticle you want to modify - but only elements that you need to change. Follow the guide of each verticle to see the supported parameters.
-- through JVM properties, you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. Any parameter provided through system properties will always overwrite default and starter values.
-- in some scenarios, it's also possible to create your own service that uses Knot.x core verticle, where you can build the configuration from scratch. Such service might be also overwritten using starter JSON and/or JVM properties.
+- through JVM properties, you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. Any parameter provided through system properties will always override default and starter values.
+- in some scenarios, it's also possible to create your own service that uses Knot.x core verticle, where you can build the configuration from scratch. Such service might be also overridden using starter JSON and/or JVM properties.
 
 ### How to configure though starter JSON ?
 In your project specific `knots-starter.json` add `config` object. Inside, put field with configuration object for each service you want to change configuration for.
@@ -166,7 +166,7 @@ Next step, is to use your new service in `knotx-starter.json`.
   }
 }
 ```
-Finally, you can still do overwrites of that config as described above, through starter JSON as in the example, or through JVM properties:
+Finally, you can still do override of that config as described above, through starter JSON as in the example, or through JVM properties:
 
 Single value:
 ```
