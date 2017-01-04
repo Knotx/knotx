@@ -135,3 +135,7 @@ and lets you to focus on Knot logic:
 | ! Note |
 |:------ |
 | Please note that this section focuses on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using other languages. |
+
+| ! Note |
+|:------ |
+| Besides Verticle implementation itself, a custom implementation of your Knot must be build as Knot.x service in order to be deployed as part of Knot.x. Follow the [[Knot.x Service|KnotxService]] in order to see how to make your Knot a Knot.x Service. | 

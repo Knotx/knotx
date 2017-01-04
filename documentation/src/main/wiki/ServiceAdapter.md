@@ -30,3 +30,8 @@ adapters for any custom solution.
 
 Writing custom Service Adapter requires fulfilling [[Service Knot|ServiceKnot]] contract.
 Please refer also to [[Adapter|Adapter#how-to-extend]].
+
+| ! Note |
+|:------ |
+| Besides Verticle implementation itself, a custom implementation of your Service Adapter must be build as Knot.x service in order to be deployed as part of Knot.x. Follow the [[Knot.x Service|KnotxService]] in order to see how to make your Service Adapter a Knot.x Service. | 
+

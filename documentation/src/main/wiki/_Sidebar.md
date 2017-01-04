@@ -7,6 +7,7 @@
     * [[Core Architecture|CoreArchitecture]]
     * [[Communication Flow|CommunicationFlow]]
     * [[Knot Routing|KnotRouting]]
+  * [[Knot.x Service|KnotxService]]
   * [[Server|Server]]
   * [[Repository|Repository]]
     * [[Http Repository Connector|HttpRepositoryConnector]]

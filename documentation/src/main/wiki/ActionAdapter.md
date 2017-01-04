@@ -28,3 +28,8 @@ For you convenience, Knot.x is shipped with a default Action Adapter called `Htt
 
 Writing custom Service Adapter requires fulfilling [[Action Knot|ActionKnot]] contract.
 Please refer also to [[Adapter|Adapter#how-to-extend]].
+
+| ! Note |
+|:------ |
+| Besides Verticle implementation itself, a custom implementation of your Action Adapter must be build as Knot.x service in order to be deployed as part of Knot.x. Follow the [[Knot.x Service|KnotxService]] in order to see how to make your Action Adapter a Knot.x Service. | 
+
