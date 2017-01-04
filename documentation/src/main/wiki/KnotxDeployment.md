@@ -33,8 +33,30 @@ At this step `KNOTX_HOME` should contain:
 To start Knot.x with custom modules, use following command
 
 ```
-java -Dlogback.configurationFile=logback.xml -cp "app/*" com.cognifide.knotx.launcher.LogbackLauncher -conf knotx-custom.json
+java -Dlogback.configurationFile=logback.xml -cp "app/*" com.cognifide.knotx.launcher.LogbackLauncher -conf knotx-custom-starter.json
 ```
+
+### Vert.x metrics
+For monitoring purposes you might want to enable Vert.x metrics in order to monitor how Knot.x performs. 
+Currently, it's possible to enable JMX metrics, so you can use any JMX tool, like Jconsole to inspect all the metrics Vert.x collects.
+
+In order to enable it, add following JVM property when starting Knot.x
+```
+java -Dcom.sun.management.jmxremote -Dvertx.metrics.options.jmxEnabled=true -Dvertx.metrics.options.jmxDomain=knotx ...
+```
+Vert.x collects:
+- Vert.x elements metrics (such as amount of verticles, worker pool sizes, etc.)
+- Event bus metrics (such as bytes sent/received, messages delivered, etc. )
+- HTTP Clients metrics (such as bytes sent/received, connections, amount of requests, per http code responses, etc. )
+- HTTP Server metrics (such as bytes sent/received, connections, amount of requests, etc.)
+
+For a detailed description about available metrics please check [Vert.x The Metrics](http://vertx.io/docs/vertx-dropwizard-metrics/java/#_the_metrics) page
+
+<aside class="warning">
+Warning
+We don’t recommend that you try to gather metrics from your production environment. JMX’s RPC API is fragile and bonkers. 
+For development purposes and browsing, though, it can be very useful.
+</aside>
 
 ## How to configure ?
 As mentioned above, the knotx-starter.json is the main configuration file describing what Knot.x modules (verticles) need to be started as part of Knot.x.
