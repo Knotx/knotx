@@ -60,7 +60,7 @@ public class HttpClientFacadeTest {
   // Configuration
 
   private static final Integer PORT = 3000;
-
+  
   private static final String DOMAIN = "localhost";
 
   private static final String PATH = "/services/mock.*";
