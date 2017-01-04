@@ -30,9 +30,9 @@ import java.io.InputStream;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class KnotxServiceVerticleFactory implements VerticleFactory {
+public class KnotxModuleVerticleFactory implements VerticleFactory {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServiceVerticleFactory.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxModuleVerticleFactory.class);
 
   @Override
   public boolean requiresResolve() {
@@ -48,7 +48,7 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
       JsonObject descriptor = readDescriptor(classLoader, descriptorFile);
       String main = readVerticleMainClass(descriptor, descriptorFile);
 
-      // Any options specified in the service config will override anything specified at deployment time
+      // Any options specified in the module config will override anything specified at deployment time
       // Options and Config specified in knotx starter JSON will override those configurations
       JsonObject depOptions = deploymentOptions.toJson();
       JsonObject depConfig = depOptions.getJsonObject("config", new JsonObject());
@@ -104,7 +104,7 @@ public class KnotxServiceVerticleFactory implements VerticleFactory {
     try (InputStream is = classLoader.getResourceAsStream(descriptorFile)) {
       if (is == null) {
         throw new IllegalArgumentException(
-            "Cannot find service descriptor file " + descriptorFile + " on classpath");
+            "Cannot find module descriptor file " + descriptorFile + " on classpath");
       }
       try (Scanner scanner = new Scanner(is, "UTF-8").useDelimiter("\\A")) {
         String conf = scanner.next();

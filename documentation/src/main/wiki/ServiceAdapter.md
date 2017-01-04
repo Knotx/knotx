@@ -33,5 +33,5 @@ Please refer also to [[Adapter|Adapter#how-to-extend]].
 
 | ! Note |
 |:------ |
-| Besides Verticle implementation itself, a custom implementation of your Service Adapter must be build as Knot.x service in order to be deployed as part of Knot.x. Follow the [[Knot.x Service|KnotxService]] in order to see how to make your Service Adapter a Knot.x Service. | 
+| Besides Verticle implementation itself, a custom implementation of your Service Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Service Adapter a module. | 
 

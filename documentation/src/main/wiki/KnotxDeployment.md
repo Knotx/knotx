@@ -37,12 +37,12 @@ java -Dlogback.configurationFile=logback.xml -cp "app/*" com.cognifide.knotx.lau
 ```
 
 ## How to configure ?
-As mentioned above, the knotx-starter.json is the main configuration file describing what services (verticles) need to be started as part of Knot.x.
+As mentioned above, the knotx-starter.json is the main configuration file describing what Knot.x modules (verticles) need to be started as part of Knot.x.
 
 `knotx-standalone.json` configuration available on Github looks like below
 ```json
 {
-  "services": [
+  "modules": [
     "knotx:io.knotx.KnotxServer",
     "knotx:io.knotx.HttpRepositoryConnector",
     "knotx:io.knotx.FilesystemRepositoryConnector",
@@ -54,10 +54,10 @@ As mentioned above, the knotx-starter.json is the main configuration file descri
   ]
 }
 ```
-As you see, it simply have list of services (verticles) that Knot.x should start. Out of the box, no other configuration is required as each verticle 
+As you see, it simply have list of modules (verticles) that Knot.x should start. Out of the box, no other configuration is required as each verticle 
 is shipped with default config.
 
-However, at the production environment you must alter the configuration parameters such as http Port HTTP server listens on, or HTTP headers that are 
+However, at the production environment you must alter the configuration parameters such as port of HTTP server, or HTTP headers that are 
 being passed, or finally addresses to the client services that are going to be used for rendering dynamic content.
 
 Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are two ways:
@@ -65,15 +65,15 @@ Thanks to the Knot.x capabilities you can provide your configurations that modif
 you need to change. Follow the guide of each Verticle to see the supported parameters.
 - through JVM properties, you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. 
 Any parameter provided through system properties will always override default and starter values.
-- in some scenarios, it's also possible to create your own service that uses Knot.x core Verticle, where you can build the configuration from scratch. 
-Such service might be also overridden using starter JSON and/or JVM properties.
+- in some scenarios, it's also possible to create your own module that uses Knot.x core Verticle, where you can build the configuration from scratch. 
+Such module might be also overridden using starter JSON and/or JVM properties.
 
 ### How to configure though starter JSON ?
-In your project specific `knots-starter.json` add `config` object. Inside, put field with configuration object for each service you want to change configuration for.
-For instance, you want to modify configuration of KnotxServer service, you can do it as follows:
+In your project specific `knots-starter.json` add `config` object. Inside, put field with configuration object for each module you want to change configuration for.
+For instance, you want to modify configuration of KnotxServer module, you can do it as follows:
 ```json
 {
-  "services": [
+  "modules": [
     "knotx:io.knotx.KnotxServer",
     "knotx:io.knotx.HttpRepositoryConnector",
     "knotx:io.knotx.FilesystemRepositoryConnector",
@@ -97,11 +97,11 @@ For instance, you want to modify configuration of KnotxServer service, you can d
 ```
 Important things to remember:
 - `options` field which maps exactly to a [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html) object. 
-It means, that you can specify here deployment options for how many instances of that service should be deployed, etc.
-- Inside `options` you can supply `config` object where you're actualy can provide Knot.x service specific configuration. 
+It means, that you can specify here deployment options such as how many instances of that module should be deployed, etc.
+- Inside `options` you can supply `config` object where you're actualy can provide configuration to the verticle represented by the module. 
 See Knot.x Verticle documentation to see what's available on each Verticle. 
 
-If you start Knot.x with the configuration as above, it will start all services listed in the config, but the KnotxServer will be deployed as:
+If you start Knot.x with the configuration as above, it will start all modules listed in the config, but the KnotxServer will be deployed as:
 - Two instances
 - HTTP Port it listens is 9999
 
@@ -136,15 +136,15 @@ Then, you can use that config to override default routing as below:
 -Dio.knotx.KnotxServer.options.config.routing=file:my-routing.json
 ```
 
-### How to configure your own service ?
-The last option to change Verticle configuration, is to redefine Knotx Service by creating your own service descriptor. 
+### How to configure your own module ?
+The last option to change Verticle configuration, is to redefine Knotx module by creating your own descriptor. 
 The descriptor is simply a JSON file that must be available in classpath (e.g. in JAR file of your custom Verticle implementation, 
 or inside folder where all JAR files you put on your installation).
 
-Name of the descriptor file is important as it's a service name used in starter JSON.
+Name of the descriptor file is important as it's a module name used in starter JSON.
 
 For instance, you want to create KnotxServer configuration from scratch, ignoring default config available. 
-All you have to do is, to create service descriptor file, e.g. `my.KnotxServer.json` with the content as below
+All you have to do is, to create module descriptor file, e.g. `my.KnotxServer.json` with the content as below
 ```json
 {
   "main": "com.cognifide.knotx.server.KnotxServerVerticle",
@@ -156,13 +156,13 @@ All you have to do is, to create service descriptor file, e.g. `my.KnotxServer.j
 }
 ```
 Where:
-- `main` is the fully qualified class name of the Verticle service should deploy (can be Knot.x core Verticle or your custom implementation)
+- `main` is the fully qualified class name of the Verticle the module represents
 - `options` object, where you can specify deployment options, and inside it a `config` object that should have Verticle specific configuration
 
-Next step, is to use your new service in `knotx-starter.json`.
+Next step, is to use your new module in `knotx-starter.json`.
 ```json
 {
-  "services": [
+  "modules": [
     "knotx:my.KnotxServer",
     "......"
   ],

@@ -1,5 +1,5 @@
 {
-  "services": [
+  "modules": [
     "knotx:io.knotx.KnotxServer",
     "knotx:io.knotx.HttpRepositoryConnector",
     "knotx:io.knotx.FilesystemRepositoryConnector",

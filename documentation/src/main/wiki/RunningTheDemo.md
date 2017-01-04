@@ -101,7 +101,7 @@ You can play with the demo in order to get familiar with the ways how to configu
 but change `httpPort` property only. Let's set it to `9999`.
 ```json
 {
-  "services": [
+  "modules": [
     "knotx:example.io.knotx.KnotxServer",
     "knotx:io.knotx.HttpRepositoryConnector",
     "knotx:io.knotx.FilesystemRepositoryConnector",

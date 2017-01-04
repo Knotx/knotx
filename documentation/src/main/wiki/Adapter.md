@@ -58,7 +58,7 @@ Reference implementation of `com.cognifide.knotx.adapter.api.AbstractAdapter` is
 
 | ! Note |
 |:------ |
-| Besides Verticle implementation itself, a custom implementation of your Adapter must be build as Knot.x service in order to be deployed as part of Knot.x. Follow the [[Knot.x Service|KnotxService]] in order to see how to make your Adapter a Knot.x Service. |
+| Besides Verticle implementation itself, a custom implementation of your Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Adapter a module. |
 
 ### Configuration file
 Adapter could have its JSON configuration file that will be passed to `initConfiguration` method in form of `JsonObject`.

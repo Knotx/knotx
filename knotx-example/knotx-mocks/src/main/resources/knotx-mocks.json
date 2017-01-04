@@ -1,5 +1,5 @@
 {
-  "services": [
+  "modules": [
     "knotx:io.knotx.RemoteRepositoryMock",
     "knotx:io.knotx.ServiceMock",
     "knotx:io.knotx.ServiceAdapterMock",

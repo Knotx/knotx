@@ -1,5 +1,5 @@
 {
-  "services": [
+  "modules": [
     "knotx:test.io.knotx.HttpServiceAdapter",
     "knotx:test.io.knotx.MockService"
   ]

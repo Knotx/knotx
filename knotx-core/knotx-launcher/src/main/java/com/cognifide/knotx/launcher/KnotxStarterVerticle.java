@@ -42,7 +42,7 @@ import rx.Observable;
 public class KnotxStarterVerticle extends AbstractVerticle {
 
   public static final String CONFIG_OVERRIDE = "config";
-  public static final String SERVICE_OPTIONS = "options";
+  public static final String MODULE_OPTIONS = "options";
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
 
   @Override
@@ -56,12 +56,12 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     eventBus.registerDefaultCodec(ClientResponse.class, new ClientResponseCodec());
     eventBus.registerDefaultCodec(KnotContext.class, new KnotContextCodec());
 
-    vertx.registerVerticleFactory(new KnotxServiceVerticleFactory());
+    vertx.registerVerticleFactory(new KnotxModuleVerticleFactory());
   }
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {
-    Observable.from(config().getJsonArray("services"))
+    Observable.from(config().getJsonArray("modules"))
         .flatMap(this::deployVerticle)
         .compose(joinDeployments())
         .subscribe(
@@ -76,17 +76,17 @@ public class KnotxStarterVerticle extends AbstractVerticle {
         );
   }
 
-  private Observable<Pair<String, String>> deployVerticle(final Object service) {
-    return vertx.deployVerticleObservable((String) service, getServiceOptions((String) service))
-        .map(deploymentID -> Pair.of((String) service, deploymentID));
+  private Observable<Pair<String, String>> deployVerticle(final Object module) {
+    return vertx.deployVerticleObservable((String) module, getModuleOptions((String) module))
+        .map(deploymentID -> Pair.of((String) module, deploymentID));
   }
 
-  private DeploymentOptions getServiceOptions(final String service) {
+  private DeploymentOptions getModuleOptions(final String module) {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
-    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE).containsKey(service)) {
-      JsonObject serviceConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(service);
-      if (serviceConfig.containsKey(SERVICE_OPTIONS)) {
-        deploymentOptions.fromJson(serviceConfig.getJsonObject(SERVICE_OPTIONS));
+    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE).containsKey(module)) {
+      JsonObject moduleConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(module);
+      if (moduleConfig.containsKey(MODULE_OPTIONS)) {
+        deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
       }
     }
     return deploymentOptions;
