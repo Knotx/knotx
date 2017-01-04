@@ -53,28 +53,28 @@ import rx.Observable;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpClientFacadeTest {
-  
+
   // Configuration
-  
+
   private static final Integer PORT = 3000;
-  
+
   private static final String DOMAIN = "localhost";
-  
+
   private static final String PATH = "/services/mock.*";
-  
+
   // Request payload
-  
+
   private static final String REQUEST_PATH = "/services/mock/first.json";
-  
+
   private static final List<Pattern> PATTERNS = Collections.singletonList(Pattern.compile("X-test*"));
-  
+
   private RunTestOnContext vertx = new RunTestOnContext();
-  
+
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-  
+
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
-  
+
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
@@ -83,11 +83,11 @@ public class HttpClientFacadeTest {
     final HttpClient httpClient = PowerMockito.spy(httpClient());
     HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
-    
+
     // when
     Observable<ClientResponse> result = clientFacade
         .process(payloadMessage(REQUEST_PATH, new ClientRequest()), HttpMethod.GET);
-    
+
     // then
     result.subscribe(
         response -> {
@@ -98,7 +98,7 @@ public class HttpClientFacadeTest {
         error -> context.fail(error.getMessage()),
         async::complete);
   }
-  
+
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
@@ -108,11 +108,11 @@ public class HttpClientFacadeTest {
     HttpClientFacade clientFacade = new HttpClientFacade(httpClient, getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
     final ClientRequest request = new ClientRequest().setParams(MultiMap.caseInsensitiveMultiMap().add("dynamicValue", "first"));
-    
+
     // when
     Observable<ClientResponse> result =
         clientFacade.process(payloadMessage("/services/mock/{param.dynamicValue}.json", request), HttpMethod.GET);
-    
+
     // then
     result.subscribe(
         response -> {
@@ -123,7 +123,7 @@ public class HttpClientFacadeTest {
         error -> context.fail(error.getMessage()),
         async::complete);
   }
-  
+
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void whenServiceRequestedWithoutPathParam_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
@@ -131,10 +131,10 @@ public class HttpClientFacadeTest {
     // given
     HttpClient mockedHttpClient = Mockito.mock(HttpClient.class);
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
-    
+
     // when
     Observable<ClientResponse> result = clientFacade.process(new AdapterRequest(), HttpMethod.GET);
-    
+
     // then
     result.subscribe(
         response -> context.fail("Error should occur!"),
@@ -147,7 +147,7 @@ public class HttpClientFacadeTest {
         },
         async::complete);
   }
-  
+
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void whenUnsupportedPathServiceRequested_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
@@ -155,11 +155,11 @@ public class HttpClientFacadeTest {
     // given
     HttpClient mockedHttpClient = Mockito.mock(HttpClient.class);
     HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
-    
+
     // when
     Observable<ClientResponse> result =
         clientFacade.process(payloadMessage("/not/supported/path", new ClientRequest()), HttpMethod.GET);
-    
+
     // then
     result.subscribe(
         response -> context.fail("Error should occur!"),
@@ -172,15 +172,15 @@ public class HttpClientFacadeTest {
         },
         async::complete);
   }
-  
+
   private HttpClient httpClient() {
     return Vertx.newInstance(vertx.vertx()).createHttpClient();
   }
-  
+
   private AdapterRequest payloadMessage(String servicePath, ClientRequest request) {
     return new AdapterRequest().setRequest(request).setParams(new JsonObject().put("path", servicePath));
   }
-  
+
   private List<ServiceMetadata> getServiceConfigurations() {
     return Lists.newArrayList(
         new ServiceMetadata()
@@ -189,5 +189,5 @@ public class HttpClientFacadeTest {
             .setPath(PATH)
             .setAllowedRequestHeaderPatterns(PATTERNS));
   }
-  
+
 }
