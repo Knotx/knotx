@@ -152,7 +152,7 @@ Let's modify `httpPort` once again, but this time using JVM property.
 ```
 $ java -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-monolith-X.Y.Z-SNAPSHOT-fat.jar -conf src/main/resources/knotx-example-experiments.json
 ```
-2. Notice that HTTP Server is listening on port **7777* now, so starter JSON configuration is overwritten.
+2. Notice that HTTP Server is listening on port **7777** now, so starter JSON configuration is overwritten.
 ```
 ...
 2017-01-03 12:35:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777

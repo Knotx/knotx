@@ -23,6 +23,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.io.File;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,22 +38,26 @@ public class SystemPropsConfiguration {
     envConfig = System.getProperties()
         .entrySet()
         .stream()
-        .filter(entry -> {
-          String key = ((String) entry.getKey());
-          boolean result = false;
-          if (key.startsWith(identifier)) {
-            if (StringUtils.isBlank(StringUtils.substringAfter(key, identifier + "."))) {
-              LOGGER.warn("-D{}={} does not have specified key after Service name", key, entry.getValue());
-            } else {
-              result = true;
-            }
-          }
-          return result;
-        })
+        .filter(entry -> onlyPropertyForIdentifier(entry, identifier))
         .collect(Collectors.toMap(
             entry -> StringUtils.substringAfter(((String) entry.getKey()), identifier + "."),
             entry -> new Value(((String) entry.getValue()))
         ));
+  }
+
+  private boolean onlyPropertyForIdentifier(Entry<Object, Object> entry, String identifier) {
+    boolean result = false;
+
+    String key = ((String) entry.getKey());
+    if (key.startsWith(identifier)) {
+      if (StringUtils.isBlank(StringUtils.substringAfter(key, identifier + "."))) {
+        LOGGER.warn("-D{}={} does not have specified key after Service name", key, entry.getValue());
+      } else {
+        result = true;
+      }
+    }
+
+    return result;
   }
 
   /**

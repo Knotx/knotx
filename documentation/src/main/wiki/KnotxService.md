@@ -6,7 +6,7 @@ As mentioned in [[Knot.x Deployment|KnotxDeployment]], the list of services must
 ```json
 {
   "services": [
-    "knotx;io.knotx.KnotxServer",
+    "knotx:io.knotx.KnotxServer",
     "knotx:my.custom.Service"
   ]
 }
@@ -89,7 +89,7 @@ E.g.: `src/main/resources/my.custom.Service.json`
 ```json
 {
   "services": [
-    "knotx;io.knotx.KnotxServer",
+    "knotx:io.knotx.KnotxServer",
     "knotx:my.custom.Service"
   ]
 }

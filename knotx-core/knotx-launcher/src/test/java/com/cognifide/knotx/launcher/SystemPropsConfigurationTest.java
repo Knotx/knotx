@@ -38,14 +38,14 @@ public class SystemPropsConfigurationTest {
       "io.knotx.KnotxServer.options.config.someData");
 
   @Test
-  public void setNoEnvValue() {
+  public void whenNoSystemProperty_expectEmptyConfig() {
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
     assertEquals(true, systemPropsConfiguration.envConfig().isEmpty());
   }
 
   @Test
-  public void setOneValueNoKey() {
+  public void whenOneMatchingSystemPropertyWithoutObject_expectEmptyConfig() {
     System.setProperty("io.knotx.KnotxServer", "9999");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
@@ -53,7 +53,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void setOneEnvValue() {
+  public void whenOneCorrectMatchingProperty_expectSameOnConfig() {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
@@ -62,7 +62,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void setThreeEnvValues() {
+  public void whenThreeCorrectMatchingProperties_expectSameOnConfig() {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
     System.setProperty("io.knotx.KnotxServer.options.config.pass", "true");
     System.setProperty("io.knotx.KnotxServer.options.config.settings.bogus", "abcd");
@@ -75,7 +75,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void setFileEnvValue() {
+  public void whenOneCorrectFileBasedProperty_expectJsonObjectInConfig() {
     System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfig.json");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
@@ -84,7 +84,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void testUpdateDescriptorOneValue() {
+  public void whenOneProperty_expectDescriptorWithUpdatedMatchingField() {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
@@ -99,7 +99,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void testMergeDescriptorWithFile() {
+  public void whenFileBasedProperty_expectDescriptorWithUpdatedJsonObject() {
     System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfig.json");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
@@ -127,7 +127,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void testMergeDescriptorWithFileAndValues() {
+  public void whenFileBasedAndValueProperties_expectDescriptorCorrectlyUpdated() {
     System.setProperty("io.knotx.KnotxServer.options.haGroup", "default");
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
     System.setProperty("io.knotx.KnotxServer.options.config.someData", "file:src/test/resources/sampleConfig.json");
@@ -156,7 +156,7 @@ public class SystemPropsConfigurationTest {
   }
 
   @Test
-  public void testMergeDescriptorWithFileWithArray() {
+  public void whenFileBasedHavingArray_expectDescriptorHaveUpdatedThisJsonArray() {
     System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfigArray.json");
     SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
 
