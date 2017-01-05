@@ -61,8 +61,9 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
             .filter(fragment -> fragment.identifiers().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
-            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, message)))
-        .orElse(Observable.just(FragmentContext.empty()))
+            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, message))
+            .toList()
+        ).orElse(Observable.just(Collections.emptyList()))
         .map(result -> createSuccessResponse(message))
         .onErrorReturn(error -> processError(message, error));
   }
