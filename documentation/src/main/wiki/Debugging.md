@@ -1,0 +1,28 @@
+# Debugging Knot.x Demo
+
+## Requirements
+
+To run Knot.x you only need Java 8.
+To build it you also need Maven (version 3.3.1 or higher).
+Intellij IDE
+
+## How to set up Knot.x debugging in Intellij IDE
+Assuming you have Knot.x project opened in Intellij, you can set up Run/Debug Application configuration to be able to run or debug Demo or 
+Standalone Knot.x application directly in your IDE.
+
+1. Go to Run/Debug Configurations in IntelliJ
+2. Add new Application Configuration
+
+[[assets/knotx-debugging-new-config.png|alt=Knot.x Debugging new config]]
+3. Set name of the configuration
+4. Pick main class to be com.cognifide.knotx.launcher.LogbackLauncher
+5. In Program Arguments specify that KnotxStarterVerticle should be run with the `-conf` parameter pointing to the configuration you want to run (e.g. Example monolith)
+```
+run com.cognifide.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-monolith.json
+```
+6. Set **Working directory** to the module where your json config exists (e.g. knotx-example-monolith)
+7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-monolith)
+8. Optionally, in VM options you can specify system properties if you want to override configuration or set memory properly of this configuration.
+9. Finally, you can now Run or Debug this configuration and play with Knot.x as usuall.
+
+[[assets/knotx-debugging-config.png|alt=Knot.x Debugging config]]
