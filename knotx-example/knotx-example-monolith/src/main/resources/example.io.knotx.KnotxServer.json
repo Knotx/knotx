@@ -1,0 +1,92 @@
+{
+  "main": "com.cognifide.knotx.server.KnotxServerVerticle",
+  "options": {
+    "config": {
+      "httpPort": 8092,
+      "displayExceptionDetails": true,
+      "allowedResponseHeaders": [
+        "Access-Control-Allow-Origin",
+        "Allow",
+        "Cache-Control",
+        "Content-Disposition",
+        "Content-Encoding",
+        "Content-Language",
+        "Content-Location",
+        "Content-MD5",
+        "Content-Range",
+        "Content-Type",
+        "Content-Length",
+        "Content-Security-Policy",
+        "Date",
+        "ETag",
+        "Expires",
+        "Last-Modified",
+        "Location",
+        "Pragma",
+        "Proxy-Authenticate",
+        "Server",
+        "Set-Cookie",
+        "Status",
+        "Vary",
+        "Via",
+        "X-Frame-Options",
+        "X-XSS-Protection",
+        "X-Content-Type-Options",
+        "X-UA-Compatible",
+        "X-Request-ID"
+      ],
+      "repositories": [
+        {
+          "path": "/content/local/.*",
+          "address": "knotx.core.repository.filesystem"
+        },
+        {
+          "path": "/content/.*",
+          "address": "knotx.core.repository.http"
+        },
+        {
+          "path": "/img/.*",
+          "address": "knotx.core.repository.http",
+          "doProcessing": false
+        }
+      ],
+      "splitter": {
+        "address": "knotx.core.splitter"
+      },
+      "routing": {
+        "GET": [
+          {
+            "path": "/content/.*",
+            "address": "knotx.knot.action",
+            "onTransition": {
+              "next": {
+                "address": "knotx.knot.service",
+                "onTransition": {
+                  "next": {
+                    "address": "knotx.knot.handlebars"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "POST": [
+          {
+            "path": "/content/.*",
+            "address": "knotx.knot.action",
+            "onTransition": {
+              "next": {
+                "address": "knotx.knot.service",
+                "onTransition": {
+                  "next": {
+                    "address": "knotx.knot.handlebars"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

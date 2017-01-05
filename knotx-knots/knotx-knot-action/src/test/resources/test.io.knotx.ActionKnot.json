@@ -1,0 +1,39 @@
+{
+  "main": "com.cognifide.knotx.knot.action.ActionKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.action",
+      "adapters": [
+        {
+          "name": "action-self",
+          "address": "address-self",
+          "params": {
+            "example": "example-value"
+          },
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ],
+          "allowedResponseHeaders": [
+            "X-*"
+          ]
+        },
+        {
+          "name": "action-redirect",
+          "address": "address-redirect",
+          "params": {
+            "example": "example-value"
+          },
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ],
+          "allowedResponseHeaders": [
+            "X-*"
+          ]
+        }
+      ],
+      "formIdentifierName": "snippet-identifier"
+    }
+  }
+}

@@ -64,9 +64,9 @@ public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     address = config().getString("address");
-    clientOptions = config().getJsonObject("client.options", new JsonObject());
-    clientDestination = config().getJsonObject("client.destination");
-    allowedRequestHeaders = config().getJsonArray("allowed.request.headers", new JsonArray()).stream()
+    clientOptions = config().getJsonObject("clientOptions", new JsonObject());
+    clientDestination = config().getJsonObject("clientDestination");
+    allowedRequestHeaders = config().getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
         .map(object -> (String) object)
         .map(new StringToPatternFunction())
         .collect(Collectors.toList());

@@ -44,29 +44,24 @@ It can be reflected in Handlebars templates like:
 ```
 
 ## How to configure?
-Handlebars Knot is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
-depending on how it's deployed. You need to supply **Handlebars Knot** configuration.
+Handlebars Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
-JSON presented below is an example how to configure Handlebars Knot deployed as standalone fat jar:
+Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json` file available in classpath.
 ```json
 {
-  "address": "knotx.knot.handlebars",
-  "template.debug": true
-}
-```
-When deploying **Handlebars Knot** using Knot.x starter verticle, configuration presented above should 
-be wrapped in the JSON `config` section:
-```json
-"verticles" : {
-  ...,
-  "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle": {
+  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle",
+  "options": {
     "config": {
-      "PUT YOUR CONFIG HERE"
+      "address": "knotx.knot.handlebars",
+      "templateDebug": true
     }
-  },
-  ...,
+  }
 }
 ```
+In general, it:
+- Listens on event bus address 'knotx.knot.handlebars'
+- Renders HTML debug comments on the output HTML
+
 Detailed description of each configuration option is described in the next subsection.
 
 ### Handlebars Knot options
@@ -76,7 +71,7 @@ Main Handlebars Knot options available.
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Handlebars Knot verticle. |
-| `template.debug`            | `Boolean`                           | &#10004;       | Template debug enabled option.|
+| `templateDebug`             | `Boolean`                           | &#10004;       | Template debug enabled option.|
 
 ## How to extend?
 

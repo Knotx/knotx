@@ -1,6 +1,6 @@
 {
-  "http.port": 8092,
-  "allowed.response.headers": [
+  "httpPort": 8092,
+  "allowedResponseHeaders": [
     "referer",
     "user-agent",
     "from",
