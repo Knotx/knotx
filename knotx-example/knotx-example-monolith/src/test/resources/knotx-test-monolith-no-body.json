@@ -7,6 +7,7 @@
     "knotx:io.knotx.HandlebarsKnot",
     "knotx:io.knotx.ServiceKnot",
     "knotx:example.io.knotx.ActionKnot",
+    "knotx:io.knotx.AssemblyKnot",
     "knotx:io.knotx.HttpServiceAdapter",
     "knotx:io.knotx.HttpActionAdapter",
     "knotx:io.knotx.RemoteRepositoryMock",

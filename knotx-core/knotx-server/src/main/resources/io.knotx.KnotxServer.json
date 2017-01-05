@@ -55,7 +55,12 @@
             "address": "knotx.knot.service",
             "onTransition": {
               "next": {
-                "address": "knotx.knot.handlebars"
+                "address": "knotx.knot.handlebars",
+                "onTransition": {
+                  "next": {
+                    "address": "knotx.knot.assembly"
+                  }
+                }
               }
             }
           }

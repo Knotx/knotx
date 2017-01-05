@@ -7,6 +7,7 @@
     "knotx:io.knotx.ServiceKnot",
     "knotx:io.knotx.ActionKnot",
     "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.AssemblyKnot",
     "knotx:io.knotx.HttpServiceAdapter"
   ]
 }

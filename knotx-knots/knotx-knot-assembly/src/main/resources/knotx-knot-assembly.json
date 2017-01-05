@@ -1,3 +1,5 @@
 {
-  "address": "knotx.knot.assembly"
+  "modules": [
+    "knotx:io.knotx.AssemblyKnot"
+  ]
 }
