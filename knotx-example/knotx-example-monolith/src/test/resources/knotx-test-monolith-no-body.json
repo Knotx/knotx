@@ -15,36 +15,28 @@
     "knotx:io.knotx.ActionAdapterMock"
   ],
   "config": {
+    "knotx:test.io.knotx.KnotxServer": {
+      "options": {
+        "config": {
+          "repositories": [
+            {
+              "path": "/content/test/.*",
+              "address": "knotx.core.repository.filesystem"
+            }
+          ]
+        }
+      }
+    },
     "knotx:io.knotx.ServiceKnot": {
       "options": {
         "config": {
           "services": [
             {
-              "name": "first-service",
+              "name": "fourth-service",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/first.json"
-              },
-              "cacheKey": "first"
-            },
-            {
-              "name": "second-service",
-              "address": "knotx.adapter.service.http",
-              "params": {
-                "path": "/service/mock/second.json"
+                "path": "/service/mock/fourth.json"
               }
-            },
-            {
-              "name": "third-service",
-              "address": "knotx.adapter.service.http",
-              "params": {
-                "path": "/service/mock/third.json"
-              }
-            },
-            {
-              "name": "labelsRepository",
-              "address": "knotx.adapter.service.http",
-              "params": {}
             }
           ]
         }
