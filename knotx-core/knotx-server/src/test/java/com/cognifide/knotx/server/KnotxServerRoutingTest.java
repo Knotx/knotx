@@ -18,16 +18,11 @@
 package com.cognifide.knotx.server;
 
 
-import com.cognifide.knotx.codec.AdapterRequestCodec;
-import com.cognifide.knotx.codec.AdapterResponseCodec;
-import com.cognifide.knotx.dataobjects.AdapterRequest;
-import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.junit.TestVertxDeployer;
 
-import org.junit.Before;
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -36,7 +31,6 @@ import org.junit.runner.RunWith;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;

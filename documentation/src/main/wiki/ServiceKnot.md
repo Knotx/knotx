@@ -64,41 +64,34 @@ to avoid multiple calls for the same data.
 Caching is performed within page request scope, this means another request will not get cached data.
 
 ## How to configure?
-Service Knot is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
-depending on how it's deployed. You need to supply **Service Knot** configuration.
+Service Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
-JSON presented below is an example how to configure Service Knot deployed as standalone fat jar:
+Default configuration shipped with the verticle as `io.knotx.ServiceKnot.json` file available in classpath.
+
 ```json
 {
-  "address": "knotx.knot.service",
-  "client.options": {
-    "maxPoolSize": 1000,
-    "keepAlive": false
-  },
-  "services": [
-    {
-      "name" : "mock",
-      "address" : "mock-service-adapter",
-      "config": {
-        "path": "/service/mock/.*"
-      }
-    }
-  ]
-}
-```
-When deploying **Service Knot** using Knot.x starter verticle, configuration presented above should 
-be wrapped in the JSON `config` section:
-```json
-"verticles" : {
-  ...,
-  "com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
+  "main": "com.cognifide.knotx.knot.service.ServiceKnotVerticle",
+  "options": {
     "config": {
-      "PUT YOUR CONFIG HERE"
+      "address": "knotx.knot.service",
+      "services": [
+        {
+          "name": "mock",
+          "address": "mock-service-adapter",
+          "params": {
+            "path": "/service/mock/.*"
+          }
+        }
+      ]
     }
-  },
-  ...,
+  }
 }
 ```
+In general, it:
+- Listens on event bus address `knotx.knot.service` on messages to process
+- It communicates with the [Service Adapter|ServiceAdapter] on event bus address `mock-service-adapter` for processing GET requests to the services
+- It defines service adapter configuration
+
 Detailed description of each configuration option is described in the next subsection.
 
 ### Service Knot options
@@ -108,14 +101,13 @@ Main Service Knot options available.
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Service Knot verticle. |
-| `client.options`            | `String`                            | &#10004;       | JSON representation of [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) configuration for [HttpClient](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClient.html) |
 | `services`                  | `Array of ServiceMetadata`          | &#10004;       | Array of [ServiceMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-view/src/main/java/com/cognifide/knotx/knot/service/ServiceKnotConfiguration.java).|
 
-Service (Adapter) metadata options available.
+ServiceMetadata options available.
 
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-service-{NAMESPACE}={ADAPTERNAME}`. |
 | `address`                   | `String`                            | &#10004;       | Event bus address of the **Adapter** verticle. |
-| `params`                    | `JSON object`                       | &#10004;       | Default params which are sent to Adapter. |
+| `params`                    | `JSON object`                       | &#10004;       | Json Object with default params which are sent to Adapter. |
 | `cacheKey`                  | `String`                            |                | Cache key which is used for Adapters calls caching. **No** means that cache key has value `{NAME}|{PARAMS}` |

@@ -1,4 +1,5 @@
 {
-  "address": "knotx.knot.handlebars",
-  "template.debug": true
+  "modules": [
+    "knotx:io.knotx.HandlebarsKnot"
+  ]
 }

@@ -1,6 +1,6 @@
 #Knot Routing
 
-A Request from a user goes first to the [[Server|#Server]]. 
+A Request from a user goes first to the [[Server|Server]]. 
 Server passes the request to Knot.x modules until processing is finished and result can be returned. 
 The request flow is described in [[Communication Flow|CommunicationFlow]] section.
 

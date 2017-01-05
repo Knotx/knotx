@@ -20,6 +20,7 @@ package com.cognifide.knotx.mocks;
 
 import com.cognifide.knotx.mocks.adapter.MockServiceHandler;
 
+import io.vertx.core.Future;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -49,7 +50,7 @@ public class MockServiceVerticle extends AbstractVerticle {
   };
 
   @Override
-  public void start() throws IOException, URISyntaxException {
+  public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();
 
@@ -59,7 +60,17 @@ public class MockServiceVerticle extends AbstractVerticle {
     router.route().method(HttpMethod.GET).handler(createGetHandler());
 
     router.route().failureHandler(ErrorHandler.create(true));
-    httpServer.requestHandler(router::accept).listen(config().getInteger("http.port"));
+    httpServer.requestHandler(router::accept).listen(
+        config().getInteger("httpPort"),
+        result -> {
+          if (result.succeeded()) {
+            LOGGER.info("Mock Service server started. Listening on port {}", config().getInteger("httpPort"));
+            fut.complete();
+          } else {
+            LOGGER.error("Unable to start Mock Service server.", result.cause());
+            fut.fail(result.cause());
+          }
+        });
   }
 
   @Override
@@ -68,11 +79,11 @@ public class MockServiceVerticle extends AbstractVerticle {
   }
 
   private MockServiceHandler createGetHandler() {
-    return new MockServiceHandler(config().getString("mock.data.root"), vertx.fileSystem());
+    return new MockServiceHandler(config().getString("mockDataRoot"), vertx.fileSystem());
   }
 
   private MockServiceHandler createPostHandler() {
-    MockServiceHandler mockServiceHandler = new MockServiceHandler(config().getString("mock.data.root"), vertx.fileSystem());
+    MockServiceHandler mockServiceHandler = new MockServiceHandler(config().getString("mockDataRoot"), vertx.fileSystem());
     return config().getBoolean("bouncing", false)
         ? mockServiceHandler.withBodyProcessor(BOUNCER)
         : mockServiceHandler;

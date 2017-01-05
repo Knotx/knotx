@@ -41,43 +41,48 @@ Http Service Adapter replies with `ClientResponse` that contains:
 | `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
 ## How to configure?
-Http Service Adapter is deployed as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html), 
-depending on how it's deployed.
-Http Service Adapter can be configured to support multiple external `services`, see example configuration:
+Http Service Adapter is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
+Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.json` file available in classpath.
 ```json
 {
-  "address": "knotx.adapter.service.http",
-  "client.options": {
-    "maxPoolSize": 1000,
-    "keepAlive": false
-  },
-  "services": [
-    {
-      "path": "/service/mock/.*",
-      "domain": "localhost",
-      "port": 3000,
-      "allowed.request.headers": [
-        "Content-Type",
-        "X-*"
-      ]
-    },
-    {
-      "path": "/service/.*",
-      "domain": "localhost",
-      "port": 8080,
-      "allowed.request.headers": [
-        "Content-Type",
-        "X-*"
+  "main": "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.adapter.service.http",
+      "clientOptions": {
+        "maxPoolSize": 1000,
+        "keepAlive": false,
+        "logActivity": true
+      },
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 3000,
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ]
+        },
+        {
+          "path": "/service/.*",
+          "domain": "localhost",
+          "port": 8080,
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ]
+        }
       ]
     }
-  ]
+  }
 }
 ```
-
+In general, the default configuration covers:
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
 will be processed by Http Service Adapter.
-- `client.options` are [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) used to configure HTTP connection. 
+- `clientOptions` are [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) used to configure HTTP connection. 
 Any HttpClientOption may be defined in this section, at this example two options are defined: 
   - `maxPoolSize` -  maximum pool size for simultaneous connections,
   - `keepAlive` - that shows keep alive should be disabled on the client.
@@ -87,19 +92,11 @@ In example above, two services are configured:
   - `/service/.*` that will call `http://localhost:8080` domain with defined [path](#service-path).
 
 
-## Example
-Assuming, that Http Service Adapter was configured as presented in [Example configuration](#how-to-configure) and:
-
 #### Service Knot configuration
 Example configuration of a [[Service Knot|ServiceKnot]]:
 ```json
-"com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
   "config": {
     "address": "knotx.knot.service",
-    "client.options": {
-      "maxPoolSize": 1000,
-      "keepAlive": false
-    },
     "services": [
       {
         "name" : "search",
@@ -117,7 +114,6 @@ Example configuration of a [[Service Knot|ServiceKnot]]:
       }
     ]
   }
-}
 ```
 
 #### snippet

@@ -49,7 +49,9 @@
     <div class="col-md-12">
       <script data-knot-types="form-1"
               type="text/x-handlebars-template">
-        <p class="bg-danger">{{#if action._result.validationErrors}}Invalid credentials{{/if}}</p>
+        {{#if action._result.validationErrors}}
+        <p class="bg-danger">Invalid credentials</p>
+        {{/if}}
         <p>Please provide your password</p>
         <form data-knotx-action="step2" data-knotx-on-success="/content/remote/simple.html"
               data-knotx-on-error="_self" method="post">

@@ -17,21 +17,19 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.fragments.Fragment;
-import com.cognifide.knotx.junit.FileReader;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.launcher.junit.FileReader;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 //FIXME: rename tests to meet naming convention
 @RunWith(value = Parameterized.class)

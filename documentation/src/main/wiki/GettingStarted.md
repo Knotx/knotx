@@ -46,38 +46,38 @@ You should see:
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO]
-[INFO] Knot.x ............................................. SUCCESS [  2.747 s]
-[INFO] Knot.x - Reactive microservice assembler - documentation SUCCESS [  0.091 s]
-[INFO] Knot.x - Reactive microservice assembler - Core Root POM SUCCESS [  0.159 s]
-[INFO] Knot.x - Reactive microservice assembler - Common .. SUCCESS [  5.713 s]
-[INFO] Knot.x - Reactive microservice assembler - Repository Verticle SUCCESS [  0.071 s]
-[INFO] Knot.x - Reactive microservice assembler - Specialized Filesysten Repository Verticle SUCCESS [  4.622 s
-]
-[INFO] Knot.x - Reactive microservice assembler - Specialized Http Repository Verticle SUCCESS [  4.670 s]
-[INFO] Knot.x - Reactive microservice assembler - HTML Fragment Splitter SUCCESS [  7.849 s]
-[INFO] Knot.x - Reactive microservice assembler - HTTP Server SUCCESS [  7.902 s]
-[INFO] Knot.x - Reactive microservice assembler - Knot Root SUCCESS [  0.109 s]
-[INFO] Knot.x - Reactive microservice assembler - Knot API  SUCCESS [  0.414 s]
-[INFO] Knot.x - Reactive microservice assembler - Service Knot SUCCESS [  4.563 s]
-[INFO] Knot.x - Reactive microservice assembler - Adapter Root SUCCESS [  0.100 s]
-[INFO] Knot.x - Reactive microservice assembler - Adapter API SUCCESS [  0.405 s]
-[INFO] Knot.x - Reactive microservice assembler - Adapter Common SUCCESS [  1.866 s]
-[INFO] Knot.x - Reactive microservice assembler - Action Knot Verticle SUCCESS [  6.901 s]
-[INFO] Knot.x - Reactive microservice assembler - Handlebars Knot SUCCESS [  3.623 s]
-[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [  0.305 s]
-[INFO] Knot.x - Mocked services for sample app ............ SUCCESS [  2.894 s]
-[INFO] Knot.x - Reactive microservice assembler - HTTP Service Adapter SUCCESS [ 10.189 s]
-[INFO] Knot.x - Reactive microservice assembler - HTTP Action Adapter SUCCESS [  9.619 s]
-[INFO] Knot.x - Reactive microservice assembler - Auhtorization Knot Verticle SUCCESS [ 10.165 s]
-[INFO] Knot.x - Reactive microservice assembler - Standalone Knot.x SUCCESS [  2.779 s]
-[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [ 11.764 s]
+[INFO] Knot.x ............................................. SUCCESS [  2.304 s]
+[INFO] Knot.x - Reactive microservice assembler - documentation SUCCESS [  0.067 s]
+[INFO] Knot.x - Reactive microservice assembler - Core Root POM SUCCESS [  0.139 s]
+[INFO] Knot.x - Reactive microservice assembler - Common .. SUCCESS [  6.657 s]
+[INFO] Knot.x - Reactive microservice assembler - Launcher  SUCCESS [  3.008 s]
+[INFO] Knot.x - Reactive microservice assembler - Repositories Connectors SUCCESS [  0.060 s]
+[INFO] Knot.x - Reactive microservice assembler - Filesystem Repository Connector Verticle SUCCESS [  2.290 s]
+[INFO] Knot.x - Reactive microservice assembler - Http Repository Connector Verticle SUCCESS [  2.415 s]
+[INFO] Knot.x - Reactive microservice assembler - HTML Fragment Splitter SUCCESS [  4.615 s]
+[INFO] Knot.x - Reactive microservice assembler - HTTP Server SUCCESS [  5.300 s]
+[INFO] Knot.x - Reactive microservice assembler - Adapter Root SUCCESS [  0.085 s]
+[INFO] Knot.x - Reactive microservice assembler - Adapter API SUCCESS [  0.337 s]
+[INFO] Knot.x - Reactive microservice assembler - Adapter Common SUCCESS [  1.384 s]
+[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [  0.668 s]
+[INFO] Knot.x - Mocked services for sample app ............ SUCCESS [  2.068 s]
+[INFO] Knot.x - Reactive microservice assembler - HTTP Service Adapter SUCCESS [  5.291 s]
+[INFO] Knot.x - Reactive microservice assembler - HTTP Action Adapter SUCCESS [  4.974 s]
+[INFO] Knot.x - Reactive microservice assembler - Knot Root SUCCESS [  0.076 s]
+[INFO] Knot.x - Reactive microservice assembler - Knot API  SUCCESS [  0.263 s]
+[INFO] Knot.x - Reactive microservice assembler - Action Knot Verticle SUCCESS [  4.553 s]
+[INFO] Knot.x - Reactive microservice assembler - Service Knot SUCCESS [  3.496 s]
+[INFO] Knot.x - Reactive microservice assembler - Handlebars Knot SUCCESS [  2.173 s]
+[INFO] Knot.x - Reactive microservice assembler - Standalone Knot.x SUCCESS [  2.096 s]
+[INFO] Knot.x - Sample App with Mock service .............. SUCCESS [  6.944 s]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 01:40 min
-[INFO] Finished at: 2016-11-20T15:32:38+01:00
-[INFO] Final Memory: 166M/1491M
+[INFO] Total time: 01:01 min
+[INFO] Finished at: 2017-01-03T12:47:50+01:00
+[INFO] Final Memory: 107M/910M
 [INFO] ------------------------------------------------------------------------
+
 ```
 
 See also [[how to run Knot.x demo|RunningTheDemo]].

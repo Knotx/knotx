@@ -32,17 +32,16 @@
 
   <name>Knot.x - Sample App with Mock service</name>
 
-  <properties>
-    <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</main.verticle>
-    <exec.config>knotx-example-monolith.json</exec.config>
-  </properties>
-
   <dependencies>
     <!-- Knot.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-launcher</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -142,6 +141,13 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-launcher</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -154,10 +160,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

@@ -17,8 +17,7 @@
  */
 package com.cognifide.knotx.knot.service;
 
-import com.cognifide.knotx.junit.FileReader;
-
+import com.cognifide.knotx.launcher.junit.FileReader;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;

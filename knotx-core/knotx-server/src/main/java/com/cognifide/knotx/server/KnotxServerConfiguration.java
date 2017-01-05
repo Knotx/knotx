@@ -46,7 +46,7 @@ public class KnotxServerConfiguration {
   private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   public KnotxServerConfiguration(JsonObject config) {
-    httpPort = config.getInteger("http.port");
+    httpPort = config.getInteger("httpPort");
     splitterAddress = config.getJsonObject("splitter").getString("address");
 
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
@@ -61,7 +61,7 @@ public class KnotxServerConfiguration {
         .forEach(object -> repositoryAddressMapping.put(object.getString("path"),
             new RepositoryEntry(object.getString("address"), object.getBoolean("doProcessing", true))));
 
-    allowedResponseHeaders = config.getJsonArray("allowed.response.headers").stream()
+    allowedResponseHeaders = config.getJsonArray("allowedResponseHeaders").stream()
         .map(item -> ((String) item).toLowerCase())
         .collect(Collectors.toSet());
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Handlebars Knot
+    Knot.x - Reactive microservice assembler - Action Knot
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -28,8 +28,11 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide" level="debug"
-          additivity="false">
+  <logger name="com.cognifide.knotx" level="INFO" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger name="com.cognifide.knotx.knot.templating" level="TRACE" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 

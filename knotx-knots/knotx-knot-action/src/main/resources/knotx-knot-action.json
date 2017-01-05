@@ -1,19 +1,5 @@
 {
-  "address": "knotx.knot.action",
-  "adapters": [
-    {
-      "name": "action-self",
-      "address": "test",
-      "params" : {
-        "example": "example-value"
-      },
-      "allowed.request.headers": [
-        "Cookie"
-      ],
-      "allowed.response.headers": [
-        "Set-Cookie"
-      ]
-    }
-  ],
-  "formIdentifierName": "snippet-identifier"
+  "modules": [
+    "knotx:io.knotx.ActionKnot"
+  ]
 }
