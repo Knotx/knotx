@@ -52,11 +52,9 @@ Vert.x collects:
 
 For a detailed description about available metrics please check [Vert.x The Metrics](http://vertx.io/docs/vertx-dropwizard-metrics/java/#_the_metrics) page
 
-<aside class="warning">
-Warning
-We don’t recommend that you try to gather metrics from your production environment. JMX’s RPC API is fragile and bonkers. 
-For development purposes and browsing, though, it can be very useful.
-</aside>
+| ! Warning |
+|:------ |
+| **We don’t recommend that you try to gather metrics from your production environment. JMX’s RPC API is fragile and bonkers. For development purposes and browsing, though, it can be very useful.** | 
 
 ## How to configure ?
 As mentioned above, the knotx-starter.json is the main configuration file describing what Knot.x modules (verticles) need to be started as part of Knot.x.
