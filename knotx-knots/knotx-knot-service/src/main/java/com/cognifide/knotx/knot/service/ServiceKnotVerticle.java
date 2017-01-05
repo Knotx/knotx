@@ -23,6 +23,7 @@ import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import java.util.Collections;
+import java.util.Set;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
@@ -38,6 +39,8 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   private static final String DEFAULT_TEMPLATING_KNOT = "next";
 
+  private static final String SUPPORTED_FRAGMENT_ID = "services";
+
   private FragmentProcessor snippetProcessor;
 
   @Override
@@ -51,16 +54,22 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
     return new ServiceKnotConfiguration(config);
   }
 
+  @Override
   protected Observable<KnotContext> process(KnotContext message) {
     return message.fragments()
         .map(fragments -> Observable.from(fragments)
-            .filter(fragment -> !fragment.isRaw())
+            .filter(fragment -> fragment.identifiers().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
             .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, message)))
         .orElse(Observable.just(FragmentContext.empty()))
         .map(result -> createSuccessResponse(message))
         .onErrorReturn(error -> processError(message, error));
+  }
+
+  @Override
+  protected boolean shouldProcess(Set<String> fragmentsIdentifiers) {
+    return fragmentsIdentifiers.contains(SUPPORTED_FRAGMENT_ID);
   }
 
   @Override

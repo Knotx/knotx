@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Standalone Knot.x
+    Knot.x - Reactive microservice assembler - Assembly Knot
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -24,20 +24,32 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knotx-core</artifactId>
+    <artifactId>knotx-knots</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-standalone</artifactId>
+  <artifactId>knotx-knot-assembly</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Standalone Knot.x</name>
+  <name>Knot.x - Reactive microservice assembler - Assembly Knot</name>
 
   <properties>
     <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</main.verticle>
+    <main.verticle>com.cognifide.knotx.knot.assembly.AssemblyKnotVerticle</main.verticle>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-knot-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -54,79 +66,59 @@
       <artifactId>vertx-rx-java</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-hazelcast</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.reactivex</groupId>
       <artifactId>rxjava</artifactId>
     </dependency>
+
+    <!-- COMMON -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
 
-    <!-- Knot.x -->
+    <!-- Tests -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-repository-connector-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-repository-connector-filesystem</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-fragment-splitter</artifactId>
-      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-knot-api</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    <!-- REPOSITORY -->
+    <!-- REPOSITORY -->
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-service</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-action</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-handlebars</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-assembly</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-adapter-service-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-adapter-action-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-server</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -137,4 +129,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>

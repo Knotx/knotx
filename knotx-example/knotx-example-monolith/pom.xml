@@ -76,8 +76,13 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+    <groupId>com.cognifide.knotx</groupId>
+    <artifactId>knotx-knot-handlebars</artifactId>
+    <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-handlebars</artifactId>
+      <artifactId>knotx-knot-assembly</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

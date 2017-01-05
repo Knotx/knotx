@@ -19,28 +19,19 @@ package com.cognifide.knotx.knot.templating;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
 import com.cognifide.knotx.knot.api.AbstractKnot;
 import com.cognifide.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
-import com.cognifide.knotx.knot.templating.wrappers.HtmlFragment;
-import com.cognifide.knotx.knot.templating.wrappers.RawHtmlFragment;
-import com.cognifide.knotx.knot.templating.wrappers.TemplateHtmlFragment;
 import com.github.jknack.handlebars.Handlebars;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.ServiceLoader;
-
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
+import java.util.ServiceLoader;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
 public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfiguration> {
@@ -51,6 +42,10 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
 
   private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end compiled snippet -->";
 
+  private static final String DEFAULT_HANDLEBARS_TRANSITION = "next";
+
+  private static final String SUPPORTED_FRAGMENT_ID = "handlebars";
+
   private Handlebars handlebars;
 
   @Override
@@ -60,48 +55,43 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
   }
 
   @Override
-  protected Observable<KnotContext> process(KnotContext message) {
-    return message.fragments()
-        .map(
-            fragments -> Observable.from(fragments)
-                .flatMap(this::compileHtmlFragment)
-                .concatMapEager(this::applyData)
-                // eager will buffer faster processing to emit items in proper order, keeping concurrency.
-                .reduce(new StringBuilder(), StringBuilder::append)
-                .map(StringBuilder::toString)
-
-        ).orElse(Observable.just(StringUtils.EMPTY))
-        .map(result -> createSuccessResponse(message, result))
-        .onErrorReturn(error -> processError(message, error));
+  protected Observable<KnotContext> process(KnotContext msg) {
+    return Observable.create(observer -> {
+      try {
+        msg.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
+        msg.fragments().ifPresent(fragments ->
+            fragments.stream()
+                .filter(fragment -> fragment.identifiers().contains(SUPPORTED_FRAGMENT_ID))
+                .forEach(fragment -> fragment.setContent(startComment() +
+                    new HandlebarsFragment(fragment).compileWith(handlebars)
+                    + endComment()))
+        );
+        observer.onNext(msg);
+        observer.onCompleted();
+      } catch (Exception e) {
+        observer.onError(e);
+      }
+    });
   }
 
-  private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
-    ClientResponse clientResponse = inputContext.clientResponse();
-    MultiMap headers = clientResponse.headers();
-    headers.set(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(renderedContent.length()));
-    clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
-
-    return new KnotContext()
-        .setClientRequest(inputContext.clientRequest())
-        .setClientResponse(clientResponse);
+  @Override
+  protected boolean shouldProcess(Set<String> fragmentsIdentifiers) {
+    return fragmentsIdentifiers.contains(SUPPORTED_FRAGMENT_ID);
   }
 
   @Override
   protected KnotContext processError(KnotContext knotContext, Throwable error) {
-    return null;
+    LOGGER.error("Error happened during Template processing", error);
+    ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+
+    return new KnotContext()
+        .setClientRequest(knotContext.clientRequest())
+        .setClientResponse(errorResponse);
   }
 
   @Override
   protected HandlebarsKnotConfiguration initConfiguration(JsonObject config) {
     return new HandlebarsKnotConfiguration(config);
-  }
-
-  private Observable<String> applyData(HtmlFragment snippet) {
-    LOGGER.trace("Applying data to snippet {}", snippet);
-
-    return Observable.just(startComment() +
-        snippet.getContentWithContext(snippet.getFragment().getContext()) +
-        endComment());
   }
 
   private String startComment() {
@@ -129,21 +119,6 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
       handlebars.registerHelper(helper.getName(), helper);
       LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
     });
-  }
-
-  private Observable<HtmlFragment> compileHtmlFragment(Fragment fragment) {
-    if (!fragment.isRaw()) {
-      return Observable.create(subscriber -> {
-        try {
-          subscriber.onNext(new TemplateHtmlFragment(fragment).compileWith(handlebars));
-          subscriber.onCompleted();
-        } catch (IOException e) {
-          subscriber.onError(e);
-        }
-      });
-    } else {
-      return Observable.just(new RawHtmlFragment(fragment));
-    }
   }
 
 }

@@ -15,54 +15,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.templating.wrappers;
+package com.cognifide.knotx.knot.templating;
 
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.handlebars.JsonObjectValueResolver;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
+class HandlebarsFragment {
 
-import io.vertx.core.json.JsonObject;
+  private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsFragment.class);
 
-public class TemplateHtmlFragment implements HtmlFragment {
+  private final Fragment fragment;
 
   private final String unwrappedContent;
-  private final Fragment fragment;
-  private final JsonObject context;
 
-  private Template compiledFragment;
-
-  public TemplateHtmlFragment(Fragment fragment) {
+  HandlebarsFragment(Fragment fragment) {
     this.fragment = fragment;
-    this.context = fragment.getContext();
-    Document document = Jsoup.parseBodyFragment(fragment.getContent());
-    Element scriptTag = document.body().child(0);
-    this.unwrappedContent = scriptTag.unwrap().toString(); //remove outer script tag
+    this.unwrappedContent = getUnwrappedContent(fragment);
   }
 
-  @Override
-  public String getContentWithContext(JsonObject model) {
+  String compileWith(Handlebars handlebars) {
     try {
-      return compiledFragment.apply(Context.newBuilder(model.mergeIn(context)).push(JsonObjectValueResolver.INSTANCE).build());
+      Template compiledFragment = handlebars.compileInline(unwrappedContent);
+      return compiledFragment.apply(
+          Context.newBuilder(fragment.getContext())
+              .push(JsonObjectValueResolver.INSTANCE)
+              .build());
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      LOGGER.error("Could not process fragment [{}]", fragment.getContent(), e);
+      throw new IllegalStateException("Handlebars fragment can not be evaluated correctly.");
     }
   }
 
-  @Override
-  public Fragment getFragment() {
-    return fragment;
+  private String getUnwrappedContent(Fragment fragment) {
+    Document document = Jsoup.parseBodyFragment(fragment.getContent());
+    Element scriptTag = document.body().child(0);
+    return scriptTag.unwrap().toString();
   }
 
-  public TemplateHtmlFragment compileWith(Handlebars handlebars) throws IOException {
-    this.compiledFragment = handlebars.compileInline(unwrappedContent);
-    return this;
-  }
 }

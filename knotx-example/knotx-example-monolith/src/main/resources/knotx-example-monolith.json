@@ -63,7 +63,12 @@
                   "address": "knotx.knot.service",
                   "onTransition": {
                     "next" : {
-                      "address": "knotx.knot.handlebars"
+                      "address": "knotx.knot.handlebars",
+                      "onTransition": {
+                        "next" : {
+                          "address": "knotx.knot.assembly"
+                        }
+                      }
                     }
                   }
                 }
@@ -79,7 +84,12 @@
                   "address": "knotx.knot.service",
                   "onTransition": {
                     "next": {
-                      "address": "knotx.knot.handlebars"
+                      "address": "knotx.knot.handlebars",
+                      "onTransition": {
+                        "next" : {
+                          "address": "knotx.knot.assembly"
+                        }
+                      }
                     }
                   }
                 }
@@ -235,6 +245,11 @@
       "config": {
         "address": "knotx.knot.handlebars",
         "template.debug": true
+      }
+    },
+    "com.cognifide.knotx.knot.assembly.AssemblyKnotVerticle": {
+      "config": {
+        "address": "knotx.knot.assembly"
       }
     },
     "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle" :{
