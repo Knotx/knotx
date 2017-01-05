@@ -1,8 +1,0 @@
-{
-  "main": "com.cognifide.knotx.knot.assembly.AssemblyKnotVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.knot.assembly"
-    }
-  }
-}

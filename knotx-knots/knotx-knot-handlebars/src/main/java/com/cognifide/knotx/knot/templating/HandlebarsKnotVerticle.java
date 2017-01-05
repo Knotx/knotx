@@ -82,7 +82,8 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
   @Override
   protected KnotContext processError(KnotContext knotContext, Throwable error) {
     LOGGER.error("Error happened during Template processing", error);
-    ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+    ClientResponse errorResponse = new ClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
 
     return new KnotContext()
         .setClientRequest(knotContext.clientRequest())

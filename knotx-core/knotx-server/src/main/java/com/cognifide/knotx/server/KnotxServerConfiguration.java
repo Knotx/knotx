@@ -43,11 +43,14 @@ public class KnotxServerConfiguration {
 
   private String splitterAddress;
 
+  private String assemblerAddress;
+
   private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   public KnotxServerConfiguration(JsonObject config) {
     httpPort = config.getInteger("httpPort");
     splitterAddress = config.getJsonObject("splitter").getString("address");
+    assemblerAddress = config.getJsonObject("assembler").getString("address");
 
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
@@ -68,6 +71,10 @@ public class KnotxServerConfiguration {
 
   public String splitterAddress() {
     return splitterAddress;
+  }
+
+  String assemblerAddress() {
+    return assemblerAddress;
   }
 
   public boolean displayExceptionDetails() {

@@ -38,6 +38,7 @@
     <module>knotx-launcher</module>
     <module>knotx-repository</module>
     <module>knotx-fragment-splitter</module>
+    <module>knotx-fragment-assembler</module>
     <module>knotx-server</module>
   </modules>
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Assembly Knot
+    Knot.x - Reactive microservice assembler - Fragment Assembler
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -24,18 +24,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knotx-knots</artifactId>
+    <artifactId>knotx-core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-knot-assembly</artifactId>
+  <artifactId>knotx-fragment-assembler</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Assembly Knot</name>
-
-  <properties>
-    <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.knot.assembly.AssemblyKnotVerticle</main.verticle>
-  </properties>
+  <name>Knot.x - Reactive microservice assembler - Fragment Assembler</name>
 
   <dependencies>
     <dependency>

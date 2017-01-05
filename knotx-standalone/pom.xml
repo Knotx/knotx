@@ -105,7 +105,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-assembly</artifactId>
+      <artifactId>knotx-fragment-assembler</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
