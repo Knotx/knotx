@@ -28,9 +28,8 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
-import rx.Observable;
-
 import java.util.Optional;
+import rx.Observable;
 
 public class ServiceEngine {
 
@@ -48,8 +47,7 @@ public class ServiceEngine {
     this.configuration = serviceConfiguration;
   }
 
-  public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
-                                              KnotContext knotContext) {
+  public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
     AdapterRequest adapterRequest = new AdapterRequest()
         .setRequest(knotContext.clientRequest())
         .setParams(serviceEntry.getParams());
@@ -61,17 +59,19 @@ public class ServiceEngine {
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
     Optional<ServiceKnotConfiguration.ServiceMetadata> serviceMetadata = configuration.getServices().stream()
-            .filter(service -> serviceEntry.getName().matches(service.getName()))
-            .findFirst();
+        .filter(service -> serviceEntry.getName().matches(service.getName()))
+        .findFirst();
+
     if (serviceMetadata.isPresent()) {
       return serviceMetadata.map(metadata ->
-              serviceEntry.setAddress(metadata.getAddress())
-                      .mergeParams(metadata.getParams())
-                      .overrideCacheKey(metadata.getCacheKey())
-      ).get();
+          new ServiceEntry(serviceEntry)
+              .setAddress(metadata.getAddress())
+              .mergeParams(metadata.getParams())
+              .setCacheKey(metadata.getCacheKey()))
+          .get();
     } else {
-      LOGGER.error("Missing configuration for: {}", serviceEntry.getName());
-      throw new IllegalStateException("Missing configuration");
+      LOGGER.error("Missing service configuration for: {}", serviceEntry.getName());
+      throw new IllegalStateException("Missing service configuration");
     }
   }
 
