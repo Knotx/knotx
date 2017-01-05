@@ -17,6 +17,10 @@
  */
 package com.cognifide.knotx.example.monolith;
 
+import com.cognifide.knotx.junit.Logback;
+import com.cognifide.knotx.launcher.junit.FileReader;
+import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
+import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
 import com.cognifide.knotx.junit.FileReader;
 import com.cognifide.knotx.junit.KnotxConfiguration;
 import com.cognifide.knotx.junit.Logback;
@@ -32,6 +36,7 @@ import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
+import java.util.Map;
 import org.jsoup.Jsoup;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,7 +53,8 @@ public class SampleApplicationTest {
 
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
   private static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
-  private static final String MISSING_SERVICE_CONFIG_REQUEST_URI = "/content/local/missingServiceConfig.html";
+private static final String MISSING_SERVICE_CONFIG_REQUEST_URI = "/content/local/missingServiceConfig.html";
+  private static final String LOCAL_NO_BODY_REQUEST_URI = "/content/local/noBody.html";
   private static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
   private static final int KNOTX_SERVER_PORT = 8092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
@@ -60,7 +66,8 @@ public class SampleApplicationTest {
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri,
+      Action1<HttpClientRequest> requestBuilder) {
     return Observable.create(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();
@@ -71,12 +78,15 @@ public class SampleApplicationTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
+  @KnotxConfiguration("knotx-test-monolith.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
   }
 
   @Test
+  @KnotxConfiguration("knotx-test-monolith-no-body.json")
+  public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(TestContext context) {
+    testGetRequest(context, LOCAL_NO_BODY_REQUEST_URI, "noBody.html");
   @KnotxConfiguration("knotx-example-monolith.json")
   public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(TestContext context) {
     testGetServerError(context, MISSING_SERVICE_CONFIG_REQUEST_URI);
@@ -89,19 +99,19 @@ public class SampleApplicationTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
+  @KnotxConfiguration("knotx-test-monolith.json")
   public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
+  @KnotxConfiguration("knotx-test-monolith.json")
   public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
+  @KnotxConfiguration("knotx-test-monolith.json")
   public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);

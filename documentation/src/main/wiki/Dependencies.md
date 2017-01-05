@@ -7,4 +7,10 @@
 - com.google.code.gson
 - guava
 - commons-lang3
+- commons-io
 - junit
+- hamcrest
+- assertj
+- powermock
+- mockito
+- com.github.stefanbirkner.system-rules

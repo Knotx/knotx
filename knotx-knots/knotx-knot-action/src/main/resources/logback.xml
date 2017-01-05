@@ -28,8 +28,11 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide.knot.action" level="debug"
-          additivity="false">
+  <logger name="com.cognifide.knotx" level="INFO" additivity="false">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger name="com.cognifide.knotx.knot.action" level="TRACE" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 

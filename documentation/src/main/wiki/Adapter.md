@@ -56,6 +56,10 @@ Reference implementation of `com.cognifide.knotx.adapter.api.AbstractAdapter` is
 |:------ |
 | Please note that this section focused on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using language you like. |
 
+| ! Note |
+|:------ |
+| Besides Verticle implementation itself, a custom implementation of your Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Adapter a module. |
+
 ### Configuration file
 Adapter could have its JSON configuration file that will be passed to `initConfiguration` method in form of `JsonObject`.
 You may read more about example configuration for `HttpServiceAdapterVerticle` in [[Http Service Adapter|HttpServiceAdapter]] section.

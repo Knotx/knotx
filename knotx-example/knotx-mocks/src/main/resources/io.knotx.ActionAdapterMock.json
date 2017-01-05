@@ -1,0 +1,9 @@
+{
+  "main": "com.cognifide.knotx.mocks.MockActionAdapterVerticle",
+  "options": {
+    "config": {
+      "address": "mock-action-adapter",
+      "mockDataRoot": "mock/action"
+    }
+  }
+}

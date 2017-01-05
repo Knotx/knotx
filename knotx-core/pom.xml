@@ -35,9 +35,9 @@
 
   <modules>
     <module>knotx-common</module>
+    <module>knotx-launcher</module>
     <module>knotx-repository</module>
     <module>knotx-fragment-splitter</module>
     <module>knotx-server</module>
-    <module>knotx-standalone</module>
   </modules>
 </project>

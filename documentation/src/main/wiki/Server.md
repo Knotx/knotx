@@ -41,74 +41,95 @@ In both cases the response will be returned to the client.
 For more details please see [[Routing|Routing]] and [[Communication Flow|CommunicationFlow]] sections.
 
 ## How to configure?
-Server is deployed as a separate Verticle, depending on how it's deployed. 
-You need to supply **Server** configuration as JSON below if deployed as Server Verticle fat jar.
+Server is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+
+Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` file available in classpath.
 ```json
 {
-  "http.port": 8080,
-  "allowed.response.headers": [ "Content-Type", "Content-Length", "Location", "Set-Cookie" ],
-  "repositories" : [
-    {
-      "path": "/content/local/.*\.html",
-      "address": "filesystem.repository.eventbus.address"
-    },
-    {
-      "path": "/content/.*\.html",
-      "address": "http.repository.eventbus.address"
-    }
-  ],
-  "splitter": {
-    "address" : "splitter.eventbus.address"
-  },
-  "routing": {
-    "GET": {
-      "path": "/.*\.html",
-      "address": "first.knot.eventbus.address",
-      "onTransition": {
-        "go-second": {
-          "address": "second.knot.eventbus.address",
-          "onTransition": {
-            "go-third": {
-              "address": "third.knots.eventbus.address"
+  "main": "com.cognifide.knotx.server.KnotxServerVerticle",
+  "options": {
+    "config": {
+      "httpPort": 8092,
+      "displayExceptionDetails": true,
+      "allowedResponseHeaders": [
+        "Access-Control-Allow-Origin",
+        "Allow",
+        "Cache-Control",
+        "Content-Disposition",
+        "Content-Encoding",
+        "Content-Language",
+        "Content-Location",
+        "Content-MD5",
+        "Content-Range",
+        "Content-Type",
+        "Content-Length",
+        "Content-Security-Policy",
+        "Date",
+        "ETag",
+        "Expires",
+        "Last-Modified",
+        "Location",
+        "Pragma",
+        "Proxy-Authenticate",
+        "Server",
+        "Set-Cookie",
+        "Status",
+        "Vary",
+        "Via",
+        "X-Frame-Options",
+        "X-XSS-Protection",
+        "X-Content-Type-Options",
+        "X-UA-Compatible",
+        "X-Request-ID"
+      ],
+      "repositories": [
+        {
+          "path": "/content/local/.*",
+          "address": "knotx.core.repository.filesystem"
+        },
+        {
+          "path": "/content/.*",
+          "address": "knotx.core.repository.http"
+        }
+      ],
+      "splitter": {
+        "address": "knotx.core.splitter"
+      },
+      "routing": {
+        "GET": [
+          {
+            "path": "/content/.*",
+            "address": "knotx.knot.service",
+            "onTransition": {
+              "next": {
+                "address": "knotx.knot.handlebars"
+              }
             }
           }
-        },
-        "go-alt": {
-          "address": "alternate.knot.eventbus.address"
-        }
+        ]
       }
-    },
-    "POST": {
-      "path": "/.*\.html",
-      "address": "first.knot.eventbus.address"
     }
   }
 }
 ```
+In short, by default, server does:
+- Listens on port 8092
+- Displays exception details on error pages (for development purposes)
+- Returns certain headers in Http Response to the client (as shown above)
+- Communicates with two types of repositories: HTTP and Filesystem
+- Uses core [Splitter|Splitter]
+- Each GET request under `/content` path routed through [Service Knot|ServiceKnot] and then [Handlebars rendering engine|HandlebarsKnot]
 
-Or, above configuration wrapped in the JSON `config` section as shown below, if deployed using Knot.x starter verticle.
-```json
-  "verticles": {
-    ...,
-    "com.cognifide.knotx.server.KnotxServerVerticle": {
-      "config": {
-         "PUT YOUR CONFIG HERE"
-      }
-    },
-    ...,
-  }
-```
-
-Detailed description of each configuration option is described in next section.
+Detailed description of each configuration option that's available is described in next section.
 
 ## Server options
 Main server options available.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
-| `http.port`                 | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
-| `displayExceptionDetails`   | `Boolean`                           |         | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
-| `allowed.response.headers`  | `Array of String`                   |         | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
+| `httpPort`                  | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
+| `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
+| `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `repositories`              | `Array of RepositoryEntry`          | &#10004;       | Array of repositories configurations |
 | `splitter`                  | `SplitterEntry`                     | &#10004;       | **Splitter** communication options |
 | `routing`                   | `Object of Method to RoutingEntry`  | &#10004;       | Set of HTTP method based routing entries, describing communication between **Knots**<br/>`"routing": {"GET": {}, "POST": {}}` |

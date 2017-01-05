@@ -1,0 +1,13 @@
+{
+  "modules": [
+    "knotx:io.knotx.KnotxServer",
+    "knotx:io.knotx.HttpRepositoryConnector",
+    "knotx:io.knotx.FilesystemRepositoryConnector",
+    "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.ServiceKnot",
+    "knotx:io.knotx.ActionKnot",
+    "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.HttpServiceAdapter"
+  ]
+}
+

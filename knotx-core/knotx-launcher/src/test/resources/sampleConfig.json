@@ -1,0 +1,10 @@
+{
+  "someInteger": 1234,
+  "someBoolean": false,
+  "someString": "foo",
+  "someNested": {
+    "nestedInteger": 1234,
+    "nestedBoolean": false,
+    "nestedString": "foo"
+  }
+}

@@ -46,7 +46,7 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
 
   @Override
   public void start() throws Exception {
-    LOGGER.debug("Starting <{}>", this.getClass().getName());
+    LOGGER.info("Starting <{}>", this.getClass().getName());
 
     vertx.eventBus().<KnotContext>consumer(configuration.getAddress())
         .handler(message -> Observable.just(message)

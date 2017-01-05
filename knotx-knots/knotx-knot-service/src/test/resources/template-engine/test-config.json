@@ -1,6 +1,6 @@
 {
   "address": "knotx.knot.service",
-  "client.options": {
+  "clientOptions": {
     "maxPoolSize": 100,
     "keepAlive": false
   },
