@@ -15,18 +15,6 @@
     "knotx:io.knotx.ActionAdapterMock"
   ],
   "config": {
-    "knotx:test.io.knotx.KnotxServer": {
-      "options": {
-        "config": {
-          "repositories": [
-            {
-              "path": "/content/test/.*",
-              "address": "knotx.core.repository.filesystem"
-            }
-          ]
-        }
-      }
-    },
     "knotx:io.knotx.ServiceKnot": {
       "options": {
         "config": {
