@@ -44,20 +44,65 @@ import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
 public class SampleApplicationTest {
-  
+
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
   private static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
+  private static final String MISSING_SERVICE_CONFIG_REQUEST_URI = "/content/local/missingServiceConfig.html";
+  private static final String LOCAL_NO_BODY_REQUEST_URI = "/content/local/noBody.html";
   private static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
   private static final int KNOTX_SERVER_PORT = 8092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
-  
+
   private RunTestOnContext vertx = new RunTestOnContext();
-  
+
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-  
+
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
-  
+
+  @Test
+  @KnotxConfiguration("knotx-test-monolith.json")
+  public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
+    testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-test-monolith-no-body.json")
+  public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(TestContext context) {
+    testGetRequest(context, LOCAL_NO_BODY_REQUEST_URI, "noBody.html");
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-example-monolith.json")
+  public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(TestContext context) {
+    testGetServerError(context, MISSING_SERVICE_CONFIG_REQUEST_URI);
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-example-monolith.json")
+  public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
+    testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-test-monolith.json")
+  public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
+    testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-test-monolith.json")
+  public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-test-monolith.json")
+  public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
+  }
+
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri,
       Action1<HttpClientRequest> requestBuilder) {
     return Observable.create(subscriber -> {
@@ -68,41 +113,10 @@ public class SampleApplicationTest {
       req.end();
     });
   }
-  
-  @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
-  public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
-    testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
-  }
-  
-  @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
-  public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
-    testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
-  }
-  
-  @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
-  public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
-    testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
-  }
-  
-  @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
-  public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
-  }
-  
-  @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
-  public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
-  }
-  
+
   private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
-    
+
     Async async = context.async();
     Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
       String bodyForm = formData.entrySet().stream()
@@ -115,7 +129,7 @@ public class SampleApplicationTest {
       }
       req.write(bodyForm);
     });
-    
+
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
       try {
@@ -123,11 +137,11 @@ public class SampleApplicationTest {
       } catch (Exception e) {
         context.fail(e);
       }
-      
+
       async.complete();
     }));
   }
-  
+
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
@@ -144,22 +158,33 @@ public class SampleApplicationTest {
           async.complete();
         }));
   }
-  
+
+  private void testGetServerError(TestContext context, String url) {
+    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    Async async = context.async();
+    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
+        resp -> resp.bodyHandler(body -> {
+          context.assertEquals(resp.statusCode(), HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+          client.close();
+          async.complete();
+        }));
+  }
+
   private Map<String, String> getFirstTestFormData() {
     Map<String, String> data = Maps.newHashMap();
     data.put("name", "test");
     data.put("email", "email@example.com");
     data.put("_frmId", "competition");
-    
+
     return data;
   }
-  
+
   private Map<String, String> getSecondTestFormData() {
     Map<String, String> data = Maps.newHashMap();
     data.put("name", "test");
     data.put("email", "email@example.com");
     data.put("_frmId", "competition");
-    
+
     return data;
   }
 }

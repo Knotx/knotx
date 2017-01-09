@@ -21,15 +21,19 @@ import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
-
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import io.vertx.rxjava.core.eventbus.Message;
+import java.util.Optional;
 import rx.Observable;
 
 public class ServiceEngine {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);
 
   private static final String RESULT_NAMESPACE_KEY = "_result";
   private static final String RESPONSE_NAMESPACE_KEY = "_response";
@@ -43,8 +47,7 @@ public class ServiceEngine {
     this.configuration = serviceConfiguration;
   }
 
-  public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry,
-                                              KnotContext knotContext) {
+  public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
     AdapterRequest adapterRequest = new AdapterRequest()
         .setRequest(knotContext.clientRequest())
         .setParams(serviceEntry.getParams());
@@ -55,14 +58,21 @@ public class ServiceEngine {
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
-    return configuration.getServices().stream()
+    Optional<ServiceKnotConfiguration.ServiceMetadata> serviceMetadata = configuration.getServices().stream()
         .filter(service -> serviceEntry.getName().matches(service.getName()))
-        .findFirst().map(metadata ->
-            serviceEntry.setAddress(metadata.getAddress())
-                .mergeParams(metadata.getParams())
-                .overrideCacheKey(metadata.getCacheKey())
-        )
-        .get();
+        .findFirst();
+
+    if (serviceMetadata.isPresent()) {
+      return serviceMetadata.map(metadata ->
+          new ServiceEntry(serviceEntry)
+              .setAddress(metadata.getAddress())
+              .mergeParams(metadata.getParams())
+              .setCacheKey(metadata.getCacheKey()))
+          .get();
+    } else {
+      LOGGER.error("Missing service configuration for: {}", serviceEntry.getName());
+      throw new IllegalStateException("Missing service configuration");
+    }
   }
 
   private JsonObject buildResultObject(AdapterResponse adapterResponse) {
