@@ -16,23 +16,17 @@
  */
 package com.cognifide.knotx.dataobjects;
 
-import com.google.common.base.MoreObjects;
+import com.cognifide.knotx.fragments.Fragment;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Lists;
-
-import com.cognifide.knotx.fragments.Fragment;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import io.vertx.core.buffer.Buffer;
+import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import java.util.List;
 import rx.Observable;
 
-public class KnotContext extends Codec {
+@DataObject(generateConverter = true)
+public class KnotContext {
 
   private String transition;
 
@@ -46,6 +40,14 @@ public class KnotContext extends Codec {
 
   public KnotContext() {
     //Nothing to set by default
+  }
+
+  public KnotContext(JsonObject json) {
+    KnotContextConverter.fromJson(json, this);
+  }
+
+  public JsonObject toJson() {
+    return new JsonObject();
   }
 
   public KnotContext setClientRequest(ClientRequest request) {
@@ -73,20 +75,20 @@ public class KnotContext extends Codec {
     return this;
   }
 
-  public ClientRequest clientRequest() {
+  public String getTransition() {
+    return transition;
+  }
+
+  public ClientRequest getClientRequest() {
     return clientRequest;
   }
 
-  public ClientResponse clientResponse() {
+  public ClientResponse getClientResponse() {
     return clientResponse;
   }
 
-  public Optional<String> transition() {
-    return Optional.ofNullable(transition);
-  }
-
-  public Optional<List<Fragment>> fragments() {
-    return Optional.ofNullable(fragments);
+  public List<Fragment> getFragments() {
+    return fragments;
   }
 
   public Cache<String, Observable<JsonObject>> getCache() {
@@ -95,8 +97,12 @@ public class KnotContext extends Codec {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof KnotContext)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof KnotContext)) {
+      return false;
+    }
     KnotContext that = (KnotContext) o;
     return Objects.equal(transition, that.transition) &&
         Objects.equal(clientRequest, that.clientRequest) &&
@@ -109,61 +115,5 @@ public class KnotContext extends Codec {
     return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
   }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("transition", transition)
-        .add("clientRequest", clientRequest)
-        .add("clientResponse", clientResponse)
-        .add("fragments", fragments)
-        .toString();
-  }
-
-  @Override
-  public void encodeToWire(Buffer buffer) {
-    encodeString(buffer, transition);
-    if (clientRequest != null) {
-      encodeInt(buffer, 1);
-      clientRequest.encodeToWire(buffer);
-    } else {
-      encodeInt(buffer, 0);
-    }
-    if (clientResponse != null) {
-      encodeInt(buffer, 1);
-      clientResponse.encodeToWire(buffer);
-    } else {
-      encodeInt(buffer, 0);
-    }
-    if (fragments == null || fragments.isEmpty()) {
-      encodeInt(buffer, 0);
-    } else {
-      encodeInt(buffer, fragments.size());
-      for (Fragment item : fragments) {
-        encodeString(buffer, item.toJson().encode());
-      }
-    }
-  }
-
-  @Override
-  public void decodeFromWire(AtomicInteger position, Buffer buffer) {
-    transition = decodeString(position, buffer);
-    int exists = decodeInt(position, buffer);
-    if (exists == 1) {
-      clientRequest = new ClientRequest();
-      clientRequest.decodeFromWire(position, buffer);
-    }
-    exists = decodeInt(position, buffer);
-    if (exists == 1) {
-      clientResponse = new ClientResponse();
-      clientResponse.decodeFromWire(position, buffer);
-    }
-    int fragmentsAmount = decodeInt(position, buffer);
-    if (fragmentsAmount > 0) {
-      fragments = Lists.newArrayList();
-      for (int fragIdx = fragmentsAmount; fragIdx > 0; fragIdx--) {
-        fragments.add(new Fragment(new JsonObject(decodeString(position, buffer))));
-      }
-    }
-  }
 }
 

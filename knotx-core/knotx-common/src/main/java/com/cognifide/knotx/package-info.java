@@ -1,6 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - HTML Fragment Splitter
- *
+ * Knot.x - Reactive microservice assembler - Common
  * Copyright (C) 2016 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.splitter;
+@ModuleGen(name = "knotx-core-common", groupPackage="com.cognifide.knotx")
+package com.cognifide.knotx;
 
-import io.vertx.core.json.JsonObject;
-
-class FragmentSplitterConfiguration {
-
-  private final String address;
-
-  FragmentSplitterConfiguration(JsonObject config) {
-    address = config.getString("address");
-  }
-
-  String getAddress() {
-    return address;
-  }
-}
+import io.vertx.codegen.annotations.ModuleGen;

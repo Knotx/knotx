@@ -19,12 +19,14 @@ package com.cognifide.knotx.fragments;
 
 import com.google.common.base.Objects;
 
+import io.vertx.codegen.annotations.DataObject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.NoSuchElementException;
 
 import io.vertx.core.json.JsonObject;
 
+@DataObject(inheritConverter = true)
 public class Fragment {
 
   private static final String RAW_FRAGMENT_ID = "_raw";
@@ -41,10 +43,10 @@ public class Fragment {
 
   private final JsonObject context;
 
-  public Fragment(JsonObject fragment) {
-    this.id = fragment.getString(ID);
-    this.content = fragment.getString(CONTENT);
-    this.context = fragment.getJsonObject(CONTEXT, new JsonObject());
+  public Fragment(JsonObject json) {
+    this.id = json.getString(ID);
+    this.content = json.getString(CONTENT);
+    this.context = json.getJsonObject(CONTEXT, new JsonObject());
   }
 
   private Fragment(String id, String data) {

@@ -1,0 +1,76 @@
+= Cheatsheets
+
+[[AdapterRequest]]
+== AdapterRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[params]]`params`|`Json object`|-
+|[[request]]`request`|`link:dataobjects.html#ClientRequest[ClientRequest]`|-
+|===
+
+[[AdapterResponse]]
+== AdapterResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[response]]`response`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
+|[[signal]]`signal`|`String`|-
+|===
+
+[[ClientRequest]]
+== ClientRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[method]]`method`|`link:enums.html#HttpMethod[HttpMethod]`|-
+|[[path]]`path`|`String`|-
+|===
+
+[[ClientResponse]]
+== ClientResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|===
+
+[[Fragment]]
+== Fragment
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[content]]`content`|`String`|-
+|[[context]]`context`|`Json object`|-
+|[[id]]`id`|`String`|-
+|[[raw]]`raw`|`Boolean`|-
+|===
+
+[[KnotContext]]
+== KnotContext
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[clientRequest]]`clientRequest`|`link:dataobjects.html#ClientRequest[ClientRequest]`|-
+|[[clientResponse]]`clientResponse`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
+|[[fragments]]`fragments`|`Array of link:dataobjects.html#Fragment[Fragment]`|-
+|[[transition]]`transition`|`String`|-
+|===
+

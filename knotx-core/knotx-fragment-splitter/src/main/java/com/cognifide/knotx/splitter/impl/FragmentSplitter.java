@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - API
+ * Knot.x - Reactive microservice assembler - HTML Fragment Splitter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,24 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.codec;
+package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.fragments.Fragment;
 
-public class ClientResponseCodec extends AbstractMessageCodec<ClientResponse> {
+import java.util.List;
 
-  private ClientResponseCodecFactory factory = new ClientResponseCodecFactory();
+public interface FragmentSplitter {
 
-  @Override
-  protected ClientResponseCodecFactory getFactory() {
-    return factory;
-  }
-
-  private class ClientResponseCodecFactory extends AbstractMessageCodec.CodecFactory {
-    @Override
-    ClientResponse newInstance() {
-      return new ClientResponse();
-    }
-  }
+  List<Fragment> split(String template);
 
 }

@@ -18,14 +18,13 @@
 package com.cognifide.knotx.dataobjects;
 
 import com.google.common.base.Objects;
-
+import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.concurrent.atomic.AtomicInteger;
+@DataObject(generateConverter = true)
+public class AdapterResponse {
 
-import io.vertx.core.buffer.Buffer;
-
-public class AdapterResponse extends Codec {
   private ClientResponse response;
 
   private String signal;
@@ -34,7 +33,16 @@ public class AdapterResponse extends Codec {
     //Empty Reponse object
   }
 
-  public ClientResponse response() {
+
+  public AdapterResponse(JsonObject json) {
+    AdapterResponseConverter.fromJson(json, this);
+  }
+
+  public JsonObject toJson() {
+    return new JsonObject();
+  }
+
+  public ClientResponse getResponse() {
     return response;
   }
 
@@ -43,7 +51,7 @@ public class AdapterResponse extends Codec {
     return this;
   }
 
-  public String signal() {
+  public String getSignal() {
     return signal;
   }
 
@@ -55,11 +63,15 @@ public class AdapterResponse extends Codec {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof AdapterResponse)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof AdapterResponse)) {
+      return false;
+    }
     AdapterResponse that = (AdapterResponse) o;
-    return Objects.equal(signal, that.signal()) &&
-        response.equals(that.response());
+    return Objects.equal(signal, that.signal) &&
+        response.equals(that.response);
   }
 
   @Override
@@ -73,26 +85,5 @@ public class AdapterResponse extends Codec {
         .append("response", response)
         .append("signal", signal)
         .toString();
-  }
-
-  @Override
-  public void encodeToWire(Buffer buffer) {
-    encodeString(buffer, signal);
-    if (response != null) {
-      encodeInt(buffer, 1);
-      response.encodeToWire(buffer);
-    } else {
-      encodeInt(buffer, 0);
-    }
-  }
-
-  @Override
-  public void decodeFromWire(AtomicInteger pos, Buffer buffer) {
-    signal = decodeString(pos, buffer);
-    int exists = decodeInt(pos, buffer);
-    if (exists == 1) {
-      response = new ClientResponse();
-      response.decodeFromWire(pos, buffer);
-    }
   }
 }

@@ -17,18 +17,18 @@
  */
 package com.cognifide.knotx.dataobjects;
 
+import com.cognifide.knotx.util.DataObjectsUtil;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
 
-public class ClientResponse extends Codec {
+@DataObject(generateConverter = true)
+public class ClientResponse {
 
   private HttpResponseStatus statusCode;
 
@@ -40,15 +40,24 @@ public class ClientResponse extends Codec {
     //Empty object
   }
 
-  public HttpResponseStatus statusCode() {
+
+  public ClientResponse(JsonObject json) {
+    ClientResponseConverter.fromJson(json, this);
+  }
+
+  public JsonObject toJson() {
+    return new JsonObject();
+  }
+
+  public HttpResponseStatus getStatusCode() {
     return statusCode;
   }
 
-  public MultiMap headers() {
+  public MultiMap getHeaders() {
     return headers;
   }
 
-  public Buffer body() {
+  public Buffer getBody() {
     return body;
   }
 
@@ -85,42 +94,29 @@ public class ClientResponse extends Codec {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ClientResponse)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ClientResponse)) {
+      return false;
+    }
     ClientResponse that = (ClientResponse) o;
     return Objects.equal(statusCode, that.statusCode) &&
-        equalsMultimap(this.headers, that.headers) &&
-        equalsBody(this.body, that.body);
+        DataObjectsUtil.equalsMultimap(this.headers, that.headers) &&
+        DataObjectsUtil.equalsBody(this.body, that.body);
   }
 
   @Override
   public int hashCode() {
-    return 31 * Objects.hashCode(statusCode, body) + multiMapHash(headers);
+    return 31 * Objects.hashCode(statusCode, body) + DataObjectsUtil.multiMapHash(headers);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("statusCode", statusCode)
-        .add("headers", toString(headers))
+        .add("headers", DataObjectsUtil.toString(headers))
         .add("body", body)
         .toString();
-  }
-
-  @Override
-  public void encodeToWire(io.vertx.core.buffer.Buffer buffer) {
-    encodeInt(buffer, statusCode != null ? statusCode.code() : 0);
-    encodeMultiMap(buffer, headers);
-    encodeBuffer(buffer, body);
-  }
-
-  @Override
-  public void decodeFromWire(AtomicInteger position, io.vertx.core.buffer.Buffer buffer) {
-    Integer code = decodeInt(position, buffer);
-    if (code > 0) {
-      statusCode = HttpResponseStatus.valueOf(code);
-    }
-    headers = decodeMultiMap(position, buffer);
-    body = decodeBuffer(position, buffer);
   }
 }

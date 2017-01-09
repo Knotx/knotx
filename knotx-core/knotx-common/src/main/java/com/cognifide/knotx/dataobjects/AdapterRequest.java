@@ -18,15 +18,13 @@
 package com.cognifide.knotx.dataobjects;
 
 import com.google.common.base.Objects;
-
+import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.concurrent.atomic.AtomicInteger;
+@DataObject(generateConverter = true)
+public class AdapterRequest {
 
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonObject;
-
-public class AdapterRequest extends Codec {
   private ClientRequest request;
 
   private JsonObject params;
@@ -35,7 +33,15 @@ public class AdapterRequest extends Codec {
     //Empty object
   }
 
-  public ClientRequest request() {
+  public AdapterRequest(JsonObject json) {
+    AdapterRequestConverter.fromJson(json, this);
+  }
+
+  public JsonObject toJson() {
+    return new JsonObject();
+  }
+
+  public ClientRequest getRequest() {
     return request;
   }
 
@@ -44,7 +50,7 @@ public class AdapterRequest extends Codec {
     return this;
   }
 
-  public JsonObject params() {
+  public JsonObject getParams() {
     return params;
   }
 
@@ -55,11 +61,15 @@ public class AdapterRequest extends Codec {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof AdapterRequest)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof AdapterRequest)) {
+      return false;
+    }
     AdapterRequest that = (AdapterRequest) o;
-    return Objects.equal(params, that.params()) &&
-        request.equals(that.request());
+    return Objects.equal(params, that.params) &&
+        request.equals(that.request);
   }
 
   @Override
@@ -73,34 +83,5 @@ public class AdapterRequest extends Codec {
         .append("request", request)
         .append("params", params)
         .toString();
-  }
-
-  @Override
-  public void encodeToWire(Buffer buffer) {
-    if (request != null) {
-      encodeInt(buffer, 1);
-      request.encodeToWire(buffer);
-    } else {
-      encodeInt(buffer, 0);
-    }
-    if (params != null) {
-      encodeInt(buffer, 1);
-      encodeString(buffer, params.encode());
-    } else {
-      encodeInt(buffer, 0);
-    }
-  }
-
-  @Override
-  public void decodeFromWire(AtomicInteger pos, Buffer buffer) {
-    int exists = decodeInt(pos, buffer);
-    if (exists == 1) {
-      request = new ClientRequest();
-      request.decodeFromWire(pos, buffer);
-    }
-    exists = decodeInt(pos, buffer);
-    if (exists == 1) {
-      params = new JsonObject(decodeString(pos, buffer));
-    }
   }
 }

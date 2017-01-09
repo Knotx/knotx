@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - API
+ * Knot.x - Reactive microservice assembler - HTML Fragment Splitter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,23 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.codec;
+package com.cognifide.knotx.splitter.configuration;
 
-import com.cognifide.knotx.dataobjects.KnotContext;
+import io.vertx.core.json.JsonObject;
 
-public class KnotContextCodec extends AbstractMessageCodec<KnotContext> {
+public class FragmentSplitterConfiguration {
 
-  private KnotContextCodecFactory factory = new KnotContextCodecFactory();
+  private final String address;
 
-  @Override
-  protected KnotContextCodecFactory getFactory() {
-    return factory;
+  public FragmentSplitterConfiguration(JsonObject config) {
+    address = config.getString("address");
   }
 
-  private class KnotContextCodecFactory extends AbstractMessageCodec.CodecFactory {
-    @Override
-    KnotContext newInstance() {
-      return new KnotContext();
-    }
+  String getAddress() {
+    return address;
   }
 }

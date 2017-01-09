@@ -19,39 +19,50 @@ package com.cognifide.knotx.dataobjects;
 
 
 import com.cognifide.knotx.http.UriHelper;
+import com.cognifide.knotx.util.DataObjectsUtil;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
-import io.vertx.core.buffer.Buffer;
+import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class ClientRequest extends Codec {
+@DataObject(generateConverter = true)
+public class ClientRequest {
+
   private String path;
 
   private HttpMethod method;
 
   private MultiMap headers = MultiMap.caseInsensitiveMultiMap();
 
-  private MultiMap params = MultiMap.caseInsensitiveMultiMap();
+  private Map<String, List<String>> params = Collections.unmodifiableMap(new HashMap<>());
 
-  private MultiMap formAttributes = MultiMap.caseInsensitiveMultiMap();
+  private Map<String, List<String>> formAttributes = Collections.unmodifiableMap(new HashMap<>());
 
   public ClientRequest() {
     //Nothing to set by default
   }
 
+  public ClientRequest(JsonObject json) {
+    ClientRequestConverter.fromJson(json, this);
+  }
+
+  public JsonObject toJson() {
+    return new JsonObject();
+  }
+
   public ClientRequest(ClientRequest request) {
-    this.path = request.path();
-    this.method = request.method();
-    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) request.headers().getDelegate());
-    this.params = MultiMap.newInstance((io.vertx.core.MultiMap) request.params().getDelegate());
-    this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) request.formAttributes().getDelegate());
+    this.path = request.path;
+    this.method = request.method;
+    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) request.headers.getDelegate());
+    this.params = MultiMap.newInstance((io.vertx.core.MultiMap) request.params.getDelegate());
+    this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) request.formAttributes.getDelegate());
   }
 
   public ClientRequest(HttpServerRequest serverRequest) {
@@ -60,25 +71,26 @@ public class ClientRequest extends Codec {
     this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.headers().getDelegate());
     this.params = UriHelper.getParams(serverRequest.uri());
     this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.formAttributes().getDelegate());
+
   }
 
-  public String path() {
+  public String getPath() {
     return path;
   }
 
-  public HttpMethod method() {
+  public HttpMethod getMethod() {
     return method;
   }
 
-  public MultiMap headers() {
+  public MultiMap getHeaders() {
     return headers;
   }
 
-  public MultiMap params() {
+  public Map<String, List<String>> getParams() {
     return params;
   }
 
-  public MultiMap formAttributes() {
+  public Map<String, List<String>> getFormAttributes() {
     return formAttributes;
   }
 
@@ -97,31 +109,36 @@ public class ClientRequest extends Codec {
     return this;
   }
 
-  public ClientRequest setParams(MultiMap params) {
+  public ClientRequest setParams(Map<String, List<String>> params) {
     this.params = params;
     return this;
   }
 
-  public ClientRequest setFormAttributes(MultiMap formAttributes) {
+  public ClientRequest setFormAttributes(Map<String, List<String>> formAttributes) {
     this.formAttributes = formAttributes;
     return this;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof ClientRequest)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof ClientRequest)) {
+      return false;
+    }
     ClientRequest that = (ClientRequest) o;
     return Objects.equal(path, that.path) &&
         Objects.equal(method, that.method) &&
-        equalsMultimap(this.headers, that.headers) &&
-        equalsMultimap(this.params, that.params) &&
-        equalsMultimap(this.formAttributes, that.formAttributes);
+        DataObjectsUtil.equalsMultimap(this.headers, that.headers) &&
+        DataObjectsUtil.equalsMap(this.params, that.params) &&
+        DataObjectsUtil.equalsMap(this.formAttributes, that.formAttributes);
   }
 
   @Override
   public int hashCode() {
-    return 41 * Objects.hashCode(path, method) + 37 * multiMapHash(headers) + 31 * multiMapHash(params) + multiMapHash(formAttributes);
+    return 41 * Objects.hashCode(path, method) + 37 * DataObjectsUtil.multiMapHash(headers) + 31 * DataObjectsUtil.multiMapHash(params)
+        + DataObjectsUtil.multiMapHash(formAttributes);
   }
 
   @Override
@@ -129,31 +146,11 @@ public class ClientRequest extends Codec {
     return MoreObjects.toStringHelper(this)
         .add("path", path)
         .add("method", method)
-        .add("headers", toString(headers))
-        .add("params", toString(params))
-        .add("formAttributes", toString(formAttributes))
+        .add("headers", DataObjectsUtil.toString(headers))
+        .add("params", MoreObjects.toStringHelper()DataObjectsUtil.toString(params))
+        .add("formAttributes", DataObjectsUtil.toString(formAttributes))
         .toString();
   }
 
-  @Override
-  public void encodeToWire(Buffer buffer) {
-    encodeString(buffer, path);
-    encodeString(buffer, method != null ? method.name() : StringUtils.EMPTY);
-    encodeMultiMap(buffer, headers);
-    encodeMultiMap(buffer, params);
-    encodeMultiMap(buffer, formAttributes);
-  }
-
-  @Override
-  public void decodeFromWire(AtomicInteger position, Buffer buffer) {
-    path = decodeString(position, buffer);
-    String decodedMethod = decodeString(position, buffer);
-    if (StringUtils.isNotBlank(decodedMethod)) {
-      method = HttpMethod.valueOf(decodedMethod);
-    }
-    headers = decodeMultiMap(position, buffer);
-    params = decodeMultiMap(position, buffer);
-    formAttributes = decodeMultiMap(position, buffer);
-  }
 }
 
