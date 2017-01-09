@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.splitter.configuration;
+package com.cognifide.knotx.splitter.impl;
 
 import io.vertx.core.json.JsonObject;
 
@@ -27,7 +27,7 @@ public class FragmentSplitterConfiguration {
     address = config.getString("address");
   }
 
-  String getAddress() {
+  public String getAddress() {
     return address;
   }
 }

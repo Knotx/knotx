@@ -15,14 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.splitter.impl;
+package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.KnotContext;
+import io.vertx.codegen.annotations.ProxyGen;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 
-import java.util.List;
+@ProxyGen
+public interface FragmentSplitterService {
 
-public interface FragmentSplitter {
+  /**
+   * The name of the event bus service.
+   */
+  String SERVICE_NAME = "fragment-splitter-eb-service";
 
-  List<Fragment> split(String template);
-
+  void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);
 }

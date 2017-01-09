@@ -17,76 +17,65 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.dataobjects.KnotContext;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import io.netty.handler.codec.http.HttpResponseStatus;
+import com.cognifide.knotx.common.BaseMicroserviceVerticle;
+import com.cognifide.knotx.splitter.impl.FragmentSplitterConfiguration;
+import com.cognifide.knotx.splitter.impl.FragmentSplitterServiceImpl;
 import io.vertx.core.Context;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.eventbus.Message;
-import rx.Observable;
+import io.vertx.serviceproxy.ProxyHelper;
 
-public class FragmentSplitterVerticle extends AbstractVerticle {
+public class FragmentSplitterVerticle extends BaseMicroserviceVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterVerticle.class);
 
+  private FragmentSplitterService splitterService;
   private FragmentSplitterConfiguration configuration;
-
-  private FragmentSplitter splitter;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
     this.configuration = new FragmentSplitterConfiguration(config());
-    this.splitter = new HtmlFragmentSplitter();
   }
 
   @Override
-  public void start() throws IOException, URISyntaxException {
-    LOGGER.debug("Starting <{}>", this.getClass().getName());
-    EventBus eventBus = vertx.eventBus();
+  public void start(Future<Void> future) throws Exception {
+    super.start();
 
-    eventBus.<KnotContext>consumer(configuration.getAddress()).handler(
-        message -> Observable.just(message)
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                response -> {
-                  KnotContext context = response.body();
-                  context.setFragments(splitter.split(context.clientResponse().body().toString()));
-                  context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
-                  response.reply(context);
-                },
-                error -> {
-                  LOGGER.error("Exception happened during HTML splitting.", error);
-                  message.reply(processError(message.body(), error));
-                }
-            )
-    );
+    //create the microservice instance
+    this.splitterService = new FragmentSplitterServiceImpl(vertx);
+    //register the service proxy on event bus
+    ProxyHelper.registerService(FragmentSplitterService.class, (Vertx) vertx, splitterService, configuration.getAddress());
+
+    //publish the service in the discovery infrastructure
+    publishEventBusService(FragmentSplitterService.SERVICE_NAME, configuration.getAddress(), FragmentSplitterService.class.toString(),
+        new JsonObject())
+        .setHandler(future.completer());
   }
 
-  private KnotContext processError(KnotContext context, Throwable error) {
-    HttpResponseStatus statusCode;
-    if (error instanceof NoSuchElementException) {
-      statusCode = HttpResponseStatus.NOT_FOUND;
-    } else {
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    }
-    context.clientResponse().setStatusCode(statusCode);
-    return context;
-  }
-
-  private void traceMessage(Message<KnotContext> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
-    }
-  }
+  //  @Override
+//  public void start() throws IOException, URISyntaxException {
+//    LOGGER.debug("Starting <{}>", this.getClass().getName());
+//    EventBus eventBus = vertx.eventBus();
+//
+//    eventBus.<KnotContext>consumer(configuration.getAddress()).handler(
+//        message -> Observable.just(message)
+//            .doOnNext(this::traceMessage)
+//            .subscribe(
+//                response -> {
+//                  KnotContext context = response.body();
+//                  context.setFragments(splitter.split(context.clientResponse().body().toString()));
+//                  context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
+//                  response.reply(context);
+//                },
+//                error -> {
+//                  LOGGER.error("Exception happened during HTML splitting.", error);
+//                  message.reply(processError(message.body(), error));
+//                }
+//            )
+//    );
+//  }
 }
