@@ -128,6 +128,11 @@
         <version>${vertx.version}</version>
       </dependency>
       <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-dropwizard-metrics</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
         <groupId>io.reactivex</groupId>
         <artifactId>rxjava</artifactId>
         <version>${rxjava.version}</version>
