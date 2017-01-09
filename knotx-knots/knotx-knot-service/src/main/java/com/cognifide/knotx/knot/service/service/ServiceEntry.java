@@ -34,6 +34,14 @@ public class ServiceEntry {
   private String cacheKey;
   private JsonObject params;
 
+  public ServiceEntry(ServiceEntry serviceEntry) {
+    this.namespace = serviceEntry.namespace;
+    this.name = serviceEntry.name;
+    this.address = serviceEntry.address;
+    this.cacheKey = serviceEntry.cacheKey;
+    this.params = serviceEntry.params.copy();
+  }
+
   public ServiceEntry(Attribute serviceAttribute, Attribute paramsAttribute) {
     this.namespace = ServiceAttributeUtil.extractNamespace(serviceAttribute.getKey());
     this.name = serviceAttribute.getValue();
@@ -41,7 +49,7 @@ public class ServiceEntry {
     this.cacheKey = String.format("%s|%s", getName(), getParams());
   }
 
-  public ServiceEntry overrideCacheKey(String newCacheKey) {
+  public ServiceEntry setCacheKey(String newCacheKey) {
     if (StringUtils.isNotEmpty(newCacheKey)) {
       this.cacheKey = newCacheKey;
     }

@@ -1,0 +1,43 @@
+{
+  "modules": [
+    "knotx:test.io.knotx.KnotxServer",
+    "knotx:io.knotx.HttpRepositoryConnector",
+    "knotx:io.knotx.FilesystemRepositoryConnector",
+    "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.HandlebarsKnot",
+    "knotx:io.knotx.ServiceKnot",
+    "knotx:example.io.knotx.ActionKnot",
+    "knotx:io.knotx.HttpServiceAdapter",
+    "knotx:io.knotx.HttpActionAdapter",
+    "knotx:io.knotx.RemoteRepositoryMock",
+    "knotx:io.knotx.ServiceMock",
+    "knotx:io.knotx.ServiceAdapterMock",
+    "knotx:io.knotx.ActionAdapterMock"
+  ],
+  "config": {
+    "knotx:io.knotx.ServiceKnot": {
+      "options": {
+        "config": {
+          "services": [
+            {
+              "name": "fourth-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/fourth.json"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "knotx:io.knotx.HttpActionAdapter": {
+      "options": {
+        "config": {
+          "allowedRequestHeaders": [
+            "Cookie"
+          ]
+        }
+      }
+    }
+  }
+}
