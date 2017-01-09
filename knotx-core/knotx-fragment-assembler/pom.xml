@@ -19,8 +19,8 @@
 
 -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
@@ -38,10 +38,9 @@
       <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-api</artifactId>
+      <artifactId>knotx-launcher</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -75,12 +74,21 @@
       <artifactId>guava</artifactId>
     </dependency>
 
+    <!-- REPOSITORY -->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+    </dependency>
+
     <!-- Tests -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-unit</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-common</artifactId>
@@ -90,14 +98,10 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-    <!-- REPOSITORY -->
-    <!-- REPOSITORY -->
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
+      <artifactId>knotx-launcher</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

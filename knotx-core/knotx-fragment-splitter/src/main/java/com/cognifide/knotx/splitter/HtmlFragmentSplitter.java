@@ -17,38 +17,31 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.google.common.collect.Lists;
-
 import com.cognifide.knotx.fragments.Fragment;
-
+import com.cognifide.knotx.fragments.FragmentConstants;
+import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 class HtmlFragmentSplitter implements FragmentSplitter {
-
-
-  private static final String SNIPPET_IDENTIFIER_NAME = "data-knot-types";
-
-  private static final String ANY_SNIPPET_PATTERN = "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
-  private static final Pattern SNIPPET_PATTERN =
-      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
-  private static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
   @Override
   public List<Fragment> split(String html) {
     List<Fragment> fragments = Lists.newLinkedList();
-    if (html.matches(ANY_SNIPPET_PATTERN)) {
-      Matcher matcher = SNIPPET_PATTERN.matcher(html);
+    if (html.matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
+      Matcher matcher = FragmentConstants.SNIPPET_PATTERN.matcher(html);
       int idx = 0;
       while (matcher.find()) {
         MatchResult matchResult = matcher.toMatchResult();
         if (idx < matchResult.start()) {
           fragments.add(toRaw(html, idx, matchResult.start()));
         }
-        fragments.add(toSnippet(matchResult.group(1).intern().split(FRAGMENT_IDENTIFIERS_SEPARATOR), html, matchResult.start(), matchResult.end()));
+        fragments.add(
+            toSnippet(matchResult.group(1).intern()
+                    .split(FragmentConstants.FRAGMENT_IDENTIFIERS_SEPARATOR), html,
+                matchResult.start(), matchResult.end()));
         idx = matchResult.end();
       }
       if (idx < html.length()) {

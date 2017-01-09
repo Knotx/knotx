@@ -19,7 +19,6 @@ package com.cognifide.knotx.knot.assembler;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.fragments.Fragment;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -35,21 +34,16 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import rx.Observable;
 
 public class FragmentAssemblerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerVerticle.class);
 
-  private static final String SNIPPET_IDENTIFIER_NAME = "data-knot-types";
-
-  private static final String ANY_SNIPPET_PATTERN =
-      "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
+  private static final String LINE_SEPARATOR = "\n";
 
   private FragmentAssemblerConfiguration configuration;
+
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -62,7 +56,7 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
     EventBus eventBus = vertx.eventBus();
 
-    eventBus.<KnotContext>consumer(configuration.getAddress()).handler(
+    eventBus.<KnotContext>consumer(configuration.address()).handler(
         message -> Observable.just(message)
             .doOnNext(this::traceMessage)
             .subscribe(
@@ -80,18 +74,9 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
 
   private String getTemplateContent(KnotContext context) {
     return context.fragments().map(fragments -> fragments.stream()
-        .map(Fragment::getContent)
-        .filter(StringUtils::isNotBlank)
-        .map(value -> {
-          if (value.matches(ANY_SNIPPET_PATTERN)) {
-            Document document = Jsoup.parseBodyFragment(value);
-            Element scriptTag = document.body().child(0);
-            return scriptTag.unwrap().toString();
-          } else {
-            return value;
-          }
-        })
-        .collect(Collectors.joining())).orElse(StringUtils.EMPTY);
+        .map(configuration.assemblyStrategy()::get)
+        .collect(Collectors.joining(LINE_SEPARATOR)))
+        .orElseThrow(() -> new IllegalStateException("Fragments not initialized!"));
   }
 
   private KnotContext processError(KnotContext knotContext, Throwable error) {
@@ -106,9 +91,15 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
 
   private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
     ClientResponse clientResponse = inputContext.clientResponse();
-    MultiMap headers = clientResponse.headers();
-    headers.set(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(renderedContent.length()));
-    clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
+    if (StringUtils.isBlank(renderedContent)) {
+      clientResponse.setStatusCode(HttpResponseStatus.NO_CONTENT);
+    } else {
+      MultiMap headers = clientResponse.headers();
+      headers
+          .set(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(renderedContent.length()));
+      clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
+      clientResponse.setStatusCode(HttpResponseStatus.OK);
+    }
 
     return new KnotContext()
         .setClientRequest(inputContext.clientRequest())
