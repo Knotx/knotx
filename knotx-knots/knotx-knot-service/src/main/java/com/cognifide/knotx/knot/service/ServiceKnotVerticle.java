@@ -58,7 +58,7 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
   protected Observable<KnotContext> process(KnotContext message) {
     return message.fragments()
         .map(fragments -> Observable.from(fragments)
-            .filter(fragment -> fragment.identifiers().contains(SUPPORTED_FRAGMENT_ID))
+            .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
             .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, message))
@@ -69,8 +69,8 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
   }
 
   @Override
-  protected boolean shouldProcess(Set<String> fragmentsIdentifiers) {
-    return fragmentsIdentifiers.contains(SUPPORTED_FRAGMENT_ID);
+  protected boolean shouldProcess(Set<String> knots) {
+    return knots.contains(SUPPORTED_FRAGMENT_ID);
   }
 
   @Override

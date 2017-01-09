@@ -48,21 +48,22 @@ class HandlebarsFragment {
   String compileWith(Handlebars handlebars) {
     try {
       Template compiledFragment = handlebars.compileInline(unwrappedContent);
-      LOGGER.trace("Applying context [{}] to fragment [{}]", fragment.getContext(),
-          StringUtils.substring(fragment.getContent(), 0, MAX_FRAGMENT_CONTENT_LOG_LENGTH)
-              .replaceAll("[\n\r]", ""));
+      LOGGER.trace("Applying context [{}] to fragment [{}]", fragment.context(),
+          StringUtils
+              .abbreviate(fragment.content().replaceAll("[\n\r\t]", ""),
+                  MAX_FRAGMENT_CONTENT_LOG_LENGTH));
       return compiledFragment.apply(
-          Context.newBuilder(fragment.getContext())
+          Context.newBuilder(fragment.context())
               .push(JsonObjectValueResolver.INSTANCE)
               .build());
     } catch (IOException e) {
-      LOGGER.error("Could not process fragment [{}]", fragment.getContent(), e);
+      LOGGER.error("Could not process fragment [{}]", fragment.content(), e);
       throw new IllegalStateException("Handlebars fragment can not be evaluated correctly.");
     }
   }
 
   private String getUnwrappedContent(Fragment fragment) {
-    Document document = Jsoup.parseBodyFragment(fragment.getContent());
+    Document document = Jsoup.parseBodyFragment(fragment.content());
     Element scriptTag = document.body().child(0);
     return scriptTag.unwrap().toString();
   }

@@ -1,26 +1,27 @@
 #HTML Fragment Splitter
-HTML Fragment Splitter divides HTML template into static and dynamic chunks. Those chunks (fragments) 
+HTML Fragment Splitter divides HTML template into static and dynamic chunks. Those chunks (fragments)
 goes to Knot context and can be processed later by [[Knots|Knot]].
 
 ##How does it work?
-HTML Fragment Splitter gets a Knot context as input and responds with the modified Knot context. It 
-divides HTML using regexp `<script\s+data-knot-types\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>` into
-static and dynamic fragments. So all `script` tags with a `data-knot-types` attribute are converted to 
-dynamic fragments. **According to performance reasons Splitter requires `data-knot-types` 
+HTML Fragment Splitter reads Knot Context having raw HTML, splits it into fragments, updates Knot Context,
+and returns back to the caller. It
+splits HTML using regexp `<script\s+data-knot-types\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>` into
+static and dynamic fragments. So all `script` tags with a `data-knot-types` attribute are converted to
+dynamic fragments. **According to performance reasons Splitter requires `data-knot-types`
 attribute to be the first attribute in the `script` tag.**
 All HTML markup outside script tags is considered as static fragments.
 
-Fragment contains an *list of knot types, a content (a template chunk) and a context*. The *list of knot types* contains `data-knot-types` 
-attribute values (list of knot types separated with commas) or `_raw` value for static fragments. It can be used by Knots to select required fragment / fragments 
-(performance enhancement) without additional snippet content processing. The *content* contains 
-script tag with its content for dynamic fragments or static HTML content for static fragments. 
+Fragment contains an *list of knot types, a content (a template chunk) and a context*. The *list of knot types* contains `data-knot-types`
+attribute values (list of knot types separated with commas) or `_raw` value for static fragments. It can be used by Knots to select required fragment / fragments
+(performance enhancement) without additional snippet content processing. The *content* contains
+script tag with its content for dynamic fragments or static HTML content for static fragments.
 The *context* can be omitted at this moment.
 
 At the end Splitter updates the Knot context with the list of fragments and returns it to further processing.
 
 ####Example
-A site visitor requests for page *example.html* page. Knot.x fetches a page template from Repository and asks 
-Splitter to retrieve fragments from the template: 
+A site visitor requests for page *example.html* page. Knot.x fetches a page template from Repository and asks
+Splitter to retrieve fragments from the template:
 ```html
 <!DOCTYPE html>
 <html lang="en">

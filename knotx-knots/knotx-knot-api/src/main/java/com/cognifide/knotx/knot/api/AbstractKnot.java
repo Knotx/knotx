@@ -29,7 +29,6 @@ import io.vertx.rxjava.core.eventbus.Message;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import rx.Observable;
@@ -53,9 +52,9 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
   public void start() throws Exception {
     LOGGER.info("Starting <{}>", this.getClass().getName());
 
-    Observable<Message<KnotContext>> observable = vertx.eventBus().<KnotContext>consumer(
-        configuration.getAddress()).toObservable();
-    observable
+    vertx.eventBus().<KnotContext>consumer(
+        configuration.getAddress())
+        .toObservable()
         .doOnNext(this::traceMessage)
         .subscribe(
             msg -> {
@@ -75,27 +74,27 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
         );
   }
 
-  protected abstract rx.Observable<KnotContext> process(KnotContext message);
+  protected abstract Observable<KnotContext> process(KnotContext message);
 
-  protected abstract boolean shouldProcess(Set<String> fragmentsIdentifiers);
+  protected abstract boolean shouldProcess(Set<String> knots);
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
   protected abstract C initConfiguration(JsonObject config);
 
   protected boolean shouldProcess(Message<KnotContext> msg) {
-    Optional<List<Fragment>> fragments = msg.body().fragments();
-    Set<String> allFragmentsIdentifiers = getAllFragmentsIdentifiers(fragments);
-    return shouldProcess(allFragmentsIdentifiers);
+    Set<String> knots = msg.body().fragments()
+        .map(this::getKnotSet)
+        .orElse(Collections.emptySet());
+    return shouldProcess(knots);
   }
 
-  private Set<String> getAllFragmentsIdentifiers(Optional<List<Fragment>> fragments) {
-    return fragments.map(f ->
-        f.stream()
-            .map(Fragment::identifiers)
+  private Set<String> getKnotSet(List<Fragment> fragments) {
+    return
+        fragments.stream()
+            .map(Fragment::knots)
             .flatMap(Collection::stream)
-            .collect(Collectors.toSet())
-    ).orElse(Collections.emptySet());
+            .collect(Collectors.toSet());
   }
 
   private void traceMessage(Message<KnotContext> message) {

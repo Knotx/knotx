@@ -28,20 +28,20 @@ public enum AssemblyStrategy {
   SIMPLE {
     @Override
     protected String get(Fragment fragment) {
-      return fragment.getContent();
+      return fragment.content();
     }
   },
 
   EXTRACT {
     @Override
     protected String get(Fragment fragment) {
-      if (fragment.getContent().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
-        Document document = Jsoup.parseBodyFragment(fragment.getContent());
+      if (fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
+        Document document = Jsoup.parseBodyFragment(fragment.content());
         Element scriptTag = document.body().child(0);
         return "<!-- SNIPPET EXTRACTED START -->" + scriptTag.unwrap().toString()
             + "<!-- SNIPPET EXTRACTED STOP -->";
       } else {
-        return fragment.getContent();
+        return fragment.content();
       }
     }
   },
@@ -49,8 +49,8 @@ public enum AssemblyStrategy {
   CLEAR {
     @Override
     protected String get(Fragment fragment) {
-      return fragment.getContent().matches(FragmentConstants.ANY_SNIPPET_PATTERN)
-          ? "<!-- SNIPPET CLEARED -->" : fragment.getContent();
+      return fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)
+          ? "<!-- SNIPPET CLEARED -->" : fragment.content();
     }
   };
 

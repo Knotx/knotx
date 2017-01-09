@@ -62,7 +62,7 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
             .subscribe(
                 response -> {
                   KnotContext context = response.body();
-                  response.reply(createSuccessResponse(context, getTemplateContent(context)));
+                  response.reply(createSuccessResponse(context, joinFragments(context)));
                 },
                 error -> {
                   LOGGER.error("Exception happened during HTML splitting.", error);
@@ -72,7 +72,7 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
     );
   }
 
-  private String getTemplateContent(KnotContext context) {
+  private String joinFragments(KnotContext context) {
     return context.fragments().map(fragments -> fragments.stream()
         .map(configuration.assemblyStrategy()::get)
         .collect(Collectors.joining(LINE_SEPARATOR)))

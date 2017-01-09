@@ -44,7 +44,7 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
 
   private static final String DEFAULT_HANDLEBARS_TRANSITION = "next";
 
-  private static final String SUPPORTED_FRAGMENT_ID = "handlebars";
+  private static final String SUPPORTED_FRAGMENT_KNOT = "handlebars";
 
   private Handlebars handlebars;
 
@@ -61,8 +61,8 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
         msg.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
         msg.fragments().ifPresent(fragments ->
             fragments.stream()
-                .filter(fragment -> fragment.identifiers().contains(SUPPORTED_FRAGMENT_ID))
-                .forEach(fragment -> fragment.setContent(startComment() +
+                .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_KNOT))
+                .forEach(fragment -> fragment.content(startComment() +
                     new HandlebarsFragment(fragment).compileWith(handlebars)
                     + endComment()))
         );
@@ -75,8 +75,8 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
   }
 
   @Override
-  protected boolean shouldProcess(Set<String> fragmentsIdentifiers) {
-    return fragmentsIdentifiers.contains(SUPPORTED_FRAGMENT_ID);
+  protected boolean shouldProcess(Set<String> knots) {
+    return knots.contains(SUPPORTED_FRAGMENT_KNOT);
   }
 
   @Override

@@ -154,7 +154,7 @@ public class KnotContextCodecTest {
     List<Fragment> fragments = Lists.newArrayList();
 
     Fragment withContext = Fragment.snippet(Collections.singletonList("templating"), "TEMPLATING 1");
-    withContext.getContext().put("ABC", new JsonObject().put("aa", "bb").put("cc", "dd"));
+    withContext.context().put("ABC", new JsonObject().put("aa", "bb").put("cc", "dd"));
 
     fragments.add(Fragment.raw("RAW-FRAGMENT 1"));
     fragments.add(Fragment.raw("RAW-FRAGMENT 2"));
