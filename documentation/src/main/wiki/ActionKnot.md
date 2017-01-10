@@ -12,9 +12,10 @@ successful / error / next step page.
 Let's describe Action Knot behaviour with following example.
 
 ### Example
-ActionKnot processes fragments having "form-{NAME}" in data-knot-types attribute,
+ActionKnot processes Fragments having `form-{NAME}` in `data-knot-types` attribute,
 where `{NAME}` is a unique name of a form (assuming there may be more than one form on a single page
-it is used to distinguish a requested snippet).
+it is used to distinguish a requested snippet). {NAME} can contain only small and capital letters. So
+[[Knot Election Rule|Knot]] for Action Knot is pattern `form-[a-zA-Z]`.
 
 The client opens a `/content/local/login/step1.html` page. The final form markup returned by Knot.x looks like:
 
