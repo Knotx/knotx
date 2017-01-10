@@ -3,7 +3,7 @@
   "options": {
     "config": {
       "address": "knotx.core.assembler",
-      "assemblyStrategy": "EXTRACT"
+      "unprocessedStrategy": "UNWRAP"
     }
   }
 }

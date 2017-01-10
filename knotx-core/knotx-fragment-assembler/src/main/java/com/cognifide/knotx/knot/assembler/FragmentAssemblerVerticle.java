@@ -40,8 +40,6 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerVerticle.class);
 
-  private static final String LINE_SEPARATOR = "\n";
-
   private FragmentAssemblerConfiguration configuration;
 
 
@@ -75,7 +73,7 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
   private String joinFragments(KnotContext context) {
     return context.fragments().map(fragments -> fragments.stream()
         .map(configuration.assemblyStrategy()::get)
-        .collect(Collectors.joining(LINE_SEPARATOR)))
+        .collect(Collectors.joining()))
         .orElseThrow(() -> new IllegalStateException("Fragments not initialized!"));
   }
 

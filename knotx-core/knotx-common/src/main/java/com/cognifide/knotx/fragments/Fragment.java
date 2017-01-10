@@ -33,7 +33,7 @@ public class Fragment {
 
   private static final String RAW_FRAGMENT_ID = "_raw";
 
-  private static final String IDS = "_KNOTS";
+  private static final String KNOTS = "_KNOTS";
 
   private static final String CONTENT = "_CONTENT";
 
@@ -46,7 +46,7 @@ public class Fragment {
   private final JsonObject context;
 
   public Fragment(JsonObject fragment) {
-    this.knots = fragment.getJsonArray(IDS).stream().map(String::valueOf).collect(Collectors.toList());
+    this.knots = fragment.getJsonArray(KNOTS).stream().map(String::valueOf).collect(Collectors.toList());
     this.content = fragment.getString(CONTENT);
     this.context = fragment.getJsonObject(CONTEXT, new JsonObject());
   }
@@ -69,7 +69,7 @@ public class Fragment {
   }
 
   public JsonObject toJson() {
-    return new JsonObject().put(IDS, new JsonArray(knots)).put(CONTENT, content).put(CONTEXT, context);
+    return new JsonObject().put(KNOTS, new JsonArray(knots)).put(CONTENT, content).put(CONTEXT, context);
   }
 
   public List<String> knots() {

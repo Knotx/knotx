@@ -6,7 +6,7 @@
     "knotx:io.knotx.FragmentAssembler": {
       "options": {
         "config": {
-          "assemblyStrategy": "SIMPLE"
+          "unprocessedStrategy": "AS_IS"
         }
       }
     }

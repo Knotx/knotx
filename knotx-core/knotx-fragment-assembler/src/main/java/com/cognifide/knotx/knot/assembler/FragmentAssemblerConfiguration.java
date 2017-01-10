@@ -23,18 +23,19 @@ class FragmentAssemblerConfiguration {
 
   private final String address;
 
-  private final AssemblyStrategy assemblyStrategy;
+  private final UnprocessedFragmentStrategy assemblyStrategy;
 
   FragmentAssemblerConfiguration(JsonObject config) {
     address = config.getString("address");
-    assemblyStrategy = AssemblyStrategy.valueOf(config.getString("assemblyStrategy"));
+    assemblyStrategy = UnprocessedFragmentStrategy
+        .valueOf(config.getString("unprocessedStrategy", "UNWRAP").toUpperCase());
   }
 
   String address() {
     return address;
   }
 
-  public AssemblyStrategy assemblyStrategy() {
+  public UnprocessedFragmentStrategy assemblyStrategy() {
     return assemblyStrategy;
   }
 }

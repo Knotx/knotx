@@ -23,34 +23,34 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-public enum AssemblyStrategy {
+public enum UnprocessedFragmentStrategy {
 
-  SIMPLE {
+  AS_IS {
     @Override
     protected String get(Fragment fragment) {
       return fragment.content();
     }
   },
 
-  EXTRACT {
+  UNWRAP {
     @Override
     protected String get(Fragment fragment) {
       if (fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
         Document document = Jsoup.parseBodyFragment(fragment.content());
         Element scriptTag = document.body().child(0);
-        return "<!-- SNIPPET EXTRACTED START -->" + scriptTag.unwrap().toString()
-            + "<!-- SNIPPET EXTRACTED STOP -->";
+        return "<!-- SNIPPET UNWRAPED START -->" + scriptTag.unwrap().toString()
+            + "<!-- SNIPPET UNWRAPED STOP -->";
       } else {
         return fragment.content();
       }
     }
   },
 
-  CLEAR {
+  IGNORE {
     @Override
     protected String get(Fragment fragment) {
       return fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)
-          ? "<!-- SNIPPET CLEARED -->" : fragment.content();
+          ? "<!-- SNIPPET IGNORED -->" : fragment.content();
     }
   };
 

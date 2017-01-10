@@ -55,8 +55,9 @@ public class FragmentAssemblerTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("test.extract.io.knotx.FragmentAssembler.json")
-  public void callAssemblerWithNoSnippets_expectInternalServerError(TestContext context) throws Exception {
+  @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithNoSnippets_expectInternalServerError(TestContext context)
+      throws Exception {
     callAssemblerWithAssertions(context, null,
         knotContext -> context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR,
             knotContext.clientResponse().statusCode()
@@ -64,7 +65,7 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.extract.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, Collections.singletonList(" "),
@@ -73,13 +74,13 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.simple.io.knotx.FragmentAssembler.json")
-  public void callAssemblerWithManySnippets_expectSimpleResult(TestContext context)
+  @KnotxConfiguration("test.asIs.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithManySnippets_expectAsIsResult(TestContext context)
       throws Exception {
     List<String> fragments = Arrays
         .asList(FileReader.readText("fragment1.txt"), FileReader.readText("fragment2.txt"),
             FileReader.readText("fragment3.txt"));
-    String expectedResult = FileReader.readText("expectedSimpleResult.html");
+    String expectedResult = FileReader.readText("expectedAsIsResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
           context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
@@ -88,13 +89,13 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.extract.io.knotx.FragmentAssembler.json")
-  public void callAssemblerWithManySnippets_expectExtractResult(TestContext context)
+  @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithManySnippets_expectUnwrapResult(TestContext context)
       throws Exception {
     List<String> fragments = Arrays
         .asList(FileReader.readText("fragment1.txt"), FileReader.readText("fragment2.txt"),
             FileReader.readText("fragment3.txt"));
-    String expectedResult = FileReader.readText("expectedExtractResult.html");
+    String expectedResult = FileReader.readText("expectedUnwrapResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
           context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
@@ -103,13 +104,13 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.clear.io.knotx.FragmentAssembler.json")
-  public void callAssemblerWithManySnippets_expectClearResult(TestContext context)
+  @KnotxConfiguration("test.ignore.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithManySnippets_expectIgnoreResult(TestContext context)
       throws Exception {
     List<String> fragments = Arrays
         .asList(FileReader.readText("fragment1.txt"), FileReader.readText("fragment2.txt"),
             FileReader.readText("fragment3.txt"));
-    String expectedResult = FileReader.readText("expectedClearResult.html");
+    String expectedResult = FileReader.readText("expectedIgnoreResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
           context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
