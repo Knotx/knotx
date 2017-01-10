@@ -72,19 +72,10 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private void sendResponse(final RoutingContext context, final KnotContext knotContext) {
     ClientResponse clientResponse = knotContext.clientResponse();
-
-    if (clientResponse.statusCode() == HttpResponseStatus.OK) {
-      writeContentLength(context.response(), clientResponse);
-      writeHeaders(context.response(), clientResponse);
-      context.response().setStatusCode(HttpResponseStatus.OK.code()).end(clientResponse.body());
-    } else if (clientResponse.statusCode().code() == 500
-        || clientResponse.statusCode().code() == 404) {
-      context.fail(clientResponse.statusCode().code());
-    } else {
-      writeHeaders(context.response(), clientResponse);
-      context.response().setStatusCode(clientResponse.statusCode().code())
-          .end(clientResponse.body());
-    }
+    writeContentLength(context.response(), clientResponse);
+    writeHeaders(context.response(), clientResponse);
+    context.response().setStatusCode(clientResponse.statusCode().code())
+        .end(clientResponse.body());
   }
 
   private void writeHeaders(final HttpServerResponse response,
