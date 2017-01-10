@@ -22,7 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.launcher.junit.FileReader;
-import com.cognifide.knotx.splitter.FragmentSplitter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

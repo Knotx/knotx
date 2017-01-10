@@ -19,7 +19,6 @@ package com.cognifide.knotx.splitter.impl;
 
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.fragments.FragmentConstants;
-import com.cognifide.knotx.splitter.FragmentSplitter;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;

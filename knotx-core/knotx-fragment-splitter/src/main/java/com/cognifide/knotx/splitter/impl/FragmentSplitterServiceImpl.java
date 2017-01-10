@@ -18,7 +18,6 @@
 package com.cognifide.knotx.splitter.impl;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.splitter.FragmentSplitter;
 import com.cognifide.knotx.splitter.FragmentSplitterService;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
