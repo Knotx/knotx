@@ -27,15 +27,20 @@ class FragmentAssemblerConfiguration {
 
   FragmentAssemblerConfiguration(JsonObject config) {
     address = config.getString("address");
-    assemblyStrategy = UnprocessedFragmentStrategy
-        .valueOf(config.getString("unprocessedStrategy", "UNWRAP").toUpperCase());
+    assemblyStrategy = getUnprocessedStrategy(config);
   }
 
   String address() {
     return address;
   }
 
-  public UnprocessedFragmentStrategy assemblyStrategy() {
+  UnprocessedFragmentStrategy assemblyStrategy() {
     return assemblyStrategy;
+  }
+
+  private UnprocessedFragmentStrategy getUnprocessedStrategy(JsonObject config) {
+    String unprocessedStrategy = config.getString("unprocessedStrategy");
+    return unprocessedStrategy == null ? UnprocessedFragmentStrategy.UNWRAP : UnprocessedFragmentStrategy
+        .valueOf(unprocessedStrategy.toUpperCase());
   }
 }

@@ -124,7 +124,7 @@ Default configuration shipped with the verticle as `io.knotx.FragmentAssembler.j
 }
 ```
 In short, the default configuration just defines event bus address on which the Assembler listens
-for jobs to process and and strategy how to handle unprocessed snippets.
+for jobs to process and strategy how to handle unprocessed snippets.
 
 Detailed description of each configuration option is described in the next subsection.
 
