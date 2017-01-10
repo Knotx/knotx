@@ -67,7 +67,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
         }
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
-        context.response().setStatusCode(500).end();
+        context.fail(500);
       }
     });
   }
