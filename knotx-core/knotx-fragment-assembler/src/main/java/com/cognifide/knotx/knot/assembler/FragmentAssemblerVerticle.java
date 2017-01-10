@@ -72,7 +72,7 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
 
   private String joinFragments(KnotContext context) {
     return context.fragments().map(fragments -> fragments.stream()
-        .map(configuration.assemblyStrategy()::get)
+        .map(configuration.unprocessedFragmentStrategy()::get)
         .collect(Collectors.joining()))
         .orElseThrow(() -> new IllegalStateException("Fragments not initialized!"));
   }

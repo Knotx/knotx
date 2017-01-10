@@ -36,7 +36,7 @@ class FragmentAssemblerConfiguration {
     return address;
   }
 
-  UnprocessedFragmentStrategy assemblyStrategy() {
+  UnprocessedFragmentStrategy unprocessedFragmentStrategy() {
     return assemblyStrategy;
   }
 }
