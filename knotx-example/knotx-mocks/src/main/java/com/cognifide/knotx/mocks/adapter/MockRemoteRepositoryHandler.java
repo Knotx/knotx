@@ -17,23 +17,20 @@
  */
 package com.cognifide.knotx.mocks.adapter;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Sets;
-import com.google.common.io.Resources;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Optional;
-import java.util.Set;
-
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.FileSystem;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpServerRequest;
+import io.vertx.ext.web.RoutingContext;
+import java.util.Optional;
+import java.util.Set;
 
-public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
+public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
 
   private static final String SEPARATOR = "/";
   private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
@@ -41,48 +38,46 @@ public class MockRemoteRepositoryHandler implements Handler<HttpServerRequest> {
   private Set<String> textFileExtensions = Sets.newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml", "xsm", "xsl", "xsd",
       "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
 
-  private String catalogue;
+  private final FileSystem fileSystem;
+  private final String catalogue;
 
-  public MockRemoteRepositoryHandler(String catalogue) {
+  public MockRemoteRepositoryHandler(FileSystem fileSystem, String catalogue) {
+    this.fileSystem = fileSystem;
     this.catalogue = catalogue;
   }
 
   @Override
-  public void handle(HttpServerRequest event) {
-
-    String resourcePath = catalogue + SEPARATOR + getContentPath(event.path());
+  public void handle(RoutingContext context) {
+    String resourcePath = catalogue + SEPARATOR + getContentPath(context.request().path());
     final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(resourcePath));
     final String fileExtension = getFileExtension(resourcePath);
     final boolean isTextFile = fileExtension != null ? textFileExtensions.contains(fileExtension) : false;
 
-    Buffer fileContent = Buffer.buffer();
-    try {
-      URL resourceUrl = this.getClass().getClassLoader().getResource(resourcePath);
-      if (resourceUrl != null) {
-        URL url = Resources.getResource(resourcePath);
+    fileSystem.readFile(resourcePath, ar -> {
+      HttpServerResponse response = context.response();
+      if (ar.succeeded()) {
+        LOGGER.info("Mocked clientRequest [{}] fetch data from file [{}]", context.request().path(), resourcePath);
+        Buffer fileContent = ar.result();
 
-        if (isTextFile) {
-          fileContent = Buffer.buffer(Resources.toString(url, Charsets.UTF_8));
-        } else {
-          fileContent = Buffer.buffer(Resources.toByteArray(url));
-        }
-        LOGGER.info("Mocked clientRequest [{}] fetch data from file [{}]", event.path(), resourcePath);
+        setHeaders(response, contentType, isTextFile);
+        response.setStatusCode(HttpResponseStatus.OK.code()).end(fileContent);
+      } else {
+        LOGGER.error("Unable to read file.", ar.cause());
+        context.fail(404);
       }
-    } catch (IOException e) {
-      LOGGER.error("Could not read content!", e);
-    } finally {
-      event.response().putHeader("Access-Control-Allow-Origin", "*");
-      event.response().putHeader("Content-Type", createContentType(contentType.get(), isTextFile));
-      event.response().putHeader("Server", "Vert.x");
-      event.response().putHeader("Cache-control", "no-cache, no-store, must-revalidate");
-      event.response().end(new io.vertx.rxjava.core.buffer.Buffer(fileContent));
-      event.connection().close();
-    }
+    });
+  }
+
+  private void setHeaders(HttpServerResponse response, Optional<String> contentType, boolean isTextFile) {
+    response.putHeader("Access-Control-Allow-Origin", "*");
+    contentType.ifPresent(type -> response.putHeader("Content-Type", createContentType(type, isTextFile)));
+    response.putHeader("Server", "Knot.x Repository Mock Server");
+    response.putHeader("Cache-control", "no-cache, no-store, must-revalidate");
   }
 
   private String createContentType(String detectedContentType, boolean isText) {
     if (isText) {
-      return detectedContentType+"; charset=UTF-8";
+      return detectedContentType + "; charset=UTF-8";
     } else {
       return detectedContentType;
     }

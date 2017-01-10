@@ -19,37 +19,35 @@ package com.cognifide.knotx.mocks;
 
 
 import com.cognifide.knotx.mocks.adapter.MockRemoteRepositoryHandler;
-
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import io.vertx.core.Context;
-import io.vertx.core.Vertx;
+import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.http.HttpServer;
+import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.ErrorHandler;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class MockRemoteRepositoryVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryVerticle.class);
 
-  private MockRemoteRepositoryHandler mockRemoteRepositoryHandler;
-
   private HttpServer httpServer;
-
-  @Override
-  public void init(Vertx vertx, Context context) {
-    super.init(vertx, context);
-    mockRemoteRepositoryHandler = new MockRemoteRepositoryHandler(config().getString("mockDataRoot"));
-  }
 
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();
-    httpServer.requestHandler(mockRemoteRepositoryHandler).listen(
+
+    Router router = Router.router(vertx);
+    router.route().method(HttpMethod.GET).handler(createRepositoryHandler());
+    router.route().failureHandler(ErrorHandler.create(true));
+
+    httpServer.requestHandler(router::accept).listen(
         config().getInteger("httpPort"),
         result -> {
           if (result.succeeded()) {
@@ -65,6 +63,10 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
   @Override
   public void stop() throws Exception {
     httpServer.close();
+  }
+
+  private Handler<RoutingContext> createRepositoryHandler() {
+    return new MockRemoteRepositoryHandler(vertx.fileSystem(), config().getString("mockDataRoot"));
   }
 }
 
