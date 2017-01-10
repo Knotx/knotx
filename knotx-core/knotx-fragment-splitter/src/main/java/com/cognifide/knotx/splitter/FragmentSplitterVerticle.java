@@ -17,23 +17,24 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.common.BaseMicroserviceVerticle;
-import com.cognifide.knotx.splitter.impl.FragmentSplitterConfiguration;
 import com.cognifide.knotx.splitter.impl.FragmentSplitterServiceImpl;
+import com.cognifide.knotx.splitter.impl.FragmentSplitterConfiguration;
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ProxyHelper;
 
-public class FragmentSplitterVerticle extends BaseMicroserviceVerticle {
+public class FragmentSplitterVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterVerticle.class);
 
-  private FragmentSplitterService splitterService;
   private FragmentSplitterConfiguration configuration;
+
+  private MessageConsumer<JsonObject> consumer;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -42,40 +43,16 @@ public class FragmentSplitterVerticle extends BaseMicroserviceVerticle {
   }
 
   @Override
-  public void start(Future<Void> future) throws Exception {
-    super.start();
+  public void start() throws Exception {
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    //create the microservice instance
-    this.splitterService = new FragmentSplitterServiceImpl(vertx);
     //register the service proxy on event bus
-    ProxyHelper.registerService(FragmentSplitterService.class, (Vertx) vertx, splitterService, configuration.getAddress());
-
-    //publish the service in the discovery infrastructure
-    publishEventBusService(FragmentSplitterService.SERVICE_NAME, configuration.getAddress(), FragmentSplitterService.class.toString(),
-        new JsonObject())
-        .setHandler(future.completer());
+    consumer = ProxyHelper
+        .registerService(FragmentSplitterService.class, vertx, new FragmentSplitterServiceImpl(), configuration.getAddress());
   }
 
-  //  @Override
-//  public void start() throws IOException, URISyntaxException {
-//    LOGGER.debug("Starting <{}>", this.getClass().getName());
-//    EventBus eventBus = vertx.eventBus();
-//
-//    eventBus.<KnotContext>consumer(configuration.getAddress()).handler(
-//        message -> Observable.just(message)
-//            .doOnNext(this::traceMessage)
-//            .subscribe(
-//                response -> {
-//                  KnotContext context = response.body();
-//                  context.setFragments(splitter.split(context.clientResponse().body().toString()));
-//                  context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
-//                  response.reply(context);
-//                },
-//                error -> {
-//                  LOGGER.error("Exception happened during HTML splitting.", error);
-//                  message.reply(processError(message.body(), error));
-//                }
-//            )
-//    );
-//  }
+  @Override
+  public void stop() throws Exception {
+    ProxyHelper.unregisterService(consumer);
+  }
 }

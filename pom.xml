@@ -215,6 +215,12 @@
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${vertx.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency><dependency>
+        <groupId>io.vertx</groupId>
         <artifactId>vertx-unit</artifactId>
         <version>${vertx.version}</version>
         <scope>test</scope>

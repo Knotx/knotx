@@ -17,17 +17,15 @@
  */
 package com.cognifide.knotx.splitter.impl;
 
-import com.google.common.collect.Lists;
-
 import com.cognifide.knotx.fragments.Fragment;
-
+import com.cognifide.knotx.splitter.FragmentSplitter;
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class HtmlFragmentSplitter implements FragmentSplitter {
-
 
   private static final String SNIPPET_IDENTIFIER_NAME = "data-api-type";
 

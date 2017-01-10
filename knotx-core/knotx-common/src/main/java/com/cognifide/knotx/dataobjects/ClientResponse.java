@@ -75,6 +75,11 @@ public class ClientResponse {
     return this;
   }
 
+  public ClientResponse clearBody() {
+    this.body = Buffer.buffer();
+    return this;
+  }
+
   public JsonObject toMetadataJson() {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode);

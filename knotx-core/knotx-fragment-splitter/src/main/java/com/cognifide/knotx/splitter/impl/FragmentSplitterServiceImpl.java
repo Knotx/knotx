@@ -17,70 +17,40 @@
  */
 package com.cognifide.knotx.splitter.impl;
 
-import com.cognifide.knotx.codec.KnotContextCodec;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.splitter.FragmentSplitterService;
+import com.cognifide.knotx.splitter.FragmentSplitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.serviceproxy.ServiceException;
+import java.util.NoSuchElementException;
 
 public class FragmentSplitterServiceImpl implements FragmentSplitterService {
 
-  public FragmentSplitterServiceImpl(Vertx vertx) {
-    ((io.vertx.core.Vertx)vertx).eventBus().registerDefaultCodec(KnotContext.class, new KnotContextCodec());
-  }
+  private final FragmentSplitter splitter = new HtmlFragmentSplitter();
 
   @Override
   public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
     try {
-      knotContext.setFragments(new HtmlFragmentSplitter().split(knotContext.clientResponse().body().toString()));
-      knotContext.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
+      knotContext.setFragments(splitter.split(knotContext.getClientResponse().getBody().toString()));
+      knotContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
 
       result.handle(Future.succeededFuture(knotContext));
     } catch (Exception ex) {
-      result.handle(ServiceException.fail(100, "message", new JsonObject().put("Exception", ex.getClass().toString())));
+      result.handle(Future.succeededFuture(processError(knotContext, ex)));
     }
-
-//
-//
-//    eventBus.<KnotContext>consumer(configuration.getAddress()).handler(
-//        message -> Observable.just(message)
-//            .doOnNext(this::traceMessage)
-//            .subscribe(
-//                response -> {
-//                  KnotContext context = response.body();
-//                  context.setFragments(splitter.split(context.clientResponse().body().toString()));
-//                  context.clientResponse().setStatusCode(HttpResponseStatus.OK).clearBody();
-//                  response.reply(context);
-//                },
-//                error -> {
-//                  LOGGER.error("Exception happened during HTML splitting.", error);
-//                  message.reply(processError(message.body(), error));
-//                }
-//            )
-//    );
-//
-//    return null;
   }
 
-//  private KnotContext processError(KnotContext context, Throwable error) {
-//    HttpResponseStatus statusCode;
-//    if (error instanceof NoSuchElementException) {
-//      statusCode = HttpResponseStatus.NOT_FOUND;
-//    } else {
-//      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-//    }
-//    context.clientResponse().setStatusCode(statusCode);
-//    return context;
-//  }
-//
-//  private void traceMessage(Message<KnotContext> message) {
-//    if (LOGGER.isTraceEnabled()) {
-//      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
-//    }
-//  }
+  private KnotContext processError(KnotContext context, Exception exception) {
+    HttpResponseStatus statusCode;
+    if (exception instanceof NoSuchElementException) {
+      statusCode = HttpResponseStatus.NOT_FOUND;
+    } else {
+      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    context.getClientResponse().setStatusCode(statusCode.code());
+    return context;
+  }
+
 }

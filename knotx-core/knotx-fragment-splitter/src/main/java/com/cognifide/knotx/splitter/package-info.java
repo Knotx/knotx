@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@ModuleGen(groupPackage = "com.cognifide.knotx.splitter", name = "knotx-core-fragment-splitter")
+@ModuleGen(groupPackage = "com.cognifide.knotx", name = "knotx-fragment-splitter")
 package com.cognifide.knotx.splitter;
 
 import io.vertx.codegen.annotations.ModuleGen;

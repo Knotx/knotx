@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.splitter;
+package com.cognifide.knotx.splitter.impl;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -23,7 +23,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.launcher.junit.FileReader;
-import com.cognifide.knotx.splitter.impl.HtmlFragmentSplitter;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.Before;

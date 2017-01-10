@@ -18,17 +18,24 @@
 package com.cognifide.knotx.splitter;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.splitter.impl.FragmentSplitterServiceImpl;
 import io.vertx.codegen.annotations.ProxyGen;
+import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 
 @ProxyGen
+@VertxGen
 public interface FragmentSplitterService {
 
-  /**
-   * The name of the event bus service.
-   */
-  String SERVICE_NAME = "fragment-splitter-eb-service";
+  static FragmentSplitterService create(Vertx vertx) {
+    return new FragmentSplitterServiceImpl();
+  }
+
+  static FragmentSplitterService createProxy(Vertx vertx, String address) {
+    return new FragmentSplitterServiceVertxEBProxy(vertx, address);
+  }
 
   void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);
 }

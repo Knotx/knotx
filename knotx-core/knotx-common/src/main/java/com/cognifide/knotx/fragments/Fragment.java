@@ -18,13 +18,10 @@
 package com.cognifide.knotx.fragments;
 
 import com.google.common.base.Objects;
-
 import io.vertx.codegen.annotations.DataObject;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.NoSuchElementException;
-
 import io.vertx.core.json.JsonObject;
+import java.util.NoSuchElementException;
+import org.apache.commons.lang3.StringUtils;
 
 @DataObject(inheritConverter = true)
 public class Fragment {
@@ -50,8 +47,11 @@ public class Fragment {
   }
 
   private Fragment(String id, String data) {
-    if (StringUtils.isEmpty(id) || StringUtils.isEmpty(data)) {
-      throw new NoSuchElementException("Fragment is not valid [" + id + "], [" + data + "].");
+    if (StringUtils.isEmpty(id)) {
+      throw new NoSuchElementException("Fragment is not valid. ID is empty, while data:[" + data + "].");
+    }
+    if (StringUtils.isEmpty(data)) {
+      throw new NoSuchElementException("Fragment is not valid. ID is [" + id + "] while data is empty.");
     }
     this.id = id;
     this.content = data;
@@ -93,8 +93,12 @@ public class Fragment {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Fragment)) return false;
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Fragment)) {
+      return false;
+    }
     Fragment that = (Fragment) o;
     return Objects.equal(id, that.id) &&
         Objects.equal(content, that.content) &&
