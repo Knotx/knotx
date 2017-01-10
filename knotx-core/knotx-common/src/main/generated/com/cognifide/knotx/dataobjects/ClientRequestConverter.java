@@ -27,8 +27,17 @@ import io.vertx.core.json.JsonArray;
 public class ClientRequestConverter {
 
   public static void fromJson(JsonObject json, ClientRequest obj) {
+    if (json.getValue("formAttributes") instanceof JsonObject) {
+      obj.setFormAttributes(((JsonObject)json.getValue("formAttributes")).copy());
+    }
+    if (json.getValue("headers") instanceof JsonObject) {
+      obj.setHeaders(((JsonObject)json.getValue("headers")).copy());
+    }
     if (json.getValue("method") instanceof String) {
       obj.setMethod(io.vertx.core.http.HttpMethod.valueOf((String)json.getValue("method")));
+    }
+    if (json.getValue("params") instanceof JsonObject) {
+      obj.setParams(((JsonObject)json.getValue("params")).copy());
     }
     if (json.getValue("path") instanceof String) {
       obj.setPath((String)json.getValue("path"));
@@ -36,8 +45,17 @@ public class ClientRequestConverter {
   }
 
   public static void toJson(ClientRequest obj, JsonObject json) {
+    if (obj.getFormAttributes() != null) {
+      json.put("formAttributes", obj.getFormAttributes());
+    }
+    if (obj.getHeaders() != null) {
+      json.put("headers", obj.getHeaders());
+    }
     if (obj.getMethod() != null) {
       json.put("method", obj.getMethod().name());
+    }
+    if (obj.getParams() != null) {
+      json.put("params", obj.getParams());
     }
     if (obj.getPath() != null) {
       json.put("path", obj.getPath());

@@ -23,16 +23,12 @@ import com.google.common.base.Objects;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @DataObject(generateConverter = true)
 public class ClientResponse {
 
-  private HttpResponseStatus statusCode;
+  private int statusCode;
 
   private JsonObject headers = new JsonObject();
 
@@ -42,20 +38,21 @@ public class ClientResponse {
     //Empty object
   }
 
-
   public ClientResponse(JsonObject json) {
     ClientResponseConverter.fromJson(json, this);
   }
 
   public JsonObject toJson() {
-    return new JsonObject();
+    JsonObject json = new JsonObject();
+    ClientResponseConverter.toJson(this, json);
+    return json;
   }
 
-  public HttpResponseStatus getStatusCode() {
+  public int getStatusCode() {
     return statusCode;
   }
 
-  public Map<String, List<String>> getHeaders() {
+  public JsonObject getHeaders() {
     return headers;
   }
 
@@ -63,32 +60,25 @@ public class ClientResponse {
     return body;
   }
 
-  public ClientResponse setStatusCode(HttpResponseStatus statusCode) {
+  public ClientResponse setStatusCode(int statusCode) {
     this.statusCode = statusCode;
     return this;
   }
 
-  public ClientResponse setHeaders(Map<String, List<String>> headers) {
-    this.headers = Collections.unmodifiableMap(headers);
+  public ClientResponse setHeaders(JsonObject headers) {
+    this.headers = headers.copy();
     return this;
   }
 
   public ClientResponse setBody(Buffer body) {
-    this.body = body;
+    this.body = body.copy();
     return this;
   }
 
   public JsonObject toMetadataJson() {
     JsonObject json = new JsonObject();
-    json.put("statusCode", statusCode.code());
-
-    json.put("headers", headers.keySet().stream()
-        .map(name -> new JsonObject().put(name, headers.get(name)
-                .stream()
-                .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll)
-            )
-        ));
-
+    json.put("statusCode", statusCode);
+    json.put("headers", headers);
     return json;
   }
 
@@ -102,20 +92,20 @@ public class ClientResponse {
     }
     ClientResponse that = (ClientResponse) o;
     return Objects.equal(statusCode, that.statusCode) &&
-        DataObjectsUtil.equalsMap(this.headers, that.headers) &&
+        Objects.equal(this.headers, that.headers) &&
         DataObjectsUtil.equalsBody(this.body, that.body);
   }
 
   @Override
   public int hashCode() {
-    return 31 * Objects.hashCode(statusCode, body) + DataObjectsUtil.mapHash(headers);
+    return 31 * Objects.hashCode(statusCode, body) + Objects.hashCode(headers);
   }
 
   @Override
   public String toString() {
     return MoreObjects.toStringHelper(this)
         .add("statusCode", statusCode)
-        .add("headers", DataObjectsUtil.toString(headers))
+        .add("headers", headers.encode())
         .add("body", body)
         .toString();
   }

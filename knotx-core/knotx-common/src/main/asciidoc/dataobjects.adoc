@@ -8,8 +8,14 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[params]]`params`|`Json object`|-
-|[[request]]`request`|`link:dataobjects.html#ClientRequest[ClientRequest]`|-
+|[[params]]`params`|`Json object`|
++++
+Set the request params
++++
+|[[request]]`request`|`link:dataobjects.html#ClientRequest[ClientRequest]`|
++++
+Set the client request
++++
 |===
 
 [[AdapterResponse]]
@@ -32,7 +38,10 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[formAttributes]]`formAttributes`|`Json object`|-
+|[[headers]]`headers`|`Json object`|-
 |[[method]]`method`|`link:enums.html#HttpMethod[HttpMethod]`|-
+|[[params]]`params`|`Json object`|-
 |[[path]]`path`|`String`|-
 |===
 
@@ -45,6 +54,8 @@
 |===
 ^|Name | Type ^| Description
 |[[body]]`body`|`Buffer`|-
+|[[headers]]`headers`|`Json object`|-
+|[[statusCode]]`statusCode`|`Number (int)`|-
 |===
 
 [[Fragment]]

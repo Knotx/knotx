@@ -47,7 +47,9 @@ public class KnotContext {
   }
 
   public JsonObject toJson() {
-    return new JsonObject();
+    JsonObject json = new JsonObject();
+    KnotContextConverter.toJson(this, json);
+    return json;
   }
 
   public KnotContext setClientRequest(ClientRequest request) {

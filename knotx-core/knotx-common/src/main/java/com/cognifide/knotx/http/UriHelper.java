@@ -17,16 +17,27 @@
  */
 package com.cognifide.knotx.http;
 
-import java.util.List;
-import java.util.Map;
-
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 public class UriHelper {
 
-  public static Map<String, List<String>> getParams(String uri) {
+  public static JsonObject getParams(String uri) {
+    JsonObject json = new JsonObject();
     QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
-    return queryStringDecoder.parameters();
+    queryStringDecoder.parameters().entrySet().forEach(
+        entry -> {
+          JsonArray values;
+          if (json.containsKey(entry.getKey())) {
+            values = json.getJsonArray(entry.getKey());
+          } else {
+            values = new JsonArray();
+            json.put(entry.getKey(), values);
+          }
+          values.add(entry.getValue());
+        }
+    );
+    return json;
   }
 }

@@ -21,9 +21,9 @@ import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
-import com.google.common.collect.Maps;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,8 +42,8 @@ public class KnotContextFactory {
         .setClientResponse(
             new ClientResponse()
                 .setBody(StringUtils.isEmpty(template) ? Buffer.buffer() : Buffer.buffer(template))
-                .setStatusCode(HttpResponseStatus.OK)
-                .setHeaders(Maps.newHashMap()))
+                .setStatusCode(HttpResponseStatus.OK.code())
+                .setHeaders(new JsonObject()))
         .setClientRequest(new ClientRequest());
   }
 

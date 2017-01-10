@@ -138,7 +138,13 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-codegen</artifactId>
         <version>${vertx.version}</version>
-        <scope>provided</scope>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-docgen</artifactId>
+        <version>${vertx.version}</version>
+        <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>io.reactivex</groupId>
@@ -250,7 +256,10 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>
-      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-docgen</artifactId>
     </dependency>
   </dependencies>
 

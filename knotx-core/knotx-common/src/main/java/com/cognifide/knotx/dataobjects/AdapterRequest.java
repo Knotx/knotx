@@ -38,22 +38,40 @@ public class AdapterRequest {
   }
 
   public JsonObject toJson() {
-    return new JsonObject();
+    JsonObject json = new JsonObject();
+    AdapterRequestConverter.toJson(this, json);
+    return json;
   }
 
+  /**
+   * @return the client request object representing HTTP request
+   */
   public ClientRequest getRequest() {
     return request;
   }
 
+  /**
+   * Set the client request
+   * @param request - ClientRequest object
+   * @return a reference to this, so the API can be used fluently
+   */
   public AdapterRequest setRequest(ClientRequest request) {
     this.request = request;
     return this;
   }
 
+  /**
+   * @return the JsonObject with request params
+   */
   public JsonObject getParams() {
     return params;
   }
 
+  /**
+   * Set the request params
+   * @param params - JsonObject consists of request params
+   * @return a reference to this, so the API can be used fluently
+   */
   public AdapterRequest setParams(JsonObject params) {
     this.params = params;
     return this;

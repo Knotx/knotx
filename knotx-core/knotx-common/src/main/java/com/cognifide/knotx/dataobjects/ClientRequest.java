@@ -19,7 +19,6 @@ package com.cognifide.knotx.dataobjects;
 
 
 import com.cognifide.knotx.http.UriHelper;
-import com.cognifide.knotx.util.DataObjectsUtil;
 import com.cognifide.knotx.util.MultimapUtil;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -27,10 +26,6 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.http.HttpServerRequest;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @DataObject(generateConverter = true)
 public class ClientRequest {
@@ -54,24 +49,25 @@ public class ClientRequest {
   }
 
   public JsonObject toJson() {
-    return new JsonObject();
+    JsonObject json = new JsonObject();
+    ClientRequestConverter.toJson(this, json);
+    return json;
   }
 
   public ClientRequest(ClientRequest request) {
     this.path = request.path;
     this.method = request.method;
-    this.headers = Collections.unmodifiableMap(new HashMap<>(request.headers));
-    this.params = Collections.unmodifiableMap(new HashMap<>(request.params));
-    this.formAttributes = Collections.unmodifiableMap(new HashMap<>(request.formAttributes));
+    this.headers = request.headers.copy();
+    this.params = request.params.copy();
+    this.formAttributes = request.formAttributes.copy();
   }
 
   public ClientRequest(HttpServerRequest serverRequest) {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
-    this.headers = MultimapUtil.toMap(serverRequest.headers(), false);
+    this.headers = MultimapUtil.toJsonObject(serverRequest.headers(), false);
     this.params = UriHelper.getParams(serverRequest.uri());
-    this.formAttributes = MultimapUtil.toMap(serverRequest.formAttributes(), true);
-
+    this.formAttributes = MultimapUtil.toJsonObject(serverRequest.formAttributes(), true);
   }
 
   public String getPath() {
@@ -82,15 +78,15 @@ public class ClientRequest {
     return method;
   }
 
-  public Map<String, List<String>> getHeaders() {
+  public JsonObject getHeaders() {
     return headers;
   }
 
-  public Map<String, List<String>> getParams() {
+  public JsonObject getParams() {
     return params;
   }
 
-  public Map<String, List<String>> getFormAttributes() {
+  public JsonObject getFormAttributes() {
     return formAttributes;
   }
 
@@ -104,18 +100,18 @@ public class ClientRequest {
     return this;
   }
 
-  public ClientRequest setHeaders(Map<String, List<String>> headers) {
-    this.headers = Collections.unmodifiableMap(headers);
+  public ClientRequest setHeaders(JsonObject headers) {
+    this.headers = headers.copy();
     return this;
   }
 
-  public ClientRequest setParams(Map<String, List<String>> params) {
-    this.params = Collections.unmodifiableMap(params);
+  public ClientRequest setParams(JsonObject params) {
+    this.params = params.copy();
     return this;
   }
 
-  public ClientRequest setFormAttributes(Map<String, List<String>> formAttributes) {
-    this.formAttributes = Collections.unmodifiableMap(formAttributes);
+  public ClientRequest setFormAttributes(JsonObject formAttributes) {
+    this.formAttributes = formAttributes.copy();
     return this;
   }
 
@@ -130,15 +126,15 @@ public class ClientRequest {
     ClientRequest that = (ClientRequest) o;
     return Objects.equal(path, that.path) &&
         Objects.equal(method, that.method) &&
-        DataObjectsUtil.equalsMap(this.headers, that.headers) &&
-        DataObjectsUtil.equalsMap(this.params, that.params) &&
-        DataObjectsUtil.equalsMap(this.formAttributes, that.formAttributes);
+        Objects.equal(headers, that.headers) &&
+        Objects.equal(params, that.params) &&
+        Objects.equal(formAttributes, that.formAttributes);
   }
 
   @Override
   public int hashCode() {
-    return 41 * Objects.hashCode(path, method) + 37 * DataObjectsUtil.mapHash(headers) + 31 * DataObjectsUtil.mapHash(params)
-        + DataObjectsUtil.mapHash(formAttributes);
+    return 41 * Objects.hashCode(path, method) + 37 * Objects.hashCode(headers) + 31 * Objects.hashCode(params)
+        + Objects.hashCode(formAttributes);
   }
 
   @Override
@@ -146,9 +142,9 @@ public class ClientRequest {
     return MoreObjects.toStringHelper(this)
         .add("path", path)
         .add("method", method)
-        .add("headers", DataObjectsUtil.toString(headers))
-        .add("params", DataObjectsUtil.toString(params))
-        .add("formAttributes", DataObjectsUtil.toString(formAttributes))
+        .add("headers", headers.encode())
+        .add("params", params.encode())
+        .add("formAttributes", formAttributes.encode())
         .toString();
   }
 

@@ -17,32 +17,29 @@
  */
 package com.cognifide.knotx.util;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 public class MultimapUtil {
 
-  public static Map<String, List<String>> toMap(MultiMap multiMap, boolean caseSensitive) {
-    Map<String, List<String>> map = Maps.newHashMap();
+  public static JsonObject toJsonObject(MultiMap multiMap, boolean caseSensitive) {
+    JsonObject json = new JsonObject();
 
     ((io.vertx.core.MultiMap) multiMap.getDelegate()).forEach(
         entry -> {
           String key = caseSensitive ? entry.getKey() : entry.getKey().toLowerCase();
-          List<String> values;
-          if (map.containsKey(key)) {
-            values = map.get(key);
+          JsonArray values;
+          if (json.containsKey(key)) {
+            values = json.getJsonArray(key);
           } else {
-            values = Lists.newArrayList();
-            map.put(key, values);
+            values = new JsonArray();
+            json.put(key, values);
           }
           values.add(entry.getValue());
         }
     );
 
-    return Collections.unmodifiableMap(map);
+    return json;
   }
 }

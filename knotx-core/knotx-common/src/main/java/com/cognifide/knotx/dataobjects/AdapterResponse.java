@@ -39,7 +39,9 @@ public class AdapterResponse {
   }
 
   public JsonObject toJson() {
-    return new JsonObject();
+    JsonObject json = new JsonObject();
+    AdapterResponseConverter.toJson(this, json);
+    return json;
   }
 
   public ClientResponse getResponse() {

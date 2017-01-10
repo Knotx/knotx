@@ -30,11 +30,21 @@ public class ClientResponseConverter {
     if (json.getValue("body") instanceof String) {
       obj.setBody(io.vertx.core.buffer.Buffer.buffer(java.util.Base64.getDecoder().decode((String)json.getValue("body"))));
     }
+    if (json.getValue("headers") instanceof JsonObject) {
+      obj.setHeaders(((JsonObject)json.getValue("headers")).copy());
+    }
+    if (json.getValue("statusCode") instanceof Number) {
+      obj.setStatusCode(((Number)json.getValue("statusCode")).intValue());
+    }
   }
 
   public static void toJson(ClientResponse obj, JsonObject json) {
     if (obj.getBody() != null) {
       json.put("body", obj.getBody().getBytes());
     }
+    if (obj.getHeaders() != null) {
+      json.put("headers", obj.getHeaders());
+    }
+    json.put("statusCode", obj.getStatusCode());
   }
 }
