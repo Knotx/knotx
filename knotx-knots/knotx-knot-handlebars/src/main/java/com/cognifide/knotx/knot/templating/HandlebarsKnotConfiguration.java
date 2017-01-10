@@ -18,12 +18,11 @@
 package com.cognifide.knotx.knot.templating;
 
 import com.cognifide.knotx.knot.api.KnotConfiguration;
-
 import io.vertx.core.json.JsonObject;
 
 class HandlebarsKnotConfiguration extends KnotConfiguration {
 
-  private boolean templateDebug;
+  private final boolean templateDebug;
 
   HandlebarsKnotConfiguration(JsonObject config) {
     super(config);
@@ -33,4 +32,5 @@ class HandlebarsKnotConfiguration extends KnotConfiguration {
   boolean templateDebug() {
     return templateDebug;
   }
+
 }

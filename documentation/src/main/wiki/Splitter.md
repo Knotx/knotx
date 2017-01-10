@@ -1,26 +1,18 @@
 #HTML Fragment Splitter
-HTML Fragment Splitter divides HTML template into static and dynamic chunks. Those chunks (fragments) 
-goes to Knot context and can be processed later by [[Knots|Knot]].
+Fragment Splitter reads [[Knot Context|Knot]] having a HTML Template from Repository, splits it into 
+static and dynamic Fragments, updates Knot Context and returns back to the caller.
 
 ##How does it work?
-HTML Fragment Splitter gets a Knot context as input and responds with the modified Knot context. It 
-divides HTML using regexp `<script\s+data-api-type\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>` into
-static and dynamic fragments. So all `script` tags with a `data-api-type` attribute are converted to 
-dynamic fragments. **According to performance reasons Splitter requires `data-api-type` 
-attribute to be the first attribute in the `script` tag.**
-All HTML markup outside script tags is considered as static fragments.
+It splits HTML Template using regexp `<script\s+data-knot-types\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>`.
+All matched `script` tags are converted into Fragments containing list of supported [[Knots|Knot]] 
+declared in `data-knot-types` attribute. HTML parts below, above and between matched scripts are 
+converted into Fragments without Knot support. It means that they are not supposed to be processed
+by Knots. See example for more details.
 
-Fragment contains an *identifier, a content (a template chunk) and a context*. The *identifier* has `data-api-type` 
-attribute value or `_raw` for static fragments. It can be used by Knots to select required fragment / fragments 
-(performance enhancement) without additional snippet content processing. The *content* contains 
-script tag with its content for dynamic fragments or static HTML content for static fragments. 
-The *context* can be omitted at this moment.
+**Splitter requires `data-knot-types` attribute to be the first attribute in the `script` tag.**
 
-At the end Splitter updates the Knot context with the list of fragments and returns it to further processing.
-
-####Example
-A site visitor requests for page *example.html* page. Knot.x fetches a page template from Repository and asks 
-Splitter to retrieve fragments from the template: 
+###Example
+Fragment Splitter reads Knot Context with HTML Template:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +22,7 @@ Splitter to retrieve fragments from the template:
 </head>
 <body>
   <div class="row">
-    <script data-api-type="templating"
+    <script data-knot-types="services,handlebars"
             data-service="first-service"
             type="text/x-handlebars-template">
       <div class="col-md-4">
@@ -41,9 +33,9 @@ Splitter to retrieve fragments from the template:
 </body>
 </html>
 ```
-Splitter divides page into 3 following fragments:
+and splits Template into three following Fragments:
 
-**Fragment 1** (identifier = "_raw")
+**Fragment 1** (knots = "_raw")
 ```
 <!DOCTYPE html>
 <html lang="en">
@@ -54,9 +46,9 @@ Splitter divides page into 3 following fragments:
 <body>
   <div class="row">
 ```
-**Fragment 2** (identifier = "templating")
+**Fragment 2** (knots = "services,handlebars")
 ```
-    <script data-api-type="templating"
+    <script data-knot-types="services,handlebars"
             data-service="first-service"
             type="text/x-handlebars-template">
       <div class="col-md-4">
@@ -70,6 +62,22 @@ Splitter divides page into 3 following fragments:
 </body>
 </html>
 ```
+
+More details about Fragments you can find in next section.
+
+###Fragment
+Fragment contains: 
+- list of supported Knots (list of [[Knot Election Rules|Knot]]), 
+- Fragment Content (matched script or simple HTML)
+- Fragment Context (JSON with a progress state)
+
+Fragments matching `script` tag declare Knots used while further processing (see [[Knots routing|KnotRouting]]). 
+They can communicate with external services via [[Adapters|Adapter]], evaluate templates using 
+Handlebars and so on. Every Knot defines value ([[Knot Election Rule|Knot]]) for `data-knot-types` 
+attribute which determines if it will process particular Fragment or not.
+
+Fragments not matching `script` tag are not supposed to be processed while Knots routing. They are 
+used at the end of processing to assemble final HTML result (see [[Fragment Assembler|Assembler]]).
 
 ##How to configure?
 Splitter is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.

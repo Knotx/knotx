@@ -64,7 +64,7 @@ public class FragmentProcessor {
 
   private FragmentContext applyData(final FragmentContext fragmentContext, JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", fragmentContext);
-    fragmentContext.fragment().getContext().mergeIn(serviceResult);
+    fragmentContext.fragment().context().mergeIn(serviceResult);
     return fragmentContext;
   }
 

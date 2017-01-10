@@ -46,7 +46,7 @@
     </div>
   </div>
   <div class="row">
-    <script data-api-type="templating"
+    <script data-knot-types="services,handlebars"
             data-service="first-service"
             data-service-second="second-service"
             data-service-third="third-service"
@@ -72,7 +72,7 @@
   </div>
   <div class="row">
     <div class="col-md-4">
-      <script data-api-type="templating" data-service="second-service"
+      <script data-knot-types="services,handlebars" data-service="second-service"
               type="text/x-handlebars-template">
         <h2>Snippet2 - {{_result.message}}</h2>
         <p>Snippet2 - {{_result.body.a}}</p>
@@ -80,14 +80,14 @@
       </script>
     </div>
     <div class="col-md-4">
-      <script data-api-type="templating" data-service="third-service"
+      <script data-knot-types="services,handlebars" data-service="third-service"
               type="text/x-handlebars-template">
         <h2>Snippet3 - {{_result.message}}</h2>
         <p>Snippet3 - {{_result.body.a}}</p>
       </script>
     </div>
     <div class="col-md-4">
-      <script data-api-type="templating" data-service="third-service"
+      <script data-knot-types="services,handlebars" data-service="third-service"
               type="text/x-handlebars-template">
         <h2>Snippet4 - {{_result.message}}</h2>
         <p>Snippet4 - {{encode_uri _result.url}}</p>

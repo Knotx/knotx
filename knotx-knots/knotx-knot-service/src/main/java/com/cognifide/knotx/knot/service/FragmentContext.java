@@ -45,7 +45,7 @@ class FragmentContext {
   }
 
   public static FragmentContext from(Fragment fragment) {
-    Document document = Jsoup.parseBodyFragment(fragment.getContent());
+    Document document = Jsoup.parseBodyFragment(fragment.content());
     Element scriptTag = document.body().child(0);
 
     List<Attribute> attributes = scriptTag.attributes().asList();

@@ -4,6 +4,7 @@
     "knotx:io.knotx.HttpRepositoryConnector",
     "knotx:io.knotx.FilesystemRepositoryConnector",
     "knotx:io.knotx.FragmentSplitter",
+    "knotx:io.knotx.FragmentAssembler",
     "knotx:io.knotx.HandlebarsKnot",
     "knotx:io.knotx.ServiceKnot",
     "knotx:example.io.knotx.ActionKnot",

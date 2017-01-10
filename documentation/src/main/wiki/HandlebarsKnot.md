@@ -6,42 +6,47 @@ Handlebars Knot uses [Handlebars.js](http://handlebarsjs.com/) templating engine
 Handlebars Java port - [Handlebars.java](https://github.com/jknack/handlebars.java) to compile and evaluate
 templates.
 
-Handlebars Knot retrieves all [[dynamic fragments|Splitter]] from [[Knot Context|Knot]]. Then for each fragment
-it evaluates Handlebars template fragment using fragment context. In this way data from other [[Knots|Knot]]
-can be applied to Handlebars snippets.
+Handlebars Knot filters Fragments containing `handlebars` in `data-knots-types` attribute (see 
+[[Knot Election Rule|Knot]]). Then for each Fragment it merges Fragment Content (Handlebars snippet) 
+with data from Fragment Context (for example data from external services or form submission response).
 
 ###Example
 Example Knot Context contains:
+*Fragment Content*
+```html
+<script data-knot-types="services,handlebars" data-service="first-service" type="text/x-handlebars-template">
+<div class="col-md-4">
+  <h2>Snippet1 - {{_result.message}}</h2>
+  <div>Snippet1 - {{_result.body.a}}</div>
+  {{#string_equals _response.statusCode "200"}}
+    <div>Success! Status code : {{_response.statusCode}}</div>
+  {{/string_equals}}
+</div>
+</script>
+```
+*Fragment Context*
 ```
 {
   "_result": {
     "message":"this is webservice no. 1",
-    ...
+    "body": {
+      "a": "message a"
+    }
   },
   "_response": {
     "statusCode":"200"
-  },
-  "second": {
-    "_result": {
-      "message":"this is webservice no. 2",
-    ...
-    },
-    "_response": {
-      "statusCode":"200"
-    }
   }
 }
 ```
-It can be reflected in Handlebars templates like:
+Handlebars Knot uses data from Fragment Context and applies it to Fragment Content:
 ```html
 <div class="col-md-4">
-  <h2>Snippet1 - {{second._result.message}}</h2>
-  <div>Snippet1 - {{second._result.body.a}}</div>
-  {{#string_equals second._response.statusCode "200"}}
-    <div>Success! Status code : {{second._response.statusCode}}</div>
-  {{/string_equals}}
+  <h2>Snippet1 - this is webservice no. 1</h2>
+  <div>Snippet1 - message a</div>
+  <div>Success! Status code : 200</div>
 </div>
 ```
+Finally Fragment Content is replaced with merged result.
 
 ## How to configure?
 Handlebars Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.

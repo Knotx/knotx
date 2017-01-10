@@ -69,6 +69,6 @@ public class HtmlFragmentSplitterContentTest {
 
   @Test
   public void testFragment() throws Exception {
-    assertThat(fragments.get(fragmentId).getContent().trim(), equalTo(FileReader.readText(fragmentFile).trim()));
+    assertThat(fragments.get(fragmentId).content().trim(), equalTo(FileReader.readText(fragmentFile).trim()));
   }
 }

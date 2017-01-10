@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.splitter.impl.FragmentSplitterServiceImpl;
 import com.cognifide.knotx.splitter.impl.FragmentSplitterConfiguration;
+import com.cognifide.knotx.splitter.impl.FragmentSplitterServiceImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
