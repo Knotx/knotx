@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Handlebars Knot
+ * Knot.x - Reactive microservice assembler - Common
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,29 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.templating.wrappers;
+package com.cognifide.knotx.fragments;
 
-import com.cognifide.knotx.fragments.Fragment;
+import java.util.regex.Pattern;
 
-import io.vertx.core.json.JsonObject;
+public interface FragmentConstants {
 
-public class RawHtmlFragment implements HtmlFragment {
+  String SNIPPET_IDENTIFIER_NAME = "data-knot-types";
 
+  String ANY_SNIPPET_PATTERN =
+      "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
 
-  private final Fragment fragment;
+  Pattern SNIPPET_PATTERN =
+      Pattern.compile("<script\\s+" + FragmentConstants.SNIPPET_IDENTIFIER_NAME
+          + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
 
-  public RawHtmlFragment(Fragment fragment) {
-    this.fragment = fragment;
-  }
-
-  @Override
-  public String getContentWithContext(JsonObject model) {
-    return fragment.getContent();
-  }
-
-  @Override
-  public Fragment getFragment() {
-    return fragment;
-  }
+  String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
 }

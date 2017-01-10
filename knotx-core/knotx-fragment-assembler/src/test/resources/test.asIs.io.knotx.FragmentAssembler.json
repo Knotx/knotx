@@ -1,0 +1,14 @@
+{
+  "modules": [
+    "knotx:io.knotx.FragmentAssembler"
+  ],
+  "config": {
+    "knotx:io.knotx.FragmentAssembler": {
+      "options": {
+        "config": {
+          "unprocessedStrategy": "AS_IS"
+        }
+      }
+    }
+  }
+}

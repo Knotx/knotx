@@ -61,6 +61,11 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-fragment-assembler</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-knot-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -75,9 +80,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-handlebars</artifactId>
-      <version>${project.version}</version>
+    <groupId>com.cognifide.knotx</groupId>
+    <artifactId>knotx-knot-handlebars</artifactId>
+    <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>

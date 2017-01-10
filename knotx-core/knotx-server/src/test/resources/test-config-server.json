@@ -97,5 +97,8 @@
         }
       }
     ]
+  },
+  "assembler": {
+    "address": "knotx.core.assembler"
   }
 }

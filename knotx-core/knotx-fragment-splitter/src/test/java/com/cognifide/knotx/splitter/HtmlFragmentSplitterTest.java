@@ -44,7 +44,7 @@ public class HtmlFragmentSplitterTest {
 
   private String TEST_MANY_SNIPPETS_HTML = "test-many-fragments.html";
 
-  private String EXPECTED_ONE_FRAGMENT = "<script data-api-type=\"templating-X\" data-uri-get=\"/service/mock/first.json\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
+  private String EXPECTED_ONE_FRAGMENT = "<script data-knot-types=\"templating-X\" data-service=\"first-service\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
 
   private List<Fragment> testNoSnippets;
   private List<Fragment> testOneSnippetBegin;
@@ -66,7 +66,7 @@ public class HtmlFragmentSplitterTest {
   @Test
   public void testJoinFragments() throws Exception {
     StringBuilder result = new StringBuilder();
-    IntStream.rangeClosed(0, testManySnippets.size() - 1).forEach(idx -> result.append(testManySnippets.get(idx).getContent()));
+    IntStream.rangeClosed(0, testManySnippets.size() - 1).forEach(idx -> result.append(testManySnippets.get(idx).content()));
 
     assertThat(result.toString().trim(), equalTo(FileReader.readText(TEST_MANY_SNIPPETS_HTML).trim()));
   }
@@ -75,14 +75,14 @@ public class HtmlFragmentSplitterTest {
   public void testNoFragments() throws Exception {
     assertThat(testNoSnippets.size(), equalTo(1));
     assertThat(testNoSnippets.get(0).isRaw(), equalTo(true));
-    assertThat(testNoSnippets.get(0).getContent(), equalTo(FileReader.readText(TEST_NO_SNIPPETS_HTML)));
+    assertThat(testNoSnippets.get(0).content(), equalTo(FileReader.readText(TEST_NO_SNIPPETS_HTML)));
   }
 
   @Test
   public void testOneFragmentBegin() throws Exception {
     assertThat(testOneSnippetBegin.size(), equalTo(2));
     assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(0).getContent(), equalTo(EXPECTED_ONE_FRAGMENT));
+    assertThat(testOneSnippetBegin.get(0).content(), equalTo(EXPECTED_ONE_FRAGMENT));
     assertThat(testOneSnippetBegin.get(1).isRaw(), equalTo(true));
   }
 
@@ -91,7 +91,7 @@ public class HtmlFragmentSplitterTest {
     assertThat(testOneSnippetMiddle.size(), equalTo(3));
     assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
     assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
-    assertThat(testOneSnippetMiddle.get(1).getContent(), equalTo(EXPECTED_ONE_FRAGMENT));
+    assertThat(testOneSnippetMiddle.get(1).content(), equalTo(EXPECTED_ONE_FRAGMENT));
     assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
   }
 
@@ -100,13 +100,14 @@ public class HtmlFragmentSplitterTest {
     assertThat(testOneSnippetEnd.size(), equalTo(2));
     assertThat(testOneSnippetEnd.get(0).isRaw(), equalTo(true));
     assertThat(testOneSnippetEnd.get(1).isRaw(), equalTo(false));
-    assertThat(testOneSnippetEnd.get(1).getContent(), equalTo(EXPECTED_ONE_FRAGMENT));
+    assertThat(testOneSnippetEnd.get(1).content(), equalTo(EXPECTED_ONE_FRAGMENT));
   }
 
   @Test
   public void testOneFragmentWholeHtml() throws Exception {
     assertThat(testOnlyOneSnippetWhole.size(), equalTo(1));
     assertThat(testOnlyOneSnippetWhole.get(0).isRaw(), equalTo(false));
-    assertThat(testOnlyOneSnippetWhole.get(0).getContent(), equalTo(EXPECTED_ONE_FRAGMENT));
+    assertThat(testOnlyOneSnippetWhole.get(0).content(), equalTo(EXPECTED_ONE_FRAGMENT));
   }
+
 }

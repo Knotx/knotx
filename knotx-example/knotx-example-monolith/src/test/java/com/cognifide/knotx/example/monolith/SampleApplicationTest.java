@@ -181,9 +181,8 @@ public class SampleApplicationTest {
 
   private Map<String, String> getSecondTestFormData() {
     Map<String, String> data = Maps.newHashMap();
-    data.put("name", "test");
-    data.put("email", "email@example.com");
-    data.put("_frmId", "competition");
+    data.put("email2", "email@example.com");
+    data.put("_frmId", "newsletter");
 
     return data;
   }

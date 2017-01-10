@@ -1,21 +1,29 @@
 #Knot
-Knot is a module which defines custom step during [[request routing|KnotRouting]]. It can process 
-markup [[fragments|Splitter]], invoke [[Adapters|Adapter]] and redirect site visitor depending on 
-Adapter response.
+Knot defines business logic which can be applied for particular [[Fragment|Splitter]]. It can for 
+example invoke external services via [[Adapters|Adapter]], evaluate Handlebars snippet or simply 
+redirect a site visitor to different location.
 
 ##How does it work?
-Knot gets [Knot Context](#knot-context), does its job and responds with Knot Context. This is a very simple but 
-powerful contract which makes Knot easy to integrate and develop.
+Knot reads [Knot Context](#knot-context) having list of Fragments to process, does its job,
+updates Knot Context and returns it back to the caller. 
 
-Knot registers to Event Bus with an unique address and listens for [Knot Context events](#knot-request). 
-Each Knot is deployed as a separate verticle and is triggered during [[request routing|KnotRouting]].
+Particular Knot is applied to Fragments if two conditions are met:
 
-To understand what Knots really do we need to know what Knot Context is.
+- it is defined in [[Knot routing|KnotRouting]]
+- there is at least one Fragment which declares matching [Knot Election Rule](#knot-election-rule)
+
+### Knot Election Rule
+Knot Election Rule allows to define if Knot should be applied for particular Fragment. Every time 
+Knot reads Knot Context it checks if there is any Fragment which requires it. Knot Election Rule is 
+simple String value coming from `data-knot-types` attribute (the attribute contains list of Knot
+Election Rules separated with comma). Knots can simply filter Fragments which does not contain 
+certain Knot Election Rule (for example `services` or `handlebars`).
 
 ### Knot Context
-Knot Context is a model which is exchanged between [[Server|Server]] and Knot. Server forward Knot Context
-to Knots and gets Knot Context back from them. So Knot Context keeps information about site visitor 
-request, current processing status and site visitor response. Next we will use *client* and
+Knot Context is a communication model passed between [[Server|Server]], [[Fragment Splitter|Splitter]], 
+[[Knots|Knot]] and [[Fragment Assembler|Assembler]]. The flow is driven by Server forwarding and getting 
+back Knot Context to / from Splitter, Knots and Assembler. Knot Context keeps information about a 
+site visitor request, current processing status and a site visitor response. Next we will use *client* and
 *site visitor* words equivalently.
 
 Knot Context contains:
@@ -30,7 +38,7 @@ Knot Context contains:
 *Client response* includes a body (which represents final response body), HTTP headers (which are narrowed finally
 by Server) and HTTP status code.
 
-Please see [[Splitter|Splitter]] section to find out what fragments are and how they are produced. 
+Please see [[Splitter|Splitter]] section to find out what Fragments are and how they are produced. 
 Fragments contain a template fragment content and a context. Knots can process a configured fragment content, 
 call required Adapters and put responses from Adapters to the fragment context (fragment context is a JSON 
 object).

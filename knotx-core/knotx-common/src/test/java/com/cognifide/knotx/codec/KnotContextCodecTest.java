@@ -26,6 +26,7 @@ import com.cognifide.knotx.fragments.Fragment;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -152,14 +153,14 @@ public class KnotContextCodecTest {
   private List<Fragment> fragments() {
     List<Fragment> fragments = Lists.newArrayList();
 
-    Fragment withContext = Fragment.snippet("templating", "TEMPLATING 1");
-    withContext.getContext().put("ABC", new JsonObject().put("aa", "bb").put("cc", "dd"));
+    Fragment withContext = Fragment.snippet(Collections.singletonList("templating"), "TEMPLATING 1");
+    withContext.context().put("ABC", new JsonObject().put("aa", "bb").put("cc", "dd"));
 
     fragments.add(Fragment.raw("RAW-FRAGMENT 1"));
     fragments.add(Fragment.raw("RAW-FRAGMENT 2"));
-    fragments.add(Fragment.snippet("templating", "TEMPLATING 1"));
-    fragments.add(Fragment.snippet("form-1", "FORM-1"));
-    fragments.add(Fragment.snippet("form-1", "FORM-1"));
+    fragments.add(Fragment.snippet(Collections.singletonList("templating"), "TEMPLATING 1"));
+    fragments.add(Fragment.snippet(Collections.singletonList("form-1"), "FORM-1"));
+    fragments.add(Fragment.snippet(Collections.singletonList("form-1"), "FORM-1"));
     fragments.add(withContext);
 
     return fragments;

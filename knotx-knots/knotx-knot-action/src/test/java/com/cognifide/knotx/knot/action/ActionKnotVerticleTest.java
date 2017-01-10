@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class ActionKnotVerticleTest {
   public static final String EXPECTED_KNOT_TRANSITION = "next";
   private final static String ADDRESS = "knotx.knot.action";
   private final static String HIDDEN_INPUT_TAG_NAME = "snippet-identifier";
-  private static final String FRAGMENT_IDENTIFIER = "data-api-type";
+  private static final String FRAGMENT_KNOT = "data-knot-types";
   private final static String FRAGMENT_REDIRECT_IDENTIFIER = "someId123";
   private final static String FRAGMENT_SELF_IDENTIFIER = "someId456";
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
@@ -97,9 +98,9 @@ public class ActionKnotVerticleTest {
           context.assertTrue(clientResponse.fragments().isPresent());
 
           List<Fragment> fragments = clientResponse.fragments().get();
-          context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
-          context.assertEquals(expectedTemplatingFragment, fragments.get(1).getContent());
-          context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(2).getContent());
+          context.assertEquals(FIRST_FRAGMENT.content(), fragments.get(0).content());
+          context.assertEquals(expectedTemplatingFragment, fragments.get(1).content());
+          context.assertEquals(LAST_FRAGMENT.content(), fragments.get(2).content());
         },
         error -> context.fail(error.getMessage()));
   }
@@ -120,10 +121,10 @@ public class ActionKnotVerticleTest {
           context.assertTrue(clientResponse.fragments().isPresent());
 
           List<Fragment> fragments = clientResponse.fragments().get();
-          context.assertEquals(FIRST_FRAGMENT.getContent(), fragments.get(0).getContent());
-          context.assertEquals(clean(expectedRedirectFormFragment), clean(fragments.get(1).getContent()));
-          context.assertEquals(clean(expectedSelfFormFragment), clean(fragments.get(2).getContent()));
-          context.assertEquals(LAST_FRAGMENT.getContent(), fragments.get(3).getContent());
+          context.assertEquals(FIRST_FRAGMENT.content(), fragments.get(0).content());
+          context.assertEquals(clean(expectedRedirectFormFragment), clean(fragments.get(1).content()));
+          context.assertEquals(clean(expectedSelfFormFragment), clean(fragments.get(2).content()));
+          context.assertEquals(LAST_FRAGMENT.content(), fragments.get(3).content());
         },
         error -> context.fail(error.getMessage()));
   }
@@ -144,7 +145,7 @@ public class ActionKnotVerticleTest {
 
           List<Fragment> fragments = clientResponse.fragments().get();
           context.assertEquals(fragments.size(), 1);
-          context.assertEquals(clean(expectedFragmentHtml), clean(fragments.get(0).getContent()));
+          context.assertEquals(clean(expectedFragmentHtml), clean(fragments.get(0).content()));
         },
         error -> context.fail(error.getMessage()));
   }
@@ -241,8 +242,9 @@ public class ActionKnotVerticleTest {
     Optional.ofNullable(firstFragment).ifPresent(fragments::add);
     for (String file : snippetFilenames) {
       String fileContent = FileReader.readText(file);
-      String fragmentIdentifier = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_IDENTIFIER).attr(FRAGMENT_IDENTIFIER);
-      fragments.add(Fragment.snippet(fragmentIdentifier, fileContent));
+      String fragmentIdentifiers = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_KNOT).attr(
+          FRAGMENT_KNOT);
+      fragments.add(Fragment.snippet(Arrays.asList(fragmentIdentifiers.split(",")), fileContent));
     }
     Optional.ofNullable(lastFragment).ifPresent(fragments::add);
 

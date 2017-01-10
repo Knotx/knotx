@@ -17,9 +17,6 @@
  */
 package com.cognifide.knotx.server;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -30,6 +27,8 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.BodyHandler;
 import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
@@ -49,12 +48,12 @@ public class KnotxServerVerticle extends AbstractVerticle {
     Router router = Router.router(vertx);
 
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
-    configuration.getEngineRouting().entrySet().stream()
+    configuration.getEngineRouting().entrySet()
         .forEach(entry -> {
           if (entry.getKey() == HttpMethod.POST) {
             router.route().method(entry.getKey()).handler(BodyHandler.create());
           }
-          entry.getValue().stream().forEach(
+          entry.getValue().forEach(
               criteria -> {
                 router.route()
                     .method(entry.getKey())
@@ -69,7 +68,13 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 router.route()
                     .method(entry.getKey())
                     .pathRegex(criteria.path())
-                    .handler(KnotxEngineHandler.create(vertx.eventBus(), criteria.address(), criteria.onTransition(), configuration));
+                    .handler(KnotxEngineHandler
+                        .create(vertx.eventBus(), criteria.address(), criteria.onTransition()));
+
+                router.route()
+                    .method(entry.getKey())
+                    .pathRegex(criteria.path())
+                    .handler(KnotxAssemblerHandler.create(vertx.eventBus(), configuration));
               }
           );
         });
@@ -79,7 +84,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
         configuration.httpPort(),
         result -> {
           if (result.succeeded()) {
-            LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
+            LOGGER
+                .info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
             fut.complete();
           } else {
             LOGGER.error("Unable to start Knot.x HTTP Server.", result.cause());

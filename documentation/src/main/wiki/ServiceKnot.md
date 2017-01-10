@@ -3,10 +3,10 @@ Service Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adap
 data that will be later used to compose page final markup with [[Handlebars Knot|HandlebarsKnot]].
 
 ##How does it work?
-Service Knot retrieves [[dynamic fragments|Splitter]] from [[Knot Context|Knot]]. Then for every dynamic
-fragment it calls configured Adapters. At the end it collects responses from those 
-Adapters and expose them in [[Knot Context|Knot]]. Let's describe how Adapters are invoked with 
-following example.
+Service Knot filters Fragments containing `services` in `data-knots-types` attribute (see 
+[[Knot Election Rule|Knot]]). Then for every Fragment it calls configured Adapters. At the end 
+it collects responses from those Adapters and expose them in [[Knot Context|Knot]]. Let's describe 
+how Adapters are invoked with following example.
 
 Adapters calls are defined both on template and Knot configuration layers:
 
@@ -18,7 +18,7 @@ Additionally with every Adapter `data-params-{NAMESPACE}={JSON DATA}` attribute 
 which specifies parameters for Adapter call. An example `script` definition can look like:
 
 ```html
-<script data-api-type="templating"
+<script data-knot-types="services,handlebars"
   data-service="first-service"
   data-service-second="second-service"
   data-params-second='{"path":"/overridden/path"}'

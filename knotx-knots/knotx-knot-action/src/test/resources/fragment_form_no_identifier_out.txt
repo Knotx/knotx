@@ -1,4 +1,4 @@
-<script data-api-type="form" data-service="some-service" type="text/x-handlebars-template">
+<script data-knot-types="form,services,handlebars" data-service="some-service" type="text/x-handlebars-template">
      <form>
          <input type="hidden" name="snippet-identifier" value="_default_" />
          {{someValue}}

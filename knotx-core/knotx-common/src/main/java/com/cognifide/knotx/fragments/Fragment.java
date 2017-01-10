@@ -21,72 +21,76 @@ import com.google.common.base.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 public class Fragment {
 
   private static final String RAW_FRAGMENT_ID = "_raw";
 
-  private static final String ID = "_ID";
+  private static final String KNOTS = "_KNOTS";
 
   private static final String CONTENT = "_CONTENT";
 
   private static final String CONTEXT = "_CONTEXT";
 
-  private final String id;
+  private final List<String> knots;
 
   private String content;
 
   private final JsonObject context;
 
   public Fragment(JsonObject fragment) {
-    this.id = fragment.getString(ID);
+    this.knots = fragment.getJsonArray(KNOTS).stream().map(String::valueOf).collect(Collectors.toList());
     this.content = fragment.getString(CONTENT);
     this.context = fragment.getJsonObject(CONTEXT, new JsonObject());
   }
 
-  private Fragment(String id, String data) {
-    if (StringUtils.isEmpty(id) || StringUtils.isEmpty(data)) {
-      throw new NoSuchElementException("Fragment is not valid [" + id + "], [" + data + "].");
+  private Fragment(List<String> knots, String data) {
+    if (knots == null || knots.isEmpty() || StringUtils.isEmpty(data)) {
+      throw new NoSuchElementException("Fragment is not valid [" + knots + "], [" + data + "].");
     }
-    this.id = id;
+    this.knots = knots;
     this.content = data;
     this.context = new JsonObject();
   }
 
   public static Fragment raw(String data) {
-    return new Fragment(RAW_FRAGMENT_ID, data);
+    return new Fragment(Collections.singletonList(RAW_FRAGMENT_ID), data);
   }
 
-  public static Fragment snippet(String id, String data) {
-    return new Fragment(id, data);
+  public static Fragment snippet(List<String> knots, String data) {
+    return new Fragment(knots, data);
   }
 
   public JsonObject toJson() {
-    return new JsonObject().put(ID, id).put(CONTENT, content).put(CONTEXT, context);
+    return new JsonObject().put(KNOTS, new JsonArray(knots)).put(CONTENT, content).put(CONTEXT, context);
   }
 
-  public String getId() {
-    return id;
+  public List<String> knots() {
+    return knots;
   }
 
-  public String getContent() {
+  public String content() {
     return content;
   }
 
-  public Fragment setContent(String content) {
+  public Fragment content(String content) {
     this.content = content;
     return this;
   }
 
-  public JsonObject getContext() {
+  public JsonObject context() {
     return context;
   }
 
   public boolean isRaw() {
-    return RAW_FRAGMENT_ID.equals(id);
+    return knots.contains(RAW_FRAGMENT_ID);
   }
 
   @Override
@@ -94,14 +98,14 @@ public class Fragment {
     if (this == o) return true;
     if (!(o instanceof Fragment)) return false;
     Fragment that = (Fragment) o;
-    return Objects.equal(id, that.id) &&
+    return Objects.equal(knots, that.knots) &&
         Objects.equal(content, that.content) &&
         Objects.equal(context, that.context);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(id, content, context);
+    return Objects.hashCode(knots, content, context);
   }
 
   @Override

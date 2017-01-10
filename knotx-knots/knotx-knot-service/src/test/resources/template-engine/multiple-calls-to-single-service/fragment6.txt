@@ -1,4 +1,4 @@
-<script data-api-type="templating" data-service="first-service" type="text/x-handlebars-template">
+<script data-knot-types="services,handlebars" data-service="first-service" type="text/x-handlebars-template">
   <h2>{{_result.message}}</h2>
   <div>{{_result.body.c}}</div>
 </script>

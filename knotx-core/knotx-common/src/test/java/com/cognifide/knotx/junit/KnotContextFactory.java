@@ -21,14 +21,12 @@ import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class KnotContextFactory {
 
@@ -48,6 +46,17 @@ public class KnotContextFactory {
                 .setStatusCode(HttpResponseStatus.OK)
                 .setHeaders(MultiMap.caseInsensitiveMultiMap()))
         .setClientRequest(new ClientRequest());
+  }
+
+  public static KnotContext create(List<String> fragments) {
+    return new KnotContext()
+        .setFragments(
+            fragments != null ? fragments.stream().map(Fragment::raw).collect(Collectors.toList())
+                : null)
+        .setClientRequest(new ClientRequest())
+        .setClientResponse(
+            new ClientResponse()
+                .setHeaders(MultiMap.caseInsensitiveMultiMap()));
   }
 
 }

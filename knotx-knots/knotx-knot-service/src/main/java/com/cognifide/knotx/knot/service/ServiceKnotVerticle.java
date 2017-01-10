@@ -23,15 +23,14 @@ import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.knot.api.AbstractKnot;
 
 import java.util.Collections;
+import java.util.Set;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
 public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> {
@@ -39,6 +38,8 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
   private static final String DEFAULT_TEMPLATING_KNOT = "next";
+
+  private static final String SUPPORTED_FRAGMENT_ID = "services";
 
   private FragmentProcessor snippetProcessor;
 
@@ -54,19 +55,22 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
   }
 
   @Override
-  protected void process(Message<KnotContext> message, Handler<KnotContext> handler) {
-    KnotContext inputContext = message.body();
-    inputContext.fragments()
+  protected Observable<KnotContext> process(KnotContext message) {
+    return message.fragments()
         .map(fragments -> Observable.from(fragments)
-            .filter(fragment -> !fragment.isRaw())
+            .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
-            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, inputContext)))
-        .orElse(Observable.just(FragmentContext.empty()))
-        .subscribe(next -> {
-            },
-            error -> message.reply(processError(inputContext, error)),
-            () -> handler.handle(createSuccessResponse(inputContext)));
+            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, message))
+            .toList()
+        ).orElse(Observable.just(Collections.emptyList()))
+        .map(result -> createSuccessResponse(message))
+        .onErrorReturn(error -> processError(message, error));
+  }
+
+  @Override
+  protected boolean shouldProcess(Set<String> knots) {
+    return knots.contains(SUPPORTED_FRAGMENT_ID);
   }
 
   @Override

@@ -70,6 +70,7 @@ public class KnotxServerRoutingTest {
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     createDummySplitter();
+    createDummyAssembler();
     createKnotConsumer("A-engine", "+A", "go-c");
     createKnotConsumer("C-engine", "+C", null);
     testGetRequest(context, "/content/local/simple.html", "local+A+C");
@@ -79,6 +80,7 @@ public class KnotxServerRoutingTest {
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
     createDummySplitter();
+    createDummyAssembler();
     createKnotConsumer("C-engine", "+C", null);
     testGetRequest(context, "/content/simple.html", "global+C");
   }
@@ -87,6 +89,7 @@ public class KnotxServerRoutingTest {
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(TestContext context) {
     createDummySplitter();
+    createDummyAssembler();
     createKnotConsumer("A-post-engine", "+Apost", "go-b");
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
@@ -97,6 +100,7 @@ public class KnotxServerRoutingTest {
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
     createDummySplitter();
+    createDummyAssembler();
     createKnotConsumer("A-post-engine", "+Apost", "go-c");
     createKnotConsumer("C-engine", "+C", null);
     testPostRequest(context, "/content/local/simple.html", "local+Apost+C");
@@ -106,6 +110,7 @@ public class KnotxServerRoutingTest {
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
     createDummySplitter();
+    createDummyAssembler();
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
     testPostRequest(context, "/content/simple.html", "global+B+C");
@@ -153,6 +158,11 @@ public class KnotxServerRoutingTest {
   private void createDummySplitter() {
     EventBus eventBus = vertx.vertx().eventBus();
     eventBus.<KnotContext>consumer("test-splitter", msg -> msg.reply(msg.body()));
+  }
+
+  private void createDummyAssembler() {
+    EventBus eventBus = vertx.vertx().eventBus();
+    eventBus.<KnotContext>consumer("test-assembler", msg -> msg.reply(msg.body()));
   }
 
   private void createKnotConsumer(String adddress, String addToBody, String transition) {

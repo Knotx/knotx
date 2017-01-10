@@ -14,6 +14,7 @@
     * [[Http Repository Connector|HttpRepositoryConnector]]
     * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
   * [[Splitter|Splitter]]
+  * [[Assembler|Assembler]]
   * [[Knot|Knot]]
     * [[Action Knot|ActionKnot]]
     * [[Service Knot|ServiceKnot]]

@@ -18,15 +18,19 @@
 package com.cognifide.knotx.knot.api;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-
+import com.cognifide.knotx.fragments.Fragment;
 import io.vertx.core.Context;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.core.eventbus.Message;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import rx.Observable;
 
 /**
@@ -48,23 +52,50 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
   public void start() throws Exception {
     LOGGER.info("Starting <{}>", this.getClass().getName());
 
-    vertx.eventBus().<KnotContext>consumer(configuration.getAddress())
-        .handler(message -> Observable.just(message)
-            .doOnNext(this::traceMessage)
-            .subscribe(
-                result -> process(result, message::reply),
-                error -> {
-                  LOGGER.error("Error occurred in " + this.getClass().getName() + ".", error);
-                  message.reply(processError(message.body(), error));
-                }
-            ));
+    vertx.eventBus().<KnotContext>consumer(
+        configuration.getAddress())
+        .toObservable()
+        .doOnNext(this::traceMessage)
+        .subscribe(
+            msg -> {
+              if (shouldProcess(msg)) {
+                process(msg.body())
+                    .subscribe(
+                        msg::reply,
+                        error -> {
+                          LOGGER
+                              .error("Error occurred in " + this.getClass().getName() + ".", error);
+                          msg.reply(processError(msg.body(), error));
+                        });
+              } else {
+                msg.reply(msg.body());
+              }
+            }
+        );
   }
 
-  protected abstract void process(Message<KnotContext> message, Handler<KnotContext> handler);
+  protected abstract Observable<KnotContext> process(KnotContext message);
+
+  protected abstract boolean shouldProcess(Set<String> knots);
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
   protected abstract C initConfiguration(JsonObject config);
+
+  protected boolean shouldProcess(Message<KnotContext> msg) {
+    Set<String> knots = msg.body().fragments()
+        .map(this::getKnotSet)
+        .orElse(Collections.emptySet());
+    return shouldProcess(knots);
+  }
+
+  private Set<String> getKnotSet(List<Fragment> fragments) {
+    return
+        fragments.stream()
+            .map(Fragment::knots)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+  }
 
   private void traceMessage(Message<KnotContext> message) {
     if (LOGGER.isTraceEnabled()) {
