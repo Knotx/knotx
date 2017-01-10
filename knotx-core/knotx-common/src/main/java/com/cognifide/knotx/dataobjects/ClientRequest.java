@@ -20,12 +20,12 @@ package com.cognifide.knotx.dataobjects;
 
 import com.cognifide.knotx.http.UriHelper;
 import com.cognifide.knotx.util.DataObjectsUtil;
+import com.cognifide.knotx.util.MultimapUtil;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.http.HttpServerRequest;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,11 +39,11 @@ public class ClientRequest {
 
   private HttpMethod method;
 
-  private MultiMap headers = MultiMap.caseInsensitiveMultiMap();
+  private JsonObject headers = new JsonObject();
 
-  private Map<String, List<String>> params = Collections.unmodifiableMap(new HashMap<>());
+  private JsonObject params = new JsonObject();
 
-  private Map<String, List<String>> formAttributes = Collections.unmodifiableMap(new HashMap<>());
+  private JsonObject formAttributes = new JsonObject();
 
   public ClientRequest() {
     //Nothing to set by default
@@ -60,17 +60,17 @@ public class ClientRequest {
   public ClientRequest(ClientRequest request) {
     this.path = request.path;
     this.method = request.method;
-    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) request.headers.getDelegate());
-    this.params = MultiMap.newInstance((io.vertx.core.MultiMap) request.params.getDelegate());
-    this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) request.formAttributes.getDelegate());
+    this.headers = Collections.unmodifiableMap(new HashMap<>(request.headers));
+    this.params = Collections.unmodifiableMap(new HashMap<>(request.params));
+    this.formAttributes = Collections.unmodifiableMap(new HashMap<>(request.formAttributes));
   }
 
   public ClientRequest(HttpServerRequest serverRequest) {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
-    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.headers().getDelegate());
+    this.headers = MultimapUtil.toMap(serverRequest.headers(), false);
     this.params = UriHelper.getParams(serverRequest.uri());
-    this.formAttributes = MultiMap.newInstance((io.vertx.core.MultiMap) serverRequest.formAttributes().getDelegate());
+    this.formAttributes = MultimapUtil.toMap(serverRequest.formAttributes(), true);
 
   }
 
@@ -82,7 +82,7 @@ public class ClientRequest {
     return method;
   }
 
-  public MultiMap getHeaders() {
+  public Map<String, List<String>> getHeaders() {
     return headers;
   }
 
@@ -104,18 +104,18 @@ public class ClientRequest {
     return this;
   }
 
-  public ClientRequest setHeaders(MultiMap headers) {
-    this.headers = headers;
+  public ClientRequest setHeaders(Map<String, List<String>> headers) {
+    this.headers = Collections.unmodifiableMap(headers);
     return this;
   }
 
   public ClientRequest setParams(Map<String, List<String>> params) {
-    this.params = params;
+    this.params = Collections.unmodifiableMap(params);
     return this;
   }
 
   public ClientRequest setFormAttributes(Map<String, List<String>> formAttributes) {
-    this.formAttributes = formAttributes;
+    this.formAttributes = Collections.unmodifiableMap(formAttributes);
     return this;
   }
 
@@ -130,15 +130,15 @@ public class ClientRequest {
     ClientRequest that = (ClientRequest) o;
     return Objects.equal(path, that.path) &&
         Objects.equal(method, that.method) &&
-        DataObjectsUtil.equalsMultimap(this.headers, that.headers) &&
+        DataObjectsUtil.equalsMap(this.headers, that.headers) &&
         DataObjectsUtil.equalsMap(this.params, that.params) &&
         DataObjectsUtil.equalsMap(this.formAttributes, that.formAttributes);
   }
 
   @Override
   public int hashCode() {
-    return 41 * Objects.hashCode(path, method) + 37 * DataObjectsUtil.multiMapHash(headers) + 31 * DataObjectsUtil.multiMapHash(params)
-        + DataObjectsUtil.multiMapHash(formAttributes);
+    return 41 * Objects.hashCode(path, method) + 37 * DataObjectsUtil.mapHash(headers) + 31 * DataObjectsUtil.mapHash(params)
+        + DataObjectsUtil.mapHash(formAttributes);
   }
 
   @Override
@@ -147,7 +147,7 @@ public class ClientRequest {
         .add("path", path)
         .add("method", method)
         .add("headers", DataObjectsUtil.toString(headers))
-        .add("params", MoreObjects.toStringHelper()DataObjectsUtil.toString(params))
+        .add("params", DataObjectsUtil.toString(params))
         .add("formAttributes", DataObjectsUtil.toString(formAttributes))
         .toString();
   }

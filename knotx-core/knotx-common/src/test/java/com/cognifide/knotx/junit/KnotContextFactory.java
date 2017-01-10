@@ -21,14 +21,11 @@ import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.fragments.Fragment;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-
+import com.google.common.collect.Maps;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.core.buffer.Buffer;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class KnotContextFactory {
 
@@ -46,7 +43,7 @@ public class KnotContextFactory {
             new ClientResponse()
                 .setBody(StringUtils.isEmpty(template) ? Buffer.buffer() : Buffer.buffer(template))
                 .setStatusCode(HttpResponseStatus.OK)
-                .setHeaders(MultiMap.caseInsensitiveMultiMap()))
+                .setHeaders(Maps.newHashMap()))
         .setClientRequest(new ClientRequest());
   }
 

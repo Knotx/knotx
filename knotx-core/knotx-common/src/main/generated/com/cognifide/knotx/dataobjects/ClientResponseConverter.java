@@ -27,8 +27,14 @@ import io.vertx.core.json.JsonArray;
 public class ClientResponseConverter {
 
   public static void fromJson(JsonObject json, ClientResponse obj) {
+    if (json.getValue("body") instanceof String) {
+      obj.setBody(io.vertx.core.buffer.Buffer.buffer(java.util.Base64.getDecoder().decode((String)json.getValue("body"))));
+    }
   }
 
   public static void toJson(ClientResponse obj, JsonObject json) {
+    if (obj.getBody() != null) {
+      json.put("body", obj.getBody().getBytes());
+    }
   }
 }

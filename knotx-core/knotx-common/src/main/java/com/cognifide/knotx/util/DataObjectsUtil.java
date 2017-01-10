@@ -50,14 +50,14 @@ public class DataObjectsUtil {
    * @param that - compared Buffer object that
    * @return - true if objects are equals, false otherwise
    */
-  public static boolean equalsBody(io.vertx.rxjava.core.buffer.Buffer self, io.vertx.rxjava.core.buffer.Buffer that) {
+  public static boolean equalsBody(io.vertx.core.buffer.Buffer self, io.vertx.core.buffer.Buffer that) {
     if (self == that) {
       return true;
     }
     if (self != null) {
       if (that != null) {
         return Arrays
-            .equals(((io.vertx.core.buffer.Buffer) self.getDelegate()).getBytes(), ((io.vertx.core.buffer.Buffer) that.getDelegate()).getBytes());
+            .equals(self.getBytes(), that.getBytes());
       } else {
         return false;
       }
@@ -80,6 +80,20 @@ public class DataObjectsUtil {
   }
 
   /**
+   * Method computing hashCode of the give map
+   *
+   * @param map - object to compute hashcode from
+   * @return - hashcode of the given Multimap object
+   */
+  public static int mapHash(Map<String, List<String>> map) {
+    return map.keySet().stream()
+        .mapToInt(name -> Optional.ofNullable(map.get(name))
+            .map(value -> value.hashCode())
+            .orElse(0))
+        .reduce(new Integer(0), (sum, hash) -> 31 * sum + hash);
+  }
+
+  /**
    * toString() implementation for Multimap object
    *
    * @return String representing given Multimap
@@ -88,6 +102,20 @@ public class DataObjectsUtil {
     StringBuilder result = new StringBuilder();
     multiMap.names().stream().forEach(
         name -> result.append(name).append(":").append(Joiner.on(";").join(multiMap.getAll(name))).append("|")
+    );
+
+    return result.toString();
+  }
+
+  /**
+   * toString() implementation for Multimap object
+   *
+   * @return String representing given Multimap
+   */
+  public static String toString(Map<String, List<String>> map) {
+    StringBuilder result = new StringBuilder();
+    map.keySet().stream().forEach(
+        name -> result.append(name).append(":").append(Joiner.on(";").join(map.get(name))).append("|")
     );
 
     return result.toString();

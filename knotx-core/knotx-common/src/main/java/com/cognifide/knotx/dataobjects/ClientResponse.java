@@ -22,17 +22,19 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @DataObject(generateConverter = true)
 public class ClientResponse {
 
   private HttpResponseStatus statusCode;
 
-  private MultiMap headers = MultiMap.caseInsensitiveMultiMap();
+  private JsonObject headers = new JsonObject();
 
   private Buffer body;
 
@@ -53,7 +55,7 @@ public class ClientResponse {
     return statusCode;
   }
 
-  public MultiMap getHeaders() {
+  public Map<String, List<String>> getHeaders() {
     return headers;
   }
 
@@ -61,18 +63,13 @@ public class ClientResponse {
     return body;
   }
 
-  public ClientResponse clearBody() {
-    body = Buffer.buffer("");
-    return this;
-  }
-
   public ClientResponse setStatusCode(HttpResponseStatus statusCode) {
     this.statusCode = statusCode;
     return this;
   }
 
-  public ClientResponse setHeaders(MultiMap headers) {
-    this.headers = MultiMap.newInstance((io.vertx.core.MultiMap) headers.getDelegate());
+  public ClientResponse setHeaders(Map<String, List<String>> headers) {
+    this.headers = Collections.unmodifiableMap(headers);
     return this;
   }
 
@@ -85,9 +82,12 @@ public class ClientResponse {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode.code());
 
-    json.put("headers", headers.names().stream()
-        .map(name -> new JsonObject().put(name, headers.get(name)))
-        .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll));
+    json.put("headers", headers.keySet().stream()
+        .map(name -> new JsonObject().put(name, headers.get(name)
+                .stream()
+                .reduce(new JsonArray(), JsonArray::add, JsonArray::addAll)
+            )
+        ));
 
     return json;
   }
@@ -102,13 +102,13 @@ public class ClientResponse {
     }
     ClientResponse that = (ClientResponse) o;
     return Objects.equal(statusCode, that.statusCode) &&
-        DataObjectsUtil.equalsMultimap(this.headers, that.headers) &&
+        DataObjectsUtil.equalsMap(this.headers, that.headers) &&
         DataObjectsUtil.equalsBody(this.body, that.body);
   }
 
   @Override
   public int hashCode() {
-    return 31 * Objects.hashCode(statusCode, body) + DataObjectsUtil.multiMapHash(headers);
+    return 31 * Objects.hashCode(statusCode, body) + DataObjectsUtil.mapHash(headers);
   }
 
   @Override
