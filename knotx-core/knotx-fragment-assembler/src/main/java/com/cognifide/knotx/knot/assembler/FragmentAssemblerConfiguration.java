@@ -27,7 +27,9 @@ class FragmentAssemblerConfiguration {
 
   FragmentAssemblerConfiguration(JsonObject config) {
     address = config.getString("address");
-    assemblyStrategy = getUnprocessedStrategy(config);
+    assemblyStrategy = UnprocessedFragmentStrategy
+        .valueOf(config.getString("unprocessedStrategy", UnprocessedFragmentStrategy.UNWRAP.name())
+            .toUpperCase());
   }
 
   String address() {
@@ -36,11 +38,5 @@ class FragmentAssemblerConfiguration {
 
   UnprocessedFragmentStrategy assemblyStrategy() {
     return assemblyStrategy;
-  }
-
-  private UnprocessedFragmentStrategy getUnprocessedStrategy(JsonObject config) {
-    String unprocessedStrategy = config.getString("unprocessedStrategy");
-    return unprocessedStrategy == null ? UnprocessedFragmentStrategy.UNWRAP : UnprocessedFragmentStrategy
-        .valueOf(unprocessedStrategy.toUpperCase());
   }
 }
