@@ -81,5 +81,7 @@ You should see:
 
 ```
 
-See also [[how to run Knot.x demo|RunningTheDemo]].
+See also [[how to run Knot.x demo|RunningTheDemo]] for the details how to run and configure the demo.
+
+In case you wanted to try debugging Knot.x in IDE, see [[Debugging Knot.x|Debugging]].
 
