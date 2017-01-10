@@ -29,38 +29,40 @@ Where:
 You will see output similar to the following:
 ```
 ...
-2017-01-03 12:25:31 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryConnectorVerticle - Registered <HttpRepositoryConnectorVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Registered <FilesystemRepositoryConnectorVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-4] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-7] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-4] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
-2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-0] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-1] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpActionAdapterVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
-2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
-2017-01-03 12:25:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
-2017-01-03 12:25:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+2017-01-09 15:58:19 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryConnectorVerticle - Registered <HttpRepositoryConnectorVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-3] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Registered <FilesystemRepositoryConnectorVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-4] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-5] DEBUG c.c.k.k.a.FragmentAssemblerVerticle - Starting <com.cognifide.knotx.knot.assembler.FragmentAssemblerVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-7] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-4] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-0] DEBUG c.c.k.knot.action.ActionKnotVerticle - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
+2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-2] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpActionAdapterVerticle>
+2017-01-09 15:58:20 [vert.x-eventloop-thread-1] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
+2017-01-09 15:58:20 [vert.x-eventloop-thread-4] INFO  c.c.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
+2017-01-09 15:58:20 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
+2017-01-09 15:58:20 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2017-01-09 15:58:20 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED 
 
-                Deployed 2c037987-b4ad-4609-9080-f51e09609564 [knotx:io.knotx.FilesystemRepositoryConnector]
-                Deployed cf16eae3-ebd9-451f-9795-e07ba38ecf82 [knotx:io.knotx.FragmentSplitter]
-                Deployed 6ad50647-f6da-46d7-9522-ada87fa964c8 [knotx:example.io.knotx.ActionKnot]
-                Deployed 889de10e-701f-4a67-872a-85a2a98d5c4e [knotx:example.io.knotx.ServiceKnot]
-                Deployed fa9e552b-7ed2-423c-94f7-be2f7ed22340 [knotx:io.knotx.ServiceAdapterMock]
-                Deployed 1b32ea8c-0c16-410e-97b3-347613890db8 [knotx:io.knotx.HandlebarsKnot]
-                Deployed 6adcb862-057c-4f68-886c-35ca6a5b509f [knotx:io.knotx.ActionAdapterMock]
-                Deployed a3e1617e-61b0-4862-b49e-3b94063af755 [knotx:io.knotx.HttpRepositoryConnector]
-                Deployed 7b564688-d1eb-48a1-8e14-0d437630e9d7 [knotx:example.io.knotx.HttpServiceAdapter]
-                Deployed 6b460934-3914-4b28-8685-45ee3af11cf6 [knotx:example.io.knotx.HttpActionAdapter]
-                Deployed 2a6d2769-2dad-4dc2-a5d4-ac23dbdeb781 [knotx:io.knotx.ServiceMock]
-                Deployed e7c0d7f3-9f67-49bb-8eac-a381550050b0 [knotx:example.io.knotx.KnotxServer]
-                Deployed 94c4ddac-656b-487e-b471-a0c7844593f7 [knotx:io.knotx.RemoteRepositoryMock]
+		Deployed 29bc9059-fe90-4f19-8603-e2934654d085 [knotx:io.knotx.FilesystemRepositoryConnector]
+		Deployed 4280a140-d6bf-466f-901a-a5cac6a86edc [knotx:io.knotx.FragmentSplitter]
+		Deployed 40ad493e-5513-462a-98a7-454632eafa34 [knotx:io.knotx.FragmentAssembler]
+		Deployed 0ed83b89-e9e3-4169-b0d9-e1b13bdee736 [knotx:io.knotx.ServiceKnot]
+		Deployed 3459dbcd-65a1-4cda-b3fd-47c2167e29fe [knotx:io.knotx.ServiceAdapterMock]
+		Deployed 0b1b7481-6a49-4262-a6b2-2798597f513e [knotx:example.io.knotx.ActionKnot]
+		Deployed 69fcc095-6ebd-4288-9687-1c2d4fe03b88 [knotx:io.knotx.HandlebarsKnot]
+		Deployed 5fb839e3-e55b-42fa-bac7-2b10e0d4383a [knotx:io.knotx.ActionAdapterMock]
+		Deployed 412e41ce-5e6d-412f-9f88-4defe8807a1d [knotx:io.knotx.HttpRepositoryConnector]
+		Deployed 8a2739da-0966-4fef-ba8e-def0dd5c18f0 [knotx:io.knotx.HttpActionAdapter]
+		Deployed 748503e5-d8ff-435c-8ae0-99c61578da8b [knotx:io.knotx.HttpServiceAdapter]
+		Deployed b58661c8-46ca-4d26-9dde-dfe086cc0b09 [knotx:io.knotx.ServiceMock]
+		Deployed ab73a6ac-9fc5-4549-91b2-d9c2b8d4ba76 [knotx:io.knotx.RemoteRepositoryMock]
+		Deployed 9347c15a-dbd5-4f95-8eb0-68dc1ad2c457 [knotx:example.io.knotx.KnotxServer]
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:
@@ -70,6 +72,7 @@ This example app simulates Vert.x based application running Knot.x core verticle
  - [[Action Knot|ActionKnot]],
  - [[Service Knot|ServiceKnot]],
  - [[Handlebars Knot|HandlebarsKnot]],
+ - [[Assembler|Assembler]],
  - [[Http Service Adapter|HttpServiceAdapter]], 
  - example Action Adapter,
  
