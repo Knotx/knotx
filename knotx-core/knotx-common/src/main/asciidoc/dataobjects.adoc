@@ -66,9 +66,6 @@ Set the client request
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[content]]`content`|`String`|-
-|[[context]]`context`|`Json object`|-
-|[[id]]`id`|`String`|-
 |[[raw]]`raw`|`Boolean`|-
 |===
 

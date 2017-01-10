@@ -19,12 +19,13 @@ package com.cognifide.knotx.fragments;
 
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.JsonArray;
-import java.util.NoSuchElementException;
-import org.apache.commons.lang3.StringUtils;
+import io.vertx.core.json.JsonObject;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 @DataObject(inheritConverter = true)
 public class Fragment {

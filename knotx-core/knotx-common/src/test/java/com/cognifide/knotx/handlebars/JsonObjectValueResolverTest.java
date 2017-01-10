@@ -17,23 +17,19 @@
  */
 package com.cognifide.knotx.handlebars;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.InputStreamReader;
-
+import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import java.io.InputStreamReader;
+import org.junit.Before;
+import org.junit.Test;
 
 public class JsonObjectValueResolverTest {
 

@@ -24,9 +24,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import java.util.NoSuchElementException;
 
 public class FragmentSplitterServiceImpl implements FragmentSplitterService {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterServiceImpl.class);
 
   private final FragmentSplitter splitter = new HtmlFragmentSplitter();
 
@@ -38,6 +42,7 @@ public class FragmentSplitterServiceImpl implements FragmentSplitterService {
 
       result.handle(Future.succeededFuture(knotContext));
     } catch (Exception ex) {
+      LOGGER.error("Exception happened during HTML splitting.", ex);
       result.handle(Future.succeededFuture(processError(knotContext, ex)));
     }
   }

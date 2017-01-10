@@ -20,7 +20,6 @@ package com.cognifide.knotx.dataobjects;
 import com.cognifide.knotx.util.DataObjectsUtil;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;

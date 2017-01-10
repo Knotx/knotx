@@ -25,11 +25,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
-
-import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,7 +56,7 @@ public class KnotContextFactory {
         .setClientRequest(new ClientRequest())
         .setClientResponse(
             new ClientResponse()
-                .setHeaders(MultiMap.caseInsensitiveMultiMap()));
+                .setHeaders(new JsonObject()));
   }
 
 }
