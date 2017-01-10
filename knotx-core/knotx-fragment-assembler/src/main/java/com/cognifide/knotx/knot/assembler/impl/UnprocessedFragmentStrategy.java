@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.assembler;
+package com.cognifide.knotx.knot.assembler.impl;
 
 import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.fragments.FragmentConstants;

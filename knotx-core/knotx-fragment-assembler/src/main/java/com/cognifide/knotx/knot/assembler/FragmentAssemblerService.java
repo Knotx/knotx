@@ -17,27 +17,26 @@
  */
 package com.cognifide.knotx.knot.assembler;
 
-import com.cognifide.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
+import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.knot.assembler.impl.FragmentAssemblerServiceImpl;
+import io.vertx.codegen.annotations.ProxyGen;
+import io.vertx.codegen.annotations.VertxGen;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
-public class FragmentAssemblerConfiguration {
+@ProxyGen
+@VertxGen
+public interface FragmentAssemblerService {
 
-  private final String address;
-
-  private final UnprocessedFragmentStrategy assemblyStrategy;
-
-  public FragmentAssemblerConfiguration(JsonObject config) {
-    address = config.getString("address");
-    assemblyStrategy = UnprocessedFragmentStrategy
-        .valueOf(config.getString("unprocessedStrategy", UnprocessedFragmentStrategy.UNWRAP.name())
-            .toUpperCase());
+  static FragmentAssemblerService create(JsonObject configuration) {
+    return new FragmentAssemblerServiceImpl(configuration);
   }
 
-  public String address() {
-    return address;
+  static FragmentAssemblerService createProxy(Vertx vertx, String address) {
+    return new FragmentAssemblerServiceVertxEBProxy(vertx, address);
   }
 
-  public UnprocessedFragmentStrategy unprocessedFragmentStrategy() {
-    return assemblyStrategy;
-  }
+  void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);
 }

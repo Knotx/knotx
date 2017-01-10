@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Fragment Assembler
+ * Knot.x - Reactive microservice assembler - HTML Fragment Splitter
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,29 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.assembler;
+package com.cognifide.knotx.splitter;
 
-import com.cognifide.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
 import io.vertx.core.json.JsonObject;
 
-public class FragmentAssemblerConfiguration {
+public class FragmentSplitterConfiguration {
 
   private final String address;
 
-  private final UnprocessedFragmentStrategy assemblyStrategy;
-
-  public FragmentAssemblerConfiguration(JsonObject config) {
+  public FragmentSplitterConfiguration(JsonObject config) {
     address = config.getString("address");
-    assemblyStrategy = UnprocessedFragmentStrategy
-        .valueOf(config.getString("unprocessedStrategy", UnprocessedFragmentStrategy.UNWRAP.name())
-            .toUpperCase());
   }
 
-  public String address() {
+  public String getAddress() {
     return address;
-  }
-
-  public UnprocessedFragmentStrategy unprocessedFragmentStrategy() {
-    return assemblyStrategy;
   }
 }

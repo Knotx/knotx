@@ -23,6 +23,7 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.rxjava.knot.assembler.FragmentAssemblerService;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -36,7 +37,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.Observable;
 import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
@@ -59,8 +59,8 @@ public class FragmentAssemblerTest {
   public void callAssemblerWithNoSnippets_expectInternalServerError(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, null,
-        knotContext -> context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR,
-            knotContext.clientResponse().statusCode()
+        knotContext -> context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(),
+            knotContext.getClientResponse().getStatusCode()
         ));
   }
 
@@ -69,8 +69,8 @@ public class FragmentAssemblerTest {
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, Collections.singletonList(" "),
-        knotContext -> context.assertEquals(HttpResponseStatus.NO_CONTENT,
-            knotContext.clientResponse().statusCode()));
+        knotContext -> context.assertEquals(HttpResponseStatus.NO_CONTENT.code(),
+            knotContext.getClientResponse().getStatusCode()));
   }
 
   @Test
@@ -83,8 +83,8 @@ public class FragmentAssemblerTest {
     String expectedResult = FileReader.readText("expectedAsIsResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
-          context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
-          context.assertEquals(expectedResult, knotContext.clientResponse().body().toString());
+          context.assertEquals(HttpResponseStatus.OK.code(), knotContext.getClientResponse().getStatusCode());
+          context.assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
         });
   }
 
@@ -98,8 +98,8 @@ public class FragmentAssemblerTest {
     String expectedResult = FileReader.readText("expectedUnwrapResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
-          context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
-          context.assertEquals(expectedResult, knotContext.clientResponse().body().toString());
+          context.assertEquals(HttpResponseStatus.OK.code(), knotContext.getClientResponse().getStatusCode());
+          context.assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
         });
   }
 
@@ -113,28 +113,24 @@ public class FragmentAssemblerTest {
     String expectedResult = FileReader.readText("expectedIgnoreResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
-          context.assertEquals(HttpResponseStatus.OK, knotContext.clientResponse().statusCode());
-          context.assertEquals(expectedResult, knotContext.clientResponse().body().toString());
+          context.assertEquals(HttpResponseStatus.OK.code(), knotContext.getClientResponse().getStatusCode());
+          context.assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
         });
   }
 
-  private void callAssemblerWithAssertions(TestContext context, List<String> fragments,
-      Action1<KnotContext> testFunction) {
+  private void callAssemblerWithAssertions(TestContext context, List<String> fragments, Action1<KnotContext> testFunction) {
     Async async = context.async();
+    io.vertx.rxjava.core.Vertx vertx = new io.vertx.rxjava.core.Vertx(this.vertx.vertx());
 
-    vertx.vertx().eventBus().<KnotContext>send(ADDRESS, KnotContextFactory.create(fragments),
-        ar -> {
-          if (ar.succeeded()) {
-            Observable
-                .just(ar.result().body())
-                .map(knot -> Pair.of(async, knot))
-                .subscribe(pair -> testFunction.call(pair.getRight()),
-                    error -> context.fail(error.getMessage()),
-                    async::complete);
-          } else {
-            context.fail(ar.cause());
-          }
-        });
+    FragmentAssemblerService service = FragmentAssemblerService.createProxy(vertx, ADDRESS);
+
+    service.processObservable(KnotContextFactory.create(fragments))
+        .map(ctx -> Pair.of(async, ctx))
+        .subscribe(
+            next -> testFunction.call(next.getRight()),
+            error -> context.fail(error),
+            () -> async.complete()
+        );
   }
 
 }
