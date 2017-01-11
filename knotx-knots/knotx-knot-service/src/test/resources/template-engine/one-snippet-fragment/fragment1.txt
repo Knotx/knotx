@@ -1,3 +1,3 @@
-<script data-knot-types="services,handlebars" data-service="first-service" type="text/x-handlebars-template">
+<script data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
   <h2>{{_result.message}}</h2>
 </script>

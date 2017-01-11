@@ -15,7 +15,7 @@ Particular Knot is applied to Fragments if two conditions are met:
 ### Knot Election Rule
 Knot Election Rule allows to define if Knot should be applied for particular Fragment. Every time 
 Knot reads Knot Context it checks if there is any Fragment which requires it. Knot Election Rule is 
-simple String value coming from `data-knot-types` attribute (the attribute contains list of Knot
+simple String value coming from `data-knotx-knots` attribute (the attribute contains list of Knot
 Election Rules separated with comma). Knots can simply filter Fragments which does not contain 
 certain Knot Election Rule (for example `services` or `handlebars`).
 
