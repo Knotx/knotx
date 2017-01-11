@@ -45,12 +45,27 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-fragment-assembler</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-fragment-splitter</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-repository-connector-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-repository-connector-filesystem</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-repository-connector-http</artifactId>
       <version>${project.version}</version>
     </dependency>
 

@@ -18,26 +18,23 @@
 package com.cognifide.knotx.http;
 
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.MultiMap;
+import java.util.List;
+import java.util.Map;
 
 public class UriHelper {
 
-  public static JsonObject getParams(String uri) {
-    JsonObject json = new JsonObject();
+  public static MultiMap getParams(String uri) {
     QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
-    queryStringDecoder.parameters().entrySet().forEach(
-        entry -> {
-          JsonArray values;
-          if (json.containsKey(entry.getKey())) {
-            values = json.getJsonArray(entry.getKey());
-          } else {
-            values = new JsonArray();
-            json.put(entry.getKey(), values);
-          }
-          values.add(entry.getValue());
-        }
-    );
-    return json;
+    Map<String, List<String>> queryParams = queryStringDecoder.parameters();
+
+    io.vertx.core.MultiMap params = io.vertx.core.MultiMap.caseInsensitiveMultiMap();
+    if (!queryParams.isEmpty()) {
+      for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+        params.add(entry.getKey(), entry.getValue());
+      }
+
+    }
+    return MultiMap.newInstance(params);
   }
 }

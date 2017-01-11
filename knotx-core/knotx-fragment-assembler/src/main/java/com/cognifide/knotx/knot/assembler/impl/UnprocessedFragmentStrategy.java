@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.knot.assembler.impl;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.fragments.FragmentConstants;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

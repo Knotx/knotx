@@ -23,12 +23,13 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
-import com.cognifide.knotx.rxjava.knot.assembler.FragmentAssemblerService;
+import com.cognifide.knotx.rxjava.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.Vertx;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -120,9 +121,7 @@ public class FragmentAssemblerTest {
 
   private void callAssemblerWithAssertions(TestContext context, List<String> fragments, Action1<KnotContext> testFunction) {
     Async async = context.async();
-    io.vertx.rxjava.core.Vertx vertx = new io.vertx.rxjava.core.Vertx(this.vertx.vertx());
-
-    FragmentAssemblerService service = FragmentAssemblerService.createProxy(vertx, ADDRESS);
+    KnotApi service = KnotApi.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     service.processObservable(KnotContextFactory.create(fragments))
         .map(ctx -> Pair.of(async, ctx))

@@ -35,6 +35,7 @@
 
   <modules>
     <module>knotx-common</module>
+    <module>knotx-eb-api</module>
     <module>knotx-launcher</module>
     <module>knotx-repository</module>
     <module>knotx-fragment-splitter</module>

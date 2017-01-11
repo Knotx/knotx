@@ -23,11 +23,13 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.rxjava.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.Vertx;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,9 +76,7 @@ public class HtmlFragmentSplitterVerticleTest {
 
   private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
     Async async = context.async();
-    io.vertx.rxjava.core.Vertx vertx = new io.vertx.rxjava.core.Vertx(this.vertx.vertx());
-
-    FragmentSplitterService service = FragmentSplitterService.createProxy(vertx, ADDRESS);
+    KnotApi service = KnotApi.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     service.processObservable(KnotContextFactory.empty(template))
         .map(ctx -> Pair.of(async, ctx))

@@ -18,47 +18,44 @@
 package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-
+import com.cognifide.knotx.rxjava.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
 public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxSplitterHandler.class);
 
-  private EventBus eventBus;
+  private KnotApi splitter;
 
   private KnotxServerConfiguration configuration;
 
-  private KnotxSplitterHandler(EventBus eventBus, KnotxServerConfiguration configuration) {
-    this.eventBus = eventBus;
+  private KnotxSplitterHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+    this.splitter = KnotApi.createProxy(vertx, configuration.splitterAddress());
     this.configuration = configuration;
   }
 
-  public static KnotxSplitterHandler create(EventBus eventBus, KnotxServerConfiguration configuration) {
-    return new KnotxSplitterHandler(eventBus, configuration);
+  public static KnotxSplitterHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+    return new KnotxSplitterHandler(vertx, configuration);
   }
 
   @Override
   public void handle(RoutingContext context) {
     KnotContext knotContext = context.get("knotContext");
 
-    eventBus.<KnotContext>sendObservable(configuration.splitterAddress(), knotContext)
-        .map(Message::body)
+    splitter.processObservable(knotContext)
         .doOnNext(this::traceMessage)
         .subscribe(
             ctx -> {
-              if (ctx.clientResponse().statusCode() == HttpResponseStatus.OK) {
+              if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
                 context.put("knotContext", ctx);
                 context.next();
               } else {
-                context.fail(ctx.clientResponse().statusCode().code());
+                context.fail(ctx.getClientResponse().getStatusCode());
               }
             },
             error -> {

@@ -19,7 +19,7 @@ package com.cognifide.knotx.repository.impl;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
-import com.cognifide.knotx.repository.FilesystemRepositoryConnectorService;
+import com.cognifide.knotx.modules.RepositoryConnectorApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -35,12 +35,13 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rx.java.ObservableFuture;
 import io.vertx.rx.java.RxHelper;
+import io.vertx.rxjava.core.MultiMap;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
-public class FilesystemRepositoryConnectorServiceImpl implements FilesystemRepositoryConnectorService {
+public class FilesystemRepositoryConnectorServiceImpl implements RepositoryConnectorApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorServiceImpl.class);
 
@@ -78,10 +79,10 @@ public class FilesystemRepositoryConnectorServiceImpl implements FilesystemRepos
     fileSystem.open(localFilePath, OPEN_OPTIONS, fileObservable.toHandler());
   }
 
-  private JsonObject headers(Optional<String> contentType) {
-    JsonObject headers = new JsonObject();
+  private MultiMap headers(Optional<String> contentType) {
+    MultiMap headers = MultiMap.caseInsensitiveMultiMap();
     if (contentType.isPresent()) {
-      headers.put("content-type", contentType.get());
+      headers.add("Content-Type", contentType.get());
     }
     return headers;
   }

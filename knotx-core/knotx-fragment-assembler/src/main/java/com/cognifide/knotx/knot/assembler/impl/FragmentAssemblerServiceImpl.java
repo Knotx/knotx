@@ -20,7 +20,7 @@ package com.cognifide.knotx.knot.assembler.impl;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.assembler.FragmentAssemblerConfiguration;
-import com.cognifide.knotx.knot.assembler.FragmentAssemblerService;
+import com.cognifide.knotx.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -30,10 +30,11 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.MultiMap;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentAssemblerServiceImpl implements FragmentAssemblerService {
+public class FragmentAssemblerServiceImpl implements KnotApi {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerServiceImpl.class);
 
@@ -67,8 +68,8 @@ public class FragmentAssemblerServiceImpl implements FragmentAssemblerService {
     if (StringUtils.isBlank(renderedContent)) {
       clientResponse.setStatusCode(HttpResponseStatus.NO_CONTENT.code());
     } else {
-      JsonObject headers = clientResponse.getHeaders();
-      headers.put(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(), Integer.toString(renderedContent.length()));
+      MultiMap headers = clientResponse.getHeaders();
+      headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(), Integer.toString(renderedContent.length()));
 
       clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
       clientResponse.setStatusCode(HttpResponseStatus.OK.code());

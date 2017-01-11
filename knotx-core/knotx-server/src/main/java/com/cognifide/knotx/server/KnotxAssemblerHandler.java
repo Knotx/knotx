@@ -19,13 +19,14 @@ package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.rxjava.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
@@ -33,33 +34,31 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxAssemblerHandler.class);
 
-  private EventBus eventBus;
+  private KnotApi assembler;
 
   private KnotxServerConfiguration configuration;
 
-  private KnotxAssemblerHandler(EventBus eventBus, KnotxServerConfiguration configuration) {
-    this.eventBus = eventBus;
+  private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
+    this.assembler = KnotApi.createProxy(vertx, configuration.assemblerAddress());
   }
 
-  static KnotxAssemblerHandler create(EventBus eventBus, KnotxServerConfiguration configuration) {
-    return new KnotxAssemblerHandler(eventBus, configuration);
+  static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+    return new KnotxAssemblerHandler(vertx, configuration);
   }
-
 
   @Override
   public void handle(RoutingContext context) {
     KnotContext knotContext = context.get("knotContext");
 
-    eventBus.<KnotContext>sendObservable(configuration.assemblerAddress(), knotContext)
-        .map(Message::body)
+    assembler.processObservable(knotContext)
         .doOnNext(this::traceMessage)
         .subscribe(
             ctx -> {
-              if (ctx.clientResponse().statusCode() == HttpResponseStatus.OK) {
+              if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
                 sendResponse(context, ctx);
               } else {
-                context.fail(ctx.clientResponse().statusCode().code());
+                context.fail(ctx.getClientResponse().getStatusCode());
               }
             },
             error -> {
@@ -71,24 +70,28 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
   }
 
   private void sendResponse(final RoutingContext context, final KnotContext knotContext) {
-    ClientResponse clientResponse = knotContext.clientResponse();
+    ClientResponse clientResponse = knotContext.getClientResponse();
     writeContentLength(context.response(), clientResponse);
     writeHeaders(context.response(), clientResponse);
-    context.response().setStatusCode(clientResponse.statusCode().code())
-        .end(clientResponse.body());
+    context.response().setStatusCode(clientResponse.getStatusCode())
+        .end(Buffer.newInstance(clientResponse.getBody()));
   }
 
-  private void writeHeaders(final HttpServerResponse response,
-      final ClientResponse clientResponse) {
-    clientResponse.headers().names().stream()
+  private void writeHeaders(final HttpServerResponse response, final ClientResponse clientResponse) {
+    clientResponse.getHeaders().names().stream()
         .filter(this::headerFilter)
-        .forEach(name -> response.putHeader(name, clientResponse.headers().get(name)));
+        .forEach(
+            name ->
+                clientResponse.getHeaders()
+                    .getAll(name)
+                    .forEach(value -> response.putHeader(name, value))
+        );
   }
 
   private void writeContentLength(final HttpServerResponse response,
       final ClientResponse clientResponse) {
     response.putHeader(HttpHeaders.CONTENT_LENGTH.toString(),
-        Integer.toString(clientResponse.body().length()));
+        Integer.toString(clientResponse.getBody().length()));
   }
 
   private Boolean headerFilter(String name) {

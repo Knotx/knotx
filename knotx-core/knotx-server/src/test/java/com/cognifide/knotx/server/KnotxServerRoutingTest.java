@@ -20,26 +20,28 @@ package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.junit.Logback;
-
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-
+import com.cognifide.knotx.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.serviceproxy.ProxyHelper;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.RunWith;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -56,7 +58,8 @@ public class KnotxServerRoutingTest {
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri, Action1<HttpClientRequest> requestBuilder) {
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri,
+      Action1<HttpClientRequest> requestBuilder) {
     return Observable.create(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();
@@ -69,8 +72,8 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
-    createDummySplitter();
-    createDummyAssembler();
+    createDummyKnot("test-splitter");
+    createDummyKnot("test-assembler");
     createKnotConsumer("A-engine", "+A", "go-c");
     createKnotConsumer("C-engine", "+C", null);
     testGetRequest(context, "/content/local/simple.html", "local+A+C");
@@ -79,8 +82,8 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
-    createDummySplitter();
-    createDummyAssembler();
+    createDummyKnot("test-splitter");
+    createDummyKnot("test-assembler");
     createKnotConsumer("C-engine", "+C", null);
     testGetRequest(context, "/content/simple.html", "global+C");
   }
@@ -88,8 +91,8 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(TestContext context) {
-    createDummySplitter();
-    createDummyAssembler();
+    createDummyKnot("test-splitter");
+    createDummyKnot("test-assembler");
     createKnotConsumer("A-post-engine", "+Apost", "go-b");
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
@@ -99,8 +102,8 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
-    createDummySplitter();
-    createDummyAssembler();
+    createDummyKnot("test-splitter");
+    createDummyKnot("test-assembler");
     createKnotConsumer("A-post-engine", "+Apost", "go-c");
     createKnotConsumer("C-engine", "+C", null);
     testPostRequest(context, "/content/local/simple.html", "local+Apost+C");
@@ -109,8 +112,8 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
-    createDummySplitter();
-    createDummyAssembler();
+    createDummyKnot("test-splitter");
+    createDummyKnot("test-assembler");
     createKnotConsumer("B-engine", "+B", "go-c");
     createKnotConsumer("C-engine", "+C", null);
     testPostRequest(context, "/content/simple.html", "global+B+C");
@@ -155,24 +158,41 @@ public class KnotxServerRoutingTest {
         }));
   }
 
-  private void createDummySplitter() {
-    EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<KnotContext>consumer("test-splitter", msg -> msg.reply(msg.body()));
-  }
-
-  private void createDummyAssembler() {
-    EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<KnotContext>consumer("test-assembler", msg -> msg.reply(msg.body()));
+  private void createDummyKnot(String address) {
+    ProxyHelper
+        .registerService(KnotApi.class, vertx.vertx(), new DummyKnotImpl(), address);
   }
 
   private void createKnotConsumer(String adddress, String addToBody, String transition) {
-    EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<KnotContext>consumer(adddress, msg -> {
-      KnotContext knotContext = msg.body();
-      Buffer inBody = knotContext.clientResponse().body();
-      knotContext.clientResponse().setBody(inBody.appendString(addToBody));
+    ProxyHelper
+        .registerService(KnotApi.class, vertx.vertx(), new SimpleTransitionKnotImpl(addToBody, transition),
+            adddress);
+  }
+
+  private class DummyKnotImpl implements KnotApi {
+
+    @Override
+    public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
+      result.handle(Future.succeededFuture(knotContext));
+    }
+  }
+
+  private class SimpleTransitionKnotImpl implements KnotApi {
+
+    private final String addToBody;
+    private final String transition;
+
+    public SimpleTransitionKnotImpl(String addToBody, String transition) {
+      this.addToBody = addToBody;
+      this.transition = transition;
+    }
+
+    @Override
+    public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
+      Buffer inBody = knotContext.getClientResponse().getBody();
+      knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
       knotContext.setTransition(transition);
-      msg.reply(knotContext);
-    });
+      result.handle(Future.succeededFuture(knotContext));
+    }
   }
 }

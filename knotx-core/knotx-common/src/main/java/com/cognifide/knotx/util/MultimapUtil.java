@@ -23,23 +23,39 @@ import io.vertx.rxjava.core.MultiMap;
 
 public class MultimapUtil {
 
-  public static JsonObject toJsonObject(MultiMap multiMap, boolean caseSensitive) {
+  public static JsonObject toJsonObject(MultiMap multiMap) {
     JsonObject json = new JsonObject();
 
     ((io.vertx.core.MultiMap) multiMap.getDelegate()).forEach(
         entry -> {
-          String key = caseSensitive ? entry.getKey() : entry.getKey().toLowerCase();
           JsonArray values;
-          if (json.containsKey(key)) {
-            values = json.getJsonArray(key);
+          if (json.containsKey(entry.getKey())) {
+            values = json.getJsonArray(entry.getKey());
           } else {
             values = new JsonArray();
-            json.put(key, values);
+            json.put(entry.getKey(), values);
           }
           values.add(entry.getValue());
         }
     );
 
     return json;
+  }
+
+  public static MultiMap fromJsonObject(JsonObject json) {
+    MultiMap map = MultiMap.caseInsensitiveMultiMap();
+
+    json.stream()
+        .forEach(
+            entry ->
+                ((JsonArray) entry.getValue())
+                    .stream()
+                    .forEach(
+                        value ->
+                            map.add(entry.getKey(), (String) value)
+                    )
+        );
+
+    return map;
   }
 }

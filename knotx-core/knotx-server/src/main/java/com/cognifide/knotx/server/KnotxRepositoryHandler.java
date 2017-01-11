@@ -20,35 +20,33 @@ package com.cognifide.knotx.server;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-
-import java.util.Optional;
-
+import com.cognifide.knotx.rxjava.modules.RepositoryConnectorApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
+import java.util.Optional;
 
 public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxRepositoryHandler.class);
 
-  private EventBus eventBus;
+  private Vertx vertx;
 
   private KnotxServerConfiguration configuration;
 
-  private KnotxRepositoryHandler(EventBus eventBus, KnotxServerConfiguration configuration) {
-    this.eventBus = eventBus;
+  private KnotxRepositoryHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+    this.vertx = vertx;
     this.configuration = configuration;
   }
 
-  public static KnotxRepositoryHandler create(EventBus eventBus, KnotxServerConfiguration configuration) {
-    return new KnotxRepositoryHandler(eventBus, configuration);
+  public static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+    return new KnotxRepositoryHandler(vertx, configuration);
   }
 
   @Override
@@ -57,9 +55,9 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryEntry.isPresent()) {
-      eventBus.<ClientResponse>sendObservable(repositoryEntry.get().address(), knotContext.clientRequest())
+      RepositoryConnectorApi.createProxy(vertx, repositoryEntry.get().address())
+          .processObservable(knotContext.getClientRequest())
           .doOnNext(this::traceMessage)
-          .map(Message::body)
           .subscribe(
               repoResponse -> {
                 if (isSuccessResponse(repoResponse)) {
@@ -68,14 +66,14 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                     context.put("knotContext", knotContext);
                     context.next();
                   } else {
-                    writeHeaders(context.response(), repoResponse.headers());
-                    context.response().setStatusCode(repoResponse.statusCode().code()).end(repoResponse.body());
+                    writeHeaders(context.response(), repoResponse.getHeaders());
+                    context.response().setStatusCode(repoResponse.getStatusCode()).end(Buffer.newInstance(repoResponse.getBody()));
                   }
                 } else if (isErrorResponse(repoResponse)) {
-                  context.fail(repoResponse.statusCode().code());
+                  context.fail(repoResponse.getStatusCode());
                 } else {
-                  writeHeaders(context.response(), repoResponse.headers().add("Content-Length", "0"));
-                  context.response().setStatusCode(repoResponse.statusCode().code()).end();
+                  writeHeaders(context.response(), repoResponse.getHeaders().add("Content-Length", "0"));
+                  context.response().setStatusCode(repoResponse.getStatusCode()).end();
                 }
               },
               error -> context.fail(error)
@@ -87,27 +85,33 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   }
 
   private boolean isSuccessResponse(ClientResponse repoResponse) {
-    return HttpResponseStatus.OK.equals(repoResponse.statusCode());
+    return HttpResponseStatus.OK.code() == repoResponse.getStatusCode();
   }
 
   private boolean isErrorResponse(ClientResponse repoResponse) {
-    return HttpResponseStatus.INTERNAL_SERVER_ERROR.equals(repoResponse.statusCode()) || HttpResponseStatus.NOT_FOUND.equals(repoResponse.statusCode());
+    return HttpResponseStatus.INTERNAL_SERVER_ERROR.code() == repoResponse.getStatusCode() ||
+        HttpResponseStatus.NOT_FOUND.code() == repoResponse.getStatusCode();
   }
 
   private KnotContext toKnotContext(RoutingContext context) {
     return new KnotContext().setClientRequest(new ClientRequest(context.request()));
   }
 
-  private void traceMessage(Message<ClientResponse> message) {
+  private void traceMessage(ClientResponse message) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <template-repository> with value <{}>", message.body());
+      LOGGER.trace("Got message from <template-repository> with value <{}>", message.getBody());
     }
   }
 
   private void writeHeaders(HttpServerResponse response, MultiMap headers) {
     headers.names().stream()
         .filter(this::headerFilter)
-        .forEach(name -> response.putHeader(name, headers.get(name)));
+        .forEach(
+            name ->
+                headers
+                    .getAll(name)
+                    .forEach(value -> response.putHeader(name, value))
+        );
   }
 
   private Boolean headerFilter(String name) {

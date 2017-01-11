@@ -21,7 +21,7 @@ package com.cognifide.knotx.splitter.impl;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import java.util.List;
 import java.util.stream.IntStream;
