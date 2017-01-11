@@ -5,7 +5,7 @@
   },
   {
     "_ID": "newsletter",
-    "_CONTENT": "<script type=\"text/x-handlebars-template\" data-knotx-type=\"form\" data-service-userinfo=\"userinfo\" data-knotx_id=\"newsletter\"> <h1>{{userinfo._result.welcomeMessage}}</h1> {{#if sign._result}} <p>{{sign._result.responseMessage}}</p> <p>Submitted: {{sign._result.email}}</p> {{else}} <p>Please subscribe to the newsletter:</p> <form method=\"post\" data-knotx-action=\"sign\" data-knotx-view=\"thankyou.html\"> <input type=\"email\" name=\"email\"/> <input type=\"submit\" value=\"Submit\"/> </form> {{/if}} </script>",
+    "_CONTENT": "<script data-knotx-knots=\"form\" data-knotx-service-userinfo=\"userinfo\" type=\"text/x-handlebars-template\"> <h1>{{userinfo._result.welcomeMessage}}</h1> {{#if sign._result}} <p>{{sign._result.responseMessage}}</p> <p>Submitted: {{sign._result.email}}</p> {{else}} <p>Please subscribe to the newsletter:</p> <form method=\"post\" data-knotx-action=\"sign\" data-knotx-view=\"thankyou.html\"> <input type=\"email\" name=\"email\"/> <input type=\"submit\" value=\"Submit\"/> </form> {{/if}} </script>",
     "_CONTEXT": {
       "sign": {
         "email": "john.doe@knotx.com",

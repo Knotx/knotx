@@ -10,18 +10,18 @@ how Adapters are invoked with following example.
 
 Adapters calls are defined both on template and Knot configuration layers:
 
-First Service Knot collects `data-service-{NAMESPACE}={ADAPTERNAME}` attributes which define accordingly:
+First Service Knot collects `data-knotx-service-{NAMESPACE}={ADAPTERNAME}` attributes which define accordingly:
  - namespace under which Adapter response will be available,
  - name of the Adapter tha will be called during snippet processing. 
 
-Additionally with every Adapter `data-params-{NAMESPACE}={JSON DATA}` attribute can be defined 
+Additionally with every Adapter `data-knotx-params-{NAMESPACE}={JSON DATA}` attribute can be defined 
 which specifies parameters for Adapter call. An example `script` definition can look like:
 
 ```html
-<script data-knot-types="services,handlebars"
-  data-service="first-service"
-  data-service-second="second-service"
-  data-params-second='{"path":"/overridden/path"}'
+<script data-knotx-knots="services,handlebars"
+  data-knotx-service="first-service"
+  data-knotx-service-second="second-service"
+  data-knotx-params-second='{"path":"/overridden/path"}'
   type="text/x-handlebars-template">
 ```
 Service Knot will call two Adapters with names: `first-service` and `second-service`.
@@ -107,7 +107,7 @@ ServiceMetadata options available.
 
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
-| `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-service-{NAMESPACE}={ADAPTERNAME}`. |
+| `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-knotx-service-{NAMESPACE}={ADAPTERNAME}`. |
 | `address`                   | `String`                            | &#10004;       | Event bus address of the **Adapter** verticle. |
 | `params`                    | `JSON object`                       | &#10004;       | Json Object with default params which are sent to Adapter. |
 | `cacheKey`                  | `String`                            |                | Cache key which is used for Adapters calls caching. **No** means that cache key has value `{NAME}|{PARAMS}` |

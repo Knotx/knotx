@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public interface FragmentConstants {
 
-  String SNIPPET_IDENTIFIER_NAME = "data-knot-types";
+  String SNIPPET_IDENTIFIER_NAME = "data-knotx-knots";
 
   String ANY_SNIPPET_PATTERN =
       "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";

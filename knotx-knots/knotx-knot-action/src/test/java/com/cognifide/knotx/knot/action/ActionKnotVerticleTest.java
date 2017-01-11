@@ -64,7 +64,7 @@ public class ActionKnotVerticleTest {
   public static final String EXPECTED_KNOT_TRANSITION = "next";
   private final static String ADDRESS = "knotx.knot.action";
   private final static String HIDDEN_INPUT_TAG_NAME = "snippet-identifier";
-  private static final String FRAGMENT_KNOT = "data-knot-types";
+  private static final String FRAGMENT_KNOT = "data-knotx-knots";
   private final static String FRAGMENT_REDIRECT_IDENTIFIER = "someId123";
   private final static String FRAGMENT_SELF_IDENTIFIER = "someId456";
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");

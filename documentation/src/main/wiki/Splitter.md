@@ -3,13 +3,13 @@ Fragment Splitter reads [[Knot Context|Knot]] having a HTML Template from Reposi
 static and dynamic Fragments, updates Knot Context and returns back to the caller.
 
 ##How does it work?
-It splits HTML Template using regexp `<script\s+data-knot-types\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>`.
+It splits HTML Template using regexp `<script\s+data-knotx-knots\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>`.
 All matched `script` tags are converted into Fragments containing list of supported [[Knots|Knot]] 
-declared in `data-knot-types` attribute. HTML parts below, above and between matched scripts are 
+declared in `data-knotx-knots` attribute. HTML parts below, above and between matched scripts are 
 converted into Fragments without Knot support. It means that they are not supposed to be processed
 by Knots. See example for more details.
 
-**Splitter requires `data-knot-types` attribute to be the first attribute in the `script` tag.**
+**Splitter requires `data-knotx-knots` attribute to be the first attribute in the `script` tag.**
 
 ###Example
 Fragment Splitter reads Knot Context with HTML Template:
@@ -22,8 +22,8 @@ Fragment Splitter reads Knot Context with HTML Template:
 </head>
 <body>
   <div class="row">
-    <script data-knot-types="services,handlebars"
-            data-service="first-service"
+    <script data-knotx-knots="services,handlebars"
+            data-knotx-service="first-service"
             type="text/x-handlebars-template">
       <div class="col-md-4">
         <h2>Snippet - {{_result.message}}</h2>
@@ -48,8 +48,8 @@ and splits Template into three following Fragments:
 ```
 **Fragment 2** (knots = "services,handlebars")
 ```
-    <script data-knot-types="services,handlebars"
-            data-service="first-service"
+    <script data-knotx-knots="services,handlebars"
+            data-knotx-service="first-service"
             type="text/x-handlebars-template">
       <div class="col-md-4">
         <h2>Snippet - {{_result.message}}</h2>
@@ -73,7 +73,7 @@ Fragment contains:
 
 Fragments matching `script` tag declare Knots used while further processing (see [[Knots routing|KnotRouting]]). 
 They can communicate with external services via [[Adapters|Adapter]], evaluate templates using 
-Handlebars and so on. Every Knot defines value ([[Knot Election Rule|Knot]]) for `data-knot-types` 
+Handlebars and so on. Every Knot defines value ([[Knot Election Rule|Knot]]) for `data-knotx-knots` 
 attribute which determines if it will process particular Fragment or not.
 
 Fragments not matching `script` tag are not supposed to be processed while Knots routing. They are 

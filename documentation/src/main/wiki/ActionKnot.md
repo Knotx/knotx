@@ -12,7 +12,7 @@ successful / error / next step page.
 Let's describe Action Knot behaviour with following example.
 
 ### Example
-ActionKnot processes Fragments having `form-{NAME}` in `data-knot-types` attribute,
+ActionKnot processes Fragments having `form-{NAME}` in `data-knotx-knots` attribute,
 where `{NAME}` is a unique name of a form (assuming there may be more than one form on a single page
 it is used to distinguish a requested snippet). {NAME} can contain only small and capital letters. So
 [[Knot Election Rule|Knot]] for Action Knot is pattern `form-[a-zA-Z]`.
@@ -38,7 +38,7 @@ There are no Knot.x specific attributes in a final markup besides one **hidden i
 This is how form looks in the repository:
 
 ```html
-<script data-knot-types="form-1" type="text/x-handlebars-template">
+<script data-knotx-knots="form-1" type="text/x-handlebars-template">
   {{#if action._result.validationErrors}}
   <p class="bg-danger">Email address does not exists</p>
   {{/if}}
@@ -55,12 +55,12 @@ This is how form looks in the repository:
 
 Now we can explain how and why this additional hidden input `_frmId` with a value `1` appears . It
 is automatically added by Action Knot and is used to distinguish a requested form during submission process
-(there could be more than one form at the same template). Its value comes from a script's `data-knot-types`
-attribute - it retrieve a `{NAME}` value from `data-knot-types="form-{NAME}"`.
+(there could be more than one form at the same template). Its value comes from a script's `data-knotx-knots`
+attribute - it retrieve a `{NAME}` value from `data-knotx-knots="form-{NAME}"`.
 
 Following data attributes are available in the `<form>` tag with described purpose:
 - `data-knotx-action` - this is a name of an [[Action Adapter|ActionAdapter]] that will be used to handle submitted data.
-It is similar concept as `data-service-{NAME}` in [[Service Knot|ServiceKnot]]. In the example,
+It is similar concept as `data-knotx-service-{NAME}` in [[Service Knot|ServiceKnot]]. In the example,
 Action Handler registered under name `step1` will handle this form data submission.
 - `data-knotx-on-{SIGNAL}` - name of a [Signal](#Signal) that should be applied. In the example
 there is one signal success with the value `'/content/local/login/step2.html'` and one signal error

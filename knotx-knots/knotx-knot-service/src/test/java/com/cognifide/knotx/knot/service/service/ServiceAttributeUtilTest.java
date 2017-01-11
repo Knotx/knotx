@@ -27,29 +27,29 @@ public class ServiceAttributeUtilTest {
 
   @Test
   public void testAttributeWithoutNamespace() throws Exception {
-    String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-service");
-    String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-params");
+    String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-service");
+    String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-params");
     Assert.assertThat(serviceNamespace, is(StringUtils.EMPTY));
     Assert.assertThat(paramsNamespace, is(StringUtils.EMPTY));
   }
 
   @Test
   public void testAttributeWithNamespace() throws Exception {
-    String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-service-label");
-    String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-params-label");
+    String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-service-label");
+    String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-params-label");
     Assert.assertThat(serviceNamespace, is("label"));
     Assert.assertThat(paramsNamespace, is("label"));
   }
 
   @Test(expected = RuntimeException.class)
   public void testAttributeWithTwoNamespaces() throws Exception {
-    String attributeInput = "data-service-message-label";
+    String attributeInput = "data-knotx-service-message-label";
     ServiceAttributeUtil.extractNamespace(attributeInput);
   }
 
   @Test(expected = RuntimeException.class)
   public void testAttributeWithBrokenNamespace() throws Exception {
-    String attributeInput = "data-service--label";
+    String attributeInput = "data-knotx-service--label";
     ServiceAttributeUtil.extractNamespace(attributeInput);
   }
 
