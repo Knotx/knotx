@@ -24,7 +24,7 @@ Fragment Splitter reads Knot Context with HTML Template:
   <div class="row">
     <script data-knotx-knots="services,handlebars"
             data-knotx-service="first-service"
-            type="text/x-handlebars-template">
+            type="text/knotx-snippet">
       <div class="col-md-4">
         <h2>Snippet - {{_result.message}}</h2>
       </div>
@@ -50,7 +50,7 @@ and splits Template into three following Fragments:
 ```
     <script data-knotx-knots="services,handlebars"
             data-knotx-service="first-service"
-            type="text/x-handlebars-template">
+            type="text/knotx-snippet">
       <div class="col-md-4">
         <h2>Snippet - {{_result.message}}</h2>
       </div>

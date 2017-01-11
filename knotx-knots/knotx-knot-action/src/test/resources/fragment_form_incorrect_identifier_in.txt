@@ -1,4 +1,4 @@
-<script data-knotx-knots="form-678,services,handlebars" data-knotx-service="some-service" type="text/x-handlebars-template">
+<script data-knotx-knots="form-678,services,handlebars" data-knotx-service="some-service" type="text/knotx-snippet">
     <form data-knotx-action="action-redirect" data-knotx-on-step2="/content/form/step2.html">
         {{someValue}}
         <div class="form-group">

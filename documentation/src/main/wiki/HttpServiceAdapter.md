@@ -120,7 +120,7 @@ Example configuration of a [[Service Knot|ServiceKnot]]:
 Example html snippet in template:
 
 ```html
-<script data-knotx-knots="services,handlebars" type="text/x-handlebars-template"
+<script data-knotx-knots="services,handlebars" type="text/knotx-snippet"
     data-knotx-service-search="search"
     data-knotx-service-twitter="twitter">
         <h1>Welcome</h1>

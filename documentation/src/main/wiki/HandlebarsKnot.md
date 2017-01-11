@@ -14,7 +14,7 @@ with data from Fragment Context (for example data from external services or form
 Example Knot Context contains:
 *Fragment Content*
 ```html
-<script data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/x-handlebars-template">
+<script data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
 <div class="col-md-4">
   <h2>Snippet1 - {{_result.message}}</h2>
   <div>Snippet1 - {{_result.body.a}}</div>

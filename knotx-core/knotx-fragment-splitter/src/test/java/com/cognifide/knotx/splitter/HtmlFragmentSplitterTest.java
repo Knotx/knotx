@@ -44,7 +44,7 @@ public class HtmlFragmentSplitterTest {
 
   private String TEST_MANY_SNIPPETS_HTML = "test-many-fragments.html";
 
-  private String EXPECTED_ONE_FRAGMENT = "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/x-handlebars-template\"><h2>{{message}}</h2></script>";
+  private String EXPECTED_ONE_FRAGMENT = "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></script>";
 
   private List<Fragment> testNoSnippets;
   private List<Fragment> testOneSnippetBegin;

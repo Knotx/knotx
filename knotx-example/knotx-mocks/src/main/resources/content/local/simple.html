@@ -50,7 +50,7 @@
             data-knotx-service="first-service"
             data-knotx-service-second="second-service"
             data-knotx-service-third="third-service"
-            type="text/x-handlebars-template">
+            type="text/knotx-snippet">
 
       <div class="col-md-4">
         <h2>Snippet1 - {{_result.message}}</h2>
@@ -73,7 +73,7 @@
   <div class="row">
     <div class="col-md-4">
       <script data-knotx-knots="services,handlebars" data-knotx-service="second-service"
-              type="text/x-handlebars-template">
+              type="text/knotx-snippet">
         <h2>Snippet2 - {{_result.message}}</h2>
         <p>Snippet2 - {{_result.body.a}}</p>
         {{#string_equals _result.status "success"}}<p>Success!</p>{{/string_equals}}
@@ -81,14 +81,14 @@
     </div>
     <div class="col-md-4">
       <script data-knotx-knots="services,handlebars" data-knotx-service="third-service"
-              type="text/x-handlebars-template">
+              type="text/knotx-snippet">
         <h2>Snippet3 - {{_result.message}}</h2>
         <p>Snippet3 - {{_result.body.a}}</p>
       </script>
     </div>
     <div class="col-md-4">
       <script data-knotx-knots="services,handlebars" data-knotx-service="third-service"
-              type="text/x-handlebars-template">
+              type="text/knotx-snippet">
         <h2>Snippet4 - {{_result.message}}</h2>
         <p>Snippet4 - {{encode_uri _result.url}}</p>
       </script>

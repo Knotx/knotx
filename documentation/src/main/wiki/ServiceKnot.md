@@ -22,7 +22,7 @@ which specifies parameters for Adapter call. An example `script` definition can 
   data-knotx-service="first-service"
   data-knotx-service-second="second-service"
   data-knotx-params-second='{"path":"/overridden/path"}'
-  type="text/x-handlebars-template">
+  type="text/knotx-snippet">
 ```
 Service Knot will call two Adapters with names: `first-service` and `second-service`.
 

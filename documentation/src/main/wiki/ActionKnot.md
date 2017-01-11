@@ -38,7 +38,7 @@ There are no Knot.x specific attributes in a final markup besides one **hidden i
 This is how form looks in the repository:
 
 ```html
-<script data-knotx-knots="form-1" type="text/x-handlebars-template">
+<script data-knotx-knots="form-1" type="text/knotx-snippet">
   {{#if action._result.validationErrors}}
   <p class="bg-danger">Email address does not exists</p>
   {{/if}}
