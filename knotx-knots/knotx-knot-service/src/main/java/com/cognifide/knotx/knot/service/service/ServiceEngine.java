@@ -49,7 +49,7 @@ public class ServiceEngine {
 
   public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
     AdapterRequest adapterRequest = new AdapterRequest()
-        .setRequest(knotContext.clientRequest())
+        .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
     return eventBus.<AdapterResponse>sendObservable(serviceEntry.getAddress(), adapterRequest)
@@ -78,7 +78,7 @@ public class ServiceEngine {
   private JsonObject buildResultObject(AdapterResponse adapterResponse) {
     JsonObject object = new JsonObject();
 
-    String rawData = adapterResponse.response().body().toString().trim();
+    String rawData = adapterResponse.getResponse().getBody().toString().trim();
 
     if (rawData.charAt(0) == '[') {
       object.put(RESULT_NAMESPACE_KEY, new JsonArray(rawData));
@@ -87,7 +87,7 @@ public class ServiceEngine {
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", adapterResponse.response().statusCode().codeAsText()));
+    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", Integer.toString(adapterResponse.getResponse().getStatusCode())));
     return object;
   }
 }

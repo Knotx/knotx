@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.knot.api;
 
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.fragments.Fragment;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -29,6 +29,7 @@ import io.vertx.rxjava.core.eventbus.Message;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import rx.Observable;
@@ -83,7 +84,7 @@ public abstract class AbstractKnot<C extends KnotConfiguration> extends Abstract
   protected abstract C initConfiguration(JsonObject config);
 
   protected boolean shouldProcess(Message<KnotContext> msg) {
-    Set<String> knots = msg.body().fragments()
+    Set<String> knots = Optional.ofNullable(msg.body().getFragments())
         .map(this::getKnotSet)
         .orElse(Collections.emptySet());
     return shouldProcess(knots);

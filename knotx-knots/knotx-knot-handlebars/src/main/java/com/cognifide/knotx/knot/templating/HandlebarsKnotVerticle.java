@@ -29,6 +29,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +60,7 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
     return Observable.create(observer -> {
       try {
         msg.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
-        msg.fragments().ifPresent(fragments ->
+        Optional.ofNullable(msg.getFragments()).ifPresent(fragments ->
             fragments.stream()
                 .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_KNOT))
                 .forEach(fragment -> fragment.content(startComment() +
@@ -83,10 +84,10 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
   protected KnotContext processError(KnotContext knotContext, Throwable error) {
     LOGGER.error("Error happened during Template processing", error);
     ClientResponse errorResponse = new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
     return new KnotContext()
-        .setClientRequest(knotContext.clientRequest())
+        .setClientRequest(knotContext.getClientRequest())
         .setClientResponse(errorResponse);
   }
 

@@ -17,20 +17,17 @@
  */
 package com.cognifide.knotx.knot.service;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.knot.service.service.ServiceAttributeUtil;
 import com.cognifide.knotx.knot.service.service.ServiceEntry;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import rx.Observable;
 
 class FragmentContext {

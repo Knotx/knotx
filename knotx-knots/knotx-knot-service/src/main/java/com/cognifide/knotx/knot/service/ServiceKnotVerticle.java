@@ -18,19 +18,18 @@
 package com.cognifide.knotx.knot.service;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.fragments.Fragment;
 import com.cognifide.knotx.knot.api.AbstractKnot;
-
-import java.util.Collections;
-import java.util.Set;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 import rx.Observable;
 
 public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> {
@@ -56,7 +55,7 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
 
   @Override
   protected Observable<KnotContext> process(KnotContext message) {
-    return message.fragments()
+    return Optional.ofNullable(message.getFragments())
         .map(fragments -> Observable.from(fragments)
             .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
@@ -76,18 +75,18 @@ public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> 
   @Override
   protected KnotContext processError(KnotContext knotContext, Throwable error) {
     LOGGER.error("Error happened during Template processing", error);
-    ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+    ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
     return new KnotContext()
-        .setClientRequest(knotContext.clientRequest())
+        .setClientRequest(knotContext.getClientRequest())
         .setClientResponse(errorResponse);
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext) {
     return new KnotContext()
-        .setClientRequest(inputContext.clientRequest())
-        .setClientResponse(inputContext.clientResponse())
-        .setFragments(inputContext.fragments().orElse(Collections.emptyList()))
+        .setClientRequest(inputContext.getClientRequest())
+        .setClientResponse(inputContext.getClientResponse())
+        .setFragments(Optional.ofNullable(inputContext.getFragments()).orElse(Collections.emptyList()))
         .setTransition(DEFAULT_TEMPLATING_KNOT);
   }
 

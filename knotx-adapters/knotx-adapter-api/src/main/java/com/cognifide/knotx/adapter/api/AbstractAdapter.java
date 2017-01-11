@@ -32,7 +32,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.buffer.Buffer;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.rxjava.core.eventbus.Message;
 import rx.Observable;
 
@@ -74,7 +74,7 @@ public abstract class AbstractAdapter<C extends AdapterConfiguration> extends Ab
 
   private AdapterResponse getErrorResponse(String message) {
     return new AdapterResponse().setResponse(new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR)
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
         .setBody(Buffer.buffer(message)));
   }
 

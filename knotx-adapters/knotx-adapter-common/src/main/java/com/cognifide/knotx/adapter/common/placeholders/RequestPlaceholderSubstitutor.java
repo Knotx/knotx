@@ -37,13 +37,13 @@ public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
     HEADER("header.") {
       @Override
       String getValue(ClientRequest request, String placeholder) {
-        return request.headers().get(getName(placeholder));
+        return request.getHeaders().get(getName(placeholder));
       }
     },
     PARAM("param.") {
       @Override
       String getValue(ClientRequest request, String placeholder) {
-        return request.params().get(getName(placeholder));
+        return request.getParams().get(getName(placeholder));
       }
     };
 

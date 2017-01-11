@@ -17,7 +17,8 @@
  */
 package com.cognifide.knotx.knot.action;
 
-import com.cognifide.knotx.fragments.Fragment;
+
+import com.cognifide.knotx.dataobjects.Fragment;
 
 public class FormConfigurationException extends RuntimeException {
 

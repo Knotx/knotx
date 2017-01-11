@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.knot.templating;
 
-import com.cognifide.knotx.fragments.Fragment;
+import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.handlebars.JsonObjectValueResolver;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;

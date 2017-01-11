@@ -26,13 +26,6 @@ import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -43,13 +36,18 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.tuple.Pair;
 import rx.Observable;
 
 public class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
   private static final String PATH_PROPERTY_KEY = "path";
-  private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+  private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse()
+      .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
   private final List<ServiceMetadata> services;
 
@@ -77,7 +75,7 @@ public class HttpClientFacade {
    * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params' objects.
    */
   protected void validateContract(AdapterRequest message) {
-    if (message.params() == null || !message.params().containsKey(PATH_PROPERTY_KEY)) {
+    if (message.getParams() == null || !message.getParams().containsKey(PATH_PROPERTY_KEY)) {
       throw new AdapterServiceContractException("Parameter `path` was not defined in `params`!");
     }
   }
@@ -94,7 +92,7 @@ public class HttpClientFacade {
    * </br>
    *
    * @param originalRequest - ClientRequest representing original request comming to the Knot.x
-   * @param params          - JsonObject of the params to be used to build request.
+   * @param params - JsonObject of the params to be used to build request.
    * @return ClientRequest representing Http request to the target service
    */
   protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
@@ -105,13 +103,13 @@ public class HttpClientFacade {
   private Pair<ClientRequest, ServiceMetadata> prepareRequestData(AdapterRequest adapterRequest) {
     final Pair<ClientRequest, ServiceMetadata> serviceData;
 
-    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.request(), adapterRequest.params());
-    final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.path());
+    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.getRequest(), adapterRequest.getParams());
+    final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.getPath());
 
     if (serviceMetadata.isPresent()) {
       serviceData = Pair.of(serviceRequest, serviceMetadata.get());
     } else {
-      final String error = String.format("No matching service definition for the requested path '%s'", serviceRequest.path());
+      final String error = String.format("No matching service definition for the requested path '%s'", serviceRequest.getPath());
       throw new UnsupportedServiceException(error);
     }
     return serviceData;
@@ -126,14 +124,14 @@ public class HttpClientFacade {
     final ServiceMetadata serviceMetadata = serviceData.getRight();
 
     return Observable.create(subscriber -> {
-      HttpClientRequest httpRequest = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), serviceRequest.path());
+      HttpClientRequest httpRequest = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), serviceRequest.getPath());
       Observable<HttpClientResponse> resp = httpRequest.toObservable();
       resp.subscribe(subscriber);
 
-      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.headers(), serviceMetadata.getAllowedRequestHeaderPatterns());
+      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(), serviceMetadata.getAllowedRequestHeaderPatterns());
       filteredHeaders.names().forEach(headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
-      if (!serviceRequest.formAttributes().isEmpty()) {
-        httpRequest.end(FormBodyBuilder.createBody(serviceRequest.formAttributes()));
+      if (!serviceRequest.getFormAttributes().isEmpty()) {
+        httpRequest.end(FormBodyBuilder.createBody(serviceRequest.getFormAttributes()));
       } else {
         httpRequest.end();
       }
@@ -152,9 +150,9 @@ public class HttpClientFacade {
         .reduce(Buffer::appendBuffer)
         .doOnNext(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
-            .setBody(buffer)
+            .setBody((io.vertx.core.buffer.Buffer) buffer.getDelegate())
             .setHeaders(response.headers())
-            .setStatusCode(HttpResponseStatus.valueOf(response.statusCode()))
+            .setStatusCode(response.statusCode())
         );
   }
 

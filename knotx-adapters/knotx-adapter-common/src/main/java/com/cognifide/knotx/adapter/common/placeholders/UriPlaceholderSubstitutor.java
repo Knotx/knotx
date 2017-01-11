@@ -36,7 +36,7 @@ public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
     return Arrays.stream(Strategy.values())
         .filter(strategy -> StringUtils.startsWith(placeholder, strategy.prefix))
         .findFirst()
-        .map(strategy -> strategy.getValue(request.path(), placeholder))
+        .map(strategy -> strategy.getValue(request.getPath(), placeholder))
         .orElse(null);
   }
 

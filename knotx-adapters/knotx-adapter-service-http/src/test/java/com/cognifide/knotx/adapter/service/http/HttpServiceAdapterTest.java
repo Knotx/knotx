@@ -56,7 +56,7 @@ public class HttpServiceAdapterTest {
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void callNonExistingService_expectBadRequestResponse(TestContext context) {
     callAdapterServiceWithAssertions(context, "not/existing/service/address",
-        adapterResponse -> context.assertTrue(adapterResponse.response().statusCode().equals(HttpResponseStatus.INTERNAL_SERVER_ERROR)),
+        adapterResponse -> context.assertTrue(adapterResponse.getResponse().getStatusCode() == HttpResponseStatus.INTERNAL_SERVER_ERROR.code()),
         error -> context.fail(error.getMessage()));
   }
 
@@ -68,9 +68,9 @@ public class HttpServiceAdapterTest {
 
     callAdapterServiceWithAssertions(context, "/service/mock/first.json",
         adapterResponse -> {
-          context.assertTrue(adapterResponse.response().statusCode().equals(HttpResponseStatus.OK));
+          context.assertTrue(adapterResponse.getResponse().getStatusCode() == HttpResponseStatus.OK.code());
 
-          JsonObject serviceResponse = new JsonObject(adapterResponse.response().body().toString());
+          JsonObject serviceResponse = new JsonObject(adapterResponse.getResponse().getBody().toString());
           JsonObject expectedResponse = new JsonObject(expected);
           context.assertEquals(serviceResponse, expectedResponse);
         },
