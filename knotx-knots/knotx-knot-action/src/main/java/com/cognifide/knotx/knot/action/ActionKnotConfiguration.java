@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-class ActionKnotConfiguration extends KnotConfiguration {
+public class ActionKnotConfiguration extends KnotConfiguration {
 
   private final List<AdapterMetadata> adapterMetadataList;
 
@@ -69,7 +69,7 @@ class ActionKnotConfiguration extends KnotConfiguration {
     return formIdentifierName;
   }
 
-  static class AdapterMetadata {
+  public static class AdapterMetadata {
 
     private String name;
 

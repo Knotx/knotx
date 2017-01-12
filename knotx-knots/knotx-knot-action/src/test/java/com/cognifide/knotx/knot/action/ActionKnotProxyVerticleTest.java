@@ -28,16 +28,22 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.proxy.AdapterProxy;
+import com.cognifide.knotx.rxjava.proxy.KnotProxy;
 import com.google.common.collect.Lists;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.MultiMap;
+import io.vertx.rxjava.core.Vertx;
+import io.vertx.serviceproxy.ProxyHelper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +57,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 @RunWith(VertxUnitRunner.class)
 public class ActionKnotProxyVerticleTest {
@@ -62,7 +68,6 @@ public class ActionKnotProxyVerticleTest {
   private final static String HIDDEN_INPUT_TAG_NAME = "snippet-identifier";
   private static final String FRAGMENT_KNOT = "data-knot-types";
   private final static String FRAGMENT_REDIRECT_IDENTIFIER = "someId123";
-  private final static String FRAGMENT_SELF_IDENTIFIER = "someId456";
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
   private final static Fragment LAST_FRAGMENT = Fragment.raw("</body></html>");
   private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings()
@@ -164,7 +169,7 @@ public class ActionKnotProxyVerticleTest {
   @Test
   @KnotxConfiguration("knotx-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(TestContext context) throws Exception {
-    createKnotConsumer("address-redirect", "", "step2");
+    createMockAdapter("address-redirect", "", "step2");
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
     knotContext.getClientRequest()
         .setMethod(HttpMethod.POST)
@@ -215,19 +220,14 @@ public class ActionKnotProxyVerticleTest {
       Action1<Throwable> onError) {
     Async async = context.async();
 
-    vertx.vertx().eventBus().<KnotContext>send(ADDRESS, knotContext, ar -> {
-      if (ar.succeeded()) {
-        Observable
-            .just(ar.result().body())
-            .subscribe(
-                onSuccess,
-                onError,
-                async::complete
-            );
-      } else {
-        context.fail(ar.cause());
-      }
-    });
+    KnotProxy actionKnot = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
+
+    actionKnot.processObservable(knotContext)
+        .subscribe(
+            onSuccess,
+            onError,
+            async::complete
+        );
   }
 
   private KnotContext createKnotContext(String... snippetFilenames) throws Exception {
@@ -256,19 +256,37 @@ public class ActionKnotProxyVerticleTest {
         .trim();
   }
 
-  private void createKnotConsumer(String adddress, String addToBody, String signal) {
-    createKnotConsumer(adddress, addToBody, signal, Collections.emptyMap());
+  private void createMockAdapter(String adddress, String addToBody, String signal) {
+    createMockAdapter(adddress, addToBody, signal, Collections.emptyMap());
   }
 
-  private void createKnotConsumer(String adddress, String addToBody, String signal, Map<String, List<String>> headers) {
-    EventBus eventBus = vertx.vertx().eventBus();
-    eventBus.<AdapterRequest>consumer(adddress, msg -> {
+  private void createMockAdapter(String adddress, String addToBody, String signal, Map<String, List<String>> headers) {
+    Func1<AdapterRequest, AdapterResponse> adapter = adapterRequest -> {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(HttpResponseStatus.OK.code());
       response.setBody(Buffer.buffer().appendString(addToBody));
       response.setHeaders(headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
-      msg.reply(new AdapterResponse().setResponse(response).setSignal(signal));
-    });
+      return new AdapterResponse().setResponse(response).setSignal(signal);
+    };
+
+    ProxyHelper
+        .registerService(
+            com.cognifide.knotx.proxy.AdapterProxy.class, vertx.vertx(), new MockAdapterImpl(adapter),
+            adddress);
+  }
+
+  private class MockAdapterImpl implements AdapterProxy {
+
+    private final Func1<AdapterRequest, AdapterResponse> adapter;
+
+    private MockAdapterImpl(Func1<AdapterRequest, AdapterResponse> adapter) {
+      this.adapter = adapter;
+    }
+
+    @Override
+    public void process(AdapterRequest request, Handler<AsyncResult<AdapterResponse>> result) {
+      result.handle(Future.succeededFuture(adapter.call(request)));
+    }
   }
 
 }
