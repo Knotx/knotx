@@ -28,7 +28,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-fragment-splitter</artifactId>
+  <artifactId>knotx-knot-fragment-splitter</artifactId>
 
   <name>Knot.x - Reactive microservice assembler - Knot - HTML Fragment Splitter</name>
 

@@ -40,12 +40,12 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-fragment-assembler</artifactId>
+      <artifactId>knotx-knot-fragment-assembler</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-fragment-splitter</artifactId>
+      <artifactId>knotx-knot-fragment-splitter</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

@@ -28,7 +28,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-fragment-assembler</artifactId>
+  <artifactId>knotx-knot-fragment-assembler</artifactId>
 
   <name>Knot.x - Reactive microservice assembler - Knot - Fragment Assembler</name>
 
