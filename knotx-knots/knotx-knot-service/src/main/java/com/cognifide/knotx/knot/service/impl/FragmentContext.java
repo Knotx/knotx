@@ -32,8 +32,8 @@ import rx.Observable;
 
 class FragmentContext {
 
-  private static final String DATA_SERVICE = "data-service.*";
-  private static final String DATA_PARAMS = "data-params.*";
+  private static final String DATA_SERVICE = "data-knotx-service.*";
+  private static final String DATA_PARAMS = "data-knotx-params.*";
 
   private Fragment fragment;
   private List<ServiceEntry> services;

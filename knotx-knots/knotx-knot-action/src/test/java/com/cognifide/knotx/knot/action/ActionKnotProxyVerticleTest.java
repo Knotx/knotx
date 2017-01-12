@@ -66,7 +66,7 @@ public class ActionKnotProxyVerticleTest {
   public static final String EXPECTED_KNOT_TRANSITION = "next";
   private final static String ADDRESS = "knotx.knot.action";
   private final static String HIDDEN_INPUT_TAG_NAME = "snippet-identifier";
-  private static final String FRAGMENT_KNOT = "data-knot-types";
+  private static final String FRAGMENT_KNOTS = "data-knotx-knots";
   private final static String FRAGMENT_REDIRECT_IDENTIFIER = "someId123";
   private final static Fragment FIRST_FRAGMENT = Fragment.raw("<html><head></head><body>");
   private final static Fragment LAST_FRAGMENT = Fragment.raw("</body></html>");
@@ -239,8 +239,8 @@ public class ActionKnotProxyVerticleTest {
     Optional.ofNullable(firstFragment).ifPresent(fragments::add);
     for (String file : snippetFilenames) {
       String fileContent = FileReader.readText(file);
-      String fragmentIdentifiers = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_KNOT).attr(
-          FRAGMENT_KNOT);
+      String fragmentIdentifiers = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_KNOTS).attr(
+          FRAGMENT_KNOTS);
       fragments.add(Fragment.snippet(Arrays.asList(fragmentIdentifiers.split(",")), fileContent));
     }
     Optional.ofNullable(lastFragment).ifPresent(fragments::add);
