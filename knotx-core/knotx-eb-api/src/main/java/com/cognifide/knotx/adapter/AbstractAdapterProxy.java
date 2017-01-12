@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.api;
+package com.cognifide.knotx.adapter;
 
 
 import com.cognifide.knotx.dataobjects.AdapterRequest;
@@ -31,15 +31,9 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import rx.Observable;
 
-public abstract class AbstractAdapterProxy<C extends AdapterConfiguration> implements AdapterProxy {
+public abstract class AbstractAdapterProxy implements AdapterProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAdapterProxy.class);
-
-  protected C configuration;
-
-  public AbstractAdapterProxy(C config) {
-    this.configuration = config;
-  }
 
   protected abstract Observable<AdapterResponse> processRequest(AdapterRequest message);
 

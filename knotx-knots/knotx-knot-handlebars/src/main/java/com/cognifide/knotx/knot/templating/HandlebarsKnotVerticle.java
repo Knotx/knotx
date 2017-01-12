@@ -48,7 +48,7 @@ public class HandlebarsKnotVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(KnotProxy.class, vertx, new HandlebarsKnotProxyImpl(configuration), configuration.getAddress());
+        .registerService(KnotProxy.class, vertx, new HandlebarsKnotProxyImpl(configuration), configuration.address());
   }
 
   @Override

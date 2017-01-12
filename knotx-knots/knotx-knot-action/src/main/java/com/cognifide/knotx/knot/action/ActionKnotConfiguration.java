@@ -17,30 +17,27 @@
  */
 package com.cognifide.knotx.knot.action;
 
-import com.google.common.base.MoreObjects;
-
 import com.cognifide.knotx.http.StringToPatternFunction;
-import com.cognifide.knotx.knot.api.KnotConfiguration;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
+import com.google.common.base.MoreObjects;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
+public class ActionKnotConfiguration{
 
-public class ActionKnotConfiguration extends KnotConfiguration {
+  private final String address;
 
   private final List<AdapterMetadata> adapterMetadataList;
 
   private final String formIdentifierName;
 
   public ActionKnotConfiguration(JsonObject config) {
-    super(config);
+    this.address = config.getString("address");
     this.formIdentifierName = config.getString("formIdentifierName");
     this.adapterMetadataList = config.getJsonArray("adapters").stream()
         .map(item -> (JsonObject) item)
@@ -67,6 +64,10 @@ public class ActionKnotConfiguration extends KnotConfiguration {
 
   public String formIdentifierName() {
     return formIdentifierName;
+  }
+
+  public String address() {
+    return address;
   }
 
   public static class AdapterMetadata {

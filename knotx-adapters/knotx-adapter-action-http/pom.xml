@@ -49,11 +49,6 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-adapter-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-adapter-common</artifactId>
       <version>${project.version}</version>
     </dependency>

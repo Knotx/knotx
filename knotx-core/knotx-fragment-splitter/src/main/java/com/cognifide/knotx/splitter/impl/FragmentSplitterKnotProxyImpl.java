@@ -18,43 +18,48 @@
 package com.cognifide.knotx.splitter.impl;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.proxy.KnotProxy;
+import com.cognifide.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import rx.Observable;
 
-public class FragmentSplitterKnotProxyImpl implements KnotProxy {
+public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterKnotProxyImpl.class);
 
   private final FragmentSplitter splitter = new HtmlFragmentSplitter();
 
   @Override
-  public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
+  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
     try {
       knotContext.setFragments(splitter.split(knotContext.getClientResponse().getBody().toString()));
       knotContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
 
-      result.handle(Future.succeededFuture(knotContext));
+      return Observable.just(knotContext);
     } catch (Exception ex) {
       LOGGER.error("Exception happened during HTML splitting.", ex);
-      result.handle(Future.succeededFuture(processError(knotContext, ex)));
+      return Observable.just(processError(knotContext, ex));
     }
   }
 
-  private KnotContext processError(KnotContext context, Exception exception) {
+  @Override
+  protected boolean shouldProcess(Set<String> knots) {
+    return true;
+  }
+
+  @Override
+  protected KnotContext processError(KnotContext knotContext, Throwable error) {
     HttpResponseStatus statusCode;
-    if (exception instanceof NoSuchElementException) {
+    if (error instanceof NoSuchElementException) {
       statusCode = HttpResponseStatus.NOT_FOUND;
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
-    context.getClientResponse().setStatusCode(statusCode.code());
-    return context;
+    knotContext.getClientResponse().setStatusCode(statusCode.code());
+    return knotContext;
   }
 
 }

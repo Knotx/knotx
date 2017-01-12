@@ -20,7 +20,7 @@ package com.cognifide.knotx.knot.service.impl;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.knot.api.AbstractKnotProxy;
+import com.cognifide.knotx.knot.AbstractKnotProxy;
 import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 import rx.Observable;
 
-public class ServiceKnotProxyImpl extends AbstractKnotProxy<ServiceKnotConfiguration> {
+public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyImpl.class);
 
@@ -39,13 +39,9 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy<ServiceKnotConfigura
 
   private static final String SUPPORTED_FRAGMENT_ID = "services";
 
-  private final ServiceKnotConfiguration configuration;
-
   private FragmentProcessor snippetProcessor;
 
   public ServiceKnotProxyImpl(Vertx vertx, ServiceKnotConfiguration configuration) {
-    super(configuration);
-    this.configuration = configuration;
     this.snippetProcessor = new FragmentProcessor(vertx, configuration);
   }
 

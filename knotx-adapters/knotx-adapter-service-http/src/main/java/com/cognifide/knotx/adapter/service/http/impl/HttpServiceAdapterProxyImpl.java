@@ -29,7 +29,7 @@ import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import rx.Observable;
 
-public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy<HttpAdapterConfiguration> {
+public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy {
 
   private HttpClientFacade httpClientFacade;
 

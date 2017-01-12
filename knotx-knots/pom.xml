@@ -34,7 +34,6 @@
   <name>Knot.x - Reactive microservice assembler - Knot Root</name>
 
   <modules>
-    <module>knotx-knot-api</module>
     <module>knotx-knot-action</module>
     <module>knotx-knot-service</module>
     <module>knotx-knot-handlebars</module>

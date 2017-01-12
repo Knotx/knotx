@@ -17,20 +17,23 @@
  */
 package com.cognifide.knotx.knot.templating;
 
-import com.cognifide.knotx.knot.api.KnotConfiguration;
 import io.vertx.core.json.JsonObject;
 
-public class HandlebarsKnotConfiguration extends KnotConfiguration {
+public class HandlebarsKnotConfiguration {
 
   private final boolean templateDebug;
+  private final String address;
 
   public HandlebarsKnotConfiguration(JsonObject config) {
-    super(config);
-    templateDebug = config.getBoolean("templateDebug", false);
+    this.address = config.getString("address");
+    this.templateDebug = config.getBoolean("templateDebug", false);
   }
 
   public boolean templateDebug() {
     return templateDebug;
   }
 
+  public String address() {
+    return address;
+  }
 }

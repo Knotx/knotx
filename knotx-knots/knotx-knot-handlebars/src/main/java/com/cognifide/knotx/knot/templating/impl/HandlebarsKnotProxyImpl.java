@@ -20,7 +20,7 @@ package com.cognifide.knotx.knot.templating.impl;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
-import com.cognifide.knotx.knot.api.AbstractKnotProxy;
+import com.cognifide.knotx.knot.AbstractKnotProxy;
 import com.cognifide.knotx.knot.templating.HandlebarsKnotConfiguration;
 import com.cognifide.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
 import com.github.jknack.handlebars.Handlebars;
@@ -33,7 +33,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
-public class HandlebarsKnotProxyImpl extends AbstractKnotProxy<HandlebarsKnotConfiguration> {
+public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotProxyImpl.class);
 
@@ -47,8 +47,10 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy<HandlebarsKnotCon
 
   private Handlebars handlebars;
 
+  private HandlebarsKnotConfiguration configuration;
+
   public HandlebarsKnotProxyImpl(HandlebarsKnotConfiguration configuration) {
-    super(configuration);
+    this.configuration = configuration;
     this.handlebars = createHandlebars();
   }
 

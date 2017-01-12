@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.api;
+package com.cognifide.knotx.knot;
 
 import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.dataobjects.KnotContext;
@@ -36,17 +36,11 @@ import rx.Observable;
 /**
  * Abstract class that should be root for all custom knots
  */
-public abstract class AbstractKnotProxy<C extends KnotConfiguration> implements KnotProxy {
+public abstract class AbstractKnotProxy implements KnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractKnotProxy.class);
 
-  protected C configuration;
-
-  public AbstractKnotProxy(C configuration) {
-    this.configuration = configuration;
-  }
-
-  protected abstract Observable<KnotContext> processRequest(KnotContext message);
+  protected abstract Observable<KnotContext> processRequest(KnotContext knotContext);
 
   @Override
   public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {

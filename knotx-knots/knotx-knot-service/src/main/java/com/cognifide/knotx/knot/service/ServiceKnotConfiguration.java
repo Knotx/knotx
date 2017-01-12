@@ -17,22 +17,19 @@
  */
 package com.cognifide.knotx.knot.service;
 
-import com.cognifide.knotx.knot.api.KnotConfiguration;
-
+import io.vertx.core.json.JsonObject;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.List;
-import java.util.stream.Collectors;
+public class ServiceKnotConfiguration {
 
-import io.vertx.core.json.JsonObject;
-
-public class ServiceKnotConfiguration extends KnotConfiguration {
-
+  private final String address;
   private List<ServiceMetadata> services;
 
   public ServiceKnotConfiguration(JsonObject config) {
-    super(config);
+    address = config.getString("address");
     services = config.getJsonArray("services").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
@@ -47,6 +44,10 @@ public class ServiceKnotConfiguration extends KnotConfiguration {
 
   public List<ServiceMetadata> getServices() {
     return services;
+  }
+
+  public String getAddress() {
+    return address;
   }
 
   public static class ServiceMetadata {

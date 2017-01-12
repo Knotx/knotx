@@ -19,22 +19,21 @@ package com.cognifide.knotx.knot.assembler.impl;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.knot.AbstractKnotProxy;
 import com.cognifide.knotx.knot.assembler.FragmentAssemblerConfiguration;
-import com.cognifide.knotx.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import rx.Observable;
 
-public class FragmentAssemblerKnotProxyImpl implements KnotProxy {
+public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerKnotProxyImpl.class);
 
@@ -45,22 +44,37 @@ public class FragmentAssemblerKnotProxyImpl implements KnotProxy {
   }
 
   @Override
-  public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
+  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
     if (knotContext.getFragments() != null && knotContext.getFragments().size() > 0) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
             .map(configuration.unprocessedFragmentStrategy()::get)
             .collect(Collectors.joining());
 
-        result.handle(Future.succeededFuture(createSuccessResponse(knotContext, joinedFragments)));
+        return Observable.just(createSuccessResponse(knotContext, joinedFragments));
       } catch (Exception ex) {
         LOGGER.error("Exception happened during Fragment assembly.", ex);
-        result.handle(Future.succeededFuture(processError(knotContext)));
+        return Observable.just(processError(knotContext, ex));
       }
     } else { //no fragments
       LOGGER.error("Fragments are empty or not exists in KnotContext.");
-      result.handle(Future.succeededFuture(processError(knotContext)));
+      return Observable.just(processError(knotContext, null));
     }
+  }
+
+  @Override
+  protected boolean shouldProcess(Set<String> knots) {
+    return true;
+  }
+
+  @Override
+  protected KnotContext processError(KnotContext knotContext, Throwable error) {
+    ClientResponse errorResponse = new ClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+
+    return new KnotContext()
+        .setClientRequest(knotContext.getClientRequest())
+        .setClientResponse(errorResponse);
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext, String renderedContent) {
@@ -78,18 +92,5 @@ public class FragmentAssemblerKnotProxyImpl implements KnotProxy {
     return new KnotContext()
         .setClientRequest(inputContext.getClientRequest())
         .setClientResponse(clientResponse);
-  }
-
-  private KnotContext processError(KnotContext knotContext) {
-    ClientResponse errorResponse = new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-
-    return new KnotContext()
-        .setClientRequest(knotContext.getClientRequest())
-        .setClientResponse(errorResponse);
-  }
-
-  public String getAddress() {
-    return configuration.address();
   }
 }
