@@ -17,15 +17,13 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.launcher.junit.FileReader;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import com.cognifide.knotx.junit.util.FileReader;
+import io.vertx.core.json.JsonObject;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.vertx.core.json.JsonObject;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class KnotxServerConfigurationRepositoriesTest {
 

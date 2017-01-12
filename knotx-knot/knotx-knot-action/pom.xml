@@ -35,17 +35,7 @@
   <dependencies>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-eb-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
+      <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -132,23 +122,8 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-common</artifactId>
+      <artifactId>knotx-junit</artifactId>
       <version>${project.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-eb-api</artifactId>
-      <version>${project.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
-      <version>${project.version}</version>
-      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -17,19 +17,17 @@
  */
 package com.cognifide.knotx.server;
 
-import com.cognifide.knotx.launcher.junit.FileReader;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.EnumMap;
-import java.util.List;
-
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import com.cognifide.knotx.junit.util.FileReader;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
+import java.util.EnumMap;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
 
 public class KnotxServerConfigurationRoutingTest {
 
@@ -91,8 +89,10 @@ public class KnotxServerConfigurationRoutingTest {
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().isEmpty(), equalTo(false));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().keySet().size(), equalTo(1));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().keySet(), hasItem("go-c"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().get("go-c").address(), equalTo("C-engine"));
-    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().get("go-c").onTransition().isEmpty(), equalTo(true));
+    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().get("go-c").address(),
+        equalTo("C-engine"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-b").onTransition().get("go-c").onTransition().isEmpty(),
+        equalTo(true));
 
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-c").address(), equalTo("C-engine"));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).onTransition().get("go-c").onTransition().isEmpty(), equalTo(true));

@@ -19,9 +19,9 @@ package com.cognifide.knotx.server;
 
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
-import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.junit.rule.KnotxConfiguration;
+import com.cognifide.knotx.junit.rule.Logback;
+import com.cognifide.knotx.junit.rule.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;

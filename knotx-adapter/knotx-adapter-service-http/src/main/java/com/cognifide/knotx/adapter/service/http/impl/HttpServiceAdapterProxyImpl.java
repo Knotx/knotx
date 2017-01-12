@@ -17,7 +17,7 @@
  */
 package com.cognifide.knotx.adapter.service.http.impl;
 
-import com.cognifide.knotx.adapter.api.AbstractAdapterProxy;
+import com.cognifide.knotx.adapter.AbstractAdapterProxy;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
 import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
 import com.cognifide.knotx.dataobjects.AdapterRequest;
@@ -34,7 +34,6 @@ public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy {
   private HttpClientFacade httpClientFacade;
 
   public HttpServiceAdapterProxyImpl(Vertx vertx, HttpAdapterConfiguration configuration) {
-    super(configuration);
     this.httpClientFacade = new HttpClientFacade(getHttpClient(vertx, configuration), configuration.getServices());
   }
 

@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.cognifide.knotx.dataobjects.Fragment;
-import com.cognifide.knotx.launcher.junit.FileReader;
+import com.cognifide.knotx.junit.util.FileReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

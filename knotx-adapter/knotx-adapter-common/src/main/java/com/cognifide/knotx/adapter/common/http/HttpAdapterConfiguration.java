@@ -17,23 +17,22 @@
  */
 package com.cognifide.knotx.adapter.common.http;
 
-import com.cognifide.knotx.adapter.api.AdapterConfiguration;
 import com.cognifide.knotx.http.StringToPatternFunction;
-
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
+public class HttpAdapterConfiguration {
 
-public class HttpAdapterConfiguration extends AdapterConfiguration {
+  private String address;
 
   private List<ServiceMetadata> services;
 
   private JsonObject clientOptions;
 
   public HttpAdapterConfiguration(JsonObject config) {
-    super(config);
+    address = config.getString("address");
     services = config.getJsonArray("services").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
@@ -58,4 +57,7 @@ public class HttpAdapterConfiguration extends AdapterConfiguration {
     return services;
   }
 
+  public String getAddress() {
+    return address;
+  }
 }

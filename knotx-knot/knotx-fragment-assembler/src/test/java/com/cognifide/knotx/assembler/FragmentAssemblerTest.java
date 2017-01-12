@@ -18,11 +18,11 @@
 package com.cognifide.knotx.assembler;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.junit.KnotContextFactory;
-import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.launcher.junit.FileReader;
-import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
-import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.junit.rule.KnotxConfiguration;
+import com.cognifide.knotx.junit.rule.Logback;
+import com.cognifide.knotx.junit.rule.TestVertxDeployer;
+import com.cognifide.knotx.junit.util.FileReader;
+import com.cognifide.knotx.junit.util.KnotContextFactory;
 import com.cognifide.knotx.rxjava.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.unit.Async;

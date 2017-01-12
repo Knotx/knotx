@@ -17,10 +17,10 @@
  */
 package com.cognifide.knotx.example.monolith;
 
-import com.cognifide.knotx.junit.Logback;
-import com.cognifide.knotx.launcher.junit.FileReader;
-import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
-import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.junit.rule.KnotxConfiguration;
+import com.cognifide.knotx.junit.rule.Logback;
+import com.cognifide.knotx.junit.rule.TestVertxDeployer;
+import com.cognifide.knotx.junit.util.FileReader;
 import com.google.common.collect.Maps;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;

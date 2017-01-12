@@ -17,18 +17,17 @@
  */
 package com.cognifide.knotx.knot.service;
 
-import com.cognifide.knotx.launcher.junit.FileReader;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+import com.cognifide.knotx.junit.util.FileReader;
+import io.vertx.core.json.JsonObject;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import io.vertx.core.json.JsonObject;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 public class ServiceCorrectConfigurationTest {
 

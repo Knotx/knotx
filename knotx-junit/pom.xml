@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    KnotProxy.x - Reactive microservice assembler - Filesystem Repository Connector Verticle
+    Knot.x - Reactive microservice assembler - Core
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -19,18 +19,18 @@
 
 -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
-    <artifactId>knotx-repository-connector</artifactId>
+    <artifactId>knotx-root</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-repository-connector-filesystem</artifactId>
+  <artifactId>knotx-junit</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Repositories Connector - Filesystem</name>
+  <name>Knot.x - Reactive microservice assembler - JUnit Tests Knot.x helpers</name>
 
   <dependencies>
     <dependency>
@@ -38,7 +38,6 @@
       <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -60,31 +59,37 @@
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-web</artifactId>
+      <artifactId>vertx-service-discovery</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
+      <artifactId>vertx-circuit-breaker</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.reactivex</groupId>
-      <artifactId>rxjava</artifactId>
-    </dependency>
-
-    <!-- COMMON -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
 
     <!-- Tests -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-unit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -92,8 +97,9 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
+        <artifactId>maven-jar-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
+
 </project>

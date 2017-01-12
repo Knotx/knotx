@@ -18,15 +18,13 @@
 package com.cognifide.knotx.knot.service.service;
 
 
+import com.cognifide.knotx.junit.util.FileReader;
 import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
-
-import com.cognifide.knotx.launcher.junit.FileReader;
+import io.vertx.core.json.JsonObject;
 import org.jsoup.nodes.Attribute;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import io.vertx.core.json.JsonObject;
 
 public class ServiceEntryTest {
 
