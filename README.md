@@ -45,6 +45,11 @@ Find out more about this topic reading [Service Knot](https://github.com/Cognifi
 section.
 
 ###Forms
+
+<img align="left" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-forms.png?raw=true"
+  alt="Forms"/>
+
 Every site contains more or less complicated forms. **Knot.x** supports simple and multi-step forms. 
 It handles submission errors, form validations and redirects to success pages. 
 
