@@ -47,7 +47,7 @@ public abstract class AbstractAdapterProxy<C extends AdapterConfiguration> imple
   public void process(AdapterRequest request, Handler<AsyncResult<AdapterResponse>> result) {
     processRequest(request)
         .subscribe(
-            knotContext -> result.handle(Future.succeededFuture(knotContext)),
+            adapterResponse -> result.handle(Future.succeededFuture(adapterResponse)),
             error -> {
               LOGGER.error("Error happened during Adapter Request processing", error);
               result.handle(Future.succeededFuture(getErrorResponse(error.getMessage())));

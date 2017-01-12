@@ -15,18 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.templating;
+package com.cognifide.knotx.knot.templating.impl;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.handlebars.CustomHandlebarsHelper;
-import com.cognifide.knotx.knot.api.AbstractKnot;
+import com.cognifide.knotx.knot.api.AbstractKnotProxy;
+import com.cognifide.knotx.knot.templating.HandlebarsKnotConfiguration;
 import com.cognifide.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
 import com.github.jknack.handlebars.Handlebars;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Context;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.Optional;
@@ -35,9 +33,9 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
-public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfiguration> {
+public class HandlebarsKnotProxyImpl extends AbstractKnotProxy<HandlebarsKnotConfiguration> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotProxyImpl.class);
 
   private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start compiled snippet -->";
 
@@ -49,25 +47,24 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
 
   private Handlebars handlebars;
 
-  @Override
-  public void init(Vertx vertx, Context context) {
-    super.init(vertx, context);
-    initHandlebars();
+  public HandlebarsKnotProxyImpl(HandlebarsKnotConfiguration configuration) {
+    super(configuration);
+    this.handlebars = createHandlebars();
   }
 
   @Override
-  protected Observable<KnotContext> process(KnotContext msg) {
+  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
     return Observable.create(observer -> {
       try {
-        msg.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
-        Optional.ofNullable(msg.getFragments()).ifPresent(fragments ->
+        knotContext.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
+        Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
                 .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_KNOT))
                 .forEach(fragment -> fragment.content(startComment() +
                     new HandlebarsFragment(fragment).compileWith(handlebars)
                     + endComment()))
         );
-        observer.onNext(msg);
+        observer.onNext(knotContext);
         observer.onCompleted();
       } catch (Exception e) {
         observer.onError(e);
@@ -91,11 +88,6 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
         .setClientResponse(errorResponse);
   }
 
-  @Override
-  protected HandlebarsKnotConfiguration initConfiguration(JsonObject config) {
-    return new HandlebarsKnotConfiguration(config);
-  }
-
   private String startComment() {
     return snippetComment(START_WEBSERVICE_CALL_DEBUG_MARKER);
   }
@@ -112,8 +104,8 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
     return debugLine;
   }
 
-  private void initHandlebars() {
-    handlebars = new Handlebars();
+  private Handlebars createHandlebars() {
+    Handlebars handlebars = new Handlebars();
     DefaultHandlebarsHelpers.registerFor(handlebars);
 
     ServiceLoader.load(CustomHandlebarsHelper.class)
@@ -121,6 +113,7 @@ public class HandlebarsKnotVerticle extends AbstractKnot<HandlebarsKnotConfigura
       handlebars.registerHelper(helper.getName(), helper);
       LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
     });
-  }
 
+    return handlebars;
+  }
 }

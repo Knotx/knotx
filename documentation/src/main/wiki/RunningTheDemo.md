@@ -34,13 +34,13 @@ You will see output similar to the following:
 2017-01-09 15:58:19 [vert.x-eventloop-thread-3] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Registered <FilesystemRepositoryConnectorVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-4] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-5] DEBUG c.c.k.k.a.FragmentAssemblerVerticle - Starting <com.cognifide.knotx.knot.assembler.FragmentAssemblerVerticle>
-2017-01-09 15:58:19 [vert.x-eventloop-thread-7] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-7] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-4] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-0] DEBUG c.c.k.knot.action.ActionKnotVerticle - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
-2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
+2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-6] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
 2017-01-09 15:58:19 [vert.x-eventloop-thread-2] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpActionAdapterVerticle>
 2017-01-09 15:58:20 [vert.x-eventloop-thread-1] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>

@@ -70,7 +70,7 @@ Default configuration shipped with the verticle as `io.knotx.ServiceKnot.json` f
 
 ```json
 {
-  "main": "com.cognifide.knotx.knot.service.ServiceKnotVerticle",
+  "main": "com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.service",

@@ -20,7 +20,7 @@ package com.cognifide.knotx.knot.service;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.knot.api.AbstractKnot;
+import com.cognifide.knotx.knot.api.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -32,9 +32,9 @@ import java.util.Optional;
 import java.util.Set;
 import rx.Observable;
 
-public class ServiceKnotVerticle extends AbstractKnot<ServiceKnotConfiguration> {
+public class ServiceKnotProxyVerticle extends AbstractKnotProxy<ServiceKnotConfiguration> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyVerticle.class);
 
   private static final String DEFAULT_TEMPLATING_KNOT = "next";
 

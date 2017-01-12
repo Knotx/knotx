@@ -159,11 +159,11 @@ You will see output similar to the following:
 2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Registered <FilesystemRepositoryConnectorVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-4] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-7] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
-2017-01-03 12:25:31 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-6] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-3] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-4] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
-2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
+2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-0] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
 2017-01-03 12:25:31 [vert.x-eventloop-thread-2] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
@@ -1103,7 +1103,7 @@ Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]
 
 ##How to extend?
 We need to extend abstract 
-[com.cognifide.knotx.knot.api.AbstractKnot](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
+[com.cognifide.knotx.knot.api.AbstractKnotProxy](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
 class from `knotx-knots/knotx-knot-api`. AbstractKnot hides Event Bus communication and JSON configuration initialization parts
 and lets you to focus on Knot logic:
 
@@ -1327,7 +1327,7 @@ Default configuration shipped with the verticle as `io.knotx.ServiceKnot.json` f
 
 ```json
 {
-  "main": "com.cognifide.knotx.knot.service.ServiceKnotVerticle",
+  "main": "com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.service",
@@ -1420,7 +1420,7 @@ Handlebars Knot is deployed using Vert.x service factory as a separate [verticle
 Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle",
+  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.handlebars",

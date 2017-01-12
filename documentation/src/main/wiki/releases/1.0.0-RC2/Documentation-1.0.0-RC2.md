@@ -153,7 +153,7 @@ You will see output similar to the following:
 ```
 ...
 2016-11-20 15:22:18 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryVerticle - Registered <HttpRepositoryVerticle>
-2016-11-20 15:22:18 [vert.x-eventloop-thread-3] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
+2016-11-20 15:22:18 [vert.x-eventloop-thread-3] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle>
 2016-11-20 15:22:18 [vert.x-eventloop-thread-5] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle>
 2016-11-20 15:22:18 [vert.x-eventloop-thread-6] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
 2016-11-20 15:22:18 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
@@ -162,7 +162,7 @@ You will see output similar to the following:
 2016-11-20 15:22:18 [vert.x-eventloop-thread-5] INFO  c.c.k.r.FilesystemRepositoryVerticle - Registered <FilesystemRepositoryVerticle>
 2016-11-20 15:22:18 [vert.x-eventloop-thread-6] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
 2016-11-20 15:22:18 [vert.x-eventloop-thread-4] INFO  c.c.k.k.t.HandlebarsKnotVerticle - Registered custom Handlebars helper: bold
-2016-11-20 15:22:18 [vert.x-eventloop-thread-4] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
+2016-11-20 15:22:18 [vert.x-eventloop-thread-4] DEBUG c.c.knotx.knot.api.AbstractKnot - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle>
 2016-11-20 15:22:18 [vert.x-eventloop-thread-4] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
 2016-11-20 15:22:19 [vert.x-eventloop-thread-0] DEBUG c.c.k.adapter.api.AbstractAdapter - Registered <HttpServiceAdapterVerticle>
 2016-11-20 15:22:19 [vert.x-eventloop-thread-2] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
@@ -172,10 +172,10 @@ You will see output similar to the following:
 
 		Deployed 126460c4-a1ce-4edb-8a27-f7bcc46a8c6d [com.cognifide.knotx.knot.authorization.AuthorizationKnotVerticle]
 		Deployed d15b83dd-963b-40fb-967b-05f999cd5175 [com.cognifide.knotx.splitter.FragmentSplitterVerticle]
-		Deployed 6cff9e78-979b-423d-97d9-bdf9c26209bc [com.cognifide.knotx.knot.service.ServiceKnotVerticle]
+		Deployed 6cff9e78-979b-423d-97d9-bdf9c26209bc [com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle]
 		Deployed 4ec1beb0-e231-4c55-bf3e-dca9a940f1ef [com.cognifide.knotx.knot.action.ActionKnotVerticle]
 		Deployed 3b0e9f44-9e89-48b8-8b8e-ba17a376e987 [com.cognifide.knotx.repository.FilesystemRepositoryConnectorVerticle]
-		Deployed e96f425c-4fdc-4415-be92-c65e759e8476 [com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle]
+		Deployed e96f425c-4fdc-4415-be92-c65e759e8476 [com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle]
 		Deployed 9a3ea907-d513-4d22-b846-8395d6afe5e9 [com.cognifide.knotx.mocks.MockServiceAdapterVerticle]
 		Deployed 828a05f5-3ace-4d54-89bd-f5efcaaceb33 [com.cognifide.knotx.repository.HttpRepositoryConnectorVerticle]
 		Deployed e34358f2-48da-47de-b42c-d91cfc2ef2b7 [com.cognifide.knotx.mocks.MockActionAdapterVerticle]
@@ -875,7 +875,7 @@ Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]
 
 ##How to extend?
 We need to extend abstract 
-[com.cognifide.knotx.knot.api.AbstractKnot](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
+[com.cognifide.knotx.knot.api.AbstractKnotProxy](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
 class from `knotx-knots/knotx-knot-api`. AbstractKnot hides Event Bus communication and JSON configuration initialization parts
 and lets you to focus on Knot logic:
 
@@ -1130,7 +1130,7 @@ be wrapped in the JSON `config` section:
 ```json
 "verticles" : {
   ...,
-  "com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
+  "com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle": {
     "config": {
       "PUT YOUR CONFIG HERE"
     }
@@ -1220,7 +1220,7 @@ be wrapped in the JSON `config` section:
 ```json
 "verticles" : {
   ...,
-  "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle": {
+  "com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle": {
     "config": {
       "PUT YOUR CONFIG HERE"
     }
@@ -1491,7 +1491,7 @@ Assuming, that Http Service Adapter was configured as presented in [Example conf
 #### Service Knot configuration
 Example configuration of a [[Service Knot|ServiceKnot]]:
 ```json
-"com.cognifide.knotx.knot.service.ServiceKnotVerticle": {
+"com.cognifide.knotx.knot.service.ServiceKnotProxyVerticle": {
   "config": {
     "address": "knotx.knot.service",
     "client.options": {
