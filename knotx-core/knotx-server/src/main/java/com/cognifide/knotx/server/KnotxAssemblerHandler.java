@@ -100,7 +100,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private void traceMessage(KnotContext ctx) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <fragment-assembler> with value <{}>", ctx);
+      LOGGER.trace("Got message from <fragment-assembler> with value <{}>", ctx.toJson().encode());
     }
   }
 }
