@@ -198,6 +198,7 @@ public class ActionKnotProxyImpl implements KnotProxy {
               result.handle(Future.succeededFuture(knotContext));
             },
             err -> {
+              LOGGER.error("Error happened during Action processing", err);
               knotContext.getClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
               result.handle(Future.succeededFuture(knotContext));
             }

@@ -58,7 +58,7 @@ public class ClientResponse {
   public JsonObject toMetadataJson() {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode);
-    json.put("headers", headers);
+    json.put("headers", MultimapUtil.toJsonObject(headers));
     return json;
   }
 

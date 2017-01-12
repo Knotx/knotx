@@ -71,8 +71,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private void sendResponse(final RoutingContext context, final KnotContext knotContext) {
     ClientResponse clientResponse = knotContext.getClientResponse();
-    writeContentLength(context.response(), clientResponse);
     writeHeaders(context.response(), clientResponse);
+    writeContentLength(context.response());
     context.response().setStatusCode(clientResponse.getStatusCode())
         .end(Buffer.newInstance(clientResponse.getBody()));
   }
@@ -88,10 +88,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
         );
   }
 
-  private void writeContentLength(final HttpServerResponse response,
-      final ClientResponse clientResponse) {
-    response.putHeader(HttpHeaders.CONTENT_LENGTH.toString(),
-        Integer.toString(clientResponse.getBody().length()));
+  private void writeContentLength(final HttpServerResponse response) {
+    response.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
   }
 
   private Boolean headerFilter(String name) {
