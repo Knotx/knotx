@@ -30,7 +30,7 @@
 
   <artifactId>knotx-common</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Common</name>
+  <name>Knot.x - Reactive microservice assembler - Core - Common</name>
 
   <dependencies>
     <dependency>

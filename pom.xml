@@ -57,10 +57,13 @@
   <modules>
     <module>documentation</module>
     <module>knotx-core</module>
-    <module>knotx-adapters</module>
-    <module>knotx-knots</module>
+    <module>knotx-mocks</module>
+    <module>knotx-repository-connector</module>
+    <module>knotx-adapter</module>
+    <module>knotx-knot</module>
+    <module>knotx-server</module>
     <module>knotx-standalone</module>
-    <module>knotx-example</module>
+    <module>knotx-example-monolith</module>
   </modules>
 
   <scm>
