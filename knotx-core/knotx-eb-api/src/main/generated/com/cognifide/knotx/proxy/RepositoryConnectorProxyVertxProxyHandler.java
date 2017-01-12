@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package com.cognifide.knotx.modules;
+package com.cognifide.knotx.proxy;
 
-import com.cognifide.knotx.modules.AdapterApi;
+import com.cognifide.knotx.proxy.RepositoryConnectorProxy;
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -39,37 +39,37 @@ import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
+import com.cognifide.knotx.dataobjects.ClientRequest;
 import io.vertx.core.Vertx;
-import com.cognifide.knotx.dataobjects.AdapterRequest;
-import com.cognifide.knotx.dataobjects.AdapterResponse;
+import com.cognifide.knotx.proxy.RepositoryConnectorProxy;
+import com.cognifide.knotx.dataobjects.ClientResponse;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-import com.cognifide.knotx.modules.AdapterApi;
 
 /*
   Generated Proxy code - DO NOT EDIT
   @author Roger the Robot
 */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class AdapterApiVertxProxyHandler extends ProxyHandler {
+public class RepositoryConnectorProxyVertxProxyHandler extends ProxyHandler {
 
   public static final long DEFAULT_CONNECTION_TIMEOUT = 5 * 60; // 5 minutes 
 
   private final Vertx vertx;
-  private final AdapterApi service;
+  private final RepositoryConnectorProxy service;
   private final long timerID;
   private long lastAccessed;
   private final long timeoutSeconds;
 
-  public AdapterApiVertxProxyHandler(Vertx vertx, AdapterApi service) {
+  public RepositoryConnectorProxyVertxProxyHandler(Vertx vertx, RepositoryConnectorProxy service) {
     this(vertx, service, DEFAULT_CONNECTION_TIMEOUT);
   }
 
-  public AdapterApiVertxProxyHandler(Vertx vertx, AdapterApi service, long timeoutInSecond) {
+  public RepositoryConnectorProxyVertxProxyHandler(Vertx vertx, RepositoryConnectorProxy service, long timeoutInSecond) {
     this(vertx, service, true, timeoutInSecond);
   }
 
-  public AdapterApiVertxProxyHandler(Vertx vertx, AdapterApi service, boolean topLevel, long timeoutSeconds) {
+  public RepositoryConnectorProxyVertxProxyHandler(Vertx vertx, RepositoryConnectorProxy service, boolean topLevel, long timeoutSeconds) {
     this.vertx = vertx;
     this.service = service;
     this.timeoutSeconds = timeoutSeconds;
@@ -125,7 +125,7 @@ public class AdapterApiVertxProxyHandler extends ProxyHandler {
       switch (action) {
 
         case "process": {
-          service.process(json.getJsonObject("request") == null ? null : new com.cognifide.knotx.dataobjects.AdapterRequest(json.getJsonObject("request")), res -> {
+          service.process(json.getJsonObject("request") == null ? null : new com.cognifide.knotx.dataobjects.ClientRequest(json.getJsonObject("request")), res -> {
             if (res.failed()) {
               if (res.cause() instanceof ServiceException) {
                 msg.reply(res.cause());

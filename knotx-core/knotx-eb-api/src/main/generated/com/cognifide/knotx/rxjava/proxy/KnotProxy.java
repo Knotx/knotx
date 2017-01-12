@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.cognifide.knotx.rxjava.modules;
+package com.cognifide.knotx.rxjava.proxy;
 
 import java.util.Map;
 import rx.Observable;
@@ -24,11 +24,11 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 
-public class KnotApi {
+public class KnotProxy {
 
-  final com.cognifide.knotx.modules.KnotApi delegate;
+  final com.cognifide.knotx.proxy.KnotProxy delegate;
 
-  public KnotApi(com.cognifide.knotx.modules.KnotApi delegate) {
+  public KnotProxy(com.cognifide.knotx.proxy.KnotProxy delegate) {
     this.delegate = delegate;
   }
 
@@ -36,8 +36,8 @@ public class KnotApi {
     return delegate;
   }
 
-  public static KnotApi createProxy(Vertx vertx, String address) { 
-    KnotApi ret = KnotApi.newInstance(com.cognifide.knotx.modules.KnotApi.createProxy((io.vertx.core.Vertx)vertx.getDelegate(), address));
+  public static KnotProxy createProxy(Vertx vertx, String address) { 
+    KnotProxy ret = KnotProxy.newInstance(com.cognifide.knotx.proxy.KnotProxy.createProxy((io.vertx.core.Vertx)vertx.getDelegate(), address));
     return ret;
   }
 
@@ -52,7 +52,7 @@ public class KnotApi {
   }
 
 
-  public static KnotApi newInstance(com.cognifide.knotx.modules.KnotApi arg) {
-    return arg != null ? new KnotApi(arg) : null;
+  public static KnotProxy newInstance(com.cognifide.knotx.proxy.KnotProxy arg) {
+    return arg != null ? new KnotProxy(arg) : null;
   }
 }

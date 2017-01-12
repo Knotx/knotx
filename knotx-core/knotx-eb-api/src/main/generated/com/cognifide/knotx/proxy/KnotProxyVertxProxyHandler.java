@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package com.cognifide.knotx.modules;
+package com.cognifide.knotx.proxy;
 
-import com.cognifide.knotx.modules.KnotApi;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -40,8 +40,8 @@ import io.vertx.serviceproxy.ProxyHandler;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.Vertx;
-import com.cognifide.knotx.modules.KnotApi;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -50,25 +50,25 @@ import io.vertx.core.Handler;
   @author Roger the Robot
 */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class KnotApiVertxProxyHandler extends ProxyHandler {
+public class KnotProxyVertxProxyHandler extends ProxyHandler {
 
   public static final long DEFAULT_CONNECTION_TIMEOUT = 5 * 60; // 5 minutes 
 
   private final Vertx vertx;
-  private final KnotApi service;
+  private final KnotProxy service;
   private final long timerID;
   private long lastAccessed;
   private final long timeoutSeconds;
 
-  public KnotApiVertxProxyHandler(Vertx vertx, KnotApi service) {
+  public KnotProxyVertxProxyHandler(Vertx vertx, KnotProxy service) {
     this(vertx, service, DEFAULT_CONNECTION_TIMEOUT);
   }
 
-  public KnotApiVertxProxyHandler(Vertx vertx, KnotApi service, long timeoutInSecond) {
+  public KnotProxyVertxProxyHandler(Vertx vertx, KnotProxy service, long timeoutInSecond) {
     this(vertx, service, true, timeoutInSecond);
   }
 
-  public KnotApiVertxProxyHandler(Vertx vertx, KnotApi service, boolean topLevel, long timeoutSeconds) {
+  public KnotProxyVertxProxyHandler(Vertx vertx, KnotProxy service, boolean topLevel, long timeoutSeconds) {
     this.vertx = vertx;
     this.service = service;
     this.timeoutSeconds = timeoutSeconds;

@@ -23,7 +23,7 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
-import com.cognifide.knotx.rxjava.modules.KnotApi;
+import com.cognifide.knotx.rxjava.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -121,7 +121,7 @@ public class FragmentAssemblerTest {
 
   private void callAssemblerWithAssertions(TestContext context, List<String> fragments, Action1<KnotContext> testFunction) {
     Async async = context.async();
-    KnotApi service = KnotApi.createProxy(new Vertx(vertx.vertx()), ADDRESS);
+    KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     service.processObservable(KnotContextFactory.create(fragments))
         .map(ctx -> Pair.of(async, ctx))

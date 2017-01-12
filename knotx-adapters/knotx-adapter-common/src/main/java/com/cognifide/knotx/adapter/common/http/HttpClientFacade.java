@@ -68,7 +68,7 @@ public class HttpClientFacade {
   }
 
   /**
-   * Method to validate contract or params JsonObject for the Adapter Service<br/>
+   * Method to validate contract or params JsonObject for the AdapterProxy Service<br/>
    * The contract checks if all required fields exists in the object. throwing AdapterServiceContractException
    * in case of contract violation.<br/>
    *
@@ -91,7 +91,7 @@ public class HttpClientFacade {
    * allows passing those headers to the target service. See 'allowed.request.headers' section of the configuration
    * </br>
    *
-   * @param originalRequest - ClientRequest representing original request comming to the Knot.x
+   * @param originalRequest - ClientRequest representing original request comming to the KnotProxy.x
    * @param params - JsonObject of the params to be used to build request.
    * @return ClientRequest representing Http request to the target service
    */

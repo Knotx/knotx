@@ -22,11 +22,7 @@ import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
-import com.cognifide.knotx.modules.KnotApi;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
@@ -37,7 +33,6 @@ import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.core.http.HttpClient;
 import io.vertx.rxjava.core.http.HttpClientRequest;
 import io.vertx.rxjava.core.http.HttpClientResponse;
-import io.vertx.serviceproxy.ProxyHelper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -72,50 +67,50 @@ public class KnotxServerRoutingTest {
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
-    createDummyKnot("test-splitter");
-    createDummyKnot("test-assembler");
-    createKnotConsumer("A-engine", "+A", "go-c");
-    createKnotConsumer("C-engine", "+C", null);
+    createPassThroughKnot("test-splitter");
+    createPassThroughKnot("test-assembler");
+    createSimpleKnot("A-engine", "+A", "go-c");
+    createSimpleKnot("C-engine", "+C", null);
     testGetRequest(context, "/content/local/simple.html", "local+A+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
-    createDummyKnot("test-splitter");
-    createDummyKnot("test-assembler");
-    createKnotConsumer("C-engine", "+C", null);
+    createPassThroughKnot("test-splitter");
+    createPassThroughKnot("test-assembler");
+    createSimpleKnot("C-engine", "+C", null);
     testGetRequest(context, "/content/simple.html", "global+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(TestContext context) {
-    createDummyKnot("test-splitter");
-    createDummyKnot("test-assembler");
-    createKnotConsumer("A-post-engine", "+Apost", "go-b");
-    createKnotConsumer("B-engine", "+B", "go-c");
-    createKnotConsumer("C-engine", "+C", null);
+    createPassThroughKnot("test-splitter");
+    createPassThroughKnot("test-assembler");
+    createSimpleKnot("A-post-engine", "+Apost", "go-b");
+    createSimpleKnot("B-engine", "+B", "go-c");
+    createSimpleKnot("C-engine", "+C", null);
     testPostRequest(context, "/content/local/simple.html", "local+Apost+B+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
-    createDummyKnot("test-splitter");
-    createDummyKnot("test-assembler");
-    createKnotConsumer("A-post-engine", "+Apost", "go-c");
-    createKnotConsumer("C-engine", "+C", null);
+    createPassThroughKnot("test-splitter");
+    createPassThroughKnot("test-assembler");
+    createSimpleKnot("A-post-engine", "+Apost", "go-c");
+    createSimpleKnot("C-engine", "+C", null);
     testPostRequest(context, "/content/local/simple.html", "local+Apost+C");
   }
 
   @Test
   @KnotxConfiguration("test-server.json")
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
-    createDummyKnot("test-splitter");
-    createDummyKnot("test-assembler");
-    createKnotConsumer("B-engine", "+B", "go-c");
-    createKnotConsumer("C-engine", "+C", null);
+    createPassThroughKnot("test-splitter");
+    createPassThroughKnot("test-assembler");
+    createSimpleKnot("B-engine", "+B", "go-c");
+    createSimpleKnot("C-engine", "+C", null);
     testPostRequest(context, "/content/simple.html", "global+B+C");
   }
 
@@ -158,41 +153,16 @@ public class KnotxServerRoutingTest {
         }));
   }
 
-  private void createDummyKnot(String address) {
-    ProxyHelper
-        .registerService(KnotApi.class, vertx.vertx(), new DummyKnotImpl(), address);
+  private void createPassThroughKnot(String address) {
+    MockKnotProxy.register(vertx.vertx(), address);
   }
 
-  private void createKnotConsumer(String adddress, String addToBody, String transition) {
-    ProxyHelper
-        .registerService(KnotApi.class, vertx.vertx(), new SimpleTransitionKnotImpl(addToBody, transition),
-            adddress);
-  }
-
-  private class DummyKnotImpl implements KnotApi {
-
-    @Override
-    public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
-      result.handle(Future.succeededFuture(knotContext));
-    }
-  }
-
-  private class SimpleTransitionKnotImpl implements KnotApi {
-
-    private final String addToBody;
-    private final String transition;
-
-    public SimpleTransitionKnotImpl(String addToBody, String transition) {
-      this.addToBody = addToBody;
-      this.transition = transition;
-    }
-
-    @Override
-    public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
+  private void createSimpleKnot(final String address, final String addToBody, final String transition) {
+    Action1<KnotContext> simpleKnot = knotContext -> {
       Buffer inBody = knotContext.getClientResponse().getBody();
       knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
       knotContext.setTransition(transition);
-      result.handle(Future.succeededFuture(knotContext));
-    }
+    };
+    MockKnotProxy.register(vertx.vertx(), address, simpleKnot);
   }
 }

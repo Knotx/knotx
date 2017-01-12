@@ -55,7 +55,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
-public class ActionKnotVerticleTest {
+public class ActionKnotProxyVerticleTest {
 
   public static final String EXPECTED_KNOT_TRANSITION = "next";
   private final static String ADDRESS = "knotx.knot.action";

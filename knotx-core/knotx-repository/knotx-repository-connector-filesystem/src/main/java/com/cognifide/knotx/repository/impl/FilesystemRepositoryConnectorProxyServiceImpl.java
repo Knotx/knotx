@@ -19,7 +19,7 @@ package com.cognifide.knotx.repository.impl;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
-import com.cognifide.knotx.modules.RepositoryConnectorApi;
+import com.cognifide.knotx.proxy.RepositoryConnectorProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -41,9 +41,9 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
-public class FilesystemRepositoryConnectorServiceImpl implements RepositoryConnectorApi {
+public class FilesystemRepositoryConnectorProxyServiceImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorProxyServiceImpl.class);
 
   private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
@@ -51,7 +51,7 @@ public class FilesystemRepositoryConnectorServiceImpl implements RepositoryConne
   private final String catalogue;
   private final FileSystem fileSystem;
 
-  public FilesystemRepositoryConnectorServiceImpl(Vertx vertx, JsonObject configuration) {
+  public FilesystemRepositoryConnectorProxyServiceImpl(Vertx vertx, JsonObject configuration) {
     this.fileSystem = vertx.fileSystem();
     this.catalogue = configuration.getString("catalogue");
   }

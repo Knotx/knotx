@@ -38,7 +38,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
-public class HttpServiceAdapterTest {
+public class HttpServiceAdapterProxyTest {
 
   private final static String ADAPTER_ADDRESS = "knotx.adapter.service.http";
 

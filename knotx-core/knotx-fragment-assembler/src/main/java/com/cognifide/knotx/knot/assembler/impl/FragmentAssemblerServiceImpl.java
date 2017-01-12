@@ -20,7 +20,7 @@ package com.cognifide.knotx.knot.assembler.impl;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.assembler.FragmentAssemblerConfiguration;
-import com.cognifide.knotx.modules.KnotApi;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -34,7 +34,7 @@ import io.vertx.rxjava.core.MultiMap;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentAssemblerServiceImpl implements KnotApi {
+public class FragmentAssemblerServiceImpl implements KnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerServiceImpl.class);
 

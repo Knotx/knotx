@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.cognifide.knotx.rxjava.modules;
+package com.cognifide.knotx.rxjava.proxy;
 
 import java.util.Map;
 import rx.Observable;
@@ -25,11 +25,11 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 
-public class RepositoryConnectorApi {
+public class RepositoryConnectorProxy {
 
-  final com.cognifide.knotx.modules.RepositoryConnectorApi delegate;
+  final com.cognifide.knotx.proxy.RepositoryConnectorProxy delegate;
 
-  public RepositoryConnectorApi(com.cognifide.knotx.modules.RepositoryConnectorApi delegate) {
+  public RepositoryConnectorProxy(com.cognifide.knotx.proxy.RepositoryConnectorProxy delegate) {
     this.delegate = delegate;
   }
 
@@ -37,8 +37,8 @@ public class RepositoryConnectorApi {
     return delegate;
   }
 
-  public static RepositoryConnectorApi createProxy(Vertx vertx, String address) { 
-    RepositoryConnectorApi ret = RepositoryConnectorApi.newInstance(com.cognifide.knotx.modules.RepositoryConnectorApi.createProxy((io.vertx.core.Vertx)vertx.getDelegate(), address));
+  public static RepositoryConnectorProxy createProxy(Vertx vertx, String address) { 
+    RepositoryConnectorProxy ret = RepositoryConnectorProxy.newInstance(com.cognifide.knotx.proxy.RepositoryConnectorProxy.createProxy((io.vertx.core.Vertx)vertx.getDelegate(), address));
     return ret;
   }
 
@@ -53,7 +53,7 @@ public class RepositoryConnectorApi {
   }
 
 
-  public static RepositoryConnectorApi newInstance(com.cognifide.knotx.modules.RepositoryConnectorApi arg) {
-    return arg != null ? new RepositoryConnectorApi(arg) : null;
+  public static RepositoryConnectorProxy newInstance(com.cognifide.knotx.proxy.RepositoryConnectorProxy arg) {
+    return arg != null ? new RepositoryConnectorProxy(arg) : null;
   }
 }

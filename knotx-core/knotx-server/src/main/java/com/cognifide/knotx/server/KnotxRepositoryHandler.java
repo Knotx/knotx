@@ -20,7 +20,7 @@ package com.cognifide.knotx.server;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.rxjava.modules.RepositoryConnectorApi;
+import com.cognifide.knotx.rxjava.proxy.RepositoryConnectorProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -55,7 +55,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryEntry.isPresent()) {
-      RepositoryConnectorApi.createProxy(vertx, repositoryEntry.get().address())
+      RepositoryConnectorProxy.createProxy(vertx, repositoryEntry.get().address())
           .processObservable(knotContext.getClientRequest())
           .doOnNext(this::traceMessage)
           .subscribe(

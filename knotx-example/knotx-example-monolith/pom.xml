@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Sample App with Mock service
+    KnotProxy.x - Sample App with Mock service
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -33,7 +33,7 @@
   <name>Knot.x - Sample App with Mock service</name>
 
   <dependencies>
-    <!-- Knot.x -->
+    <!-- KnotProxy.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-common</artifactId>

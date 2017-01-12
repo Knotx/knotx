@@ -19,7 +19,7 @@ package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.rxjava.modules.KnotApi;
+import com.cognifide.knotx.rxjava.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
@@ -34,13 +34,13 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxAssemblerHandler.class);
 
-  private KnotApi assembler;
+  private KnotProxy assembler;
 
   private KnotxServerConfiguration configuration;
 
   private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.assembler = KnotApi.createProxy(vertx, configuration.assemblerAddress());
+    this.assembler = KnotProxy.createProxy(vertx, configuration.assemblerAddress());
   }
 
   static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {

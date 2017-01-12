@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package com.cognifide.knotx.modules;
+package com.cognifide.knotx.proxy;
 
-import com.cognifide.knotx.modules.KnotApi;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.Future;
@@ -33,8 +33,8 @@ import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.Vertx;
-import com.cognifide.knotx.modules.KnotApi;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
@@ -43,18 +43,18 @@ import io.vertx.core.Handler;
   @author Roger the Robot
 */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class KnotApiVertxEBProxy implements KnotApi {
+public class KnotProxyVertxEBProxy implements KnotProxy {
 
   private Vertx _vertx;
   private String _address;
   private DeliveryOptions _options;
   private boolean closed;
 
-  public KnotApiVertxEBProxy(Vertx vertx, String address) {
+  public KnotProxyVertxEBProxy(Vertx vertx, String address) {
     this(vertx, address, null);
   }
 
-  public KnotApiVertxEBProxy(Vertx vertx, String address, DeliveryOptions options) {
+  public KnotProxyVertxEBProxy(Vertx vertx, String address, DeliveryOptions options) {
     this._vertx = vertx;
     this._address = address;
     this._options = options;

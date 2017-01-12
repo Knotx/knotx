@@ -18,7 +18,7 @@
 package com.cognifide.knotx.knot.assembler;
 
 import com.cognifide.knotx.knot.assembler.impl.FragmentAssemblerServiceImpl;
-import com.cognifide.knotx.modules.KnotApi;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -48,11 +48,11 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
   public void start() throws IOException, URISyntaxException {
     LOGGER.debug("Starting <{}>", this.getClass().getName());
 
-    KnotApi assemblerModule = new FragmentAssemblerServiceImpl(config());
+    KnotProxy assemblerModule = new FragmentAssemblerServiceImpl(config());
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(KnotApi.class, vertx, assemblerModule, configuration.address());
+        .registerService(KnotProxy.class, vertx, assemblerModule, configuration.address());
   }
 
   @Override

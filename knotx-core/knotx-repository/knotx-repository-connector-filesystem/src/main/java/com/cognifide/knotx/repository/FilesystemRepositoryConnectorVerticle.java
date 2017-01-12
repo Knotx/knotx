@@ -17,8 +17,8 @@
  */
 package com.cognifide.knotx.repository;
 
-import com.cognifide.knotx.modules.RepositoryConnectorApi;
-import com.cognifide.knotx.repository.impl.FilesystemRepositoryConnectorServiceImpl;
+import com.cognifide.knotx.proxy.RepositoryConnectorProxy;
+import com.cognifide.knotx.repository.impl.FilesystemRepositoryConnectorProxyServiceImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -48,7 +48,7 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(RepositoryConnectorApi.class, vertx, new FilesystemRepositoryConnectorServiceImpl(vertx, config()), address);
+        .registerService(RepositoryConnectorProxy.class, vertx, new FilesystemRepositoryConnectorProxyServiceImpl(vertx, config()), address);
   }
 
   @Override

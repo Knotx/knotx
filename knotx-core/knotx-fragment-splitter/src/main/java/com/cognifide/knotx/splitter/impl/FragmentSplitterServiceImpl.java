@@ -18,7 +18,7 @@
 package com.cognifide.knotx.splitter.impl;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.modules.KnotApi;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -27,7 +27,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.NoSuchElementException;
 
-public class FragmentSplitterServiceImpl implements KnotApi {
+public class FragmentSplitterServiceImpl implements KnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterServiceImpl.class);
 

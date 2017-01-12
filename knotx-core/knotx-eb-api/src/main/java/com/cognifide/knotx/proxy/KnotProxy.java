@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Http Repository Connector Verticle
+ * Knot.x - Reactive microservice assembler - Fragment Assembler
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,12 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.modules;
+package com.cognifide.knotx.proxy;
 
-import com.cognifide.knotx.dataobjects.AdapterRequest;
-import com.cognifide.knotx.dataobjects.AdapterResponse;
-import com.cognifide.knotx.dataobjects.ClientRequest;
-import com.cognifide.knotx.dataobjects.ClientResponse;
+import com.cognifide.knotx.dataobjects.KnotContext;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
@@ -29,11 +26,11 @@ import io.vertx.core.Vertx;
 
 @ProxyGen
 @VertxGen
-public interface AdapterApi {
+public interface KnotProxy {
 
-  static AdapterApi createProxy(Vertx vertx, String address) {
-    return new AdapterApiVertxEBProxy(vertx, address);
+  static KnotProxy createProxy(Vertx vertx, String address) {
+    return new KnotProxyVertxEBProxy(vertx, address);
   }
 
-  void process(AdapterRequest request, Handler<AsyncResult<AdapterResponse>> result);
+  void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);
 }

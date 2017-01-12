@@ -18,7 +18,7 @@
 package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.rxjava.modules.KnotApi;
+import com.cognifide.knotx.rxjava.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -30,12 +30,12 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxSplitterHandler.class);
 
-  private KnotApi splitter;
+  private KnotProxy splitter;
 
   private KnotxServerConfiguration configuration;
 
   private KnotxSplitterHandler(Vertx vertx, KnotxServerConfiguration configuration) {
-    this.splitter = KnotApi.createProxy(vertx, configuration.splitterAddress());
+    this.splitter = KnotProxy.createProxy(vertx, configuration.splitterAddress());
     this.configuration = configuration;
   }
 

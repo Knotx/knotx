@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package com.cognifide.knotx.modules;
+package com.cognifide.knotx.proxy;
 
-import com.cognifide.knotx.modules.AdapterApi;
+import com.cognifide.knotx.proxy.AdapterProxy;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.Future;
@@ -35,27 +35,27 @@ import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import io.vertx.core.Vertx;
 import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
+import com.cognifide.knotx.proxy.AdapterProxy;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-import com.cognifide.knotx.modules.AdapterApi;
 
 /*
   Generated Proxy code - DO NOT EDIT
   @author Roger the Robot
 */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class AdapterApiVertxEBProxy implements AdapterApi {
+public class AdapterProxyVertxEBProxy implements AdapterProxy {
 
   private Vertx _vertx;
   private String _address;
   private DeliveryOptions _options;
   private boolean closed;
 
-  public AdapterApiVertxEBProxy(Vertx vertx, String address) {
+  public AdapterProxyVertxEBProxy(Vertx vertx, String address) {
     this(vertx, address, null);
   }
 
-  public AdapterApiVertxEBProxy(Vertx vertx, String address, DeliveryOptions options) {
+  public AdapterProxyVertxEBProxy(Vertx vertx, String address, DeliveryOptions options) {
     this._vertx = vertx;
     this._address = address;
     this._options = options;

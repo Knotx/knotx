@@ -22,7 +22,7 @@ import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.http.AllowedHeadersFilter;
 import com.cognifide.knotx.http.MultiMapCollector;
 import com.cognifide.knotx.http.StringToPatternFunction;
-import com.cognifide.knotx.modules.RepositoryConnectorApi;
+import com.cognifide.knotx.proxy.RepositoryConnectorProxy;
 import com.cognifide.knotx.util.DataObjectsUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
@@ -47,9 +47,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import rx.Observable;
 
-public class RepositoryConnectorServiceImpl implements RepositoryConnectorApi {
+public class RepositoryConnectorProxyServiceImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConnectorServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConnectorProxyServiceImpl.class);
 
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
@@ -59,7 +59,7 @@ public class RepositoryConnectorServiceImpl implements RepositoryConnectorApi {
   private final HttpClient httpClient;
 
 
-  public RepositoryConnectorServiceImpl(Vertx vertx, JsonObject configuration) {
+  public RepositoryConnectorProxyServiceImpl(Vertx vertx, JsonObject configuration) {
     clientOptions = configuration.getJsonObject("clientOptions", new JsonObject());
     clientDestination = configuration.getJsonObject("clientDestination");
     allowedRequestHeaders = configuration.getJsonArray("allowedRequestHeaders", new JsonArray()).stream()

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.modules;
+package com.cognifide.knotx.proxy;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
@@ -27,10 +27,10 @@ import io.vertx.core.Vertx;
 
 @ProxyGen
 @VertxGen
-public interface RepositoryConnectorApi {
+public interface RepositoryConnectorProxy {
 
-  static RepositoryConnectorApi createProxy(Vertx vertx, String address) {
-    return new RepositoryConnectorApiVertxEBProxy(vertx, address);
+  static RepositoryConnectorProxy createProxy(Vertx vertx, String address) {
+    return new RepositoryConnectorProxyVertxEBProxy(vertx, address);
   }
 
   void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result);

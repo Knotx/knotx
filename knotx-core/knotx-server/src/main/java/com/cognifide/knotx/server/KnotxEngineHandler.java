@@ -18,7 +18,7 @@
 package com.cognifide.knotx.server;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
-import com.cognifide.knotx.rxjava.modules.KnotApi;
+import com.cognifide.knotx.rxjava.proxy.KnotProxy;
 import com.cognifide.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -59,9 +59,9 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get("knotContext");
-    KnotApi module = KnotApi.createProxy(vertx, address);
+    KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
-    module.processObservable(knotContext)
+    knot.processObservable(knotContext)
         .doOnNext(ctx -> context.put("knotContext", ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
