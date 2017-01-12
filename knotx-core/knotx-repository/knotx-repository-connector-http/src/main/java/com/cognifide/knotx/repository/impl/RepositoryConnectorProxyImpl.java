@@ -47,9 +47,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import rx.Observable;
 
-public class RepositoryConnectorProxyServiceImpl implements RepositoryConnectorProxy {
+public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConnectorProxyServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryConnectorProxyImpl.class);
 
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
@@ -59,7 +59,7 @@ public class RepositoryConnectorProxyServiceImpl implements RepositoryConnectorP
   private final HttpClient httpClient;
 
 
-  public RepositoryConnectorProxyServiceImpl(Vertx vertx, JsonObject configuration) {
+  public RepositoryConnectorProxyImpl(Vertx vertx, JsonObject configuration) {
     clientOptions = configuration.getJsonObject("clientOptions", new JsonObject());
     clientDestination = configuration.getJsonObject("clientDestination");
     allowedRequestHeaders = configuration.getJsonArray("allowedRequestHeaders", new JsonArray()).stream()

@@ -18,7 +18,7 @@
 package com.cognifide.knotx.splitter;
 
 import com.cognifide.knotx.proxy.KnotProxy;
-import com.cognifide.knotx.splitter.impl.FragmentSplitterServiceImpl;
+import com.cognifide.knotx.splitter.impl.FragmentSplitterKnotProxyImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -48,7 +48,7 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(KnotProxy.class, vertx, new FragmentSplitterServiceImpl(), configuration.getAddress());
+        .registerService(KnotProxy.class, vertx, new FragmentSplitterKnotProxyImpl(), configuration.getAddress());
   }
 
   @Override

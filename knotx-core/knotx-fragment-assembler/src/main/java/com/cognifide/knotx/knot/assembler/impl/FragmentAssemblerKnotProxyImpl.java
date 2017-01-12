@@ -34,13 +34,13 @@ import io.vertx.rxjava.core.MultiMap;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentAssemblerServiceImpl implements KnotProxy {
+public class FragmentAssemblerKnotProxyImpl implements KnotProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerKnotProxyImpl.class);
 
   private FragmentAssemblerConfiguration configuration;
 
-  public FragmentAssemblerServiceImpl(JsonObject config) {
+  public FragmentAssemblerKnotProxyImpl(JsonObject config) {
     this.configuration = new FragmentAssemblerConfiguration(config);
   }
 

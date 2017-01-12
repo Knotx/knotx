@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.service;
+package com.cognifide.knotx.knot.service.impl;
 
 import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.knot.service.service.ServiceAttributeUtil;

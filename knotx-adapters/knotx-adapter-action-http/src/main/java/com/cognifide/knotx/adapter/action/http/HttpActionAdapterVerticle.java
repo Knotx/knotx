@@ -18,7 +18,7 @@
 package com.cognifide.knotx.adapter.action.http;
 
 
-import com.cognifide.knotx.adapter.action.http.impl.HttpActionAdapterImpl;
+import com.cognifide.knotx.adapter.action.http.impl.HttpActionAdapterProxyImpl;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
 import com.cognifide.knotx.proxy.AdapterProxy;
 import io.vertx.core.AbstractVerticle;
@@ -50,7 +50,7 @@ public class HttpActionAdapterVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(AdapterProxy.class, vertx, new HttpActionAdapterImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+        .registerService(AdapterProxy.class, vertx, new HttpActionAdapterProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
             configuration.getAddress());
   }
 

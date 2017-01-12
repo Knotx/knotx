@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Http Service Adapter
+ * Knot.x - Reactive microservice assembler - Handlebars Knot
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,12 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.adapter.service.http;
+package com.cognifide.knotx.knot.templating;
 
-
-import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
-import com.cognifide.knotx.adapter.service.http.impl.HttpServiceAdapterProxyImpl;
-import com.cognifide.knotx.proxy.AdapterProxy;
+import com.cognifide.knotx.knot.templating.impl.HandlebarsKnotProxyImpl;
+import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -30,18 +28,18 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ProxyHelper;
 
-public class HttpServiceAdapterVerticle extends AbstractVerticle {
+public class HandlebarsKnotVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceAdapterVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotVerticle.class);
 
-  private HttpAdapterConfiguration configuration;
+  private HandlebarsKnotConfiguration configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new HttpAdapterConfiguration(config());
+    this.configuration = new HandlebarsKnotConfiguration(config());
   }
 
   @Override
@@ -50,12 +48,12 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(AdapterProxy.class, vertx, new HttpServiceAdapterProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
-            configuration.getAddress());
+        .registerService(KnotProxy.class, vertx, new HandlebarsKnotProxyImpl(configuration), configuration.getAddress());
   }
 
   @Override
   public void stop() throws Exception {
     ProxyHelper.unregisterService(consumer);
   }
+
 }

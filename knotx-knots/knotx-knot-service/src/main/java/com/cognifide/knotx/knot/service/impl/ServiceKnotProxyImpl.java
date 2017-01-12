@@ -15,56 +15,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.service;
+package com.cognifide.knotx.knot.service.impl;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.Fragment;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.api.AbstractKnotProxy;
+import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Context;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.Vertx;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import rx.Observable;
 
-public class ServiceKnotProxyVerticle extends AbstractKnotProxy<ServiceKnotConfiguration> {
+public class ServiceKnotProxyImpl extends AbstractKnotProxy<ServiceKnotConfiguration> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyImpl.class);
 
   private static final String DEFAULT_TEMPLATING_KNOT = "next";
 
   private static final String SUPPORTED_FRAGMENT_ID = "services";
 
+  private final ServiceKnotConfiguration configuration;
+
   private FragmentProcessor snippetProcessor;
 
-  @Override
-  public void init(Vertx vertx, Context context) {
-    super.init(vertx, context);
-    this.snippetProcessor = new FragmentProcessor(this.vertx.eventBus(), configuration);
+  public ServiceKnotProxyImpl(Vertx vertx, ServiceKnotConfiguration configuration) {
+    super(configuration);
+    this.configuration = configuration;
+    this.snippetProcessor = new FragmentProcessor(vertx, configuration);
   }
 
   @Override
-  protected ServiceKnotConfiguration initConfiguration(JsonObject config) {
-    return new ServiceKnotConfiguration(config);
-  }
-
-  @Override
-  protected Observable<KnotContext> process(KnotContext message) {
-    return Optional.ofNullable(message.getFragments())
+  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
+    return Optional.ofNullable(knotContext.getFragments())
         .map(fragments -> Observable.from(fragments)
             .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
-            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, message))
+            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
             .toList()
         ).orElse(Observable.just(Collections.emptyList()))
-        .map(result -> createSuccessResponse(message))
-        .onErrorReturn(error -> processError(message, error));
+        .map(result -> createSuccessResponse(knotContext))
+        .onErrorReturn(error -> processError(knotContext, error));
   }
 
   @Override
@@ -102,5 +98,4 @@ public class ServiceKnotProxyVerticle extends AbstractKnotProxy<ServiceKnotConfi
       LOGGER.trace("Processing fragment {}", fragment.toJson().encodePrettily());
     }
   }
-
 }

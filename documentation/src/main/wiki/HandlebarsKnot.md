@@ -54,7 +54,7 @@ Handlebars Knot is deployed using Vert.x service factory as a separate [verticle
 Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotProxyVerticle",
+  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.handlebars",

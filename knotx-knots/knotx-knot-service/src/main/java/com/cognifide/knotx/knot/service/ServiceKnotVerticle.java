@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Handlebars Knot
+ * Knot.x - Reactive microservice assembler - Service Knot
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.templating;
+package com.cognifide.knotx.knot.service;
 
-import com.cognifide.knotx.knot.templating.impl.HandlebarsKnotProxyImpl;
+import com.cognifide.knotx.knot.service.impl.ServiceKnotProxyImpl;
 import com.cognifide.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -28,18 +28,18 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ProxyHelper;
 
-public class HandlebarsKnotProxyVerticle extends AbstractVerticle {
+public class ServiceKnotVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotProxyVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
-  private HandlebarsKnotConfiguration configuration;
+  private ServiceKnotConfiguration configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new HandlebarsKnotConfiguration(config());
+    this.configuration = new ServiceKnotConfiguration(config());
   }
 
   @Override
@@ -48,12 +48,12 @@ public class HandlebarsKnotProxyVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(KnotProxy.class, vertx, new HandlebarsKnotProxyImpl(configuration), configuration.getAddress());
+        .registerService(KnotProxy.class, vertx, new ServiceKnotProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+            configuration.getAddress());
   }
 
   @Override
   public void stop() throws Exception {
     ProxyHelper.unregisterService(consumer);
   }
-
 }

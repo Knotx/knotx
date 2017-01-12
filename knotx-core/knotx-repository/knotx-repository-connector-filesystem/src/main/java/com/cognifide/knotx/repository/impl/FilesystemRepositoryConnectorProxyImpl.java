@@ -41,9 +41,9 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import rx.Observable;
 
-public class FilesystemRepositoryConnectorProxyServiceImpl implements RepositoryConnectorProxy {
+public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorProxyServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorProxyImpl.class);
 
   private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
@@ -51,7 +51,7 @@ public class FilesystemRepositoryConnectorProxyServiceImpl implements Repository
   private final String catalogue;
   private final FileSystem fileSystem;
 
-  public FilesystemRepositoryConnectorProxyServiceImpl(Vertx vertx, JsonObject configuration) {
+  public FilesystemRepositoryConnectorProxyImpl(Vertx vertx, JsonObject configuration) {
     this.fileSystem = vertx.fileSystem();
     this.catalogue = configuration.getString("catalogue");
   }

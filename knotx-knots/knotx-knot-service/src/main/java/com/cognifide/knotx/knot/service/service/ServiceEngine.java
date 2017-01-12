@@ -21,13 +21,13 @@ import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
 import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
+import com.cognifide.knotx.rxjava.proxy.AdapterProxy;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.eventbus.EventBus;
-import io.vertx.rxjava.core.eventbus.Message;
+import io.vertx.rxjava.core.Vertx;
 import java.util.Optional;
 import rx.Observable;
 
@@ -40,10 +40,10 @@ public class ServiceEngine {
 
   private final ServiceKnotConfiguration configuration;
 
-  private final EventBus eventBus;
+  private final Vertx vertx;
 
-  public ServiceEngine(EventBus eventBus, ServiceKnotConfiguration serviceConfiguration) {
-    this.eventBus = eventBus;
+  public ServiceEngine(Vertx vertx, ServiceKnotConfiguration serviceConfiguration) {
+    this.vertx = vertx;
     this.configuration = serviceConfiguration;
   }
 
@@ -52,9 +52,9 @@ public class ServiceEngine {
         .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
-    return eventBus.<AdapterResponse>sendObservable(serviceEntry.getAddress(), adapterRequest)
-        .map(Message::body)
-        .map(this::buildResultObject);
+    AdapterProxy serviceProxy = AdapterProxy.createProxy(vertx, serviceEntry.getAddress());
+
+    return serviceProxy.processObservable(adapterRequest).map(this::buildResultObject);
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {

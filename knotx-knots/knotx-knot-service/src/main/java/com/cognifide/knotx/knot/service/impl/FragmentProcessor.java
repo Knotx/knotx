@@ -15,18 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cognifide.knotx.knot.service;
+package com.cognifide.knotx.knot.service.impl;
 
 import com.cognifide.knotx.dataobjects.KnotContext;
+import com.cognifide.knotx.knot.service.ServiceKnotConfiguration;
 import com.cognifide.knotx.knot.service.service.ServiceEngine;
 import com.cognifide.knotx.knot.service.service.ServiceEntry;
-
-import java.util.concurrent.ExecutionException;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.eventbus.EventBus;
+import io.vertx.rxjava.core.Vertx;
+import java.util.concurrent.ExecutionException;
 import rx.Observable;
 
 public class FragmentProcessor {
@@ -35,8 +34,8 @@ public class FragmentProcessor {
 
   private final ServiceEngine serviceEngine;
 
-  public FragmentProcessor(EventBus eventBus, ServiceKnotConfiguration configuration) {
-    this.serviceEngine = new ServiceEngine(eventBus, configuration);
+  public FragmentProcessor(Vertx vertx, ServiceKnotConfiguration configuration) {
+    this.serviceEngine = new ServiceEngine(vertx, configuration);
   }
 
   public Observable<FragmentContext> processSnippet(final FragmentContext fragmentContext, KnotContext request) {

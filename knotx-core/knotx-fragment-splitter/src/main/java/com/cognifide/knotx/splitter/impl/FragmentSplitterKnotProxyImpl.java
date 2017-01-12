@@ -27,9 +27,9 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.NoSuchElementException;
 
-public class FragmentSplitterServiceImpl implements KnotProxy {
+public class FragmentSplitterKnotProxyImpl implements KnotProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterKnotProxyImpl.class);
 
   private final FragmentSplitter splitter = new HtmlFragmentSplitter();
 
