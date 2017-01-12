@@ -18,51 +18,44 @@
 package com.cognifide.knotx.adapter.service.http;
 
 
-import com.cognifide.knotx.adapter.api.AbstractAdapter;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
-import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
-import com.cognifide.knotx.dataobjects.AdapterRequest;
-import com.cognifide.knotx.dataobjects.AdapterResponse;
-import com.cognifide.knotx.dataobjects.ClientResponse;
-
+import com.cognifide.knotx.adapter.service.http.impl.HttpServiceAdapterImpl;
+import com.cognifide.knotx.proxy.AdapterProxy;
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.HttpMethod;
+import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.http.HttpClient;
-import rx.Observable;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.serviceproxy.ProxyHelper;
 
-public class HttpServiceAdapterVerticle extends AbstractAdapter<HttpAdapterConfiguration> {
+public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
-  private HttpClientFacade httpClientFacade;
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceAdapterVerticle.class);
+
+  private HttpAdapterConfiguration configuration;
+
+  private MessageConsumer<JsonObject> consumer;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.httpClientFacade = new HttpClientFacade(getHttpClient(configuration), configuration.getServices());
+    this.configuration = new HttpAdapterConfiguration(config());
   }
 
   @Override
-  protected HttpAdapterConfiguration initConfiguration(JsonObject config) {
-    return new HttpAdapterConfiguration(config());
+  public void start() throws Exception {
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
+
+    //register the service proxy on event bus
+    consumer = ProxyHelper
+        .registerService(AdapterProxy.class, vertx, new HttpServiceAdapterImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+            configuration.getAddress());
   }
 
   @Override
-  protected Observable<AdapterResponse> processMessage(AdapterRequest message) {
-    return httpClientFacade.process(message, HttpMethod.GET)
-        .map(this::wrapResponse);
+  public void stop() throws Exception {
+    ProxyHelper.unregisterService(consumer);
   }
-
-  private AdapterResponse wrapResponse(ClientResponse response) {
-    return new AdapterResponse().setResponse(response);
-  }
-
-
-  private HttpClient getHttpClient(HttpAdapterConfiguration configuration) {
-    JsonObject clientOptions = configuration.getClientOptions();
-    return clientOptions.isEmpty() ?
-        vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-  }
-
 }

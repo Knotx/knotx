@@ -19,36 +19,33 @@ package com.cognifide.knotx.mocks.knot;
 
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Optional;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.file.AsyncFile;
 import io.vertx.rxjava.core.file.FileSystem;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import rx.Observable;
 
 enum KnotContextKeys {
   RESPONSE("clientResponse") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return Optional.of(new ClientResponse().setStatusCode(HttpResponseStatus.OK));
+      return Optional.of(new ClientResponse().setStatusCode(HttpResponseStatus.OK.code()));
     }
   },
   REQUEST("clientRequest") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return context.clientRequest() != null ? Optional.of(context.clientRequest()) : Optional.empty();
+      return context.getClientRequest() != null ? Optional.of(context.getClientRequest()) : Optional.empty();
     }
   },
   FRAGMENTS("fragments") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return context.fragments().isPresent() ? Optional.of(context.fragments()) : Optional.empty();
+      return Optional.ofNullable(context.getFragments());
     }
   },
   TRANSITION("transition") {

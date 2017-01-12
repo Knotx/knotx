@@ -17,14 +17,8 @@
  */
 package com.cognifide.knotx.mocks.knot;
 
-import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
 import com.cognifide.knotx.dataobjects.KnotContext;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Optional;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
@@ -33,14 +27,18 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.file.FileSystem;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import rx.Observable;
 
 public class MockKnotHandler implements Handler<Message<KnotContext>> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
 
-  private static final KnotContext ERROR_RESPONSE = new KnotContext().setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
-  private static final KnotContext NOT_FOUND = new KnotContext().setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND));
+  private static final KnotContext ERROR_RESPONSE = new KnotContext()
+      .setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()));
+  private static final KnotContext NOT_FOUND = new KnotContext()
+      .setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND.code()));
 
   private final FileSystem fileSystem;
   private final JsonObject handlerConfig;
@@ -69,15 +67,15 @@ public class MockKnotHandler implements Handler<Message<KnotContext>> {
   }
 
   private Boolean findConfiguration(KnotContext context) {
-    return handlerConfig.containsKey(context.clientRequest().path());
+    return handlerConfig.containsKey(context.getClientRequest().getPath());
   }
 
   private void logProcessedInfo(KnotContext context) {
-    LOGGER.info("Processing `{}`", context.clientRequest().path());
+    LOGGER.info("Processing `{}`", context.getClientRequest().getPath());
   }
 
   private Observable<KnotContext> prepareHandlerResponse(KnotContext context) {
-    final JsonObject responseConfig = handlerConfig.getJsonObject(context.clientRequest().path());
+    final JsonObject responseConfig = handlerConfig.getJsonObject(context.getClientRequest().getPath());
 
     return Observable.from(KnotContextKeys.values())
         .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig, context))

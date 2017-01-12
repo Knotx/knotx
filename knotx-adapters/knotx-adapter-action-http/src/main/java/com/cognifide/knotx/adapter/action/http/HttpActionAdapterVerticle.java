@@ -18,71 +18,45 @@
 package com.cognifide.knotx.adapter.action.http;
 
 
-import com.cognifide.knotx.adapter.api.AbstractAdapter;
+import com.cognifide.knotx.adapter.action.http.impl.HttpActionAdapterImpl;
 import com.cognifide.knotx.adapter.common.http.HttpAdapterConfiguration;
-import com.cognifide.knotx.adapter.common.http.HttpClientFacade;
-import com.cognifide.knotx.dataobjects.AdapterRequest;
-import com.cognifide.knotx.dataobjects.AdapterResponse;
-import com.cognifide.knotx.dataobjects.ClientResponse;
-
-import io.netty.handler.codec.http.HttpResponseStatus;
+import com.cognifide.knotx.proxy.AdapterProxy;
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.HttpMethod;
+import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpClient;
-import rx.Observable;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+import io.vertx.serviceproxy.ProxyHelper;
 
-public class HttpActionAdapterVerticle extends AbstractAdapter<HttpAdapterConfiguration> {
+public class HttpActionAdapterVerticle extends AbstractVerticle {
 
-  private HttpClientFacade httpClientFacade;
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpActionAdapterVerticle.class);
+
+  private HttpAdapterConfiguration configuration;
+
+  private MessageConsumer<JsonObject> consumer;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.httpClientFacade = new HttpClientFacade(getHttpClient(configuration), configuration.getServices());
+    this.configuration = new HttpAdapterConfiguration(config());
   }
 
   @Override
-  protected HttpAdapterConfiguration initConfiguration(JsonObject config) {
-    return new HttpAdapterConfiguration(config());
+  public void start() throws Exception {
+    LOGGER.debug("Starting <{}>", this.getClass().getName());
+
+    //register the service proxy on event bus
+    consumer = ProxyHelper
+        .registerService(AdapterProxy.class, vertx, new HttpActionAdapterImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+            configuration.getAddress());
   }
 
   @Override
-  protected Observable<AdapterResponse> processMessage(AdapterRequest message) {
-    return httpClientFacade.process(message, HttpMethod.POST)
-        .map(this::prepareResponse);
+  public void stop() throws Exception {
+    ProxyHelper.unregisterService(consumer);
   }
 
-  private HttpClient getHttpClient(HttpAdapterConfiguration configuration) {
-    JsonObject clientOptions = configuration.getClientOptions();
-    return clientOptions.isEmpty() ?
-        vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-  }
-
-  private AdapterResponse prepareResponse(ClientResponse response) {
-    AdapterResponse result = new AdapterResponse();
-
-    if (response.statusCode() == HttpResponseStatus.OK) {
-      if (isJsonBody(response.body()) && response.body().toJsonObject().containsKey("validationErrors")) {
-        result.setSignal("error");
-      } else {
-        result.setSignal("success");
-      }
-    }
-    result.setResponse(response);
-
-    return result;
-  }
-
-  private boolean isJsonBody(Buffer bodyBuffer) {
-    String body = bodyBuffer.toString().trim();
-    if (body.charAt(0) == '{' && body.charAt(body.length() - 1) == '}') {
-      return true;
-    } else {
-      return false;
-    }
-  }
 }

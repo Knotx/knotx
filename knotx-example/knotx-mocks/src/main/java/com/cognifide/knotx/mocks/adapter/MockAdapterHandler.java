@@ -21,14 +21,9 @@ import com.cognifide.knotx.dataobjects.AdapterRequest;
 import com.cognifide.knotx.dataobjects.AdapterResponse;
 import com.cognifide.knotx.dataobjects.ClientRequest;
 import com.cognifide.knotx.dataobjects.ClientResponse;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.util.Optional;
-
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.HttpHeaders;
@@ -38,9 +33,12 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
+import java.io.File;
+import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 public class MockAdapterHandler implements Handler<Message<AdapterRequest>> {
+
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
@@ -56,8 +54,8 @@ public class MockAdapterHandler implements Handler<Message<AdapterRequest>> {
 
   @Override
   public void handle(Message<AdapterRequest> message) {
-    ClientRequest request = message.body().request();
-    JsonObject params = message.body().params();
+    ClientRequest request = message.body().getRequest();
+    JsonObject params = message.body().getParams();
 
     String resourcePath = getFilePath(params.getString("path"));
     fileSystem.readFile(resourcePath, ar -> {
@@ -74,17 +72,17 @@ public class MockAdapterHandler implements Handler<Message<AdapterRequest>> {
   private AdapterResponse okResponse(ClientRequest request, String data) {
     return new AdapterResponse().setResponse(new ClientResponse()
         .setHeaders(headers(request, data))
-        .setStatusCode(HttpResponseStatus.OK)
+        .setStatusCode(HttpResponseStatus.OK.code())
         .setBody(Buffer.buffer(data)));
   }
 
   protected AdapterResponse errorResponse() {
     return new AdapterResponse().setResponse(new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()));
   }
 
   protected String getContentType(ClientRequest request) {
-    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.path())).orElse(DEFAULT_MIME);
+    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.getPath())).orElse(DEFAULT_MIME);
   }
 
   protected String getFilePath(String path) {

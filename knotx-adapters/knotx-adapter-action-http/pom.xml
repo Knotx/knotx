@@ -39,6 +39,11 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
+      <artifactId>knotx-eb-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-launcher</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -67,6 +72,10 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-rx-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-service-proxy</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>

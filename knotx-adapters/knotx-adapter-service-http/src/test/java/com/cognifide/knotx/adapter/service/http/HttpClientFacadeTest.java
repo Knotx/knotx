@@ -91,7 +91,7 @@ public class HttpClientFacadeTest {
     // then
     result.subscribe(
         response -> {
-          context.assertEquals(HttpResponseStatus.OK, response.getStatusCode());
+          context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(httpClient, Mockito.times(1)).request(HttpMethod.GET, 3000, "localhost", REQUEST_PATH);
         },
@@ -116,7 +116,7 @@ public class HttpClientFacadeTest {
     // then
     result.subscribe(
         response -> {
-          context.assertEquals(HttpResponseStatus.OK, response.getStatusCode());
+          context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(httpClient, Mockito.times(1)).request(HttpMethod.GET, 3000, "localhost", REQUEST_PATH);
         },

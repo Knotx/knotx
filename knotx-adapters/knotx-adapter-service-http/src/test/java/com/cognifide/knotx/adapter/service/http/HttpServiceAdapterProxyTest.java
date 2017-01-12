@@ -24,17 +24,18 @@ import com.cognifide.knotx.junit.Logback;
 import com.cognifide.knotx.launcher.junit.FileReader;
 import com.cognifide.knotx.launcher.junit.KnotxConfiguration;
 import com.cognifide.knotx.launcher.junit.TestVertxDeployer;
+import com.cognifide.knotx.rxjava.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.rxjava.core.Vertx;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.Observable;
 import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
@@ -82,19 +83,14 @@ public class HttpServiceAdapterProxyTest {
     AdapterRequest message = payloadMessage(servicePath);
     Async async = context.async();
 
-    vertx.vertx().eventBus().<AdapterResponse>send(ADAPTER_ADDRESS, message, ar -> {
-      if (ar.succeeded()) {
-        Observable
-            .just(ar.result().body())
-            .subscribe(
-                onSuccess,
-                onError,
-                async::complete
-            );
-      } else {
-        context.fail(ar.cause());
-      }
-    });
+    AdapterProxy service = AdapterProxy.createProxy(new Vertx(vertx.vertx()), ADAPTER_ADDRESS);
+
+    service.processObservable(message)
+        .subscribe(
+            onSuccess,
+            onError,
+            async::complete
+        );
   }
 
   private AdapterRequest payloadMessage(String servicePath) {
