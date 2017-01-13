@@ -1,6 +1,7 @@
 ![Cognifide logo](http://cognifide.github.io/images/cognifide-logo.png)
 
 [![][travis img]][travis]
+[![][sonarqube img]][sonarqube]
 [![][license img]][license]
 
 #Knot.x - reactive multisource assembler 
@@ -70,3 +71,6 @@ You can run **Knot.x** demo with less than 5 minutes, you only need Java 8. See 
 
 [license]:LICENSE
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg
+
+[sonarqube]:https://sonarqube.com/dashboard/index/com.cognifide.knotx:knotx-root
+[sonarqube img]:https://sonarqube.com/api/badges/gate?key=com.cognifide.knotx:knotx-root
