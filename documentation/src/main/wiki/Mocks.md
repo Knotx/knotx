@@ -8,7 +8,7 @@ For the prototyping or development purposes Knot.x is shipped with the Mocks Ver
 - Listens on configured HTTP port on client requests
 - On GET request
   - Retrieves file from the file system from the path `mockDataRoot`+`request.path`.
-  - Sends response to the client with the content of the file setting proper response headers and status code
+  - Sends response to the client with the content of the file setting proper response headers and status code `200` (Or `404` is no requested mock file)
 - On POST request, does the same as above. Optionally, if `bouncing=true` it adds to the response JSON Object form attributes from the POST request.  
 
 ### How to configure ?
@@ -39,7 +39,7 @@ See [[how to configure delay ?|#how-to-configure-delay-]] section for details.
 - Listens on configured HTTP port on client requests
 - On GET request only
   - Retrieves file from the file system from the path `mockDataRoot`+`request.path`.
-  - Sends response to the client with the content of the file setting proper response headers and status code
+  - Sends response to the client with the content of the file setting proper response headers and status code `200` (Or `404` is no requested mock file)
 
 ### How to configure ?
 Default configuration shipped with the verticle as `io.knotx.RemoteRepositoryMock.json` file available in classpath.
