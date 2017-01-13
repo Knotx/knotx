@@ -23,6 +23,7 @@
     * [[Service Adapter|ServiceAdapter]]
     * [[Action Adapter|ActionAdapter]]
     * [[Http Service Adapter|HttpServiceAdapter]]
+  * [[Mocks|Mocks]]    
   * [[Knot.x Deployment|KnotxDeployment]]
   * [[Dependencies|Dependencies]]
   * [[What's new|WhatsNew]]

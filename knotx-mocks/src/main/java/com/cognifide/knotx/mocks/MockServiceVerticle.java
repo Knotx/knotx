@@ -19,12 +19,8 @@ package com.cognifide.knotx.mocks;
 
 
 import com.cognifide.knotx.mocks.adapter.MockServiceHandler;
-
-import io.vertx.core.Future;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
@@ -34,6 +30,8 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.ErrorHandler;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import rx.functions.Action2;
 
 public class MockServiceVerticle extends AbstractVerticle {
@@ -44,7 +42,7 @@ public class MockServiceVerticle extends AbstractVerticle {
 
   private static final Action2<RoutingContext, String> BOUNCER = (context, mockData) -> {
     JsonObject responseBody = new JsonObject(mockData);
-    context.response().putHeader("Set-Cookie", "mockCookie="+context.request().path());
+    context.response().putHeader("Set-Cookie", "mockCookie=" + context.request().path());
     context.response().setStatusCode(200).end(responseBody.encodePrettily());
   };
 
@@ -78,11 +76,13 @@ public class MockServiceVerticle extends AbstractVerticle {
   }
 
   private MockServiceHandler createGetHandler() {
-    return new MockServiceHandler(config().getString("mockDataRoot"), vertx.fileSystem());
+    return new MockServiceHandler(config().getString("mockDataRoot"), vertx, config().getLong("delayAllMs", 0L),
+        config().getJsonObject("delay", new JsonObject()));
   }
 
   private MockServiceHandler createPostHandler() {
-    MockServiceHandler mockServiceHandler = new MockServiceHandler(config().getString("mockDataRoot"), vertx.fileSystem());
+    MockServiceHandler mockServiceHandler = new MockServiceHandler(config().getString("mockDataRoot"), vertx, config().getLong("delayAllMs", 0L),
+        config().getJsonObject("delay", new JsonObject()));
     return config().getBoolean("bouncing", false)
         ? mockServiceHandler.withBodyProcessor(BOUNCER)
         : mockServiceHandler;

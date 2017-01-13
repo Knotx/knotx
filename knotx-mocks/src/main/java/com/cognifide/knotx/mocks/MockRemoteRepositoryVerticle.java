@@ -24,6 +24,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
@@ -66,7 +67,8 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
   }
 
   private Handler<RoutingContext> createRepositoryHandler() {
-    return new MockRemoteRepositoryHandler(vertx.fileSystem(), config().getString("mockDataRoot"));
+    return new MockRemoteRepositoryHandler(vertx, config().getString("mockDataRoot"), config().getLong("delayAllMs", 0L),
+        config().getJsonObject("delay", new JsonObject()));
   }
 }
 

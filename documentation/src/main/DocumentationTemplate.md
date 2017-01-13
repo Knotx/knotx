@@ -20,6 +20,7 @@
 #include "wiki/ServiceAdapter.md"
 #include "wiki/ActionAdapter.md"
 #include "wiki/HttpServiceAdapter.md"
+#include "wiki/Mocks.md"
 #include "wiki/KnotxDeployment.md"
 #include "wiki/Dependencies.md"
 #include "wiki/WhatsNew.md"
