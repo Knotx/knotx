@@ -82,14 +82,12 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   }
 
   private long getDelay(String path) {
-    long delay = delayPerPath.getJsonObject(path, new JsonObject()).getLong("delayMs", 0L);
-
     if (delayAllMs > 0) {
       return delayAllMs;
-    } else if (delay > 0) {
-      return delay;
+    } else {
+      long delay = delayPerPath.getJsonObject(path, new JsonObject()).getLong("delayMs", delayAllMs);
+      return delay > 0 ? delay : 0L;
     }
-    return 0L;
   }
 
   private void generateResponse(String path, Action0 action) {
