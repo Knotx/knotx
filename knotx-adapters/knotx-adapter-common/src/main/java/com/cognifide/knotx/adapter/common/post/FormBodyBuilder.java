@@ -17,9 +17,8 @@
  */
 package com.cognifide.knotx.adapter.common.post;
 
-import org.apache.commons.lang3.StringUtils;
-
 import io.vertx.rxjava.core.MultiMap;
+import org.apache.commons.lang3.StringUtils;
 
 public class FormBodyBuilder {
 
@@ -32,7 +31,7 @@ public class FormBodyBuilder {
               new StringBuilder(field).append("=").append(formAttributes.get(field))
           )
           .reduce((a, b) -> a.append("&").append(b))
-          .get().toString();
+          .orElse(new StringBuilder()).toString();
     }
 
     return result;
