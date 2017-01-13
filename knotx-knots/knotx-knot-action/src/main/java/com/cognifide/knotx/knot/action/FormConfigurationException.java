@@ -21,13 +21,7 @@ import com.cognifide.knotx.fragments.Fragment;
 
 public class FormConfigurationException extends RuntimeException {
 
-  private Fragment fragment;
-
   public FormConfigurationException(Fragment fragment) {
     super("Form not configured correctly " + fragment.knots());
-  }
-
-  public Fragment getFragment() {
-    return fragment;
   }
 }
