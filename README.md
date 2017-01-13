@@ -75,7 +75,7 @@ services. Those features are not publicly available so you only have some sample
 pages. Additionally your demo pages can be easily changed to use live services without any further
 development work. Your client will be impressed with how fast it can happen.
 
-Find out more about this topic by reading the [Knot.x Demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo) 
+Find out more about this topic by reading the [Mocks](https://github.com/Cognifide/knotx/wiki/Mocks) 
 section of this documentation.
 
 ###Extensions
@@ -92,6 +92,8 @@ Those extension points communicates with Knot.x Core using a very performant Eve
 implement your integration layer in one place inside **Knot.x**. Not enough? If you wish, you can implement
 your extensions in any language you like, as long as it's supported by [Vert.x](http://vertx.io/).
 
+Find out more about this topic by reading the [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter) 
+sections of this documentation.
 
 ## What's the philosophy behind Knot.x?
 We care a lot about speed and that is why we built **Knot.x** on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
