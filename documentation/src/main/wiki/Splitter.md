@@ -1,5 +1,5 @@
 #HTML Fragment Splitter
-Fragment Splitter reads [[Knot Context|Knot]] having a HTML Template from Repository, splits it into 
+Fragment Splitter reads [[Knot Context|Knot]] having a HTML Template retrieved from Repository using configured connector, splits it into 
 static and dynamic Fragments, updates Knot Context and returns back to the caller.
 
 ##How does it work?

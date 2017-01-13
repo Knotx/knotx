@@ -85,10 +85,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
         result -> {
           if (result.succeeded()) {
             LOGGER
-                .info("KnotProxy.x HTTP Server started. Listening on port {}", configuration.httpPort());
+                .info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
             fut.complete();
           } else {
-            LOGGER.error("Unable to start KnotProxy.x HTTP Server.", result.cause());
+            LOGGER.error("Unable to start Knot.x HTTP Server.", result.cause());
             fut.fail(result.cause());
           }
         });

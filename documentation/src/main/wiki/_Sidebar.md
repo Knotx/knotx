@@ -10,7 +10,7 @@
     * [[Knot Routing|KnotRouting]]
   * [[Knot.x Modules|KnotxModules]]
   * [[Server|Server]]
-  * [[Repository|Repository]]
+  * [[Repository Connectors|RepositoryConnectors]]
     * [[Http Repository Connector|HttpRepositoryConnector]]
     * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
   * [[Splitter|Splitter]]

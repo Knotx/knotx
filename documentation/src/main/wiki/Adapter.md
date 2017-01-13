@@ -37,35 +37,32 @@ exposed with unique Event Bus address - that's the only obligation (the same lik
 Please see example configuration for [[Http Service Adapter|HttpServiceAdapter#how-to-configure]]
 
 ## How to extend?
-First we need to extend abstract 
-[com.cognifide.knotx.adapter.api.AbstractAdapter](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AbstractAdapter.java)
-class from `knotx-adapters/knotx-adapter-api`. AbstractAdapter hides Event Bus communication and JSON configuration reading parts
-and lets you to focus on Adapter logic:
+Implementation of Adapter does not require knowledge how to communicate via Vert.x event bus. It's wrapped by **Vert.x Service Proxy** functionality, 
+so any new implementation need to focus on the business logic of the Adapter. 
 
-- `initConfiguration` method that initialize Adapter with `JsonObject` model
-- `processMessage` method that consumes `AdapterRequest` messages from [[Knot|Knot]] and returns `AdapterResponse` messages
+In order to implement Adapter, follow the guide below:
+1. Create your Knot by extending `com.cognifide.knotx.adapter.AbstractAdapterProxy` class, and implement your business logic in the `processRequest()` method that 
+should return of `Observable<AdapterResponse>` (promise of the AdapterResponse).
+*See `com.cognifide.knotx.adapter.service.http.impl.HttpServiceAdapterProxyImpl.java` as an example.*
 
-To deal with configuration model you may extend
-[com.cognifide.knotx.adapter.api.AdapterConfiguration](https://github.com/Cognifide/knotx/blob/master/knotx-adapters/knotx-adapter-api/src/main/java/com/cognifide/knotx/adapter/api/AdapterConfiguration.java) class
-from `knotx-adapters/knotx-adapter-api`.
+2. Create class extending `AbstractVerticle` that will should simple read the configuration, and register your AdapterProxy implementation on the given `address`.
+See `com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle.java` how the `HttpServiceAdapterProxyImpl` is registered.
 
-Reference implementation of `com.cognifide.knotx.adapter.api.AbstractAdapter` is [[Http Service Adapter|HttpServiceAdapter]] from
-`knotx-adapters/knotx-adapter-service-http` module.
-
-| ! Note |
-|:------ |
-| Please note that this section focused on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using language you like. |
+`AbstractAdapterProxy` class provides following methods that you can extend in your implementation.
+These are:
+- `Observable<AdapterResponse> processRequest(AdapterRequest message)` method that consumes `AdapterRequest` messages from [[Knot|Knot]] and returns `AdapterResponse` object as `rx.Observable`
+- Optionally, `AdapterResponse getErrorResponse(AdapterRequest request, Throwable error)` method which handles any Exception thrown during processing, and is responsible for preparing proper AdapterResponse on such situations. By default `AbstractAdapterProxy` implements this method, and returns `AdapterResponse` with the `ClientResponse` object having `500` status code and the error message in response body. 
 
 | ! Note |
 |:------ |
-| Besides Verticle implementation itself, a custom implementation of your Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Adapter a module. |
+| Please note, that this section focuses on Java language only. Thanks to [Vert.x polyglotism mechanism](http://vertx.io) you can implement your Adapters and Knots using other languages. |
 
-### Configuration file
-Adapter could have its JSON configuration file that will be passed to `initConfiguration` method in form of `JsonObject`.
-You may read more about example configuration for `HttpServiceAdapterVerticle` in [[Http Service Adapter|HttpServiceAdapter]] section.
+| ! Note |
+|:------ |
+| Besides Verticle implementation itself, a custom implementation of your Knot must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Knot a module. | 
 
 ### Adapters common library
-For many useful and reusable Adapters concept, please check our [knotx-adapter-common](https://github.com/Cognifide/knotx/tree/master/knotx-adapters/knotx-adapter-common)
+For many useful and reusable Adapters concept, please check our [knotx-adapter-common](https://github.com/Cognifide/knotx/tree/master/knotx-adapter/knotx-adapter-common)
 module. You will find there support for `placeholders` and `http connectivity`. 
 
 ### How to run a custom Adapter with Knot.x

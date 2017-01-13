@@ -1,7 +1,7 @@
 # Service Adapter
 Service Adapter is Component of a system, that mediate communication between Knot.x [[Service Knot|ServiceKnot]]
 and external services that deliver data injected into template. In short, Service Adapter acts as a
-`proxy` between Knot.x and external services.
+element translating messages between external services and Knots.
 
 ## How does it work?
 Service Adapter accepts message with the following data:
@@ -22,11 +22,13 @@ of [[Http Service Adapter|HttpServiceAdapter#how-to-configure]].
 Implementing custom Service Adapter that meet your project requirements allows 
 you to adopt request from Knot.x into request understandable by an endpoint service, and adopts 
 responses from that service into unified message understandable by Knot.x.
+
 For you convenience, Knot.x comes with implementation of a [[Service Adapter|ServiceAdapter]], 
 that enables communication with external services using HTTP Protocol. 
+
 See [[Http Service Adapter|HttpServiceAdapter]] for more information.
 Please note, that this implementation is very generic and we recommend to create project-specific 
-adapters for any custom solution.
+adapters for your setup.
 
 Writing custom Service Adapter requires fulfilling [[Service Knot|ServiceKnot]] contract.
 Please refer also to [[Adapter|Adapter#how-to-extend]].

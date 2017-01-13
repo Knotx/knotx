@@ -24,6 +24,7 @@ of [[Http Service Adapter|HttpServiceAdapter#how-to-configure]].
 Implementing Action Adapter that meets your project requirements allows 
 you to adopt request from Knot.x into request understandable by an endpoint service, and adopts 
 responses from that service into unified message understandable by Knot.x.
+
 For you convenience, Knot.x is shipped with a default Action Adapter called `HttpActionAdapter`.
 
 Writing custom Service Adapter requires fulfilling [[Action Knot|ActionKnot]] contract.

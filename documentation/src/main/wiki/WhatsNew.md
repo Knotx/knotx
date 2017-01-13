@@ -6,3 +6,4 @@
 * Changed snippet attribute name `data-params` to `data-knotx-params`
 * Changed snippet attribute `type` value `text/x-handlebars-template` to `text/knotx-snippet`
 * Introduced *FragmentAssembler* which joins all Fragments just before the response to the site visitor
+* Introduce Vert.x Service Proxy mechanism for Adapter, Knot, RepositoryConnector implementation, to hide the event bus implementation, simplify development process and to enable service discovery functionality in the near future.

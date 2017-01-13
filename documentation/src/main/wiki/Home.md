@@ -14,7 +14,7 @@ In short, we call **Knot.x** a **reactive multisource assembler**.
 
 [[assets/knotx-high-level-architecture.png|alt=High Level Architecture]]
 
-- **Knot.x** can combine several template (page) sources thanks to its [[Repository|Repository]] feature. It allows to have one entry point to different content platforms.
+- **Knot.x** can combine several template (page) sources thanks to its [[Repository Connectors|RepositoryConnectors]] feature. It allows to have one entry point to different content platforms.
 - **Knot.x** can assemble dynamic page that requires data from multiple external sources (e.g. microservices) thanks to [[Service Knot|ServiceKnot]] and [[Handlebars Knot|HandlebarsKnot]] modules.
 - With fast and scalable heart of an architecture - [Vert.x](http://vertx.io/) engine - **Knot.x** can significantly boost platform's performance. Learn more about [[Knot.x Architecture|Architecture]].
 - **Knot.x** supports forms submission including multi-step forms. Find out more about this topic reading about [[Action Knot|ActionKnot]].
