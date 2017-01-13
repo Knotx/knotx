@@ -6,3 +6,4 @@
 * Changed snippet attribute name `data-params` to `data-knotx-params`
 * Changed snippet attribute `type` value `text/x-handlebars-template` to `text/knotx-snippet`
 * Introduced *FragmentAssembler* which joins all Fragments just before the response to the site visitor
+* Added delay configuration to HTTP Service & Remote Repository mocks

@@ -17,32 +17,38 @@
  */
 package com.cognifide.knotx.mocks.adapter;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.util.Optional;
-
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
-import io.vertx.core.file.FileSystem;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.impl.MimeMapping;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
+import java.io.File;
+import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
+import rx.functions.Action0;
 import rx.functions.Action2;
 
 public class MockServiceHandler implements Handler<RoutingContext> {
+
   private static final String SEPARATOR = "/";
 
   private static final String DEFAULT_MIME = "text/plain";
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
-  private final FileSystem fileSystem;
+  private final Vertx vertx;
   private Action2<RoutingContext, String> bodyProcessor;
   private String catalogue;
 
-  public MockServiceHandler(String catalogue, FileSystem fileSystem) {
+  private long delayAllMs;
+  private final JsonObject delayPerPath;
+
+  public MockServiceHandler(String catalogue, Vertx vertx, long delayAllMs, JsonObject delayPerPath) {
     this.catalogue = catalogue;
-    this.fileSystem = fileSystem;
+    this.vertx = vertx;
+    this.delayAllMs = delayAllMs;
+    this.delayPerPath = delayPerPath;
   }
 
   public MockServiceHandler withBodyProcessor(Action2<RoutingContext, String> bodyProcessor) {
@@ -56,20 +62,42 @@ public class MockServiceHandler implements Handler<RoutingContext> {
     String contentType = getContentType(context);
     String modifiedResponseStatusCode = getStatusCode(context);
 
-    fileSystem.readFile(resourcePath, ar -> {
+    vertx.fileSystem().readFile(resourcePath, ar -> {
       if (ar.succeeded()) {
         String mockData = ar.result().toString();
         if (bodyProcessor != null) {
           bodyProcessor.call(context, mockData);
         } else {
-          context.response().putHeader("Content-Type", contentType);
-          context.response().setStatusCode(StringUtils.isNotBlank(modifiedResponseStatusCode) ? Integer.valueOf(modifiedResponseStatusCode) : 200).end(mockData);
+          generateResponse(context.request().path(), () -> {
+            context.response().putHeader("Content-Type", contentType);
+            context.response().setStatusCode(StringUtils.isNotBlank(modifiedResponseStatusCode) ? Integer.valueOf(modifiedResponseStatusCode) : 200)
+                .end(mockData);
+          });
         }
       } else {
         LOGGER.error("Unable to read file. {}", ar.cause());
         context.fail(500);
       }
     });
+  }
+
+  private long getDelay(String path) {
+    if (delayAllMs > 0) {
+      return delayAllMs;
+    } else {
+      long delay = delayPerPath.getJsonObject(path, new JsonObject()).getLong("delayMs", delayAllMs);
+      return delay > 0 ? delay : 0L;
+    }
+  }
+
+  private void generateResponse(String path, Action0 action) {
+    long delay = getDelay(path);
+    if (delay > 0) {
+      LOGGER.info("Delaying response for path {} by {} ms", path, delay);
+      vertx.setTimer(delay, timerId -> action.call());
+    } else {
+      action.call();
+    }
   }
 
   private String getStatusCode(RoutingContext context) {

@@ -20,15 +20,17 @@ package com.cognifide.knotx.mocks.adapter;
 import com.google.common.collect.Sets;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.http.impl.MimeMapping;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Optional;
 import java.util.Set;
+import rx.functions.Action0;
 
 public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
 
@@ -38,12 +40,16 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
   private Set<String> textFileExtensions = Sets.newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml", "xsm", "xsl", "xsd",
       "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
 
-  private final FileSystem fileSystem;
+  private final Vertx vertx;
   private final String catalogue;
+  private long delayAllMs;
+  private final JsonObject delayPerPath;
 
-  public MockRemoteRepositoryHandler(FileSystem fileSystem, String catalogue) {
-    this.fileSystem = fileSystem;
+  public MockRemoteRepositoryHandler(Vertx vertx, String catalogue, long delayAllMs, JsonObject delayPerPath) {
+    this.vertx = vertx;
     this.catalogue = catalogue;
+    this.delayAllMs = delayAllMs;
+    this.delayPerPath = delayPerPath;
   }
 
   @Override
@@ -53,19 +59,39 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     final String fileExtension = getFileExtension(resourcePath);
     final boolean isTextFile = fileExtension != null ? textFileExtensions.contains(fileExtension) : false;
 
-    fileSystem.readFile(resourcePath, ar -> {
+    vertx.fileSystem().readFile(resourcePath, ar -> {
       HttpServerResponse response = context.response();
       if (ar.succeeded()) {
         LOGGER.info("Mocked clientRequest [{}] fetch data from file [{}]", context.request().path(), resourcePath);
         Buffer fileContent = ar.result();
-
-        setHeaders(response, contentType, isTextFile);
-        response.setStatusCode(HttpResponseStatus.OK.code()).end(fileContent);
+        generateResponse(context.request().path(), () -> {
+          setHeaders(response, contentType, isTextFile);
+          response.setStatusCode(HttpResponseStatus.OK.code()).end(fileContent);
+        });
       } else {
         LOGGER.error("Unable to read file.", ar.cause());
         context.fail(404);
       }
     });
+  }
+
+  private long getDelay(String path) {
+    if (delayAllMs > 0) {
+      return delayAllMs;
+    } else {
+      long delay = delayPerPath.getJsonObject(path, new JsonObject()).getLong("delayMs", delayAllMs);
+      return delay > 0 ? delay : 0L;
+    }
+  }
+
+  private void generateResponse(String path, Action0 action) {
+    long delay = getDelay(path);
+    if (delay > 0) {
+      LOGGER.info("Delaying response for path {} by {} ms", path, delay);
+      vertx.setTimer(delay, timerId -> action.call());
+    } else {
+      action.call();
+    }
   }
 
   private void setHeaders(HttpServerResponse response, Optional<String> contentType, boolean isTextFile) {
