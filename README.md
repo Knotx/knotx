@@ -4,47 +4,111 @@
 [![][sonarqube img]][sonarqube]
 [![][license img]][license]
 
-#Knot.x - reactive multisource assembler 
+#Knot.x - efficient, high-performance and scalable integration platform for modern websites   
 
 <p align="center">
-  <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true"
-         alt="Knot.x"/>
+  <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
 </p>
 
 
 ## What is Knot.x?
-Very efficient, high-performance and scalable platform which assembles static and dynamic content from multiple sources.
+Let's imagine **an online banking website** containing different features like a *chat box*, *exchange rates*, 
+*stock data* and *user profile information*. The site has a high performance characteristic, despite of 
+its complexity and *target publishing channels*.
 
-## What's philosophy behind Knot.x?
-We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
+All those features come from different providers/vendors having their own teams working in various modes, 
+technologies and release cycles.
 
-### Stability and responsiveness
-**Knot.x** uses asynchronous programming principles which allows it to process a large number of requests using a single thread.
-Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
-The platform stays responsive under heavy and varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
+**Knot.x** connects all of them in a controlled and isolated way, preventing any undesired interferences.
+It combines **asynchronous programming principles** and **message-driven architecture** providing **a scalable 
+platform** for modern sites.
 
-### Loose coupling
-Relies on asynchronous message-passing to establish a boundary between system components that ensures 
-loose coupling, isolation and location transparency. Base **Knot.x** component is called [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
-
-### Scalability
-Various scaling options are available to suit client needs and help in cost optimization. Using a 
-simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of 
-servers.
+**Knot.x** connects all of the above **in a unified customer experience**.
 
 
 ## What problems does Knot.x solve?
-**Knot.x** assembles static and dynamic content from multiple sources to produce pages with dynamic data in a very performant manner.
 
-<p align="center">
-  <img src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-overview.png?raw=true"
-         alt="Knot.x overview"/>
-</p>
+###Features
 
-- **Knot.x** can combine several template (page) sources thanks to its [Repository](https://github.com/Cognifide/knotx/wiki/Repository) feature. It allows to have one entry point to different content platforms.
-- **Knot.x** can assemble dynamic page that requires data from multiple external sources (e.g. microservices) thanks to [Service Knot](https://github.com/Cognifide/knotx/wiki/ServiceKnot) and [Handlebars Knot](https://github.com/Cognifide/knotx/wiki/HandlebarsKnot) modules.
-- With fast and scalable heart of an architecture - [Vert.x](http://vertx.io/) engine - **Knot.x** can significantly boost platform's performance. Learn more about [Knot.x Architecture](https://github.com/Cognifide/knotx/wiki/Architecture).
-- **Knot.x** supports forms submission including multi-step forms. Find out more about this topic reading about [Action Knot](https://github.com/Cognifide/knotx/wiki/ActionKnot).
+<img align="right" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-features.png?raw=true"
+  alt="Knot.x Features"/>
+
+Probably you have many features / services you want to connect to your site. They come from 
+different vendors, talk using various protocols (REST / SOAP / binary) and have different 
+reliability characteristics.
+
+**Knot.x** assembles your static HTML pages with any features / services in a very 
+performant manner. It loads and analyses static pages from a Repository, collects dynamic 
+features from multiple sources asynchronously and injects them into the page.
+If a service you connect to may have unpredictable or cyclic outages you can easily handle them according
+to your business rules. 
+
+Read the [Service Knot](https://github.com/Cognifide/knotx/wiki/ServiceKnot) 
+section to find out more about this topic.
+
+###Forms
+
+<img align="left" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-forms.png?raw=true"
+  alt="Knot.x Forms"/>
+
+Every site contains more or less complicated forms. **Knot.x** supports simple and multi-step forms. 
+It handles submission errors, form validation and redirects to success pages. 
+
+Forms can be used to compose multi-step workflows. **Knot.x** allows you to define a graph of interconnected steps, responding to user input / site visitor choices.
+
+Find out more about this topic by reading the [Action Knot](https://github.com/Cognifide/knotx/wiki/ActionKnot) 
+section of the **Knot.x** documentation.
+
+###Prototyping
+
+<img align="right" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-prototyping.png?raw=true"
+  alt="Knot.x Prototyping"/>
+
+A potential client asked you to prepare a demo presenting the capabilities of a new site. The client
+operates in the financial sector so your site needs to connect to exchange rates and stock data 
+services. Those features are not publicly available so you only have some sample data to work with.
+
+**Knot.x** gives you the ability to use simple Mocks. This allows you to expose your sample data directly to
+pages. Additionally your demo pages can be easily changed to use live services without any further
+development work. Your client will be impressed with how fast it can happen.
+
+Find out more about this topic by reading the [Knot.x Demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo) 
+section of this documentation.
+
+###Extensions
+
+<img align="left" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-extensions.png?raw=true"
+  alt="Knot.x Extensions"/>
+
+You need to implement custom authentication mechanism for your site and then integrate with service 
+talking with its own custom protocol. **Knot.x** is a fully modular platform with very flexible extension
+points that we call [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter).
+
+Those extension points communicates with Knot.x Core using a very performant Event Bus so you can
+implement your integration layer in one place inside **Knot.x**. Not enough? If you wish, you can implement
+your extensions in any language you like, as long as it's supported by [Vert.x](http://vertx.io/).
+
+
+## What's the philosophy behind Knot.x?
+We care a lot about speed and that is why we built **Knot.x** on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
+
+### Stability and responsiveness
+**Knot.x** uses asynchronous programming principles, which allows it to process a large number of requests using a single thread.
+Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
+The platform stays responsive under heavy and varying loads and is designed to follow the principles outlined in the [Reactive Manifesto](http://www.reactivemanifesto.org/).
+
+### Loose coupling
+**Knot.x** relies on asynchronous message-passing to establish a boundary between system components that ensures 
+loose coupling, isolation and location transparency. A base **Knot.x** component is called a [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
+
+### Scalability
+Various scaling options are available to suit client needs and help in cost optimisation. Using a 
+simple concurrency model and a message bus, **Knot.x** can be scaled within a single host or a cluster of 
+servers.
 
 ## Full Documentation
 
@@ -58,7 +122,7 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 
 ## Demo
 
-You can run **Knot.x** demo with less than 5 minutes, you only need Java 8. See [how to run Knot.x demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo).
+You can run a **Knot.x** demo within less than 5 minutes, all you need is Java 8. See [how you can run the Knot.x demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo).
 
 
 ## Licence
