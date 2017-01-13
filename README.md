@@ -18,7 +18,7 @@ its complexity and *target publishing channels*.
 All those features come from different providers/vendors having their own teams working in various modes, 
 technologies and release cycles.
 
-Knot.x connects all of them in a controlled and isolated way, preventing any undesired interferences.
+**Knot.x** connects all of them in a controlled and isolated way, preventing any undesired interferences.
 It combines **asynchronous programming principles** and **message-driven architecture** providing **a scalable 
 platform** for modern sites.
 
@@ -35,15 +35,16 @@ platform** for modern sites.
 
 Probably you have many features / services you want to connect to your site. They come from 
 different vendors, talk using various protocols (REST / SOAP / binary) and have different 
-reliability characteristic.
-**Knot.x** assembles your static HTML pages with any features / services in a very 
-performant manner. It loads and analyses static page from Repository, collects dynamic 
-features from multiple sources asynchronously and injects them into the page.
-If service you connect to has unpredicted or cyclic outages you can easily handle them according
-your business rules. 
+reliability characteristics.
 
-Find out more about this topic reading [Service Knot](https://github.com/Cognifide/knotx/wiki/ServiceKnot) 
-section.
+**Knot.x** assembles your static HTML pages with any features / services in a very 
+performant manner. It loads and analyses static pages from a Repository, collects dynamic 
+features from multiple sources asynchronously and injects them into the page.
+If a service you connect to may have unpredictable or cyclic outages you can easily handle them according
+to your business rules. 
+
+Read the [Service Knot](https://github.com/Cognifide/knotx/wiki/ServiceKnot) 
+section to find out more about this topic.
 
 ###Forms
 
@@ -52,49 +53,50 @@ section.
   alt="Forms"/>
 
 Every site contains more or less complicated forms. **Knot.x** supports simple and multi-step forms. 
-It handles submission errors, form validations and redirects to success pages. 
+It handles submission errors, form validation and redirects to success pages. 
 
-Transition flow mechanism allows to define multi-step forms with graph characteristic. Every step 
-can define various next steps according to current submission state / site visitor choices.
+Forms can be used to compose multi-step workflows. **Knot.x** allows you to define a graph of interconnected steps, responding to user input / site visitor choices.
 
-Find out more about this topic reading [Action Knot](https://github.com/Cognifide/knotx/wiki/ActionKnot) 
-section.
+Find out more about this topic by reading the [Action Knot](https://github.com/Cognifide/knotx/wiki/ActionKnot) 
+section of the **Knot.x** documentation.
 
 ###Prototyping
-Your potential client asked you to prepare a demo presenting a new site capabilities. The client
-is connected with financial sector so your site needs to connect to exchange rates and stock data 
-features. Those features are not public available so you have only sample data.
-**Knot.x** gives you very simple Mocks mechanism. This allows to expose your sample data directly to
-pages. Additionally your demo pages can be easily switched to life services without any 
-development. Your client will be impressed how quick and fast it can be.
+A potential client asked you to prepare a demo presenting the capabilities of a new site. The client
+operates in the financial sector so your site needs to connect to exchange rates and stock data 
+services. Those features are not publicly available so you only have some sample data to work with.
 
-Find out more about this topic reading [Knot.x Demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo) 
-section.
+**Knot.x** gives you the ability to use simple Mocks. This allows you to expose your sample data directly to
+pages. Additionally your demo pages can be easily changed to use live services without any further
+development work. Your client will be impressed with how fast it can happen.
+
+Find out more about this topic by reading the [Knot.x Demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo) 
+section of this documentation.
 
 ###Extensions
 You need to implement custom authentication mechanism for your site and then integrate with service 
-talking with its own custom protocol. **Knot.x** is fully modular platform with very flexible extension
-points: [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter).
-Those extension points communicates with Knot.x Core using very performant Event Bus so you can
-implement your integration layer in one place inside Knot.x. Not enough? If you wish you can implement
-your extensions in language you like thanks [Vert.x](http://vertx.io/) capabilities.
+talking with its own custom protocol. **Knot.x** is a fully modular platform with very flexible extension
+points that we call [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter).
+
+Those extension points communicates with Knot.x Core using a very performant Event Bus so you can
+implement your integration layer in one place inside **Knot.x**. Not enough? If you wish, you can implement
+your extensions in any language you like, as long as it's supported by [Vert.x](http://vertx.io/).
 
 
-## What's philosophy behind Knot.x?
-We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
+## What's the philosophy behind Knot.x?
+We care a lot about speed and that is why we built **Knot.x** on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
 ### Stability and responsiveness
-**Knot.x** uses asynchronous programming principles which allows it to process a large number of requests using a single thread.
+**Knot.x** uses asynchronous programming principles, which allows it to process a large number of requests using a single thread.
 Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
-The platform stays responsive under heavy and varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
+The platform stays responsive under heavy and varying loads and is designed to follow the principles outlined in the [Reactive Manifesto](http://www.reactivemanifesto.org/).
 
 ### Loose coupling
-Relies on asynchronous message-passing to establish a boundary between system components that ensures 
-loose coupling, isolation and location transparency. Base **Knot.x** component is called [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
+**Knot.x** relies on asynchronous message-passing to establish a boundary between system components that ensures 
+loose coupling, isolation and location transparency. A base **Knot.x** component is called a [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
 
 ### Scalability
-Various scaling options are available to suit client needs and help in cost optimization. Using a 
-simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of 
+Various scaling options are available to suit client needs and help in cost optimisation. Using a 
+simple concurrency model and a message bus, **Knot.x** can be scaled within a single host or a cluster of 
 servers.
 
 ## Full Documentation
@@ -109,7 +111,7 @@ For bugs, questions and discussions please use the [Github Issues](https://githu
 
 ## Demo
 
-You can run **Knot.x** demo with less than 5 minutes, you only need Java 8. See [how to run Knot.x demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo).
+You can run a **Knot.x** demo within less than 5 minutes, all you need is Java 8. See [how you can run the Knot.x demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo).
 
 
 ## Licence
