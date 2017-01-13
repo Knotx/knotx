@@ -1,5 +1,14 @@
 sudo: required
 language: java
-script: mvn clean package -Pskip-integration-tests
+install: true
+script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Pskip-integration-tests
 jdk:
   - oraclejdk8
+addons:
+  sonarqube:
+    token:
+      secure: "your_token_encrypted_with_travis_encrypt_tool"
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
