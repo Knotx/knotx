@@ -35,8 +35,8 @@ platform** for modern sites.
   alt="Knot.x Features"/>
 
 Probably you have many features / services you want to connect to your site. They come from 
-different vendors, talk using various protocols (REST / SOAP / binary) and have different 
-reliability characteristics.
+different vendors, talk using various network protocols (HTTP/WebSocket/TCP etc.) and message 
+formats (SOAP/JSON/XML/binary etc.).
 
 **Knot.x** assembles your static HTML pages with any features / services in a very 
 performant manner. It loads and analyses static pages from a Repository, collects dynamic 
