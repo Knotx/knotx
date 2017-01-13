@@ -3,7 +3,7 @@
 [![][travis img]][travis]
 [![][license img]][license]
 
-#Knot.x - efficient, high-performance and scalable integration platform for modern web sites   
+#Knot.x - efficient, high-performance and scalable integration platform for modern websites   
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
@@ -11,9 +11,10 @@
 
 
 ## What is Knot.x?
-Lets imagine **an online banking web site** containing different features like a *chat box*, *exchange rates*, 
+Let's imagine **an online banking website** containing different features like a *chat box*, *exchange rates*, 
 *stock data* and *user profile information*. The site has a high performance characteristic, despite of 
 its complexity and *target publishing channels*.
+
 All those features come from different providers/vendors having their own teams working in various modes, 
 technologies and release cycles.
 
