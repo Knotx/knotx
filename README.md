@@ -31,7 +31,7 @@ platform** for modern sites.
 
 <img align="right" 
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-features.png?raw=true"
-  alt="Features"/>
+  alt="Knot.x Features"/>
 
 Probably you have many features / services you want to connect to your site. They come from 
 different vendors, talk using various protocols (REST / SOAP / binary) and have different 
@@ -50,7 +50,7 @@ section to find out more about this topic.
 
 <img align="left" 
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-forms.png?raw=true"
-  alt="Forms"/>
+  alt="Knot.x Forms"/>
 
 Every site contains more or less complicated forms. **Knot.x** supports simple and multi-step forms. 
 It handles submission errors, form validation and redirects to success pages. 
@@ -61,6 +61,11 @@ Find out more about this topic by reading the [Action Knot](https://github.com/C
 section of the **Knot.x** documentation.
 
 ###Prototyping
+
+<img align="right" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-prototyping.png?raw=true"
+  alt="Knot.x Prototyping"/>
+
 A potential client asked you to prepare a demo presenting the capabilities of a new site. The client
 operates in the financial sector so your site needs to connect to exchange rates and stock data 
 services. Those features are not publicly available so you only have some sample data to work with.
@@ -73,6 +78,11 @@ Find out more about this topic by reading the [Knot.x Demo](https://github.com/C
 section of this documentation.
 
 ###Extensions
+
+<img align="left" 
+  src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-extensions.png?raw=true"
+  alt="Knot.x Extensions"/>
+
 You need to implement custom authentication mechanism for your site and then integrate with service 
 talking with its own custom protocol. **Knot.x** is a fully modular platform with very flexible extension
 points that we call [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter).
