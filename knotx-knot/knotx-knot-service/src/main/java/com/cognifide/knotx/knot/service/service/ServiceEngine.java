@@ -62,17 +62,16 @@ public class ServiceEngine {
         .filter(service -> serviceEntry.getName().matches(service.getName()))
         .findFirst();
 
-    if (serviceMetadata.isPresent()) {
-      return serviceMetadata.map(metadata ->
-          new ServiceEntry(serviceEntry)
-              .setAddress(metadata.getAddress())
-              .mergeParams(metadata.getParams())
-              .setCacheKey(metadata.getCacheKey()))
-          .get();
-    } else {
-      LOGGER.error("Missing service configuration for: {}", serviceEntry.getName());
-      throw new IllegalStateException("Missing service configuration");
-    }
+    return serviceMetadata.map(
+        metadata ->
+            new ServiceEntry(serviceEntry)
+                .setAddress(metadata.getAddress())
+                .mergeParams(metadata.getParams())
+                .setCacheKey(metadata.getCacheKey()))
+        .orElseThrow(() -> {
+          LOGGER.error("Missing service configuration for: {}", serviceEntry.getName());
+          return new IllegalStateException("Missing service configuration");
+        });
   }
 
   private JsonObject buildResultObject(AdapterResponse adapterResponse) {

@@ -28,6 +28,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.rxjava.core.eventbus.Message;
 import io.vertx.rxjava.core.file.FileSystem;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import rx.Observable;
 
@@ -85,7 +86,7 @@ public class MockKnotHandler implements Handler<Message<KnotContext>> {
   }
 
   private JsonObject mergeResponseValues(JsonObject result, Pair<String, Optional<Object>> value) {
-    return new JsonObject().put(value.getLeft(), value.getRight().get());
+    return new JsonObject().put(value.getLeft(), value.getRight().orElse(StringUtils.EMPTY));
   }
 
 }
