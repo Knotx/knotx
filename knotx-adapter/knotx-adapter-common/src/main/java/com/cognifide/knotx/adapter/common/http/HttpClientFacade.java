@@ -91,7 +91,7 @@ public class HttpClientFacade {
    * allows passing those headers to the target service. See 'allowed.request.headers' section of the configuration
    * </br>
    *
-   * @param originalRequest - ClientRequest representing original request comming to the KnotProxy.x
+   * @param originalRequest - ClientRequest representing original request comming to the Knot.x
    * @param params - JsonObject of the params to be used to build request.
    * @return ClientRequest representing Http request to the target service
    */

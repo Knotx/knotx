@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    KnotProxy.x - Sample App with Mock service
+    Knot.x - Sample App with Mock service
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -33,7 +33,7 @@
   <name>Knot.x - Reactive microservice assembler - Example Knot.x App</name>
 
   <dependencies>
-    <!-- KnotProxy.x -->
+    <!-- Knot.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-core</artifactId>
