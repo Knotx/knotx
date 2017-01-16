@@ -45,7 +45,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
   @Override
   protected Observable<KnotContext> processRequest(KnotContext knotContext) {
-    if (knotContext.getFragments() != null && knotContext.getFragments().size() > 0) {
+    if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
             .map(configuration.unprocessedFragmentStrategy()::get)
@@ -56,10 +56,14 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
         LOGGER.error("Exception happened during Fragment assembly.", ex);
         return Observable.just(processError(knotContext, ex));
       }
-    } else { //no fragments
+    } else {
       LOGGER.error("Fragments are empty or not exists in KnotContext.");
       return Observable.just(processError(knotContext, null));
     }
+  }
+
+  private boolean hasFragments(KnotContext knotContext) {
+    return knotContext.getFragments() != null && knotContext.getFragments().size() > 0;
   }
 
   @Override

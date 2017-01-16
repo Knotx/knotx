@@ -28,7 +28,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ProxyHelper;
 
-public class HandlebarsKnotVerticle extends AbstractVerticle {
+public class gHandlebarsKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotVerticle.class);
 
