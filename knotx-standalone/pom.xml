@@ -87,11 +87,6 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-adapter-action-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-server</artifactId>
       <version>${project.version}</version>
     </dependency>

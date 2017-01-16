@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - HTTP Service Adapter
+    Knot.x - Sample App with Mock service
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -18,9 +18,9 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.cognifide.knotx</groupId>
@@ -28,14 +28,14 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-adapter</artifactId>
+  <artifactId>knotx-example</artifactId>
   <packaging>pom</packaging>
 
-  <name>Knot.x - Reactive microservice assembler - Adapter</name>
+  <name>Knot.x - Reactive microservice assembler - Example</name>
 
   <modules>
-    <module>knotx-adapter-common</module>
-    <module>knotx-adapter-service-http</module>
+    <module>knotx-example-handlebars-ext</module>
+    <module>knotx-example-action-adapter-http</module>
+    <module>knotx-example-app</module>
   </modules>
-
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Knot.x - Reactive microservice assembler - Service Knot
+    Knot.x - Example HTTP Action Adapter
 
     Copyright (C) 2016 Cognifide Limited
 
@@ -28,7 +28,7 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide.knotx.knot.templating" level="TEST"
+  <logger name="com.cognifide.knotx.adapter.common" level="INFO"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
