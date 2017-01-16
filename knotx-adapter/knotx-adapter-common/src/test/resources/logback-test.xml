@@ -28,7 +28,7 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide.knotx" level="TRACE"
+  <logger name="com.cognifide.knotx.action.http" level="INFO"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
