@@ -32,7 +32,7 @@
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="com.cognifide.knotx.server" level="TRACE" additivity="false">
+  <logger name="com.cognifide.knotx.server" level="INFO" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 
