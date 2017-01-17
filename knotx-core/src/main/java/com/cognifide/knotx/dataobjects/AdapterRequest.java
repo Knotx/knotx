@@ -52,6 +52,7 @@ public class AdapterRequest {
 
   /**
    * Set the client request
+   *
    * @param request - ClientRequest object
    * @return a reference to this, so the API can be used fluently
    */
@@ -69,6 +70,7 @@ public class AdapterRequest {
 
   /**
    * Set the request params
+   *
    * @param params - JsonObject consists of request params
    * @return a reference to this, so the API can be used fluently
    */

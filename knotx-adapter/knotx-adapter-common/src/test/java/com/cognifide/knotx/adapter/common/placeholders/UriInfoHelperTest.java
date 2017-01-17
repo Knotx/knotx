@@ -17,17 +17,27 @@
  */
 package com.cognifide.knotx.adapter.common.placeholders;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 @RunWith(Parameterized.class)
 public class UriInfoHelperTest {
+
+  @Parameterized.Parameter
+  public String uri;
+  @Parameterized.Parameter(value = 1)
+  public String path;
+  @Parameterized.Parameter(value = 2)
+  public String selectorString;
+  @Parameterized.Parameter(value = 3)
+  public String extension;
+  @Parameterized.Parameter(value = 4)
+  public String suffix;
 
   @Parameterized.Parameters(name = "{index}: {0}")
   public static Collection<Object[]> data() {
@@ -58,21 +68,6 @@ public class UriInfoHelperTest {
         {"/a/b.s1.html/c/d.s.txt#f", "/a/b", "s1", "html", "/c/d.s.txt"},
         {"/a/b.s1.s2.html/c/d.s.txt#f", "/a/b", "s1.s2", "html", "/c/d.s.txt"}});
   }
-
-  @Parameterized.Parameter
-  public String uri;
-
-  @Parameterized.Parameter(value = 1)
-  public String path;
-
-  @Parameterized.Parameter(value = 2)
-  public String selectorString;
-
-  @Parameterized.Parameter(value = 3)
-  public String extension;
-
-  @Parameterized.Parameter(value = 4)
-  public String suffix;
 
   @Test
   public void getUriInfo_whenGivenUrl_expectProperlyDecomposedUrl() {

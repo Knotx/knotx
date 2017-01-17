@@ -29,7 +29,8 @@ public class Logback implements TestRule {
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
-        System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+        System.setProperty("vertx.logger-delegate-factory-class-name",
+            "io.vertx.core.logging.SLF4JLogDelegateFactory");
         base.evaluate();
       }
     };

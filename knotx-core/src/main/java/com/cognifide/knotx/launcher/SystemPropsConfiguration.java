@@ -51,7 +51,8 @@ public class SystemPropsConfiguration {
     String key = ((String) entry.getKey());
     if (key.startsWith(identifier)) {
       if (StringUtils.isBlank(StringUtils.substringAfter(key, identifier + "."))) {
-        LOGGER.warn("-D{}={} does not have specified key after Service name", key, entry.getValue());
+        LOGGER
+            .warn("-D{}={} does not have specified key after Service name", key, entry.getValue());
       } else {
         result = true;
       }
@@ -61,10 +62,15 @@ public class SystemPropsConfiguration {
   }
 
   /**
-   * Update given JsonObject with the data provided in system property during Knotx start. In order to provide such overrides you can use two
-   * approches: - -Dio.knotx.KnotxServer.httpPort=9999, -Dio.knotx.KnotxServer.splitter.address=other-address -> this will override one property with
-   * the value given after '=' - -Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json file from the field
-   * specified
+   * Update given JsonObject with the data provided in system property during Knotx start.<br/>
+   * In order to provide such overrides you can use two approches:
+   * <ul>
+   * <li>-Dio.knotx.KnotxServer.httpPort=9999,
+   * -Dio.knotx.KnotxServer.splitter.address=other-address - this will override one property
+   * with the value given after '=' </li>
+   * <li>-Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json
+   * file from the field specified</li>
+   * </ul>
    */
   public JsonObject updateJsonObject(JsonObject descriptor) {
     final JsonObject object = descriptor.copy();

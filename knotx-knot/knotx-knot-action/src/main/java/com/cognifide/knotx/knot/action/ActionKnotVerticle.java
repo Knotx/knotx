@@ -48,7 +48,8 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(KnotProxy.class, vertx, new ActionKnotProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+        .registerService(KnotProxy.class, vertx,
+            new ActionKnotProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
             configuration.address());
   }
 

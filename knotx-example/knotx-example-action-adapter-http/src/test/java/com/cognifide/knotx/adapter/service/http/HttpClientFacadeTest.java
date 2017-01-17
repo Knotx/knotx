@@ -65,8 +65,10 @@ public class HttpClientFacadeTest {
 
   private static final String REQUEST_PATH = "/services/mock/first.json";
 
-  private static final List<Pattern> PATTERNS = Collections.singletonList(Pattern.compile("X-test*"));
-  private final static ClientRequest clientRequest = new ClientRequest().setMethod(HttpMethod.POST).setPath("/content/simple.html");
+  private static final List<Pattern> PATTERNS = Collections
+      .singletonList(Pattern.compile("X-test*"));
+  private final static ClientRequest clientRequest = new ClientRequest().setMethod(HttpMethod.POST)
+      .setPath("/content/simple.html");
   private RunTestOnContext vertx = new RunTestOnContext();
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
   @Rule
@@ -74,7 +76,8 @@ public class HttpClientFacadeTest {
 
   @Test
   @KnotxConfiguration("knotx-action-adapter-http-test.json")
-  public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
+  public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(
+      TestContext context) throws Exception {
     Async async = context.async();
     // given
     final HttpClient httpClient = PowerMockito.spy(httpClient());
@@ -83,14 +86,16 @@ public class HttpClientFacadeTest {
 
     // when
     Observable<ClientResponse> result = clientFacade
-        .process(payloadMessage(new JsonObject().put("path", REQUEST_PATH), clientRequest), HttpMethod.POST);
+        .process(payloadMessage(new JsonObject().put("path", REQUEST_PATH), clientRequest),
+            HttpMethod.POST);
 
     // then
     result.subscribe(
         response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
-          Mockito.verify(httpClient, Mockito.times(1)).request(HttpMethod.POST, 3000, "localhost", REQUEST_PATH);
+          Mockito.verify(httpClient, Mockito.times(1))
+              .request(HttpMethod.POST, 3000, "localhost", REQUEST_PATH);
         },
         error -> context.fail(error.getMessage()),
         async::complete);
@@ -98,7 +103,8 @@ public class HttpClientFacadeTest {
 
   @Test
   @KnotxConfiguration("knotx-action-adapter-http-test.json")
-  public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(TestContext context) throws Exception {
+  public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(
+      TestContext context) throws Exception {
     Async async = context.async();
     // given
     final HttpClient httpClient = PowerMockito.spy(httpClient());
@@ -110,7 +116,9 @@ public class HttpClientFacadeTest {
 
     Observable<ClientResponse> result =
         clientFacade
-            .process(payloadMessage(new JsonObject().put("path", "/services/mock/{param.dynamicValue}.json"), clientRequest.setParams(requestParams)),
+            .process(payloadMessage(
+                new JsonObject().put("path", "/services/mock/{param.dynamicValue}.json"),
+                clientRequest.setParams(requestParams)),
                 HttpMethod.POST);
 
     // then
@@ -118,7 +126,8 @@ public class HttpClientFacadeTest {
         response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
-          Mockito.verify(httpClient, Mockito.times(1)).request(HttpMethod.POST, 3000, "localhost", REQUEST_PATH);
+          Mockito.verify(httpClient, Mockito.times(1))
+              .request(HttpMethod.POST, 3000, "localhost", REQUEST_PATH);
         },
         error -> context.fail(error.getMessage()),
         async::complete);
@@ -126,11 +135,13 @@ public class HttpClientFacadeTest {
 
   @Test
   @KnotxConfiguration("knotx-action-adapter-http-test.json")
-  public void whenServiceRequestedWithoutPathParam_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
+  public void whenServiceRequestedWithoutPathParam_expectNoServiceRequestAndBadRequest(
+      TestContext context) throws Exception {
     Async async = context.async();
     // given
     HttpClient mockedHttpClient = Mockito.mock(HttpClient.class);
-    HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient,
+        getServiceConfigurations());
 
     // when
     Observable<ClientResponse> result = clientFacade.process(new AdapterRequest()
@@ -141,8 +152,11 @@ public class HttpClientFacadeTest {
         response -> context.fail("Error should occur!"),
         error -> {
           {
-            context.assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
-            Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
+            context
+                .assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
+            Mockito.verify(mockedHttpClient, Mockito.times(0))
+                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                    Matchers.anyString());
             async.complete();
           }
         },
@@ -151,15 +165,19 @@ public class HttpClientFacadeTest {
 
   @Test
   @KnotxConfiguration("knotx-action-adapter-http-test.json")
-  public void whenUnsupportedPathServiceRequested_expectNoServiceRequestAndBadRequest(TestContext context) throws Exception {
+  public void whenUnsupportedPathServiceRequested_expectNoServiceRequestAndBadRequest(
+      TestContext context) throws Exception {
     Async async = context.async();
     // given
     HttpClient mockedHttpClient = Mockito.mock(HttpClient.class);
-    HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient, getServiceConfigurations());
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedHttpClient,
+        getServiceConfigurations());
 
     // when
     Observable<ClientResponse> result =
-        clientFacade.process(payloadMessage(new JsonObject().put("path", "/not/supported/path"), clientRequest), HttpMethod.POST);
+        clientFacade.process(
+            payloadMessage(new JsonObject().put("path", "/not/supported/path"), clientRequest),
+            HttpMethod.POST);
 
     // then
     result.subscribe(
@@ -167,7 +185,9 @@ public class HttpClientFacadeTest {
         error -> {
           {
             context.assertEquals(UnsupportedServiceException.class, error.getClass());
-            Mockito.verify(mockedHttpClient, Mockito.times(0)).request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(), Matchers.anyString());
+            Mockito.verify(mockedHttpClient, Mockito.times(0))
+                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                    Matchers.anyString());
             async.complete();
           }
         },

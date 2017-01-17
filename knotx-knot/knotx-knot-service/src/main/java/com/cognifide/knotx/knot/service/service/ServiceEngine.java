@@ -58,7 +58,8 @@ public class ServiceEngine {
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
-    Optional<ServiceKnotConfiguration.ServiceMetadata> serviceMetadata = configuration.getServices().stream()
+    Optional<ServiceKnotConfiguration.ServiceMetadata> serviceMetadata = configuration.getServices()
+        .stream()
         .filter(service -> serviceEntry.getName().matches(service.getName()))
         .findFirst();
 
@@ -86,7 +87,8 @@ public class ServiceEngine {
     } else {
       throw new DecodeException("Result is neither Json Array nor Json Object");
     }
-    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject().put("statusCode", Integer.toString(adapterResponse.getResponse().getStatusCode())));
+    object.put(RESPONSE_NAMESPACE_KEY, new JsonObject()
+        .put("statusCode", Integer.toString(adapterResponse.getResponse().getStatusCode())));
     return object;
   }
 }

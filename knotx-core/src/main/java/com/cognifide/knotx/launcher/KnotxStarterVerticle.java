@@ -56,7 +56,8 @@ public class KnotxStarterVerticle extends AbstractVerticle {
 
   private DeploymentOptions getModuleOptions(final String module) {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
-    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE).containsKey(module)) {
+    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE)
+        .containsKey(module)) {
       JsonObject moduleConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(module);
       if (moduleConfig.containsKey(MODULE_OPTIONS)) {
         deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
@@ -67,13 +68,16 @@ public class KnotxStarterVerticle extends AbstractVerticle {
 
   private Observable.Transformer<Pair<String, String>, String> joinDeployments() {
     return observable ->
-        observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()), this::collectDeployment)
+        observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()),
+            this::collectDeployment)
             .map(StringBuilder::toString);
   }
 
-  private StringBuilder collectDeployment(StringBuilder accumulator, Pair<String, String> deploymentId) {
+  private StringBuilder collectDeployment(StringBuilder accumulator,
+      Pair<String, String> deploymentId) {
     return accumulator
-        .append(String.format("\t\tDeployed %s [%s]", deploymentId.getRight(), deploymentId.getLeft()))
+        .append(
+            String.format("\t\tDeployed %s [%s]", deploymentId.getRight(), deploymentId.getLeft()))
         .append(System.lineSeparator());
   }
 }

@@ -174,7 +174,8 @@ public class ActionKnotProxyImpl implements KnotProxy {
 
               if (shouldRedirect(redirectLocation)) {
                 LOGGER.trace("Request redirected to [{}]", redirectLocation);
-                knotContext.getClientResponse().setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY.code());
+                knotContext.getClientResponse()
+                    .setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY.code());
                 MultiMap headers = MultiMap.caseInsensitiveMultiMap();
                 headers.addAll(getFilteredHeaders(clientResponse.getHeaders(),
                     adapterMetadata.getAllowedResponseHeaders()));
@@ -189,9 +190,10 @@ public class ActionKnotProxyImpl implements KnotProxy {
                     .put("_response", clientResponse.toMetadataJson());
 
                 currentFragment.context().put("action", actionContext);
-                knotContext.getClientResponse().setHeaders(getFilteredHeaders(clientResponse.getHeaders(),
-                    adapterMetadata.getAllowedResponseHeaders())
-                );
+                knotContext.getClientResponse()
+                    .setHeaders(getFilteredHeaders(clientResponse.getHeaders(),
+                        adapterMetadata.getAllowedResponseHeaders())
+                    );
                 Optional.ofNullable(knotContext.getFragments()).ifPresent(this::processFragments);
                 knotContext.setTransition(DEFAULT_TRANSITION);
               }
@@ -199,7 +201,8 @@ public class ActionKnotProxyImpl implements KnotProxy {
             },
             err -> {
               LOGGER.error("Error happened during Action processing", err);
-              knotContext.getClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+              knotContext.getClientResponse()
+                  .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
               result.handle(Future.succeededFuture(knotContext));
             }
         );

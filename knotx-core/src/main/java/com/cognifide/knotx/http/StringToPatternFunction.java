@@ -17,12 +17,11 @@
  */
 package com.cognifide.knotx.http;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 public class StringToPatternFunction implements Function<String, Pattern> {
 

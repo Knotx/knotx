@@ -34,7 +34,8 @@ public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy {
   private HttpClientFacade httpClientFacade;
 
   public HttpServiceAdapterProxyImpl(Vertx vertx, HttpAdapterConfiguration configuration) {
-    this.httpClientFacade = new HttpClientFacade(getHttpClient(vertx, configuration), configuration.getServices());
+    this.httpClientFacade = new HttpClientFacade(getHttpClient(vertx, configuration),
+        configuration.getServices());
   }
 
   @Override

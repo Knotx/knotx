@@ -44,14 +44,17 @@ public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> 
         .noneMatch(supportedMethod -> supportedMethod == context.request().method());
 
     boolean shouldRejectPath = configuration.getEngineRouting().values().stream().noneMatch(
-        routingEntries -> routingEntries.stream().anyMatch(item -> context.request().path().matches(item.path()))
+        routingEntries -> routingEntries.stream()
+            .anyMatch(item -> context.request().path().matches(item.path()))
     );
 
     if (shouldRejectMethod) {
-      LOGGER.warn("Requested method {} is not supported based on configuration", context.request().method());
+      LOGGER.warn("Requested method {} is not supported based on configuration",
+          context.request().method());
       context.fail(HttpResponseStatus.METHOD_NOT_ALLOWED.code());
     } else if (shouldRejectPath) {
-      LOGGER.warn("Requested path {} is not supported based on configuration", context.request().path());
+      LOGGER.warn("Requested path {} is not supported based on configuration",
+          context.request().path());
       context.fail(HttpResponseStatus.NOT_FOUND.code());
     } else {
       context.next();

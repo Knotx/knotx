@@ -53,7 +53,8 @@ public class KnotxServerRoutingTest {
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri,
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
+      int port, String domain, String uri,
       Action1<HttpClientRequest> requestBuilder) {
     return Observable.create(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
@@ -85,7 +86,8 @@ public class KnotxServerRoutingTest {
 
   @Test
   @KnotxConfiguration("test-server.json")
-  public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(TestContext context) {
+  public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(
+      TestContext context) {
     createPassThroughKnot("test-splitter");
     createPassThroughKnot("test-assembler");
     createSimpleKnot("A-post-engine", "+Apost", "go-b");
@@ -96,7 +98,8 @@ public class KnotxServerRoutingTest {
 
   @Test
   @KnotxConfiguration("test-server.json")
-  public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(TestContext context) {
+  public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(
+      TestContext context) {
     createPassThroughKnot("test-splitter");
     createPassThroughKnot("test-assembler");
     createSimpleKnot("A-post-engine", "+Apost", "go-c");
@@ -118,16 +121,18 @@ public class KnotxServerRoutingTest {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     String testBody = "a=b";
     Async async = context.async();
-    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
-      req.headers().set("content-length", String.valueOf(testBody.length()));
-      req.headers().set("content-type", "application/x-www-form-urlencoded");
-      req.write(testBody);
-    });
+    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT,
+        KNOTX_SERVER_ADDRESS, url, req -> {
+          req.headers().set("content-length", String.valueOf(testBody.length()));
+          req.headers().set("content-type", "application/x-www-form-urlencoded");
+          req.write(testBody);
+        });
 
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
       try {
-        context.assertEquals(body.toString(), expectedResult, "Wrong engines processed request, expected " + expectedResult);
+        context.assertEquals(body.toString(), expectedResult,
+            "Wrong engines processed request, expected " + expectedResult);
       } catch (Exception e) {
         context.fail(e);
       }
@@ -157,7 +162,8 @@ public class KnotxServerRoutingTest {
     MockKnotProxy.register(vertx.vertx(), address);
   }
 
-  private void createSimpleKnot(final String address, final String addToBody, final String transition) {
+  private void createSimpleKnot(final String address, final String addToBody,
+      final String transition) {
     Action1<KnotContext> simpleKnot = knotContext -> {
       Buffer inBody = knotContext.getClientResponse().getBody();
       knotContext.getClientResponse().setBody(inBody.appendString(addToBody));

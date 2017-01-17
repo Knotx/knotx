@@ -50,7 +50,8 @@ public class HttpActionAdapterVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(AdapterProxy.class, vertx, new HttpActionAdapterProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+        .registerService(AdapterProxy.class, vertx,
+            new HttpActionAdapterProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
             configuration.getAddress());
   }
 

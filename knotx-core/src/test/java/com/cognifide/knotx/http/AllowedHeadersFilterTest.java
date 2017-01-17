@@ -74,7 +74,8 @@ public class AllowedHeadersFilterTest {
   @Test
   public void whenNoWildcardPatternsAvailableWithDifferentCasing_expectExactMatchingHeadersPassed() {
     AllowedHeadersFilter filter = AllowedHeadersFilter.create(
-        Lists.newArrayList(patternGenerator.apply("content-type"), patternGenerator.apply("Location")));
+        Lists.newArrayList(patternGenerator.apply("content-type"),
+            patternGenerator.apply("Location")));
 
     List<String> filtered = filterHeaders(filter);
 

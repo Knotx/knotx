@@ -36,33 +36,45 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
 
   private static final String SEPARATOR = "/";
   private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
-
-  private Set<String> textFileExtensions = Sets.newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml", "xsm", "xsl", "xsd",
-      "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
-
   private final Vertx vertx;
   private final String catalogue;
-  private long delayAllMs;
   private final JsonObject delayPerPath;
+  private Set<String> textFileExtensions = Sets
+      .newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml", "xsm", "xsl",
+          "xsd",
+          "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
+  private long delayAllMs;
 
-  public MockRemoteRepositoryHandler(Vertx vertx, String catalogue, long delayAllMs, JsonObject delayPerPath) {
+  public MockRemoteRepositoryHandler(Vertx vertx, String catalogue, long delayAllMs,
+      JsonObject delayPerPath) {
     this.vertx = vertx;
     this.catalogue = catalogue;
     this.delayAllMs = delayAllMs;
     this.delayPerPath = delayPerPath;
   }
 
+  public static String getFileExtension(String filename) {
+    int li = filename.lastIndexOf('.');
+    if (li != -1 && li != filename.length() - 1) {
+      return filename.substring(li + 1, filename.length());
+    }
+    return null;
+  }
+
   @Override
   public void handle(RoutingContext context) {
     String resourcePath = catalogue + SEPARATOR + getContentPath(context.request().path());
-    final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(resourcePath));
+    final Optional<String> contentType = Optional
+        .ofNullable(MimeMapping.getMimeTypeForFilename(resourcePath));
     final String fileExtension = getFileExtension(resourcePath);
-    final boolean isTextFile = fileExtension != null ? textFileExtensions.contains(fileExtension) : false;
+    final boolean isTextFile =
+        fileExtension != null ? textFileExtensions.contains(fileExtension) : false;
 
     vertx.fileSystem().readFile(resourcePath, ar -> {
       HttpServerResponse response = context.response();
       if (ar.succeeded()) {
-        LOGGER.info("Mocked clientRequest [{}] fetch data from file [{}]", context.request().path(), resourcePath);
+        LOGGER.info("Mocked clientRequest [{}] fetch data from file [{}]", context.request().path(),
+            resourcePath);
         Buffer fileContent = ar.result();
         generateResponse(context.request().path(), () -> {
           setHeaders(response, contentType, isTextFile);
@@ -79,7 +91,8 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     if (delayAllMs > 0) {
       return delayAllMs;
     } else {
-      long delay = delayPerPath.getJsonObject(path, new JsonObject()).getLong("delayMs", delayAllMs);
+      long delay = delayPerPath.getJsonObject(path, new JsonObject())
+          .getLong("delayMs", delayAllMs);
       return delay > 0 ? delay : 0L;
     }
   }
@@ -94,9 +107,11 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     }
   }
 
-  private void setHeaders(HttpServerResponse response, Optional<String> contentType, boolean isTextFile) {
+  private void setHeaders(HttpServerResponse response, Optional<String> contentType,
+      boolean isTextFile) {
     response.putHeader("Access-Control-Allow-Origin", "*");
-    contentType.ifPresent(type -> response.putHeader("Content-Type", createContentType(type, isTextFile)));
+    contentType
+        .ifPresent(type -> response.putHeader("Content-Type", createContentType(type, isTextFile)));
     response.putHeader("Server", "Knot.x Repository Mock Server");
     response.putHeader("Cache-control", "no-cache, no-store, must-revalidate");
   }
@@ -115,14 +130,6 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     } else {
       return path;
     }
-  }
-
-  public static String getFileExtension(String filename) {
-    int li = filename.lastIndexOf('.');
-    if (li != -1 && li != filename.length() - 1) {
-      return filename.substring(li + 1, filename.length());
-    }
-    return null;
   }
 
 }

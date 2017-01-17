@@ -20,13 +20,11 @@ package com.cognifide.knotx.knot.templating.helpers;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
 
 public enum DefaultHandlebarsHelpers implements Helper<Object> {
 

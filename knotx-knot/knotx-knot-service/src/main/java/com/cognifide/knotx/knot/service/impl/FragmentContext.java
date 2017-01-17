@@ -49,11 +49,15 @@ class FragmentContext {
 
     Map<String, Attribute> serviceAttributes = attributes.stream()
         .filter(attribute -> attribute.getKey().matches(DATA_SERVICE))
-        .collect(Collectors.toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()), Function.identity()));
+        .collect(Collectors
+            .toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()),
+                Function.identity()));
 
     Map<String, Attribute> paramsAttributes = attributes.stream()
         .filter(attribute -> attribute.getKey().matches(DATA_PARAMS))
-        .collect(Collectors.toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()), Function.identity()));
+        .collect(Collectors
+            .toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()),
+                Function.identity()));
 
     return empty().fragment(fragment).services(serviceAttributes.entrySet().stream()
         .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))

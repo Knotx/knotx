@@ -37,7 +37,8 @@ public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
   private HttpClientFacade httpClientFacade;
 
   public HttpActionAdapterProxyImpl(Vertx vertx, HttpAdapterConfiguration configuration) {
-    this.httpClientFacade = new HttpClientFacade(getHttpClient(vertx, configuration), configuration.getServices());
+    this.httpClientFacade = new HttpClientFacade(getHttpClient(vertx, configuration),
+        configuration.getServices());
   }
 
   @Override
@@ -55,7 +56,8 @@ public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
     AdapterResponse result = new AdapterResponse();
 
     if (response.getStatusCode() == HttpResponseStatus.OK.code()) {
-      if (isJsonBody(response.getBody()) && response.getBody().toJsonObject().containsKey("validationErrors")) {
+      if (isJsonBody(response.getBody()) && response.getBody().toJsonObject()
+          .containsKey("validationErrors")) {
         result.setSignal("error");
       } else {
         result.setSignal("success");

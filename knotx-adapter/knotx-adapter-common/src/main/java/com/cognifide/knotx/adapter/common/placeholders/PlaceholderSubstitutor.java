@@ -24,7 +24,7 @@ public interface PlaceholderSubstitutor {
   /**
    * Get the replacement value from the supplied clientRequest and placeholder name
    *
-   * @param request     the supplied clientRequest
+   * @param request the supplied clientRequest
    * @param placeholder the placeholder name
    * @return the replacement value, or null if no replacement can be get
    */

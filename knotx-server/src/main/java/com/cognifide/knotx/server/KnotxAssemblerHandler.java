@@ -77,7 +77,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
         .end(Buffer.newInstance(clientResponse.getBody()));
   }
 
-  private void writeHeaders(final HttpServerResponse response, final ClientResponse clientResponse) {
+  private void writeHeaders(final HttpServerResponse response,
+      final ClientResponse clientResponse) {
     clientResponse.getHeaders().names().stream()
         .filter(this::headerFilter)
         .forEach(

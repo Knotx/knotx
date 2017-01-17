@@ -18,10 +18,8 @@
 package com.cognifide.knotx.adapter.common.placeholders;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 
 public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
 

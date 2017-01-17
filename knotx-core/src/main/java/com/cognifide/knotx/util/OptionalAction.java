@@ -19,10 +19,10 @@ package com.cognifide.knotx.util;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-
 import rx.functions.Action0;
 
 public class OptionalAction<T> {
+
   private Optional<T> optional;
 
   private OptionalAction(Optional<T> optional) {

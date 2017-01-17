@@ -18,13 +18,11 @@
 package com.cognifide.knotx.knot.service.service;
 
 
+import io.vertx.core.json.JsonObject;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
-
-import java.util.Objects;
-
-import io.vertx.core.json.JsonObject;
 
 public class ServiceEntry {
 
@@ -49,13 +47,6 @@ public class ServiceEntry {
     this.cacheKey = String.format("%s|%s", getName(), getParams());
   }
 
-  public ServiceEntry setCacheKey(String newCacheKey) {
-    if (StringUtils.isNotEmpty(newCacheKey)) {
-      this.cacheKey = newCacheKey;
-    }
-    return this;
-  }
-
   public ServiceEntry mergeParams(JsonObject defaultParams) {
     this.params = defaultParams.copy().mergeIn(this.params);
     return this;
@@ -73,8 +64,20 @@ public class ServiceEntry {
     return address;
   }
 
+  ServiceEntry setAddress(String address) {
+    this.address = address;
+    return this;
+  }
+
   public String getCacheKey() {
     return cacheKey;
+  }
+
+  public ServiceEntry setCacheKey(String newCacheKey) {
+    if (StringUtils.isNotEmpty(newCacheKey)) {
+      this.cacheKey = newCacheKey;
+    }
+    return this;
   }
 
   public JsonObject getParams() {
@@ -108,11 +111,6 @@ public class ServiceEntry {
   @Override
   public int hashCode() {
     return Objects.hash(namespace, name, cacheKey, params);
-  }
-
-  ServiceEntry setAddress(String address) {
-    this.address = address;
-    return this;
   }
 
   private JsonObject getParams(Attribute paramsAttribute) {

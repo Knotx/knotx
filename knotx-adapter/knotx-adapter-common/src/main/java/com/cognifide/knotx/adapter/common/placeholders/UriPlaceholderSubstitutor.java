@@ -18,12 +18,10 @@
 package com.cognifide.knotx.adapter.common.placeholders;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.net.URI;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class UriPlaceholderSubstitutor implements PlaceholderSubstitutor {
 

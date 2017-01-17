@@ -45,25 +45,28 @@ public class TestVertxDeployer implements TestRule {
       public void evaluate() throws Throwable {
         KnotxConfiguration knotxConfig = description.getAnnotation(KnotxConfiguration.class);
         if (knotxConfig == null || knotxConfig.value().isEmpty()) {
-          throw new IllegalArgumentException("Missing @KnotxConfiguration annotation with the path to configuration JSON");
+          throw new IllegalArgumentException(
+              "Missing @KnotxConfiguration annotation with the path to configuration JSON");
         }
         Vertx vertx = Vertx.newInstance(vertxContext.vertx());
 
         CountDownLatch latch = new CountDownLatch(1);
         Future<String> deployFuture = Future.future();
 
-        vertx.deployVerticle(KnotxStarterVerticle.class.getName(), new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
-          if (ar.succeeded()) {
-            deployFuture.complete();
-          } else {
-            deployFuture.fail(ar.cause());
-          }
-          latch.countDown();
-        });
+        vertx.deployVerticle(KnotxStarterVerticle.class.getName(),
+            new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
+              if (ar.succeeded()) {
+                deployFuture.complete();
+              } else {
+                deployFuture.fail(ar.cause());
+              }
+              latch.countDown();
+            });
         latch.await(3, TimeUnit.SECONDS);
 
         if (latch.getCount() != 0) {
-          deployFuture.fail(new IllegalStateException("Knot.x did not finish deploy all verticles"));
+          deployFuture
+              .fail(new IllegalStateException("Knot.x did not finish deploy all verticles"));
         }
 
         if (deployFuture.failed()) {

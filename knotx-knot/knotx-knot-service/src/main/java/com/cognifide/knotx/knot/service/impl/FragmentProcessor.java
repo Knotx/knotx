@@ -38,7 +38,8 @@ public class FragmentProcessor {
     this.serviceEngine = new ServiceEngine(vertx, configuration);
   }
 
-  public Observable<FragmentContext> processSnippet(final FragmentContext fragmentContext, KnotContext request) {
+  public Observable<FragmentContext> processSnippet(final FragmentContext fragmentContext,
+      KnotContext request) {
     LOGGER.debug("Processing Handlebars snippet {}", fragmentContext.fragment());
     return Observable.just(fragmentContext)
         .flatMap(FragmentContext::services)
@@ -54,14 +55,16 @@ public class FragmentProcessor {
   private Observable<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
     LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
-      return request.getCache().get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
+      return request.getCache()
+          .get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
     } catch (ExecutionException e) {
       LOGGER.fatal("Unable to get service data {}", e);
       return Observable.error(e);
     }
   }
 
-  private FragmentContext applyData(final FragmentContext fragmentContext, JsonObject serviceResult) {
+  private FragmentContext applyData(final FragmentContext fragmentContext,
+      JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", fragmentContext);
     fragmentContext.fragment().context().mergeIn(serviceResult);
     return fragmentContext;
@@ -69,7 +72,8 @@ public class FragmentProcessor {
 
   private void traceService(ServiceEntry serviceEntry) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(), serviceEntry.getParams());
+      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(),
+          serviceEntry.getParams());
     }
   }
 

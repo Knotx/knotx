@@ -56,26 +56,34 @@ public class HtmlFragmentSplitterTest {
   @Before
   public void setUp() throws Exception {
     testNoSnippets = new HtmlFragmentSplitter().split(FileReader.readText(TEST_NO_SNIPPETS_HTML));
-    testManySnippets = new HtmlFragmentSplitter().split(FileReader.readText(TEST_MANY_SNIPPETS_HTML));
-    testOneSnippetBegin = new HtmlFragmentSplitter().split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    testOneSnippetMiddle = new HtmlFragmentSplitter().split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
-    testOneSnippetEnd = new HtmlFragmentSplitter().split(FileReader.readText(TEST_ONE_SNIPPET_END_HTML));
-    testOnlyOneSnippetWhole = new HtmlFragmentSplitter().split(FileReader.readText(ONLY_ONE_SNIPPET_WHOLE_HTML));
+    testManySnippets = new HtmlFragmentSplitter()
+        .split(FileReader.readText(TEST_MANY_SNIPPETS_HTML));
+    testOneSnippetBegin = new HtmlFragmentSplitter()
+        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
+    testOneSnippetMiddle = new HtmlFragmentSplitter()
+        .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
+    testOneSnippetEnd = new HtmlFragmentSplitter()
+        .split(FileReader.readText(TEST_ONE_SNIPPET_END_HTML));
+    testOnlyOneSnippetWhole = new HtmlFragmentSplitter()
+        .split(FileReader.readText(ONLY_ONE_SNIPPET_WHOLE_HTML));
   }
 
   @Test
   public void testJoinFragments() throws Exception {
     StringBuilder result = new StringBuilder();
-    IntStream.rangeClosed(0, testManySnippets.size() - 1).forEach(idx -> result.append(testManySnippets.get(idx).content()));
+    IntStream.rangeClosed(0, testManySnippets.size() - 1)
+        .forEach(idx -> result.append(testManySnippets.get(idx).content()));
 
-    assertThat(result.toString().trim(), equalTo(FileReader.readText(TEST_MANY_SNIPPETS_HTML).trim()));
+    assertThat(result.toString().trim(),
+        equalTo(FileReader.readText(TEST_MANY_SNIPPETS_HTML).trim()));
   }
 
   @Test
   public void testNoFragments() throws Exception {
     assertThat(testNoSnippets.size(), equalTo(1));
     assertThat(testNoSnippets.get(0).isRaw(), equalTo(true));
-    assertThat(testNoSnippets.get(0).content(), equalTo(FileReader.readText(TEST_NO_SNIPPETS_HTML)));
+    assertThat(testNoSnippets.get(0).content(),
+        equalTo(FileReader.readText(TEST_NO_SNIPPETS_HTML)));
   }
 
   @Test

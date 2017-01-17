@@ -51,7 +51,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    final Optional<KnotxServerConfiguration.RepositoryEntry> repositoryEntry = configuration.repositoryForPath(context.request().path());
+    final Optional<KnotxServerConfiguration.RepositoryEntry> repositoryEntry = configuration
+        .repositoryForPath(context.request().path());
     final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryEntry.isPresent()) {
@@ -67,12 +68,14 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                     context.next();
                   } else {
                     writeHeaders(context.response(), repoResponse.getHeaders());
-                    context.response().setStatusCode(repoResponse.getStatusCode()).end(Buffer.newInstance(repoResponse.getBody()));
+                    context.response().setStatusCode(repoResponse.getStatusCode())
+                        .end(Buffer.newInstance(repoResponse.getBody()));
                   }
                 } else if (isErrorResponse(repoResponse)) {
                   context.fail(repoResponse.getStatusCode());
                 } else {
-                  writeHeaders(context.response(), repoResponse.getHeaders().add("Content-Length", "0"));
+                  writeHeaders(context.response(),
+                      repoResponse.getHeaders().add("Content-Length", "0"));
                   context.response().setStatusCode(repoResponse.getStatusCode()).end();
                 }
               },

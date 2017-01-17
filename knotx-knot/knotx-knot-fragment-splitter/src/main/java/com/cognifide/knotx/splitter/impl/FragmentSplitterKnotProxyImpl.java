@@ -35,7 +35,8 @@ public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
   @Override
   protected Observable<KnotContext> processRequest(KnotContext knotContext) {
     try {
-      knotContext.setFragments(splitter.split(knotContext.getClientResponse().getBody().toString()));
+      knotContext
+          .setFragments(splitter.split(knotContext.getClientResponse().getBody().toString()));
       knotContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
 
       return Observable.just(knotContext);
