@@ -29,6 +29,7 @@
   * [[What's new|WhatsNew]]
 
 ### Released
+* [[1.0.0-RC4|Documentation-1.0.0-RC4]]
 * [[1.0.0-RC3|Documentation-1.0.0-RC3]]
 * [[1.0.0-RC2|Documentation-1.0.0-RC2]]
 * [[1.0.0-RC1|Documentation-1.0.0-RC1]]
