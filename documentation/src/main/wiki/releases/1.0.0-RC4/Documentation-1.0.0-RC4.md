@@ -159,9 +159,9 @@ To run Knot.x you need Java 8.
 ## Hello world!
 First download Knot.x sample app:
 
-[knotx-example-monolith-X.X.X-fat.jar](https://github.com/Cognifide/knotx/releases/)
+[knotx-example-app-X.X.X-fat.jar](https://github.com/Cognifide/knotx/releases/)
 
-[knotx-example-monolith.json](https://github.com/Cognifide/knotx/releases/)
+[knotx-example-app.json](https://github.com/Cognifide/knotx/releases/)
 
 
 Now you can run Knot.x:
@@ -433,8 +433,8 @@ Standalone Knot.x application directly in your IDE.
 ```
 run com.cognifide.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-monolith.json
 ```
-6. Set **Working directory** to the module where your json config exists (e.g. knotx-example-monolith)
-7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-monolith)
+6. Set **Working directory** to the module where your json config exists (e.g. knotx-example-app)
+7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-app)
 8. Optionally, in VM options you can specify system properties if you want to override configuration or set memory properly of this configuration.
 9. Finally, you can now Run or Debug this configuration and play with Knot.x as usuall.
 
@@ -1766,7 +1766,7 @@ This interface extends [com.github.jknack.handlebars.Helper](https://jknack.gith
 
 Sample application contains an example custom Handlebars helper - please take a look at the implementation of ```BoldHelper```:
 * Implementation class: ```com.cognifide.knotx.example.monolith.handlebars.BoldHelper```
-* service registration: ```knotx-example-monolith/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
+* service registration: ```knotx-example/knotx-example-app/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
 
 # Adapters
 Adapters are modules which are responsible for communication between Knot.x (exactly [[Knots|Knot]]) 

@@ -99,4 +99,4 @@ This interface extends [com.github.jknack.handlebars.Helper](https://jknack.gith
 
 Sample application contains an example custom Handlebars helper - please take a look at the implementation of ```BoldHelper```:
 * Implementation class: ```com.cognifide.knotx.example.monolith.handlebars.BoldHelper```
-* service registration: ```knotx-example-monolith/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
+* service registration: ```knotx-example/knotx-example-app/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
