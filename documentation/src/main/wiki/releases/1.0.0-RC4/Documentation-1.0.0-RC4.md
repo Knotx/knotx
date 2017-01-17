@@ -228,7 +228,7 @@ To run Knot.x you only need Java 8.
 To build it you also need Maven (version 3.3.1 or higher).
 
 ## Running the demo
-To run an [Example monolith app](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app) do the following:
+To run an [Example app](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app) do the following:
 
 Build Knot.x with Example app:
 
@@ -429,7 +429,7 @@ Standalone Knot.x application directly in your IDE.
 [[assets/knotx-debugging-new-config.png|alt=Knot.x Debugging new config]]
 3. Set name of the configuration
 4. Pick main class to be com.cognifide.knotx.launcher.LogbackLauncher
-5. In Program Arguments specify that KnotxStarterVerticle should be run with the `-conf` parameter pointing to the configuration you want to run (e.g. Example monolith)
+5. In Program Arguments specify that KnotxStarterVerticle should be run with the `-conf` parameter pointing to the configuration you want to run (e.g. Example app)
 ```
 run com.cognifide.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-monolith.json
 ```

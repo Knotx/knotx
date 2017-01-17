@@ -21,7 +21,7 @@ Standalone Knot.x application directly in your IDE.
 run com.cognifide.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-app.json
 ```
 6. Set **Working directory** to the module where your json config exists (e.g. knotx-example-app)
-7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-monolith)
+7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-app)
 8. Optionally, in VM options you can specify system properties if you want to override configuration or set memory properly of this configuration.
 9. Finally, you can now Run or Debug this configuration and play with Knot.x as usuall.
 

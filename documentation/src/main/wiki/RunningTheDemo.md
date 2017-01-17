@@ -6,7 +6,7 @@ To run Knot.x you only need Java 8.
 To build it you also need Maven (version 3.3.1 or higher).
 
 ## Running the demo
-To run an [Example monolith app](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app) do the following:
+To run an [Example app](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app) do the following:
 
 Build Knot.x with Example app:
 
