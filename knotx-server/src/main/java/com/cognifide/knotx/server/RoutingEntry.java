@@ -20,6 +20,7 @@ package com.cognifide.knotx.server;
 import java.util.Map;
 
 public class RoutingEntry {
+
   private String path;
   private String address;
   private Map<String, RoutingEntry> onTransition;

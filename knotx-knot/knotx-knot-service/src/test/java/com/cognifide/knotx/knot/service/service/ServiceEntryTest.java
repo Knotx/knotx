@@ -39,7 +39,8 @@ public class ServiceEntryTest {
 
   @Test
   public void mergePayload_pathFromParamsAttribute() {
-    ServiceEntry serviceEntry = new ServiceEntry(new Attribute("data-knotx-service-first", "first-service"),
+    ServiceEntry serviceEntry = new ServiceEntry(
+        new Attribute("data-knotx-service-first", "first-service"),
         new Attribute("data-knotx-params-first", "{\"path\":\"first-service\"}"));
     serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
     Assert.assertEquals("first-service", serviceEntry.getParams().getString("path"));
@@ -47,7 +48,8 @@ public class ServiceEntryTest {
 
   @Test
   public void mergePayload_pathFromConfigAttribute() {
-    ServiceEntry serviceEntry = new ServiceEntry(new Attribute("data-knotx-service-first", "first-service"),
+    ServiceEntry serviceEntry = new ServiceEntry(
+        new Attribute("data-knotx-service-first", "first-service"),
         new Attribute("data-knotx-params-first", "{}"));
     serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
     Assert.assertEquals("/service/mock/first.json", serviceEntry.getParams().getString("path"));
@@ -55,7 +57,8 @@ public class ServiceEntryTest {
 
   @Test
   public void mergePayload_nameFromParamsAttribute() {
-    ServiceEntry serviceEntry = new ServiceEntry(new Attribute("data-knotx-service-first", "first-service"),
+    ServiceEntry serviceEntry = new ServiceEntry(
+        new Attribute("data-knotx-service-first", "first-service"),
         new Attribute("data-knotx-params-first", "{\"name\":\"first-service-name\"}"));
     serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
     Assert.assertEquals("/service/mock/first.json", serviceEntry.getParams().getString("path"));

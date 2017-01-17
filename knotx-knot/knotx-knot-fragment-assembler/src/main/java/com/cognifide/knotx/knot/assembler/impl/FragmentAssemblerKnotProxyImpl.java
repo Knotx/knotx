@@ -35,7 +35,8 @@ import rx.Observable;
 
 public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerKnotProxyImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FragmentAssemblerKnotProxyImpl.class);
 
   private FragmentAssemblerConfiguration configuration;
 
@@ -87,7 +88,8 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
       clientResponse.setStatusCode(HttpResponseStatus.NO_CONTENT.code());
     } else {
       MultiMap headers = clientResponse.getHeaders();
-      headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(), Integer.toString(renderedContent.length()));
+      headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
+          Integer.toString(renderedContent.length()));
 
       clientResponse.setBody(Buffer.buffer(renderedContent)).setHeaders(headers);
       clientResponse.setStatusCode(HttpResponseStatus.OK.code());

@@ -67,13 +67,13 @@ public class ClientResponse {
     return statusCode;
   }
 
-  public Buffer getBody() {
-    return body;
-  }
-
   public ClientResponse setStatusCode(int statusCode) {
     this.statusCode = statusCode;
     return this;
+  }
+
+  public Buffer getBody() {
+    return body;
   }
 
   public ClientResponse setBody(Buffer body) {

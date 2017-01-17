@@ -35,7 +35,8 @@ public class DataObjectsUtil {
    */
   public static boolean equalsMultimap(MultiMap self, MultiMap that) {
     return Objects.equal(self.names(), that.names()) &&
-        self.names().stream().allMatch(name -> that.contains(name) && self.getAll(name).equals(that.getAll(name)));
+        self.names().stream()
+            .allMatch(name -> that.contains(name) && self.getAll(name).equals(that.getAll(name)));
   }
 
   /**
@@ -45,7 +46,8 @@ public class DataObjectsUtil {
    * @param that - compared Buffer object that
    * @return - true if objects are equals, false otherwise
    */
-  public static boolean equalsBody(io.vertx.core.buffer.Buffer self, io.vertx.core.buffer.Buffer that) {
+  public static boolean equalsBody(io.vertx.core.buffer.Buffer self,
+      io.vertx.core.buffer.Buffer that) {
     if (self == that) {
       return true;
     }
@@ -71,7 +73,8 @@ public class DataObjectsUtil {
     io.vertx.core.MultiMap map = (io.vertx.core.MultiMap) multiMap.getDelegate();
 
     return map.entries().stream().mapToInt(
-        entry -> 31 * entry.getKey().hashCode() + (entry.getValue() == null ? 0 : entry.getValue().hashCode())
+        entry -> 31 * entry.getKey().hashCode() + (entry.getValue() == null ? 0
+            : entry.getValue().hashCode())
     ).reduce(0, (sum, hash) -> 41 * sum + hash);
   }
 
@@ -83,7 +86,8 @@ public class DataObjectsUtil {
   public static String toString(MultiMap multiMap) {
     StringBuilder result = new StringBuilder();
     multiMap.names().stream().forEach(
-        name -> result.append(name).append(":").append(Joiner.on(";").join(multiMap.getAll(name))).append("|")
+        name -> result.append(name).append(":").append(Joiner.on(";").join(multiMap.getAll(name)))
+            .append("|")
     );
 
     return result.toString();
@@ -97,7 +101,8 @@ public class DataObjectsUtil {
   public static String toString(Map<String, List<String>> map) {
     StringBuilder result = new StringBuilder();
     map.keySet().stream().forEach(
-        name -> result.append(name).append(":").append(Joiner.on(";").join(map.get(name))).append("|")
+        name -> result.append(name).append(":").append(Joiner.on(";").join(map.get(name)))
+            .append("|")
     );
 
     return result.toString();

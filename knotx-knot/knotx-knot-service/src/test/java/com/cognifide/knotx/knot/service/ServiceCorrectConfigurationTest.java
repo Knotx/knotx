@@ -41,7 +41,8 @@ public class ServiceCorrectConfigurationTest {
   public void setUp() throws Exception {
     JsonObject config = new JsonObject(FileReader.readText("service-correct.json"));
     correctConfig = new ServiceKnotConfiguration(config);
-    expectedService = createMockedService("first-service", "knotx.core-adapter", "{\"path\":\"/service/mock/first.json\"}", "first");
+    expectedService = createMockedService("first-service", "knotx.core-adapter",
+        "{\"path\":\"/service/mock/first.json\"}", "first");
   }
 
   @Test
@@ -51,7 +52,8 @@ public class ServiceCorrectConfigurationTest {
     assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedService));
   }
 
-  private ServiceKnotConfiguration.ServiceMetadata createMockedService(String name, String address, String params, String cacheKey) {
+  private ServiceKnotConfiguration.ServiceMetadata createMockedService(String name, String address,
+      String params, String cacheKey) {
     ServiceKnotConfiguration.ServiceMetadata newService = new ServiceKnotConfiguration.ServiceMetadata();
     newService.setName(name);
     newService.setAddress(address);

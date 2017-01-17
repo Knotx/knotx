@@ -52,7 +52,8 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
             .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
-            .flatMap(compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
+            .flatMap(
+                compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
             .toList()
         ).orElse(Observable.just(Collections.emptyList()))
         .map(result -> createSuccessResponse(knotContext))
@@ -67,7 +68,8 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
   @Override
   protected KnotContext processError(KnotContext knotContext, Throwable error) {
     LOGGER.error("Error happened during Template processing", error);
-    ClientResponse errorResponse = new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+    ClientResponse errorResponse = new ClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
     return new KnotContext()
         .setClientRequest(knotContext.getClientRequest())
@@ -78,7 +80,8 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
     return new KnotContext()
         .setClientRequest(inputContext.getClientRequest())
         .setClientResponse(inputContext.getClientResponse())
-        .setFragments(Optional.ofNullable(inputContext.getFragments()).orElse(Collections.emptyList()))
+        .setFragments(
+            Optional.ofNullable(inputContext.getFragments()).orElse(Collections.emptyList()))
         .setTransition(DEFAULT_TEMPLATING_KNOT);
   }
 

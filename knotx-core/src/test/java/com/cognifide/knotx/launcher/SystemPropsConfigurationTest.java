@@ -27,19 +27,23 @@ import org.junit.contrib.java.lang.system.ClearSystemProperties;
 
 public class SystemPropsConfigurationTest {
 
-  private final static String EXPECTED_OBJECT = "{\"someInteger\":1234,\"someBoolean\":false,\"someString\":\"foo\","
-      + "\"someNested\":{\"nestedInteger\":1234,\"nestedBoolean\":false,\"nestedString\":\"foo\"}}";
+  private final static String EXPECTED_OBJECT =
+      "{\"someInteger\":1234,\"someBoolean\":false,\"someString\":\"foo\","
+          + "\"someNested\":{\"nestedInteger\":1234,\"nestedBoolean\":false,\"nestedString\":\"foo\"}}";
 
 
   @Rule
-  public final ClearSystemProperties cleanedProperties = new ClearSystemProperties("io.knotx.KnotxServer",
+  public final ClearSystemProperties cleanedProperties = new ClearSystemProperties(
+      "io.knotx.KnotxServer",
       "io.knotx.KnotxServer.options.config.httpPort", "io.knotx.KnotxServer.options.config.pass",
-      "io.knotx.KnotxServer.options.config.settings.bogus", "io.knotx.KnotxServer.options.config", "io.knotx.KnotxServer.options.haGroup",
+      "io.knotx.KnotxServer.options.config.settings.bogus", "io.knotx.KnotxServer.options.config",
+      "io.knotx.KnotxServer.options.haGroup",
       "io.knotx.KnotxServer.options.config.someData");
 
   @Test
   public void whenNoSystemProperty_expectEmptyConfig() {
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     assertEquals(true, systemPropsConfiguration.envConfig().isEmpty());
   }
@@ -47,7 +51,8 @@ public class SystemPropsConfigurationTest {
   @Test
   public void whenOneMatchingSystemPropertyWithoutObject_expectEmptyConfig() {
     System.setProperty("io.knotx.KnotxServer", "9999");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     assertEquals(true, systemPropsConfiguration.envConfig().isEmpty());
   }
@@ -55,10 +60,12 @@ public class SystemPropsConfigurationTest {
   @Test
   public void whenOneCorrectMatchingProperty_expectSameOnConfig() {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     assertEquals(1, systemPropsConfiguration.envConfig().size());
-    assertEquals(new Integer(9999), systemPropsConfiguration.envConfig().get("options.config.httpPort").getObject());
+    assertEquals(new Integer(9999),
+        systemPropsConfiguration.envConfig().get("options.config.httpPort").getObject());
   }
 
   @Test
@@ -66,82 +73,121 @@ public class SystemPropsConfigurationTest {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
     System.setProperty("io.knotx.KnotxServer.options.config.pass", "true");
     System.setProperty("io.knotx.KnotxServer.options.config.settings.bogus", "abcd");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     assertEquals(3, systemPropsConfiguration.envConfig().size());
-    assertEquals(new Integer(9999), systemPropsConfiguration.envConfig().get("options.config.httpPort").getObject());
+    assertEquals(new Integer(9999),
+        systemPropsConfiguration.envConfig().get("options.config.httpPort").getObject());
     assertEquals(true, systemPropsConfiguration.envConfig().get("options.config.pass").getObject());
-    assertEquals("abcd", systemPropsConfiguration.envConfig().get("options.config.settings.bogus").getObject());
+    assertEquals("abcd",
+        systemPropsConfiguration.envConfig().get("options.config.settings.bogus").getObject());
   }
 
   @Test
   public void whenOneCorrectFileBasedProperty_expectJsonObjectInConfig() {
-    System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfig.json");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    System.setProperty("io.knotx.KnotxServer.options.config",
+        "file:src/test/resources/sampleConfig.json");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     assertEquals(1, systemPropsConfiguration.envConfig().size());
-    assertEquals(EXPECTED_OBJECT, ((JsonObject) systemPropsConfiguration.envConfig().get("options.config").getObject()).encode());
+    assertEquals(EXPECTED_OBJECT,
+        ((JsonObject) systemPropsConfiguration.envConfig().get("options.config").getObject())
+            .encode());
   }
 
   @Test
   public void whenOneProperty_expectDescriptorWithUpdatedMatchingField() {
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptor());
 
     assertEquals(3, descriptor.getJsonObject("options").getJsonObject("config").size());
-    assertEquals("value", descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
-    assertEquals(new Integer(9999), descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
-    assertEquals(true, descriptor.getJsonObject("options").getJsonObject("config").containsKey("someData"));
-    assertEquals(new Integer(123), descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData").getInteger("data"));
-    assertEquals("string", descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData").getString("string"));
+    assertEquals("value",
+        descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
+    assertEquals(new Integer(9999),
+        descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
+    assertEquals(true,
+        descriptor.getJsonObject("options").getJsonObject("config").containsKey("someData"));
+    assertEquals(new Integer(123),
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData")
+            .getInteger("data"));
+    assertEquals("string",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData")
+            .getString("string"));
   }
 
   @Test
   public void whenFileBasedProperty_expectDescriptorWithUpdatedJsonObject() {
-    System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfig.json");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    System.setProperty("io.knotx.KnotxServer.options.config",
+        "file:src/test/resources/sampleConfig.json");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptor());
 
     assertEquals(7, descriptor.getJsonObject("options").getJsonObject("config").size());
 
     //original data
-    assertEquals("value", descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
-    assertEquals(new Integer(1234), descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
-    assertEquals(true, descriptor.getJsonObject("options").getJsonObject("config").containsKey("someData"));
-    assertEquals(new Integer(123), descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData").getInteger("data"));
-    assertEquals("string", descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData").getString("string"));
+    assertEquals("value",
+        descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
+    assertEquals(new Integer(1234),
+        descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
+    assertEquals(true,
+        descriptor.getJsonObject("options").getJsonObject("config").containsKey("someData"));
+    assertEquals(new Integer(123),
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData")
+            .getInteger("data"));
+    assertEquals("string",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData")
+            .getString("string"));
 
     //merged data
-    assertEquals(new Integer(1234), descriptor.getJsonObject("options").getJsonObject("config").getInteger("someInteger"));
-    assertEquals(false, descriptor.getJsonObject("options").getJsonObject("config").getBoolean("someBoolean"));
-    assertEquals("foo", descriptor.getJsonObject("options").getJsonObject("config").getString("someString"));
-
-    assertEquals(3, descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested").size());
     assertEquals(new Integer(1234),
-        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested").getInteger("nestedInteger"));
-    assertEquals(false, descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested").getBoolean("nestedBoolean"));
-    assertEquals("foo", descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested").getString("nestedString"));
+        descriptor.getJsonObject("options").getJsonObject("config").getInteger("someInteger"));
+    assertEquals(false,
+        descriptor.getJsonObject("options").getJsonObject("config").getBoolean("someBoolean"));
+    assertEquals("foo",
+        descriptor.getJsonObject("options").getJsonObject("config").getString("someString"));
+
+    assertEquals(3,
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested")
+            .size());
+    assertEquals(new Integer(1234),
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested")
+            .getInteger("nestedInteger"));
+    assertEquals(false,
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested")
+            .getBoolean("nestedBoolean"));
+    assertEquals("foo",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someNested")
+            .getString("nestedString"));
   }
 
   @Test
   public void whenFileBasedAndValueProperties_expectDescriptorCorrectlyUpdated() {
     System.setProperty("io.knotx.KnotxServer.options.haGroup", "default");
     System.setProperty("io.knotx.KnotxServer.options.config.httpPort", "9999");
-    System.setProperty("io.knotx.KnotxServer.options.config.someData", "file:src/test/resources/sampleConfig.json");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    System.setProperty("io.knotx.KnotxServer.options.config.someData",
+        "file:src/test/resources/sampleConfig.json");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptor());
 
     assertEquals("default", descriptor.getJsonObject("options").getString("haGroup"));
 
     assertEquals(3, descriptor.getJsonObject("options").getJsonObject("config").size());
-    assertEquals("value", descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
-    assertEquals(new Integer(9999), descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
+    assertEquals("value",
+        descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
+    assertEquals(new Integer(9999),
+        descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
 
-    JsonObject nested = descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData");
+    JsonObject nested = descriptor.getJsonObject("options").getJsonObject("config")
+        .getJsonObject("someData");
     assertEquals(6, nested.size());
     assertEquals(new Integer(123), nested.getInteger("data"));
     assertEquals("string", nested.getString("string"));
@@ -157,26 +203,46 @@ public class SystemPropsConfigurationTest {
 
   @Test
   public void whenFileBasedHavingArray_expectDescriptorHaveUpdatedThisJsonArray() {
-    System.setProperty("io.knotx.KnotxServer.options.config", "file:src/test/resources/sampleConfigArray.json");
-    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration("io.knotx.KnotxServer");
+    System.setProperty("io.knotx.KnotxServer.options.config",
+        "file:src/test/resources/sampleConfigArray.json");
+    SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+        "io.knotx.KnotxServer");
 
     JsonObject descriptor = systemPropsConfiguration.updateJsonObject(getDescriptorArray());
 
     assertEquals(6, descriptor.getJsonObject("options").getJsonObject("config").size());
-    assertEquals("value", descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
-    assertEquals(new Integer(1234), descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
-    assertEquals(true, descriptor.getJsonObject("options").getJsonObject("config").containsKey("someData"));
-    assertEquals(new Integer(123), descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData").getInteger("data"));
-    assertEquals("string", descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData").getString("string"));
+    assertEquals("value",
+        descriptor.getJsonObject("options").getJsonObject("config").getString("address"));
+    assertEquals(new Integer(1234),
+        descriptor.getJsonObject("options").getJsonObject("config").getInteger("httpPort"));
+    assertEquals(true,
+        descriptor.getJsonObject("options").getJsonObject("config").containsKey("someData"));
+    assertEquals(new Integer(123),
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData")
+            .getInteger("data"));
+    assertEquals("string",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonObject("someData")
+            .getString("string"));
 
-    assertEquals(1, descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array2").size());
-    assertEquals("123", descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array2").getString(0));
+    assertEquals(1,
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array2").size());
+    assertEquals("123",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array2")
+            .getString(0));
 
-    assertEquals(new Integer(6666), descriptor.getJsonObject("options").getJsonObject("config").getInteger("someInteger"));
-    assertEquals(3, descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array").size());
-    assertEquals("abc", descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array").getString(0));
-    assertEquals("def", descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array").getString(1));
-    assertEquals("ghi", descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array").getString(2));
+    assertEquals(new Integer(6666),
+        descriptor.getJsonObject("options").getJsonObject("config").getInteger("someInteger"));
+    assertEquals(3,
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array").size());
+    assertEquals("abc",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array")
+            .getString(0));
+    assertEquals("def",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array")
+            .getString(1));
+    assertEquals("ghi",
+        descriptor.getJsonObject("options").getJsonObject("config").getJsonArray("array")
+            .getString(2));
   }
 
   private JsonObject getDescriptor() {

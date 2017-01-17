@@ -32,7 +32,7 @@ public class SlingUriInfo {
   private String suffix;
 
   public SlingUriInfo(String path, String[] pathParts, String selectorString, String[] selectors,
-                      String extension, String suffix) {
+      String extension, String suffix) {
     this.path = path;
     this.pathParts = pathParts;
     this.selectorString = selectorString;

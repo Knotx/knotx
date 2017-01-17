@@ -19,7 +19,6 @@ package com.cognifide.knotx.mocks;
 
 
 import com.cognifide.knotx.mocks.knot.MockKnotHandler;
-
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;

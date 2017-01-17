@@ -31,16 +31,16 @@ public class MockKnotProxy implements KnotProxy {
 
   private Action1<KnotContext> knot;
 
+  private MockKnotProxy(Action1<KnotContext> knot) {
+    this.knot = knot;
+  }
+
   public static void register(Vertx vertx, String address) {
     register(vertx, address, null);
   }
 
   public static void register(Vertx vertx, String address, Action1<KnotContext> knot) {
     ProxyHelper.registerService(KnotProxy.class, vertx, new MockKnotProxy(knot), address);
-  }
-
-  private MockKnotProxy(Action1<KnotContext> knot) {
-    this.knot = knot;
   }
 
   @Override

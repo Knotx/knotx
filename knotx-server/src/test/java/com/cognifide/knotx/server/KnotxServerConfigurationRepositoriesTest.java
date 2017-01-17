@@ -35,18 +35,23 @@ public class KnotxServerConfigurationRepositoriesTest {
   }
 
   @Test
-  public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths() throws Exception {
+  public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths()
+      throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get().address(), equalTo("knotx.repository.filesystem"));
-    assertThat(serverConfig.repositoryForPath("/content/simple.html").get().address(), equalTo("knotx.repository.http"));
+    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get().address(),
+        equalTo("knotx.repository.filesystem"));
+    assertThat(serverConfig.repositoryForPath("/content/simple.html").get().address(),
+        equalTo("knotx.repository.http"));
   }
 
   @Test
-  public void whenConfigWithRepositoryMappings_expectNoRepositoryAddressOnNotMatchingPaths() throws Exception {
+  public void whenConfigWithRepositoryMappings_expectNoRepositoryAddressOnNotMatchingPaths()
+      throws Exception {
     KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
 
-    assertThat(serverConfig.repositoryForPath("/content2/local/simple.html").isPresent(), equalTo(false));
+    assertThat(serverConfig.repositoryForPath("/content2/local/simple.html").isPresent(),
+        equalTo(false));
     assertThat(serverConfig.repositoryForPath("/service/simple.html").isPresent(), equalTo(false));
   }
 

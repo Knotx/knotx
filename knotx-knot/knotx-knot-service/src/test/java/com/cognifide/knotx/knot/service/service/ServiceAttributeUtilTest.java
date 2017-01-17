@@ -17,11 +17,11 @@
  */
 package com.cognifide.knotx.knot.service.service;
 
+import static org.hamcrest.core.Is.is;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.hamcrest.core.Is.is;
 
 public class ServiceAttributeUtilTest {
 

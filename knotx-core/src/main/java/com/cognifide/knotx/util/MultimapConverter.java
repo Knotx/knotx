@@ -24,14 +24,15 @@ import io.vertx.rxjava.core.MultiMap;
 public class MultimapConverter {
 
   /**
-   * Converts Multimap to JsonObject<br/>
-   * It expects the MultiMap key, contains List of String objects, so the result of conversion will look like below<br/>
+   * Converts Multimap to JsonObject<br/> It expects the MultiMap key, contains List of String
+   * objects, so the result of conversion will look like below<br/>
    * <pre>
    *   {
    *      "mapKey1": ["val1", "val2"],
    *      "mapKey2": ["val1"]
    *   }
    * </pre>
+   *
    * @param multiMap - Multimap to convert
    * @return - JsonObject with JsonArray under each object key
    */
@@ -55,8 +56,10 @@ public class MultimapConverter {
   }
 
   /**
-   * Converts JsonObject to Multimap. It expects the JsonObject key, contains JsonArray with list of String objects.<br/>
-   * Each jsonObject key is converted into MutliMap "key", while JsonArray as List of String objects for this velu.
+   * Converts JsonObject to Multimap. It expects the JsonObject key, contains JsonArray with list of
+   * String objects.<br/> Each jsonObject key is converted into MutliMap "key", while JsonArray as
+   * List of String objects for this velu.
+   *
    * @param json - JsonObject to convert
    * @return - Multimap
    */

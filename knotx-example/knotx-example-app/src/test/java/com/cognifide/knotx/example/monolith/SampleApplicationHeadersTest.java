@@ -70,8 +70,10 @@ public class SampleApplicationHeadersTest {
           MultiMap headers = resp.headers();
           headers.names().forEach(name -> {
             context.assertEquals(resp.statusCode(), 200, "Wrong status code received.");
-            context.assertTrue(expectedHeaders.contains(name), "Header " + name + " is not expected.");
-            context.assertEquals(expectedHeaders.get(name), headers.get(name), "Wrong value of " + name + " header.");
+            context
+                .assertTrue(expectedHeaders.contains(name), "Header " + name + " is not expected.");
+            context.assertEquals(expectedHeaders.get(name), headers.get(name),
+                "Wrong value of " + name + " header.");
           });
           async.complete();
         });

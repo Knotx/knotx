@@ -18,12 +18,10 @@
 package com.cognifide.knotx.handlebars;
 
 import com.github.jknack.handlebars.ValueResolver;
-
+import io.vertx.core.json.JsonObject;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import io.vertx.core.json.JsonObject;
 
 /**
  * A {@link io.vertx.core.json.JsonObject} value resolver.

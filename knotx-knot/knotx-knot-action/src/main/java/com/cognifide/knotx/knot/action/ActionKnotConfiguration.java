@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class ActionKnotConfiguration{
+public class ActionKnotConfiguration {
 
   private final String address;
 
@@ -46,11 +46,13 @@ public class ActionKnotConfiguration{
           metadata.name = item.getString("name");
           metadata.address = item.getString("address");
           metadata.params = item.getJsonObject("params", new JsonObject()).getMap();
-          metadata.allowedRequestHeaders = item.getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
+          metadata.allowedRequestHeaders = item
+              .getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
               .map(new StringToPatternFunction())
               .collect(Collectors.toList());
-          metadata.allowedResponseHeaders = item.getJsonArray("allowedResponseHeaders", new JsonArray()).stream()
+          metadata.allowedResponseHeaders = item
+              .getJsonArray("allowedResponseHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
               .map(new StringToPatternFunction())
               .collect(Collectors.toList());

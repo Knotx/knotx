@@ -60,6 +60,18 @@ public class SampleApplicationTest {
   @Rule
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
+  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
+      int port, String domain, String uri,
+      Action1<HttpClientRequest> requestBuilder) {
+    return Observable.create(subscriber -> {
+      HttpClientRequest req = client.request(method, port, domain, uri);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      requestBuilder.call(req);
+      req.end();
+    });
+  }
+
   @Test
   @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
@@ -68,13 +80,15 @@ public class SampleApplicationTest {
 
   @Test
   @KnotxConfiguration("knotx-test-app-no-body.json")
-  public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(TestContext context) {
+  public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(
+      TestContext context) {
     testGetRequest(context, LOCAL_NO_BODY_REQUEST_URI, "noBody.html");
   }
 
   @Test
   @KnotxConfiguration("knotx-example-app.json")
-  public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(TestContext context) {
+  public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(
+      TestContext context) {
     testGetServerError(context, MISSING_SERVICE_CONFIG_REQUEST_URI);
   }
 
@@ -86,54 +100,52 @@ public class SampleApplicationTest {
 
   @Test
   @KnotxConfiguration("knotx-test-app.json")
-  public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
+  public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(
+      TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
   @Test
   @KnotxConfiguration("knotx-test-app.json")
-  public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
+  public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(
+      TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(),
+        "multipleFormWithPostResult.html", false);
   }
 
   @Test
   @KnotxConfiguration("knotx-test-app.json")
-  public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
-    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
+  public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(
+      TestContext context) {
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(),
+        "multipleFormWithPostResult.html", false);
+    testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(),
+        "multipleFormWithPostResult2.html", false);
   }
 
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method, int port, String domain, String uri,
-      Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.call(req);
-      req.end();
-    });
-  }
-
-  private void testPostRequest(TestContext context, String url, Map<String, String> formData, String expectedResponseFile, boolean ajaxCall) {
+  private void testPostRequest(TestContext context, String url, Map<String, String> formData,
+      String expectedResponseFile, boolean ajaxCall) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
 
     Async async = context.async();
-    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url, req -> {
-      String bodyForm = formData.entrySet().stream()
-          .map(entry -> entry.getKey() + "=" + entry.getValue())
-          .reduce((p1, p2) -> p1 + "&" + p2).get();
-      req.headers().set("content-length", String.valueOf(bodyForm.length()));
-      req.headers().set("content-type", "application/x-www-form-urlencoded");
-      if (ajaxCall) {
-        req.headers().set("X-Requested-With", "XMLHttpRequest");
-      }
-      req.write(bodyForm);
-    });
+    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT,
+        KNOTX_SERVER_ADDRESS, url, req -> {
+          String bodyForm = formData.entrySet().stream()
+              .map(entry -> entry.getKey() + "=" + entry.getValue())
+              .reduce((p1, p2) -> p1 + "&" + p2).get();
+          req.headers().set("content-length", String.valueOf(bodyForm.length()));
+          req.headers().set("content-type", "application/x-www-form-urlencoded");
+          if (ajaxCall) {
+            req.headers().set("X-Requested-With", "XMLHttpRequest");
+          }
+          req.write(bodyForm);
+        });
 
     request.subscribe(resp -> resp.bodyHandler(body -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
       try {
-        context.assertEquals(Jsoup.parse(body.toString()).body().html(), Jsoup.parse(FileReader.readText(expectedResponseFile)).body().html());
+        context.assertEquals(Jsoup.parse(body.toString()).body().html(),
+            Jsoup.parse(FileReader.readText(expectedResponseFile)).body().html());
       } catch (Exception e) {
         context.fail(e);
       }

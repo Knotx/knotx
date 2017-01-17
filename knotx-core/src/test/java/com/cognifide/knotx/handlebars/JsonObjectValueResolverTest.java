@@ -43,30 +43,36 @@ public class JsonObjectValueResolverTest {
   }
 
   @Test
-  public void JsonObjectResolver_whenApplyingProgrammaticallyCreatedObject_expectVariablesResolved() throws Exception {
-    Context context = Context.newBuilder(programmaticModel()).push(JsonObjectValueResolver.INSTANCE).build();
+  public void JsonObjectResolver_whenApplyingProgrammaticallyCreatedObject_expectVariablesResolved()
+      throws Exception {
+    Context context = Context.newBuilder(programmaticModel()).push(JsonObjectValueResolver.INSTANCE)
+        .build();
     String compiled = template.apply(context).trim();
 
     assertThat(compiled, equalTo(expected));
   }
 
   @Test
-  public void JsonObjectResolver_whenApplyingFileBasedObject_expectVariablesResolved() throws Exception {
-    Context context = Context.newBuilder(filebasedModel()).push(JsonObjectValueResolver.INSTANCE).build();
+  public void JsonObjectResolver_whenApplyingFileBasedObject_expectVariablesResolved()
+      throws Exception {
+    Context context = Context.newBuilder(filebasedModel()).push(JsonObjectValueResolver.INSTANCE)
+        .build();
     String compiled = template.apply(context).trim();
 
     assertThat(compiled, equalTo(expected));
   }
 
   private String readFile(String path) throws Exception {
-    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
+    return CharStreams
+        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
   }
 
   private JsonObject programmaticModel() {
     return new JsonObject().put("sample",
         new JsonObject().put("result",
             new JsonObject().put("first", "First Message")
-                .put("second", new JsonObject().put("foo", "Very Long Second Foo Message !! 2 &&%^$")))
+                .put("second",
+                    new JsonObject().put("foo", "Very Long Second Foo Message !! 2 &&%^$")))
             .put("arr", new JsonArray().add(1).add(2).add(3).add("foo").add("bar").add(true)));
 
   }

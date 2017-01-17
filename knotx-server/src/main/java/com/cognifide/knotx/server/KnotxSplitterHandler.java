@@ -59,7 +59,8 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
               }
             },
             error -> {
-              LOGGER.error("Error happened while communicating with {} engine", error, configuration.splitterAddress());
+              LOGGER.error("Error happened while communicating with {} engine", error,
+                  configuration.splitterAddress());
               context.fail(error);
             }
         );

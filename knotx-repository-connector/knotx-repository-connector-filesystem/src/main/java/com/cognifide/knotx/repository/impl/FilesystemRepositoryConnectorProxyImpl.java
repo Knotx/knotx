@@ -43,9 +43,11 @@ import rx.Observable;
 
 public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorProxyImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FilesystemRepositoryConnectorProxyImpl.class);
 
-  private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false).setWrite(false);
+  private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false)
+      .setWrite(false);
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
   private final String catalogue;
@@ -59,14 +61,16 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
     final String localFilePath = catalogue + StringUtils.stripStart(request.getPath(), "/");
-    final Optional<String> contentType = Optional.ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
+    final Optional<String> contentType = Optional
+        .ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
 
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
     ObservableFuture<AsyncFile> fileObservable = RxHelper.observableFuture();
     fileObservable
         .flatMap(this::processFile)
-        .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code()).setHeaders(headers(contentType)).setBody(buffer))
+        .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
+            .setHeaders(headers(contentType)).setBody(buffer))
         .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND.code()))
         .subscribe(
             response -> result.handle(Future.succeededFuture(response)),

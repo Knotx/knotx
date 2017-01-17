@@ -37,7 +37,8 @@ public class MockKnotHandler implements Handler<Message<KnotContext>> {
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
 
   private static final KnotContext ERROR_RESPONSE = new KnotContext()
-      .setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()));
+      .setClientResponse(
+          new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code()));
   private static final KnotContext NOT_FOUND = new KnotContext()
       .setClientResponse(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND.code()));
 
@@ -76,7 +77,8 @@ public class MockKnotHandler implements Handler<Message<KnotContext>> {
   }
 
   private Observable<KnotContext> prepareHandlerResponse(KnotContext context) {
-    final JsonObject responseConfig = handlerConfig.getJsonObject(context.getClientRequest().getPath());
+    final JsonObject responseConfig = handlerConfig
+        .getJsonObject(context.getClientRequest().getPath());
 
     return Observable.from(KnotContextKeys.values())
         .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig, context))
