@@ -20,7 +20,7 @@ package com.cognifide.knotx.dataobjects;
 
 import com.cognifide.knotx.http.UriHelper;
 import com.cognifide.knotx.util.DataObjectsUtil;
-import com.cognifide.knotx.util.MultimapUtil;
+import com.cognifide.knotx.util.MultimapConverter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
@@ -129,27 +129,27 @@ public class ClientRequest {
    **/
 
   JsonObject getJsonHeaders() {
-    return MultimapUtil.toJsonObject(headers);
+    return MultimapConverter.toJsonObject(headers);
   }
 
   JsonObject getJsonParams() {
-    return MultimapUtil.toJsonObject(params);
+    return MultimapConverter.toJsonObject(params);
   }
 
   JsonObject getJsonFormAttributes() {
-    return MultimapUtil.toJsonObject(formAttributes);
+    return MultimapConverter.toJsonObject(formAttributes);
   }
 
   void setJsonHeaders(JsonObject headers) {
-    this.headers = MultimapUtil.fromJsonObject(headers);
+    this.headers = MultimapConverter.fromJsonObject(headers);
   }
 
   void setJsonParams(JsonObject params) {
-    this.params = MultimapUtil.fromJsonObject(params);
+    this.params = MultimapConverter.fromJsonObject(params);
   }
 
   void setJsonFormAttributes(JsonObject formAttributes) {
-    this.formAttributes = MultimapUtil.fromJsonObject(formAttributes);
+    this.formAttributes = MultimapConverter.fromJsonObject(formAttributes);
   }
 
   /**

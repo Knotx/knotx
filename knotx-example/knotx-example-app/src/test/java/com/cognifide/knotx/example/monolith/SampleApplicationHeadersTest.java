@@ -57,7 +57,7 @@ public class SampleApplicationHeadersTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI);
   }

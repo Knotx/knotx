@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Action Knot Verticle
+ * Knot.x - Reactive microservice assembler - Action Knot
  *
  * Copyright (C) 2016 Cognifide Limited
  *

@@ -22,12 +22,12 @@ import io.vertx.rxjava.core.MultiMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class DataObjectsUtil {
 
   /**
-   * Equality operator for Multimap objects
+   * Equality operator for Multimap objects.
+   * Multimap represents keys as String, values as List of Strings.
    *
    * @param self - compared Multimap object self
    * @param that - compared Multimap object that
@@ -36,11 +36,6 @@ public class DataObjectsUtil {
   public static boolean equalsMultimap(MultiMap self, MultiMap that) {
     return Objects.equal(self.names(), that.names()) &&
         self.names().stream().allMatch(name -> that.contains(name) && self.getAll(name).equals(that.getAll(name)));
-  }
-
-  public static boolean equalsMap(Map<String, List<String>> self, Map<String, List<String>> that) {
-    return Objects.equal(self.keySet(), that.keySet()) &&
-        self.values().stream().allMatch(name -> that.containsKey(name) && self.get(name).equals(that.get(name)));
   }
 
   /**
@@ -66,31 +61,18 @@ public class DataObjectsUtil {
   }
 
   /**
-   * Method computing hashCode of the give multimap
+   * Method computing hashCode of the give Multimap.
+   * Multimap is treat as list of entires, key(String), value(List of Strings)
    *
    * @param multiMap - object to compute hashcode from
    * @return - hashcode of the given Multimap object
    */
   public static int multiMapHash(MultiMap multiMap) {
-    return multiMap.names().stream()
-        .mapToInt(name -> Optional.ofNullable(multiMap.get(name))
-            .map(String::hashCode)
-            .orElse(0))
-        .reduce(new Integer(0), (sum, hash) -> 31 * sum + hash);
-  }
+    io.vertx.core.MultiMap map = (io.vertx.core.MultiMap) multiMap.getDelegate();
 
-  /**
-   * Method computing hashCode of the give map
-   *
-   * @param map - object to compute hashcode from
-   * @return - hashcode of the given Multimap object
-   */
-  public static int mapHash(Map<String, List<String>> map) {
-    return map.keySet().stream()
-        .mapToInt(name -> Optional.ofNullable(map.get(name))
-            .map(value -> value.hashCode())
-            .orElse(0))
-        .reduce(new Integer(0), (sum, hash) -> 31 * sum + hash);
+    return map.entries().stream().mapToInt(
+        entry -> 31 * entry.getKey().hashCode() + (entry.getValue() == null ? 0 : entry.getValue().hashCode())
+    ).reduce(0, (sum, hash) -> 41 * sum + hash);
   }
 
   /**

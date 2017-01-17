@@ -18,7 +18,7 @@
 package com.cognifide.knotx.dataobjects;
 
 import com.cognifide.knotx.util.DataObjectsUtil;
-import com.cognifide.knotx.util.MultimapUtil;
+import com.cognifide.knotx.util.MultimapConverter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
@@ -58,7 +58,7 @@ public class ClientResponse {
   public JsonObject toMetadataJson() {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode);
-    json.put("headers", MultimapUtil.toJsonObject(headers));
+    json.put("headers", MultimapConverter.toJsonObject(headers));
     return json;
   }
 
@@ -97,11 +97,11 @@ public class ClientResponse {
    **/
 
   JsonObject getJsonHeaders() {
-    return MultimapUtil.toJsonObject(headers);
+    return MultimapConverter.toJsonObject(headers);
   }
 
   void setJsonHeaders(JsonObject headers) {
-    this.headers = MultimapUtil.fromJsonObject(headers);
+    this.headers = MultimapConverter.fromJsonObject(headers);
   }
 
   /**

@@ -61,43 +61,43 @@ public class SampleApplicationTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingLocalSimplePageWithGet_expectLocalSimpleHtml(TestContext context) {
     testGetRequest(context, LOCAL_REQUEST_URI, "localSimpleResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith-no-body.json")
+  @KnotxConfiguration("knotx-test-app-no-body.json")
   public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(TestContext context) {
     testGetRequest(context, LOCAL_NO_BODY_REQUEST_URI, "noBody.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
+  @KnotxConfiguration("knotx-example-app.json")
   public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(TestContext context) {
     testGetServerError(context, MISSING_SERVICE_CONFIG_REQUEST_URI);
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-monolith.json")
+  @KnotxConfiguration("knotx-example-app.json")
   public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingLocalMultipleFormsPageWithGet_expectMutlipleFormsWithGetResultHtml(TestContext context) {
     testGetRequest(context, LOCAL_MULTIPLE_FORMS_URI, "multipleFormWithGetResult.html");
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingWithPostMethodFirstForm_expectFirstFormPresentingFormActionResult(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-monolith.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingWithPostFirstFormTwiceWithDifferentData_expectDifferentResultOfFirstFormForEachRequest(TestContext context) {
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getFirstTestFormData(), "multipleFormWithPostResult.html", false);
     testPostRequest(context, LOCAL_MULTIPLE_FORMS_URI, getSecondTestFormData(), "multipleFormWithPostResult2.html", false);
