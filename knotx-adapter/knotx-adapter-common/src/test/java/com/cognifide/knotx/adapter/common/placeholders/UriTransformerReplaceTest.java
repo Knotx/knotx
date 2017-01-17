@@ -17,18 +17,14 @@
  */
 package com.cognifide.knotx.adapter.common.placeholders;
 
-import com.cognifide.knotx.adapter.common.placeholders.UriTransformer;
 import com.cognifide.knotx.dataobjects.ClientRequest;
-
+import io.vertx.rxjava.core.MultiMap;
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import io.vertx.rxjava.core.MultiMap;
 
 @RunWith(Parameterized.class)
 public class UriTransformerReplaceTest {
@@ -111,7 +107,8 @@ public class UriTransformerReplaceTest {
 
   @Test
   public void getServiceUri_whenGivenUriWithPlaceholdersAndMockedRequest_expectPlaceholdersSubstitutedWithValues() {
-    ClientRequest httpRequest = new ClientRequest().setHeaders(getHeadersMultiMap()).setParams(getParamsMultiMap()).setPath(requestedUri);
+    ClientRequest httpRequest = new ClientRequest().setHeaders(getHeadersMultiMap())
+        .setParams(getParamsMultiMap()).setPath(requestedUri);
 
     String finalUri = UriTransformer.resolveServicePath(servicePath, httpRequest);
 

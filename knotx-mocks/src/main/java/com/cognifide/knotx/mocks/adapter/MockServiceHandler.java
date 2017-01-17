@@ -38,13 +38,13 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   private static final String DEFAULT_MIME = "text/plain";
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final Vertx vertx;
+  private final JsonObject delayPerPath;
   private Action2<RoutingContext, String> bodyProcessor;
   private String catalogue;
-
   private long delayAllMs;
-  private final JsonObject delayPerPath;
 
-  public MockServiceHandler(String catalogue, Vertx vertx, long delayAllMs, JsonObject delayPerPath) {
+  public MockServiceHandler(String catalogue, Vertx vertx, long delayAllMs,
+      JsonObject delayPerPath) {
     this.catalogue = catalogue;
     this.vertx = vertx;
     this.delayAllMs = delayAllMs;
@@ -70,7 +70,9 @@ public class MockServiceHandler implements Handler<RoutingContext> {
         } else {
           generateResponse(context.request().path(), () -> {
             context.response().putHeader("Content-Type", contentType);
-            context.response().setStatusCode(StringUtils.isNotBlank(modifiedResponseStatusCode) ? Integer.valueOf(modifiedResponseStatusCode) : 200)
+            context.response().setStatusCode(
+                StringUtils.isNotBlank(modifiedResponseStatusCode) ? Integer
+                    .valueOf(modifiedResponseStatusCode) : 200)
                 .end(mockData);
           });
         }
@@ -85,7 +87,8 @@ public class MockServiceHandler implements Handler<RoutingContext> {
     if (delayAllMs > 0) {
       return delayAllMs;
     } else {
-      long delay = delayPerPath.getJsonObject(path, new JsonObject()).getLong("delayMs", delayAllMs);
+      long delay = delayPerPath.getJsonObject(path, new JsonObject())
+          .getLong("delayMs", delayAllMs);
       return delay > 0 ? delay : 0L;
     }
   }
@@ -106,11 +109,13 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   }
 
   private String getContentType(RoutingContext context) {
-    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(context.request().path())).orElse(DEFAULT_MIME);
+    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(context.request().path()))
+        .orElse(DEFAULT_MIME);
   }
 
   private String getFilePath(RoutingContext context) {
-    return catalogue + File.separator + StringUtils.substringAfterLast(context.request().path(), SEPARATOR);
+    return catalogue + File.separator + StringUtils
+        .substringAfterLast(context.request().path(), SEPARATOR);
   }
 
 }

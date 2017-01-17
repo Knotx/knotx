@@ -30,7 +30,8 @@ import io.vertx.serviceproxy.ProxyHelper;
 
 public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnectorVerticle.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FilesystemRepositoryConnectorVerticle.class);
 
   private String address;
 
@@ -48,7 +49,8 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(RepositoryConnectorProxy.class, vertx, new FilesystemRepositoryConnectorProxyImpl(vertx, config()), address);
+        .registerService(RepositoryConnectorProxy.class, vertx,
+            new FilesystemRepositoryConnectorProxyImpl(vertx, config()), address);
   }
 
   @Override

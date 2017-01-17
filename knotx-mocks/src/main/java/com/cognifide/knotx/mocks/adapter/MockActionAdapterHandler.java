@@ -67,7 +67,8 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
   private AdapterResponse replyTransition(ClientRequest request, JsonObject transitions) {
     final Pair<Optional<String>, JsonObject> result = getTransitionResult(request, transitions);
 
-    final JsonObject resultBody = result.getRight().put("form", toJsonObject(request.getFormAttributes()));
+    final JsonObject resultBody = result.getRight()
+        .put("form", toJsonObject(request.getFormAttributes()));
 
     final String data = resultBody.toString();
     final ClientResponse clientResponse = new ClientResponse()
@@ -85,7 +86,8 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
     return response;
   }
 
-  private Pair<Optional<String>, JsonObject> getTransitionResult(ClientRequest request, JsonObject transitions) {
+  private Pair<Optional<String>, JsonObject> getTransitionResult(ClientRequest request,
+      JsonObject transitions) {
     return transitions.stream()
         .filter(entry -> matchRequest(request, entry)).findFirst()
         .map(this::toTransitionPair)
@@ -93,7 +95,8 @@ public class MockActionAdapterHandler extends MockAdapterHandler {
   }
 
   private Pair<Optional<String>, JsonObject> toTransitionPair(Map.Entry<String, Object> entry) {
-    return Pair.of(Optional.of(entry.getKey()), ((JsonObject) entry.getValue()).getJsonObject("response"));
+    return Pair
+        .of(Optional.of(entry.getKey()), ((JsonObject) entry.getValue()).getJsonObject("response"));
   }
 
   private Pair<Optional<String>, JsonObject> getErrorResponse() {

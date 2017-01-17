@@ -86,14 +86,17 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callGetWithNoActionFragments_expectResponseOkNoFragmentChanges(TestContext context) throws Exception {
+  public void callGetWithNoActionFragments_expectResponseOkNoFragmentChanges(TestContext context)
+      throws Exception {
     String expectedTemplatingFragment = FileReader.readText("fragment_templating_out.txt");
-    KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT, "fragment_templating_in.txt");
+    KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT,
+        "fragment_templating_in.txt");
     knotContext.getClientRequest().setMethod(HttpMethod.GET);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals(HttpResponseStatus.OK.code(),
+              clientResponse.getClientResponse().getStatusCode());
           context.assertTrue(clientResponse.getTransition() != null);
           context.assertEquals("next", clientResponse.getTransition());
           context.assertTrue(clientResponse.getFragments() != null);
@@ -108,22 +111,26 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callGetWithTwoActionFragments_expectResponseOkTwoFragmentChanges(TestContext context) throws Exception {
+  public void callGetWithTwoActionFragments_expectResponseOkTwoFragmentChanges(TestContext context)
+      throws Exception {
     String expectedRedirectFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
     String expectedSelfFormFragment = FileReader.readText("fragment_form_self_out.txt");
-    KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT, "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
+    KnotContext knotContext = createKnotContext(FIRST_FRAGMENT, LAST_FRAGMENT,
+        "fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
     knotContext.getClientRequest().setMethod(HttpMethod.GET);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals(HttpResponseStatus.OK.code(),
+              clientResponse.getClientResponse().getStatusCode());
           context.assertTrue(clientResponse.getTransition() != null);
           context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.getTransition());
           context.assertTrue(clientResponse.getFragments() != null);
 
           List<Fragment> fragments = clientResponse.getFragments();
           context.assertEquals(FIRST_FRAGMENT.content(), fragments.get(0).content());
-          context.assertEquals(clean(expectedRedirectFormFragment), clean(fragments.get(1).content()));
+          context
+              .assertEquals(clean(expectedRedirectFormFragment), clean(fragments.get(1).content()));
           context.assertEquals(clean(expectedSelfFormFragment), clean(fragments.get(2).content()));
           context.assertEquals(LAST_FRAGMENT.content(), fragments.get(3).content());
         },
@@ -132,14 +139,16 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callGetWithActionFragmentWithoutIdentifier_expectResponseOkWithOneFragmentChanges(TestContext context) throws Exception {
+  public void callGetWithActionFragmentWithoutIdentifier_expectResponseOkWithOneFragmentChanges(
+      TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_no_identifier_in.txt");
     String expectedFragmentHtml = FileReader.readText("fragment_form_no_identifier_out.txt");
     knotContext.getClientRequest().setMethod(HttpMethod.GET);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals(HttpResponseStatus.OK.code(),
+              clientResponse.getClientResponse().getStatusCode());
           context.assertTrue(clientResponse.getTransition() != null);
           context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.getTransition());
           context.assertTrue(clientResponse.getFragments() != null);
@@ -153,13 +162,15 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callGetWithActionFragmentActionHandlerNotExists_expectStatusCode500(TestContext context) throws Exception {
+  public void callGetWithActionFragmentActionHandlerNotExists_expectStatusCode500(
+      TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_actionhandler_not_exists_in.txt");
     knotContext.getClientRequest().setMethod(HttpMethod.GET);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(),
+              clientResponse.getClientResponse().getStatusCode());
           context.assertFalse(clientResponse.getTransition() != null);
           context.assertFalse(clientResponse.getFragments() != null);
         },
@@ -168,17 +179,22 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(TestContext context) throws Exception {
+  public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(
+      TestContext context) throws Exception {
     createMockAdapter("address-redirect", "", "step2");
-    KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt", "fragment_form_self_in.txt");
+    KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt",
+        "fragment_form_self_in.txt");
     knotContext.getClientRequest()
         .setMethod(HttpMethod.POST)
-        .setFormAttributes(MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, FRAGMENT_REDIRECT_IDENTIFIER));
+        .setFormAttributes(MultiMap.caseInsensitiveMultiMap()
+            .add(HIDDEN_INPUT_TAG_NAME, FRAGMENT_REDIRECT_IDENTIFIER));
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.MOVED_PERMANENTLY.code(), clientResponse.getClientResponse().getStatusCode());
-          context.assertEquals("/content/form/step2.html", clientResponse.getClientResponse().getHeaders().get("Location"));
+          context.assertEquals(HttpResponseStatus.MOVED_PERMANENTLY.code(),
+              clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals("/content/form/step2.html",
+              clientResponse.getClientResponse().getHeaders().get("Location"));
           context.assertFalse(clientResponse.getTransition() != null);
           context.assertFalse(clientResponse.getFragments() != null);
         },
@@ -187,13 +203,15 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callPostWithActionFragmentWithoutRequestedFragmentIdentifier_expectStatusCode500(TestContext context) throws Exception {
+  public void callPostWithActionFragmentWithoutRequestedFragmentIdentifier_expectStatusCode500(
+      TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_incorrect_identifier_in.txt");
     knotContext.getClientRequest().setMethod(HttpMethod.POST);
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.NOT_FOUND.code(), clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals(HttpResponseStatus.NOT_FOUND.code(),
+              clientResponse.getClientResponse().getStatusCode());
           context.assertFalse(clientResponse.getFragments() != null);
           context.assertFalse(clientResponse.getTransition() != null);
         },
@@ -202,21 +220,25 @@ public class ActionKnotProxyVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-test.json")
-  public void callPostWithActionFragmentWithIncorrectSnippetId_expectStatusCode500(TestContext context) throws Exception {
+  public void callPostWithActionFragmentWithIncorrectSnippetId_expectStatusCode500(
+      TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt");
     knotContext.getClientRequest().setMethod(HttpMethod.POST)
-        .setFormAttributes(MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, "snippet_id_not_exists"));
+        .setFormAttributes(
+            MultiMap.caseInsensitiveMultiMap().add(HIDDEN_INPUT_TAG_NAME, "snippet_id_not_exists"));
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.NOT_FOUND.code(), clientResponse.getClientResponse().getStatusCode());
+          context.assertEquals(HttpResponseStatus.NOT_FOUND.code(),
+              clientResponse.getClientResponse().getStatusCode());
           context.assertFalse(clientResponse.getFragments() != null);
           context.assertFalse(clientResponse.getTransition() != null);
         },
         error -> context.fail(error.getMessage()));
   }
 
-  private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext, Action1<KnotContext> onSuccess,
+  private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext,
+      Action1<KnotContext> onSuccess,
       Action1<Throwable> onError) {
     Async async = context.async();
 
@@ -234,13 +256,15 @@ public class ActionKnotProxyVerticleTest {
     return createKnotContext(null, null, snippetFilenames);
   }
 
-  private KnotContext createKnotContext(Fragment firstFragment, Fragment lastFragment, String... snippetFilenames) throws Exception {
+  private KnotContext createKnotContext(Fragment firstFragment, Fragment lastFragment,
+      String... snippetFilenames) throws Exception {
     List<Fragment> fragments = Lists.newArrayList();
     Optional.ofNullable(firstFragment).ifPresent(fragments::add);
     for (String file : snippetFilenames) {
       String fileContent = FileReader.readText(file);
-      String fragmentIdentifiers = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_KNOTS).attr(
-          FRAGMENT_KNOTS);
+      String fragmentIdentifiers = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_KNOTS)
+          .attr(
+              FRAGMENT_KNOTS);
       fragments.add(Fragment.snippet(Arrays.asList(fragmentIdentifiers.split(",")), fileContent));
     }
     Optional.ofNullable(lastFragment).ifPresent(fragments::add);
@@ -249,7 +273,8 @@ public class ActionKnotProxyVerticleTest {
   }
 
   private String clean(String text) {
-    String cleanText = text.replace("\n", "").replaceAll(">(\\s)+<", "><").replaceAll(">(\\s)+\\{", ">{").replaceAll("\\}(\\s)+<", "}<");
+    String cleanText = text.replace("\n", "").replaceAll(">(\\s)+<", "><")
+        .replaceAll(">(\\s)+\\{", ">{").replaceAll("\\}(\\s)+<", "}<");
     return Jsoup.parse(cleanText, "UTF-8", Parser.xmlParser())
         .outputSettings(OUTPUT_SETTINGS)
         .html()
@@ -260,18 +285,21 @@ public class ActionKnotProxyVerticleTest {
     createMockAdapter(adddress, addToBody, signal, Collections.emptyMap());
   }
 
-  private void createMockAdapter(String adddress, String addToBody, String signal, Map<String, List<String>> headers) {
+  private void createMockAdapter(String adddress, String addToBody, String signal,
+      Map<String, List<String>> headers) {
     Func1<AdapterRequest, AdapterResponse> adapter = adapterRequest -> {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(HttpResponseStatus.OK.code());
       response.setBody(Buffer.buffer().appendString(addToBody));
-      response.setHeaders(headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
+      response.setHeaders(
+          headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
       return new AdapterResponse().setResponse(response).setSignal(signal);
     };
 
     ProxyHelper
         .registerService(
-            com.cognifide.knotx.proxy.AdapterProxy.class, vertx.vertx(), new MockAdapterImpl(adapter),
+            com.cognifide.knotx.proxy.AdapterProxy.class, vertx.vertx(),
+            new MockAdapterImpl(adapter),
             adddress);
   }
 

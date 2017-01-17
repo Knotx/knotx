@@ -69,10 +69,11 @@ public class HttpClientFacade {
 
   /**
    * Method to validate contract or params JsonObject for the AdapterProxy Service<br/>
-   * The contract checks if all required fields exists in the object. throwing AdapterServiceContractException
-   * in case of contract violation.<br/>
+   * The contract checks if all required fields exists in the object.
+   * throwing AdapterServiceContractException in case of contract violation.<br/>
    *
-   * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params' objects.
+   * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params'
+   * objects.
    */
   protected void validateContract(AdapterRequest message) {
     if (message.getParams() == null || !message.getParams().containsKey(PATH_PROPERTY_KEY)) {
@@ -81,15 +82,17 @@ public class HttpClientFacade {
   }
 
   /**
-   * Method responsible for building request to the service.</br>
+   * Method responsible for building request to the service.
+   * </br>
    * <br/>
-   * The responsibility of the method is to build ClientRequest based on the original Http Request<br/>
+   * The responsibility of the method is to build ClientRequest based on the original Http
+   * Request<br/>
    * - It must set path property of the request based on the params<br/>
    * - It might set headers of the request if needed.</br>
    * <br/>
    * In case of headers created modified in this method, ensure that your service configuration
-   * allows passing those headers to the target service. See 'allowed.request.headers' section of the configuration
-   * </br>
+   * allows passing those headers to the target service. See 'allowed.request.headers' section
+   * of the configuration </br>
    *
    * @param originalRequest - ClientRequest representing original request comming to the Knot.x
    * @param params - JsonObject of the params to be used to build request.
@@ -97,19 +100,23 @@ public class HttpClientFacade {
    */
   protected ClientRequest buildServiceRequest(ClientRequest originalRequest, JsonObject params) {
     return new ClientRequest(originalRequest)
-        .setPath(UriTransformer.resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
+        .setPath(UriTransformer
+            .resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
   }
 
   private Pair<ClientRequest, ServiceMetadata> prepareRequestData(AdapterRequest adapterRequest) {
     final Pair<ClientRequest, ServiceMetadata> serviceData;
 
-    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.getRequest(), adapterRequest.getParams());
+    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.getRequest(),
+        adapterRequest.getParams());
     final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.getPath());
 
     if (serviceMetadata.isPresent()) {
       serviceData = Pair.of(serviceRequest, serviceMetadata.get());
     } else {
-      final String error = String.format("No matching service definition for the requested path '%s'", serviceRequest.getPath());
+      final String error = String
+          .format("No matching service definition for the requested path '%s'",
+              serviceRequest.getPath());
       throw new UnsupportedServiceException(error);
     }
     return serviceData;
@@ -119,17 +126,22 @@ public class HttpClientFacade {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Observable<HttpClientResponse> callService(Pair<ClientRequest, ServiceMetadata> serviceData, HttpMethod method) {
+  private Observable<HttpClientResponse> callService(
+      Pair<ClientRequest, ServiceMetadata> serviceData, HttpMethod method) {
     final ClientRequest serviceRequest = serviceData.getLeft();
     final ServiceMetadata serviceMetadata = serviceData.getRight();
 
     return Observable.create(subscriber -> {
-      HttpClientRequest httpRequest = httpClient.request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(), serviceRequest.getPath());
+      HttpClientRequest httpRequest = httpClient
+          .request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(),
+              serviceRequest.getPath());
       Observable<HttpClientResponse> resp = httpRequest.toObservable();
       resp.subscribe(subscriber);
 
-      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(), serviceMetadata.getAllowedRequestHeaderPatterns());
-      filteredHeaders.names().forEach(headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
+      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
+          serviceMetadata.getAllowedRequestHeaderPatterns());
+      filteredHeaders.names().forEach(
+          headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
       if (!serviceRequest.getFormAttributes().isEmpty()) {
         httpRequest.end(FormBodyBuilder.createBody(serviceRequest.getFormAttributes()));
       } else {

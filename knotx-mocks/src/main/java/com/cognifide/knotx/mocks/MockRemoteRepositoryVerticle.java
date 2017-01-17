@@ -52,7 +52,8 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
         config().getInteger("httpPort"),
         result -> {
           if (result.succeeded()) {
-            LOGGER.info("Mock Remote Repository server started. Listening on port {}", config().getInteger("httpPort"));
+            LOGGER.info("Mock Remote Repository server started. Listening on port {}",
+                config().getInteger("httpPort"));
             fut.complete();
           } else {
             LOGGER.error("Unable to start Mock Remote Repository server.", result.cause());
@@ -67,7 +68,8 @@ public class MockRemoteRepositoryVerticle extends AbstractVerticle {
   }
 
   private Handler<RoutingContext> createRepositoryHandler() {
-    return new MockRemoteRepositoryHandler(vertx, config().getString("mockDataRoot"), config().getLong("delayAllMs", 0L),
+    return new MockRemoteRepositoryHandler(vertx, config().getString("mockDataRoot"),
+        config().getLong("delayAllMs", 0L),
         config().getJsonObject("delay", new JsonObject()));
   }
 }

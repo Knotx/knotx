@@ -57,28 +57,33 @@ public class HttpServiceAdapterProxyTest {
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
   public void callNonExistingService_expectBadRequestResponse(TestContext context) {
     callAdapterServiceWithAssertions(context, "not/existing/service/address",
-        adapterResponse -> context.assertTrue(adapterResponse.getResponse().getStatusCode() == HttpResponseStatus.INTERNAL_SERVER_ERROR.code()),
+        adapterResponse -> context.assertTrue(adapterResponse.getResponse().getStatusCode()
+            == HttpResponseStatus.INTERNAL_SERVER_ERROR.code()),
         error -> context.fail(error.getMessage()));
   }
 
 
   @Test
   @KnotxConfiguration("knotx-service-adapter-http-test.json")
-  public void callExistingService_expectOKResponseWithServiceDataProvidedByService1(TestContext context) throws Exception {
+  public void callExistingService_expectOKResponseWithServiceDataProvidedByService1(
+      TestContext context) throws Exception {
     final String expected = FileReader.readText("first-response.json");
 
     callAdapterServiceWithAssertions(context, "/service/mock/first.json",
         adapterResponse -> {
-          context.assertTrue(adapterResponse.getResponse().getStatusCode() == HttpResponseStatus.OK.code());
+          context.assertTrue(
+              adapterResponse.getResponse().getStatusCode() == HttpResponseStatus.OK.code());
 
-          JsonObject serviceResponse = new JsonObject(adapterResponse.getResponse().getBody().toString());
+          JsonObject serviceResponse = new JsonObject(
+              adapterResponse.getResponse().getBody().toString());
           JsonObject expectedResponse = new JsonObject(expected);
           context.assertEquals(serviceResponse, expectedResponse);
         },
         error -> context.fail(error.getMessage()));
   }
 
-  private void callAdapterServiceWithAssertions(TestContext context, String servicePath, Action1<AdapterResponse> onSuccess,
+  private void callAdapterServiceWithAssertions(TestContext context, String servicePath,
+      Action1<AdapterResponse> onSuccess,
       Action1<Throwable> onError) {
     AdapterRequest message = payloadMessage(servicePath);
     Async async = context.async();
@@ -94,7 +99,8 @@ public class HttpServiceAdapterProxyTest {
   }
 
   private AdapterRequest payloadMessage(String servicePath) {
-    return new AdapterRequest().setRequest(new ClientRequest()).setParams(new JsonObject().put("path", servicePath));
+    return new AdapterRequest().setRequest(new ClientRequest())
+        .setParams(new JsonObject().put("path", servicePath));
   }
 
 }

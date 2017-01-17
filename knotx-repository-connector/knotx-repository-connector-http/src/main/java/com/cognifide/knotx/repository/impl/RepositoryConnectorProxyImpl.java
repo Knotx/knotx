@@ -62,7 +62,8 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
   public RepositoryConnectorProxyImpl(Vertx vertx, JsonObject configuration) {
     clientOptions = configuration.getJsonObject("clientOptions", new JsonObject());
     clientDestination = configuration.getJsonObject("clientDestination");
-    allowedRequestHeaders = configuration.getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
+    allowedRequestHeaders = configuration.getJsonArray("allowedRequestHeaders", new JsonArray())
+        .stream()
         .map(object -> (String) object)
         .map(new StringToPatternFunction())
         .collect(Collectors.toList());
@@ -83,7 +84,8 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
       );
     }
 
-    RxHelper.get(httpClient, clientDestination.getInteger("port"), clientDestination.getString("domain"),
+    RxHelper.get(httpClient, clientDestination.getInteger("port"),
+        clientDestination.getString("domain"),
         repoUri, MultiMap.caseInsensitiveMultiMap())
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
@@ -98,7 +100,8 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
   private HttpClient createHttpClient(Vertx vertx) {
     io.vertx.core.http.HttpClient httpClient =
-        clientOptions.isEmpty() ? vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
+        clientOptions.isEmpty() ? vertx.createHttpClient()
+            : vertx.createHttpClient(new HttpClientOptions(clientOptions));
 
     return HttpClient.newInstance(httpClient);
   }
@@ -109,7 +112,8 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
     if (params != null && params.names().size() > 0) {
       uri.append("?")
           .append(params.names().stream()
-              .map(name -> new StringBuilder(name).append("=").append(encodeParamValue(params.get(name))))
+              .map(name -> new StringBuilder(name).append("=")
+                  .append(encodeParamValue(params.get(name))))
               .collect(Collectors.joining("&"))
           );
     }
@@ -133,7 +137,8 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
         .map(buffer -> toSuccessResponse(buffer, response));
   }
 
-  private ClientResponse toSuccessResponse(Buffer buffer, final HttpClientResponse httpClientResponse) {
+  private ClientResponse toSuccessResponse(Buffer buffer,
+      final HttpClientResponse httpClientResponse) {
     return new ClientResponse()
         .setStatusCode(httpClientResponse.statusCode())
         .setHeaders(httpClientResponse.headers())

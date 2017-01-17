@@ -18,18 +18,15 @@
 package com.cognifide.knotx.adapter.common.placeholders;
 
 import com.cognifide.knotx.dataobjects.ClientRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 public final class UriTransformer {
 

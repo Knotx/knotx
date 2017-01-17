@@ -19,8 +19,8 @@
 
 -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.cognifide.knotx</groupId>
@@ -222,7 +222,8 @@
         <version>${vertx.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
-      </dependency><dependency>
+      </dependency>
+      <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-unit</artifactId>
         <version>${vertx.version}</version>
@@ -367,7 +368,8 @@
                       implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                     <manifestEntries>
                       <Main-Class>com.cognifide.knotx.launcher.LogbackLauncher</Main-Class>
-                      <Main-Verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle</Main-Verticle>
+                      <Main-Verticle>com.cognifide.knotx.launcher.KnotxStarterVerticle
+                      </Main-Verticle>
                     </manifestEntries>
                   </transformer>
                   <transformer

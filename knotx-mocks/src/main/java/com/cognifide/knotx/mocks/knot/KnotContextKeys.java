@@ -39,7 +39,8 @@ enum KnotContextKeys {
   REQUEST("clientRequest") {
     @Override
     Optional<Object> defaultValue(KnotContext context) {
-      return context.getClientRequest() != null ? Optional.of(context.getClientRequest()) : Optional.empty();
+      return context.getClientRequest() != null ? Optional.of(context.getClientRequest())
+          : Optional.empty();
     }
   },
   FRAGMENTS("fragments") {
@@ -70,7 +71,8 @@ enum KnotContextKeys {
     return key;
   }
 
-  Observable<Pair<String, Optional<Object>>> valueOrDefault(FileSystem fileSystem, JsonObject responseConfig, KnotContext context) {
+  Observable<Pair<String, Optional<Object>>> valueOrDefault(FileSystem fileSystem,
+      JsonObject responseConfig, KnotContext context) {
     return Observable.just(key)
         .filter(responseConfig::containsKey)
         .flatMap(contextKey -> this.mockValue(fileSystem, responseConfig.getString(contextKey)))
@@ -79,7 +81,8 @@ enum KnotContextKeys {
   }
 
   Observable<Optional<Object>> mockValue(FileSystem fileSystem, String resourcePath) {
-    return fileSystem.openObservable(resourcePath, new OpenOptions().setCreate(false).setWrite(false))
+    return fileSystem
+        .openObservable(resourcePath, new OpenOptions().setCreate(false).setWrite(false))
         .flatMap(this::processFile)
         .map(this::toJson);
   }
@@ -87,7 +90,8 @@ enum KnotContextKeys {
   abstract Optional<Object> defaultValue(KnotContext context);
 
   private Optional<Object> toJson(Buffer buffer) {
-    return Optional.of(buffer.toString().trim().charAt(0) == '{' ? buffer.toJsonObject() : buffer.toJsonArray());
+    return Optional.of(buffer.toString().trim().charAt(0) == '{' ? buffer.toJsonObject()
+        : buffer.toJsonArray());
   }
 
   private Observable<Buffer> processFile(final AsyncFile asyncFile) {

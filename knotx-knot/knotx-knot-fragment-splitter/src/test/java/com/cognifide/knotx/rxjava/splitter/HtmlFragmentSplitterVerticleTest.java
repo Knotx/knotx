@@ -56,17 +56,20 @@ public class HtmlFragmentSplitterVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callSplitterWithEmptyBody_expectNotFoundResponse(TestContext context) throws Exception {
+  public void callSplitterWithEmptyBody_expectNotFoundResponse(TestContext context)
+      throws Exception {
     callFragmentSplitterWithAssertions(context, "",
         knotContext -> {
-          context.assertEquals(knotContext.getClientResponse().getStatusCode(), HttpResponseStatus.NOT_FOUND.code());
+          context.assertEquals(knotContext.getClientResponse().getStatusCode(),
+              HttpResponseStatus.NOT_FOUND.code());
           context.assertFalse(knotContext.getFragments() != null);
         });
   }
 
   @Test
   @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callSplitterWithManySnippets_expectMultipleFragments(TestContext context) throws Exception {
+  public void callSplitterWithManySnippets_expectMultipleFragments(TestContext context)
+      throws Exception {
     callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
         knotContext -> {
           context.assertTrue(knotContext.getFragments() != null);
@@ -74,7 +77,8 @@ public class HtmlFragmentSplitterVerticleTest {
         });
   }
 
-  private void callFragmentSplitterWithAssertions(TestContext context, String template, Action1<KnotContext> testFunction) {
+  private void callFragmentSplitterWithAssertions(TestContext context, String template,
+      Action1<KnotContext> testFunction) {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 

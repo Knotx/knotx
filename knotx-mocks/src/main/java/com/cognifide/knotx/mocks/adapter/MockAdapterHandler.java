@@ -82,15 +82,18 @@ public class MockAdapterHandler implements Handler<Message<AdapterRequest>> {
   }
 
   protected String getContentType(ClientRequest request) {
-    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.getPath())).orElse(DEFAULT_MIME);
+    return Optional.ofNullable(MimeMapping.getMimeTypeForFilename(request.getPath()))
+        .orElse(DEFAULT_MIME);
   }
 
   protected String getFilePath(String path) {
-    return catalogue + File.separator + (path.contains(SEPARATOR) ? StringUtils.substringAfterLast(path, SEPARATOR) : path);
+    return catalogue + File.separator + (path.contains(SEPARATOR) ? StringUtils
+        .substringAfterLast(path, SEPARATOR) : path);
   }
 
   protected MultiMap headers(ClientRequest request, String data) {
-    return MultiMap.caseInsensitiveMultiMap().add(HttpHeaders.CONTENT_TYPE.toString(), getContentType(request))
+    return MultiMap.caseInsensitiveMultiMap()
+        .add(HttpHeaders.CONTENT_TYPE.toString(), getContentType(request))
         .add(HttpHeaders.CONTENT_LENGTH.toString(), Integer.toString(data.length()));
   }
 }

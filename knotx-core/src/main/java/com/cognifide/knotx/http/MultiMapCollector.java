@@ -18,7 +18,7 @@
 package com.cognifide.knotx.http;
 
 import com.google.common.collect.ImmutableSet;
-
+import io.vertx.rxjava.core.MultiMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -26,8 +26,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-
-import io.vertx.rxjava.core.MultiMap;
 
 public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
 
@@ -39,7 +37,8 @@ public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
     this.value = value;
   }
 
-  public static <T> MultiMapCollector<T> toMultimap(Function<T, String> keyGetter, Function<T, List<String>> valueGetter) {
+  public static <T> MultiMapCollector<T> toMultimap(Function<T, String> keyGetter,
+      Function<T, List<String>> valueGetter) {
     return new MultiMapCollector<>(keyGetter, valueGetter);
   }
 
@@ -50,7 +49,8 @@ public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
 
   @Override
   public BiConsumer<MultiMap, T> accumulator() {
-    return (multiMap, t) -> value.apply(t).forEach(value -> multiMap.add(keyGetter.apply(t), value));
+    return (multiMap, t) -> value.apply(t)
+        .forEach(value -> multiMap.add(keyGetter.apply(t), value));
   }
 
 

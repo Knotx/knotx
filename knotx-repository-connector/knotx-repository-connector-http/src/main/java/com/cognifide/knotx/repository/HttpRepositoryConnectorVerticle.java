@@ -30,7 +30,8 @@ import io.vertx.serviceproxy.ProxyHelper;
 
 public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryConnectorVerticle.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(HttpRepositoryConnectorVerticle.class);
 
   private String address;
   private MessageConsumer<JsonObject> consumer;
@@ -49,7 +50,8 @@ public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(RepositoryConnectorProxy.class, vertx, new RepositoryConnectorProxyImpl(vertx, config()), address);
+        .registerService(RepositoryConnectorProxy.class, vertx,
+            new RepositoryConnectorProxyImpl(vertx, config()), address);
   }
 
   @Override

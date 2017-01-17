@@ -17,11 +17,10 @@
  */
 package com.cognifide.knotx.adapter.common.http;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.List;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class ServiceMetadata {
 
@@ -83,7 +82,8 @@ public class ServiceMetadata {
     return allowedRequestHeaderPatterns;
   }
 
-  public ServiceMetadata setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
+  public ServiceMetadata setAllowedRequestHeaderPatterns(
+      List<Pattern> allowedRequestHeaderPatterns) {
     this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
     return this;
   }

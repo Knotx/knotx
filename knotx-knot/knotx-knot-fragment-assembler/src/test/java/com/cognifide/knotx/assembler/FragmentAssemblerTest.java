@@ -84,8 +84,10 @@ public class FragmentAssemblerTest {
     String expectedResult = FileReader.readText("expectedAsIsResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), knotContext.getClientResponse().getStatusCode());
-          context.assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
+          context.assertEquals(HttpResponseStatus.OK.code(),
+              knotContext.getClientResponse().getStatusCode());
+          context
+              .assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
         });
   }
 
@@ -99,8 +101,10 @@ public class FragmentAssemblerTest {
     String expectedResult = FileReader.readText("expectedUnwrapResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), knotContext.getClientResponse().getStatusCode());
-          context.assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
+          context.assertEquals(HttpResponseStatus.OK.code(),
+              knotContext.getClientResponse().getStatusCode());
+          context
+              .assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
         });
   }
 
@@ -114,12 +118,15 @@ public class FragmentAssemblerTest {
     String expectedResult = FileReader.readText("expectedIgnoreResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), knotContext.getClientResponse().getStatusCode());
-          context.assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
+          context.assertEquals(HttpResponseStatus.OK.code(),
+              knotContext.getClientResponse().getStatusCode());
+          context
+              .assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
         });
   }
 
-  private void callAssemblerWithAssertions(TestContext context, List<String> fragments, Action1<KnotContext> testFunction) {
+  private void callAssemblerWithAssertions(TestContext context, List<String> fragments,
+      Action1<KnotContext> testFunction) {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 

@@ -61,11 +61,14 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       // Any options or config provided by system properites will override anything specified
       // at deployment time and on starter Json config
       try {
-        SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(identifier);
+        SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+            identifier);
         if (!systemPropsConfiguration.envConfig().isEmpty()) {
           JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
-          JsonObject updatedKnotOptions = updatedDescriptor.getJsonObject("options", new JsonObject());
-          JsonObject updatedKnotConfig = updatedKnotOptions.getJsonObject("config", new JsonObject());
+          JsonObject updatedKnotOptions = updatedDescriptor
+              .getJsonObject("options", new JsonObject());
+          JsonObject updatedKnotConfig = updatedKnotOptions
+              .getJsonObject("config", new JsonObject());
           depOptions.mergeIn(updatedKnotOptions);
           knotConfig.mergeIn(updatedKnotConfig);
         }
@@ -99,7 +102,8 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
     throw new IllegalStateException("Shouldn't be called");
   }
 
-  private JsonObject readDescriptor(ClassLoader classLoader, String descriptorFile) throws IOException {
+  private JsonObject readDescriptor(ClassLoader classLoader, String descriptorFile)
+      throws IOException {
     JsonObject descriptor;
     try (InputStream is = classLoader.getResourceAsStream(descriptorFile)) {
       if (is == null) {

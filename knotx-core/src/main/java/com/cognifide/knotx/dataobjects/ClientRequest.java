@@ -51,12 +51,6 @@ public class ClientRequest {
     ClientRequestConverter.fromJson(json, this);
   }
 
-  public JsonObject toJson() {
-    JsonObject json = new JsonObject();
-    ClientRequestConverter.toJson(this, json);
-    return json;
-  }
-
   public ClientRequest(ClientRequest request) {
     this.path = request.path;
     this.method = request.method;
@@ -73,17 +67,23 @@ public class ClientRequest {
     this.formAttributes = MultiMap.caseInsensitiveMultiMap().setAll(serverRequest.formAttributes());
   }
 
-  public String getPath() {
-    return path;
+  public JsonObject toJson() {
+    JsonObject json = new JsonObject();
+    ClientRequestConverter.toJson(this, json);
+    return json;
   }
 
-  public HttpMethod getMethod() {
-    return method;
+  public String getPath() {
+    return path;
   }
 
   public ClientRequest setPath(String path) {
     this.path = path;
     return this;
+  }
+
+  public HttpMethod getMethod() {
+    return method;
   }
 
   public ClientRequest setMethod(HttpMethod method) {
@@ -97,25 +97,25 @@ public class ClientRequest {
   }
 
   @GenIgnore
-  public MultiMap getParams() {
-    return MultiMap.caseInsensitiveMultiMap().addAll(params);
-  }
-
-  @GenIgnore
-  public MultiMap getFormAttributes() {
-    return MultiMap.caseInsensitiveMultiMap().addAll(formAttributes);
-  }
-
-  @GenIgnore
   public ClientRequest setHeaders(MultiMap headers) {
     this.headers = MultiMap.caseInsensitiveMultiMap().addAll(headers);
     return this;
   }
 
   @GenIgnore
+  public MultiMap getParams() {
+    return MultiMap.caseInsensitiveMultiMap().addAll(params);
+  }
+
+  @GenIgnore
   public ClientRequest setParams(MultiMap params) {
     this.params = MultiMap.caseInsensitiveMultiMap().addAll(params);
     return this;
+  }
+
+  @GenIgnore
+  public MultiMap getFormAttributes() {
+    return MultiMap.caseInsensitiveMultiMap().addAll(formAttributes);
   }
 
   @GenIgnore
@@ -132,20 +132,20 @@ public class ClientRequest {
     return MultimapConverter.toJsonObject(headers);
   }
 
-  JsonObject getJsonParams() {
-    return MultimapConverter.toJsonObject(params);
-  }
-
-  JsonObject getJsonFormAttributes() {
-    return MultimapConverter.toJsonObject(formAttributes);
-  }
-
   void setJsonHeaders(JsonObject headers) {
     this.headers = MultimapConverter.fromJsonObject(headers);
   }
 
+  JsonObject getJsonParams() {
+    return MultimapConverter.toJsonObject(params);
+  }
+
   void setJsonParams(JsonObject params) {
     this.params = MultimapConverter.fromJsonObject(params);
+  }
+
+  JsonObject getJsonFormAttributes() {
+    return MultimapConverter.toJsonObject(formAttributes);
   }
 
   void setJsonFormAttributes(JsonObject formAttributes) {
@@ -174,7 +174,8 @@ public class ClientRequest {
 
   @Override
   public int hashCode() {
-    return 41 * Objects.hashCode(path, method) + 37 * DataObjectsUtil.multiMapHash(headers) + 31 * DataObjectsUtil.multiMapHash(params)
+    return 41 * Objects.hashCode(path, method) + 37 * DataObjectsUtil.multiMapHash(headers)
+        + 31 * DataObjectsUtil.multiMapHash(params)
         + DataObjectsUtil.multiMapHash(formAttributes);
   }
 

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@ModuleGen(name = "knotx-eb-api", groupPackage="com.cognifide.knotx")
+@ModuleGen(name = "knotx-eb-api", groupPackage = "com.cognifide.knotx")
 package com.cognifide.knotx;
 
 import io.vertx.codegen.annotations.ModuleGen;

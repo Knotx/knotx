@@ -51,28 +51,8 @@ public class KnotContext {
     return json;
   }
 
-  public KnotContext setClientRequest(ClientRequest request) {
-    this.clientRequest = request;
-    return this;
-  }
-
-  public KnotContext setClientResponse(ClientResponse response) {
-    this.clientResponse = response;
-    return this;
-  }
-
-  public KnotContext setFragments(List<Fragment> fragments) {
-    this.fragments = fragments;
-    return this;
-  }
-
   public KnotContext clearFragments() {
     this.fragments = null;
-    return this;
-  }
-
-  public KnotContext setTransition(String transition) {
-    this.transition = transition;
     return this;
   }
 
@@ -80,16 +60,36 @@ public class KnotContext {
     return transition;
   }
 
+  public KnotContext setTransition(String transition) {
+    this.transition = transition;
+    return this;
+  }
+
   public ClientRequest getClientRequest() {
     return clientRequest;
+  }
+
+  public KnotContext setClientRequest(ClientRequest request) {
+    this.clientRequest = request;
+    return this;
   }
 
   public ClientResponse getClientResponse() {
     return clientResponse;
   }
 
+  public KnotContext setClientResponse(ClientResponse response) {
+    this.clientResponse = response;
+    return this;
+  }
+
   public List<Fragment> getFragments() {
     return fragments;
+  }
+
+  public KnotContext setFragments(List<Fragment> fragments) {
+    this.fragments = fragments;
+    return this;
   }
 
   public Cache<String, Observable<JsonObject>> getCache() {

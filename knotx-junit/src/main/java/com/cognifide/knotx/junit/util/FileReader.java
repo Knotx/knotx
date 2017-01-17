@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 public interface FileReader {
 
   static String readText(String path) throws Exception {
-    return CharStreams.toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
+    return CharStreams
+        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
   }
 }

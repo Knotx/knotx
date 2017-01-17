@@ -37,14 +37,12 @@ import rx.functions.Action2;
 public class MockServiceVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceVerticle.class);
-
-  private HttpServer httpServer;
-
   private static final Action2<RoutingContext, String> BOUNCER = (context, mockData) -> {
     JsonObject responseBody = new JsonObject(mockData);
     context.response().putHeader("Set-Cookie", "mockCookie=" + context.request().path());
     context.response().setStatusCode(200).end(responseBody.encodePrettily());
   };
+  private HttpServer httpServer;
 
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
@@ -61,7 +59,8 @@ public class MockServiceVerticle extends AbstractVerticle {
         config().getInteger("httpPort"),
         result -> {
           if (result.succeeded()) {
-            LOGGER.info("Mock Service server started. Listening on port {}", config().getInteger("httpPort"));
+            LOGGER.info("Mock Service server started. Listening on port {}",
+                config().getInteger("httpPort"));
             fut.complete();
           } else {
             LOGGER.error("Unable to start Mock Service server.", result.cause());
@@ -76,12 +75,14 @@ public class MockServiceVerticle extends AbstractVerticle {
   }
 
   private MockServiceHandler createGetHandler() {
-    return new MockServiceHandler(config().getString("mockDataRoot"), vertx, config().getLong("delayAllMs", 0L),
+    return new MockServiceHandler(config().getString("mockDataRoot"), vertx,
+        config().getLong("delayAllMs", 0L),
         config().getJsonObject("delay", new JsonObject()));
   }
 
   private MockServiceHandler createPostHandler() {
-    MockServiceHandler mockServiceHandler = new MockServiceHandler(config().getString("mockDataRoot"), vertx, config().getLong("delayAllMs", 0L),
+    MockServiceHandler mockServiceHandler = new MockServiceHandler(
+        config().getString("mockDataRoot"), vertx, config().getLong("delayAllMs", 0L),
         config().getJsonObject("delay", new JsonObject()));
     return config().getBoolean("bouncing", false)
         ? mockServiceHandler.withBodyProcessor(BOUNCER)

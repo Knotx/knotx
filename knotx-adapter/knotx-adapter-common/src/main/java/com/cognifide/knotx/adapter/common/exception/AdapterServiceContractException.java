@@ -21,6 +21,7 @@ package com.cognifide.knotx.adapter.common.exception;
  * Thrown to indicate that adapter service contract was violated.
  */
 public class AdapterServiceContractException extends RuntimeException {
+
   public AdapterServiceContractException(String message) {
     super(message);
   }
