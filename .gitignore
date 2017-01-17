@@ -80,3 +80,4 @@ bin/
 # Project specific   #
 ######################
 .vertx
+file-uploads
