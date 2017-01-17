@@ -32,7 +32,7 @@
   <artifactId>documentation</artifactId>
   <packaging>pom</packaging>
 
-  <name>Knot.x - Reactive microservice assembler - documentation</name>
+  <name>Knot.x - Reactive microservice assembler - Wiki Documentation</name>
 
   <build>
     <plugins>

@@ -875,7 +875,7 @@ Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]
 
 ##How to extend?
 We need to extend abstract 
-[com.cognifide.knotx.knot.api.AbstractKnot](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
+[com.cognifide.knotx.knot.api.AbstractKnotProxy](https://github.com/Cognifide/knotx/blob/master/knotx-knots/knotx-knot-api/src/main/java/com/cognifide/knotx/knot/api/AbstractKnot.java)
 class from `knotx-knots/knotx-knot-api`. AbstractKnot hides Event Bus communication and JSON configuration initialization parts
 and lets you to focus on Knot logic:
 

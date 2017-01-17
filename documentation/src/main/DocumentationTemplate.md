@@ -8,7 +8,7 @@
 #include "wiki/KnotRouting.md"
 #include "wiki/KnotxModules.md"
 #include "wiki/Server.md"
-#include "wiki/Repository.md"
+#include "wiki/RepositoryConnectors.md"
 #include "wiki/HttpRepositoryConnector.md"
 #include "wiki/FilesystemRepositoryConnector.md"
 #include "wiki/Splitter.md"

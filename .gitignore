@@ -9,6 +9,7 @@ C:
 .project
 .classpath
 .settings
+generated
 
 # Compiled source #
 ###################
@@ -79,3 +80,5 @@ bin/
 # Project specific   #
 ######################
 .vertx
+file-uploads
+**/src/main/resources/*-js

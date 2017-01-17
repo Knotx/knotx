@@ -31,15 +31,11 @@
   <artifactId>knotx-example</artifactId>
   <packaging>pom</packaging>
 
-  <name>Knot.x - Sample App with Mock service</name>
+  <name>Knot.x - Reactive microservice assembler - Example</name>
 
   <modules>
-    <module>knotx-mocks</module>
-    <module>knotx-example-monolith</module>
+    <module>knotx-example-handlebars-ext</module>
+    <module>knotx-example-action-adapter-http</module>
+    <module>knotx-example-app</module>
   </modules>
-
-  <properties>
-    <!-- the main verticle class name -->
-    <main.verticle>com.cognifide.knotx.repository.server.SampleApplication</main.verticle>
-  </properties>
 </project>

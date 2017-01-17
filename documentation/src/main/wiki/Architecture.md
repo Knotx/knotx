@@ -2,7 +2,7 @@
 
 A simplified description of Knot.x can be `a tool which converts a static page (template) into 
 dynamic page driven by data provided by microservices`.
-Page visitor requests are directed to Knot.x. Then Knot.x calls Repository for 
+Page visitor requests are directed to Knot.x. Then Knot.x calls [[Repository Connector|RepositoryConnectors]] for 
 the template, split this template to static / dynamic fragments and process those fragments. Finally 
 it calls external services if required.
 

@@ -2,7 +2,7 @@
 
 Server is essentially a "heart" (a main [Verticle](http://vertx.io/docs/vertx-core/java/#_verticles)) of Knot.x.
 It creates HTTP Server, listening for browser requests, and is responsible for coordination of 
-communication between [[Repository|Repository]], [[Splitter|Splitter]] and all deployed [[Knots|Knot]].
+communication between [[Repository Connectors|RepositoryConnectors]], [[Splitter|Splitter]] and all deployed [[Knots|Knot]].
 
 ## How does it work?
 Once the HTTP request from the browser comes to the Knot.x, it goes to the **Server** verticle.
@@ -139,7 +139,7 @@ Main server options available.
 | Name  | Type  | Mandatory | Description  |
 |-------:|:-------:|:-------:  |-------|
 | `path`      | `String`  | &#10004;       | Regular expression of the HTTP Request path |
-| `address`   | `String`  | &#10004;       | Event bus address of the **Repository|Repository** verticle, that should deliver content for the requested path matching the regexp in `path` |
+| `address`   | `String`  | &#10004;       | Event bus address of the **Repository Connector** modules, that should deliver content for the requested path matching the regexp in `path` |
 
 ### SplitterEntry options
 

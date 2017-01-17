@@ -42,12 +42,7 @@
     <!-- Knot.x -->
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-launcher</artifactId>
+      <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -62,12 +57,12 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-fragment-splitter</artifactId>
+      <artifactId>knotx-knot-fragment-splitter</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-knot-api</artifactId>
+      <artifactId>knotx-knot-fragment-assembler</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -87,17 +82,7 @@
     </dependency>
     <dependency>
       <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-fragment-assembler</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
       <artifactId>knotx-adapter-service-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.cognifide.knotx</groupId>
-      <artifactId>knotx-adapter-action-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

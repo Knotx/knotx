@@ -57,8 +57,12 @@
   <modules>
     <module>documentation</module>
     <module>knotx-core</module>
-    <module>knotx-adapters</module>
-    <module>knotx-knots</module>
+    <module>knotx-junit</module>
+    <module>knotx-mocks</module>
+    <module>knotx-repository-connector</module>
+    <module>knotx-adapter</module>
+    <module>knotx-knot</module>
+    <module>knotx-server</module>
     <module>knotx-standalone</module>
     <module>knotx-example</module>
   </modules>
@@ -97,6 +101,8 @@
     <mockito.version>2.0.2-beta</mockito.version>
     <hamcrest.version>1.3</hamcrest.version>
     <system-rules.version>1.16.0</system-rules.version>
+
+    <generated.dir>${project.basedir}/src/main/generated</generated.dir>
   </properties>
 
   <dependencyManagement>
@@ -133,10 +139,34 @@
         <version>${vertx.version}</version>
       </dependency>
       <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-service-proxy</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-codegen</artifactId>
+        <version>${vertx.version}</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
         <groupId>io.reactivex</groupId>
         <artifactId>rxjava</artifactId>
         <version>${rxjava.version}</version>
       </dependency>
+
+      <!-- Vert.x Microservice toolbox -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-service-discovery</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-circuit-breaker</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+
       <!-- REPOSITORY -->
       <dependency>
         <groupId>org.jsoup</groupId>
@@ -188,6 +218,12 @@
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
+        <artifactId>vertx-core</artifactId>
+        <version>${vertx.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency><dependency>
+        <groupId>io.vertx</groupId>
         <artifactId>vertx-unit</artifactId>
         <version>${vertx.version}</version>
         <scope>test</scope>
@@ -225,9 +261,31 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen</artifactId>
+    </dependency>
+  </dependencies>
+
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-clean</id>
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>${generated.dir}</directory>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
@@ -235,6 +293,32 @@
             <source>1.8</source>
             <target>1.8</target>
           </configuration>
+          <executions>
+            <execution>
+              <id>default-compile</id>
+              <configuration>
+                <annotationProcessors>
+                  <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
+                </annotationProcessors>
+                <generatedSourcesDirectory>${generated.dir}</generatedSourcesDirectory>
+                <compilerArgs>
+                  <arg>-AoutputDirectory=${project.basedir}/src/main</arg>
+                </compilerArgs>
+              </configuration>
+            </execution>
+            <execution>
+              <id>default-testCompile</id>
+              <configuration>
+                <annotationProcessors>
+                  <annotationProcessor>io.vertx.codegen.CodeGenProcessor</annotationProcessor>
+                </annotationProcessors>
+                <generatedTestSourcesDirectory>${generated.dir}</generatedTestSourcesDirectory>
+                <compilerArgs>
+                  <arg>-AoutputDirectory=${project.basedir}/src/test</arg>
+                </compilerArgs>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

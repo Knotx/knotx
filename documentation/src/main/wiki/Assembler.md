@@ -78,7 +78,7 @@ It leaves fragments untouched. So, result of join will look like below for our e
 </html>
 ```
 #### UNWRAP strategy
-It unwraps the snippet, by removing <script> tag leaving just body of the snippet. So, the result of 
+It unwraps the snippet, by removing `<script>` tag leaving just body of the snippet. So, the result of 
 join will look like this:
 ```
 <html>
