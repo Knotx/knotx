@@ -9,6 +9,7 @@ C:
 .project
 .classpath
 .settings
+generated
 
 # Compiled source #
 ###################
