@@ -29,6 +29,10 @@
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
+  <description>Knot.x - efficient, high-performance and scalable integration platform for modern
+    websites
+  </description>
+  <url>http://knotx.io</url>
 
   <inceptionYear>2016</inceptionYear>
   <licenses>
@@ -68,23 +72,21 @@
   </modules>
 
   <scm>
-    <connection>scm:git:https://github.com/Cognifide/knotx.git</connection>
-    <developerConnection>scm:git|https://github.com/Cognifide/knotx.git</developerConnection>
+    <connection>scm:git:git://github.com/Cognifide/knotx.git</connection>
+    <developerConnection>scm:git:ssh://github.com:Cognifide/knotx.git</developerConnection>
+    <url>http://github.com/Cognifide/knotx/tree/master</url>
     <tag>HEAD</tag>
-    <url>https://github.com/Cognifide/knotx</url>
   </scm>
 
   <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
     <repository>
-      <id>sonatype-nexus-staging</id>
-      <name>Nexus Release Repository</name>
+      <id>ossrh</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
-    <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-    </snapshotRepository>
   </distributionManagement>
 
   <properties>
@@ -118,6 +120,10 @@
     <apache.rat.plugin.version>0.12</apache.rat.plugin.version>
     <maven.shade.plugin.version>2.3</maven.shade.plugin.version>
     <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
+    <maven.nexus.staging.plugin.version>1.6.7</maven.nexus.staging.plugin.version>
+    <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
+    <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
+    <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
 
     <generated.dir>${project.basedir}/src/main/generated</generated.dir>
   </properties>
@@ -357,6 +363,32 @@
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven.jar.plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven.source.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven.javadoc.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <!-- plugin for checking if licensing header is present in headers of defined files -->
         <plugin>
           <groupId>org.apache.rat</groupId>
@@ -421,6 +453,25 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven.surefire.plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>${maven.nexus.staging.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>${maven.gpg.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -433,6 +484,45 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+          </plugin>
+          <!--<plugin>-->
+            <!--<groupId>org.sonatype.plugins</groupId>-->
+            <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
+            <!--<extensions>true</extensions>-->
+            <!--<configuration>-->
+              <!--<serverId>ossrh</serverId>-->
+              <!--<nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
+              <!--<autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+            <!--</configuration>-->
+          <!--</plugin>-->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven.gpg.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>skip-integration-tests</id>
       <build>
