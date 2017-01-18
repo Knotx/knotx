@@ -138,5 +138,5 @@ You can run a **Knot.x** demo within less than 5 minutes, all you need is Java 8
 [license]:LICENSE
 [license img]:https://img.shields.io/badge/License-Apache%202-blue.svg
 
-[sonarqube]:https://sonarqube.com/dashboard/index/com.cognifide.knotx:knotx-root
-[sonarqube img]:https://sonarqube.com/api/badges/gate?key=com.cognifide.knotx:knotx-root
+[sonarqube]:https://sonarqube.com/dashboard/index/io.knotx:knotx-root
+[sonarqube img]:https://sonarqube.com/api/badges/gate?key=io.knotx:knotx-root

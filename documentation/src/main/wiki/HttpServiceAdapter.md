@@ -46,7 +46,7 @@ Http Service Adapter is deployed using Vert.x service factory as a separate [ver
 Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+  "main": "io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
   "options": {
     "config": {
       "address": "knotx.adapter.service.http",

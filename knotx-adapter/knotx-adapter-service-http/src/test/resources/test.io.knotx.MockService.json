@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.mocks.MockServiceVerticle",
+  "main": "io.knotx.mocks.MockServiceVerticle",
   "options": {
     "config": {
       "mockDataRoot": "mock/service",

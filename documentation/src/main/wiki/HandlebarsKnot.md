@@ -54,7 +54,7 @@ Handlebars Knot is deployed using Vert.x service factory as a separate [verticle
 Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle",
+  "main": "io.knotx.knot.templating.HandlebarsKnotVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.handlebars",
@@ -85,10 +85,11 @@ Main Handlebars Knot options available.
 If the list of available handlebars helpers is not enough, you can easily extend it. To do this the 
 following actions should be undertaken:
 
-1. Create a class implementing ```com.cognifide.knotx.handlebars.CustomHandlebarsHelper``` interface. 
+1. Use io.knotx:knotx-knot-handlebars module as dependency
+2. Create a class implementing ```io.knotx.knot.templating.handlebars.CustomHandlebarsHelper``` interface. 
 This interface extends [com.github.jknack.handlebars.Helper](https://jknack.github.io/handlebars.java/helpers.html)
-2. Register the implementation as a service in the JAR file containing the implementation
-    * Create a configuration file called META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper 
+3. Register the implementation as a service in the JAR file containing the implementation
+    * Create a configuration file called META-INF/services/io.knotx.handlebars.CustomHandlebarsHelper 
     in the same project as your implementation class
     * Paste a fully qualified name of the implementation class inside the configuration file. If you're 
     providing multiple helpers in a single JAR, you can list them in new lines (one name per line is allowed) 
@@ -98,5 +99,5 @@ This interface extends [com.github.jknack.handlebars.Helper](https://jknack.gith
 #### Example extension
 
 Sample application contains an example custom Handlebars helper - please take a look at the implementation of ```BoldHelper```:
-* Implementation class: ```com.cognifide.knotx.example.monolith.handlebars.BoldHelper```
-* service registration: ```knotx-example/knotx-example-app/src/main/resources/META-INF/services/com.cognifide.knotx.handlebars.CustomHandlebarsHelper```
+* Implementation class: ```io.knotx.example.monolith.handlebars.BoldHelper```
+* service registration: ```knotx-example/knotx-example-app/src/main/resources/META-INF/services/io.knotx.knot.templating.handlebars.CustomHandlebarsHelper```

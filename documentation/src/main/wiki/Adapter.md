@@ -41,13 +41,13 @@ Implementation of an Adapter does not require knowledge of how to communicate vi
 
 In order to implement an Adapter, follow the guide below:
 
-1. Create your Knot by extending the `com.cognifide.knotx.adapter.AbstractAdapterProxy` class and implement your business logic in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
+1. Create your Knot by extending the `io.knotx.adapter.AbstractAdapterProxy` class and implement your business logic in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
 
-   You can refer to `com.cognifide.knotx.adapter.service.http.impl.HttpServiceAdapterProxyImpl.java` as an example.
+   You can refer to `io.knotx.adapter.service.http.impl.HttpServiceAdapterProxyImpl.java` as an example.
 
 2. Create a class extending `AbstractVerticle` that will simply read the configuration and register your `AdapterProxy` implementation at the `address` provided.
 
-   Have a look at `com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle.java` to see how the `HttpServiceAdapterProxyImpl` is registered.
+   Have a look at `io.knotx.adapter.service.http.HttpServiceAdapterVerticle.java` to see how the `HttpServiceAdapterProxyImpl` is registered.
 
 The `AbstractAdapterProxy` class provides the following methods that you can extend in your implementation:
 

@@ -15,10 +15,10 @@ Standalone Knot.x application directly in your IDE.
 
 [[assets/knotx-debugging-new-config.png|alt=Knot.x Debugging new config]]
 3. Set name of the configuration
-4. Pick main class to be com.cognifide.knotx.launcher.LogbackLauncher
+4. Pick main class to be io.knotx.launcher.LogbackLauncher
 5. In Program Arguments specify that KnotxStarterVerticle should be run with the `-conf` parameter pointing to the configuration you want to run (e.g. Example app)
 ```
-run com.cognifide.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-app.json
+run io.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-app.json
 ```
 6. Set **Working directory** to the module where your json config exists (e.g. knotx-example-app)
 7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-app)

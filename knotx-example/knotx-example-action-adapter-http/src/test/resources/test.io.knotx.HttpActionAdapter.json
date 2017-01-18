@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle",
+  "main": "io.knotx.adapter.action.http.HttpActionAdapterVerticle",
   "options": {
     "config": {
       "address": "knotx.adapter.action.http",

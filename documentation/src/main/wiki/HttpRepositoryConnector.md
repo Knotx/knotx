@@ -14,7 +14,7 @@ Default configuration shipped with the verticle as `io.knotx.HttpRepositoryConne
 
 ```json
 {
-  "main": "com.cognifide.knotx.repository.HttpRepositoryConnectorVerticle",
+  "main": "io.knotx.repository.HttpRepositoryConnectorVerticle",
   "options": {
     "config": {
       "address": "knotx.core.repository.http",

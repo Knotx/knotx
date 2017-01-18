@@ -28,7 +28,7 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide.knotx.knot.templating" level="TEST"
+  <logger name="io.knotx.knot.templating" level="TEST"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>

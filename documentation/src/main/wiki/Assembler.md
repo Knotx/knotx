@@ -114,7 +114,7 @@ Fragment Assembler is deployed using Vert.x service factory as a separate [verti
 Default configuration shipped with the verticle as `io.knotx.FragmentAssembler.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.knot.assembler.FragmentAssemblerVerticle",
+  "main": "io.knotx.knot.assembler.FragmentAssemblerVerticle",
   "options": {
     "config": {
       "address": "knotx.core.assembler",

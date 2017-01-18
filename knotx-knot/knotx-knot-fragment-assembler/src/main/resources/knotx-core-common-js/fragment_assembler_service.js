@@ -20,8 +20,8 @@ var Vertx = require('vertx-js/vertx');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JFragmentAssemblerService = com.cognifide.knotx.knot.assembler.FragmentAssemblerService;
-var KnotContext = com.cognifide.knotx.dataobjects.KnotContext;
+var JFragmentAssemblerService = io.knotx.knot.assembler.FragmentAssemblerService;
+var KnotContext = io.knotx.dataobjects.KnotContext;
 
 /**
  @class
@@ -34,13 +34,13 @@ var FragmentAssemblerService = function(j_val) {
   /**
 
    @public
-   @param knotContext {Object} 
-   @param result {function} 
+   @param knotContext {Object}
+   @param result {function}
    */
   this.process = function(knotContext, result) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
-      j_fragmentAssemblerService["process(com.cognifide.knotx.dataobjects.KnotContext,io.vertx.core.Handler)"](knotContext != null ? new KnotContext(new JsonObject(JSON.stringify(knotContext))) : null, function(ar) {
+      j_fragmentAssemblerService["process(io.knotx.dataobjects.KnotContext,io.vertx.core.Handler)"](knotContext != null ? new KnotContext(new JsonObject(JSON.stringify(knotContext))) : null, function(ar) {
       if (ar.succeeded()) {
         result(utils.convReturnDataObject(ar.result()), null);
       } else {
@@ -59,7 +59,7 @@ var FragmentAssemblerService = function(j_val) {
 /**
 
  @memberof module:knotx-core-common-js/fragment_assembler_service
- @param vertx {Vertx} 
+ @param vertx {Vertx}
  @return {FragmentAssemblerService}
  */
 FragmentAssemblerService.create = function(vertx) {
@@ -72,8 +72,8 @@ FragmentAssemblerService.create = function(vertx) {
 /**
 
  @memberof module:knotx-core-common-js/fragment_assembler_service
- @param vertx {Vertx} 
- @param address {string} 
+ @param vertx {Vertx}
+ @param address {string}
  @return {FragmentAssemblerService}
  */
 FragmentAssemblerService.createProxy = function(vertx, address) {

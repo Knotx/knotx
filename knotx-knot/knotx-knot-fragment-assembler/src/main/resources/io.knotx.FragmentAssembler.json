@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.knot.assembler.FragmentAssemblerVerticle",
+  "main": "io.knotx.knot.assembler.FragmentAssemblerVerticle",
   "options": {
     "config": {
       "address": "knotx.core.assembler",

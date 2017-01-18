@@ -19,9 +19,9 @@ var utils = require('vertx-js/util/utils');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JRepositoryConnectorService = com.cognifide.knotx.repository.RepositoryConnectorService;
-var ClientRequest = com.cognifide.knotx.dataobjects.ClientRequest;
-var ClientResponse = com.cognifide.knotx.dataobjects.ClientResponse;
+var JRepositoryConnectorService = io.knotx.repository.RepositoryConnectorService;
+var ClientRequest = io.knotx.dataobjects.ClientRequest;
+var ClientResponse = io.knotx.dataobjects.ClientResponse;
 
 /**
  @class
@@ -34,13 +34,13 @@ var RepositoryConnectorService = function(j_val) {
   /**
 
    @public
-   @param request {Object} 
-   @param result {function} 
+   @param request {Object}
+   @param result {function}
    */
   this.process = function(request, result) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
-      j_repositoryConnectorService["process(com.cognifide.knotx.dataobjects.ClientRequest,io.vertx.core.Handler)"](request != null ? new ClientRequest(new JsonObject(JSON.stringify(request))) : null, function(ar) {
+      j_repositoryConnectorService["process(io.knotx.dataobjects.ClientRequest,io.vertx.core.Handler)"](request != null ? new ClientRequest(new JsonObject(JSON.stringify(request))) : null, function(ar) {
       if (ar.succeeded()) {
         result(utils.convReturnDataObject(ar.result()), null);
       } else {

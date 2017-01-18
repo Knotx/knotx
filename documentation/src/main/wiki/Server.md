@@ -46,7 +46,7 @@ Server is deployed using Vert.x service factory as a separate [verticle](http://
 Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.server.KnotxServerVerticle",
+  "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
       "httpPort": 8092,

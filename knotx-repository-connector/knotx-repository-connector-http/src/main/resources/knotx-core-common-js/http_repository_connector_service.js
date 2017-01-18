@@ -20,9 +20,9 @@ var Vertx = require('vertx-js/vertx');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JHttpRepositoryConnectorService = com.cognifide.knotx.repository.HttpRepositoryConnectorService;
-var ClientRequest = com.cognifide.knotx.dataobjects.ClientRequest;
-var ClientResponse = com.cognifide.knotx.dataobjects.ClientResponse;
+var JHttpRepositoryConnectorService = io.knotx.repository.HttpRepositoryConnectorService;
+var ClientRequest = io.knotx.dataobjects.ClientRequest;
+var ClientResponse = io.knotx.dataobjects.ClientResponse;
 
 /**
  @class
@@ -35,13 +35,13 @@ var HttpRepositoryConnectorService = function(j_val) {
   /**
 
    @public
-   @param request {Object} 
-   @param result {function} 
+   @param request {Object}
+   @param result {function}
    */
   this.process = function(request, result) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
-      j_httpRepositoryConnectorService["process(com.cognifide.knotx.dataobjects.ClientRequest,io.vertx.core.Handler)"](request != null ? new ClientRequest(new JsonObject(JSON.stringify(request))) : null, function(ar) {
+      j_httpRepositoryConnectorService["process(io.knotx.dataobjects.ClientRequest,io.vertx.core.Handler)"](request != null ? new ClientRequest(new JsonObject(JSON.stringify(request))) : null, function(ar) {
       if (ar.succeeded()) {
         result(utils.convReturnDataObject(ar.result()), null);
       } else {
@@ -60,8 +60,8 @@ var HttpRepositoryConnectorService = function(j_val) {
 /**
 
  @memberof module:knotx-core-common-js/http_repository_connector_service
- @param vertx {Vertx} 
- @param configuration {Object} 
+ @param vertx {Vertx}
+ @param configuration {Object}
  @return {HttpRepositoryConnectorService}
  */
 HttpRepositoryConnectorService.create = function(vertx, configuration) {
@@ -74,8 +74,8 @@ HttpRepositoryConnectorService.create = function(vertx, configuration) {
 /**
 
  @memberof module:knotx-core-common-js/http_repository_connector_service
- @param vertx {Vertx} 
- @param address {string} 
+ @param vertx {Vertx}
+ @param address {string}
  @return {HttpRepositoryConnectorService}
  */
 HttpRepositoryConnectorService.createProxy = function(vertx, address) {
