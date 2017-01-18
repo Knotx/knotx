@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum DefaultHandlebarsHelpers implements Helper<Object> {
 
   /**
-   * Checks if current value and given parameter are equal as Strings.<br/>
+   * Checks if current value and given parameter are equal as Strings.<br>
    * Usage:
    * <p>
    * <pre>
@@ -56,7 +56,7 @@ public enum DefaultHandlebarsHelpers implements Helper<Object> {
   },
 
   /**
-   * Encodes given value.<br/>
+   * Encodes given value.<br>
    * Usage:
    * <p>
    * <pre>
