@@ -124,6 +124,7 @@
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
     <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
+    <jacoco.maven.plugin.version>0.7.7.201606060606</jacoco.maven.plugin.version>
 
     <generated.dir>${project.basedir}/src/main/generated</generated.dir>
   </properties>
@@ -472,6 +473,25 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.maven.plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <phase>test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -479,6 +499,10 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
@@ -496,16 +520,6 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
           </plugin>
-          <!--<plugin>-->
-            <!--<groupId>org.sonatype.plugins</groupId>-->
-            <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
-            <!--<extensions>true</extensions>-->
-            <!--<configuration>-->
-              <!--<serverId>ossrh</serverId>-->
-              <!--<nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-              <!--<autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-            <!--</configuration>-->
-          <!--</plugin>-->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
@@ -519,6 +533,16 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
           </plugin>
         </plugins>
       </build>
