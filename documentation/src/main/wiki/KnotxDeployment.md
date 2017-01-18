@@ -37,7 +37,7 @@ At this step `KNOTX_HOME` should contain:
 To start Knot.x with custom modules, use following command
 
 ```
-java -Dlogback.configurationFile=logback.xml -cp "app/*" com.cognifide.knotx.launcher.LogbackLauncher -conf knotx-custom-starter.json
+java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-custom-starter.json
 ```
 
 ### Vert.x metrics
@@ -171,7 +171,7 @@ For instance, you want to create KnotxServer configuration from scratch, ignorin
 All you have to do is, to create module descriptor file, e.g. `my.KnotxServer.json` with the content as below
 ```json
 {
-  "main": "com.cognifide.knotx.server.KnotxServerVerticle",
+  "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
       

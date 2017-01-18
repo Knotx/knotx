@@ -137,13 +137,13 @@ Implementation of a Knot does not require knowledge of how to communicate via th
 
 In order to implement a Knot, follow the guide below:
 
-1. Create your Knot by extending `com.cognifide.knotx.knot.AbstractKnotProxy` class, and implement your business logic in the `processRequest()` method with the return type of `Observable<KnotContext>` (a promise of the modified `KnotContext`).
+1. Create your Knot by extending `io.knotx.knot.AbstractKnotProxy` class, and implement your business logic in the `processRequest()` method with the return type of `Observable<KnotContext>` (a promise of the modified `KnotContext`).
 
-   See `com.cognifide.knotx.knot.service.impl.ServiceKnotProxyImpl.java` as an example.
+   See `io.knotx.knot.service.impl.ServiceKnotProxyImpl.java` as an example.
 
 2. Create a class extending `AbstractVerticle` that will read the configuration and register your `KnotProxy` implementation at the given `address`.
 
-   Have a look at `com.cognifide.knotx.knot.service.ServiceKnotVerticle.java` to see how the `ServiceKnotProxyImpl` is registered.
+   Have a look at `io.knotx.knot.service.ServiceKnotVerticle.java` to see how the `ServiceKnotProxyImpl` is registered.
 
 The `AbstractKnotProxy` class provides the following methods that you can override in your implementation in order to control the processing of Fragments:
 

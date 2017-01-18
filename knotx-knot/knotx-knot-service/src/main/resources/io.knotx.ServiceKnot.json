@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.knot.service.ServiceKnotVerticle",
+  "main": "io.knotx.knot.service.ServiceKnotVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.service",

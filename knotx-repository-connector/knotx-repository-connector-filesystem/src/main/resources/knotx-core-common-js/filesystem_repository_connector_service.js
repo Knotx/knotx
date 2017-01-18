@@ -20,9 +20,9 @@ var Vertx = require('vertx-js/vertx');
 
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
-var JFilesystemRepositoryConnectorService = com.cognifide.knotx.repository.FilesystemRepositoryConnectorService;
-var ClientRequest = com.cognifide.knotx.dataobjects.ClientRequest;
-var ClientResponse = com.cognifide.knotx.dataobjects.ClientResponse;
+var JFilesystemRepositoryConnectorService = io.knotx.repository.FilesystemRepositoryConnectorService;
+var ClientRequest = io.knotx.dataobjects.ClientRequest;
+var ClientResponse = io.knotx.dataobjects.ClientResponse;
 
 /**
  @class
@@ -35,13 +35,13 @@ var FilesystemRepositoryConnectorService = function(j_val) {
   /**
 
    @public
-   @param request {Object} 
-   @param result {function} 
+   @param request {Object}
+   @param result {function}
    */
   this.process = function(request, result) {
     var __args = arguments;
     if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
-      j_filesystemRepositoryConnectorService["process(com.cognifide.knotx.dataobjects.ClientRequest,io.vertx.core.Handler)"](request != null ? new ClientRequest(new JsonObject(JSON.stringify(request))) : null, function(ar) {
+      j_filesystemRepositoryConnectorService["process(io.knotx.dataobjects.ClientRequest,io.vertx.core.Handler)"](request != null ? new ClientRequest(new JsonObject(JSON.stringify(request))) : null, function(ar) {
       if (ar.succeeded()) {
         result(utils.convReturnDataObject(ar.result()), null);
       } else {
@@ -60,8 +60,8 @@ var FilesystemRepositoryConnectorService = function(j_val) {
 /**
 
  @memberof module:knotx-core-common-js/filesystem_repository_connector_service
- @param vertx {Vertx} 
- @param configuration {Object} 
+ @param vertx {Vertx}
+ @param configuration {Object}
  @return {FilesystemRepositoryConnectorService}
  */
 FilesystemRepositoryConnectorService.create = function(vertx, configuration) {
@@ -74,8 +74,8 @@ FilesystemRepositoryConnectorService.create = function(vertx, configuration) {
 /**
 
  @memberof module:knotx-core-common-js/filesystem_repository_connector_service
- @param vertx {Vertx} 
- @param address {string} 
+ @param vertx {Vertx}
+ @param address {string}
  @return {FilesystemRepositoryConnectorService}
  */
 FilesystemRepositoryConnectorService.createProxy = function(vertx, address) {

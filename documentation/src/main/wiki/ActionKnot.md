@@ -80,7 +80,7 @@ Default configuration shipped with the verticle as `io.knotx.ActionKnot.json` fi
 
 ```json
 {
-  "main": "com.cognifide.knotx.knot.action.ActionKnotVerticle",
+  "main": "io.knotx.knot.action.ActionKnotVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.action",

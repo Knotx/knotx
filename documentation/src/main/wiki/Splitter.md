@@ -85,7 +85,7 @@ Splitter is deployed using Vert.x service factory as a separate [verticle](http:
 Default configuration shipped with the verticle as `io.knotx.FragmentSplitter.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.splitter.FragmentSplitterVerticle",
+  "main": "io.knotx.splitter.FragmentSplitterVerticle",
   "options": {
     "config": {
       "address": "knotx.core.splitter"

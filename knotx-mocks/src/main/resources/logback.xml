@@ -28,12 +28,12 @@
     </layout>
   </appender>
 
-  <logger name="com.cognifide.knotx" level="DEBUG"
+  <logger name="io.knotx" level="DEBUG"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="com.cognifide.knotx.engine" level="INFO"
+  <logger name="io.knotx.engine" level="INFO"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>

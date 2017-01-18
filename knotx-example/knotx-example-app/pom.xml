@@ -23,7 +23,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.cognifide.knotx</groupId>
+    <groupId>io.knotx</groupId>
     <artifactId>knotx-example</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
@@ -33,123 +33,74 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-example-handlebars-ext</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <!-- Knots -->
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-repository-connector-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-repository-connector-filesystem</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-fragment-splitter</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-fragment-assembler</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-service</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-action</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-handlebars</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-server</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-adapter-service-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-example-action-adapter-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-mocks</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.1.3</version>
-    </dependency>
 
-    <!-- CORE -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-rx-java</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-service-proxy</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.reactivex</groupId>
-      <artifactId>rxjava</artifactId>
-    </dependency>
-
-    <!-- REPOSITORY -->
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-    </dependency>
-
-    <!-- HANDLEBARS -->
-    <dependency>
-      <groupId>com.github.jknack</groupId>
-      <artifactId>handlebars</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.github.jknack</groupId>
-      <artifactId>handlebars-jackson2</artifactId>
-    </dependency>
-
-    <!-- COMMON -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-
-    <!-- Tests -->
+     <!-- Tests -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -175,7 +126,7 @@
       <artifactId>vertx-unit</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.cognifide.knotx</groupId>
+      <groupId>io.knotx</groupId>
       <artifactId>knotx-junit</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>

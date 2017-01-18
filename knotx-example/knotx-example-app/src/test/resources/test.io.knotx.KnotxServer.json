@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.server.KnotxServerVerticle",
+  "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
       "httpPort": 8092,

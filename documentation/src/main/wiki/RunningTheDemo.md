@@ -29,40 +29,40 @@ Where:
 You will see output similar to the following:
 ```
 ...
-2017-01-13 09:15:05 [vert.x-eventloop-thread-1] DEBUG c.c.knotx.server.KnotxServerVerticle - Starting <com.cognifide.knotx.server.KnotxServerVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-2] INFO  c.c.k.r.HttpRepositoryConnectorVerticle - Registered <HttpRepositoryConnectorVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-3] INFO  c.c.k.r.FilesystemRepositoryConnectorVerticle - Starting <FilesystemRepositoryConnectorVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-4] DEBUG c.c.k.s.FragmentSplitterVerticle - Starting <com.cognifide.knotx.splitter.FragmentSplitterVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-5] DEBUG c.c.k.k.a.FragmentAssemblerVerticle - Starting <com.cognifide.knotx.knot.assembler.FragmentAssemblerVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-6] DEBUG c.c.k.k.t.HandlebarsKnotVerticle - Starting <com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-7] DEBUG c.c.k.k.service.ServiceKnotVerticle - Starting <com.cognifide.knotx.knot.service.ServiceKnotVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-4] INFO  c.c.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-5] INFO  c.c.k.m.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-0] DEBUG c.c.k.knot.action.ActionKnotVerticle - Starting <com.cognifide.knotx.knot.action.ActionKnotVerticle>
-2017-01-13 09:15:05 [vert.x-eventloop-thread-6] INFO  c.c.k.k.t.i.HandlebarsKnotProxyImpl - Registered custom Handlebars helper: bold
-2017-01-13 09:15:05 [vert.x-eventloop-thread-6] INFO  c.c.k.m.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
-2017-01-13 09:15:06 [vert.x-eventloop-thread-2] DEBUG c.c.k.a.a.h.HttpActionAdapterVerticle - Starting <com.cognifide.knotx.adapter.action.http.HttpActionAdapterVerticle>
-2017-01-13 09:15:06 [vert.x-eventloop-thread-1] DEBUG c.c.k.a.s.h.HttpServiceAdapterVerticle - Starting <com.cognifide.knotx.adapter.service.http.HttpServiceAdapterVerticle>
-2017-01-13 09:15:06 [vert.x-eventloop-thread-4] INFO  c.c.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
-2017-01-13 09:15:06 [vert.x-eventloop-thread-3] INFO  c.c.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
-2017-01-13 09:15:06 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
-2017-01-13 09:15:06 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+2017-01-18 09:18:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Starting <io.knotx.server.KnotxServerVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-2] INFO  i.k.r.HttpRepositoryConnectorVerticle - Starting <HttpRepositoryConnectorVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-3] INFO  i.k.r.FilesystemRepositoryConnectorVerticle - Starting <FilesystemRepositoryConnectorVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-0] INFO  i.k.knot.action.ActionKnotVerticle - Starting <io.knotx.knot.action.ActionKnotVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-4] INFO  i.k.s.FragmentSplitterVerticle - Starting <io.knotx.splitter.FragmentSplitterVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-5] INFO  i.k.k.a.FragmentAssemblerVerticle - Starting <io.knotx.knot.assembler.FragmentAssemblerVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-6] INFO  i.k.k.t.HandlebarsKnotVerticle - Starting <io.knotx.knot.templating.HandlebarsKnotVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-7] INFO  i.k.knot.service.ServiceKnotVerticle - Starting <io.knotx.knot.service.ServiceKnotVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-4] INFO  io.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-3] INFO  i.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-5] INFO  i.k.mocks.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-6] INFO  i.k.k.t.impl.HandlebarsKnotProxyImpl - Registered custom Handlebars helper: bold
+2017-01-18 09:18:40 [vert.x-eventloop-thread-6] INFO  i.k.mocks.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-2] INFO  i.k.a.a.h.HttpActionAdapterVerticle - Starting <io.knotx.adapter.action.http.HttpActionAdapterVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-1] INFO  i.k.a.s.h.HttpServiceAdapterVerticle - Starting <io.knotx.adapter.service.http.HttpServiceAdapterVerticle>
+2017-01-18 09:18:40 [vert.x-eventloop-thread-3] INFO  i.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
+2017-01-18 09:18:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2017-01-18 09:18:40 [vert.x-eventloop-thread-4] INFO  io.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
+2017-01-18 09:18:40 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
-                Deployed e66138b0-20ee-4f69-9858-da1d0cc2ba8e [knotx:io.knotx.FilesystemRepositoryConnector]
-                Deployed ac6b81d0-a136-40c3-b76c-d2ce04e4f61e [knotx:io.knotx.FragmentSplitter]
-                Deployed 8a0cfe43-07f7-426a-bcf5-1a111ec3a29f [knotx:io.knotx.FragmentAssembler]
-                Deployed 470d4a2f-b475-4d34-bec5-fcc11d90dd92 [knotx:io.knotx.ServiceKnot]
-                Deployed 7d4a4deb-b969-46f8-b12b-0d6ad5c34d96 [knotx:io.knotx.ServiceAdapterMock]
-                Deployed 433b3a3b-c7ba-480c-a211-01c589c2301e [knotx:example.io.knotx.ActionKnot]
-                Deployed 4bf8a308-1822-49a6-bf81-bd55e827a925 [knotx:io.knotx.HandlebarsKnot]
-                Deployed c138ed25-ae6c-4ace-b815-4cb0a056a335 [knotx:io.knotx.ActionAdapterMock]
-                Deployed 82a237f3-4296-435b-aa4b-2a4f356969c1 [knotx:io.knotx.HttpRepositoryConnector]
-                Deployed ec326504-5c08-42fc-8ef9-ec4a48e83d1a [knotx:example.io.knotx.HttpActionAdapter]
-                Deployed a6a3c5ad-e2ce-4550-b365-3873cbbe9222 [knotx:io.knotx.HttpServiceAdapter]
-                Deployed 9937d6e6-9b41-4562-be7c-813959cf94d1 [knotx:io.knotx.ServiceMock]
-                Deployed 5f9dff50-4882-4c65-8d34-b1ddc4da6717 [knotx:io.knotx.RemoteRepositoryMock]
-                Deployed f4fb44bf-a1ec-469b-961d-dce14a005f9c [knotx:example.io.knotx.KnotxServer]
+                Deployed bf28d297-87e1-40de-9328-d03a24428370 [knotx:io.knotx.FragmentSplitter]
+                Deployed a86383e3-1f15-475f-a8e1-14cbc515d295 [knotx:io.knotx.ServiceKnot]
+                Deployed 2ba723be-f68f-4636-95a2-1794ed5cc9c5 [knotx:io.knotx.FilesystemRepositoryConnector]
+                Deployed df9f9967-8211-419a-8558-51b2aa378020 [knotx:io.knotx.FragmentAssembler]
+                Deployed 0ea49334-888c-4f1a-9892-f2caab816b45 [knotx:io.knotx.ServiceAdapterMock]
+                Deployed 4922cd4c-b5d1-4b61-adb1-4fd9f61e8867 [knotx:example.io.knotx.ActionKnot]
+                Deployed 269bdf78-4701-4fde-8f8a-8479df7cbde6 [knotx:io.knotx.HandlebarsKnot]
+                Deployed 623f93cd-656a-4dc4-87b4-fe3b665ea629 [knotx:io.knotx.ActionAdapterMock]
+                Deployed 4ca0b3c7-01b2-4fbc-aea7-28adc7cc0d9c [knotx:io.knotx.HttpRepositoryConnector]
+                Deployed a8faf376-f333-401c-9988-7f2288044ed5 [knotx:example.io.knotx.HttpActionAdapter]
+                Deployed 70539977-9337-48bb-9b76-7c2c1c9a1898 [knotx:io.knotx.HttpServiceAdapter]
+                Deployed 35797434-b27d-45d2-91f2-af2a86c1b6b0 [knotx:io.knotx.RemoteRepositoryMock]
+                Deployed 32d14454-a3c8-4b6f-b5f0-0954be5ad763 [knotx:example.io.knotx.KnotxServer]
+                Deployed 06c5a193-4a37-4da2-b8ee-015a42357a35 [knotx:io.knotx.ServiceMock]
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:

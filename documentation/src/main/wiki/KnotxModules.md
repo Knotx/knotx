@@ -22,13 +22,13 @@ In our case two descriptors are going to be looked up: `io.knotx.KnotxServer.jso
 The descriptor file is simply a text file which must contain a valid JSON object. At minimum the JSON must provide a `main` field which determines the actual verticle that will be deployed, e.g.:
 ```json
 {
-  "main": "com.cognifide.knotx.server.KnotxServerVerticle"
+  "main": "io.knotx.server.KnotxServerVerticle"
 }
 ```
 The JSON can also provide an `options` field which maps exactly to a **[Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html)** object.
 ```json
 {
-  "main": "com.cognifide.knotx.server.KnotxServerVerticle",
+  "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
       "httpPort": 4555,

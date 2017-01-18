@@ -15,7 +15,7 @@ For the prototyping or development purposes Knot.x is shipped with the Mocks Ver
 Default configuration shipped with the verticle as `io.knotx.ServiceMock.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.mocks.MockServiceVerticle",
+  "main": "io.knotx.mocks.MockServiceVerticle",
   "options": {
     "config": {
       "mockDataRoot": "mock/service",
@@ -45,7 +45,7 @@ See [[how to configure delay ?|#how-to-configure-delay-]] section for details.
 Default configuration shipped with the verticle as `io.knotx.RemoteRepositoryMock.json` file available in classpath.
 ```json
 {
-  "main": "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle",
+  "main": "io.knotx.mocks.MockRemoteRepositoryVerticle",
   "options": {
     "config": {
       "mockDataRoot": "mock/repository",

@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.knot.templating.HandlebarsKnotVerticle",
+  "main": "io.knotx.knot.templating.HandlebarsKnotVerticle",
   "options": {
     "config": {
       "address": "knotx.knot.handlebars",

@@ -14,7 +14,7 @@ Default configuration shipped with the verticle as `io.knotx.FilesystemRepositor
 
 ```json
 {
-  "main": "com.cognifide.knotx.repository.FilesystemRepositoryConnectorVerticle",
+  "main": "io.knotx.repository.FilesystemRepositoryConnectorVerticle",
   "options": {
     "config": {
       "address": "knotx.core.repository.filesystem",

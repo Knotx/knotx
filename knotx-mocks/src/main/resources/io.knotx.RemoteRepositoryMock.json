@@ -1,5 +1,5 @@
 {
-  "main": "com.cognifide.knotx.mocks.MockRemoteRepositoryVerticle",
+  "main": "io.knotx.mocks.MockRemoteRepositoryVerticle",
   "options": {
     "config": {
       "mockDataRoot": "mock/repository",
