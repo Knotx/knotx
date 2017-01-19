@@ -415,6 +415,10 @@
                     <file>src/main/resources/${project.artifactId}.json</file>
                     <type>json</type>
                   </artifact>
+                  <artifact>
+                    <file>src/main/resources/logback.xml</file>
+                    <type>logback.xml</type>
+                  </artifact>
                 </artifacts>
               </configuration>
             </execution>
@@ -545,7 +549,7 @@
 
   <profiles>
     <profile>
-      <id>sonatype-oss-release</id>
+      <id>release</id>
       <build>
         <plugins>
           <plugin>

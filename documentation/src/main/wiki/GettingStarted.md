@@ -4,23 +4,24 @@
 ## Getting Binaries
 Knot.x binaries and dependency information for Maven, Ivy, Gradle and others can be found at 
 [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.vertx%22).
-There are two kinds of binaries available:
-- jar file, e.g. knotx-core-X.Y.Z.jar consists of binary for the module implementation.
-- fat jar, e.g. knotx-core-X.Y.Z-fat.jar consists of above and all required dependencies. 
-It allows to run module itself.
 
-Additionally, github releases consits of Sample & Standalone app fat jars together with required configuration files.
+Besides jar files with the modules implementations, there are available additional resources 
+such as far.jar (bundled with all dependencies allowing to run itself) and configuration json file, 
+for three modules:
+- knotx-mocks
+- knotx-standalone
+- knotx-sample-app
 
 To run Knot.x you need Java 8.
 
 ## Hello world!
-First download Knot.x sample app or build it yourself (see [[Building|GettingStarted#building]] section):
-- [knotx-example-app-X.X.X-fat.jar](https://github.com/Cognifide/knotx/releases/)
-- [knotx-example-app.json](https://github.com/Cognifide/knotx/releases/)
+First download Knot.x sample app & config for latest version, or build it yourself (see [[Building|GettingStarted#building]] section):
+- [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
+- [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
 
 Now you can run Knot.x:
 ```
-java -jar knotx-example-app-X.X.X-fat.jar -conf knotx-example-app.json
+java -jar knotx-example-app-X.Y.Z-fat.jar -conf knotx-example-app-X.Y.Z.json
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 

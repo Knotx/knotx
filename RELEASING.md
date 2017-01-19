@@ -42,7 +42,7 @@ $> git push
 ```
 5. Build & deploy to Nexus staging repository
 ```
-$> mvn clean deploy -Psonatype-oss-release -Dgpg.passphrase=<your_gpg_key_passphrase>
+$> mvn clean deploy -Prelease -Dgpg.passphrase=<your_gpg_key_passphrase>
 ```
 6. On successful deploy, validate artifacts with version X.Y.Z are available on Nexus Staging:
 [https://oss.sonatype.org/content/groups/staging/io/knotx/](https://oss.sonatype.org/content/groups/staging/io/knotx/)
@@ -67,6 +67,20 @@ $> mvn nexus-staging:drop
 
     Binaries and dependency information for Maven, Ivy, Gradle and others can be found at 
     [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.vertx%22%20AND%20v%3A<X.Y.Z>)
+    
+    Additionally, 
+    - Example App:
+      - [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/example-app/X.Y.Z/example-app-X.Y.Z.fat.jar)
+      - [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/example-app/X.Y.Z/example-app-X.Y.Z.json)
+      - [knotx-example-app-X.Y.Z.logback.xml](https://oss.sonatype.org/content/groups/public/io/knotx/example-app/X.Y.Z/example-app-X.Y.Z.logback.xml)
+    - Mocks:
+      - [knotx-mocks-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-mocks/X.Y.Z/knotx-mocks-X.Y.Z.fat.jar)
+      - [knotx-mocks-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-mocks/X.Y.Z/knotx-mocks-X.Y.Z.json)
+      - [knotx-mocks-X.Y.Z.logback.xml](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-mocks/X.Y.Z/knotx-mocks-X.Y.Z.logback.xml)
+    - Knot.x Standalone:
+      - [knotx-standalone-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-standalone/X.Y.Z/knotx-standalone-X.Y.Z.fat.jar)
+      - [knotx-standalone-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-standalone/X.Y.Z/knotx-standalone-X.Y.Z.json)
+      - [knotx-standalone-X.Y.Z.logback.xml](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-standalone/X.Y.Z/knotx-standalone-X.Y.Z.logback.xml)
   ```
   Replace `<X.Y.Z>` in the maven.org URL with proper version
 

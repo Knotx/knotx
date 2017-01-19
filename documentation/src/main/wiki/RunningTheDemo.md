@@ -16,7 +16,7 @@ $ cd knotx
 $ mvn clean install
 ```
 
-or download [released](https://github.com/Cognifide/knotx/releases) application `knotx-example-app-X.Y.Z-fat.jar` and configuration file `knotx-example-app.json`.
+or download [released](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app) application `knotx-example-app-X.Y.Z.fat.jar` and configuration file `knotx-example-app-X.Y.Z.json`.
 
 Run example app:
 ```
