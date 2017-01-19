@@ -1,24 +1,27 @@
 # Getting started
 
+---------------- TODO - add maven central items ----------
 ## Getting Binaries
-Knot.x provides binaries and default JSON configuration files at [Releases](https://github.com/Cognifide/knotx/releases).
-Binaries are packaged in *fat jars*. A fat jar is a standalone executable Jar file containing all 
-the dependencies required to run the application. It make those jars easy to execute.
+Knot.x binaries and dependency information for Maven, Ivy, Gradle and others can be found at 
+[http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.vertx%22).
+
+Besides jar files with the modules implementations, there are available additional resources 
+such as far.jar (bundled with all dependencies allowing to run itself) and configuration json file, 
+for three modules:
+- knotx-mocks
+- knotx-standalone
+- knotx-sample-app
 
 To run Knot.x you need Java 8.
 
 ## Hello world!
-First download Knot.x sample app:
-
-[knotx-example-app-X.X.X-fat.jar](https://github.com/Cognifide/knotx/releases/)
-
-[knotx-example-app.json](https://github.com/Cognifide/knotx/releases/)
-
+First download Knot.x sample app & config for latest version, or build it yourself (see [[Building|GettingStarted#building]] section):
+- [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
+- [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
 
 Now you can run Knot.x:
-
 ```
-java -jar knotx-example-app-X.X.X-fat.jar -conf knotx-example-app.json
+java -jar knotx-example-app-X.Y.Z-fat.jar -conf knotx-example-app-X.Y.Z.json
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 

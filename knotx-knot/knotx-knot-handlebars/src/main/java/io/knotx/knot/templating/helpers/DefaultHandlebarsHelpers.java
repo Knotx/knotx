@@ -29,9 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 public enum DefaultHandlebarsHelpers implements Helper<Object> {
 
   /**
-   * Checks if current value and given parameter are equal as Strings.<br/>
+   * Checks if current value and given parameter are equal as Strings.<br>
    * Usage:
-   * <p>
    * <pre>
    *     {{#string_equals value "parameter"}}
    *         equal
@@ -39,7 +38,6 @@ public enum DefaultHandlebarsHelpers implements Helper<Object> {
    *         not equal
    *     {{/string_equals}}
    * </pre>
-   * <p>
    * If value is "parameter", the output will be "equal".
    */
   STRING_EQUALS("string_equals") {
@@ -56,13 +54,11 @@ public enum DefaultHandlebarsHelpers implements Helper<Object> {
   },
 
   /**
-   * Encodes given value.<br/>
+   * Encodes given value.<br>
    * Usage:
-   * <p>
    * <pre>
    *     {{encode_uri value}}
    * </pre>
-   * <p>
    * If value is "ex@mple string", the output will be "ex%40mple+string"
    */
   ENCODE_URI("encode_uri") {

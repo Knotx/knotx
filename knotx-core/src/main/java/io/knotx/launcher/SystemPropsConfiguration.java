@@ -62,7 +62,7 @@ public class SystemPropsConfiguration {
   }
 
   /**
-   * Update given JsonObject with the data provided in system property during Knotx start.<br/>
+   * Update given JsonObject with the data provided in system property during Knotx start.<br>
    * In order to provide such overrides you can use two approches:
    * <ul>
    * <li>-Dio.knotx.KnotxServer.httpPort=9999,
@@ -71,6 +71,8 @@ public class SystemPropsConfiguration {
    * <li>-Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json
    * file from the field specified</li>
    * </ul>
+   * @param descriptor - JsonObject with module descriptor
+   * @return JsonObject - updated descriptor
    */
   public JsonObject updateJsonObject(JsonObject descriptor) {
     final JsonObject object = descriptor.copy();

@@ -28,7 +28,7 @@
     </layout>
   </appender>
 
-  <logger name="io.knotx" level="INFO"
+  <logger name="io.knotx" level="DEBUG"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>

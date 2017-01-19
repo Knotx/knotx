@@ -81,27 +81,13 @@ public class DataObjectsUtil {
   /**
    * toString() implementation for Multimap object
    *
+   * @param multiMap - Multimap
    * @return String representing given Multimap
    */
   public static String toString(MultiMap multiMap) {
     StringBuilder result = new StringBuilder();
     multiMap.names().stream().forEach(
         name -> result.append(name).append(":").append(Joiner.on(";").join(multiMap.getAll(name)))
-            .append("|")
-    );
-
-    return result.toString();
-  }
-
-  /**
-   * toString() implementation for Multimap object
-   *
-   * @return String representing given Multimap
-   */
-  public static String toString(Map<String, List<String>> map) {
-    StringBuilder result = new StringBuilder();
-    map.keySet().stream().forEach(
-        name -> result.append(name).append(":").append(Joiner.on(";").join(map.get(name)))
             .append("|")
     );
 
