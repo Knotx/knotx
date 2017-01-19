@@ -9,7 +9,7 @@
 3. You have create GPG key for the email you have registered on Sonatype.org JIRA 
 (Follow the [Working with PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html) 
 guide how to do it). 
-**Don't forgot to deploy your public key to keyserver** 
+**Don't forget to deploy your public key to the key server** 
 
 4. Add `<server>` entry to your `settings.xml` file
 ```xml
@@ -51,11 +51,11 @@ $> mvn clean deploy -Prelease -Dgpg.passphrase=<your_gpg_key_passphrase>
 $> mvn nexus-staging:release
 ```
 In case you want to drop the release, you can use `nexus-staging:drop`
-9. If everything is fine, promote release to **Nexus Central Release Repositories**
+8. If artifacts on staging repository are correctly verified you can promote release to **Nexus Central Release Repositories**
 ```
 $> mvn nexus-staging:drop
 ```
-10. Create release on Github: [https://github.com/Cognifide/knotx/releases/new](https://github.com/Cognifide/knotx/releases/new)
+9. Create release on Github: [https://github.com/Cognifide/knotx/releases/new](https://github.com/Cognifide/knotx/releases/new)
   - Set proper Tag version, e.g.: `X.Y.Z` at `release/X.Y.Z` branch
   - Set title of the release: `X.Y.Z`
   - Describe release as follows:
