@@ -25,7 +25,6 @@ platform** for modern sites.
 
 **Knot.x** connects all of the above **in a unified customer experience**.
 
-
 ## What problems does Knot.x solve?
 
 ###Features
