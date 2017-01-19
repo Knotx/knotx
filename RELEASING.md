@@ -6,7 +6,7 @@
 2. Your Sonatype.org account added to Knot.x project (if not, please contact Knot.x team: 
 [knotx.team@gmail.com](email:knotx.team@gmail.com))
 
-3. You have create GPG key for the email you have registered on Sonatype.org JIRA 
+3. You have generated GPG key for the email you have registered on Sonatype.org JIRA 
 (Follow the [Working with PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html) 
 guide how to do it). 
 **Don't forget to deploy your public key to the key server** 
