@@ -51,11 +51,7 @@ $> mvn clean deploy -Prelease -Dgpg.passphrase=<your_gpg_key_passphrase>
 $> mvn nexus-staging:release
 ```
 In case you want to drop the release, you can use `nexus-staging:drop`
-8. If artifacts on staging repository are correctly verified you can promote release to **Nexus Central Release Repositories**
-```
-$> mvn nexus-staging:drop
-```
-9. Create release on Github: [https://github.com/Cognifide/knotx/releases/new](https://github.com/Cognifide/knotx/releases/new)
+8. Create release on Github: [https://github.com/Cognifide/knotx/releases/new](https://github.com/Cognifide/knotx/releases/new)
   - Set proper Tag version, e.g.: `X.Y.Z` at `release/X.Y.Z` branch
   - Set title of the release: `X.Y.Z`
   - Describe release as follows:
