@@ -1,5 +1,5 @@
 /*
- * Knot.x - Reactive microservice assembler - Launcher
+ * Knot.x - Reactive microservice assembler - Core
  *
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -17,6 +17,7 @@
  */
 package io.knotx.launcher;
 
+import io.knotx.util.JsonObjectUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Verticle;
@@ -56,7 +57,7 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       JsonObject knotOptions = descriptor.getJsonObject("options", new JsonObject());
       JsonObject knotConfig = knotOptions.getJsonObject("config", new JsonObject());
       depOptions.mergeIn(knotOptions);
-      knotConfig.mergeIn(depConfig);
+      JsonObjectUtil.deepMerge(knotConfig, depConfig);
 
       // Any options or config provided by system properites will override anything specified
       // at deployment time and on starter Json config
