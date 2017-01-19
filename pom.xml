@@ -390,6 +390,36 @@
             </execution>
           </executions>
         </plugin>
+        <!-- Attache fat jar to the distribution -->
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.12</version>
+          <configuration>
+            <skipAttach>true</skipAttach>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-distribution</id>
+              <phase>package</phase>
+              <goals>
+                <goal>attach-artifact</goal>
+              </goals>
+              <configuration>
+                <artifacts>
+                  <artifact>
+                    <file>target/${project.artifactId}-${project.version}-fat.jar</file>
+                    <type>fat.jar</type>
+                  </artifact>
+                  <artifact>
+                    <file>src/main/resources/${project.artifactId}.json</file>
+                    <type>json</type>
+                  </artifact>
+                </artifacts>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
         <!-- plugin for checking if licensing header is present in headers of defined files -->
         <plugin>
           <groupId>org.apache.rat</groupId>
@@ -458,6 +488,12 @@
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
           <version>${maven.nexus.staging.plugin.version}</version>
+          <extensions>true</extensions>
+          <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -509,7 +545,7 @@
 
   <profiles>
     <profile>
-      <id>release</id>
+      <id>sonatype-oss-release</id>
       <build>
         <plugins>
           <plugin>
@@ -537,12 +573,6 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>false</autoReleaseAfterClose>
-            </configuration>
           </plugin>
         </plugins>
       </build>
