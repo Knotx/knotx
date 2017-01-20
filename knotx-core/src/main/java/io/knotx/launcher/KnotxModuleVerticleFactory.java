@@ -57,7 +57,7 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       JsonObject knotOptions = descriptor.getJsonObject("options", new JsonObject());
       JsonObject knotConfig = knotOptions.getJsonObject("config", new JsonObject());
       depOptions.mergeIn(knotOptions);
-      JsonObjectUtil.deepMerge(knotConfig, depConfig);
+      knotConfig = JsonObjectUtil.deepMerge(knotConfig, depConfig);
 
       // Any options or config provided by system properites will override anything specified
       // at deployment time and on starter Json config

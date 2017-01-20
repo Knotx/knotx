@@ -21,20 +21,27 @@ import io.vertx.core.json.JsonObject;
 
 public class JsonObjectUtil {
 
-  public static void deepMerge(JsonObject source, JsonObject other) {
+  public static JsonObject deepMerge(JsonObject source, JsonObject other) {
+    JsonObject result = source.copy();
     other.forEach(entry -> {
-      if (source.containsKey(entry.getKey())) {
-        if (source.getMap().get(entry.getKey()) instanceof JsonObject
+      if (result.containsKey(entry.getKey())) {
+        if (result.getMap().get(entry.getKey()) instanceof JsonObject
             && entry.getValue() instanceof JsonObject) {
-          JsonObject sourceJson = source.getJsonObject(entry.getKey());
-          deepMerge(sourceJson, (JsonObject) entry.getValue());
-          source.put(entry.getKey(), sourceJson);
+
+          result.put(entry.getKey(),
+              deepMerge(
+                  source.getJsonObject(entry.getKey()),
+                  (JsonObject) entry.getValue()
+              )
+          );
         } else { //Override whole key, if value is not jsonObject
-          source.put(entry.getKey(), entry.getValue());
+          result.put(entry.getKey(), entry.getValue());
         }
       } else {
-        source.put(entry.getKey(), entry.getValue());
+        result.put(entry.getKey(), entry.getValue());
       }
     });
+
+    return result;
   }
 }

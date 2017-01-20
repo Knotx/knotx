@@ -32,115 +32,109 @@ public class JsonObjectUtilTest {
   private final static int NEW_PORT = 8000;
 
   private JsonObject source = new JsonObject()
-      .put("config", new JsonObject()
           .put("clientDestinations", new JsonObject()
               .put("domain", OLD_DOMAIN)
-              .put("port", OLD_PORT)));
+              .put("port", OLD_PORT));
 
   @Test
   public void whenSourceObjectMergedWithChangedOneDeepField_expectOnlyThatFieldIsOverriden() {
     JsonObject newDomain = new JsonObject()
-        .put("config", new JsonObject()
             .put("clientDestinations", new JsonObject()
-                .put("domain", NEW_DOMAIN)));
+                .put("domain", NEW_DOMAIN));
 
-    JsonObjectUtil.deepMerge(source, newDomain);
+    JsonObject result = JsonObjectUtil.deepMerge(source, newDomain);
 
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getString("domain"),
+        result.getJsonObject("clientDestinations").getString("domain"),
         equalTo(NEW_DOMAIN));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getInteger("port"),
+        result.getJsonObject("clientDestinations").getInteger("port"),
         equalTo(OLD_PORT));
   }
 
   @Test
   public void whenSourceObjectMergedWithChangedAllDeepFields_expectAllDeepFieldsAreOverriden() {
     JsonObject allFields = new JsonObject()
-        .put("config", new JsonObject()
             .put("clientDestinations", new JsonObject()
                 .put("domain", NEW_DOMAIN)
-                .put("port", NEW_PORT)));
+                .put("port", NEW_PORT));
 
-    JsonObjectUtil.deepMerge(source, allFields);
+    JsonObject result = JsonObjectUtil.deepMerge(source, allFields);
 
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getString("domain"),
+        result.getJsonObject("clientDestinations").getString("domain"),
         equalTo(NEW_DOMAIN));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getInteger("port"),
+        result.getJsonObject("clientDestinations").getInteger("port"),
         equalTo(NEW_PORT));
   }
 
   @Test
   public void whenSourceObjectMergedWithUpdateAndNewDeepFields_expectAllDeepFieldsAreOverridenAndNewAdded() {
     JsonObject updateAndAdd = new JsonObject()
-        .put("config", new JsonObject()
             .put("clientDestinations", new JsonObject()
                 .put("domain", NEW_DOMAIN)
                 .put("port", NEW_PORT)
-                .put("newField", true)));
+                .put("newField", true));
 
-    JsonObjectUtil.deepMerge(source, updateAndAdd);
+    JsonObject result = JsonObjectUtil.deepMerge(source, updateAndAdd);
 
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getString("domain"),
+        result.getJsonObject("clientDestinations").getString("domain"),
         equalTo(NEW_DOMAIN));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getInteger("port"),
+        result.getJsonObject("clientDestinations").getInteger("port"),
         equalTo(NEW_PORT));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getBoolean("newField"),
+        result.getJsonObject("clientDestinations").getBoolean("newField"),
         equalTo(true));
   }
 
   @Test
   public void whenSourceObjectMergedWithNewObject_expectNewObjectAdded() {
     JsonObject updateAndAdd = new JsonObject()
-        .put("config", new JsonObject()
             .put("clientOptions", new JsonObject()
                 .put("a", "aaa")
-                .put("b", 1234)));
+                .put("b", 1234));
 
-    JsonObjectUtil.deepMerge(source, updateAndAdd);
+    JsonObject result = JsonObjectUtil.deepMerge(source, updateAndAdd);
 
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getString("domain"),
+        result.getJsonObject("clientDestinations").getString("domain"),
         equalTo(OLD_DOMAIN));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getInteger("port"),
+        result.getJsonObject("clientDestinations").getInteger("port"),
         equalTo(OLD_PORT));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientOptions").getString("a"),
+        result.getJsonObject("clientOptions").getString("a"),
         equalTo("aaa"));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientOptions").getInteger("b"),
+        result.getJsonObject("clientOptions").getInteger("b"),
         equalTo(1234));
   }
 
   @Test
   public void whenSourceObjectMergedWithNewObjectAndOverrides_expectNewObjectAddedAndOverridesHappened() {
     JsonObject updateAndAdd = new JsonObject()
-        .put("config", new JsonObject()
             .put("clientDestinations", new JsonObject()
                 .put("domain", NEW_DOMAIN))
             .put("clientOptions", new JsonObject()
                 .put("a", "aaa")
-                .put("b", 1234)));
+                .put("b", 1234));
 
-    JsonObjectUtil.deepMerge(source, updateAndAdd);
+    JsonObject result = JsonObjectUtil.deepMerge(source, updateAndAdd);
 
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getString("domain"),
+        result.getJsonObject("clientDestinations").getString("domain"),
         equalTo(NEW_DOMAIN));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientDestinations").getInteger("port"),
+        result.getJsonObject("clientDestinations").getInteger("port"),
         equalTo(OLD_PORT));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientOptions").getString("a"),
+        result.getJsonObject("clientOptions").getString("a"),
         equalTo("aaa"));
     assertThat(
-        source.getJsonObject("config").getJsonObject("clientOptions").getInteger("b"),
+        result.getJsonObject("clientOptions").getInteger("b"),
         equalTo(1234));
   }
 
