@@ -25,8 +25,7 @@ public class JsonObjectUtil {
     JsonObject result = source.copy();
     other.forEach(entry -> {
       if (result.containsKey(entry.getKey())) {
-        if (result.getMap().get(entry.getKey()) instanceof JsonObject
-            && entry.getValue() instanceof JsonObject) {
+        if (isKeyAJsonObject(result, entry.getKey()) && entry.getValue() instanceof JsonObject) {
 
           result.put(entry.getKey(),
               deepMerge(
@@ -43,5 +42,9 @@ public class JsonObjectUtil {
     });
 
     return result;
+  }
+
+  private static boolean isKeyAJsonObject(JsonObject object, String key) {
+    return object.getMap().get(key) instanceof JsonObject;
   }
 }
