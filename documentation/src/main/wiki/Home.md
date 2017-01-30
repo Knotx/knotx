@@ -8,7 +8,7 @@
 
 ## What problems does Knot.x solve?
 
-**Knot.x** uses data from any source (like REST / SOAP service, search engine, CRM etc) and transforms it into an unified customer experience using a 
+**Knot.x** uses data from any source (like REST / SOAP service, search engine, CRM etc.) and transforms it into an unified customer experience using a 
 template from a repository. The template can contain dynamic snippets which determine the way how data is used. The repository can be CMS system, Apache or 
 simple catalogue with static HTML pages. 
 
