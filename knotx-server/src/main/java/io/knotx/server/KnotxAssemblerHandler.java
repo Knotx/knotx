@@ -51,17 +51,13 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     KnotContext knotContext = context.get("knotContext");
 
-    if (knotContext.getClientResponse().getStatusCode() != HttpResponseStatus.OK.code()) {
-      HttpServerResponse httpResponse = context.response();
-      writeHeaders(httpResponse, knotContext.getClientResponse());
-      httpResponse.setStatusCode(knotContext.getClientResponse().getStatusCode()).end();
-    } else {
+    if (isOkClientResponse(knotContext.getClientResponse())) {
       assembler.processObservable(knotContext)
           .doOnNext(this::traceMessage)
           .subscribe(
               ctx -> {
-                if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
-                  sendResponse(context, ctx);
+                if (isOkClientResponse(ctx.getClientResponse())) {
+                  sendResponse(context, ctx.getClientResponse());
                 } else {
                   context.fail(ctx.getClientResponse().getStatusCode());
                 }
@@ -72,15 +68,26 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
                 context.fail(error);
               }
           );
+    } else {
+      sendResponse(context, knotContext.getClientResponse());
     }
   }
 
-  private void sendResponse(final RoutingContext context, final KnotContext knotContext) {
-    ClientResponse clientResponse = knotContext.getClientResponse();
+  private boolean isOkClientResponse(ClientResponse clientResponse) {
+    return clientResponse.getStatusCode() == HttpResponseStatus.OK.code();
+  }
+
+  private void sendResponse(final RoutingContext context, final ClientResponse clientResponse) {
+    HttpServerResponse httpResponse = context.response();
     writeHeaders(context.response(), clientResponse);
 
-    context.response().setStatusCode(clientResponse.getStatusCode())
-        .end(Buffer.newInstance(clientResponse.getBody()));
+    httpResponse.setStatusCode(clientResponse.getStatusCode());
+
+    if (isOkClientResponse(clientResponse)) {
+      httpResponse.end(Buffer.newInstance(clientResponse.getBody()));
+    } else {
+      httpResponse.end();
+    }
   }
 
   private void writeHeaders(final HttpServerResponse response,
