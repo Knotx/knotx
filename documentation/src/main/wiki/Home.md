@@ -4,7 +4,7 @@
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
 </p>
 
-**Knot.x** is a high-efficient and scalable integration platform for modern websites written in [Vert.x](http://vertx.io/) technology.
+**Knot.x** is a highly-efficient and scalable integration platform for modern websites developed in Java on top of [Vert.x](http://vertx.io/) framework.
 
 ## What problems does Knot.x solve?
 
@@ -36,7 +36,7 @@ servers.
 
 ## Community
 
-####Gitter
+####Online Chat
 
 [Gitter Chat](https://gitter.im/Knotx/Lobby) is a way for users to chat with the Knot.x team. Feel free to leave a message, even if we’re not around, we will definitely respond to you when available.
 
