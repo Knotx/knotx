@@ -4,20 +4,15 @@
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
 </p>
 
-A simplified description of **Knot.x** can be `a tool which converts a static page (template) into a 
-dynamic page driven by the data provided by external sources`
-
-In short, we call **Knot.x** a **reactive multisource assembler**.
+**Knot.x** is a high-efficient and scalable integration platform for modern websites written in [Vert.x](http://vertx.io/) technology.
 
 ## What problems does Knot.x solve?
-**Knot.x** assembles static and dynamic content from multiple sources to produce pages with dynamic data in a very performant manner.
+
+**Knot.x** uses data from any source (like REST / SOAP service, search engine, CRM etc) and transforms it into an unified customer experience using a 
+template from a repository. The template can contain dynamic snippets which determine the way how data is used. The repository can be CMS system, Apache or 
+simple catalogue with static HTML pages. 
 
 [[assets/knotx-high-level-architecture.png|alt=High Level Architecture]]
-
-- **Knot.x** can combine several template (page) sources thanks to its [[Repository Connectors|RepositoryConnectors]] feature. It allows to have one entry point to different content platforms.
-- **Knot.x** can assemble dynamic page that requires data from multiple external sources (e.g. microservices) thanks to [[Service Knot|ServiceKnot]] and [[Handlebars Knot|HandlebarsKnot]] modules.
-- With fast and scalable heart of an architecture - [Vert.x](http://vertx.io/) engine - **Knot.x** can significantly boost platform's performance. Learn more about [[Knot.x Architecture|Architecture]].
-- **Knot.x** supports forms submission including multi-step forms. Find out more about this topic reading about [[Action Knot|ActionKnot]].
 
 ## What's philosophy behind Knot.x?
 We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
@@ -37,3 +32,22 @@ loose coupling, isolation and location transparency. Base **Knot.x** component i
 Various scaling options are available to suit client needs and help in cost optimization. Using a 
 simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of 
 servers.
+
+
+## Community
+
+####Gitter
+
+[Gitter Chat](https://gitter.im/Knotx/Lobby) is a way for users to chat with the Knot.x team. Feel free to leave a message, even if we’re not around, we will definitely respond to you when available.
+
+####Google Groups
+
+Google Groups are memorable ways to ask questions and communicate with the Knot.x team and other users. There are two groups available:
+
+* [User Group](https://groups.google.com/forum/#!forum/knotx) – for all Knot.x users
+* [Developers Group](https://groups.google.com/forum/#!forum/knotx-contributors) – for Knot.x Core team and project contributors
+
+
+## Licence
+
+**Knot.x** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
