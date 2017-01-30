@@ -51,28 +51,34 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     KnotContext knotContext = context.get("knotContext");
 
-    assembler.processObservable(knotContext)
-        .doOnNext(this::traceMessage)
-        .subscribe(
-            ctx -> {
-              if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
-                sendResponse(context, ctx);
-              } else {
-                context.fail(ctx.getClientResponse().getStatusCode());
+    if (knotContext.getClientResponse().getStatusCode() != HttpResponseStatus.OK.code()) {
+      HttpServerResponse httpResponse = context.response();
+      writeHeaders(httpResponse, knotContext.getClientResponse());
+      httpResponse.setStatusCode(knotContext.getClientResponse().getStatusCode()).end();
+    } else {
+      assembler.processObservable(knotContext)
+          .doOnNext(this::traceMessage)
+          .subscribe(
+              ctx -> {
+                if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
+                  sendResponse(context, ctx);
+                } else {
+                  context.fail(ctx.getClientResponse().getStatusCode());
+                }
+              },
+              error -> {
+                LOGGER.error("Error happened while communicating with {} engine", error,
+                    configuration.splitterAddress());
+                context.fail(error);
               }
-            },
-            error -> {
-              LOGGER.error("Error happened while communicating with {} engine", error,
-                  configuration.splitterAddress());
-              context.fail(error);
-            }
-        );
+          );
+    }
   }
 
   private void sendResponse(final RoutingContext context, final KnotContext knotContext) {
     ClientResponse clientResponse = knotContext.getClientResponse();
     writeHeaders(context.response(), clientResponse);
-    writeContentLength(context.response());
+
     context.response().setStatusCode(clientResponse.getStatusCode())
         .end(Buffer.newInstance(clientResponse.getBody()));
   }
@@ -87,9 +93,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
                     .getAll(name)
                     .forEach(value -> response.putHeader(name, value))
         );
-  }
 
-  private void writeContentLength(final HttpServerResponse response) {
     response.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
   }
 

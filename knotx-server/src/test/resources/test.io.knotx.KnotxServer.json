@@ -41,7 +41,8 @@
         "x-original-requested-uri",
         "x-solr-core-key",
         "x-language-code",
-        "x-requested-with"
+        "x-requested-with",
+        "location"
       ],
       "repositories": [
         {
