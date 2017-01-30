@@ -4,7 +4,7 @@
 [![][sonarqube img]][sonarqube]
 [![][license img]][license]
 
-#Knot.x - efficient, high-performance and scalable integration platform for modern websites   
+#Knot.x is a highly-efficient and scalable integration platform for modern websites.
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
@@ -94,31 +94,28 @@ your extensions in any language you like, as long as it's supported by [Vert.x](
 Find out more about this topic by reading the [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter) 
 sections of this documentation.
 
-## What's the philosophy behind Knot.x?
-We care a lot about speed and that is why we built **Knot.x** on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
-
-### Stability and responsiveness
-**Knot.x** uses asynchronous programming principles, which allows it to process a large number of requests using a single thread.
-Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
-The platform stays responsive under heavy and varying loads and is designed to follow the principles outlined in the [Reactive Manifesto](http://www.reactivemanifesto.org/).
-
-### Loose coupling
-**Knot.x** relies on asynchronous message-passing to establish a boundary between system components that ensures 
-loose coupling, isolation and location transparency. A base **Knot.x** component is called a [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
-
-### Scalability
-Various scaling options are available to suit client needs and help in cost optimisation. Using a 
-simple concurrency model and a message bus, **Knot.x** can be scaled within a single host or a cluster of 
-servers.
 
 ## Full Documentation
 
 See our [Wiki](https://github.com/Cognifide/knotx/wiki) for full documentation, examples and other information.
 
 
-## Communication, bugs and feedback
+## Community
 
-For bugs, questions and discussions please use the [Github Issues](https://github.com/Cognifide/knotx/issues).
+####Online Chat
+
+[Gitter Chat](https://gitter.im/Knotx/Lobby) is a way for users to chat with the Knot.x team. Feel free to leave a message, even if we’re not around, we will definitely respond to you when available.
+
+####Google Groups
+
+Google Groups are memorable ways to ask questions and communicate with the Knot.x team and other users. There are two groups available:
+
+* [User Group](https://groups.google.com/forum/#!forum/knotx) – for all Knot.x users
+* [Developers Group](https://groups.google.com/forum/#!forum/knotx-contributors) – for Knot.x Core team and project contributors
+
+## Bugs
+
+All feature requests and bugs can be filed as issues on [Gitub](https://github.com/Cognifide/knotx/issues). Do not use Github issues to ask questions, post them on the [User Group](https://groups.google.com/forum/#!forum/knotx) or [Gitter Chat](https://gitter.im/Knotx/Lobby).
 
 
 ## Demo
