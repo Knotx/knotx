@@ -26,7 +26,6 @@
   * [[Mocks|Mocks]]    
   * [[Knot.x Deployment|KnotxDeployment]]
   * [[Dependencies|Dependencies]]
-  * [[What's new|WhatsNew]]
 
 ### Released
 * [[1.0.0-RC4|Documentation-1.0.0-RC4]]
