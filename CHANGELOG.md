@@ -5,15 +5,15 @@ All notable changes to Knot.x will be documented in this file.
 List of changes that are finished but not yet released in any final version.
 
 ## Version 1.0.0 (*In progress*)
-- Initial open source release
+- Initial open source release.
 
 ## Version [1.0.0-RC5](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC5)
 - Changed Knot.x modules naming convention to io.knotx.*.
 - [fixed Form submission](https://github.com/Cognifide/knotx/issues/237).
 
 ## Version [1.0.0-RC4](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC4)
-- Introduced _FragmentAssembler_ which joins all Fragments just before the response to the site visitor
-- Added delay configuration to HTTP Service & Remote Repository mocks
+- Introduced _FragmentAssembler_ which joins all Fragments just before the response to the site visitor.
+- Added delay configuration to HTTP Service & Remote Repository mocks.
 - Introduce Vert.x Service Proxy mechanism for Adapter, Knot, RepositoryConnector implementation, to hide the event bus implementation, simplify development process and to enable service discovery functionality in the near future.
 
 ## Version [1.0.0-RC3](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC3)
