@@ -91,7 +91,7 @@ public class HttpClientFacade {
    * - It might set headers of the request if needed.<br>
    * <br>
    * In case of headers created modified in this method, ensure that your service configuration
-   * allows passing those headers to the target service. See 'allowed.request.headers' section
+   * allows passing those headers to the target service. See 'allowedRequestHeaders' section
    * of the configuration <br>
    *
    * @param originalRequest - ClientRequest representing original request comming to the Knot.x
