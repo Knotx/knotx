@@ -11,7 +11,9 @@
             "example": "example-value"
           },
           "allowedRequestHeaders": [
-            "Cookie"
+            "Cookie",
+            "Content-Type",
+            "Content-Length"
           ],
           "allowedResponseHeaders": [
             "Set-Cookie"

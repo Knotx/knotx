@@ -39,7 +39,9 @@
             "path": "/service/mock/post-step-1.json"
           },
           "allowedRequestHeaders": [
-            "Cookie"
+            "Cookie",
+            "Content-Type",
+            "Content-Length"
           ],
           "allowedResponseHeaders": [
             "Set-Cookie",
@@ -53,7 +55,9 @@
             "path": "/service/mock/post-step-2.json"
           },
           "allowedRequestHeaders": [
-            "Cookie"
+            "Cookie",
+            "Content-Type",
+            "Content-Length"
           ],
           "allowedResponseHeaders": [
             "Set-Cookie",
