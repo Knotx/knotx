@@ -9,7 +9,7 @@ List of changes that are finished but not yet released in any final version.
 
 ## Version [1.0.0-RC5](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC5)
 - Changed Knot.x modules naming convention to io.knotx.*.
-- [fixed Form submission](https://github.com/Cognifide/knotx/issues/237).
+- [PR-237](https://github.com/Cognifide/knotx/issues/238) - fixed Form submission.
 
 ## Version [1.0.0-RC4](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC4)
 - Introduced _FragmentAssembler_ which joins all Fragments just before the response to the site visitor.
