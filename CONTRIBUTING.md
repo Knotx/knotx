@@ -33,6 +33,10 @@ This documentation after update is ported to [Knot.x wiki](https://github.com/Co
 When updating documentation please update proper markdown pages in [documentation](https://github.com/Cognifide/knotx/tree/master/documentation) module following [instructions](https://github.com/Cognifide/knotx/blob/master/documentation/README.md) and include it with your pull request.
 After your pull request is merged, wiki pages will be updated. **Please do not update wiki pages directly because your changes will be lost.**
 
+## Changelog
+When changing or fixing some important part of Knot.x, please remember to update [Changelog](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md).
+Your entry should be enlisted in `Unreleased` section. It will be moved to appropriate release notes when released.
+
 ## Tests naming convention
 Tests written in Knot.x should be named with `methodName_whenStateUnderTest_expectBehavior` convention proposed as the first example in [7 Popular Unit Test Naming Conventions](https://dzone.com/articles/7-popular-unit-test-naming).
 
