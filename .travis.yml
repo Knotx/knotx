@@ -12,3 +12,11 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/9f543ed555acc6226fe5
+    on_success: always
+    on_failure: always
+    on_start: never
