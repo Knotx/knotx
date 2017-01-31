@@ -36,7 +36,7 @@ After your pull request is merged, wiki pages will be updated. **Please do not u
 ## Changelog
 When changing or fixing some important part of Knot.x, please remember to update [Changelog](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md).
 Your entry should be enlisted in `Unreleased` section. It will be moved to appropriate release notes when released.
-Please use convention `PR-X - description`.
+Please use convention `PR-X - description`, where `PR-X` links to a pull request with changes.
 
 ## Tests naming convention
 Tests written in Knot.x should be named with `methodName_whenStateUnderTest_expectBehavior` convention proposed as the first example in [7 Popular Unit Test Naming Conventions](https://dzone.com/articles/7-popular-unit-test-naming).
