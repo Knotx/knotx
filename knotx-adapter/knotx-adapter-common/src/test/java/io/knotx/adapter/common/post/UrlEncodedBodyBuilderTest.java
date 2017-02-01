@@ -24,7 +24,7 @@ import io.vertx.rxjava.core.MultiMap;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-public class FormBodyBuilderTest {
+public class UrlEncodedBodyBuilderTest {
 
   private final static MultiMap oneField = MultiMap.caseInsensitiveMultiMap()
       .add("field1", "value 1");
@@ -37,24 +37,24 @@ public class FormBodyBuilderTest {
 
   @Test
   public void whenEmptyMultimap_expectEmptyBodyString() {
-    assertThat(FormBodyBuilder.encodeBody(null), equalTo(StringUtils.EMPTY));
-    assertThat(FormBodyBuilder.encodeBody(MultiMap.caseInsensitiveMultiMap()),
+    assertThat(UrlEncodedBodyBuilder.encodeBody(null), equalTo(StringUtils.EMPTY));
+    assertThat(UrlEncodedBodyBuilder.encodeBody(MultiMap.caseInsensitiveMultiMap()),
         equalTo(StringUtils.EMPTY));
   }
 
   @Test
   public void whenOneField_expectBodyStringWithOnePair() {
-    assertThat(FormBodyBuilder.encodeBody(oneField), equalTo("field1=value%201"));
+    assertThat(UrlEncodedBodyBuilder.encodeBody(oneField), equalTo("field1=value%201"));
   }
 
   @Test
   public void whenTwoFields_expectBodyStringWithTwoPairs() {
-    assertThat(FormBodyBuilder.encodeBody(twoFields), equalTo("field1=value1&field2=value%20two"));
+    assertThat(UrlEncodedBodyBuilder.encodeBody(twoFields), equalTo("field1=value1&field2=value%20two"));
   }
 
   @Test
   public void whenThreeFields_expectBodyStringWithThreePairs() {
-    assertThat(FormBodyBuilder.encodeBody(threeFields),
+    assertThat(UrlEncodedBodyBuilder.encodeBody(threeFields),
         equalTo("field1=value1&field2=value2&field%20three=value%20three"));
   }
 }

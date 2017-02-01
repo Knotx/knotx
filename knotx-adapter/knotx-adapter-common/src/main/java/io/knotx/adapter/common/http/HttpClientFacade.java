@@ -20,7 +20,7 @@ package io.knotx.adapter.common.http;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
 import io.knotx.adapter.common.placeholders.UriTransformer;
-import io.knotx.adapter.common.post.FormBodyBuilder;
+import io.knotx.adapter.common.post.UrlEncodedBodyBuilder;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
@@ -143,7 +143,7 @@ public class HttpClientFacade {
       filteredHeaders.names().forEach(
           headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
       if (!serviceRequest.getFormAttributes().isEmpty()) {
-        httpRequest.end(FormBodyBuilder.encodeBody(serviceRequest.getFormAttributes()));
+        httpRequest.end(UrlEncodedBodyBuilder.encodeBody(serviceRequest.getFormAttributes()));
       } else {
         httpRequest.end();
       }
