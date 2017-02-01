@@ -55,7 +55,9 @@
       "options": {
         "config": {
           "allowedRequestHeaders": [
-            "Cookie"
+            "Cookie",
+            "Content-Type",
+            "Content-Length"
           ]
         }
       }
