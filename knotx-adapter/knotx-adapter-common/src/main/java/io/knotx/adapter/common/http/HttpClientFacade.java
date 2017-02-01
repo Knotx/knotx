@@ -143,7 +143,7 @@ public class HttpClientFacade {
       filteredHeaders.names().forEach(
           headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
       if (!serviceRequest.getFormAttributes().isEmpty()) {
-        httpRequest.end(FormBodyBuilder.createBody(serviceRequest.getFormAttributes()));
+        httpRequest.end(FormBodyBuilder.encodeBody(serviceRequest.getFormAttributes()));
       } else {
         httpRequest.end();
       }

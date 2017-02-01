@@ -27,34 +27,34 @@ import org.junit.Test;
 public class FormBodyBuilderTest {
 
   private final static MultiMap oneField = MultiMap.caseInsensitiveMultiMap()
-      .add("field1", "value1");
+      .add("field1", "value 1");
 
   private final static MultiMap twoFields = MultiMap.caseInsensitiveMultiMap()
-      .add("field1", "value1").add("field2", "value2");
+      .add("field1", "value1").add("field2", "value two");
 
   private final static MultiMap threeFields = MultiMap.caseInsensitiveMultiMap()
-      .add("field1", "value1").add("field2", "value2").add("field3", "value3");
+      .add("field1", "value1").add("field2", "value2").add("field three", "value three");
 
   @Test
   public void whenEmptyMultimap_expectEmptyBodyString() {
-    assertThat(FormBodyBuilder.createBody(null), equalTo(StringUtils.EMPTY));
-    assertThat(FormBodyBuilder.createBody(MultiMap.caseInsensitiveMultiMap()),
+    assertThat(FormBodyBuilder.encodeBody(null), equalTo(StringUtils.EMPTY));
+    assertThat(FormBodyBuilder.encodeBody(MultiMap.caseInsensitiveMultiMap()),
         equalTo(StringUtils.EMPTY));
   }
 
   @Test
   public void whenOneField_expectBodyStringWithOnePair() {
-    assertThat(FormBodyBuilder.createBody(oneField), equalTo("field1=value1"));
+    assertThat(FormBodyBuilder.encodeBody(oneField), equalTo("field1=value%201"));
   }
 
   @Test
   public void whenTwoFields_expectBodyStringWithTwoPairs() {
-    assertThat(FormBodyBuilder.createBody(twoFields), equalTo("field1=value1&field2=value2"));
+    assertThat(FormBodyBuilder.encodeBody(twoFields), equalTo("field1=value1&field2=value%20two"));
   }
 
   @Test
   public void whenThreeFields_expectBodyStringWithThreePairs() {
-    assertThat(FormBodyBuilder.createBody(threeFields),
-        equalTo("field1=value1&field2=value2&field3=value3"));
+    assertThat(FormBodyBuilder.encodeBody(threeFields),
+        equalTo("field1=value1&field2=value2&field%20three=value%20three"));
   }
 }

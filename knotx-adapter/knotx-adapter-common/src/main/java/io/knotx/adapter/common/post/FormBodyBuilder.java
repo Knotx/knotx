@@ -17,23 +17,51 @@
  */
 package io.knotx.adapter.common.post;
 
+import io.netty.handler.codec.http.HttpConstants;
 import io.vertx.rxjava.core.MultiMap;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 public class FormBodyBuilder {
 
-  public static String createBody(final MultiMap formAttributes) {
-    String result = StringUtils.EMPTY;
+  public static String encodeBody(final MultiMap formAttributes) {
+    return encodeBody(formAttributes, HttpConstants.DEFAULT_CHARSET);
+  }
 
-    if (formAttributes != null && !formAttributes.isEmpty()) {
-      result = formAttributes.names().stream()
-          .map(field ->
-              new StringBuilder(field).append("=").append(formAttributes.get(field))
-          )
-          .reduce((a, b) -> a.append("&").append(b))
-          .orElse(new StringBuilder()).toString();
+  public static String encodeBody(final MultiMap formAttributes, Charset charset) {
+    if (formAttributes == null || formAttributes.isEmpty()) {
+      return StringUtils.EMPTY;
+    } else {
+      Iterator<Entry<String, String>> entryIt = ((io.vertx.core.MultiMap) formAttributes
+          .getDelegate())
+          .iterator();
+
+      StringBuilder sb = new StringBuilder();
+      while (entryIt.hasNext()) {
+        Entry<String, String> entry = entryIt.next();
+        sb.append(encodeComponent(entry.getKey(), charset));
+        if (entry.getValue() != null) {
+          sb.append('=');
+          sb.append(encodeComponent(entry.getValue(), charset));
+        }
+        if (entryIt.hasNext()) {
+          sb.append('&');
+        }
+      }
+      return sb.toString();
     }
+  }
 
-    return result;
+  private static String encodeComponent(String s, Charset charset) {
+    try {
+      return URLEncoder.encode(s, charset.name()).replace("+", "%20");
+    } catch (UnsupportedEncodingException ignored) {
+      throw new UnsupportedCharsetException(charset.name());
+    }
   }
 }
