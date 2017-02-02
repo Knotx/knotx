@@ -41,7 +41,7 @@ public class UrlEncodedBodyBuilder {
           .getDelegate())
           .iterator();
 
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(128);
       while (entryIt.hasNext()) {
         Entry<String, String> entry = entryIt.next();
         sb.append(encodeComponent(entry.getKey(), charset));
