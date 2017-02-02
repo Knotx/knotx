@@ -47,7 +47,7 @@ public class HttpAdapterConfiguration {
               .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
-    clientOptions = config.getJsonObject("client.options", new JsonObject());
+    clientOptions = config.getJsonObject("clientOptions", new JsonObject());
   }
 
   public JsonObject getClientOptions() {
