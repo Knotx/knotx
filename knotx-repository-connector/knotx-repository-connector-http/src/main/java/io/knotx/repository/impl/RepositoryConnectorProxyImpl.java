@@ -107,7 +107,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
   private String buildRepoUri(ClientRequest repoRequest) {
     StringBuilder uri = new StringBuilder(repoRequest.getPath());
     MultiMap params = repoRequest.getParams();
-    if (params != null && params.names().size() > 0) {
+    if (params != null && params.names() != null && !params.names().isEmpty()) {
       uri.append("?")
           .append(params.names().stream()
               .map(name -> new StringBuilder(name).append("=")

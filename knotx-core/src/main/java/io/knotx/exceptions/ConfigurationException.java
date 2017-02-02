@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.junit.util;
+package io.knotx.exceptions;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-import java.io.IOException;
-import java.io.InputStreamReader;
+public class ConfigurationException extends RuntimeException {
 
-public interface FileReader {
-
-  static String readText(String path) throws IOException {
-    return CharStreams
-        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
+  public ConfigurationException(String message) {
+    super(message);
   }
+
 }

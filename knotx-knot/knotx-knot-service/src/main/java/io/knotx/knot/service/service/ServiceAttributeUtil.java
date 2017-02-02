@@ -16,6 +16,7 @@
 package io.knotx.knot.service.service;
 
 
+import io.knotx.exceptions.InvalidAttributeException;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +46,7 @@ public final class ServiceAttributeUtil {
       String namespace = matcher.group(groupIndex);
       return StringUtils.defaultString(namespace);
     } else {
-      throw new RuntimeException(String.format("Attribute %s is invalid", attributeName));
+      throw new InvalidAttributeException(attributeName);
     }
 
   }

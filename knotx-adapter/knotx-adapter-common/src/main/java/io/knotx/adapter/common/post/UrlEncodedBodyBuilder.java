@@ -25,7 +25,11 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
-public class UrlEncodedBodyBuilder {
+public final class UrlEncodedBodyBuilder {
+
+  private UrlEncodedBodyBuilder() {
+    //hidden util constructor
+  }
 
   public static String encodeBody(final MultiMap formAttributes) {
     return encodeBody(formAttributes, HttpConstants.DEFAULT_CHARSET);
