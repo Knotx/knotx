@@ -24,7 +24,7 @@ technologies and release cycles.
 It combines **asynchronous programming principles** and **message-driven architecture** providing **a scalable
 platform** for modern sites.
 
-**Knot.x** connects all of the above **into a unified customer experience**.
+**Knot.x** connects all of the above **to create a unified customer experience**.
 
 ## What problems does Knot.x solve?
 
@@ -67,7 +67,7 @@ section of the **Knot.x** documentation.
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-prototyping.png?raw=true"
   alt="Knot.x Prototyping"/>
 
-A potential client asks you to prepare a demo presenting capabilities of a new site. The client
+A potential client asks you to prepare a demo presenting the capabilities of a new site. The client
 operates in the financial sector so your site needs to connect to exchange rates and stock data
 services. Those features are not publicly available so you only have some sample data to work with.
 
@@ -84,11 +84,11 @@ section of this documentation.
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-extensions.png?raw=true"
   alt="Knot.x Extensions"/>
 
-You need to implement custom authentication mechanism for your site and then integrate with service which 
+You need to implement a custom authentication mechanism for your site and then integrate with a service which 
 uses its own custom protocol. **Knot.x** is a fully modular platform with very flexible extension
 points that we call [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter).
 
-Those extension points communicate with Knot.x Core using a efficient Event Bus so you can
+Those extension points communicate with Knot.x Core using an efficient Event Bus so you can
 implement your integration layer in one place inside **Knot.x**. Not enough? If you wish, you can implement
 your extensions in any language you like, as long as it's supported by [Vert.x](http://vertx.io/).
 
