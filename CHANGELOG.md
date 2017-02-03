@@ -7,6 +7,9 @@ List of changes that are finished but not yet released in any final version.
 ## Version 1.0.0 (*In progress*)
 - Initial open source release.
 
+## Version [1.0.0-RC7](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC7)
+- [PR-253](https://github.com/Cognifide/knotx/pull/253) - repository http headers propagation fix
+
 ## Version [1.0.0-RC6](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC6)
 - [PR-243](https://github.com/Cognifide/knotx/pull/243) - fixed allowed headers configuration entry in HttpAdapterConfiguration
 - [PR-244](https://github.com/Cognifide/knotx/pull/244) - fixed Form submission encoding for 'application/x-www-form-urlencoded'
