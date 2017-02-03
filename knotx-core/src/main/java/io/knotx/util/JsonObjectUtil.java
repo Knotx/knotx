@@ -17,7 +17,11 @@ package io.knotx.util;
 
 import io.vertx.core.json.JsonObject;
 
-public class JsonObjectUtil {
+public final class JsonObjectUtil {
+
+  private JsonObjectUtil() {
+    //util class
+  }
 
   public static JsonObject deepMerge(JsonObject source, JsonObject other) {
     JsonObject result = source.copy();

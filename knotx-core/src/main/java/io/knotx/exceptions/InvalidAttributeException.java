@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.junit.util;
+package io.knotx.exceptions;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-import java.io.IOException;
-import java.io.InputStreamReader;
+public class InvalidAttributeException extends RuntimeException {
 
-public interface FileReader {
+  private static final String MESSAGE = "Attribute %s is invalid";
 
-  static String readText(String path) throws IOException {
-    return CharStreams
-        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
+  public InvalidAttributeException(String invalidAttributeName) {
+    super(String.format(MESSAGE, invalidAttributeName));
   }
+
 }
