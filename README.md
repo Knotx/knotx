@@ -14,7 +14,7 @@
 
 ## What is Knot.x?
 Let's imagine **an online banking website** containing different features like a *chat box*, *exchange rates*,
-*stock data* and *user profile information*. The site has a high performance characteristic, despite of
+*stock data* and *user profile information*. The site has a high performance characteristic, despite
 its complexity and *target publishing channels*.
 
 All those features come from different providers/vendors having their own teams working in various modes,
@@ -24,7 +24,7 @@ technologies and release cycles.
 It combines **asynchronous programming principles** and **message-driven architecture** providing **a scalable
 platform** for modern sites.
 
-**Knot.x** connects all of the above **in a unified customer experience**.
+**Knot.x** connects all of the above **to create a unified customer experience**.
 
 ## What problems does Knot.x solve?
 
@@ -34,14 +34,14 @@ platform** for modern sites.
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-features.png?raw=true"
   alt="Knot.x Features"/>
 
-Probably you have many features / services you want to connect to your site. They come from
-different vendors, talk using various network protocols (HTTP/WebSocket/TCP etc.) and message
+You may have many features / services that you want to connect to your site. They come from
+different vendors, communicate using various network protocols (HTTP/WebSocket/TCP etc.) and message
 formats (SOAP/JSON/XML/binary etc.).
 
-**Knot.x** assembles your static HTML pages with any features / services in a very
-performant manner. It loads and analyses static pages from a Repository, collects dynamic
+**Knot.x** assembles all your features / services into HTML pages in a very
+efficient manner. It loads and analyses static pages from Repository, collects dynamic
 features from multiple sources asynchronously and injects them into the page.
-If a service you connect to may have unpredictable or cyclic outages you can easily handle them according
+If a service you connect to has unpredictable or cyclic outages you can easily handle them according
 to your business rules.
 
 Read the [Service Knot](https://github.com/Cognifide/knotx/wiki/ServiceKnot)
@@ -54,9 +54,9 @@ section to find out more about this topic.
   alt="Knot.x Forms"/>
 
 Every site contains more or less complicated forms. **Knot.x** supports simple and multi-step forms.
-It handles submission errors, form validation and redirects to success pages.
+It handles submission errors, form validations and redirects to success pages.
 
-Forms can be used to compose multi-step workflows. **Knot.x** allows you to define a graph of interconnected steps, responding to user input / site visitor choices.
+Forms can be used to compose multi-step workflows. **Knot.x** allows you to define a graph of interconnected steps, responding to user input or site visitor choices.
 
 Find out more about this topic by reading the [Action Knot](https://github.com/Cognifide/knotx/wiki/ActionKnot)
 section of the **Knot.x** documentation.
@@ -67,7 +67,7 @@ section of the **Knot.x** documentation.
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-prototyping.png?raw=true"
   alt="Knot.x Prototyping"/>
 
-A potential client asked you to prepare a demo presenting the capabilities of a new site. The client
+A potential client asks you to prepare a demo presenting the capabilities of a new site. The client
 operates in the financial sector so your site needs to connect to exchange rates and stock data
 services. Those features are not publicly available so you only have some sample data to work with.
 
@@ -84,11 +84,11 @@ section of this documentation.
   src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-intro-extensions.png?raw=true"
   alt="Knot.x Extensions"/>
 
-You need to implement custom authentication mechanism for your site and then integrate with service
-talking with its own custom protocol. **Knot.x** is a fully modular platform with very flexible extension
+You need to implement a custom authentication mechanism for your site and then integrate with a service which 
+uses its own custom protocol. **Knot.x** is a fully modular platform with very flexible extension
 points that we call [Knots](https://github.com/Cognifide/knotx/wiki/Knot) and [Adapters](https://github.com/Cognifide/knotx/wiki/Adapter).
 
-Those extension points communicates with Knot.x Core using a very performant Event Bus so you can
+Those extension points communicate with Knot.x Core using an efficient Event Bus so you can
 implement your integration layer in one place inside **Knot.x**. Not enough? If you wish, you can implement
 your extensions in any language you like, as long as it's supported by [Vert.x](http://vertx.io/).
 
