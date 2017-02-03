@@ -84,7 +84,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
     RxHelper.get(httpClient, clientDestination.getInteger("port"),
         clientDestination.getString("domain"),
-        repoUri, MultiMap.caseInsensitiveMultiMap())
+        repoUri, requestHeaders)
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
         .subscribe(
