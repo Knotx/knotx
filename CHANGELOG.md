@@ -7,6 +7,12 @@ List of changes that are finished but not yet released in any final version.
 ## Version 1.0.0 (*In progress*)
 - Initial open source release.
 
+## Version [1.0.0-RC6](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC6)
+- [PR-243](https://github.com/Cognifide/knotx/pull/243) - fixed allowed headers configuration entry in HttpAdapterConfiguration
+- [PR-244](https://github.com/Cognifide/knotx/pull/244) - fixed Form submission encoding for 'application/x-www-form-urlencoded'
+- [PR-246](https://github.com/Cognifide/knotx/pull/246) - fixed client options configuration entry in HttpAdapterConfiguration (could influence on a platform performance)
+
+
 ## Version [1.0.0-RC5](https://github.com/Cognifide/knotx/releases/tag/1.0.0-RC5)
 - Changed Knot.x modules naming convention to io.knotx.*.
 - [PR-238](https://github.com/Cognifide/knotx/pull/238) - fixed Form submission.
