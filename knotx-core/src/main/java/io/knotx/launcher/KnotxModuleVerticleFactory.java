@@ -113,9 +113,9 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
         String conf = scanner.next();
         descriptor = new JsonObject(conf);
       } catch (NoSuchElementException e) {
-        throw new IllegalArgumentException(descriptorFile + " is empty");
+        throw new IllegalArgumentException(descriptorFile + " is empty", e);
       } catch (DecodeException e) {
-        throw new IllegalArgumentException(descriptorFile + " contains invalid json");
+        throw new IllegalArgumentException(descriptorFile + " contains invalid json", e);
       }
     }
 

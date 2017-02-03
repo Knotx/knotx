@@ -62,7 +62,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private boolean hasFragments(KnotContext knotContext) {
-    return knotContext.getFragments() != null && knotContext.getFragments().size() > 0;
+    return knotContext.getFragments() != null && !knotContext.getFragments().isEmpty();
   }
 
   @Override

@@ -15,6 +15,7 @@
  */
 package io.knotx.http;
 
+import io.knotx.exceptions.ConfigurationException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.function.Function;
@@ -33,8 +34,8 @@ public class StringToPatternFunction implements Function<String, Pattern> {
     try {
       compiledPattern = Pattern.compile(toRegex(stringPattern), Pattern.CASE_INSENSITIVE);
     } catch (PatternSyntaxException e) {
-      LOGGER.error("Invalid allowed headers configuration syntax: {}", stringPattern, e);
-      throw new RuntimeException("Application error - invalid configuration");
+      LOGGER.error("Invalid configuration syntax: {}", stringPattern, e);
+      throw new ConfigurationException("Application error - invalid configuration");
     }
     return compiledPattern;
   }
