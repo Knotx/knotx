@@ -39,8 +39,7 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
   private final JsonObject delayPerPath;
   private Set<String> textFileExtensions = Sets
       .newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml", "xsm", "xsl",
-          "xsd",
-          "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
+          "xsd", "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
   private long delayAllMs;
 
   public MockRemoteRepositoryHandler(Vertx vertx, String catalogue, long delayAllMs,
@@ -65,8 +64,7 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     final Optional<String> contentType = Optional
         .ofNullable(MimeMapping.getMimeTypeForFilename(resourcePath));
     final String fileExtension = getFileExtension(resourcePath);
-    final boolean isTextFile =
-        fileExtension != null ? textFileExtensions.contains(fileExtension) : false;
+    final boolean isTextFile = fileExtension != null && textFileExtensions.contains(fileExtension);
 
     vertx.fileSystem().readFile(resourcePath, ar -> {
       HttpServerResponse response = context.response();

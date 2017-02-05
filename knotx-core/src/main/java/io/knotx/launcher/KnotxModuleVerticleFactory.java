@@ -59,29 +59,34 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       depOptions.mergeIn(knotOptions);
       knotConfig = JsonObjectUtil.deepMerge(knotConfig, depConfig);
 
-      // Any options or config provided by system properites will override anything specified
+      // Any options or config provided by system properties will override anything specified
       // at deployment time and on starter Json config
-      try {
-        SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
-            identifier);
-        if (!systemPropsConfiguration.envConfig().isEmpty()) {
-          JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
-          JsonObject updatedKnotOptions = updatedDescriptor
-              .getJsonObject(OPTIONS_KEY, new JsonObject());
-          JsonObject updatedKnotConfig = updatedKnotOptions
-              .getJsonObject(CONFIG_KEY, new JsonObject());
-          depOptions.mergeIn(updatedKnotOptions);
-          knotConfig.mergeIn(updatedKnotConfig);
-        }
-      } catch (IllegalArgumentException ex) {
-        LOGGER.warn("Unable to parse given system properties due to exception", ex);
-      }
+      overrideConfigWithSystemProperties(identifier, descriptor, depOptions, knotConfig);
 
       depOptions.put(CONFIG_KEY, knotConfig);
       deploymentOptions.fromJson(depOptions);
       resolution.complete(main);
     } catch (Exception e) {
       resolution.fail(e);
+    }
+  }
+
+  private void overrideConfigWithSystemProperties(String identifier, JsonObject descriptor,
+      JsonObject depOptions, JsonObject knotConfig) {
+    try {
+      SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+          identifier);
+      if (!systemPropsConfiguration.envConfig().isEmpty()) {
+        JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
+        JsonObject updatedKnotOptions = updatedDescriptor
+            .getJsonObject(OPTIONS_KEY, new JsonObject());
+        JsonObject updatedKnotConfig = updatedKnotOptions
+            .getJsonObject(CONFIG_KEY, new JsonObject());
+        depOptions.mergeIn(updatedKnotOptions);
+        knotConfig.mergeIn(updatedKnotConfig);
+      }
+    } catch (IllegalArgumentException ex) {
+      LOGGER.warn("Unable to parse given system properties due to exception", ex);
     }
   }
 

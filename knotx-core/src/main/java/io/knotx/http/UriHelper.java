@@ -20,7 +20,11 @@ import io.vertx.rxjava.core.MultiMap;
 import java.util.List;
 import java.util.Map;
 
-public class UriHelper {
+public final class UriHelper {
+
+  private UriHelper() {
+    // util constructor
+  }
 
   public static MultiMap getParams(String uri) {
     QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);

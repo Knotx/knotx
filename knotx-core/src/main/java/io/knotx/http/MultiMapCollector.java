@@ -30,7 +30,7 @@ public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
   private final Function<T, String> keyGetter;
   private final Function<T, List<String>> value;
 
-  public MultiMapCollector(Function<T, String> keyGetter, Function<T, List<String>> value) {
+  private MultiMapCollector(Function<T, String> keyGetter, Function<T, List<String>> value) {
     this.keyGetter = keyGetter;
     this.value = value;
   }
@@ -48,7 +48,7 @@ public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
   @Override
   public BiConsumer<MultiMap, T> accumulator() {
     return (multiMap, t) -> value.apply(t)
-        .forEach(value -> multiMap.add(keyGetter.apply(t), value));
+        .forEach(v -> multiMap.add(keyGetter.apply(t), v));
   }
 
 
