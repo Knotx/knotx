@@ -32,6 +32,8 @@ import java.util.Scanner;
 public class KnotxModuleVerticleFactory implements VerticleFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxModuleVerticleFactory.class);
+  private static final String CONFIG_KEY = "config";
+  private static final String OPTIONS_KEY = "options";
 
   @Override
   public boolean requiresResolve() {
@@ -50,10 +52,10 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       // Any options specified in the module config will override anything specified at deployment time
       // Options and Config specified in knotx starter JSON will override those configurations
       JsonObject depOptions = deploymentOptions.toJson();
-      JsonObject depConfig = depOptions.getJsonObject("config", new JsonObject());
+      JsonObject depConfig = depOptions.getJsonObject(CONFIG_KEY, new JsonObject());
 
-      JsonObject knotOptions = descriptor.getJsonObject("options", new JsonObject());
-      JsonObject knotConfig = knotOptions.getJsonObject("config", new JsonObject());
+      JsonObject knotOptions = descriptor.getJsonObject(OPTIONS_KEY, new JsonObject());
+      JsonObject knotConfig = knotOptions.getJsonObject(CONFIG_KEY, new JsonObject());
       depOptions.mergeIn(knotOptions);
       knotConfig = JsonObjectUtil.deepMerge(knotConfig, depConfig);
 
@@ -65,9 +67,9 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
         if (!systemPropsConfiguration.envConfig().isEmpty()) {
           JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
           JsonObject updatedKnotOptions = updatedDescriptor
-              .getJsonObject("options", new JsonObject());
+              .getJsonObject(OPTIONS_KEY, new JsonObject());
           JsonObject updatedKnotConfig = updatedKnotOptions
-              .getJsonObject("config", new JsonObject());
+              .getJsonObject(CONFIG_KEY, new JsonObject());
           depOptions.mergeIn(updatedKnotOptions);
           knotConfig.mergeIn(updatedKnotConfig);
         }
@@ -75,7 +77,7 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
         LOGGER.warn("Unable to parse given system properties due to exception", ex);
       }
 
-      depOptions.put("config", knotConfig);
+      depOptions.put(CONFIG_KEY, knotConfig);
       deploymentOptions.fromJson(depOptions);
       resolution.complete(main);
     } catch (Exception e) {

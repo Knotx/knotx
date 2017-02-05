@@ -29,6 +29,8 @@ import java.util.Optional;
 class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxEngineHandler.class);
+  private static final String KNOT_CONTEXT_KEY = "knotContext";
+
   private Vertx vertx;
   private String address;
   private Map<String, RoutingEntry> routing;
@@ -56,11 +58,11 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
     knot.processObservable(knotContext)
-        .doOnNext(ctx -> context.put("knotContext", ctx))
+        .doOnNext(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
                 .ifPresent(on -> {
@@ -72,12 +74,12 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                         "No on criteria defined in routing for {} transition received from {}", on,
                         address);
                     // last knot can return default transition
-                    context.put("knotContext", ctx);
+                    context.put(KNOT_CONTEXT_KEY, ctx);
                     context.next();
                   }
                 })
                 .ifNotPresent(() -> {
-                  context.put("knotContext", ctx);
+                  context.put(KNOT_CONTEXT_KEY, ctx);
                   context.next();
                 }),
             error -> {

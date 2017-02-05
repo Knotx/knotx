@@ -18,7 +18,14 @@ package io.knotx.splitter.impl;
 import io.knotx.dataobjects.Fragment;
 import java.util.List;
 
+@FunctionalInterface
 public interface FragmentSplitter {
 
+  /**
+   * Splits a template (markup) into list of fragments (see {@link io.knotx.dataobjects.Fragment}).
+   * @param template - a string containing the template content which will be split.
+   * @return list of fragments (see {@link io.knotx.dataobjects.Fragment}).
+   */
   List<Fragment> split(String template);
+
 }
