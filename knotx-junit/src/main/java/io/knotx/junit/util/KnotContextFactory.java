@@ -26,7 +26,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class KnotContextFactory {
+public final class KnotContextFactory {
+
+  private KnotContextFactory() {
+    //util class
+  }
 
   public static KnotContext empty(List<Fragment> fragments) {
     return empty("").setFragments(fragments);
@@ -49,7 +53,8 @@ public class KnotContextFactory {
   public static KnotContext create(List<String> fragments) {
     return new KnotContext()
         .setFragments(
-            fragments != null ? fragments.stream().map(Fragment::raw).collect(Collectors.toList())
+            fragments != null
+                ? fragments.stream().map(Fragment::raw).collect(Collectors.toList())
                 : null)
         .setClientRequest(new ClientRequest())
         .setClientResponse(

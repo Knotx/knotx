@@ -105,15 +105,15 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private Handlebars createHandlebars() {
-    Handlebars handlebars = new Handlebars();
-    DefaultHandlebarsHelpers.registerFor(handlebars);
+    Handlebars newHandlebars = new Handlebars();
+    DefaultHandlebarsHelpers.registerFor(newHandlebars);
 
     ServiceLoader.load(CustomHandlebarsHelper.class)
         .iterator().forEachRemaining(helper -> {
-      handlebars.registerHelper(helper.getName(), helper);
+      newHandlebars.registerHelper(helper.getName(), helper);
       LOGGER.info("Registered custom Handlebars helper: {}", helper.getName());
     });
 
-    return handlebars;
+    return newHandlebars;
   }
 }

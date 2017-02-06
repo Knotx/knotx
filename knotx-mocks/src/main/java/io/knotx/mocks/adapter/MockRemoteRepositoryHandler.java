@@ -34,13 +34,13 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
 
   private static final String SEPARATOR = "/";
   private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
+  private static final Set<String> TEST_FILES_EXTENSIONS =
+      Sets.newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml",
+          "xsm", "xsl", "xsd", "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
+
   private final Vertx vertx;
   private final String catalogue;
   private final JsonObject delayPerPath;
-  private Set<String> textFileExtensions = Sets
-      .newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml", "xsm", "xsl",
-          "xsd",
-          "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
   private long delayAllMs;
 
   public MockRemoteRepositoryHandler(Vertx vertx, String catalogue, long delayAllMs,
@@ -51,7 +51,7 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     this.delayPerPath = delayPerPath;
   }
 
-  public static String getFileExtension(String filename) {
+  private static String getFileExtension(String filename) {
     int li = filename.lastIndexOf('.');
     if (li != -1 && li != filename.length() - 1) {
       return filename.substring(li + 1, filename.length());
@@ -66,7 +66,7 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
         .ofNullable(MimeMapping.getMimeTypeForFilename(resourcePath));
     final String fileExtension = getFileExtension(resourcePath);
     final boolean isTextFile =
-        fileExtension != null ? textFileExtensions.contains(fileExtension) : false;
+        fileExtension != null && TEST_FILES_EXTENSIONS.contains(fileExtension);
 
     vertx.fileSystem().readFile(resourcePath, ar -> {
       HttpServerResponse response = context.response();

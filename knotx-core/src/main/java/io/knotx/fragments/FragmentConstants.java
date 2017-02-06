@@ -17,17 +17,17 @@ package io.knotx.fragments;
 
 import java.util.regex.Pattern;
 
-public interface FragmentConstants {
+public final class FragmentConstants {
 
-  String SNIPPET_IDENTIFIER_NAME = "data-knotx-knots";
+  public static final String SNIPPET_IDENTIFIER_NAME = "data-knotx-knots";
 
-  String ANY_SNIPPET_PATTERN =
+  public static final String ANY_SNIPPET_PATTERN =
       "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
 
-  Pattern SNIPPET_PATTERN =
-      Pattern.compile("<script\\s+" + FragmentConstants.SNIPPET_IDENTIFIER_NAME
+  public static final Pattern SNIPPET_PATTERN =
+      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME
           + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
 
-  String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
+  public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
 }

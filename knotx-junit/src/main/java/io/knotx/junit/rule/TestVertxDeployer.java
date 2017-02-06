@@ -22,6 +22,7 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.rxjava.core.Vertx;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.rules.TestRule;
@@ -60,9 +61,8 @@ public class TestVertxDeployer implements TestRule {
               }
               latch.countDown();
             });
-        latch.await(3, TimeUnit.SECONDS);
 
-        if (latch.getCount() != 0) {
+        if (!latch.await(3, TimeUnit.SECONDS)) {
           deployFuture
               .fail(new IllegalStateException("Knot.x did not finish deploy all verticles"));
         }
@@ -76,7 +76,7 @@ public class TestVertxDeployer implements TestRule {
     };
   }
 
-  private JsonObject readJson(String path) throws Exception {
+  private JsonObject readJson(String path) throws IOException {
     return new JsonObject(FileReader.readText(path));
   }
 }

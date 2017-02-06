@@ -104,12 +104,6 @@ public class ActionKnotProxyImpl implements KnotProxy {
     return errorResponse;
   }
 
-  private void traceMessage(Message<KnotContext> message) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got message from <{}> with value <{}>", message.replyAddress(), message.body());
-    }
-  }
-
   private void handleFormAction(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
     LOGGER.trace("Process form for {} ", knotContext);
     Fragment currentFragment = Optional.ofNullable(knotContext.getFragments())

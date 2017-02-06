@@ -32,6 +32,8 @@ import java.util.Scanner;
 public class KnotxModuleVerticleFactory implements VerticleFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxModuleVerticleFactory.class);
+  private static final String CONFIG_KEY = "config";
+  private static final String OPTIONS_KEY = "options";
 
   @Override
   public boolean requiresResolve() {
@@ -50,36 +52,41 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       // Any options specified in the module config will override anything specified at deployment time
       // Options and Config specified in knotx starter JSON will override those configurations
       JsonObject depOptions = deploymentOptions.toJson();
-      JsonObject depConfig = depOptions.getJsonObject("config", new JsonObject());
+      JsonObject depConfig = depOptions.getJsonObject(CONFIG_KEY, new JsonObject());
 
-      JsonObject knotOptions = descriptor.getJsonObject("options", new JsonObject());
-      JsonObject knotConfig = knotOptions.getJsonObject("config", new JsonObject());
+      JsonObject knotOptions = descriptor.getJsonObject(OPTIONS_KEY, new JsonObject());
+      JsonObject knotConfig = knotOptions.getJsonObject(CONFIG_KEY, new JsonObject());
       depOptions.mergeIn(knotOptions);
       knotConfig = JsonObjectUtil.deepMerge(knotConfig, depConfig);
 
-      // Any options or config provided by system properites will override anything specified
+      // Any options or config provided by system properties will override anything specified
       // at deployment time and on starter Json config
-      try {
-        SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
-            identifier);
-        if (!systemPropsConfiguration.envConfig().isEmpty()) {
-          JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
-          JsonObject updatedKnotOptions = updatedDescriptor
-              .getJsonObject("options", new JsonObject());
-          JsonObject updatedKnotConfig = updatedKnotOptions
-              .getJsonObject("config", new JsonObject());
-          depOptions.mergeIn(updatedKnotOptions);
-          knotConfig.mergeIn(updatedKnotConfig);
-        }
-      } catch (IllegalArgumentException ex) {
-        LOGGER.warn("Unable to parse given system properties due to exception", ex);
-      }
+      overrideConfigWithSystemProperties(identifier, descriptor, depOptions, knotConfig);
 
-      depOptions.put("config", knotConfig);
+      depOptions.put(CONFIG_KEY, knotConfig);
       deploymentOptions.fromJson(depOptions);
       resolution.complete(main);
     } catch (Exception e) {
       resolution.fail(e);
+    }
+  }
+
+  private void overrideConfigWithSystemProperties(String identifier, JsonObject descriptor,
+      JsonObject depOptions, JsonObject knotConfig) {
+    try {
+      SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
+          identifier);
+      if (!systemPropsConfiguration.envConfig().isEmpty()) {
+        JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
+        JsonObject updatedKnotOptions = updatedDescriptor
+            .getJsonObject(OPTIONS_KEY, new JsonObject());
+        JsonObject updatedKnotConfig = updatedKnotOptions
+            .getJsonObject(CONFIG_KEY, new JsonObject());
+        depOptions.mergeIn(updatedKnotOptions);
+        knotConfig.mergeIn(updatedKnotConfig);
+      }
+    } catch (IllegalArgumentException ex) {
+      LOGGER.warn("Unable to parse given system properties due to exception", ex);
     }
   }
 

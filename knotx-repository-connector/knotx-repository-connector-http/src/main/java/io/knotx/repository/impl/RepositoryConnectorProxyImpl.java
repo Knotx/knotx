@@ -97,11 +97,11 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
   }
 
   private HttpClient createHttpClient(Vertx vertx) {
-    io.vertx.core.http.HttpClient httpClient =
+    io.vertx.core.http.HttpClient vertxHttpClient =
         clientOptions.isEmpty() ? vertx.createHttpClient()
             : vertx.createHttpClient(new HttpClientOptions(clientOptions));
 
-    return HttpClient.newInstance(httpClient);
+    return HttpClient.newInstance(vertxHttpClient);
   }
 
   private String buildRepoUri(ClientRequest repoRequest) {

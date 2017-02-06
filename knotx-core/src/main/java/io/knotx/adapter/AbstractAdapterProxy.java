@@ -42,12 +42,18 @@ public abstract class AbstractAdapterProxy implements AdapterProxy {
             adapterResponse -> result.handle(Future.succeededFuture(adapterResponse)),
             error -> {
               LOGGER.error("Error happened during Adapter Request processing", error);
-              result.handle(Future.succeededFuture(getErrorResponse(request, error)));
+              result.handle(Future.succeededFuture(getErrorResponse(error)));
             }
         );
   }
 
-  protected AdapterResponse getErrorResponse(AdapterRequest request, Throwable error) {
+  /**
+   * Method generates error {@link AdapterResponse} in case of processing failure.
+   *
+   * @param error - error that occurred.
+   * @return - error response (e.g. with 500 status code and other info).
+   */
+  protected AdapterResponse getErrorResponse(Throwable error) {
     return new AdapterResponse().setResponse(new ClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
         .setBody(Buffer.buffer(error.getMessage())));

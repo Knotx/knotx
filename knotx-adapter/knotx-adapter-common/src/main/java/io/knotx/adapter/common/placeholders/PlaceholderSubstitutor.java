@@ -17,6 +17,7 @@ package io.knotx.adapter.common.placeholders;
 
 import io.knotx.dataobjects.ClientRequest;
 
+@FunctionalInterface
 public interface PlaceholderSubstitutor {
 
   /**
