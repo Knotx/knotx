@@ -25,21 +25,21 @@ import java.util.Map;
 public class DataObjectsUtil {
 
   /**
-   * Equality operator for Multimap objects.
-   * Multimap represents keys as String, values as List of Strings.
+   * Equality operator for MultiMap objects.
+   * MultiMap represents keys as String, values as List of Strings.
    *
-   * @param self - compared Multimap object self
-   * @param that - compared Multimap object that
+   * @param self - compared {@link MultiMap} object self
+   * @param that - compared {@link MultiMap} object that
    * @return - true if objects are equals, false otherwise
    */
-  public static boolean equalsMultimap(MultiMap self, MultiMap that) {
+  public static boolean equalsMultiMap(MultiMap self, MultiMap that) {
     return Objects.equal(self.names(), that.names()) &&
         self.names().stream()
             .allMatch(name -> that.contains(name) && self.getAll(name).equals(that.getAll(name)));
   }
 
   /**
-   * Equality operator for Buffer objects. It assues the buffer might contain binary data
+   * Equality operator for Buffer objects. It assumes the buffer might contain binary data
    *
    * @param self - compared Buffer object self
    * @param that - compared Buffer object that
@@ -62,11 +62,11 @@ public class DataObjectsUtil {
   }
 
   /**
-   * Method computing hashCode of the give Multimap.
-   * Multimap is treat as list of entires, key(String), value(List of Strings)
+   * Method computing hashCode of the give MultiMap.
+   * MultiMap is treat as list of entries, key(String), value(List of Strings)
    *
    * @param multiMap - object to compute hashcode from
-   * @return - hashcode of the given Multimap object
+   * @return - hashcode of the given {@link MultiMap} object
    */
   public static int multiMapHash(MultiMap multiMap) {
     io.vertx.core.MultiMap map = (io.vertx.core.MultiMap) multiMap.getDelegate();
@@ -78,10 +78,10 @@ public class DataObjectsUtil {
   }
 
   /**
-   * toString() implementation for Multimap object
+   * toString() implementation for MultiMap object
    *
-   * @param multiMap - Multimap
-   * @return String representing given Multimap
+   * @param multiMap - {@link MultiMap}
+   * @return String representing given MultiMap
    */
   public static String toString(MultiMap multiMap) {
     StringBuilder result = new StringBuilder();

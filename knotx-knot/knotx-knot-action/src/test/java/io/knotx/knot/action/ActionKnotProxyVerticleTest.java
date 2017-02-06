@@ -290,7 +290,7 @@ public class ActionKnotProxyVerticleTest {
       response.setStatusCode(HttpResponseStatus.OK.code());
       response.setBody(Buffer.buffer().appendString(addToBody));
       response.setHeaders(
-          headers.keySet().stream().collect(MultiMapCollector.toMultimap(o -> o, headers::get)));
+          headers.keySet().stream().collect(MultiMapCollector.toMultiMap(o -> o, headers::get)));
       return new AdapterResponse().setResponse(response).setSignal(signal);
     };
 

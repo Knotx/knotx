@@ -19,10 +19,10 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
-public class MultimapConverter {
+public class MultiMapConverter {
 
   /**
-   * Converts Multimap to JsonObject<br> It expects the MultiMap key, contains List of String
+   * Converts MultiMap to JsonObject<br> It expects the MultiMap key, contains List of String
    * objects, so the result of conversion will look like below
    * <br>
    * <pre>
@@ -32,8 +32,8 @@ public class MultimapConverter {
    *   }
    * </pre>
    *
-   * @param multiMap - Multimap to convert
-   * @return - JsonObject with JsonArray under each object key
+   * @param multiMap - {@link MultiMap} to convert
+   * @return - {@link JsonObject} with {@link JsonArray} under each object key
    */
   public static JsonObject toJsonObject(MultiMap multiMap) {
     JsonObject json = new JsonObject();
@@ -55,13 +55,13 @@ public class MultimapConverter {
   }
 
   /**
-   * Converts JsonObject to Multimap. It expects the JsonObject key, contains JsonArray with list of
+   * Converts JsonObject to MultiMap. It expects the JsonObject key, contains JsonArray with list of
    * String objects.<br>
-   * Each jsonObject key is converted into MutliMap "key", while JsonArray as List of String objects
+   * Each jsonObject key is converted into MultiMap "key", while JsonArray as List of String objects
    * for this velue.
    *
-   * @param json - JsonObject to convert
-   * @return - Multimap
+   * @param json - {@link JsonObject} to convert
+   * @return - {@link MultiMap} created from {@link JsonObject}
    */
   public static MultiMap fromJsonObject(JsonObject json) {
     MultiMap map = MultiMap.caseInsensitiveMultiMap();

@@ -151,7 +151,7 @@ public class HttpClientFacade {
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
+        .collect(MultiMapCollector.toMultiMap(o -> o, headers::getAll));
   }
 
   private Observable<ClientResponse> wrapResponse(HttpClientResponse response) {

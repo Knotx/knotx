@@ -26,8 +26,8 @@ import rx.Observable;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
 
-  public static final String CONFIG_OVERRIDE = "config";
-  public static final String MODULE_OPTIONS = "options";
+  private static final String CONFIG_OVERRIDE = "config";
+  private static final String MODULE_OPTIONS = "options";
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
 
   @Override
