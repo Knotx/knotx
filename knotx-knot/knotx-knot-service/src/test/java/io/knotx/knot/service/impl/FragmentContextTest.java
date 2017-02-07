@@ -17,23 +17,19 @@ package io.knotx.knot.service.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
-import com.googlecode.zohhak.api.Coercion;
 import com.googlecode.zohhak.api.Configure;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit.coercers.KnotxCoercers;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.vertx.core.json.JsonObject;
-import java.io.IOException;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 @RunWith(ZohhakRunner.class)
-@Configure(separator = ";")
+@Configure(separator = ";", coercers = KnotxCoercers.class)
 public class FragmentContextTest {
 
   @TestWith({
@@ -79,16 +75,4 @@ public class FragmentContextTest {
     );
   }
 
-  @Coercion
-  public JsonObject provideParameters(String paramsAsJsonObject) throws IOException {
-    return new JsonObject(paramsAsJsonObject);
-  }
-
-  @Coercion
-  public Fragment provideFragment(String fragmentContentFile) throws IOException {
-    final String fragmentContent = FileReader.readText(fragmentContentFile);
-    Fragment fragmentMock = Mockito.mock(Fragment.class);
-    when(fragmentMock.content()).thenReturn(fragmentContent);
-    return fragmentMock;
-  }
 }
