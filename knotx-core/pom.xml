@@ -96,6 +96,10 @@
       <groupId>com.googlecode.zohhak</groupId>
       <artifactId>zohhak</artifactId>
     </dependency>
+    <dependency>
+      <groupId>uk.co.datumedge</groupId>
+      <artifactId>hamcrest-json</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

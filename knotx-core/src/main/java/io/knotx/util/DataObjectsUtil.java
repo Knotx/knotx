@@ -63,7 +63,8 @@ public class DataObjectsUtil {
 
   /**
    * Method computing hashCode of the give MultiMap.
-   * MultiMap is treat as list of entries, key(String), value(List of Strings)
+   * MultiMap is treated as a list of key-value pairs where each key is a String and
+   * the corresponding value is a List of Strings.
    *
    * @param multiMap - object to compute hashcode from
    * @return - hashcode of the given {@link MultiMap} object

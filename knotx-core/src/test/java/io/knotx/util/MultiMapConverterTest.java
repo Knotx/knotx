@@ -17,6 +17,7 @@ package io.knotx.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
 import com.googlecode.zohhak.api.Coercion;
 import com.googlecode.zohhak.api.Configure;
@@ -53,7 +54,7 @@ public class MultiMapConverterTest {
     JsonObject jsonObject = MultiMapConverter.toJsonObject(multiMap);
     assertThat(
         jsonObject.toString(),
-        equalTo(expectedJson));
+        sameJSONAs(expectedJson).allowingAnyArrayOrdering());
   }
 
   @TestWith({
