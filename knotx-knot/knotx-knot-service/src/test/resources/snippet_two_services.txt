@@ -1,0 +1,7 @@
+<script
+  data-knotx-knots="services"
+  data-knotx-service="no-name-service"
+  data-knotx-service-named="named-service"
+  type="text/knotx-snippet">
+  <h2>{{_result.message}}</h2>
+</script>

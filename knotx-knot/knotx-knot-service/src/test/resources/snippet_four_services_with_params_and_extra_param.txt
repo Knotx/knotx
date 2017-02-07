@@ -1,0 +1,14 @@
+<script
+  data-knotx-knots="services"
+  data-knotx-service-a="a-service"
+  data-knotx-params-a='{"a":"a"}'
+  data-knotx-service-b="b-service"
+  data-knotx-params-b='{"b":"b"}'
+  data-knotx-service-c="c-service"
+  data-knotx-params-c='{"c":"c"}'
+  data-knotx-service-d="d-service"
+  data-knotx-params-d='{"d":"d"}'
+  data-knotx-params-unbound='{"e":"e"}'
+  type="text/knotx-snippet">
+  <h2>{{_result.message}}</h2>
+</script>

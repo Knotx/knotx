@@ -1,0 +1,9 @@
+<script
+  data-knotx-knots="services"
+  data-knotx-service-first="first-service"
+  data-knotx-params-first='{"first-service-key":"first-service-value"}'
+  data-knotx-service-second="second-service"
+  data-knotx-params-second='{"second-service-key":"second-service-value"}'
+  type="text/knotx-snippet">
+  <h2>{{_result.message}}</h2>
+</script>
