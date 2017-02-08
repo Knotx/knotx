@@ -15,18 +15,15 @@
  */
 package io.knotx.knot.templating.impl;
 
-import io.knotx.dataobjects.Fragment;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import io.knotx.dataobjects.Fragment;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 class HandlebarsFragment {
 
@@ -40,7 +37,7 @@ class HandlebarsFragment {
 
   HandlebarsFragment(Fragment fragment) {
     this.fragment = fragment;
-    this.unwrappedContent = getUnwrappedContent(fragment);
+    this.unwrappedContent = FragmentContentExtractor.getUnwrappedContent(fragment);
   }
 
   String compileWith(Handlebars handlebars) {
@@ -58,12 +55,6 @@ class HandlebarsFragment {
       LOGGER.error("Could not process fragment [{}]", fragment.content(), e);
       throw new IllegalStateException("Handlebars fragment can not be evaluated correctly.");
     }
-  }
-
-  private String getUnwrappedContent(Fragment fragment) {
-    Document document = Jsoup.parseBodyFragment(fragment.content());
-    Element scriptTag = document.body().child(0);
-    return scriptTag.unwrap().toString();
   }
 
 }

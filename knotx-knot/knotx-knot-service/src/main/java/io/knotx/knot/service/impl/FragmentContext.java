@@ -34,7 +34,7 @@ class FragmentContext {
   private static final String DATA_PARAMS = "data-knotx-params.*";
 
   private Fragment fragment;
-  private List<ServiceEntry> services;
+  List<ServiceEntry> services;
 
   private FragmentContext() {
   }
@@ -57,15 +57,18 @@ class FragmentContext {
             .toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()),
                 Function.identity()));
 
-    return empty().fragment(fragment).services(serviceAttributes.entrySet().stream()
-        .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
-        .collect(Collectors.toList()));
+    return empty()
+        .fragment(fragment)
+        .services(
+            serviceAttributes.entrySet().stream()
+            .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
+            .collect(Collectors.toList())
+        );
   }
 
   static FragmentContext empty() {
     return new FragmentContext();
   }
-
 
   Fragment fragment() {
     return fragment;

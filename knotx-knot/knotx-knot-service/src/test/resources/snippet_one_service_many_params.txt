@@ -1,0 +1,8 @@
+<script
+  data-knotx-knots="services"
+  data-knotx-service="first-service"
+  data-knotx-params='{"path":"/overridden/path","anotherParam":"someValue"}'
+  data-knotx-params-undefined='{"notBound":"toAnyService"}'
+  type="text/knotx-snippet">
+  <h2>{{_result.message}}</h2>
+</script>

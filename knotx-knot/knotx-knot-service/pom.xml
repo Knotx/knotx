@@ -63,6 +63,14 @@
       <artifactId>vertx-unit</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.googlecode.zohhak</groupId>
+      <artifactId>zohhak</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>uk.co.datumedge</groupId>
+      <artifactId>hamcrest-json</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-junit</artifactId>
       <version>${project.version}</version>
