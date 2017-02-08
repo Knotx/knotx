@@ -18,7 +18,7 @@ package io.knotx.dataobjects;
 
 import io.knotx.http.UriHelper;
 import io.knotx.util.DataObjectsUtil;
-import io.knotx.util.MultimapConverter;
+import io.knotx.util.MultiMapConverter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
@@ -123,36 +123,32 @@ public class ClientRequest {
   }
 
   /**
-   * Serialization variants of Multimap fields
+   * Serialization variants of MultiMap fields
    **/
 
   JsonObject getJsonHeaders() {
-    return MultimapConverter.toJsonObject(headers);
+    return MultiMapConverter.toJsonObject(headers);
   }
 
   void setJsonHeaders(JsonObject headers) {
-    this.headers = MultimapConverter.fromJsonObject(headers);
+    this.headers = MultiMapConverter.fromJsonObject(headers);
   }
 
   JsonObject getJsonParams() {
-    return MultimapConverter.toJsonObject(params);
+    return MultiMapConverter.toJsonObject(params);
   }
 
   void setJsonParams(JsonObject params) {
-    this.params = MultimapConverter.fromJsonObject(params);
+    this.params = MultiMapConverter.fromJsonObject(params);
   }
 
   JsonObject getJsonFormAttributes() {
-    return MultimapConverter.toJsonObject(formAttributes);
+    return MultiMapConverter.toJsonObject(formAttributes);
   }
 
   void setJsonFormAttributes(JsonObject formAttributes) {
-    this.formAttributes = MultimapConverter.fromJsonObject(formAttributes);
+    this.formAttributes = MultiMapConverter.fromJsonObject(formAttributes);
   }
-
-  /**
-   * Object overrides
-   **/
 
   @Override
   public boolean equals(Object o) {
@@ -165,9 +161,9 @@ public class ClientRequest {
     ClientRequest that = (ClientRequest) o;
     return Objects.equal(path, that.path) &&
         Objects.equal(method, that.method) &&
-        DataObjectsUtil.equalsMultimap(headers, that.headers) &&
-        DataObjectsUtil.equalsMultimap(params, that.params) &&
-        DataObjectsUtil.equalsMultimap(formAttributes, that.formAttributes);
+        DataObjectsUtil.equalsMultiMap(headers, that.headers) &&
+        DataObjectsUtil.equalsMultiMap(params, that.params) &&
+        DataObjectsUtil.equalsMultiMap(formAttributes, that.formAttributes);
   }
 
   @Override

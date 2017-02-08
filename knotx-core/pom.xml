@@ -92,6 +92,14 @@
       <groupId>com.github.stefanbirkner</groupId>
       <artifactId>system-rules</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.googlecode.zohhak</groupId>
+      <artifactId>zohhak</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>uk.co.datumedge</groupId>
+      <artifactId>hamcrest-json</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

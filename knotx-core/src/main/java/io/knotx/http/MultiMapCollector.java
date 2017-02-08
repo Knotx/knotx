@@ -35,7 +35,7 @@ public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
     this.value = value;
   }
 
-  public static <T> MultiMapCollector<T> toMultimap(Function<T, String> keyGetter,
+  public static <T> MultiMapCollector<T> toMultiMap(Function<T, String> keyGetter,
       Function<T, List<String>> valueGetter) {
     return new MultiMapCollector<>(keyGetter, valueGetter);
   }

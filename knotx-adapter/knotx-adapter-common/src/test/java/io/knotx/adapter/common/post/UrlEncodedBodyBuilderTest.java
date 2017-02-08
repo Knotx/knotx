@@ -34,7 +34,7 @@ public class UrlEncodedBodyBuilderTest {
       .add("field1", "value1").add("field2", "value2").add("field three", "value three");
 
   @Test
-  public void whenEmptyMultimap_expectEmptyBodyString() {
+  public void whenEmptyMultiMap_expectEmptyBodyString() {
     assertThat(UrlEncodedBodyBuilder.encodeBody(null), equalTo(StringUtils.EMPTY));
     assertThat(UrlEncodedBodyBuilder.encodeBody(MultiMap.caseInsensitiveMultiMap()),
         equalTo(StringUtils.EMPTY));

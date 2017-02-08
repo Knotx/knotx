@@ -150,7 +150,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
   private MultiMap getFilteredHeaders(MultiMap headers) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedRequestHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
+        .collect(MultiMapCollector.toMultiMap(o -> o, headers::getAll));
   }
 
   private void traceHttpResponse(HttpClientResponse response) {

@@ -41,7 +41,7 @@ Set the client request
 |[[jsonFormAttributes]]`jsonFormAttributes`|`Json object`|-
 |[[jsonHeaders]]`jsonHeaders`|`Json object`|
 +++
-Serialization variants of Multimap fields
+Serialization variants of MultiMap fields
 +++
 |[[jsonParams]]`jsonParams`|`Json object`|-
 |[[method]]`method`|`link:enums.html#HttpMethod[HttpMethod]`|-
@@ -59,7 +59,7 @@ Serialization variants of Multimap fields
 |[[body]]`body`|`Buffer`|-
 |[[jsonHeaders]]`jsonHeaders`|`Json object`|
 +++
-Serialization variants of Multimap fields
+Serialization variants of MultiMap fields
 +++
 |[[statusCode]]`statusCode`|`Number (int)`|-
 |===

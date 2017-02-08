@@ -30,4 +30,8 @@ public final class FragmentConstants {
 
   public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
+  private FragmentConstants() {
+    //constants util class constructor
+  }
+
 }

@@ -16,7 +16,7 @@
 package io.knotx.dataobjects;
 
 import io.knotx.util.DataObjectsUtil;
-import io.knotx.util.MultimapConverter;
+import io.knotx.util.MultiMapConverter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
@@ -56,7 +56,7 @@ public class ClientResponse {
   public JsonObject toMetadataJson() {
     JsonObject json = new JsonObject();
     json.put("statusCode", statusCode);
-    json.put("headers", MultimapConverter.toJsonObject(headers));
+    json.put("headers", MultiMapConverter.toJsonObject(headers));
     return json;
   }
 
@@ -91,20 +91,16 @@ public class ClientResponse {
   }
 
   /**
-   * Serialization variants of Multimap fields
+   * Serialization variants of MultiMap fields
    **/
 
   JsonObject getJsonHeaders() {
-    return MultimapConverter.toJsonObject(headers);
+    return MultiMapConverter.toJsonObject(headers);
   }
 
   void setJsonHeaders(JsonObject headers) {
-    this.headers = MultimapConverter.fromJsonObject(headers);
+    this.headers = MultiMapConverter.fromJsonObject(headers);
   }
-
-  /**
-   * Objects overrides
-   **/
 
   @Override
   public boolean equals(Object o) {
@@ -116,7 +112,7 @@ public class ClientResponse {
     }
     ClientResponse that = (ClientResponse) o;
     return Objects.equal(statusCode, that.statusCode) &&
-        DataObjectsUtil.equalsMultimap(this.headers, that.headers) &&
+        DataObjectsUtil.equalsMultiMap(this.headers, that.headers) &&
         DataObjectsUtil.equalsBody(this.body, that.body);
   }
 

@@ -38,7 +38,6 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.eventbus.Message;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -326,6 +325,6 @@ public class ActionKnotProxyImpl implements KnotProxy {
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedHeaders))
-        .collect(MultiMapCollector.toMultimap(o -> o, headers::getAll));
+        .collect(MultiMapCollector.toMultiMap(o -> o, headers::getAll));
   }
 }
