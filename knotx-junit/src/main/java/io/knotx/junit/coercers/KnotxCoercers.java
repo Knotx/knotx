@@ -18,6 +18,7 @@ package io.knotx.junit.coercers;
 import static org.mockito.Mockito.when;
 
 import io.knotx.dataobjects.Fragment;
+import io.knotx.fragments.FragmentConstants;
 import io.knotx.junit.util.FileReader;
 import io.vertx.core.json.JsonObject;
 import java.io.IOException;
@@ -25,14 +26,16 @@ import org.mockito.Mockito;
 
 public class KnotxCoercers {
 
-  public Fragment provideFragment(String fragmentContentFile) throws IOException {
+  public static Fragment provideFragment(String fragmentContentFile) throws IOException {
     final String fragmentContent = FileReader.readText(fragmentContentFile);
+
     Fragment fragmentMock = Mockito.mock(Fragment.class);
     when(fragmentMock.content()).thenReturn(fragmentContent);
+    when(fragmentMock.isRaw()).thenReturn(!fragmentContent.matches(FragmentConstants.ANY_SNIPPET_PATTERN));
     return fragmentMock;
   }
 
-  public JsonObject provideJsonObjectFromString(String input) {
+  public static JsonObject provideJsonObjectFromString(String input) {
     return new JsonObject(input);
   }
 

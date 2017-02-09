@@ -25,6 +25,7 @@ import io.vertx.rxjava.core.MultiMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public final class KnotContextFactory {
 
@@ -50,11 +51,11 @@ public final class KnotContextFactory {
         .setClientRequest(new ClientRequest());
   }
 
-  public static KnotContext create(List<String> fragments) {
+  public static KnotContext create(List<Pair<List<String>, String>> fragments) {
     return new KnotContext()
         .setFragments(
             fragments != null
-                ? fragments.stream().map(Fragment::raw).collect(Collectors.toList())
+                ? fragments.stream().map(data -> Fragment.snippet(data.getKey(), data.getValue())).collect(Collectors.toList())
                 : null)
         .setClientRequest(new ClientRequest())
         .setClientResponse(

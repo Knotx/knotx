@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.templating.impl;
+package io.knotx.fragments;
 
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
+import com.google.common.io.CharStreams;
+import com.google.common.io.Resources;
+import com.googlecode.zohhak.api.Coercion;
 import com.googlecode.zohhak.api.Configure;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit.coercers.KnotxCoercers;
-import io.knotx.junit.util.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 @RunWith(ZohhakRunner.class)
-@Configure(separator = ";", coercers = KnotxCoercers.class)
+@Configure(separator = ";")
 public class FragmentContentExtractorTest {
 
   @TestWith({
@@ -37,8 +42,22 @@ public class FragmentContentExtractorTest {
   public void getUnwrappedContent_withFragment_expectDefinedContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
 
-    final String expectedContent = FileReader.readText(expectedContentFileName);
+    final String expectedContent = readText(expectedContentFileName);
     final String unwrappedContent = FragmentContentExtractor.getUnwrappedContent(fragment);
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
+
+  @Coercion
+  public Fragment provideFragment(String fragmentContentFile) throws IOException {
+    final String fragmentContent = readText(fragmentContentFile);
+    Fragment fragmentMock = Mockito.mock(Fragment.class);
+    when(fragmentMock.content()).thenReturn(fragmentContent);
+    return fragmentMock;
+  }
+
+  private String readText(String path) throws IOException {
+    return CharStreams
+        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
+  }
+
 }
