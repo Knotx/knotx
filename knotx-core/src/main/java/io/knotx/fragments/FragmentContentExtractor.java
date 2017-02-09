@@ -16,9 +16,6 @@
 package io.knotx.fragments;
 
 import io.knotx.dataobjects.Fragment;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 public final class FragmentContentExtractor {
 
@@ -27,8 +24,7 @@ public final class FragmentContentExtractor {
   }
 
   public static String getUnwrappedContent(Fragment fragment) {
-    Document document = Jsoup.parseBodyFragment(fragment.content());
-    Element scriptTag = document.body().child(0);
-    return scriptTag.unwrap().toString();
+    String content = fragment.content();
+    return content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
   }
 }
