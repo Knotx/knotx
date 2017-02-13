@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 
 public class KnotxCoercers {
 
-  public static Fragment provideFragment(String fragmentContentFile) throws IOException {
+  public Fragment provideFragment(String fragmentContentFile) throws IOException {
     final String fragmentContent = FileReader.readText(fragmentContentFile);
 
     Fragment fragmentMock = Mockito.mock(Fragment.class);
@@ -35,7 +35,7 @@ public class KnotxCoercers {
     return fragmentMock;
   }
 
-  public static JsonObject provideJsonObjectFromString(String input) {
+  public JsonObject provideJsonObjectFromString(String input) {
     return new JsonObject(input);
   }
 

@@ -16,6 +16,7 @@
 package io.knotx.fragments;
 
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +29,7 @@ import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
@@ -35,7 +37,7 @@ import org.mockito.Mockito;
 @Configure(separator = ";")
 public class FragmentContentExtractorTest {
 
-  @TestWith({
+  @TestWith(value = {
       "simple_snippet.txt;simple_snippet-expected_content.txt",
       "big_snippet.txt;big_snippet-expected_content.txt"
   })
@@ -47,10 +49,25 @@ public class FragmentContentExtractorTest {
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
+  @TestWith({
+      "empty_snippet.txt",
+      "raw_snippet.txt"
+  })
+  public void getUnwrappedContent_withRawFragment_expectNotChangedContent(Fragment fragment) throws Exception {
+    final String unwrappedContent = FragmentContentExtractor.getUnwrappedContent(fragment);
+    assertThat(unwrappedContent, equalToIgnoringWhiteSpace(fragment.content()));
+  }
+
+  @Test
+  public void getUnwrappedContent_withNullFragment_expectNull() throws Exception {
+    assertNull(FragmentContentExtractor.getUnwrappedContent(null));
+  }
+
   @Coercion
   public Fragment provideFragment(String fragmentContentFile) throws IOException {
     final String fragmentContent = readText(fragmentContentFile);
     Fragment fragmentMock = Mockito.mock(Fragment.class);
+    when(fragmentMock.isRaw()).thenReturn(!fragmentContent.contains(FragmentConstants.SNIPPET_IDENTIFIER_NAME));
     when(fragmentMock.content()).thenReturn(fragmentContent);
     return fragmentMock;
   }

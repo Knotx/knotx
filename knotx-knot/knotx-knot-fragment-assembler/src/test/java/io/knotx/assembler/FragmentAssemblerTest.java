@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
@@ -72,7 +73,7 @@ public class FragmentAssemblerTest {
   @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
-    callAssemblerWithAssertions(context, Collections.singletonList(new ImmutablePair<>(Collections.singletonList(RAW), " ")),
+    callAssemblerWithAssertions(context, Collections.singletonList(new ImmutablePair<>(Collections.singletonList(RAW), StringUtils.SPACE)),
         knotContext -> context.assertEquals(HttpResponseStatus.NO_CONTENT.code(),
             knotContext.getClientResponse().getStatusCode()));
   }

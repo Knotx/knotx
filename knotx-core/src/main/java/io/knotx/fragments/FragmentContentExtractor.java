@@ -24,7 +24,15 @@ public final class FragmentContentExtractor {
   }
 
   public static String getUnwrappedContent(Fragment fragment) {
+    if (fragment == null) {
+      return null;
+    }
+
     String content = fragment.content();
-    return content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
+    if (fragment.isRaw()) {
+      return content;
+    } else {
+      return content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
+    }
   }
 }
