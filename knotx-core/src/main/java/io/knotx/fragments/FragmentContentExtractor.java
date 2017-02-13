@@ -29,10 +29,6 @@ public final class FragmentContentExtractor {
     }
 
     String content = fragment.content();
-    if (fragment.isRaw()) {
-      return content;
-    } else {
-      return content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
-    }
+    return fragment.isRaw() ? content : content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
   }
 }
