@@ -19,6 +19,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import io.knotx.dataobjects.Fragment;
+import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;

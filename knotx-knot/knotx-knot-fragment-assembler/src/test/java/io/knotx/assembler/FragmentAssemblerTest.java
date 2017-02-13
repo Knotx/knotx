@@ -28,9 +28,12 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.rxjava.core.Vertx;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,6 +45,9 @@ import rx.functions.Action1;
 public class FragmentAssemblerTest {
 
   private final static String ADDRESS = "knotx.core.assembler";
+  private final static String RAW = "_raw";
+  private static final String SERVICES = "services";
+  private static final String HANDLEBARS = "handlebars";
 
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -67,7 +73,7 @@ public class FragmentAssemblerTest {
   @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
-    callAssemblerWithAssertions(context, Collections.singletonList(" "),
+    callAssemblerWithAssertions(context, Collections.singletonList(new ImmutablePair<>(Collections.singletonList(RAW), StringUtils.SPACE)),
         knotContext -> context.assertEquals(HttpResponseStatus.NO_CONTENT.code(),
             knotContext.getClientResponse().getStatusCode()));
   }
@@ -76,9 +82,10 @@ public class FragmentAssemblerTest {
   @KnotxConfiguration("test.asIs.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectAsIsResult(TestContext context)
       throws Exception {
-    List<String> fragments = Arrays
-        .asList(FileReader.readText("fragment1.txt"), FileReader.readText("fragment2.txt"),
-            FileReader.readText("fragment3.txt"));
+    List<Pair<List<String>, String>> fragments = Arrays.asList(
+        toPair("fragment1.txt", RAW),
+        toPair("fragment2.txt", SERVICES, HANDLEBARS),
+        toPair("fragment3.txt", RAW));
     String expectedResult = FileReader.readText("expectedAsIsResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
@@ -93,9 +100,10 @@ public class FragmentAssemblerTest {
   @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectUnwrapResult(TestContext context)
       throws Exception {
-    List<String> fragments = Arrays
-        .asList(FileReader.readText("fragment1.txt"), FileReader.readText("fragment2.txt"),
-            FileReader.readText("fragment3.txt"));
+    List<Pair<List<String>, String>> fragments = Arrays.asList(
+        toPair("fragment1.txt", RAW),
+        toPair("fragment2.txt", SERVICES, HANDLEBARS),
+        toPair("fragment3.txt", RAW));
     String expectedResult = FileReader.readText("expectedUnwrapResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
@@ -110,9 +118,10 @@ public class FragmentAssemblerTest {
   @KnotxConfiguration("test.ignore.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectIgnoreResult(TestContext context)
       throws Exception {
-    List<String> fragments = Arrays
-        .asList(FileReader.readText("fragment1.txt"), FileReader.readText("fragment2.txt"),
-            FileReader.readText("fragment3.txt"));
+    List<Pair<List<String>, String>> fragments = Arrays.asList(
+        toPair("fragment1.txt", RAW),
+        toPair("fragment2.txt", SERVICES, HANDLEBARS),
+        toPair("fragment3.txt", RAW));
     String expectedResult = FileReader.readText("expectedIgnoreResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
@@ -123,7 +132,7 @@ public class FragmentAssemblerTest {
         });
   }
 
-  private void callAssemblerWithAssertions(TestContext context, List<String> fragments,
+  private void callAssemblerWithAssertions(TestContext context, List<Pair<List<String>, String>> fragments,
       Action1<KnotContext> testFunction) {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
@@ -132,9 +141,13 @@ public class FragmentAssemblerTest {
         .map(ctx -> Pair.of(async, ctx))
         .subscribe(
             next -> testFunction.call(next.getRight()),
-            error -> context.fail(error),
-            () -> async.complete()
+            context::fail,
+            async::complete
         );
+  }
+
+  private Pair<List<String>, String> toPair(String filePath, String... knots) throws IOException {
+    return new ImmutablePair<>(Arrays.asList(knots), FileReader.readText(filePath));
   }
 
 }

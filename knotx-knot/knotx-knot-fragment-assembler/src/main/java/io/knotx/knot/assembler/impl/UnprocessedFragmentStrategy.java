@@ -17,9 +17,7 @@ package io.knotx.knot.assembler.impl;
 
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import io.knotx.fragments.FragmentContentExtractor;
 
 public enum UnprocessedFragmentStrategy {
 
@@ -33,10 +31,8 @@ public enum UnprocessedFragmentStrategy {
   UNWRAP {
     @Override
     protected String get(Fragment fragment) {
-      if (fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
-        Document document = Jsoup.parseBodyFragment(fragment.content());
-        Element scriptTag = document.body().child(0);
-        return "<!-- SNIPPET UNWRAPED START -->" + scriptTag.unwrap().toString()
+      if (!fragment.isRaw() && fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
+        return "<!-- SNIPPET UNWRAPED START -->" + FragmentContentExtractor.getUnwrappedContent(fragment)
             + "<!-- SNIPPET UNWRAPED STOP -->";
       } else {
         return fragment.content();

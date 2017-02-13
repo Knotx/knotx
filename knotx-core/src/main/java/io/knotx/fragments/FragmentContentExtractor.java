@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.templating.impl;
+package io.knotx.fragments;
 
 import io.knotx.dataobjects.Fragment;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
-final class FragmentContentExtractor {
+public final class FragmentContentExtractor {
 
   private FragmentContentExtractor() {
     //util class
   }
 
-  static String getUnwrappedContent(Fragment fragment) {
-    Document document = Jsoup.parseBodyFragment(fragment.content());
-    Element scriptTag = document.body().child(0);
-    return scriptTag.unwrap().toString();
+  public static String getUnwrappedContent(Fragment fragment) {
+    if (fragment == null) {
+      return null;
+    }
+
+    String content = fragment.content();
+    return fragment.isRaw() ? content : content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
   }
 }
