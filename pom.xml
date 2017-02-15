@@ -23,7 +23,7 @@
 
   <groupId>io.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-RC8</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
