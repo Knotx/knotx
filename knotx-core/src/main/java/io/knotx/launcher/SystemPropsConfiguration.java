@@ -85,7 +85,7 @@ public class SystemPropsConfiguration {
               if (element.containsKey(path[idx])) {
                 element = element.getJsonObject(path[idx]);
               } else {
-                throw new ConfigurationException(
+                throw new IllegalArgumentException (
                     "Wrong config override. There is no matching element " + entry.getKey()
                         + " in the configuration");
               }
