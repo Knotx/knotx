@@ -16,7 +16,11 @@
 template from a repository. The template can contain dynamic snippets which determine the way how data is used. The repository can be CMS system, Apache or 
 simple catalogue with static HTML pages. 
 
-[[assets/knotx-high-level-architecture.png|alt=High Level Architecture]]
+<p align="center">
+  <img align="right"
+    src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-high-level-architecture.png?raw=true"
+    alt="High Level Architecture"/>
+</p>
 
 ## What's philosophy behind Knot.x?
 We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
@@ -30,7 +34,11 @@ The platform stays responsive under heavy and varying load and is designed to fo
 Relies on asynchronous message-passing to establish a boundary between system components that ensures 
 loose coupling, isolation and location transparency. Base **Knot.x** component is called [[Knot|Knot]].
 
-[[assets/knotx-modules-basic-request-flow.png|alt=Basic request flow]]
+<p align="center">
+  <img align="right"
+    src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-modules-basic-request-flow.png?raw=true"
+    alt="Basic request flow"/>
+</p>
 
 ### Scalability
 Various scaling options are available to suit client needs and help in cost optimization. Using a 
