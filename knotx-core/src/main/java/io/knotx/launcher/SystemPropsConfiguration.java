@@ -16,6 +16,7 @@
 package io.knotx.launcher;
 
 import com.google.common.collect.Maps;
+import io.knotx.exceptions.ConfigurationException;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -69,6 +70,7 @@ public class SystemPropsConfiguration {
    * <li>-Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json
    * file from the field specified</li>
    * </ul>
+   *
    * @param descriptor - JsonObject with module descriptor
    * @return JsonObject - updated descriptor
    */
@@ -80,7 +82,13 @@ public class SystemPropsConfiguration {
           JsonObject element = object;
           for (int idx = 0; idx < path.length; idx++) {
             if (idx < path.length - 1) {
-              element = element.getJsonObject(path[idx]);
+              if (element.containsKey(path[idx])) {
+                element = element.getJsonObject(path[idx]);
+              } else {
+                throw new ConfigurationException(
+                    "Wrong config override. There is no matching element " + entry.getKey()
+                        + " in the configuration");
+              }
             } else { //last
               if (entry.getValue().getObject() instanceof JsonObject) {
                 element.getJsonObject(path[idx]).mergeIn((JsonObject) entry.getValue().getObject());
