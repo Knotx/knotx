@@ -57,37 +57,34 @@ public class KnotxModuleVerticleFactory implements VerticleFactory {
       JsonObject knotOptions = descriptor.getJsonObject(OPTIONS_KEY, new JsonObject());
       JsonObject knotConfig = knotOptions.getJsonObject(CONFIG_KEY, new JsonObject());
       depOptions.mergeIn(knotOptions);
-      knotConfig = JsonObjectUtil.deepMerge(knotConfig, depConfig);
+      depOptions.put(CONFIG_KEY, JsonObjectUtil.deepMerge(knotConfig, depConfig));
+
+      JsonObject serviceDescriptor = new JsonObject().put(OPTIONS_KEY, depOptions);
 
       // Any options or config provided by system properties will override anything specified
       // at deployment time and on starter Json config
-      overrideConfigWithSystemProperties(identifier, descriptor, depOptions, knotConfig);
+      serviceDescriptor = overrideConfigWithSystemProperties(identifier, serviceDescriptor);
 
-      depOptions.put(CONFIG_KEY, knotConfig);
-      deploymentOptions.fromJson(depOptions);
+      deploymentOptions.fromJson(serviceDescriptor.getJsonObject(OPTIONS_KEY));
       resolution.complete(main);
     } catch (Exception e) {
       resolution.fail(e);
     }
   }
 
-  private void overrideConfigWithSystemProperties(String identifier, JsonObject descriptor,
-      JsonObject depOptions, JsonObject knotConfig) {
+  private JsonObject overrideConfigWithSystemProperties(String identifier, JsonObject descriptor) {
+    JsonObject result = descriptor;
     try {
       SystemPropsConfiguration systemPropsConfiguration = new SystemPropsConfiguration(
           identifier);
       if (!systemPropsConfiguration.envConfig().isEmpty()) {
-        JsonObject updatedDescriptor = systemPropsConfiguration.updateJsonObject(descriptor);
-        JsonObject updatedKnotOptions = updatedDescriptor
-            .getJsonObject(OPTIONS_KEY, new JsonObject());
-        JsonObject updatedKnotConfig = updatedKnotOptions
-            .getJsonObject(CONFIG_KEY, new JsonObject());
-        depOptions.mergeIn(updatedKnotOptions);
-        knotConfig.mergeIn(updatedKnotConfig);
+        result = systemPropsConfiguration.updateJsonObject(descriptor);
       }
     } catch (IllegalArgumentException ex) {
       LOGGER.warn("Unable to parse given system properties due to exception", ex);
     }
+
+    return result;
   }
 
   @Override
