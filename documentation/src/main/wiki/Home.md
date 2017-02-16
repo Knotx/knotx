@@ -1,4 +1,6 @@
 # Wiki
+This documentation is dedicated for more advanced users and developers. Here you can find information how to extend Knot.x, how to tune particular 
+modules according your needs. Additionally wiki contains base information how set up Knot.x and run examples.
 
 * [[Getting started|GettingStarted]]
   * [[Running The Demo|RunningTheDemo]]
