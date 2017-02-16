@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.knotx</groupId>
     <artifactId>knotx-root</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC9</version>
   </parent>
 
   <artifactId>knotx-core</artifactId>
