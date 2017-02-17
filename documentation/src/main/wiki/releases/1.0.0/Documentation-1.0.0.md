@@ -1,33 +1,114 @@
-# Wiki
+# Wiki for Knot.x 1.0.0
 This documentation is dedicated for more advanced users and developers. Here you can find information how to extend Knot.x, how to tune particular 
 modules according your needs. Additionally wiki contains base information how set up Knot.x and run examples.
 
-* [[Getting started|GettingStarted]]
-  * [[Running The Demo|RunningTheDemo]]
-  * [[Debugging Knot.x|Debugging]]
-* [[Architecture|Architecture]]
-  * [[High Level Architecture|HighLevelArchitecture]]
-  * [[Core Architecture|CoreArchitecture]]
-  * [[Communication Flow|CommunicationFlow]]
-  * [[Knot Routing|KnotRouting]]
-* [[Knot.x Modules|KnotxModules]]
-* [[Server|Server]]
-* [[Repository Connectors|RepositoryConnectors]]
-  * [[Http Repository Connector|HttpRepositoryConnector]]
-  * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
-* [[Splitter|Splitter]]
-* [[Assembler|Assembler]]
-* [[Knot|Knot]]
-  * [[Action Knot|ActionKnot]]
-  * [[Service Knot|ServiceKnot]]
-  * [[Handlebars Knot|HandlebarsKnot]]
-* [[Adapter|Adapter]]
-  * [[Service Adapter|ServiceAdapter]]
-  * [[Action Adapter|ActionAdapter]]
-  * [[Http Service Adapter|HttpServiceAdapter]]
-* [[Mocks|Mocks]]    
-* [[Knot.x Deployment|KnotxDeployment]]
-* [[Dependencies|Dependencies]]
+User documentation is available at [http://knotx.io](http://knotx.io/).
+
+- [Getting started](#getting-started)
+  - [Getting Binaries](#getting-binaries)
+  - [Hello world!](#hello-world)
+  - [Building](#building)
+- [Running Knot.x Demo](#running-knotx-demo)
+  - [Requirements](#requirements)
+  - [Running the demo](#running-the-demo)
+  - [Reconfigure demo](#reconfigure-demo)
+    - [Use starter JSON](#use-starter-json)
+    - [Use JVM properties](#use-jvm-properties)
+    - [Conclusions](#conclusions)
+- [Debugging Knot.x Demo](#debugging-knotx-demo)
+  - [Requirements](#requirements-1)
+  - [How to set up Knot.x debugging in Intellij IDE](#how-to-set-up-knotx-debugging-in-intellij-ide)
+- [Communication Flow](#communication-flow)
+- [Knot.x Module](#knotx-module)
+- [Server](#server)
+  - [How does it work?](#how-does-it-work)
+    - [Routing](#routing)
+  - [How to configure?](#how-to-configure)
+  - [Server options](#server-options)
+    - [RepositoryEntry options](#repositoryentry-options)
+    - [SplitterEntry options](#splitterentry-options)
+    - [RoutingEntry options](#routingentry-options)
+    - [KnotRouteEntry options](#knotrouteentry-options)
+- [Repository Connectors](#repository-connectors)
+  - [How does it work?](#how-does-it-work-1)
+- [HTTP Repository Connector](#http-repository-connector)
+  - [How does it work?](#how-does-it-work-2)
+  - [How to configure?](#how-to-configure-1)
+    - [Options](#options)
+    - [Destination options](#destination-options)
+- [Filesystem Repository Connector section](#filesystem-repository-connector-section)
+  - [How does it work?](#how-does-it-work-3)
+  - [How to configure?](#how-to-configure-2)
+    - [Options](#options-1)
+    - [Splitter config](#splitter-config)
+      - [AS_IS strategy](#as_is-strategy)
+      - [UNWRAP strategy](#unwrap-strategy)
+      - [IGNORE strategy](#ignore-strategy)
+    - [Fragment Assembler config](#fragment-assembler-config)
+    - [Knot Election Rule](#knot-election-rule)
+    - [Knot Context](#knot-context)
+      - [Knot Request](#knot-request)
+      - [Knot Response](#knot-response)
+        - [Example Knot Responses](#example-knot-responses)
+- [Action Knot](#action-knot)
+    - [Example](#example)
+    - [Signal](#signal)
+    - [Action Knot options](#action-knot-options)
+- [Service Knot](#service-knot)
+    - [Adapter Calls Caching](#adapter-calls-caching)
+  - [How to configure?](#how-to-configure-3)
+    - [Service Knot options](#service-knot-options)
+- [Handlebars Knot](#handlebars-knot)
+  - [How to configure?](#how-to-configure-4)
+    - [Handlebars Knot options](#handlebars-knot-options)
+  - [How to extend?](#how-to-extend)
+    - [Extending handlebars with custom helpers](#extending-handlebars-with-custom-helpers)
+      - [Example extension](#example-extension)
+- [Adapters](#adapters)
+  - [How does it work?](#how-does-it-work-4)
+    - [Types of adapters](#types-of-adapters)
+  - [How to configure?](#how-to-configure-5)
+  - [How to extend?](#how-to-extend-1)
+    - [Adapters common library](#adapters-common-library)
+    - [How to run a custom Adapter with Knot.x](#how-to-run-a-custom-adapter-with-knotx)
+- [Service Adapter](#service-adapter)
+  - [How does it work?](#how-does-it-work-5)
+  - [How to configure?](#how-to-configure-6)
+  - [How to extend?](#how-to-extend-2)
+- [Action Adapter](#action-adapter)
+  - [How does it work?](#how-does-it-work-6)
+  - [How to configure?](#how-to-configure-7)
+  - [How to extend?](#how-to-extend-3)
+- [Http Service Adapter](#http-service-adapter)
+  - [How does it work?](#how-does-it-work-7)
+    - [Service path](#service-path)
+    - [Parametrized services calls](#parametrized-services-calls)
+    - [Adapter Response](#adapter-response)
+  - [How to configure?](#how-to-configure-8)
+      - [Service Knot configuration](#service-knot-configuration)
+      - [snippet](#snippet)
+      - [request](#request)
+    - [Processing](#processing)
+        - [search service](#search-service)
+        - [twitter service](#twitter-service)
+- [Mocks](#mocks)
+  - [HTTP Service mock](#http-service-mock)
+    - [How does it work?](#how-does-it-work-8)
+    - [How to configure ?](#how-to-configure-)
+  - [HTTP Remote repository mock](#http-remote-repository-mock)
+    - [How does it work?](#how-does-it-work-9)
+    - [How to configure ?](#how-to-configure--1)
+  - [How to configure delay ?](#how-to-configure-delay-)
+    - [Delay all responses](#delay-all-responses)
+    - [Delay reponses for specific paths](#delay-reponses-for-specific-paths)
+- [Deploying Knot.x with custom modules](#deploying-knotx-with-custom-modules)
+  - [Recommended Knot.x deployment](#recommended-knotx-deployment)
+    - [Vert.x metrics](#vertx-metrics)
+  - [How to configure ?](#how-to-configure--2)
+    - [How to configure though starter JSON ?](#how-to-configure-though-starter-json-)
+    - [How to configure through JVM properties ?](#how-to-configure-through-jvm-properties-)
+    - [How to configure your own module ?](#how-to-configure-your-own-module-)
+- [Dependencies](#dependencies)
 
 # Getting started
 
