@@ -22,7 +22,7 @@ simple catalogue with static HTML pages.
     alt="High Level Architecture"/>
 </p>
 
-## What's philosophy behind Knot.x?
+## What's the philosophy behind Knot.x?
 We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
 ### Stability and responsiveness
@@ -32,7 +32,7 @@ The platform stays responsive under heavy and varying load and is designed to fo
 
 ### Loose coupling
 Relies on asynchronous message-passing to establish a boundary between system components that ensures 
-loose coupling, isolation and location transparency. Base **Knot.x** component is called [[Knot|Knot]].
+loose coupling, isolation and location transparency. Base **Knot.x** component is called [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
 
 <p align="center">
   <img align="right"
@@ -47,9 +47,9 @@ servers.
 
 ## Documentation
 
-See our [KNOTX.io](http://knotx.io) for tutorials, examples and user documentation.
+See [KNOTX.io](http://knotx.io) for tutorials, examples and user documentation.
 
-See our [Wiki](https://github.com/Cognifide/knotx/wiki) for developer documentation, examples and other information.
+See [Wiki](https://github.com/Cognifide/knotx/wiki) for developer documentation, examples and other information.
 
 
 ## Community

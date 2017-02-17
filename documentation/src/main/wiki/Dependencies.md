@@ -13,4 +13,5 @@
 - assertj
 - powermock
 - mockito
+- zohhak
 - com.github.stefanbirkner.system-rules
