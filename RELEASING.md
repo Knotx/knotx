@@ -79,13 +79,13 @@ guide to get one).
      - etx
 
      Binaries and dependency information for Maven, Ivy, Gradle and others can be found at 
-  [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.vertx%22%20AND%20v%3A<X.Y.Z>)
+  [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.knotx%22%20AND%20v%3A<X.Y.Z>)
   
      Additionally, 
      - Example App:
-       - [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/example-app/X.Y.Z/example-app-X.Y.Z.fat.jar)
-       - [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/example-app/X.Y.Z/example-app-X.Y.Z.json)
-       - [knotx-example-app-X.Y.Z.logback.xml](https://oss.sonatype.org/content/groups/public/io/knotx/example-app/X.Y.Z/example-app-X.Y.Z.logback.xml)
+       - [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app/X.Y.Z/knotx-example-app-X.Y.Z.fat.jar)
+       - [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app/X.Y.Z/knotx-example-app-X.Y.Z.json)
+       - [knotx-example-app-X.Y.Z.logback.xml](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app/X.Y.Z/knotx-example-app-X.Y.Z.logback.xml)
      - Mocks:
        - [knotx-mocks-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-mocks/X.Y.Z/knotx-mocks-X.Y.Z.fat.jar)
        - [knotx-mocks-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-mocks/X.Y.Z/knotx-mocks-X.Y.Z.json)
