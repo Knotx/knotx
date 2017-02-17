@@ -22,7 +22,7 @@ simple catalogue with static HTML pages.
     alt="High Level Architecture"/>
 </p>
 
-## What's philosophy behind Knot.x?
+## What's the philosophy behind Knot.x?
 We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
 
 ### Stability and responsiveness
