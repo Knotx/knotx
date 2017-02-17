@@ -26,3 +26,6 @@
   * [[Mocks|Mocks]]    
   * [[Knot.x Deployment|KnotxDeployment]]
   * [[Dependencies|Dependencies]]
+
+### Released
+* [[1.0.0|Documentation-1.0.0]]
