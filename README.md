@@ -2,6 +2,7 @@
 
 [![][travis img]][travis]
 [![][license img]][license]
+[![][central-repo img]][central-repo]
 [![][gitter img]][gitter]
 
 #Knot.x is a highly-efficient and scalable integration platform for modern websites.
@@ -85,6 +86,9 @@ You can run a **Knot.x** demo within less than 5 minutes, all you need is Java 8
 
 [license]:https://github.com/Cognifide/knotx/blob/master/LICENSE
 [license img]:https://img.shields.io/badge/License-Apache%202.0-blue.svg
+
+[central-repo]:http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.knotx%22
+[central-repo img]:https://img.shields.io/maven-central/v/io.knotx/knotx-root.svg?label=Maven%20Central
 
 [gitter]:https://gitter.im/Knotx/Lobby
 [gitter img]:https://badges.gitter.im/Knotx/knotx-extensions.svg
