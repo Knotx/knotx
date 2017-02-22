@@ -31,10 +31,10 @@ Test Environment is set up on AWS Cloud.
 ![Test environment](assets/knotx-test-environment.png)
 
 ### System under test
-* 1 x Apache - c4.large, 2CPU, 4GB RAM, 500Mbps bandwidth,centos 6.8.
+* 1 x Apache HTTP Server - c4.large, 2CPU, 4GB RAM, 500Mbps bandwidth,centos 6.8.
 * 1 x Knot.x - c4.large, 2CPU, 4GB RAM, 500Mbps bandwidth,centos 6.8.
-* 1 x Mocks - c4.large, 2CPU, 4GB RAM, 500Mbps bandwidth,centos 6.8.
-* 1 x AEM - c4.xlarge, 4CPU, 8GB RAM, 750Mbps bandwidth.centos 6.8.
+* 1 x Repository & Services Mocks - c4.large, 2CPU, 4GB RAM, 500Mbps bandwidth,centos 6.8.
+
 
 ### Knotx author start command
 `java -Dlogback.configurationFile=/content/knotx/author/logback.xml -Dvertx.cacheDirBase=/content/knotx/author/.vertx -Xms1024m -Xmx2048m -XX:ReservedCodeCacheSize=128m -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=18092 -Dcom.sun.management.jmxremote.rmi.port=18092 -Djava.rmi.server.hostname=10.254.165.236 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Xloggc:/content/logs/knotx/gc.log -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=5M -jar /content/knotx/author/knotx.jar -conf /content/knotx/author/config/author-config.json`
@@ -60,7 +60,7 @@ Test Environment is set up on AWS Cloud.
 * Grafana 3.0.1 (Internal Instance at Cognifide Office) as a Live Test Monitoring tool.
 
 ## Test Process
-Test process that we used is based on Microsoft Performance testing process - https://msdn.microsoft.com/en-us/library/bb924376.aspx.
+Test process that we used is based on Microsoft [Microsoft Performance testing process](https://msdn.microsoft.com/en-us/library/bb924376.aspx).
 
 ## Test Scripts
 * Test script implemented in JMeter 3.1.
@@ -97,3 +97,13 @@ Test process that we used is based on Microsoft Performance testing process - ht
 ## Retests
 * After facing an issue we investigate it and tweak/fix.
 * After fix we retest with the same configuration/test/environment to verify it.
+
+## Terminology
+* [JMeter Glossary](https://jmeter.apache.org/usermanual/glossary.html)
+* [Performance Testing Guidance for Web Applications](https://msdn.microsoft.com/en-us/library/bb924356.aspx)
+* [Dictionary of Load Testing Terms](http://www.webperformance.com/library/dictionary.html)
+
+
+
+
+

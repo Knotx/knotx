@@ -3,7 +3,7 @@
 ## Introduction
 During performance tests we've realized that default configurations are a bottleneck. This applies to Apache HTTP Server, Knot.x and Mocks configuration. To move forward, we've introduced following tuning.
 
-## Apache tuning
+## Apache HTTP Server tuning
 ```
 <IfModule worker.c>
   ServerLimit          200
@@ -17,10 +17,10 @@ During performance tests we've realized that default configurations are a bottle
 </IfModule>
 ```
 
-## Apache ulimit
+## Apache HTTP Server ulimit
 `apache - nofile 16384`
 
-## Sysctl tuning on knotx, mocks and apache servers
+## Sysctl tuning on Knot.x, Mocks and Apache HTTP Servers
 ```
 net.core.netdev_max_backlog=2048
 net.core.rmem_max=8388608
