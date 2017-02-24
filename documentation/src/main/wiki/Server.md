@@ -98,7 +98,7 @@ Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` f
       "routing": {
         "GET": [
           {
-            "path": "/content/.*",
+            "path": ".*\\.html",
             "address": "knotx.knot.service",
             "onTransition": {
               "next": {
@@ -118,7 +118,7 @@ In short, by default, server does:
 - Returns certain headers in Http Response to the client (as shown above)
 - Communicates with two types of repositories: HTTP and Filesystem
 - Uses core [Splitter|Splitter]
-- Each GET request under `/content` path routed through [Service Knot|ServiceKnot] and then [Handlebars rendering engine|HandlebarsKnot]
+- Each GET request for any html resource (with `.html` extension) is routed through [Service Knot|ServiceKnot] and then [Handlebars rendering engine|HandlebarsKnot]
 
 Detailed description of each configuration option that's available is described in next section.
 

@@ -51,7 +51,7 @@
       "routing": {
         "GET": [
           {
-            "path": "/content/.*",
+            "path": ".*\\.html",
             "address": "knotx.knot.service",
             "onTransition": {
               "next": {
