@@ -56,7 +56,7 @@
       "routing": {
         "GET": [
           {
-            "path": ".*\\.html",
+            "path": "/content/.*",
             "address": "knotx.knot.action",
             "onTransition": {
               "next": {
@@ -72,7 +72,7 @@
         ],
         "POST": [
           {
-            "path": ".*\\.html",
+            "path": "/content/.*",
             "address": "knotx.knot.action",
             "onTransition": {
               "next": {
