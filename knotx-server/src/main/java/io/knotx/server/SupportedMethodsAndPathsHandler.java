@@ -23,8 +23,8 @@ import io.vertx.rxjava.ext.web.RoutingContext;
 
 public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxSplitterHandler.class);
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SupportedMethodsAndPathsHandler.class);
 
   private KnotxServerConfiguration configuration;
 
