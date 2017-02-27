@@ -27,7 +27,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
 import java.util.Optional;
-import rx.Observable;
+import rx.Single;
 
 public class ServiceEngine {
 
@@ -45,14 +45,14 @@ public class ServiceEngine {
     this.configuration = serviceConfiguration;
   }
 
-  public Observable<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
+  public Single<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
     AdapterRequest adapterRequest = new AdapterRequest()
         .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
     AdapterProxy serviceProxy = AdapterProxy.createProxy(vertx, serviceEntry.getAddress());
 
-    return serviceProxy.processObservable(adapterRequest).map(this::buildResultObject);
+    return serviceProxy.rxProcess(adapterRequest).map(this::buildResultObject);
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {

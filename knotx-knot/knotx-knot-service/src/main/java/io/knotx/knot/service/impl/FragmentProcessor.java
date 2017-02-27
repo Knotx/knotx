@@ -25,6 +25,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
 import java.util.concurrent.ExecutionException;
 import rx.Observable;
+import rx.Single;
 
 public class FragmentProcessor {
 
@@ -44,20 +45,20 @@ public class FragmentProcessor {
         .map(serviceEngine::mergeWithConfiguration)
         .doOnNext(this::traceService)
         .flatMap(serviceEntry ->
-            fetchServiceData(serviceEntry, request)
+            fetchServiceData(serviceEntry, request).toObservable()
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new JsonObject(), JsonObject::mergeIn)
         .map(results -> applyData(fragmentContext, results));
   }
 
-  private Observable<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
+  private Single<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
     LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
       return request.getCache()
           .get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
     } catch (ExecutionException e) {
       LOGGER.fatal("Unable to get service data {}", e);
-      return Observable.error(e);
+      return Single.error(e);
     }
   }
 

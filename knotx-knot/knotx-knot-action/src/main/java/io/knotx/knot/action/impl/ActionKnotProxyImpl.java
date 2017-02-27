@@ -136,7 +136,7 @@ public class ActionKnotProxyImpl implements KnotProxy {
         });
 
     AdapterProxy adapter = AdapterProxy.createProxy(vertx, adapterMetadata.getAddress());
-    adapter.processObservable(prepareRequest(knotContext, adapterMetadata))
+    adapter.rxProcess(prepareRequest(knotContext, adapterMetadata))
         .subscribe(
             adapterResp -> {
               final ClientResponse clientResponse = adapterResp.getResponse();

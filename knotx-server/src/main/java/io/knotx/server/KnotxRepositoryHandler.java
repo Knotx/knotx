@@ -55,8 +55,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
     if (repositoryEntry.isPresent()) {
       RepositoryConnectorProxy.createProxy(vertx, repositoryEntry.get().address())
-          .processObservable(knotContext.getClientRequest())
-          .doOnNext(this::traceMessage)
+          .rxProcess(knotContext.getClientRequest())
+          .doOnSuccess(this::traceMessage)
           .subscribe(
               repoResponse -> {
                 if (isSuccessResponse(repoResponse)) {
