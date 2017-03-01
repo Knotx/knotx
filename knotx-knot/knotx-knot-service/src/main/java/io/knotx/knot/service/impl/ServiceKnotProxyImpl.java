@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import rx.Observable;
+import rx.Single;
 
 public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
@@ -44,7 +45,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
   }
 
   @Override
-  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
+  protected Single<KnotContext> processRequest(KnotContext knotContext) {
     return Optional.ofNullable(knotContext.getFragments())
         .map(fragments -> Observable.from(fragments)
             .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
@@ -53,7 +54,8 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
             .flatMap(
                 compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
             .toList()
-        ).orElse(Observable.just(Collections.emptyList()))
+            .toSingle()
+        ).orElse(Single.just(Collections.emptyList()))
         .map(result -> createSuccessResponse(knotContext))
         .onErrorReturn(error -> processError(knotContext, error));
   }
