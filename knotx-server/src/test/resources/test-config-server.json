@@ -56,7 +56,7 @@
   "routing": {
     "GET": [
       {
-        "path": "/content/local/.*",
+        "path": ".*/local/.*\\.html",
         "address": "A-engine",
         "onTransition": {
           "go-c": {
@@ -65,13 +65,13 @@
         }
       },
       {
-        "path": "/content/.*",
+        "path": ".*\\.html",
         "address": "C-engine"
       }
     ],
     "POST": [
       {
-        "path": "/content/local/.*",
+        "path": ".*/local/.*\\.html",
         "address": "A-post-engine",
         "onTransition": {
           "go-b": {
@@ -88,7 +88,7 @@
         }
       },
       {
-        "path": "/content/.*",
+        "path": ".*\\.html",
         "address": "B-engine",
         "onTransition": {
           "go-c": {

@@ -25,7 +25,7 @@
       "routing": {
         "GET": [
           {
-            "path": "/content/.*",
+            "path": ".*\\.html",
             "address": "knotx.knot.action",
             "onTransition": {
               "next": {
@@ -41,7 +41,7 @@
         ],
         "POST": [
           {
-            "path": "/content/.*",
+            "path": ".*\\.html",
             "address": "knotx.knot.action",
             "onTransition": {
               "next": {
