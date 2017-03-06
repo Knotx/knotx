@@ -24,9 +24,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.FileSystem;
-import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -37,15 +35,12 @@ import io.vertx.rxjava.core.MultiMap;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import rx.Observable;
 
 public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FilesystemRepositoryConnectorProxyImpl.class);
 
-  private static final OpenOptions OPEN_OPTIONS = new OpenOptions().setCreate(false)
-      .setWrite(false);
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
   private final String catalogue;
@@ -64,9 +59,8 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
 
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
-    ObservableFuture<AsyncFile> fileObservable = RxHelper.observableFuture();
+    ObservableFuture<Buffer> fileObservable = RxHelper.observableFuture();
     fileObservable
-        .flatMap(this::processFile)
         .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
             .setHeaders(headers(contentType)).setBody(buffer))
         .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND.code()))
@@ -78,21 +72,13 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
             }
         );
 
-    fileSystem.open(localFilePath, OPEN_OPTIONS, fileObservable.toHandler());
+    fileSystem.readFile(localFilePath, fileObservable.toHandler());
   }
 
   private MultiMap headers(Optional<String> contentType) {
     MultiMap headers = MultiMap.caseInsensitiveMultiMap();
-    if (contentType.isPresent()) {
-      headers.add("Content-Type", contentType.get());
-    }
+    contentType.ifPresent(s -> headers.add("Content-Type", s));
     return headers;
-  }
-
-  private Observable<Buffer> processFile(final AsyncFile asyncFile) {
-    return Observable.just(Buffer.buffer())
-        .mergeWith(RxHelper.toObservable(asyncFile))
-        .reduce(Buffer::appendBuffer);
   }
 
   private ClientResponse processError(Throwable error) {
