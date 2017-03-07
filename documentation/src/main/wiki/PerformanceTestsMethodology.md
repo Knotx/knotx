@@ -50,8 +50,8 @@ Test Environment is set up on AWS Cloud.
 * 2 x Jmeter Servers - c4.xlarge, 4CPU, 8GB RAM, 750Mbps bandwidth,centos 6.8.
 
 ### Repositories
-* mocks-knotx - \knotx-performance-tests\config-knotx\
-* config-knotx - \knotx-performance-tests\mocks-knotx\
+* mocks-knotx - [knotx-perfromance-tests\config-knotx](https://github.com/Cognifide/knotx/tree/master/knotx-perfromance-tests/config-knotx)
+* config-knotx - [knotx-perfromance-tests\mocks-knotx](https://github.com/Cognifide/knotx/tree/master/knotx-perfromance-tests/mocks-knotx)
 
 ## Tools
 * JMeter 3.1 with plugins (at AWS) as a Load Generator.
