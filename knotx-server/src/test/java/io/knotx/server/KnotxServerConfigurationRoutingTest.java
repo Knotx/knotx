@@ -29,8 +29,8 @@ import org.junit.Test;
 
 public class KnotxServerConfigurationRoutingTest {
 
-  public static final int FIRST_IDX = 0;
-  public static final int SECOND_IDX = 1;
+  private static final int FIRST_IDX = 0;
+  private static final int SECOND_IDX = 1;
   private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   @Before
@@ -50,10 +50,10 @@ public class KnotxServerConfigurationRoutingTest {
   public void whenConfigWithGetRouting_expectTwoRoutings() throws Exception {
     assertThat(engineRouting.get(HttpMethod.GET).size(), equalTo(2));
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).path(),
-        equalTo("/content/local/.*"));
+        equalTo(".*/local/.*\\.html"));
     assertThat(engineRouting.get(HttpMethod.GET).get(FIRST_IDX).address(), equalTo("A-engine"));
 
-    assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).path(), equalTo("/content/.*"));
+    assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).path(), equalTo(".*\\.html"));
     assertThat(engineRouting.get(HttpMethod.GET).get(SECOND_IDX).address(), equalTo("C-engine"));
   }
 
@@ -61,11 +61,11 @@ public class KnotxServerConfigurationRoutingTest {
   public void whenConfigWithPostRouting_expectTwoRoutings() throws Exception {
     assertThat(engineRouting.get(HttpMethod.POST).size(), equalTo(2));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).path(),
-        equalTo("/content/local/.*"));
+        equalTo(".*/local/.*\\.html"));
     assertThat(engineRouting.get(HttpMethod.POST).get(FIRST_IDX).address(),
         equalTo("A-post-engine"));
 
-    assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).path(), equalTo("/content/.*"));
+    assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).path(), equalTo(".*\\.html"));
     assertThat(engineRouting.get(HttpMethod.POST).get(SECOND_IDX).address(), equalTo("B-engine"));
   }
 
