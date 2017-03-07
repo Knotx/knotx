@@ -10,4 +10,5 @@ This page gathers all tests summaries, recommendations and actions undertaken.
 * [[Several fixes applied to Knot.x as well as configuration tweaks both for Knot.x and Apache HTTP Server|PerformanceTestsTuning]]
 
 ## Tests Summary
-![Test summary](assets/knotx-perf-tests-summary.png)
+[ ![Test summary](assets/knotx-perf-tests-summary.png) ](assets/knotx-perf-tests-summary.png)
+(click to view details)
