@@ -1,0 +1,1517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="3.1" jmeter="3.1 r1770033">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="KNOTX" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="project" elementType="Argument">
+            <stringProp name="Argument.name">project</stringProp>
+            <stringProp name="Argument.value">knotx</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Domains AWS" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="protocol" elementType="Argument">
+            <stringProp name="Argument.name">protocol</stringProp>
+            <stringProp name="Argument.value">http</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">https. http</stringProp>
+          </elementProp>
+          <elementProp name="domain" elementType="Argument">
+            <stringProp name="Argument.name">domain</stringProp>
+            <stringProp name="Argument.value">octopus.cognifide.com</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="TestPlan.comments">Domains for Integration env</stringProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Domains LOCALHOST" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="protocol" elementType="Argument">
+            <stringProp name="Argument.name">protocol</stringProp>
+            <stringProp name="Argument.value">http</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">https. http</stringProp>
+          </elementProp>
+          <elementProp name="domain" elementType="Argument">
+            <stringProp name="Argument.name">domain</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="port" elementType="Argument">
+            <stringProp name="Argument.name">port</stringProp>
+            <stringProp name="Argument.value">8092</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="TestPlan.comments">Domains for Staging env</stringProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="threads" elementType="Argument">
+            <stringProp name="Argument.name">threads</stringProp>
+            <stringProp name="Argument.value">2500</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">2500</stringProp>
+          </elementProp>
+          <elementProp name="rampup" elementType="Argument">
+            <stringProp name="Argument.name">rampup</stringProp>
+            <stringProp name="Argument.value">5400</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">in  seconds (30 minutes = 1800 seconds)|5400</stringProp>
+          </elementProp>
+          <elementProp name="think-time-constant" elementType="Argument">
+            <stringProp name="Argument.name">think-time-constant</stringProp>
+            <stringProp name="Argument.value">4000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">miliseconds</stringProp>
+          </elementProp>
+          <elementProp name="think-time-deviation" elementType="Argument">
+            <stringProp name="Argument.name">think-time-deviation</stringProp>
+            <stringProp name="Argument.value">2000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">miliseconds</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="TestPlan.comments">variables</stringProp>
+      </Arguments>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Variables debug" enabled="false">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="threads" elementType="Argument">
+            <stringProp name="Argument.name">threads</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="rampup" elementType="Argument">
+            <stringProp name="Argument.name">rampup</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">seconds</stringProp>
+          </elementProp>
+          <elementProp name="think-time-constant" elementType="Argument">
+            <stringProp name="Argument.name">think-time-constant</stringProp>
+            <stringProp name="Argument.value">500</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">miliseconds</stringProp>
+          </elementProp>
+          <elementProp name="think-time-deviation" elementType="Argument">
+            <stringProp name="Argument.name">think-time-deviation</stringProp>
+            <stringProp name="Argument.value">300</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">miliseconds</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Monolith Example content" enabled="false">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${threads}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${rampup}</stringProp>
+        <longProp name="ThreadGroup.start_time">1448350538000</longProp>
+        <longProp name="ThreadGroup.end_time">1448350538000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${domain}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+          <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Host</stringProp>
+              <stringProp name="Header.value">${domain}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Gaussian Random Timer" enabled="true">
+          <stringProp name="ConstantTimer.delay">${think-time-constant}</stringProp>
+          <stringProp name="RandomTimer.range">${think-time-deviation}</stringProp>
+        </GaussianRandomTimer>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/content/remote/simple.html" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/remote/simple.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet1 webservice1" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1196106308">&lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 1&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Custom Handlebars helper&lt;/strong&gt;&lt;/div&gt;
+      &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet1 webservice2" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="2126566061">&lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 2&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+        
+        &lt;div&gt;Success! Status code : 200&lt;/div&gt;
+        
+        &lt;h2&gt;Snippet1 - this is webservice no. 2&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+      &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet1 webservice3" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1261664959">&lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 3&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+      &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet2 webservice2" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-119815867">&lt;div class=&quot;col-md-4&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h2&gt;Snippet2 - this is webservice no. 2&lt;/h2&gt;
+        &lt;p&gt;Snippet2 - message - a&lt;/p&gt;
+        &lt;p&gt;Success!&lt;/p&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet3 webservice2" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="592867911">&lt;div class=&quot;col-md-4&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h2&gt;Snippet3 - this is webservice no. 3&lt;/h2&gt;
+        &lt;p&gt;Snippet3 - message - a&lt;/p&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet4 webservice3" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="999100110">&lt;div class=&quot;col-md-4&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h2&gt;Snippet4 - this is webservice no. 3&lt;/h2&gt;
+        &lt;p&gt;Snippet4 - http%3A%2F%2Fexample.com&lt;/p&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/content/local/simple.html" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/local/simple.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet1 webservice1" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1196106308">&lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 1&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+        &lt;div&gt;&lt;strong&gt;Custom Handlebars helper&lt;/strong&gt;&lt;/div&gt;
+      &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet1 webservice2" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1778261662">&lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 2&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+        
+        &lt;div&gt;Success! Status code : 200&lt;/div&gt;
+        
+      &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet1 webservice3" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1261664959">&lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 3&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+      &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet2 webservice3" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-119815867">&lt;div class=&quot;col-md-4&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h2&gt;Snippet2 - this is webservice no. 2&lt;/h2&gt;
+        &lt;p&gt;Snippet2 - message - a&lt;/p&gt;
+        &lt;p&gt;Success!&lt;/p&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet3 webservice3" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="592867911">&lt;div class=&quot;col-md-4&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h2&gt;Snippet3 - this is webservice no. 3&lt;/h2&gt;
+        &lt;p&gt;Snippet3 - message - a&lt;/p&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="snippet4 webservice3" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="999100110">&lt;div class=&quot;col-md-4&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h2&gt;Snippet4 - this is webservice no. 3&lt;/h2&gt;
+        &lt;p&gt;Snippet4 - http%3A%2F%2Fexample.com&lt;/p&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/content/local/multiple-forms.html" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/local/multiple-forms.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1684137879">    &lt;div class=&quot;col-md-12&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt; &lt;h1&gt;welcome in competition&lt;/h1&gt;  &lt;p&gt;Please subscribe to our new competition:&lt;/p&gt; 
+ &lt;form method=&quot;post&quot; class=&quot;form-inline&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;_frmId&quot; value=&quot;competition&quot; /&gt; 
+  &lt;div class=&quot;form-group&quot;&gt; 
+   &lt;label for=&quot;name&quot;&gt;Name&lt;/label&gt; 
+   &lt;input type=&quot;text&quot; name=&quot;name&quot; id=&quot;name&quot; /&gt; 
+  &lt;/div&gt; 
+  &lt;div class=&quot;form-group&quot;&gt; 
+   &lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt; 
+   &lt;input type=&quot;email&quot; name=&quot;email&quot; id=&quot;email&quot; /&gt; 
+  &lt;/div&gt; 
+  &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt; 
+ &lt;/form&gt;  &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-12&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt; 
+ &lt;div id=&quot;newsletter-form-wrapper&quot;&gt; 
+  &lt;h1&gt;subscribe to newsletter&lt;/h1&gt;  
+  &lt;p&gt;Please subscribe to our newsletter:&lt;/p&gt; 
+  &lt;form method=&quot;post&quot; class=&quot;form-inline&quot;&gt;
+   &lt;input type=&quot;hidden&quot; name=&quot;_frmId&quot; value=&quot;newsletter&quot; /&gt; 
+   &lt;div class=&quot;form-group&quot;&gt; 
+    &lt;label for=&quot;email2&quot;&gt;Email&lt;/label&gt; 
+    &lt;input type=&quot;email&quot; name=&quot;email&quot; id=&quot;email2&quot; /&gt; 
+   &lt;/div&gt; 
+   &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt; 
+  &lt;/form&gt;  
+ &lt;/div&gt; &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/content/remote/multiple-forms.html" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/remote/multiple-forms.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1465339216">  &lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-12&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;h1&gt;&lt;/h1&gt;
+        
+        &lt;p&gt;Please subscribe to our new competition:&lt;/p&gt;
+        &lt;form method=&quot;post&quot; class=&quot;form-inline&quot;&gt;
+          &lt;div class=&quot;form-group&quot;&gt;
+            &lt;label for=&quot;name&quot;&gt;Name&lt;/label&gt;
+            &lt;input type=&quot;text&quot; name=&quot;name&quot; id=&quot;name&quot;/&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;form-group&quot;&gt;
+            &lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
+            &lt;input type=&quot;email&quot; name=&quot;email&quot; id=&quot;email&quot;/&gt;
+          &lt;/div&gt;
+          &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt;
+          &lt;input type=&quot;hidden&quot; name=&quot;_id&quot; value=&quot;competition-form&quot;/&gt;
+        &lt;/form&gt;
+        
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-12&quot;&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+        &lt;div id=&quot;newsletter-form-wrapper&quot;&gt;
+          &lt;h1&gt;&lt;/h1&gt;
+          
+          &lt;p&gt;Please subscribe to our newsletter:&lt;/p&gt;
+          &lt;form method=&quot;post&quot; class=&quot;form-inline&quot; id=&quot;newsletter&quot;&gt;
+            &lt;div class=&quot;form-group&quot;&gt;
+              &lt;label for=&quot;email2&quot;&gt;Email&lt;/label&gt;
+              &lt;input type=&quot;email&quot; name=&quot;email&quot; id=&quot;email2&quot;/&gt;
+            &lt;/div&gt;
+            &lt;button type=&quot;submit&quot; class=&quot;btn btn-default&quot;&gt;Submit&lt;/button&gt;
+            &lt;input type=&quot;hidden&quot; name=&quot;_id&quot; value=&quot;newsletter-form&quot;/&gt;
+          &lt;/form&gt;
+          
+        &lt;/div&gt;
+      &lt;!-- end compiled snippet --&gt;&lt;!-- start compiled snippet --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Sample content" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${threads}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${rampup}</stringProp>
+        <longProp name="ThreadGroup.start_time">1448350538000</longProp>
+        <longProp name="ThreadGroup.end_time">1448350538000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${domain}</stringProp>
+          <stringProp name="HTTPSampler.port">${port}</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol">${protocol}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+          <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+          <collectionProp name="HeaderManager.headers">
+            <elementProp name="" elementType="Header">
+              <stringProp name="Header.name">Host</stringProp>
+              <stringProp name="Header.value">${domain}</stringProp>
+            </elementProp>
+          </collectionProp>
+        </HeaderManager>
+        <hashTree/>
+        <GaussianRandomTimer guiclass="GaussianRandomTimerGui" testclass="GaussianRandomTimer" testname="Gaussian Random Timer" enabled="true">
+          <stringProp name="ConstantTimer.delay">${think-time-constant}</stringProp>
+          <stringProp name="RandomTimer.range">${think-time-deviation}</stringProp>
+        </GaussianRandomTimer>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1 snippet and 1 service" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/simple-1snippet-1service.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="1 snippet and 1 service Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1611250901">    &lt;!-- start compiled snippet --&gt;
+      &lt;div class=&quot;col-md-6&quot;&gt;
+        &lt;h2&gt;This is the list of 7 highest mountains of each of the seven continents - Messner version&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Everest - Asia&lt;/li&gt;
+			&lt;li&gt;Aconcagua - South America&lt;/li&gt;
+			&lt;li&gt;Denali - North America&lt;/li&gt;
+			&lt;li&gt;Kilimanjaro - Africa&lt;/li&gt;
+			&lt;li&gt;Elbrus - Europe&lt;/li&gt;
+			&lt;li&gt;Puncak Jaya - Australasia (continent)&lt;/li&gt;
+			&lt;li&gt;Vinson - Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+      &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;row&quot;&gt;  
+      &lt;div class=&quot;col-md-6&quot;&gt;
+        &lt;h2&gt;This is the list of 7 highest mountains of each of the seven continents - Bass version&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Everest - Asia&lt;/li&gt;
+			&lt;li&gt;Aconcagua - South America&lt;/li&gt;
+			&lt;li&gt;Denali - North America&lt;/li&gt;
+			&lt;li&gt;Kilimanjaro - Africa&lt;/li&gt;
+			&lt;li&gt;Elbrus - Europe&lt;/li&gt;
+			&lt;li&gt;Kosciuszko - Australia&lt;/li&gt;
+			&lt;li&gt;Vinson - Antarctica&lt;/li&gt;
+		&lt;/ol&gt;      
+	  &lt;/div&gt;
+    &lt;!-- end compiled snippet --&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1 Snippet 5 Services" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/simple-1snippet-5services.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="1 Snippet 5 Services assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-228629141">    &lt;!-- start compiled snippet --&gt;
+
+      &lt;div class=&quot;col-md-6&quot;&gt;
+        &lt;h2&gt;This is the list of 7 highest mountains of each of the seven continents - Messner version&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Everest - Asia&lt;/li&gt;
+			&lt;li&gt;Aconcagua - South America&lt;/li&gt;
+			&lt;li&gt;Denali - North America&lt;/li&gt;
+			&lt;li&gt;Kilimanjaro - Africa&lt;/li&gt;
+			&lt;li&gt;Elbrus - Europe&lt;/li&gt;
+			&lt;li&gt;Puncak Jaya - Australasia (continent)&lt;/li&gt;
+			&lt;li&gt;Vinson - Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+		&lt;h2&gt;Continents&lt;/h2&gt;		
+		&lt;ol&gt;
+			&lt;li&gt;Asia&lt;/li&gt;
+			&lt;li&gt;South America&lt;/li&gt;
+			&lt;li&gt;Africa&lt;/li&gt;
+			&lt;li&gt;Europe&lt;/li&gt;
+			&lt;li&gt;Australasia (continetn)&lt;/li&gt;
+			&lt;li&gt;Australia&lt;/li&gt;
+			&lt;li&gt;Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+		&lt;h2&gt;Countries&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Nepal&lt;/li&gt;
+			&lt;li&gt;China&lt;/li&gt;
+			&lt;li&gt;United States&lt;/li&gt;
+			&lt;li&gt;Argentina&lt;/li&gt;
+			&lt;li&gt;Tanzania&lt;/li&gt;
+			&lt;li&gt;Russia&lt;/li&gt;
+			&lt;li&gt;Australia&lt;/li&gt;
+		&lt;/ol&gt;
+		&lt;h2&gt;Names&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Edmund Hillary&lt;/li&gt;
+			&lt;li&gt;Tenzing Norgay&lt;/li&gt;
+			&lt;li&gt;Reinhold Messner&lt;/li&gt;
+			&lt;li&gt;Jerzy Kukuczka&lt;/li&gt;
+			&lt;li&gt;George Mallory&lt;/li&gt;
+			&lt;li&gt;Joe Simpson&lt;/li&gt;
+			&lt;li&gt;Lino Lacedelli&lt;/li&gt;
+		&lt;/ol&gt;
+		&lt;h2&gt;Dates&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;17 July 1990, Pamir Mountains&lt;/li&gt;
+			&lt;li&gt;3 July 1953, Nanga Parbat&lt;/li&gt;
+			&lt;li&gt;11 May 1953, Mount Everest&lt;/li&gt;
+			&lt;li&gt;31 July 1954, K2&lt;/li&gt;
+			&lt;li&gt;24 August 2008, Mont Blanc&lt;/li&gt;
+			&lt;li&gt;July 1936, Eiger&lt;/li&gt;
+			&lt;li&gt;11 July 1955, Mount Temple&lt;/li&gt;
+		&lt;/ol&gt;
+      &lt;/div&gt;
+    &lt;!-- end compiled snippet --&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="5 snippets and 1 service for each snippet" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/simple-5snippets.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="5 snippets and 1 service for each snippet Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-2012902983">    &lt;!-- start compiled snippet --&gt;
+
+      &lt;div class=&quot;col-md-12&quot;&gt;
+        &lt;h2&gt;This is the list of 7 highest mountains of each of the seven continents - Messner version&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Everest - Asia&lt;/li&gt;
+			&lt;li&gt;Aconcagua - South America&lt;/li&gt;
+			&lt;li&gt;Denali - North America&lt;/li&gt;
+			&lt;li&gt;Kilimanjaro - Africa&lt;/li&gt;
+			&lt;li&gt;Elbrus - Europe&lt;/li&gt;
+			&lt;li&gt;Puncak Jaya - Australasia (continent)&lt;/li&gt;
+			&lt;li&gt;Vinson - Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;
+	&lt;!-- end compiled snippet --&gt;	
+    &lt;!-- start compiled snippet --&gt;		
+      &lt;div class=&quot;col-md-12&quot;&gt;
+			&lt;h2&gt;Continents&lt;/h2&gt;		
+		&lt;ol&gt;
+			&lt;li&gt;Asia&lt;/li&gt;
+			&lt;li&gt;South America&lt;/li&gt;
+			&lt;li&gt;Africa&lt;/li&gt;
+			&lt;li&gt;Europe&lt;/li&gt;
+			&lt;li&gt;Australasia (continetn)&lt;/li&gt;
+			&lt;li&gt;Australia&lt;/li&gt;
+			&lt;li&gt;Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Countries&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Nepal&lt;/li&gt;
+			&lt;li&gt;China&lt;/li&gt;
+			&lt;li&gt;United States&lt;/li&gt;
+			&lt;li&gt;Argentina&lt;/li&gt;
+			&lt;li&gt;Tanzania&lt;/li&gt;
+			&lt;li&gt;Russia&lt;/li&gt;
+			&lt;li&gt;Australia&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Names&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Edmund Hillary&lt;/li&gt;
+			&lt;li&gt;Tenzing Norgay&lt;/li&gt;
+			&lt;li&gt;Reinhold Messner&lt;/li&gt;
+			&lt;li&gt;Jerzy Kukuczka&lt;/li&gt;
+			&lt;li&gt;George Mallory&lt;/li&gt;
+			&lt;li&gt;Joe Simpson&lt;/li&gt;
+			&lt;li&gt;Lino Lacedelli&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Dates&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;17 July 1990, Pamir Mountains&lt;/li&gt;
+			&lt;li&gt;3 July 1953, Nanga Parbat&lt;/li&gt;
+			&lt;li&gt;11 May 1953, Mount Everest&lt;/li&gt;
+			&lt;li&gt;31 July 1954, K2&lt;/li&gt;
+			&lt;li&gt;24 August 2008, Mont Blanc&lt;/li&gt;
+			&lt;li&gt;July 1936, Eiger&lt;/li&gt;
+			&lt;li&gt;11 July 1955, Mount Temple&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;</stringProp>
+              <stringProp name="0"></stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="10 snippets and 1 service for each snippet" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/simple-10snippets.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="10 snippets and 1 service for each snippet Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1852634041">    &lt;!-- start compiled snippet --&gt;
+
+      &lt;div class=&quot;col-md-12&quot;&gt;
+        &lt;h2&gt;This is the list of 7 highest mountains of each of the seven continents - Messner version&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Everest - Asia&lt;/li&gt;
+			&lt;li&gt;Aconcagua - South America&lt;/li&gt;
+			&lt;li&gt;Denali - North America&lt;/li&gt;
+			&lt;li&gt;Kilimanjaro - Africa&lt;/li&gt;
+			&lt;li&gt;Elbrus - Europe&lt;/li&gt;
+			&lt;li&gt;Puncak Jaya - Australasia (continent)&lt;/li&gt;
+			&lt;li&gt;Vinson - Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;
+	&lt;!-- end compiled snippet --&gt;	
+    &lt;!-- start compiled snippet --&gt;		
+      &lt;div class=&quot;col-md-12&quot;&gt;
+			&lt;h2&gt;Continents&lt;/h2&gt;		
+		&lt;ol&gt;
+			&lt;li&gt;Asia&lt;/li&gt;
+			&lt;li&gt;South America&lt;/li&gt;
+			&lt;li&gt;Africa&lt;/li&gt;
+			&lt;li&gt;Europe&lt;/li&gt;
+			&lt;li&gt;Australasia (continetn)&lt;/li&gt;
+			&lt;li&gt;Australia&lt;/li&gt;
+			&lt;li&gt;Antarctica&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Countries&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Nepal&lt;/li&gt;
+			&lt;li&gt;China&lt;/li&gt;
+			&lt;li&gt;United States&lt;/li&gt;
+			&lt;li&gt;Argentina&lt;/li&gt;
+			&lt;li&gt;Tanzania&lt;/li&gt;
+			&lt;li&gt;Russia&lt;/li&gt;
+			&lt;li&gt;Australia&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Names&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Edmund Hillary&lt;/li&gt;
+			&lt;li&gt;Tenzing Norgay&lt;/li&gt;
+			&lt;li&gt;Reinhold Messner&lt;/li&gt;
+			&lt;li&gt;Jerzy Kukuczka&lt;/li&gt;
+			&lt;li&gt;George Mallory&lt;/li&gt;
+			&lt;li&gt;Joe Simpson&lt;/li&gt;
+			&lt;li&gt;Lino Lacedelli&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Dates&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;17 July 1990, Pamir Mountains&lt;/li&gt;
+			&lt;li&gt;3 July 1953, Nanga Parbat&lt;/li&gt;
+			&lt;li&gt;11 May 1953, Mount Everest&lt;/li&gt;
+			&lt;li&gt;31 July 1954, K2&lt;/li&gt;
+			&lt;li&gt;24 August 2008, Mont Blanc&lt;/li&gt;
+			&lt;li&gt;July 1936, Eiger&lt;/li&gt;
+			&lt;li&gt;11 July 1955, Mount Temple&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;	
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Lakes&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Caspian Sea – 371,000 km2&lt;/li&gt;
+			&lt;li&gt;Lake Superior – 82,414 km2&lt;/li&gt;
+			&lt;li&gt;Lake Victoria – 69,485 km2&lt;/li&gt;
+			&lt;li&gt;Lake Huron – 59,600 km2&lt;/li&gt;
+			&lt;li&gt;Lake Michigan – 58,000 km2&lt;/li&gt;
+			&lt;li&gt;Lake Tanganyika – 32,893 km2&lt;/li&gt;
+			&lt;li&gt;Lake Baikal – 31,500 km2&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Deserts&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Antarctica&lt;/li&gt;
+			&lt;li&gt;Arctic&lt;/li&gt;
+			&lt;li&gt;Sahara&lt;/li&gt;
+			&lt;li&gt;Arabian Desert&lt;/li&gt;
+			&lt;li&gt;Gobi Desert&lt;/li&gt;
+			&lt;li&gt;Kalahari Desert&lt;/li&gt;
+			&lt;li&gt;Greate Victoria Desert&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Stars&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;UY Scuti&lt;/li&gt;
+			&lt;li&gt;WOH G64&lt;/li&gt;
+			&lt;li&gt;RW Cephei&lt;/li&gt;
+			&lt;li&gt;Westerlund 1-26&lt;/li&gt;
+			&lt;li&gt;V354 Cephei&lt;/li&gt;
+			&lt;li&gt;KY Cygni&lt;/li&gt;
+			&lt;li&gt;VY Canis Majoris&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Winds&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Berg&lt;/li&gt;
+			&lt;li&gt;Bora&lt;/li&gt;
+			&lt;li&gt;Etesian&lt;/li&gt;
+			&lt;li&gt;Haboob&lt;/li&gt;
+			&lt;li&gt;Khamsin&lt;/li&gt;
+			&lt;li&gt;Mistral&lt;/li&gt;
+			&lt;li&gt;Scirocco&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;
+    &lt;!-- start compiled snippet --&gt;	
+      &lt;div class=&quot;col-md-12&quot;&gt;		
+		&lt;h2&gt;Passes&lt;/h2&gt;
+		&lt;ol&gt;
+			&lt;li&gt;Thorong La 5416m&lt;/li&gt;
+			&lt;li&gt;West col 6135m&lt;/li&gt;
+			&lt;li&gt;East Col 6100m&lt;/li&gt;
+			&lt;li&gt;Cho La 5420m&lt;/li&gt;
+			&lt;li&gt;Larky Pass 5213m&lt;/li&gt;
+			&lt;li&gt;Kagmara La 5115m&lt;/li&gt;
+			&lt;li&gt;Ganja La 5106m&lt;/li&gt;
+		&lt;/ol&gt;
+	  &lt;/div&gt;	
+	&lt;!-- end compiled snippet --&gt;	</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="big data" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/content/simple-big-data.html</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
+          <boolProp name="HTTPSampler.monitor">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="big data Assertion 1" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="714755909">    &lt;!-- start compiled snippet --&gt;
+
+      &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;h2&gt;Snippet1 - this is webservice no. 1&lt;/h2&gt;
+        &lt;div&gt;Snippet1 - message - a&lt;/div&gt;
+        &lt;div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;!-- end compiled snippet --&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="big data Assertion 2" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1907040664">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas auctor magna turpis, a condimentum leo sollicitudin et. Etiam venenatis turpis mauris, et sodales lorem consectetur non. Duis et augue a ipsum pulvinar sollicitudin. Sed aliquam elementum ligula, ut viverra mi mattis quis. Ut in commodo tortor. Nunc ac massa vel quam iaculis lacinia sed vitae enim. Sed ornare malesuada egestas. Curabitur quis turpis ac eros iaculis varius sit amet nec eros. Suspendisse eget nisl velit. Aliquam eu justo vulputate risus malesuada semper eu sit amet nunc. Morbi tellus leo, gravida quis velit sit amet, finibus tincidunt diam. Etiam lorem felis, mollis sit amet velit id, scelerisque ultricies tellus. Nunc semper porttitor posuere. Integer leo risus, porta sit amet felis et, aliquet lobortis libero. Donec orci turpis, accumsan dapibus turpis at, venenatis consectetur felis.</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="big data Assertion 2" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-1260638246">                  &lt;tr class=&quot;active&quot;&gt;
+                    &lt;td&gt;7&lt;/td&gt;
+                    &lt;td&gt;Column content&lt;/td&gt;
+                    &lt;td&gt;Column content&lt;/td&gt;
+                    &lt;td&gt;Column content&lt;/td&gt;
+                  &lt;/tr&gt;</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ResponseTimesOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Response Times Over Time" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">500</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ResponseCodesPerSecondGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Response Codes per Second" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">1000</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.HitsPerSecondGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Hits per Second" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">1000</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.TransactionsPerSecondGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Transactions per Second" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">1000</longProp>
+        <boolProp name="graph_aggregated">true</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CompositeResultCollector guiclass="kg.apc.jmeter.vizualizers.CompositeGraphGui" testclass="kg.apc.jmeter.vizualizers.CompositeResultCollector" testname="jp@gc - Composite Graph" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">500</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+        <collectionProp name="COMPOSITE_CFG">
+          <collectionProp name="">
+            <stringProp name="-243013315">jp@gc - Response Times Over Time</stringProp>
+            <stringProp name="-243013315">jp@gc - Response Times Over Time</stringProp>
+            <stringProp name="-243013315">jp@gc - Response Times Over Time</stringProp>
+            <stringProp name="-243013315">jp@gc - Response Times Over Time</stringProp>
+            <stringProp name="-243013315">jp@gc - Response Times Over Time</stringProp>
+          </collectionProp>
+          <collectionProp name="">
+            <stringProp name="-1965355293">/content/remote/simple.html</stringProp>
+            <stringProp name="-1549391110">Overall Response Times</stringProp>
+            <stringProp name="879751262">/content/local/simple.html</stringProp>
+            <stringProp name="794038494">/content/local/multiple-forms.html</stringProp>
+            <stringProp name="-145827229">/content/remote/multiple-forms.html</stringProp>
+          </collectionProp>
+        </collectionProp>
+      </kg.apc.jmeter.vizualizers.CompositeResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>false</assertions>
+            <subresults>false</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <fileName>true</fileName>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">testresults/knotx_${__time(YMDHMS)}.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="SimpleDataWriter" testclass="ResultCollector" testname="Simple Data Writer xml" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>true</encoding>
+            <assertions>false</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>true</samplerData>
+            <xml>true</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>true</responseHeaders>
+            <requestHeaders>true</requestHeaders>
+            <responseDataOnError>true</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <url>true</url>
+            <fileName>true</fileName>
+            <hostname>true</hostname>
+            <threadCounts>true</threadCounts>
+            <sampleCount>true</sampleCount>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">testresults/knotx_${__time(YMDHMS)}.xml</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
+        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="graphiteMetricsSender" elementType="Argument">
+              <stringProp name="Argument.name">graphiteMetricsSender</stringProp>
+              <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.graphite.TextGraphiteMetricsSender</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="graphiteHost" elementType="Argument">
+              <stringProp name="Argument.name">graphiteHost</stringProp>
+              <stringProp name="Argument.value">localhost</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="graphitePort" elementType="Argument">
+              <stringProp name="Argument.name">graphitePort</stringProp>
+              <stringProp name="Argument.value">2003</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="rootMetricsPrefix" elementType="Argument">
+              <stringProp name="Argument.name">rootMetricsPrefix</stringProp>
+              <stringProp name="Argument.value">jmeter.knotx.</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="summaryOnly" elementType="Argument">
+              <stringProp name="Argument.name">summaryOnly</stringProp>
+              <stringProp name="Argument.value">true</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="samplersList" elementType="Argument">
+              <stringProp name="Argument.name">samplersList</stringProp>
+              <stringProp name="Argument.value">.*</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="useRegexpForSamplersList" elementType="Argument">
+              <stringProp name="Argument.name">useRegexpForSamplersList</stringProp>
+              <stringProp name="Argument.value">true</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="percentiles" elementType="Argument">
+              <stringProp name="Argument.name">percentiles</stringProp>
+              <stringProp name="Argument.value">90;95;99</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="classname">org.apache.jmeter.visualizers.backend.graphite.GraphiteBackendListenerClient</stringProp>
+      </BackendListener>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

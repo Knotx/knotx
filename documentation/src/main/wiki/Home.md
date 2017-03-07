@@ -29,4 +29,8 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
   * [[Http Service Adapter|HttpServiceAdapter]]
 * [[Mocks|Mocks]]    
 * [[Knot.x Deployment|KnotxDeployment]]
+* [[Performance]]
+  * [[Performance Tests Methodology|PerformanceTestsMethodology]]
+  * [[Performance Tests Summary|PerformanceTestsSummary]]
+  * [[Performance Tests Tuning|PerformanceTestsTuning]]
 * [[Dependencies|Dependencies]]
