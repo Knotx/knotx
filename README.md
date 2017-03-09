@@ -1,5 +1,6 @@
 ![Cognifide logo](http://cognifide.github.io/images/cognifide-logo.png)
 
+[![][maven img]][maven]
 [![][travis img]][travis]
 [![][license img]][license]
 [![][gitter img]][gitter]
@@ -79,6 +80,9 @@ You can run a **Knot.x** demo within less than 5 minutes, all you need is Java 8
 
 **Knot.x** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
+
+[maven]:http://search.maven.org/#search|gav|1|g:"io.knotx"
+[maven img]:https://maven-badges.herokuapp.com/maven-central/io.knotx/knotx-core/badge.svg
 
 [travis]:https://travis-ci.org/Cognifide/knotx
 [travis img]:https://travis-ci.org/Cognifide/knotx.svg?branch=master
