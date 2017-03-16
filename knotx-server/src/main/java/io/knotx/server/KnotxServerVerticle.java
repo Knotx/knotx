@@ -78,17 +78,18 @@ public class KnotxServerVerticle extends AbstractVerticle {
         });
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 
-    vertx.createHttpServer().requestHandler(router::accept).listen(
-        configuration.httpPort(),
-        result -> {
-          if (result.succeeded()) {
-            LOGGER
-                .info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
-            fut.complete();
-          } else {
-            LOGGER.error("Unable to start Knot.x HTTP Server.", result.cause());
-            fut.fail(result.cause());
-          }
-        });
+    vertx.createHttpServer()
+        .requestHandler(router::accept)
+        .rxListen(configuration.httpPort())
+        .subscribe(ok -> {
+              LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
+              fut.complete();
+            },
+            error -> {
+              LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
+              fut.fail(error.getCause());
+            }
+        );
+
   }
 }

@@ -137,12 +137,14 @@ public class FragmentAssemblerTest {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
-    service.processObservable(KnotContextFactory.create(fragments))
+    service.rxProcess(KnotContextFactory.create(fragments))
         .map(ctx -> Pair.of(async, ctx))
         .subscribe(
-            next -> testFunction.call(next.getRight()),
-            context::fail,
-            async::complete
+            success -> {
+              testFunction.call(success.getRight());
+              async.complete();
+            },
+            context::fail
         );
   }
 

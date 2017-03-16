@@ -80,12 +80,14 @@ public class HtmlFragmentSplitterVerticleTest {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
-    service.processObservable(KnotContextFactory.empty(template))
+    service.rxProcess(KnotContextFactory.empty(template))
         .map(ctx -> Pair.of(async, ctx))
         .subscribe(
-            next -> testFunction.call(next.getRight()),
-            error -> context.fail(error),
-            () -> async.complete()
+            success -> {
+              testFunction.call(success.getRight());
+              async.complete();
+            },
+            error -> context.fail(error)
         );
   }
 

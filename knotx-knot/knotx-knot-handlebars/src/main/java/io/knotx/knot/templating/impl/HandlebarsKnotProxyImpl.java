@@ -15,13 +15,13 @@
  */
 package io.knotx.knot.templating.impl;
 
+import com.github.jknack.handlebars.Handlebars;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.knotx.knot.templating.HandlebarsKnotConfiguration;
 import io.knotx.knot.templating.handlebars.CustomHandlebarsHelper;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
-import com.github.jknack.handlebars.Handlebars;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
-import rx.Observable;
+import rx.Single;
 
 public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
@@ -53,8 +53,8 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
   }
 
   @Override
-  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
-    return Observable.create(observer -> {
+  protected Single<KnotContext> processRequest(KnotContext knotContext) {
+    return Single.create(observer -> {
       try {
         knotContext.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
@@ -64,8 +64,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
                     new HandlebarsFragment(fragment).compileWith(handlebars)
                     + endComment()))
         );
-        observer.onNext(knotContext);
-        observer.onCompleted();
+        observer.onSuccess(knotContext);
       } catch (Exception e) {
         observer.onError(e);
       }

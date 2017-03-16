@@ -50,8 +50,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
     KnotContext knotContext = context.get("knotContext");
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
-      assembler.processObservable(knotContext)
-          .doOnNext(this::traceMessage)
+      assembler.rxProcess(knotContext)
+          .doOnSuccess(this::traceMessage)
           .subscribe(
               ctx -> {
                 if (isOkClientResponse(ctx.getClientResponse())) {

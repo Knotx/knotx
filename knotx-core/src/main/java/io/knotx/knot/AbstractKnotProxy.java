@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import rx.Observable;
+import rx.Single;
 
 /**
  * Abstract class that should be root for all custom knots
@@ -38,7 +38,7 @@ public abstract class AbstractKnotProxy implements KnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractKnotProxy.class);
 
-  protected abstract Observable<KnotContext> processRequest(KnotContext knotContext);
+  protected abstract Single<KnotContext> processRequest(KnotContext knotContext);
 
   @Override
   public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
@@ -60,7 +60,7 @@ public abstract class AbstractKnotProxy implements KnotProxy {
 
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
-  protected boolean shouldProcess(KnotContext context) {
+  private boolean shouldProcess(KnotContext context) {
     Set<String> knots = Optional.ofNullable(context.getFragments())
         .map(this::getKnotSet)
         .orElse(Collections.emptySet());
