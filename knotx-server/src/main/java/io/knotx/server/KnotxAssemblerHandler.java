@@ -96,7 +96,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
             name ->
                 clientResponse.getHeaders()
                     .getAll(name)
-                    .forEach(value -> response.putHeader(name, value))
+                    .forEach(value -> response.headers().add(name, value))
         );
 
     response.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
