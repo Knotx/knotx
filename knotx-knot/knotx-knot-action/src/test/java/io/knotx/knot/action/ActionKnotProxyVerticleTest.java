@@ -208,7 +208,7 @@ public class ActionKnotProxyVerticleTest {
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.NOT_FOUND.code(),
+          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(),
               clientResponse.getClientResponse().getStatusCode());
           context.assertFalse(clientResponse.getFragments() != null);
           context.assertFalse(clientResponse.getTransition() != null);
@@ -227,7 +227,7 @@ public class ActionKnotProxyVerticleTest {
 
     callActionKnotWithAssertions(context, knotContext,
         clientResponse -> {
-          context.assertEquals(HttpResponseStatus.NOT_FOUND.code(),
+          context.assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(),
               clientResponse.getClientResponse().getStatusCode());
           context.assertFalse(clientResponse.getFragments() != null);
           context.assertFalse(clientResponse.getTransition() != null);

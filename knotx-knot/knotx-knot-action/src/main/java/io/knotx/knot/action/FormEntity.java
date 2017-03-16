@@ -15,18 +15,18 @@
  */
 package io.knotx.knot.action;
 
-import static io.knotx.knot.action.FormConstants.FORM_DEFAULT_IDENTIFIER;
 import static io.knotx.knot.action.FormConstants.FORM_ACTION_ATTR;
+import static io.knotx.knot.action.FormConstants.FORM_DEFAULT_IDENTIFIER;
 import static io.knotx.knot.action.FormConstants.FORM_SIGNAL_ATTR_PREFIX;
 import static io.knotx.knot.action.FormConstants.FRAGMENT_KNOT_PATTERN;
 import static io.knotx.knot.action.FormConstants.FRAGMENT_KNOT_PREFIX;
 
 import io.knotx.dataobjects.Fragment;
+import io.knotx.exceptions.ConfigurationException;
 import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -123,7 +123,7 @@ public class FormEntity {
         .orElseThrow(() -> {
           LOGGER.error("Could not find adapter name [{}] mapping in configuration [{}].",
               adapter, configuration.adapterMetadatas());
-          return new IllegalStateException("Could not find action adapter name");
+          return new ConfigurationException("Could not find action adapter name!");
         });
   }
 
@@ -131,12 +131,7 @@ public class FormEntity {
     return scriptDocument.getElementsByAttributeStarting(FORM_SIGNAL_ATTR_PREFIX).stream()
         .flatMap(element -> element.attributes().asList().stream())
         .filter(allAttr -> allAttr.getKey().startsWith(FORM_SIGNAL_ATTR_PREFIX))
-        .map(signalAttr -> (Entry<String, String>) signalAttr)
         .collect(Collectors.toMap(e -> e.getKey().replace(FORM_SIGNAL_ATTR_PREFIX, StringUtils.EMPTY),
-            Entry::getValue,
-            (v1, v2) -> {
-              throw new IllegalStateException();
-            },
-            HashMap::new));
+            Entry::getValue));
   }
 }

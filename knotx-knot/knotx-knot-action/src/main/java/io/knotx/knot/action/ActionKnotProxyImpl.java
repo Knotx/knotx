@@ -40,7 +40,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.Vertx;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -89,18 +88,11 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     return knots.stream().anyMatch(knot -> knot.startsWith(FRAGMENT_KNOT_PREFIX));
   }
 
+  @Override
   protected KnotContext processError(KnotContext context, Throwable error) {
+    LOGGER.error("Could not process template [{}]", error, context.getClientRequest().getPath());
     KnotContext errorResponse = new KnotContext().setClientResponse(context.getClientResponse());
-    HttpResponseStatus statusCode;
-    if (error instanceof NoSuchElementException) {
-      statusCode = HttpResponseStatus.NOT_FOUND;
-    } else if (error instanceof FormConfigurationException) {
-      LOGGER.error("Form incorrectly configured [{}]", context.getClientRequest());
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    } else {
-      statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    }
-    errorResponse.getClientResponse().setStatusCode(statusCode.code());
+    errorResponse.getClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
     return errorResponse;
   }
 
@@ -188,7 +180,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
         .map(f -> FormEntity.from(f, configuration))
         .collect(Collectors.toList());
     if (areUnique(forms)) {
-      throw new IllegalStateException();
+      LOGGER.error("Form identifiers are not unique [{}]", forms.stream().map(FormEntity::getIdentifier).toArray());
+      throw new IllegalStateException("Form identifiers are not unique!");
     }
     return forms;
   }
@@ -235,8 +228,10 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   private FormEntity currentForm(List<FormEntity> forms, KnotContext knotContext) {
     return forms.stream().filter(form -> isCurrentFormFragment(form, knotContext)).findFirst()
         .orElseThrow(() -> {
-          LOGGER.error("Could not form for [{}]", knotContext.getClientRequest().getFormAttributes());
-          return new NoSuchElementException();
+          LOGGER
+              .error("No form attribute [{}] matched with forms identifiers [{}]", knotContext.getClientRequest().getFormAttributes(),
+                  forms.stream().map(FormEntity::getIdentifier).toArray());
+          return new IllegalStateException("Could not match form identifiers!");
         });
   }
 
