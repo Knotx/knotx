@@ -45,8 +45,8 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     KnotContext knotContext = context.get("knotContext");
 
-    splitter.processObservable(knotContext)
-        .doOnNext(this::traceMessage)
+    splitter.rxProcess(knotContext)
+        .doOnSuccess(this::traceMessage)
         .subscribe(
             ctx -> {
               if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {

@@ -29,7 +29,7 @@ import io.vertx.rxjava.core.MultiMap;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import rx.Observable;
+import rx.Single;
 
 public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
@@ -43,21 +43,21 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
   }
 
   @Override
-  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
+  protected Single<KnotContext> processRequest(KnotContext knotContext) {
     if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
             .map(configuration.unprocessedFragmentStrategy()::get)
             .collect(Collectors.joining());
 
-        return Observable.just(createSuccessResponse(knotContext, joinedFragments));
+        return Single.just(createSuccessResponse(knotContext, joinedFragments));
       } catch (Exception ex) {
         LOGGER.error("Exception happened during Fragment assembly.", ex);
-        return Observable.just(processError(knotContext, ex));
+        return Single.just(processError(knotContext, ex));
       }
     } else {
       LOGGER.error("Fragments are empty or not exists in KnotContext.");
-      return Observable.just(processError(knotContext, null));
+      return Single.just(processError(knotContext, null));
     }
   }
 

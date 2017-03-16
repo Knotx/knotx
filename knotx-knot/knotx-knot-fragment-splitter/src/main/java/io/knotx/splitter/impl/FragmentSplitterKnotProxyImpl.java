@@ -22,7 +22,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import rx.Observable;
+import rx.Single;
 
 public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
 
@@ -31,16 +31,16 @@ public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
   private final FragmentSplitter splitter = new HtmlFragmentSplitter();
 
   @Override
-  protected Observable<KnotContext> processRequest(KnotContext knotContext) {
+  protected Single<KnotContext> processRequest(KnotContext knotContext) {
     try {
       knotContext
           .setFragments(splitter.split(knotContext.getClientResponse().getBody().toString()));
       knotContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
 
-      return Observable.just(knotContext);
+      return Single.just(knotContext);
     } catch (Exception ex) {
       LOGGER.error("Exception happened during HTML splitting.", ex);
-      return Observable.just(processError(knotContext, ex));
+      return Single.just(processError(knotContext, ex));
     }
   }
 
