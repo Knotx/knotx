@@ -61,8 +61,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
     KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
-    knot.processObservable(knotContext)
-        .doOnNext(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))
+    knot.rxProcess(knotContext)
+        .doOnSuccess(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
                 .ifPresent(on -> {

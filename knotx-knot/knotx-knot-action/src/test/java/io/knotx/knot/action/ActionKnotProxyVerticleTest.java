@@ -15,6 +15,7 @@
  */
 package io.knotx.knot.action;
 
+import com.google.common.collect.Lists;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.ClientResponse;
@@ -28,7 +29,6 @@ import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
 import io.knotx.proxy.AdapterProxy;
 import io.knotx.rxjava.proxy.KnotProxy;
-import com.google.common.collect.Lists;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -242,11 +242,13 @@ public class ActionKnotProxyVerticleTest {
 
     KnotProxy actionKnot = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
-    actionKnot.processObservable(knotContext)
+    actionKnot.rxProcess(knotContext)
         .subscribe(
-            onSuccess,
-            onError,
-            async::complete
+            success -> {
+              onSuccess.call(success);
+              async.complete();
+            },
+            onError
         );
   }
 

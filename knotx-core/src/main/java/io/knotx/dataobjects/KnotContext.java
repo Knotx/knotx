@@ -21,7 +21,7 @@ import com.google.common.cache.CacheBuilder;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
-import rx.Observable;
+import rx.Single;
 
 @DataObject(generateConverter = true)
 public class KnotContext {
@@ -34,7 +34,7 @@ public class KnotContext {
 
   private List<Fragment> fragments;
 
-  private volatile Cache<String, Observable<JsonObject>> cache = CacheBuilder.newBuilder().build();
+  private volatile Cache<String, Single<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
   public KnotContext() {
     //Nothing to set by default
@@ -91,7 +91,7 @@ public class KnotContext {
     return this;
   }
 
-  public Cache<String, Observable<JsonObject>> getCache() {
+  public Cache<String, Single<JsonObject>> getCache() {
     return cache;
   }
 
