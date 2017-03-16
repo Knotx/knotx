@@ -117,7 +117,9 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
         .setHeaders(getFilteredHeaders(knotContext.getClientRequest().getHeaders(),
             metadata.getAllowedRequestHeaders()));
 
-    return new AdapterRequest().setRequest(request).setParams(new JsonObject(metadata.getParams()));
+    AdapterRequest adapterRequest = new AdapterRequest().setRequest(request).setParams(new JsonObject(metadata.getParams()));
+    LOGGER.info("Adapter [{}] call with request [{}]", metadata.getAddress(), adapterRequest);
+    return adapterRequest;
   }
 
   private KnotContext processAdapterResponse(KnotContext knotContext, List<FormEntity> forms, FormEntity form, AdapterResponse response) {
