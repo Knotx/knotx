@@ -39,8 +39,6 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
   private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end compiled snippet -->";
 
-  private static final String DEFAULT_HANDLEBARS_TRANSITION = "next";
-
   private static final String SUPPORTED_FRAGMENT_KNOT = "handlebars";
 
   private Handlebars handlebars;
@@ -56,7 +54,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
   protected Single<KnotContext> processRequest(KnotContext knotContext) {
     return Single.create(observer -> {
       try {
-        knotContext.setTransition(DEFAULT_HANDLEBARS_TRANSITION);
+        knotContext.setTransition(DEFAULT_TRANSITION);
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
                 .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_KNOT))

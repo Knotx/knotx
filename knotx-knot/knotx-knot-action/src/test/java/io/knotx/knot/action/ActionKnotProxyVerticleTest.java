@@ -61,7 +61,7 @@ import rx.functions.Func1;
 @RunWith(VertxUnitRunner.class)
 public class ActionKnotProxyVerticleTest {
 
-  public static final String EXPECTED_KNOT_TRANSITION = "next";
+  public static final String KNOT_TRANSITION = "next";
   private final static String ADDRESS = "knotx.knot.action";
   private final static String HIDDEN_INPUT_TAG_NAME = "snippet-identifier";
   private static final String FRAGMENT_KNOTS = "data-knotx-knots";
@@ -96,7 +96,7 @@ public class ActionKnotProxyVerticleTest {
           context.assertEquals(HttpResponseStatus.OK.code(),
               clientResponse.getClientResponse().getStatusCode());
           context.assertTrue(clientResponse.getTransition() != null);
-          context.assertEquals("next", clientResponse.getTransition());
+          context.assertEquals(KNOT_TRANSITION, clientResponse.getTransition());
           context.assertTrue(clientResponse.getFragments() != null);
 
           List<Fragment> fragments = clientResponse.getFragments();
@@ -122,7 +122,7 @@ public class ActionKnotProxyVerticleTest {
           context.assertEquals(HttpResponseStatus.OK.code(),
               clientResponse.getClientResponse().getStatusCode());
           context.assertTrue(clientResponse.getTransition() != null);
-          context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.getTransition());
+          context.assertEquals(KNOT_TRANSITION, clientResponse.getTransition());
           context.assertTrue(clientResponse.getFragments() != null);
 
           List<Fragment> fragments = clientResponse.getFragments();
@@ -148,7 +148,7 @@ public class ActionKnotProxyVerticleTest {
           context.assertEquals(HttpResponseStatus.OK.code(),
               clientResponse.getClientResponse().getStatusCode());
           context.assertTrue(clientResponse.getTransition() != null);
-          context.assertEquals(EXPECTED_KNOT_TRANSITION, clientResponse.getTransition());
+          context.assertEquals(KNOT_TRANSITION, clientResponse.getTransition());
           context.assertTrue(clientResponse.getFragments() != null);
 
           List<Fragment> fragments = clientResponse.getFragments();

@@ -34,8 +34,6 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyImpl.class);
 
-  private static final String DEFAULT_TEMPLATING_KNOT = "next";
-
   private static final String SUPPORTED_FRAGMENT_ID = "services";
 
   private FragmentProcessor snippetProcessor;
@@ -82,7 +80,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
         .setClientResponse(inputContext.getClientResponse())
         .setFragments(
             Optional.ofNullable(inputContext.getFragments()).orElse(Collections.emptyList()))
-        .setTransition(DEFAULT_TEMPLATING_KNOT);
+        .setTransition(DEFAULT_TRANSITION);
   }
 
   private Observable<FragmentContext> compileHtmlFragment(Fragment fragment) {

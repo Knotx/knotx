@@ -15,7 +15,6 @@
  */
 package io.knotx.knot.action;
 
-import io.knotx.knot.action.impl.ActionKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
