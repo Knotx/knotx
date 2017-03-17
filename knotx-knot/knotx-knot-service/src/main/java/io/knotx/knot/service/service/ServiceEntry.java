@@ -46,7 +46,9 @@ public class ServiceEntry {
   }
 
   public ServiceEntry mergeParams(JsonObject defaultParams) {
-    this.params = defaultParams.copy().mergeIn(this.params);
+    if (defaultParams != null) {
+      this.params = defaultParams.copy().mergeIn(this.params);
+    }
     return this;
   }
 
