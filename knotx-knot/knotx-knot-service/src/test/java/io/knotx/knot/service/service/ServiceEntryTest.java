@@ -26,12 +26,18 @@ import org.junit.Test;
 
 public class ServiceEntryTest {
 
-  private ServiceKnotConfiguration config;
+  private ServiceKnotConfiguration configWithDefaultParams;
+
+  private ServiceKnotConfiguration configNoDefaultParams;
 
   @Before
   public void setUp() throws Exception {
-    JsonObject configFile = new JsonObject(FileReader.readText("service-correct.json"));
-    this.config = new ServiceKnotConfiguration(configFile);
+    configWithDefaultParams = new ServiceKnotConfiguration(
+        new JsonObject(FileReader.readText("service-correct.json"))
+    );
+    configNoDefaultParams = new ServiceKnotConfiguration(
+        new JsonObject(FileReader.readText("service-correct-no-params.json"))
+    );
   }
 
 
@@ -40,7 +46,7 @@ public class ServiceEntryTest {
     ServiceEntry serviceEntry = new ServiceEntry(
         new Attribute("data-knotx-service-first", "first-service"),
         new Attribute("data-knotx-params-first", "{\"path\":\"first-service\"}"));
-    serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
+    serviceEntry.mergeParams(configWithDefaultParams.getServices().stream().findFirst().get().getParams());
     Assert.assertEquals("first-service", serviceEntry.getParams().getString("path"));
   }
 
@@ -49,7 +55,7 @@ public class ServiceEntryTest {
     ServiceEntry serviceEntry = new ServiceEntry(
         new Attribute("data-knotx-service-first", "first-service"),
         new Attribute("data-knotx-params-first", "{}"));
-    serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
+    serviceEntry.mergeParams(configWithDefaultParams.getServices().stream().findFirst().get().getParams());
     Assert.assertEquals("/service/mock/first.json", serviceEntry.getParams().getString("path"));
   }
 
@@ -58,9 +64,17 @@ public class ServiceEntryTest {
     ServiceEntry serviceEntry = new ServiceEntry(
         new Attribute("data-knotx-service-first", "first-service"),
         new Attribute("data-knotx-params-first", "{\"name\":\"first-service-name\"}"));
-    serviceEntry.mergeParams(config.getServices().stream().findFirst().get().getParams());
+    serviceEntry.mergeParams(configWithDefaultParams.getServices().stream().findFirst().get().getParams());
     Assert.assertEquals("/service/mock/first.json", serviceEntry.getParams().getString("path"));
     Assert.assertEquals("first-service-name", serviceEntry.getParams().getString("name"));
   }
 
+  @Test
+  public void mergePayload_whenNoDefaultParams_expectDefinedParamsUsed() throws Exception {
+    ServiceEntry serviceEntry = new ServiceEntry(
+        new Attribute("data-knotx-service-first", "first-service"),
+        new Attribute("data-knotx-params-first", "{\"path\":\"some-other-service.json\"}"));
+    serviceEntry.mergeParams(configNoDefaultParams.getServices().stream().findFirst().get().getParams());
+    Assert.assertEquals("some-other-service.json", serviceEntry.getParams().getString("path"));
+  }
 }
