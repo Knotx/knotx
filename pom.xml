@@ -93,8 +93,8 @@
     <java.version>1.8</java.version>
 
     <!-- Dependency versions -->
-    <vertx.version>3.4.0</vertx.version>
-    <rxjava.version>1.2.5</rxjava.version>
+    <vertx.version>3.4.1</vertx.version>
+    <rxjava.version>1.2.7</rxjava.version>
     <jsoup.version>1.10.2</jsoup.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-lang3.version>3.5</commons-lang3.version>
