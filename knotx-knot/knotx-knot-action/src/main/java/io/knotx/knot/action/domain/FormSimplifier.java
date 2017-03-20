@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.action;
+package io.knotx.knot.action.domain;
 
-class FormConstants {
+/**
+ * It removes all Knot.x specific tags from form fragment (form definition). Additionally it adds hidden input field with from identifier.
+ */
+public interface FormSimplifier {
 
-  static final String FRAGMENT_KNOT_PREFIX = "form";
-  static final String FORM_DEFAULT_IDENTIFIER = "_default_";
-  static final String FORM_NO_REDIRECT_SIGNAL = "_self";
-
-  static final String FRAGMENT_KNOT_PATTERN = "form(-)?";
-  static final String FORM_SIGNAL_ATTR_PREFIX = "data-knotx-on-";
-  static final String FORM_ACTION_ATTR = "data-knotx-action";
-
-  static final String ACTION_FORM_ATTRIBUTES_PATTERN = "data-knotx-.*";
-
-  private FormConstants() {
-    // hidden
-  }
+  String simplify(String content, String formIdAttrName, String formIdAttrValue);
 
 }

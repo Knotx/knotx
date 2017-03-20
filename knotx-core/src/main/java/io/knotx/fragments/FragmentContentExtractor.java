@@ -40,4 +40,9 @@ public final class FragmentContentExtractor {
     Element scriptTag = Jsoup.parseBodyFragment(fragment.content()).body().child(0);
     return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());
   }
+
+  public static Document getUnwrappedDocument(String content) {
+    Element scriptTag = Jsoup.parseBodyFragment(content).body().child(0);
+    return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());
+  }
 }

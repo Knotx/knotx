@@ -15,6 +15,7 @@
  */
 package io.knotx.knot.action;
 
+import io.knotx.knot.action.domain.DefaultFormSimplifier;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -46,7 +47,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
     //register the service proxy on event bus
     consumer = ProxyHelper
         .registerService(KnotProxy.class, vertx,
-            new ActionKnotProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+            new ActionKnotProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration, new DefaultFormSimplifier()),
             configuration.address());
   }
 

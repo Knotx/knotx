@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.action;
+package io.knotx.knot.action.domain;
 
-import static io.knotx.knot.action.FormConstants.FORM_ACTION_ATTR;
-import static io.knotx.knot.action.FormConstants.FORM_DEFAULT_IDENTIFIER;
-import static io.knotx.knot.action.FormConstants.FORM_SIGNAL_ATTR_PREFIX;
-import static io.knotx.knot.action.FormConstants.FRAGMENT_KNOT_PATTERN;
-import static io.knotx.knot.action.FormConstants.FRAGMENT_KNOT_PREFIX;
+import static io.knotx.knot.action.domain.FormConstants.FORM_ACTION_ATTR;
+import static io.knotx.knot.action.domain.FormConstants.FORM_DEFAULT_IDENTIFIER;
+import static io.knotx.knot.action.domain.FormConstants.FORM_SIGNAL_ATTR_PREFIX;
+import static io.knotx.knot.action.domain.FormConstants.FRAGMENT_KNOT_PATTERN;
+import static io.knotx.knot.action.domain.FormConstants.FRAGMENT_KNOT_PREFIX;
 
 import io.knotx.dataobjects.Fragment;
+import io.knotx.dataobjects.KnotContext;
 import io.knotx.exceptions.ConfigurationException;
 import io.knotx.fragments.FragmentContentExtractor;
+import io.knotx.knot.action.ActionKnotConfiguration;
 import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -57,20 +59,31 @@ public class FormEntity {
 
   }
 
-  public Fragment getFragment() {
+  public Fragment fragment() {
     return fragment;
   }
 
-  public String getIdentifier() {
+  public String identifier() {
     return identifier;
   }
 
-  public AdapterMetadata getAdapter() {
+  public AdapterMetadata adapter() {
     return adapter;
   }
 
-  public Optional<String> getUrl(String signal) {
+  public Optional<String> url(String signal) {
     return Optional.ofNullable(signalToUrl.get(signal));
+  }
+
+  public boolean current(KnotContext knotContext, String formIdAttrName) {
+    return getFormIdentifierFromRequest(knotContext, formIdAttrName)
+        .map(formIdentifier -> identifier().equals(formIdentifier))
+        .orElse(Boolean.FALSE);
+  }
+
+  private static Optional<String> getFormIdentifierFromRequest(KnotContext knotContext, String formIdAttrName) {
+    return Optional.ofNullable(
+        knotContext.getClientRequest().getFormAttributes().get(formIdAttrName));
   }
 
   private FormEntity fragment(Fragment fragment) {
