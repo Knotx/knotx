@@ -3,6 +3,9 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+
+
+## Version 1.0.1
 - [PR-288](https://github.com/Cognifide/knotx/pull/288) - action knot refactor
 - [PR-290](https://github.com/Cognifide/knotx/pull/290) - allow defining services without default `params` configured
 - [PR-289](https://github.com/Cognifide/knotx/pull/289) - upgraded versions: Vert.x to 3.4.1 and RxJava to 1.2.7
