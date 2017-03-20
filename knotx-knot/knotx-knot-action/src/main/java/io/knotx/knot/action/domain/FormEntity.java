@@ -50,7 +50,7 @@ public class FormEntity {
   private Map<String, String> signalToUrl;
 
   public static FormEntity from(Fragment fragment, ActionKnotConfiguration configuration) {
-    Document scriptDocument = FragmentContentExtractor.unwrappedDocument(fragment);
+    Document scriptDocument = FragmentContentExtractor.unwrapDocument(fragment);
     return new FormEntity()
         .fragment(fragment)
         .identifier(getFormIdentifier(fragment))

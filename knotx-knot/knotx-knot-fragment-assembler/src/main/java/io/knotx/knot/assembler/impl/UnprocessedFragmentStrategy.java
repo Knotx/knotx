@@ -32,7 +32,7 @@ public enum UnprocessedFragmentStrategy {
     @Override
     protected String get(Fragment fragment) {
       if (!fragment.isRaw() && fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
-        return "<!-- SNIPPET UNWRAPED START -->" + FragmentContentExtractor.unwrappedContent(fragment)
+        return "<!-- SNIPPET UNWRAPED START -->" + FragmentContentExtractor.unwrapContent(fragment)
             + "<!-- SNIPPET UNWRAPED STOP -->";
       } else {
         return fragment.content();
