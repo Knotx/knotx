@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import rx.Single;
 
 /**
@@ -37,6 +38,8 @@ import rx.Single;
 public abstract class AbstractKnotProxy implements KnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractKnotProxy.class);
+
+  protected static final String DEFAULT_TRANSITION = "next";
 
   protected abstract Single<KnotContext> processRequest(KnotContext knotContext);
 
@@ -52,6 +55,8 @@ public abstract class AbstractKnotProxy implements KnotProxy {
               }
           );
     } else {
+      knotContext.setTransition(StringUtils.isBlank(knotContext.getTransition()) ?
+          DEFAULT_TRANSITION : knotContext.getTransition());
       result.handle(Future.succeededFuture(knotContext));
     }
   }

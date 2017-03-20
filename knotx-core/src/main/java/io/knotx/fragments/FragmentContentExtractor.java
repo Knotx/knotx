@@ -16,6 +16,10 @@
 package io.knotx.fragments;
 
 import io.knotx.dataobjects.Fragment;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 
 public final class FragmentContentExtractor {
 
@@ -23,12 +27,24 @@ public final class FragmentContentExtractor {
     //util class
   }
 
-  public static String getUnwrappedContent(Fragment fragment) {
+  public static String unwrapContent(Fragment fragment) {
     if (fragment == null) {
       return null;
     }
 
     String content = fragment.content();
     return fragment.isRaw() ? content : content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
+  }
+
+  public static Document unwrapDocument(Fragment fragment) {
+    if (fragment == null) {
+      return null;
+    }
+    return unwrapDocument(fragment.content());
+  }
+
+  public static Document unwrapDocument(String content) {
+    Element scriptTag = Jsoup.parseBodyFragment(content).body().child(0);
+    return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());
   }
 }

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.action;
+package io.knotx.knot.action.domain;
 
+/**
+ * It removes all Knot.x specific tags from form fragment (form definition). Additionally it adds hidden input field with from identifier.
+ */
+public interface FormSimplifier {
 
-import io.knotx.dataobjects.Fragment;
+  String simplify(String content, String formIdAttrName, String formIdAttrValue);
 
-public class FormConfigurationException extends RuntimeException {
-
-  public FormConfigurationException(Fragment fragment) {
-    super("Form not configured correctly " + fragment.knots());
-  }
 }
