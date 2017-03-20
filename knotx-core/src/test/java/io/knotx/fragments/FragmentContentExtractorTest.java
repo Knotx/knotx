@@ -45,7 +45,7 @@ public class FragmentContentExtractorTest {
       String expectedContentFileName) throws Exception {
 
     final String expectedContent = readText(expectedContentFileName);
-    final String unwrappedContent = FragmentContentExtractor.getUnwrappedContent(fragment);
+    final String unwrappedContent = FragmentContentExtractor.unwrappedContent(fragment);
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
@@ -54,13 +54,13 @@ public class FragmentContentExtractorTest {
       "raw_snippet.txt"
   })
   public void getUnwrappedContent_withRawFragment_expectNotChangedContent(Fragment fragment) throws Exception {
-    final String unwrappedContent = FragmentContentExtractor.getUnwrappedContent(fragment);
+    final String unwrappedContent = FragmentContentExtractor.unwrappedContent(fragment);
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(fragment.content()));
   }
 
   @Test
   public void getUnwrappedContent_withNullFragment_expectNull() throws Exception {
-    assertNull(FragmentContentExtractor.getUnwrappedContent(null));
+    assertNull(FragmentContentExtractor.unwrappedContent(null));
   }
 
   @Coercion

@@ -38,7 +38,7 @@ class HandlebarsFragment {
 
   HandlebarsFragment(Fragment fragment) {
     this.fragment = fragment;
-    this.unwrappedContent = FragmentContentExtractor.getUnwrappedContent(fragment);
+    this.unwrappedContent = FragmentContentExtractor.unwrappedContent(fragment);
   }
 
   String compileWith(Handlebars handlebars) {

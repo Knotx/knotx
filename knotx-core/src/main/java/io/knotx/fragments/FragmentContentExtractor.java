@@ -27,7 +27,7 @@ public final class FragmentContentExtractor {
     //util class
   }
 
-  public static String getUnwrappedContent(Fragment fragment) {
+  public static String unwrappedContent(Fragment fragment) {
     if (fragment == null) {
       return null;
     }
@@ -36,12 +36,14 @@ public final class FragmentContentExtractor {
     return fragment.isRaw() ? content : content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
   }
 
-  public static Document getUnwrappedDocument(Fragment fragment) {
-    Element scriptTag = Jsoup.parseBodyFragment(fragment.content()).body().child(0);
-    return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());
+  public static Document unwrappedDocument(Fragment fragment) {
+    if (fragment == null) {
+      return null;
+    }
+    return unwrappedDocument(fragment.content());
   }
 
-  public static Document getUnwrappedDocument(String content) {
+  public static Document unwrappedDocument(String content) {
     Element scriptTag = Jsoup.parseBodyFragment(content).body().child(0);
     return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());
   }

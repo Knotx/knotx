@@ -35,7 +35,7 @@ public class DefaultFormSimplifier implements FormSimplifier {
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFormSimplifier.class);
 
   public String simplify(String content, String formIdAttrName, String formIdAttrValue) {
-    Document scriptContentDocument = FragmentContentExtractor.getUnwrappedDocument(content);
+    Document scriptContentDocument = FragmentContentExtractor.unwrappedDocument(content);
     Element actionFormElement = scriptContentDocument.getElementsByAttribute(FORM_ACTION_ATTR).first();
 
     LOGGER.trace("Changing form with identifier [{}]", formIdAttrValue);
