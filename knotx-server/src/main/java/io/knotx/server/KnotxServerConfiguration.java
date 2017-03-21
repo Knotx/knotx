@@ -23,6 +23,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class KnotxServerConfiguration {
 
     engineRouting = Maps.newEnumMap(HttpMethod.class);
     config.getJsonObject("routing").stream()
-        .forEach(entry -> parseMethodRouting(entry));
+        .forEach(this::parseMethodRouting);
 
     repositoryAddressMapping = Maps.newHashMap();
     config.getJsonArray("repositories").stream()
@@ -85,14 +86,14 @@ public class KnotxServerConfiguration {
   public Optional<RepositoryEntry> repositoryForPath(final String path) {
     return repositoryAddressMapping.entrySet().stream()
         .filter(mapping -> path.matches(mapping.getKey()))
-        .findFirst().map(matching -> matching.getValue());
+        .findFirst().map(Entry::getValue);
   }
 
   public Set<String> allowedResponseHeaders() {
     return allowedResponseHeaders;
   }
 
-  public EnumMap<HttpMethod, List<RoutingEntry>> getEngineRouting() {
+  public Map<HttpMethod, List<RoutingEntry>> getEngineRouting() {
     return engineRouting;
   }
 
@@ -102,7 +103,7 @@ public class KnotxServerConfiguration {
 
     ((JsonArray) entry.getValue()).stream()
         .map(item -> (JsonObject) item)
-        .map(item -> parseRoutingCriteria(item))
+        .map(this::parseRoutingCriteria)
         .forEach(methodCriteria::add);
   }
 

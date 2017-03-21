@@ -39,8 +39,8 @@ public final class UrlEncodedBodyBuilder {
     if (formAttributes == null || formAttributes.isEmpty()) {
       return StringUtils.EMPTY;
     } else {
-      Iterator<Entry<String, String>> entryIt = ((io.vertx.core.MultiMap) formAttributes
-          .getDelegate())
+      Iterator<Entry<String, String>> entryIt = formAttributes
+          .getDelegate()
           .iterator();
 
       StringBuilder sb = new StringBuilder(128);

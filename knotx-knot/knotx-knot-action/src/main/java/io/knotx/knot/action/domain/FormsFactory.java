@@ -24,9 +24,13 @@ import io.vertx.core.logging.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FormsFactory {
+public final class FormsFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FormsFactory.class);
+
+  private FormsFactory() {
+    // util class
+  }
 
   public static List<FormEntity> create(KnotContext context, ActionKnotConfiguration conf) {
     List<FormEntity> forms = context.getFragments().stream()

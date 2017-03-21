@@ -68,10 +68,6 @@ public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
 
   private boolean isJsonBody(Buffer bodyBuffer) {
     String body = bodyBuffer.toString().trim();
-    if (body.charAt(0) == '{' && body.charAt(body.length() - 1) == '}') {
-      return true;
-    } else {
-      return false;
-    }
+    return body.charAt(0) == '{' && body.charAt(body.length() - 1) == '}';
   }
 }

@@ -77,7 +77,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                   context.response().setStatusCode(repoResponse.getStatusCode()).end();
                 }
               },
-              error -> context.fail(error)
+              context::fail
           );
 
     } else {

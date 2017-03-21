@@ -15,11 +15,18 @@
  */
 package io.knotx.knot.action.domain;
 
-/**
- * It removes all Knot.x specific tags from form fragment (form definition). Additionally it adds hidden input field with from identifier.
- */
+@FunctionalInterface
 public interface FormSimplifier {
 
+  /**
+   * Removes all Knot.x specific tags from form fragment (form definition).
+   * Additionally it adds hidden input field with from identifier.
+   *
+   * @param content - content of a fragment that should be processed.
+   * @param formIdAttrName - unique identifier of a hidden form field.
+   * @param formIdAttrValue - value of identifier hidden field.
+   * @return processed content.
+   */
   String simplify(String content, String formIdAttrName, String formIdAttrValue);
 
 }

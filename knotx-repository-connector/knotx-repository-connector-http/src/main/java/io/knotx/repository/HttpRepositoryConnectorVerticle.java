@@ -44,7 +44,6 @@ public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
   @Override
   public void start() throws Exception {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
-    //RepositoryConnectorService service = RepositoryConnectorService.create(vertx, config());
 
     //register the service proxy on event bus
     consumer = ProxyHelper
