@@ -22,8 +22,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import io.knotx.junit.util.FileReader;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class KnotxServerConfigurationRoutingTest {
 
   private static final int FIRST_IDX = 0;
   private static final int SECOND_IDX = 1;
-  private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
+  private Map<HttpMethod, List<RoutingEntry>> engineRouting;
 
   @Before
   public void before() throws Exception {
