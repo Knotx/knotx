@@ -160,7 +160,7 @@ public class HttpClientFacade {
         .reduce(Buffer::appendBuffer)
         .doOnNext(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
-            .setBody((io.vertx.core.buffer.Buffer) buffer.getDelegate())
+            .setBody(buffer.getDelegate())
             .setHeaders(response.headers())
             .setStatusCode(response.statusCode())
         );

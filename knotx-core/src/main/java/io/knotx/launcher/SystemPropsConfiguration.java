@@ -16,7 +16,6 @@
 package io.knotx.launcher;
 
 import com.google.common.collect.Maps;
-import io.knotx.exceptions.ConfigurationException;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -39,15 +38,15 @@ public class SystemPropsConfiguration {
         .stream()
         .filter(entry -> onlyPropertyForIdentifier(entry, identifier))
         .collect(Collectors.toMap(
-            entry -> StringUtils.substringAfter(((String) entry.getKey()), identifier + "."),
-            entry -> new Value(((String) entry.getValue()))
+            entry -> StringUtils.substringAfter((String) entry.getKey(), identifier + "."),
+            entry -> new Value((String) entry.getValue())
         ));
   }
 
   private boolean onlyPropertyForIdentifier(Entry<Object, Object> entry, String identifier) {
     boolean result = false;
 
-    String key = ((String) entry.getKey());
+    String key = (String) entry.getKey();
     if (key.startsWith(identifier)) {
       if (StringUtils.isBlank(StringUtils.substringAfter(key, identifier + "."))) {
         LOGGER

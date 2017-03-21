@@ -19,7 +19,11 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
-public class MultiMapConverter {
+public final class MultiMapConverter {
+
+  private MultiMapConverter() {
+    //util constructor
+  }
 
   /**
    * Converts MultiMap to JsonObject<br> It expects the MultiMap key, contains List of String

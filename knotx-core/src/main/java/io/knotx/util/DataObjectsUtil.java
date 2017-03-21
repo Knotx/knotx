@@ -19,10 +19,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import io.vertx.rxjava.core.MultiMap;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
-public class DataObjectsUtil {
+public final class DataObjectsUtil {
+
+  private DataObjectsUtil() {
+    //util constructor
+  }
 
   /**
    * Equality operator for MultiMap objects.

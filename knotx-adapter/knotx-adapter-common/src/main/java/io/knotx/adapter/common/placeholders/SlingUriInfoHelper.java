@@ -37,7 +37,7 @@ public final class SlingUriInfoHelper {
   private static final Pattern URI_PATTERN = Pattern.compile(
       "([^\\.\\?#]+)(\\.([^\\/\\?#]+)\\.)?(\\.?([^\\/\\?#]+))?([^\\?#]+)?((\\?|#).+)?");
 
-  private static final Map<String, SlingUriInfo> cache = new HashMap<String, SlingUriInfo>();
+  private static final Map<String, SlingUriInfo> cache = new HashMap<>();
 
   private SlingUriInfoHelper() {
     // util
