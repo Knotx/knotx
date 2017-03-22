@@ -42,7 +42,7 @@ public final class MultiMapConverter {
   public static JsonObject toJsonObject(MultiMap multiMap) {
     JsonObject json = new JsonObject();
 
-    ((io.vertx.core.MultiMap) multiMap.getDelegate()).forEach(
+    multiMap.getDelegate().forEach(
         entry -> {
           JsonArray values;
           if (json.containsKey(entry.getKey())) {

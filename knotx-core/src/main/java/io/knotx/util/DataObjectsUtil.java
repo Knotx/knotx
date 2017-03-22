@@ -72,7 +72,7 @@ public final class DataObjectsUtil {
    * @return - hashcode of the given {@link MultiMap} object
    */
   public static int multiMapHash(MultiMap multiMap) {
-    io.vertx.core.MultiMap map = (io.vertx.core.MultiMap) multiMap.getDelegate();
+    io.vertx.core.MultiMap map = multiMap.getDelegate();
 
     return map.entries().stream().mapToInt(
         entry -> 31 * entry.getKey().hashCode() + (entry.getValue() == null ? 0

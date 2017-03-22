@@ -18,51 +18,46 @@ package io.knotx.adapter.common.http;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
 import io.knotx.adapter.common.placeholders.UriTransformer;
-import io.knotx.adapter.common.post.UrlEncodedBodyBuilder;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.MultiMap;
 import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientRequest;
-import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.rxjava.ext.web.client.HttpRequest;
+import io.vertx.rxjava.ext.web.client.HttpResponse;
+import io.vertx.rxjava.ext.web.client.WebClient;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Observable;
+import rx.Single;
 
 public class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
   private static final String PATH_PROPERTY_KEY = "path";
-  private static final ClientResponse INTERNAL_SERVER_ERROR_RESPONSE = new ClientResponse()
-      .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
 
   private final List<ServiceMetadata> services;
 
-  private final HttpClient httpClient;
+  private final WebClient webClient;
 
-  public HttpClientFacade(HttpClient httpClient, List<ServiceMetadata> services) {
-    this.httpClient = httpClient;
+  public HttpClientFacade(WebClient webClient, List<ServiceMetadata> services) {
+    this.webClient = webClient;
     this.services = services;
   }
 
-  public Observable<ClientResponse> process(AdapterRequest message, HttpMethod method) {
-    return Observable.just(message)
-        .doOnNext(this::validateContract)
+  public Single<ClientResponse> process(AdapterRequest message, HttpMethod method) {
+    return Single.just(message)
+        .doOnSuccess(this::validateContract)
         .map(this::prepareRequestData)
         .flatMap(serviceRequest -> callService(serviceRequest, method))
-        .flatMap(this::wrapResponse)
-        .defaultIfEmpty(INTERNAL_SERVER_ERROR_RESPONSE);
+        .flatMap(this::wrapResponse);
   }
 
   /**
@@ -124,28 +119,28 @@ public class HttpClientFacade {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
-  private Observable<HttpClientResponse> callService(
+  private Single<HttpResponse<Buffer>> callService(
       Pair<ClientRequest, ServiceMetadata> serviceData, HttpMethod method) {
+    final Single<HttpResponse<Buffer>> httpResponse;
+
     final ClientRequest serviceRequest = serviceData.getLeft();
     final ServiceMetadata serviceMetadata = serviceData.getRight();
 
-    return Observable.create(subscriber -> {
-      HttpClientRequest httpRequest = httpClient
-          .request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(),
-              serviceRequest.getPath());
-      Observable<HttpClientResponse> resp = httpRequest.toObservable();
-      resp.subscribe(subscriber);
+    final HttpRequest<Buffer> request = webClient
+        .request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(),
+            serviceRequest.getPath());
 
-      MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
-          serviceMetadata.getAllowedRequestHeaderPatterns());
-      filteredHeaders.names().forEach(
-          headerName -> httpRequest.putHeader(headerName, filteredHeaders.get(headerName)));
-      if (!serviceRequest.getFormAttributes().isEmpty()) {
-        httpRequest.end(UrlEncodedBodyBuilder.encodeBody(serviceRequest.getFormAttributes()));
-      } else {
-        httpRequest.end();
-      }
-    });
+    MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
+        serviceMetadata.getAllowedRequestHeaderPatterns());
+    filteredHeaders.names().forEach(
+        headerName -> request.putHeader(headerName, filteredHeaders.get(headerName)));
+    if (!serviceRequest.getFormAttributes().isEmpty()) {
+      httpResponse = request.rxSendForm(serviceRequest.getFormAttributes());
+    } else {
+      httpResponse = request.rxSend();
+    }
+
+    return httpResponse;
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
@@ -154,11 +149,9 @@ public class HttpClientFacade {
         .collect(MultiMapCollector.toMultiMap(o -> o, headers::getAll));
   }
 
-  private Observable<ClientResponse> wrapResponse(HttpClientResponse response) {
-    return Observable.just(Buffer.buffer())
-        .mergeWith(response.toObservable())
-        .reduce(Buffer::appendBuffer)
-        .doOnNext(this::traceServiceCall)
+  private Single<ClientResponse> wrapResponse(HttpResponse<Buffer> response) {
+    return Single.just(response.body())
+        .doOnSuccess(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
             .setBody(buffer.getDelegate())
             .setHeaders(response.headers())
