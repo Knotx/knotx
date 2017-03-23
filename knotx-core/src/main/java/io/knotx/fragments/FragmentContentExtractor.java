@@ -27,15 +27,28 @@ public final class FragmentContentExtractor {
     //util class
   }
 
+  /**
+   * Extracts pure markup from the given {@link Fragment}'s content removing Knotx data.
+   *
+   * @param fragment that content will be unwrapped.
+   * @return markup without Knotx data processing instructions.
+   */
   public static String unwrapContent(Fragment fragment) {
     if (fragment == null) {
       return null;
     }
 
     String content = fragment.content();
-    return fragment.isRaw() ? content : content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
+    return fragment.isRaw() ? content
+        : content.substring(content.indexOf('>') + 1, content.lastIndexOf('<'));
   }
 
+  /**
+   * Extracts pure markup from the given {@link Fragment}'s content removing Knotx data.
+   *
+   * @param fragment that content will be unwrapped.
+   * @return markup without Knotx data processing instructions in a form of jsoup {@link Document}.
+   */
   public static Document unwrapDocument(Fragment fragment) {
     if (fragment == null) {
       return null;
@@ -43,6 +56,12 @@ public final class FragmentContentExtractor {
     return unwrapDocument(fragment.content());
   }
 
+  /**
+   * Extracts pure markup from the given markup.
+   *
+   * @param content markup that contains Knotx processing instructions.
+   * @return markup without Knotx data processing instructions in a form of jsoup {@link Document}.
+   */
   public static Document unwrapDocument(String content) {
     Element scriptTag = Jsoup.parseBodyFragment(content).body().child(0);
     return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());

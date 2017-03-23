@@ -25,6 +25,9 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * An entity representing markup fragment that should be processed by Knots.
+ */
 @DataObject(inheritConverter = true)
 public class Fragment {
 
@@ -66,10 +69,16 @@ public class Fragment {
         .put(CONTEXT_KEY, context);
   }
 
+  /**
+   * @return list of Knots names that will process this fragment.
+   */
   public List<String> knots() {
     return knots;
   }
 
+  /**
+   * @return markup content of this fragment.
+   */
   public String content() {
     return content;
   }
@@ -79,10 +88,17 @@ public class Fragment {
     return this;
   }
 
+  /**
+   * @return a {@link JsonObject} containing context of processing this fragment, e.g. ActionKnot
+   * can put there `action` context that contains data accumulated during action processing.
+   */
   public JsonObject context() {
     return context;
   }
 
+  /**
+   * @return <tt>true</tt> if this Fragment has no dynamic parts (contains only static markup).
+   */
   public boolean isRaw() {
     return knots.contains(RAW_FRAGMENT_ID);
   }
