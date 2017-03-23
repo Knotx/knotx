@@ -42,6 +42,8 @@ public class HttpClientFacade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientFacade.class);
   private static final String PATH_PROPERTY_KEY = "path";
+  private static final String QUERY_PARAMS_PROPERTY_KEY = "queryParams";
+  private static final String HEADERS_PROPERTY_KEY = "headers";
 
   private final List<ServiceMetadata> services;
 
@@ -100,12 +102,19 @@ public class HttpClientFacade {
   private Pair<ClientRequest, ServiceMetadata> prepareRequestData(AdapterRequest adapterRequest) {
     final Pair<ClientRequest, ServiceMetadata> serviceData;
 
-    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.getRequest(),
-        adapterRequest.getParams());
+    final JsonObject params = adapterRequest.getParams();
+    final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.getRequest(), params);
     final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.getPath());
 
     if (serviceMetadata.isPresent()) {
-      serviceData = Pair.of(serviceRequest, serviceMetadata.get());
+      final ServiceMetadata metadata = serviceMetadata.get();
+      if (params.containsKey(HEADERS_PROPERTY_KEY)) {
+        metadata.setAdditionalHeaders(params.getJsonObject(HEADERS_PROPERTY_KEY));
+      }
+      if (params.containsKey(QUERY_PARAMS_PROPERTY_KEY)) {
+        metadata.setQueryParams(params.getJsonObject(QUERY_PARAMS_PROPERTY_KEY));
+      }
+      serviceData = Pair.of(serviceRequest, metadata);
     } else {
       final String error = String
           .format("No matching service definition for the requested path '%s'",
@@ -130,10 +139,10 @@ public class HttpClientFacade {
         .request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(),
             serviceRequest.getPath());
 
-    MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
-        serviceMetadata.getAllowedRequestHeaderPatterns());
-    filteredHeaders.names().forEach(
-        headerName -> request.putHeader(headerName, filteredHeaders.get(headerName)));
+    updateRequestQueryParams(request, serviceMetadata);
+    updateRequestHeaders(request, serviceRequest, serviceMetadata);
+    overrideRequestHeaders(request, serviceMetadata);
+
     if (!serviceRequest.getFormAttributes().isEmpty()) {
       httpResponse = request.rxSendForm(serviceRequest.getFormAttributes());
     } else {
@@ -141,6 +150,30 @@ public class HttpClientFacade {
     }
 
     return httpResponse;
+  }
+
+  private void overrideRequestHeaders(HttpRequest<Buffer> request, ServiceMetadata metadata) {
+    if (metadata.getAdditionalHeaders().isPresent()) {
+      metadata.getAdditionalHeaders().get().forEach(entry -> {
+        request.putHeader(entry.getKey(), entry.getValue().toString());
+      });
+    }
+  }
+
+  private void updateRequestQueryParams(HttpRequest<Buffer> request, ServiceMetadata metadata) {
+    if (metadata.getQueryParams().isPresent()) {
+      metadata.getQueryParams().get().forEach(entry ->
+          request.addQueryParam(entry.getKey(), entry.getValue().toString())
+      );
+    }
+  }
+
+  private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
+      ServiceMetadata serviceMetadata) {
+    MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
+        serviceMetadata.getAllowedRequestHeaderPatterns());
+    filteredHeaders.names().forEach(
+        headerName -> request.putHeader(headerName, filteredHeaders.get(headerName)));
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {

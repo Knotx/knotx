@@ -15,39 +15,21 @@
  */
 package io.knotx.adapter.common.http;
 
+import io.vertx.core.json.JsonObject;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class ServiceMetadata {
 
-  String path;
-  String domain;
-  Integer port;
-  List<Pattern> allowedRequestHeaderPatterns;
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj != null && obj instanceof ServiceMetadata) {
-      final ServiceMetadata other = (ServiceMetadata) obj;
-      return new EqualsBuilder()
-          .append(path, other.getPath())
-          .append(domain, other.getDomain())
-          .append(port, other.getPort()).isEquals();
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder()
-        .append(path)
-        .append(domain)
-        .append(port)
-        .toHashCode();
-  }
+  private String path;
+  private String domain;
+  private Integer port;
+  private List<Pattern> allowedRequestHeaderPatterns;
+  private JsonObject queryParams;
+  private JsonObject additionalHeaders;
 
   public String getPath() {
     return path;
@@ -84,5 +66,43 @@ public class ServiceMetadata {
       List<Pattern> allowedRequestHeaderPatterns) {
     this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
     return this;
+  }
+
+  public Optional<JsonObject> getQueryParams() {
+    return Optional.ofNullable(queryParams);
+  }
+
+  public void setQueryParams(JsonObject queryParams) {
+    this.queryParams = queryParams;
+  }
+
+  public Optional<JsonObject> getAdditionalHeaders() {
+    return Optional.ofNullable(additionalHeaders);
+  }
+
+  public void setAdditionalHeaders(JsonObject additionalHeaders) {
+    this.additionalHeaders = additionalHeaders;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj != null && obj instanceof ServiceMetadata) {
+      final ServiceMetadata other = (ServiceMetadata) obj;
+      return new EqualsBuilder()
+          .append(path, other.getPath())
+          .append(domain, other.getDomain())
+          .append(port, other.getPort()).isEquals();
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+        .append(path)
+        .append(domain)
+        .append(port)
+        .toHashCode();
   }
 }

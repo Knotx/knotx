@@ -35,14 +35,16 @@ public class HttpAdapterConfiguration {
         .map(item -> (JsonObject) item)
         .map(item -> {
           ServiceMetadata metadata = new ServiceMetadata();
-          metadata.path = item.getString("path");
-          metadata.domain = item.getString("domain");
-          metadata.port = item.getInteger("port");
-          metadata.allowedRequestHeaderPatterns = item
+          metadata.setPath(item.getString("path"));
+          metadata.setDomain(item.getString("domain"));
+          metadata.setPort(item.getInteger("port"));
+          metadata.setAllowedRequestHeaderPatterns(item
               .getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
               .map(new StringToPatternFunction())
-              .collect(Collectors.toList());
+              .collect(Collectors.toList())
+          );
+
           return metadata;
         }).collect(Collectors.toList());
     clientOptions = config.getJsonObject("clientOptions", new JsonObject());

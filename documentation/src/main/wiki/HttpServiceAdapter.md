@@ -5,11 +5,19 @@ It enables communication between [[Service Knot|ServiceKnot]] and external servi
 ## How does it work?
 When Http Service Adapter starts processing a message from Event Bus, it expects following input:
 - `clientRequest` - JSON object that contains client request (contains e.g. headers, params, formAttributes etc.).
-- `params` - JSON object that contains additional parameters, among those parameter mandatory `path` parameter should be defined.
+- `params` - JSON object that contains additional parameters, among those parameter mandatory 
+[`path`](#service-path) parameter should be defined, enables passing additional 
+[query params and headers](#service-params-and-additional-headers).
 
 ### Service path
 `path` parameter is a mandatory parameter that must be passed to Http Service Adapter. 
-It defines request path and may contain [placeholders](#parametrized-service-calls).
+It defines request path and may contain [placeholders](#parametrized-services-calls).
+
+### Service params and additional headers
+It is possible to pass additional query parameters and headers that Http Service Adapter will send
+to external service.
+- `queryParams` - JSON object that contains parameters passed in query.
+- `headers` - JSON object that contains headers. Those headers will *overwrite* existing values. 
 
 ### Parametrized services calls
 When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the 
@@ -110,6 +118,19 @@ Example configuration of a [[Service Knot|ServiceKnot]]:
         "address" : "knotx.adapter.service.http",
         "params": {
           "path": "/service/twitter/user/{header.userId}"
+        }
+      },
+      {
+        "name" : "javabooks",
+        "address" : "knotx.adapter.service.http",
+        "params": {
+          "path": "/books/v1/volumes",
+          "queryParams": {
+              "q": "java"
+          },
+          "headers": {
+            "token": "knotx-request"
+          }
         }
       }
     ]
