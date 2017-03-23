@@ -19,13 +19,13 @@ package io.knotx.adapter.service.http;
 import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.adapter.service.http.impl.HttpServiceAdapterProxyImpl;
 import io.knotx.proxy.AdapterProxy;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.serviceproxy.ProxyHelper;
 
 public class HttpServiceAdapterVerticle extends AbstractVerticle {
@@ -48,8 +48,8 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
     //register the service proxy on event bus
     consumer = ProxyHelper
-        .registerService(AdapterProxy.class, vertx,
-            new HttpServiceAdapterProxyImpl(new io.vertx.rxjava.core.Vertx(vertx), configuration),
+        .registerService(AdapterProxy.class, getVertx(),
+            new HttpServiceAdapterProxyImpl(vertx, configuration),
             configuration.getAddress());
   }
 
