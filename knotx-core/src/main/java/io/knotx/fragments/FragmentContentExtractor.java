@@ -28,7 +28,8 @@ public final class FragmentContentExtractor {
   }
 
   /**
-   * Extracts pure markup from the given {@link Fragment}'s content removing Knotx data.
+   * Extracts pure markup from the given {@link Fragment}'s content removing a script tag with
+   * Knot.x specific data.
    *
    * @param fragment that content will be unwrapped.
    * @return markup without Knotx data processing instructions.
@@ -44,7 +45,8 @@ public final class FragmentContentExtractor {
   }
 
   /**
-   * Extracts pure markup from the given {@link Fragment}'s content removing Knotx data.
+   * Extracts pure markup from the given {@link Fragment}'s content removing a script tag with
+   * Knot.x specific data.
    *
    * @param fragment that content will be unwrapped.
    * @return markup without Knotx data processing instructions in a form of jsoup {@link Document}.
