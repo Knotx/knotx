@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * An entity representing markup slice produced during Template fragmentation. It represents both
+ * An entity representing a markup slice produced during Template fragmentation. It represents both
  * markup with static and dynamic content.
  */
 @DataObject(inheritConverter = true)
