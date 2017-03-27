@@ -25,6 +25,10 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * An entity representing a markup slice produced during Template fragmentation. It represents both
+ * markup with static and dynamic content.
+ */
 @DataObject(inheritConverter = true)
 public class Fragment {
 
@@ -66,10 +70,16 @@ public class Fragment {
         .put(CONTEXT_KEY, context);
   }
 
+  /**
+   * @return list of Knots identifiers that are used during Knot usage decision.
+   */
   public List<String> knots() {
     return knots;
   }
 
+  /**
+   * @return markup content of this fragment.
+   */
   public String content() {
     return content;
   }
@@ -79,10 +89,18 @@ public class Fragment {
     return this;
   }
 
+  /**
+   * @return a {@link JsonObject} containing the data produced during Knots chain processing and
+   * used to exchange the context between them, e.g. ActionKnot can put there `action` context that
+   * contains data accumulated during action processing.
+   */
   public JsonObject context() {
     return context;
   }
 
+  /**
+   * @return <tt>true</tt> if this Fragment has no dynamic parts (contains only static markup).
+   */
   public boolean isRaw() {
     return knots.contains(RAW_FRAGMENT_ID);
   }
