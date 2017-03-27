@@ -37,8 +37,16 @@ class FragmentContext {
   List<ServiceEntry> services;
 
   private FragmentContext() {
+    //hidden constructor
   }
 
+  /**
+   * Factory method that creates context from the {@link Fragment}. All services and params are
+   * extracted to separate entries.
+   *
+   * @param fragment - fragment from which the context will be created.
+   * @return a FragmentContext that wraps given fragment.
+   */
   public static FragmentContext from(Fragment fragment) {
     Document document = Jsoup.parseBodyFragment(fragment.content());
     Element scriptTag = document.body().child(0);
@@ -57,25 +65,29 @@ class FragmentContext {
             .toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()),
                 Function.identity()));
 
-    return empty()
+    return new FragmentContext()
         .fragment(fragment)
         .services(
             serviceAttributes.entrySet().stream()
-            .map(entry -> new ServiceEntry(entry.getValue(), paramsAttributes.get(entry.getKey())))
-            .collect(Collectors.toList())
+                .map(entry -> new ServiceEntry(entry.getValue(),
+                    paramsAttributes.get(entry.getKey())))
+                .collect(Collectors.toList())
         );
   }
 
-  static FragmentContext empty() {
-    return new FragmentContext();
-  }
-
-  Fragment fragment() {
-    return fragment;
-  }
-
+  /**
+   * @return an {@link Observable} that emits a list of {@link ServiceEntry} that were registered
+   * with current {@link Fragment}.
+   */
   public Observable<ServiceEntry> services() {
     return Observable.from(services);
+  }
+
+  /**
+   * @return a fragment wrapped in this context.
+   */
+  public Fragment fragment() {
+    return fragment;
   }
 
   private FragmentContext fragment(Fragment fragment) {
