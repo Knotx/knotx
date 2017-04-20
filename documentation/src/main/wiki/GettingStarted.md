@@ -1,6 +1,10 @@
 # Getting started
 
----------------- TODO - add maven central items ----------
+## First steps
+
+See our first blog post [Hello Rest Service](http://knotx.io/blog/hello-rest-service/) which is a great entry point to the Knot.x world.
+See other [Knot.x tutorial blogs](http://knotx.io/blog/) to learn more.
+
 ## Getting Binaries
 Knot.x binaries and dependency information for Maven, Ivy, Gradle and others can be found at 
 [http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.vertx%22).
@@ -15,6 +19,7 @@ for three modules:
 To run Knot.x you need Java 8.
 
 ## Hello world!
+
 First download Knot.x sample app & config for latest version, or build it yourself (see [[Building|GettingStarted#building]] section):
 - [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
 - [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
