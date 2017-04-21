@@ -84,10 +84,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private Observable<FragmentContext> compileHtmlFragment(Fragment fragment) {
-    return Observable.create(subscriber -> {
-      subscriber.onNext(FragmentContext.from(fragment));
-      subscriber.onCompleted();
-    });
+    return Single.just(FragmentContext.from(fragment)).toObservable();
   }
 
   private void traceFragment(Fragment fragment) {
