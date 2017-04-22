@@ -1,9 +1,9 @@
+language: bash
 sudo: required
-language: java
-install: true
-script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Pskip-integration-tests
-jdk:
-  - oraclejdk8
+services:
+  - docker
+script:
+  - docker run -it -v $(pwd):/root/sources -w /root/sources maven:3.3.3-jdk-8 mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 addons:
   sonarqube:
     token:
