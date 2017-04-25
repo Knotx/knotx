@@ -44,7 +44,7 @@ Http Service Adapter replies with `ClientResponse` that contains:
 
 | Parameter       | Type                      |  Description  |
 |-------:         |:-------:                  |-------|
-| `statusCode`    | `HttpResponseStatus       | status code of a response from external service (e.g. `200 OK`) |
+| `statusCode`    | `HttpResponseStatus`       | status code of a response from external service (e.g. `200 OK`) |
 | `headers`       | `MultiMap`                | external service response headers |
 | `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
@@ -229,3 +229,42 @@ In response, external service returns:
 ```
 
 which is finally wrapped into [Adapter Response](#adapter-response).
+
+##### Setting service query parameters from template
+We can use the `queryParams` JSON object to define the service query parameters and their values directly from template. Consider the following service configuration:
+
+```json
+  "config": {
+    "address": "knotx.knot.service",
+    "services": [
+      {
+        "name" : "products",
+        "address" : "knotx.adapter.service.http",
+        "params": {
+          "path": "/service/products/"
+        }
+      }
+    ]
+  }
+```
+
+We can set query parameters sent to the service using the following snippet:
+
+```html
+<script data-knotx-knots="services,handlebars" type="text/knotx-snippet"
+    data-knotx-service="products"
+    data-knotx-params="{&quot;queryParams&quot;:{&quot;amount&quot;:&quot;4&quot;}}">
+        <h1>Products</h1>
+        {{#each _result.products}}
+        <p>{{productName}}</p>
+        {{/each}}
+</script>
+```
+
+This way, you can modify the request being sent to the external service, without re-starting Knot.X, just by updating the template. In this example, the request would be `/service/products?amount=4`. 
+
+The `&quot;` strings in `data-knotx-params` are used to escape the JSON quotation marks. 
+
+This mechanism can be also used simultaneously with the `path` property being parametrized by placeholders. Take into consideration, however, that placeholder values can only be resolved based on the `ClientRequest` (current http request), and not the `queryParams` value.
+
+Please note that if the `queryParams` are defined both in the configuration file and in the template, the parameters from the template will override the configuration. 
