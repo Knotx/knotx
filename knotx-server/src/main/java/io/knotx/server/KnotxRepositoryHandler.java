@@ -19,6 +19,8 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.RepositoryConnectorProxy;
+import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -49,8 +51,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    final Optional<KnotxServerConfiguration.RepositoryEntry> repositoryEntry = configuration
-        .repositoryForPath(context.request().path());
+    final Optional<RepositoryEntry> repositoryEntry = configuration
+        .getDefaultFlow().repositoryForPath(context.request().path());
     final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryEntry.isPresent()) {
@@ -116,6 +118,6 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   }
 
   private Boolean headerFilter(String name) {
-    return configuration.allowedResponseHeaders().contains(name.toLowerCase());
+    return configuration.getAllowedResponseHeaders().contains(name.toLowerCase());
   }
 }

@@ -17,6 +17,7 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -33,7 +34,7 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
   private KnotxServerConfiguration configuration;
 
   private KnotxSplitterHandler(Vertx vertx, KnotxServerConfiguration configuration) {
-    this.splitter = KnotProxy.createProxy(vertx, configuration.splitterAddress());
+    this.splitter = KnotProxy.createProxy(vertx, configuration.getDefaultFlow().splitterAddress());
     this.configuration = configuration;
   }
 
@@ -58,7 +59,7 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
             },
             error -> {
               LOGGER.error("Error happened while communicating with {} engine", error,
-                  configuration.splitterAddress());
+                  configuration.getDefaultFlow().splitterAddress());
               context.fail(error);
             }
         );

@@ -17,6 +17,7 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;

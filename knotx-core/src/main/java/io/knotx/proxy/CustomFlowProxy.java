@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server;
+package io.knotx.proxy;
 
-import java.util.Map;
+import io.knotx.dataobjects.ClientRequest;
+import io.knotx.dataobjects.ClientResponse;
+import io.vertx.codegen.annotations.ProxyGen;
+import io.vertx.codegen.annotations.VertxGen;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 
-public class RoutingEntry {
-
-  private String path;
-  private String address;
-  private Map<String, RoutingEntry> onTransition;
-
-  public RoutingEntry(String path, String address, Map<String, RoutingEntry> onTransition) {
-    this.path = path;
-    this.address = address;
-    this.onTransition = onTransition;
+@ProxyGen
+@VertxGen
+public interface CustomFlowProxy {
+  static CustomFlowProxy createProxy(Vertx vertx, String address) {
+    return new CustomFlowProxyVertxEBProxy(vertx, address);
   }
 
-  public String path() {
-    return path;
-  }
-
-  public String address() {
-    return address;
-  }
-
-  public Map<String, RoutingEntry> onTransition() {
-    return onTransition;
-  }
+  void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result);
 }

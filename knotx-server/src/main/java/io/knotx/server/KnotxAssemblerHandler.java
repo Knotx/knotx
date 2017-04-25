@@ -18,6 +18,7 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
@@ -38,7 +39,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.assembler = KnotProxy.createProxy(vertx, configuration.assemblerAddress());
+    this.assembler = KnotProxy.createProxy(vertx, configuration.getDefaultFlow().assemblerAddress());
   }
 
   static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -62,7 +63,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
               },
               error -> {
                 LOGGER.error("Error happened while communicating with {} engine", error,
-                    configuration.splitterAddress());
+                    configuration.getDefaultFlow().splitterAddress());
                 context.fail(error);
               }
           );
@@ -103,7 +104,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
   }
 
   private Boolean headerFilter(String name) {
-    return configuration.allowedResponseHeaders().contains(name.toLowerCase());
+    return configuration.getAllowedResponseHeaders().contains(name.toLowerCase());
   }
 
   private void traceMessage(KnotContext ctx) {
