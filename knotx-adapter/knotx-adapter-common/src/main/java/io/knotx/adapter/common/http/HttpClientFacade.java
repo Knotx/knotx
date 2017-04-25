@@ -133,7 +133,8 @@ public class HttpClientFacade {
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());
     filteredHeaders.names().forEach(
-        headerName -> request.putHeader(headerName, filteredHeaders.get(headerName)));
+        headerName -> filteredHeaders.getAll(headerName)
+            .forEach(value -> request.putHeader(headerName, value)));
     if (!serviceRequest.getFormAttributes().isEmpty()) {
       httpResponse = request.rxSendForm(serviceRequest.getFormAttributes());
     } else {
