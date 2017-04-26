@@ -36,15 +36,15 @@ public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy {
         configuration.getServices());
   }
 
-  private WebClient getWebClient(Vertx vertx, HttpAdapterConfiguration configuration) {
-    JsonObject clientOptions = configuration.getClientOptions();
-    return clientOptions.isEmpty() ? WebClient.create(vertx) :
-        WebClient.create(vertx, new WebClientOptions(clientOptions));
-  }
-
   @Override
   protected Single<AdapterResponse> processRequest(AdapterRequest message) {
     return httpClientFacade.process(message, HttpMethod.GET)
         .map(new AdapterResponse()::setResponse);
+  }
+
+  private WebClient getWebClient(Vertx vertx, HttpAdapterConfiguration configuration) {
+    JsonObject clientOptions = configuration.getClientOptions();
+    return clientOptions.isEmpty() ? WebClient.create(vertx) :
+        WebClient.create(vertx, new WebClientOptions(clientOptions));
   }
 }
