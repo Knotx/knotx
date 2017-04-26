@@ -61,17 +61,16 @@ public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> 
     return isMethodDisallowedInFlow(method, defaultFlow) || isMethodDisallowedInFlow(method, customFlow);
   }
 
-  private boolean isMethodDisallowedInFlow(HttpMethod method, KnotxFlowConfiguration defaultFlow) {
-    return defaultFlow.getEngineRouting().keySet().stream()
-        .noneMatch(supportedMethod -> supportedMethod == method);
+  private boolean isMethodDisallowedInFlow(HttpMethod method, KnotxFlowConfiguration flow) {
+    return flow.getEngineRouting() != null && flow.getEngineRouting().keySet().stream().noneMatch(supportedMethod -> supportedMethod == method);
   }
 
   private boolean shouldRejectPath(String path) {
     return isPathNotPresentInFlow(path, defaultFlow) && isPathNotPresentInFlow(path, customFlow);
   }
 
-  private boolean isPathNotPresentInFlow(String path, KnotxFlowConfiguration defaultFlow) {
-    return defaultFlow.getEngineRouting().values().stream().noneMatch(
+  private boolean isPathNotPresentInFlow(String path, KnotxFlowConfiguration flow) {
+    return flow.getEngineRouting().values().stream().noneMatch(
         routingEntries -> routingEntries.stream()
             .anyMatch(item -> path.matches(item.path()))
     );
