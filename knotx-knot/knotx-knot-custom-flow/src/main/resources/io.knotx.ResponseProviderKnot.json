@@ -1,0 +1,8 @@
+{
+  "main": "io.knotx.knot.customflow.ResponseProviderKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.knot.responseprovider"
+    }
+  }
+}

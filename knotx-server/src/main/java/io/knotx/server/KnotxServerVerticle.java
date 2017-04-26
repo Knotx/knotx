@@ -87,18 +87,17 @@ public class KnotxServerVerticle extends AbstractVerticle {
           entry.getValue().forEach(
               criteria -> {
 
-//                router.route()
-//                    .method(entry.getKey())
-//                    .pathRegex(criteria.path())
-//                    .handler(KnotxEngineHandler
-//                        .create(vertx, criteria.address(), criteria.onTransition()));
+                router.route()
+                    .method(entry.getKey())
+                    .pathRegex(criteria.path())
+                    .handler(KnotxEngineHandler
+                        .create(vertx, criteria.address(), criteria.onTransition()));
 
                 router.route()
                     .method(entry.getKey())
                     .pathRegex(criteria.path())
-                    .handler(KnotxCustomFlowHandler
-                        .create(vertx, criteria.address(), criteria.onTransition()));
-
+                    .handler(KnotxCustomResponseProviderHandler
+                        .create(vertx, configuration));
               }
           );
         });

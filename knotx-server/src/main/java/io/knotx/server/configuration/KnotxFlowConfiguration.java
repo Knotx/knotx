@@ -35,6 +35,8 @@ public class KnotxFlowConfiguration {
 
   private String assemblerAddress;
 
+  private String responseProviderAddress;
+
   private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   public KnotxFlowConfiguration(JsonObject config) {
@@ -61,6 +63,11 @@ public class KnotxFlowConfiguration {
     JsonObject assembler = config.getJsonObject("assembler");
     if (assembler != null) {
       assemblerAddress = assembler.getString("address");
+    }
+
+    JsonObject responseProvider = config.getJsonObject("responseprovider");
+    if (responseProvider != null) {
+      responseProviderAddress = responseProvider.getString("address");
     }
   }
 
@@ -120,4 +127,7 @@ public class KnotxFlowConfiguration {
     return engineRouting;
   }
 
+  public String requestProviderAddress() {
+    return responseProviderAddress;
+  }
 }

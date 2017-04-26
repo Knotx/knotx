@@ -16,12 +16,11 @@
 package io.knotx.server;
 
 import java.util.Map;
-import java.util.Optional;
 
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.RepositoryConnectorProxy;
+import io.knotx.rxjava.proxy.KnotProxy;
 import io.knotx.server.configuration.RoutingEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -40,11 +39,13 @@ public class KnotxCustomFlowHandler implements Handler<RoutingContext> {
   private Vertx vertx;
   private String address;
   private Map<String, RoutingEntry> routing;
+  private KnotProxy customFlowProxy;
 
   public KnotxCustomFlowHandler(Vertx vertx, String address, Map<String, RoutingEntry> routing) {
     this.vertx = vertx;
     this.address = address;
     this.routing = routing;
+    this.customFlowProxy = KnotProxy.createProxy(vertx, address);
   }
 
   public static Handler<RoutingContext> create(Vertx vertx, String address, Map<String, RoutingEntry> routing) {
@@ -55,21 +56,18 @@ public class KnotxCustomFlowHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     final KnotContext knotContext = new KnotContext().setClientRequest(new ClientRequest(context.request()));
 
-    RepositoryConnectorProxy.createProxy(vertx, address)
-        .rxProcess(knotContext.getClientRequest())
-//        .doOnSuccess(this::traceMessage)
+    customFlowProxy
+        .rxProcess(knotContext)
         .subscribe(
-            repoResponse -> {
-              if (isSuccessResponse(repoResponse)) {
-                  sendResponse(context, repoResponse);
+            ctx -> {
+                context.put("knotContext", ctx);
                 context.next();
-                } else if (isErrorResponse(repoResponse)) {
-                context.fail(repoResponse.getStatusCode());
-              } else {
-                context.response().setStatusCode(repoResponse.getStatusCode()).end();
-              }
             },
-            context::fail
+            error -> {
+              LOGGER.error("Error happened while communicating with {} engine", error,
+                  address);
+              context.fail(error);
+            }
         );
   }
   private void sendResponse(final RoutingContext context, final ClientResponse clientResponse) {

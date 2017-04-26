@@ -90,7 +90,8 @@ public abstract class AbstractKnotProxy implements KnotProxy {
   protected abstract KnotContext processError(KnotContext knotContext, Throwable error);
 
   private boolean shouldProcess(KnotContext context) {
-    Set<String> knots = Optional.ofNullable(context.getFragments())
+    Set<String> knots = Optional.ofNullable(context)
+        .map(KnotContext::getFragments)
         .map(this::getKnotSet)
         .orElse(Collections.emptySet());
     return shouldProcess(knots);
