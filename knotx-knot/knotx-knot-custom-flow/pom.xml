@@ -28,6 +28,8 @@
 
   <artifactId>knotx-knot-custom-flow</artifactId>
 
+  <name>Knot.x - Reactive microservice assembler - Knot - Custom Flow</name>
+
   <dependencies>
     <dependency>
       <groupId>io.knotx</groupId>

@@ -79,28 +79,30 @@ public class KnotxServerVerticle extends AbstractVerticle {
           );
         });
 
-    configuration.getCustomFlow().getEngineRouting().entrySet()
-        .forEach(entry -> {
-          if (entry.getKey() == HttpMethod.POST) {
-            router.route().method(entry.getKey()).handler(BodyHandler.create());
-          }
-          entry.getValue().forEach(
-              criteria -> {
+    if(configuration.getCustomFlow().getEngineRouting() != null) {
+      configuration.getCustomFlow().getEngineRouting().entrySet()
+          .forEach(entry -> {
+            if (entry.getKey() == HttpMethod.POST) {
+              router.route().method(entry.getKey()).handler(BodyHandler.create());
+            }
+            entry.getValue().forEach(
+                criteria -> {
 
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxEngineHandler
-                        .create(vertx, criteria.address(), criteria.onTransition()));
+                  router.route()
+                      .method(entry.getKey())
+                      .pathRegex(criteria.path())
+                      .handler(KnotxEngineHandler
+                          .create(vertx, criteria.address(), criteria.onTransition()));
 
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxCustomResponseProviderHandler
-                        .create(vertx, configuration));
-              }
-          );
-        });
+                  router.route()
+                      .method(entry.getKey())
+                      .pathRegex(criteria.path())
+                      .handler(KnotxCustomResponseProviderHandler
+                          .create(vertx, configuration));
+                }
+            );
+          });
+    }
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 

@@ -40,34 +40,36 @@ public class KnotxFlowConfiguration {
   private EnumMap<HttpMethod, List<RoutingEntry>> engineRouting;
 
   public KnotxFlowConfiguration(JsonObject config) {
-    repositoryAddressMapping = Maps.newHashMap();
-    JsonArray repositories = config.getJsonArray("repositories");
-    if(repositories != null) {
-      repositories.stream()
-          .map(item -> (JsonObject) item)
-          .forEach(object -> repositoryAddressMapping.put(object.getString("path"),
-              new RepositoryEntry(object.getString("address"),
-                  object.getBoolean("doProcessing", true))));
-    }
+    if(config != null) {
+      repositoryAddressMapping = Maps.newHashMap();
+      JsonArray repositories = config.getJsonArray("repositories");
+      if (repositories != null) {
+        repositories.stream()
+            .map(item -> (JsonObject) item)
+            .forEach(object -> repositoryAddressMapping.put(object.getString("path"),
+                new RepositoryEntry(object.getString("address"),
+                    object.getBoolean("doProcessing", true))));
+      }
 
-    JsonObject splitter = config.getJsonObject("splitter");
-    if(splitter != null) {
-      splitterAddress = splitter.getString("address");
-    }
+      JsonObject splitter = config.getJsonObject("splitter");
+      if (splitter != null) {
+        splitterAddress = splitter.getString("address");
+      }
 
 
-    engineRouting = Maps.newEnumMap(HttpMethod.class);
-    config.getJsonObject("routing").stream()
-        .forEach(this::parseMethodRouting);
+      engineRouting = Maps.newEnumMap(HttpMethod.class);
+      config.getJsonObject("routing").stream()
+          .forEach(this::parseMethodRouting);
 
-    JsonObject assembler = config.getJsonObject("assembler");
-    if (assembler != null) {
-      assemblerAddress = assembler.getString("address");
-    }
+      JsonObject assembler = config.getJsonObject("assembler");
+      if (assembler != null) {
+        assemblerAddress = assembler.getString("address");
+      }
 
-    JsonObject responseProvider = config.getJsonObject("responseprovider");
-    if (responseProvider != null) {
-      responseProviderAddress = responseProvider.getString("address");
+      JsonObject responseProvider = config.getJsonObject("responseprovider");
+      if (responseProvider != null) {
+        responseProviderAddress = responseProvider.getString("address");
+      }
     }
   }
 
