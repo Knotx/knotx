@@ -97,7 +97,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                   router.route()
                       .method(entry.getKey())
                       .pathRegex(criteria.path())
-                      .handler(KnotxCustomResponseProviderHandler
+                      .handler(KnotxGatewayResponseProviderHandler
                           .create(vertx, configuration));
                 }
             );

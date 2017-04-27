@@ -15,7 +15,7 @@
  */
 package io.knotx.gateway;
 
-import io.knotx.gateway.configuration.CustomFlowKnotConfiguration;
+import io.knotx.gateway.configuration.KnotxGatewayKnotConfiguration;
 import io.knotx.gateway.impl.RequestProcessorKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
@@ -31,14 +31,14 @@ public class RequestProcessorKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessorKnotVerticle.class);
 
-  private CustomFlowKnotConfiguration configuration;
+  private KnotxGatewayKnotConfiguration configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new CustomFlowKnotConfiguration(config());
+    this.configuration = new KnotxGatewayKnotConfiguration(config());
   }
 
   @Override

@@ -17,11 +17,11 @@ package io.knotx.gateway.configuration;
 
 import io.vertx.core.json.JsonObject;
 
-public class CustomFlowKnotConfiguration {
+public class KnotxGatewayKnotConfiguration {
 
   private final String address;
 
-  public CustomFlowKnotConfiguration(JsonObject config) {
+  public KnotxGatewayKnotConfiguration(JsonObject config) {
     address = config.getString("address");
   }
 

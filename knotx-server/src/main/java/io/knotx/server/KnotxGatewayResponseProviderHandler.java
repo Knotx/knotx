@@ -29,7 +29,7 @@ import io.vertx.rxjava.core.buffer.Buffer;
 import io.vertx.rxjava.core.http.HttpServerResponse;
 import io.vertx.rxjava.ext.web.RoutingContext;
 
-public class KnotxCustomResponseProviderHandler implements Handler<RoutingContext> {
+public class KnotxGatewayResponseProviderHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxAssemblerHandler.class);
 
@@ -37,13 +37,13 @@ public class KnotxCustomResponseProviderHandler implements Handler<RoutingContex
 
   private KnotxServerConfiguration configuration;
 
-  private KnotxCustomResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+  private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
     this.responseProviderProxy = KnotProxy.createProxy(vertx, configuration.getCustomFlow().responseProviderAddress());
   }
 
-  static KnotxCustomResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
-    return new KnotxCustomResponseProviderHandler(vertx, configuration);
+  static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+    return new KnotxGatewayResponseProviderHandler(vertx, configuration);
   }
 
   @Override
