@@ -173,7 +173,8 @@ public class HttpClientFacade {
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());
     filteredHeaders.names().forEach(
-        headerName -> request.putHeader(headerName, filteredHeaders.get(headerName)));
+        headerName -> filteredHeaders.getAll(headerName)
+            .forEach(value -> request.putHeader(headerName, value)));
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
