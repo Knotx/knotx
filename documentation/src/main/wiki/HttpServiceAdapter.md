@@ -5,22 +5,22 @@ It enables communication between [[Service Knot|ServiceKnot]] and external servi
 ## How does it work?
 When Http Service Adapter starts processing a message from Event Bus, it expects following input:
 - `clientRequest` - JSON object that contains client request (contains e.g. headers, params, formAttributes etc.).
-- `params` - JSON object that contains additional parameters, among those parameter mandatory 
-[`path`](#service-path) parameter should be defined, enables passing additional 
+- `params` - JSON object that contains additional parameters, among those parameter mandatory
+[`path`](#service-path) parameter should be defined, enables passing additional
 [query params and headers](#service-params-and-additional-headers).
 
 ### Service path
-`path` parameter is a mandatory parameter that must be passed to Http Service Adapter. 
+`path` parameter is a mandatory parameter that must be passed to Http Service Adapter.
 It defines request path and may contain [placeholders](#parametrized-services-calls).
 
 ### Service params and additional headers
 It is possible to pass additional query parameters and headers that Http Service Adapter will send
 to external service.
 - `queryParams` - JSON object that contains parameters passed in query.
-- `headers` - JSON object that contains headers. Those headers will *overwrite* existing values. 
+- `headers` - JSON object that contains headers. Those headers will *overwrite* existing values.
 
 ### Parametrized services calls
-When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the 
+When found a placeholder within the `path` parameter it will be replaced with a dynamic value based on the
 current http request (data from `clientRequest`). Available placeholders are:
 * `{header.x}` - is the client requests header value where `x` is the header name
 * `{param.x}` - is the client requests query parameter value. For `x` = q from `/a/b/c.html?q=knot` it will produce `knot`
@@ -90,8 +90,8 @@ Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.
 In general, the default configuration covers:
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
 will be processed by Http Service Adapter.
-- `clientOptions` are [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) used to configure HTTP connection. 
-Any HttpClientOption may be defined in this section, at this example two options are defined: 
+- `clientOptions` are [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) used to configure HTTP connection.
+Any HttpClientOption may be defined in this section, at this example two options are defined:
   - `maxPoolSize` -  maximum pool size for simultaneous connections,
   - `keepAlive` - that shows keep alive should be disabled on the client.
 - `services` - an JSON array of services that Http Service Adapter can connect to. Each service is distinguished by `path` parameter which is regex.
@@ -181,7 +181,7 @@ Http Service Adapter request parameters should look like:
 
 Http Service Adapter will lookup if `params.path` is supported and 2nd service from [Example configuration](#how-to-configure) `services` will be a match.
 Next, `params.path` placeholders are resolved, and request to `http://localhost:8080/service/solr/search?q=hello` is made.
-In response, external service returns: 
+In response, external service returns:
 
 ```json
 {
@@ -218,7 +218,7 @@ Http Service Adapter request parameters should look like:
 
 Http Service Adapter will lookup if `params.path` is supported and 2nd service from [Example configuration](#how-to-configure) `services` will be a match.
 Next, `params.path` placeholders are resolved, and request to `http://localhost:8080/service/twitter/user/johnDoe` is made.
-In response, external service returns: 
+In response, external service returns:
 
 ```json
 {
@@ -253,7 +253,7 @@ We can set query parameters sent to the service using the following snippet:
 ```html
 <script data-knotx-knots="services,handlebars" type="text/knotx-snippet"
     data-knotx-service="products"
-    data-knotx-params='{"queryParams":{"amount":"4"}}">
+    data-knotx-params='{"queryParams":{"amount":"4"}}'>
         <h1>Products</h1>
         {{#each _result.products}}
         <p>{{productName}}</p>
@@ -261,10 +261,10 @@ We can set query parameters sent to the service using the following snippet:
 </script>
 ```
 
-This way, you can modify the request parameters being sent to the external service, without re-starting Knot.X, just by updating the template. 
-In this example, the request would be `/service/products?amount=4`  
+This way, you can modify the request parameters being sent to the external service, without re-starting Knot.X, just by updating the template.
+In this example, the request would be `/service/products?amount=4`
 
-Please note that Knot.X caches templates fetched by the [[Filesystem Repository Connector|FilesystemRepositoryConnector]]. 
+Please note that Knot.X caches templates fetched by the [[Filesystem Repository Connector|FilesystemRepositoryConnector]].
 As a result, the "hot-swap" mechanism described above might not work with templates stored in local repositories.
 
 You can also set the `queryParams` from the configuration file by amending the snippet presented above:
@@ -289,4 +289,4 @@ Bear in mind that a Knot.X restart is needed in order to apply the service confi
 
 This mechanism can be also used simultaneously with the `path` property being parametrized by placeholders. Take into consideration, however, that placeholder values can only be resolved based on the `ClientRequest` (current http request), and not the `queryParams` value.
 
-Please note that if the `queryParams` are defined both in the configuration file and in the template, the parameters from the template will override the configuration. 
+Please note that if the `queryParams` are defined both in the configuration file and in the template, the parameters from the template will override the configuration.
