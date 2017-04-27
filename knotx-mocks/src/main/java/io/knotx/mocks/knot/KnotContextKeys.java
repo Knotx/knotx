@@ -26,6 +26,7 @@ import io.vertx.rxjava.core.file.FileSystem;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import rx.Observable;
+import rx.Single;
 
 enum KnotContextKeys {
   RESPONSE("clientResponse") {
@@ -80,9 +81,10 @@ enum KnotContextKeys {
 
   Observable<Optional<Object>> mockValue(FileSystem fileSystem, String resourcePath) {
     return fileSystem
-        .openObservable(resourcePath, new OpenOptions().setCreate(false).setWrite(false))
+        .rxOpen(resourcePath, new OpenOptions().setCreate(false).setWrite(false))
         .flatMap(this::processFile)
-        .map(this::toJson);
+        .map(this::toJson)
+        .toObservable();
   }
 
   abstract Optional<Object> defaultValue(KnotContext context);
@@ -92,9 +94,10 @@ enum KnotContextKeys {
         : buffer.toJsonArray());
   }
 
-  private Observable<Buffer> processFile(final AsyncFile asyncFile) {
+  private Single<Buffer> processFile(final AsyncFile asyncFile) {
     return Observable.just(Buffer.buffer())
         .mergeWith(asyncFile.toObservable())
-        .reduce(Buffer::appendBuffer);
+        .reduce(Buffer::appendBuffer)
+        .toSingle();
   }
 }
