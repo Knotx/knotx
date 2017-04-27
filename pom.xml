@@ -67,6 +67,7 @@
     <module>knotx-server</module>
     <module>knotx-standalone</module>
     <module>knotx-example</module>
+    <module>knotx-gateway</module>
   </modules>
 
   <scm>

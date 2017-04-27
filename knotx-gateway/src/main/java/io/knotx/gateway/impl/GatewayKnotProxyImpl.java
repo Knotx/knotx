@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.customflow.impl;
+package io.knotx.gateway.impl;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import rx.Single;
 
-public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
+public class GatewayKnotProxyImpl extends AbstractKnotProxy {
 
-  public static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessorKnotProxyImpl.class);
-
-  private final static String RESPONSE = "{\"message\":\"This is a sample custom flow response\"}";
+  public static final Logger LOGGER = LoggerFactory.getLogger(GatewayKnotProxyImpl.class);
 
   @Override
   protected Single<KnotContext> processRequest(KnotContext knotContext) {
-    return Single.just(createSuccessResponse(knotContext));
+    knotContext.setTransition(DEFAULT_TRANSITION);
+    return Single.just(knotContext);
   }
 
   @Override
@@ -54,22 +50,5 @@ public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
     }
     knotContext.getClientResponse().setStatusCode(statusCode.code());
     return knotContext;
-  }
-
-  private KnotContext createSuccessResponse(KnotContext inputContext) {
-
-    ClientResponse clientResponse = new ClientResponse();
-
-      io.vertx.rxjava.core.MultiMap headers = clientResponse.getHeaders();
-      headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
-          Integer.toString(RESPONSE.length()))
-          .add("Content-Type", "application/json");
-
-      clientResponse.setBody(Buffer.buffer(RESPONSE)).setHeaders(headers);
-      clientResponse.setStatusCode(HttpResponseStatus.OK.code());
-
-    return new KnotContext()
-        .setClientRequest(inputContext.getClientRequest())
-        .setClientResponse(clientResponse);
   }
 }

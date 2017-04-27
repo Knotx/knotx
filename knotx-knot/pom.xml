@@ -37,7 +37,6 @@
     <module>knotx-knot-action</module>
     <module>knotx-knot-service</module>
     <module>knotx-knot-handlebars</module>
-    <module>knotx-knot-custom-flow</module>
   </modules>
 
 </project>

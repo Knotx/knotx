@@ -30,7 +30,7 @@
     <appender-ref ref="STDOUT"/>
   </logger>
 
-  <logger name="io.knotx.knot.customflow" level="INFO" additivity="false">
+  <logger name="io.knotx.gateway" level="INFO" additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
 

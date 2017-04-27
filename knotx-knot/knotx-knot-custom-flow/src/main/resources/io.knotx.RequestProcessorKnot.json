@@ -1,8 +1,0 @@
-{
-  "main": "io.knotx.knot.customflow.RequestProcessorKnotVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.knot.requestprocessor"
-    }
-  }
-}

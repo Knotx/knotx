@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.customflow;
+package io.knotx.gateway;
 
-import io.knotx.knot.customflow.configuration.CustomFlowKnotConfiguration;
-import io.knotx.knot.customflow.impl.GatewayKnotProxyImpl;
+import io.knotx.gateway.configuration.CustomFlowKnotConfiguration;
+import io.knotx.gateway.impl.GatewayKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
