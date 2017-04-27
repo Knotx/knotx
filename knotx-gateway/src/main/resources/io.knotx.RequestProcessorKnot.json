@@ -2,7 +2,7 @@
   "main": "io.knotx.gateway.RequestProcessorKnotVerticle",
   "options": {
     "config": {
-      "address": "knotx.requestprocessor"
+      "address": "knotx.gateway.requestprocessor"
     }
   }
 }

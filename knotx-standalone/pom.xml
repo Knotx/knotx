@@ -79,7 +79,7 @@
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-knot-custom-flow</artifactId>
+      <artifactId>knotx-gateway</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

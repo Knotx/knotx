@@ -97,10 +97,10 @@
           "GET": [
             {
               "path": "/customFlow/.*",
-              "address": "knotx.knot.gatewayknot",
+              "address": "knotx.gateway.gatewayknot",
               "onTransition": {
                 "next": {
-                  "address": "knotx.knot.requestprocessor"
+                  "address": "knotx.gateway.requestprocessor"
                 }
               }
             }
@@ -108,17 +108,17 @@
           "POST": [
             {
               "path": "/customFlow/.*",
-              "address": "knotx.knot.gatewayknot",
+              "address": "knotx.gateway.gatewayknot",
               "onTransition": {
                 "next": {
-                  "address": "knotx.knot.requestprocessor"
+                  "address": "knotx.gateway.requestprocessor"
                 }
               }
             }
           ]
         },
         "responseProvider": {
-          "address": "knotx.knot.responseprovider"
+          "address": "knotx.gateway.responseprovider"
         }
       }
     }
