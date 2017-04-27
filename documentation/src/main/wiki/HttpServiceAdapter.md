@@ -261,7 +261,11 @@ We can set query parameters sent to the service using the following snippet:
 </script>
 ```
 
-This way, you can modify the request parameters being sent to the external service, without re-starting Knot.X, just by updating the template. In this example, the request would be `/service/products?amount=4`.  
+This way, you can modify the request parameters being sent to the external service, without re-starting Knot.X, just by updating the template. 
+In this example, the request would be `/service/products?amount=4`  
+
+Please note that Knot.X caches templates fetched by the [[Filesystem Repository Connector|FilesystemRepositoryConnector]]. 
+As a result, the "hot-swap" mechanism described above might not work with templates stored in local repositories.
 
 You can also set the `queryParams` from the configuration file by amending the snippet presented above:
 ```json
