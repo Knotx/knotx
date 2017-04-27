@@ -66,7 +66,7 @@ public class KnotxFlowConfiguration {
         assemblerAddress = assembler.getString("address");
       }
 
-      JsonObject responseProvider = config.getJsonObject("responseprovider");
+      JsonObject responseProvider = config.getJsonObject("responseProvider");
       if (responseProvider != null) {
         responseProviderAddress = responseProvider.getString("address");
       }
@@ -129,7 +129,7 @@ public class KnotxFlowConfiguration {
     return engineRouting;
   }
 
-  public String requestProviderAddress() {
+  public String responseProviderAddress() {
     return responseProviderAddress;
   }
 }

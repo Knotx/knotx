@@ -39,7 +39,7 @@ public class KnotxCustomResponseProviderHandler implements Handler<RoutingContex
 
   private KnotxCustomResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.responseProviderProxy = KnotProxy.createProxy(vertx, configuration.getCustomFlow().requestProviderAddress());
+    this.responseProviderProxy = KnotProxy.createProxy(vertx, configuration.getCustomFlow().responseProviderAddress());
   }
 
   static KnotxCustomResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -63,7 +63,7 @@ public class KnotxCustomResponseProviderHandler implements Handler<RoutingContex
               },
               error -> {
                 LOGGER.error("Error happened while communicating with {} engine", error,
-                    configuration.getDefaultFlow().splitterAddress());
+                    configuration.getCustomFlow().responseProviderAddress());
                 context.fail(error);
               }
           );

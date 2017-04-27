@@ -117,7 +117,7 @@
             }
           ]
         },
-        "responseprovider": {
+        "responseProvider": {
           "address": "knotx.knot.responseprovider"
         }
       }
