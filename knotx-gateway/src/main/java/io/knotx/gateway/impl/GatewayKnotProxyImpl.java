@@ -21,13 +21,9 @@ import java.util.Set;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import rx.Single;
 
 public class GatewayKnotProxyImpl extends AbstractKnotProxy {
-
-  public static final Logger LOGGER = LoggerFactory.getLogger(GatewayKnotProxyImpl.class);
 
   @Override
   protected Single<KnotContext> processRequest(KnotContext knotContext) {

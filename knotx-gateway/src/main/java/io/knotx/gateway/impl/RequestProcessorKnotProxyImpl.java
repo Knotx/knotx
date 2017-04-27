@@ -24,13 +24,9 @@ import io.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import rx.Single;
 
 public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
-
-  public static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessorKnotProxyImpl.class);
 
   private final static String RESPONSE = "{\"message\":\"This is a sample custom flow response\"}";
 
