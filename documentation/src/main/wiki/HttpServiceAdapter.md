@@ -230,7 +230,7 @@ In response, external service returns:
 
 which is finally wrapped into [Adapter Response](#adapter-response).
 
-##### Setting service query parameters from template
+##### Setting service query parameters
 We can use the `queryParams` JSON object to define the service query parameters and their values directly from template. Consider the following service configuration:
 
 ```json
@@ -253,7 +253,7 @@ We can set query parameters sent to the service using the following snippet:
 ```html
 <script data-knotx-knots="services,handlebars" type="text/knotx-snippet"
     data-knotx-service="products"
-    data-knotx-params="{&quot;queryParams&quot;:{&quot;amount&quot;:&quot;4&quot;}}">
+    data-knotx-params='{"queryParams":{"amount":"4"}}">
         <h1>Products</h1>
         {{#each _result.products}}
         <p>{{productName}}</p>
@@ -261,9 +261,27 @@ We can set query parameters sent to the service using the following snippet:
 </script>
 ```
 
-This way, you can modify the request being sent to the external service, without re-starting Knot.X, just by updating the template. In this example, the request would be `/service/products?amount=4`. 
+This way, you can modify the request parameters being sent to the external service, without re-starting Knot.X, just by updating the template. In this example, the request would be `/service/products?amount=4`.  
 
-The `&quot;` strings in `data-knotx-params` are used to escape the JSON quotation marks. 
+You can also set the `queryParams` from the configuration file by amending the snippet presented above:
+```json
+  "config": {
+    "address": "knotx.knot.service",
+    "services": [
+      {
+        "name" : "products",
+        "address" : "knotx.adapter.service.http",
+        "params": {
+          "path": "/service/products/",
+          "queryParams": {
+            "amount": "4"
+          }
+        }
+      }
+    ]
+  }
+```
+Bear in mind that a Knot.X restart is needed in order to apply the service configuration, as the configuration is loaded on startup.
 
 This mechanism can be also used simultaneously with the `path` property being parametrized by placeholders. Take into consideration, however, that placeholder values can only be resolved based on the `ClientRequest` (current http request), and not the `queryParams` value.
 
