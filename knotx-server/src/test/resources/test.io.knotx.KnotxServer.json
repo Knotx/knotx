@@ -102,6 +102,24 @@
         "assembler": {
           "address": "test-assembler"
         }
+      },
+      "customFlow": {
+        "routing": {
+          "GET": [
+            {
+              "path": "/customFlow/.*",
+              "address": "gateway",
+              "onTransition": {
+                "next": {
+                  "address": "requestprocessor"
+                }
+              }
+            }
+          ]
+        },
+        "responseProvider": {
+          "address": "responseprovider"
+        }
       }
     }
   }
