@@ -61,12 +61,6 @@ public class KnotxFlowConfiguration {
     }
   }
 
-  private String getVerticleAddress(JsonObject configuration, String verticleName) {
-    return Optional.ofNullable(configuration.getJsonObject(verticleName))
-        .map(verticleConfiguration -> verticleConfiguration.getString("address"))
-        .orElse(null);
-  }
-
   private void parseMethodRouting(Map.Entry<String, Object> entry) {
     final List<RoutingEntry> methodCriteria = getMethodCriterias(
         HttpMethod.valueOf(entry.getKey()));
@@ -102,6 +96,12 @@ public class KnotxFlowConfiguration {
       );
     }
     return transitions;
+  }
+
+  private String getVerticleAddress(JsonObject configuration, String verticleName) {
+    return Optional.ofNullable(configuration.getJsonObject(verticleName))
+        .map(verticleConfiguration -> verticleConfiguration.getString("address"))
+        .orElse(null);
   }
 
   public Optional<RepositoryEntry> repositoryForPath(final String path) {
