@@ -51,28 +51,21 @@ public class KnotxFlowConfiguration {
                     object.getBoolean("doProcessing", true))));
       }
 
-      JsonObject splitter = config.getJsonObject("splitter");
-      if (splitter != null) {
-        splitterAddress = splitter.getString("address");
-      }
-
-
       engineRouting = Maps.newEnumMap(HttpMethod.class);
       config.getJsonObject("routing").stream()
           .forEach(this::parseMethodRouting);
 
-      JsonObject assembler = config.getJsonObject("assembler");
-      if (assembler != null) {
-        assemblerAddress = assembler.getString("address");
-      }
-
-      JsonObject responseProvider = config.getJsonObject("responseProvider");
-      if (responseProvider != null) {
-        responseProviderAddress = responseProvider.getString("address");
-      }
+      splitterAddress = getVerticleAddress(config, "splitter");
+      assemblerAddress = getVerticleAddress(config, "assembler");
+      responseProviderAddress = getVerticleAddress(config, "responseProvider");
     }
   }
 
+  private String getVerticleAddress(JsonObject configuration, String verticleName) {
+    return Optional.ofNullable(configuration.getJsonObject(verticleName))
+        .map(verticleConfiguration -> verticleConfiguration.getString("address"))
+        .orElse(null);
+  }
 
   private void parseMethodRouting(Map.Entry<String, Object> entry) {
     final List<RoutingEntry> methodCriteria = getMethodCriterias(
