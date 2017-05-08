@@ -82,31 +82,36 @@ Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` f
         "X-UA-Compatible",
         "X-Request-ID"
       ],
-      "repositories": [
-        {
-          "path": "/content/local/.*",
-          "address": "knotx.core.repository.filesystem"
-        },
-        {
-          "path": "/content/.*",
-          "address": "knotx.core.repository.http"
-        }
-      ],
-      "splitter": {
-        "address": "knotx.core.splitter"
-      },
-      "routing": {
-        "GET": [
+      "defaultFlow": {
+        "repositories": [
           {
-            "path": ".*",
-            "address": "knotx.knot.service",
-            "onTransition": {
-              "next": {
-                "address": "knotx.knot.handlebars"
+            "path": "/content/local/.*",
+            "address": "knotx.core.repository.filesystem"
+          },
+          {
+            "path": "/content/.*",
+            "address": "knotx.core.repository.http"
+          }
+        ],
+        "splitter": {
+          "address": "knotx.core.splitter"
+        },
+        "routing": {
+          "GET": [
+            {
+              "path": ".*",
+              "address": "knotx.knot.service",
+              "onTransition": {
+                "next": {
+                  "address": "knotx.knot.handlebars"
+                }
               }
             }
-          }
-        ]
+          ]
+        },
+        "assembler": {
+          "address": "knotx.core.assembler"
+        }
       }
     }
   }
@@ -116,6 +121,7 @@ In short, by default, server does:
 - Listens on port 8092
 - Displays exception details on error pages (for development purposes)
 - Returns certain headers in Http Response to the client (as shown above)
+- Uses [[default Knot.X routing mechanism|KnotRouting]]
 - Communicates with two types of repositories: HTTP and Filesystem
 - Uses core [Splitter|Splitter]
 - Each GET request for any resource (`.*`) is routed through [Service Knot|ServiceKnot] and then [Handlebars rendering engine|HandlebarsKnot]
@@ -130,9 +136,19 @@ Main server options available.
 | `httpPort`                  | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
 | `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
+| `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
+| `customFlow`                | `KnotxFlowConfiguration`            |                | Configuration of [[Gateway Mode|GatewayMode]] |
+
+### KnotxFlowConfiguration options
+
+| Name                        | Type                                | Mandatory | Description  |
+|-------:                     |:-------:                            |:-------:  |-------|
 | `repositories`              | `Array of RepositoryEntry`          | &#10004;       | Array of repositories configurations |
-| `splitter`                  | `SplitterEntry`                     | &#10004;       | **Splitter** communication options |
+| `splitter`                  | `VerticleEntry`                     | &#10004;       | **Splitter** communication options |
+| `assembler`                 | `VerticleEntry`                     | &#10004;       | **Assembler** communication options |
 | `routing`                   | `Object of Method to RoutingEntry`  | &#10004;       | Set of HTTP method based routing entries, describing communication between **Knots**<br/>`"routing": {"GET": {}, "POST": {}}` |
+
+The `repositories`, `splitter` and `assembler` verticles are specific to the default Knot.X processing flow.
 
 ### RepositoryEntry options
 
@@ -141,11 +157,11 @@ Main server options available.
 | `path`      | `String`  | &#10004;       | Regular expression of the HTTP Request path |
 | `address`   | `String`  | &#10004;       | Event bus address of the **Repository Connector** modules, that should deliver content for the requested path matching the regexp in `path` |
 
-### SplitterEntry options
+### VerticleEntry options
 
 | Name  | Type  | Mandatory | Description  |
 |-------:|:-------:|:-------:  |-------|
-| `address`  | `String`  | &#10004;       | Sets the event bus address of the **Splitter** verticle |
+| `address`  | `String`  | &#10004;       | Sets the event bus address of the verticle |
 
 ### RoutingEntry options
 | Name  | Type  | Mandatory | Description  |

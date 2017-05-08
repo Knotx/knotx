@@ -1,4 +1,4 @@
-#High Level Architecture
+# High Level Architecture
 
 Knot.x is modular easily extensible and adaptable platform which assembles static and dynamic 
 content from multiple sources.
@@ -13,7 +13,7 @@ Diagram below depicts high level Knot.x architecture.
 
 Custom business logic can be encapsulated in dedicated Knots / Adapters.
 
-Knot is module which defines custom step while [request routing](#KnotRouting). It can process custom
+Knot is module which defines custom step while [[request routing|KnotRouting]]. It can process custom
 fragments, invoke Adapters and redirect site visitors to new site or error page. 
 More information about Knots can be found in the [[dedicated section|Knot]].
  

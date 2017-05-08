@@ -2,7 +2,7 @@
 Service Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adapter calls to fetch the
 data that will be later used to compose page final markup with [[Handlebars Knot|HandlebarsKnot]].
 
-##How does it work?
+## How does it work?
 Service Knot filters Fragments containing `services` in `data-knots-types` attribute (see 
 [[Knot Election Rule|Knot]]). Then for every Fragment it calls configured Adapters. At the end 
 it collects responses from those Adapters and expose them in [[Knot Context|Knot]]. Let's describe 
