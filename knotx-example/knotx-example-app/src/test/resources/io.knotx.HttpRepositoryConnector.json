@@ -10,7 +10,7 @@
       },
       "clientDestination": {
         "domain": "localhost",
-        "port": 3001
+        "port": 4001
       },
       "allowedRequestHeaders": [
         "Accept*",

@@ -11,7 +11,7 @@
         {
           "path": "/service/mock/.*",
           "domain": "localhost",
-          "port": 3000,
+          "port": 4000,
           "allowedRequestHeaders": [
             "Content-Type",
             "X-*"

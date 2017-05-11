@@ -4,7 +4,7 @@
     "config": {
       "mockDataRoot": "mock/service",
       "bouncing": true,
-      "httpPort": 3000
+      "httpPort": 4000
     }
   }
 }

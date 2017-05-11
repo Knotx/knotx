@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 public class SampleApplicationHeadersTest {
 
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
-  private static final int KNOTX_SERVER_PORT = 8092;
+  private static final int KNOTX_SERVER_PORT = 9092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
   private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
