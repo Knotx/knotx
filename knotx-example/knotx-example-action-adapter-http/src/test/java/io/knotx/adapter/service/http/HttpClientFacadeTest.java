@@ -53,7 +53,7 @@ public class HttpClientFacadeTest {
 
   // Configuration
 
-  private static final Integer PORT = 3000;
+  private static final Integer PORT = 4000;
 
   private static final String DOMAIN = "localhost";
 

@@ -1,11 +1,12 @@
 {
-  "main": "io.knotx.adapter.action.http.HttpActionAdapterVerticle",
+  "main": "io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
   "options": {
     "config": {
-      "address": "knotx.adapter.action.http",
+      "address": "knotx.adapter.service.http",
       "clientOptions": {
         "maxPoolSize": 1000,
-        "keepAlive": false
+        "keepAlive": false,
+        "logActivity": true
       },
       "services": [
         {
@@ -20,7 +21,11 @@
         {
           "path": "/service/.*",
           "domain": "localhost",
-          "port": 8080
+          "port": 8080,
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ]
         }
       ]
     }

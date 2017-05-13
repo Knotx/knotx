@@ -2,7 +2,7 @@
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
+      "httpPort": 9092,
       "allowedResponseHeaders": [
         "referer",
         "user-agent",
