@@ -5,7 +5,7 @@
 [![][central-repo img]][central-repo]
 [![][gitter img]][gitter]
 
-#Knot.x is a highly-efficient and scalable integration platform for modern websites.
+# Knot.x is a highly-efficient and scalable integration platform for modern websites.
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
@@ -55,11 +55,11 @@ See [Wiki](https://github.com/Cognifide/knotx/wiki) for developer documentation,
 
 ## Community
 
-####Online Chat
+#### Online Chat
 
 [Gitter Chat](https://gitter.im/Knotx/Lobby) is a way for users to chat with the Knot.x team. Feel free to leave a message, even if we’re not around, we will definitely respond to you when available.
 
-####Google Groups
+#### Google Groups
 
 Google Groups are memorable ways to ask questions and communicate with the Knot.x team and other users. There are two groups available:
 
