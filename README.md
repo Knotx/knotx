@@ -5,7 +5,7 @@
 [![][central-repo img]][central-repo]
 [![][gitter img]][gitter]
 
-# Knot.x is a highly-efficient and scalable integration platform for modern websites.
+# Knot.x is a highly efficient and scalable integration platform for modern websites.
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
