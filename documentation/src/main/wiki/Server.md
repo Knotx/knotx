@@ -1,39 +1,39 @@
 # Server
 
 Server is essentially a "heart" (a main [Verticle](http://vertx.io/docs/vertx-core/java/#_verticles)) of Knot.x.
-It creates HTTP Server, listening for browser requests, and is responsible for coordination of 
+It creates HTTP Server, listening for browser requests, and is responsible for coordination of
 communication between [[Repository Connectors|RepositoryConnectors]], [[Splitter|Splitter]] and all deployed [[Knots|Knot]].
 
 ## How does it work?
 Once the HTTP request from the browser comes to the Knot.x, it goes to the **Server** verticle.
 Server performs following actions when receives HTTP request:
 
-- Verifies if request **method** is configured in `routing` (see config below), and sends 
+- Verifies if request **method** is configured in `routing` (see config below), and sends
 **Method Not Allowed** response if not matches
-- Search for the **repository** address in `repositories` configuration, by matching the 
+- Search for the **repository** address in `repositories` configuration, by matching the
 requested path with the regexp from config, and sends **Not Found** response if none is matched.
 - Calls the matching **repository** address with the original request
 - Calls the **splitter** address with the template got from **repository**
-- Builds [[KnotContext|Knot]] communication model (that consists of original request, response from 
+- Builds [[KnotContext|Knot]] communication model (that consists of original request, response from
 repository & split HTML fragments)
 - Calls **[[Knots|Knot]]** according to the [routing](#routing) configuration, with the **KnotContext**
 - Once the last Knot returns processed **KnotContext**, server creates HTTP Response based on data from the KnotContext
 - Filters the response headers according to the `allowed.response.headers` configuration and returns to the browser.
 
-The diagram below depicts flow of data coordinated by the **Server** based on the hypothetical 
+The diagram below depicts flow of data coordinated by the **Server** based on the hypothetical
 configuration of routing (as described in next section).
 [[assets/knotx-server.png|alt=Knot.x Server How it Works flow diagram]]
 
 ### Routing
-Routing specifies how the system should behave for different [Knots|Knot] responses. The request flow at 
-the diagram above is reflected in a `routing` JSON node in the configuration section below. This routing 
-defines that all requests for HTML pages must be processed first by Knot listening on address 
+Routing specifies how the system should behave for different [Knots|Knot] responses. The request flow at
+the diagram above is reflected in a `routing` JSON node in the configuration section below. This routing
+defines that all requests for HTML pages must be processed first by Knot listening on address
 `first.knot.eventbus.address`. Then based on its response there are two next steps: `go-second` and
 `go-alt`:
 - If returned transition is `go-second`, Server will call next `second.knot.eventbus.address`.
 - If returned transition is `go-alt`, Server will call next `alternate.knot.eventbus.address`.
 
-For the route with `go-second` transition there is one more strep after `second.knot.eventbus.address` - 
+For the route with `go-second` transition there is one more strep after `second.knot.eventbus.address` -
 for `go-third` transition Server will call `third.knots.eventbus.address` at the end.
 For the route with `go-alt` transition Server will call `alternate.knot.eventbus.address` only.
 In both cases the response will be returned to the client.
@@ -121,7 +121,7 @@ In short, by default, server does:
 - Listens on port 8092
 - Displays exception details on error pages (for development purposes)
 - Returns certain headers in Http Response to the client (as shown above)
-- Uses [[default Knot.X routing mechanism|KnotRouting]]
+- Uses the [[default Knot.X routing mechanism|KnotRouting]]
 - Communicates with two types of repositories: HTTP and Filesystem
 - Uses core [Splitter|Splitter]
 - Each GET request for any resource (`.*`) is routed through [Service Knot|ServiceKnot] and then [Handlebars rendering engine|HandlebarsKnot]
