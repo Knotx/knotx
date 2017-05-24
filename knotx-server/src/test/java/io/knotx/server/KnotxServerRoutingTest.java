@@ -43,7 +43,7 @@ import rx.functions.Action1;
 @RunWith(VertxUnitRunner.class)
 public class KnotxServerRoutingTest {
 
-  private static final int KNOTX_SERVER_PORT = 8092;
+  private static final int KNOTX_SERVER_PORT = 9092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
   private RunTestOnContext vertx = new RunTestOnContext();

@@ -48,8 +48,9 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   }
 
   private Observable<Pair<String, String>> deployVerticle(final Object module) {
-    return vertx.deployVerticleObservable((String) module, getModuleOptions((String) module))
-        .map(deploymentID -> Pair.of((String) module, deploymentID));
+    return vertx.rxDeployVerticle((String) module, getModuleOptions((String) module))
+        .map(deploymentID -> Pair.of((String) module, deploymentID))
+        .toObservable();
   }
 
   private DeploymentOptions getModuleOptions(final String module) {
