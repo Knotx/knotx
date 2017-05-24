@@ -15,7 +15,7 @@
     "knotx:io.knotx.ServiceAdapterMock",
     "knotx:io.knotx.ActionAdapterMock",
     "knotx:io.knotx.GatewayKnot",
-    "knotx:io.knotx.RequestProcessorKnot",
+    "knotx:example.io.knotx.RequestProcessorKnot",
     "knotx:io.knotx.ResponseProviderKnot"
   ],
   "config": {

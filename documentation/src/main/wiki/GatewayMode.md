@@ -33,9 +33,8 @@ First, a Knot, called a Gateway Knot, sets the Knot Context of the request. The 
 
 After the routing is over, the response is returned from a verticle called Response Provider.
 
-//TODO an image of the routing simillar to this on Knot Routing page
-
 Depending on your routing implementation, you can use the Gateway Mode to return the external services response
 in raw form (e.g. JSON), while still having custom Knots, like authorization, to process the request.
+An example is shown in the Knot.X example application, where a custom `RequestProcessorKnot` simulates a call to an external service to fetch a JSON message.
 
 An example usage of Gateway Mode is present in the [[demo application|RunningTheDemo]].
