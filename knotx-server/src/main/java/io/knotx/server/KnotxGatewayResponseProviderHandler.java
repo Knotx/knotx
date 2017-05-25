@@ -62,7 +62,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
                 }
               },
               error -> {
-                LOGGER.error("Error happened while communicating with {} engine", error,
+                LOGGER.error("Error {} happened while communicating with `{}` engine", error,
                     configuration.getCustomFlow().responseProviderAddress());
                 context.fail(error);
               }

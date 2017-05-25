@@ -44,29 +44,31 @@ public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> 
 
   @Override
   public void handle(RoutingContext context) {
-    String path = context.request().path();
-    HttpMethod method = context.request().method();
-    boolean pathNotAllowedInDefaultFlow = isPathNotPresentInFlow(path, defaultFlow);
-    boolean pathNotAllowedInCustomFlow = isPathNotPresentInFlow(path, customFlow);
-    if (pathNotAllowedInDefaultFlow && pathNotAllowedInCustomFlow) {
-      LOGGER.warn("Requested path {} is not supported based on configuration", path);
-      context.fail(HttpResponseStatus.NOT_FOUND.code());
-    } else if (!pathNotAllowedInDefaultFlow && isMethodDisallowedInFlow(method, defaultFlow)) {
-      if (!pathNotAllowedInCustomFlow && isMethodDisallowedInFlow(method, customFlow)) {
+    final String path = context.request().path();
+    final HttpMethod method = context.request().method();
+    boolean pathSupportedByDefaultFlow = isPathSupportedByFlow(path, defaultFlow);
+    boolean pathSupportedByCustomFlow = isPathSupportedByFlow(path, customFlow);
+    if (pathSupportedByCustomFlow || pathSupportedByDefaultFlow) {
+      final boolean methodAllowedInDefaultFlow = isMethodAllowedInFlow(method, defaultFlow);
+      final boolean methodAllowedInCustomFlow = isMethodAllowedInFlow(method, customFlow);
+      if (methodAllowedInDefaultFlow || methodAllowedInCustomFlow) {
+        context.next();
+      } else {
         LOGGER.warn("Requested method {} is not supported based on configuration", method);
         context.fail(HttpResponseStatus.METHOD_NOT_ALLOWED.code());
       }
     } else {
-      context.next();
+      LOGGER.warn("Requested path {} is not supported based on configuration", path);
+      context.fail(HttpResponseStatus.NOT_FOUND.code());
     }
   }
 
-  private boolean isMethodDisallowedInFlow(HttpMethod method, KnotxFlowConfiguration flow) {
-    return flow.getEngineRouting() != null && flow.getEngineRouting().keySet().stream().noneMatch(supportedMethod -> supportedMethod == method);
+  private boolean isMethodAllowedInFlow(HttpMethod method, KnotxFlowConfiguration flow) {
+    return flow.getEngineRouting() != null && flow.getEngineRouting().keySet().stream().anyMatch(supportedMethod -> supportedMethod == method);
   }
 
-  private boolean isPathNotPresentInFlow(String path, KnotxFlowConfiguration flow) {
-    return flow.getEngineRouting() != null && flow.getEngineRouting().values().stream().noneMatch(
+  private boolean isPathSupportedByFlow(String path, KnotxFlowConfiguration flow) {
+    return flow.getEngineRouting() != null && flow.getEngineRouting().values().stream().anyMatch(
         routingEntries -> routingEntries.stream()
             .anyMatch(item -> path.matches(item.path()))
     );
