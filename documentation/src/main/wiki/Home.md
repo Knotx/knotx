@@ -1,5 +1,5 @@
 # Wiki
-This documentation is dedicated for more advanced users and developers. Here you can find information how to extend Knot.x, how to tune particular 
+This documentation is dedicated for more advanced users and developers. Here you can find information how to extend Knot.x, how to tune particular
 modules according your needs. Additionally wiki contains base information how set up Knot.x and run examples.
 
 User documentation is available at [http://knotx.io](http://knotx.io/).
@@ -12,6 +12,7 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
   * [[Core Architecture|CoreArchitecture]]
   * [[Communication Flow|CommunicationFlow]]
   * [[Knot Routing|KnotRouting]]
+  * [[Gateway Mode|GatewayMode]]
 * [[Knot.x Modules|KnotxModules]]
 * [[Server|Server]]
 * [[Repository Connectors|RepositoryConnectors]]
@@ -27,7 +28,7 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
   * [[Service Adapter|ServiceAdapter]]
   * [[Action Adapter|ActionAdapter]]
   * [[Http Service Adapter|HttpServiceAdapter]]
-* [[Mocks|Mocks]]    
+* [[Mocks|Mocks]]
 * [[Knot.x Deployment|KnotxDeployment]]
 * [[Performance|PerformanceTests]]
   * [[Performance Tests Methodology|PerformanceTestsMethodology]]

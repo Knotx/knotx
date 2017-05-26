@@ -3,18 +3,18 @@ Service Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adap
 data that will be later used to compose page final markup with [[Handlebars Knot|HandlebarsKnot]].
 
 ## How does it work?
-Service Knot filters Fragments containing `services` in `data-knots-types` attribute (see 
-[[Knot Election Rule|Knot]]). Then for every Fragment it calls configured Adapters. At the end 
-it collects responses from those Adapters and expose them in [[Knot Context|Knot]]. Let's describe 
+Service Knot filters Fragments containing `services` in `data-knots-types` attribute (see
+[[Knot Election Rule|Knot]]). Then for every Fragment it calls configured Adapters. At the end
+it collects responses from those Adapters and expose them in [[Knot Context|Knot]]. Let's describe
 how Adapters are invoked with following example.
 
 Adapters calls are defined both on template and Knot configuration layers:
 
 First Service Knot collects `data-knotx-service-{NAMESPACE}={ADAPTERNAME}` attributes which define accordingly:
  - namespace under which Adapter response will be available,
- - name of the Adapter tha will be called during snippet processing. 
+ - name of the Adapter tha will be called during snippet processing.
 
-Additionally with every Adapter `data-knotx-params-{NAMESPACE}={JSON DATA}` attribute can be defined 
+Additionally with every Adapter `data-knotx-params-{NAMESPACE}={JSON DATA}` attribute can be defined
 which specifies parameters for Adapter call. An example `script` definition can look like:
 
 ```html
@@ -58,8 +58,8 @@ those calls have also asynchronous natures. It is visualized on diagram below.
 [[assets/knotx-modules-advanced-request-flow.png|alt=Knot.x Request Flow]]
 
 ### Adapter Calls Caching
-Template might consists of more than one Adapter call. It's also possible that there are multiple 
-fragments on the page, each using same Adapter call. Knot.x does caching results of Adapter calls 
+Template might consists of more than one Adapter call. It's also possible that there are multiple
+fragments on the page, each using same Adapter call. Knot.x does caching results of Adapter calls
 to avoid multiple calls for the same data.
 Caching is performed within page request scope, this means another request will not get cached data.
 
@@ -89,7 +89,7 @@ Default configuration shipped with the verticle as `io.knotx.ServiceKnot.json` f
 ```
 In general, it:
 - Listens on event bus address `knotx.knot.service` on messages to process
-- It communicates with the [Service Adapter|ServiceAdapter] on event bus address `mock-service-adapter` for processing GET requests to the services
+- It communicates with the [[Service Adapter|ServiceAdapter]] on event bus address `mock-service-adapter` for processing GET requests to the services
 - It defines service adapter configuration
 
 Detailed description of each configuration option is described in the next subsection.

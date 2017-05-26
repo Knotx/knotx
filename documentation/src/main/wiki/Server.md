@@ -123,8 +123,8 @@ In short, by default, server does:
 - Returns certain headers in Http Response to the client (as shown above)
 - Uses the [[default Knot.X routing mechanism|KnotRouting]]
 - Communicates with two types of repositories: HTTP and Filesystem
-- Uses core [Splitter|Splitter]
-- Each GET request for any resource (`.*`) is routed through [Service Knot|ServiceKnot] and then [Handlebars rendering engine|HandlebarsKnot]
+- Uses core [[Splitter|Splitter]]
+- Each GET request for any resource (`.*`) is routed through [[Service Knot|ServiceKnot]] and then [[Handlebars rendering engine|HandlebarsKnot]]
 
 Detailed description of each configuration option that's available is described in next section.
 
