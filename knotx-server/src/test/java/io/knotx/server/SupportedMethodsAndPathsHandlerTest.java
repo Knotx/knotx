@@ -36,8 +36,8 @@ public class SupportedMethodsAndPathsHandlerTest {
   @Before
   public void before() throws Exception {
     defaultFlow = new KnotxFlowConfiguration(
-        new JsonObject(FileReader.readText("defaultFlow.json")));
-    customFlow = new KnotxFlowConfiguration(new JsonObject(FileReader.readText("customFlow.json")));
+        new JsonObject(FileReader.readText("GETOnlyDefaultFlow.json")));
+    customFlow = new KnotxFlowConfiguration(new JsonObject(FileReader.readText("GETOnlyCustomFlow.json")));
     KnotxServerConfiguration configuration = Mockito.mock(KnotxServerConfiguration.class);
     Mockito.when(configuration.getDefaultFlow()).thenReturn(defaultFlow);
     Mockito.when(configuration.getCustomFlow()).thenReturn(customFlow);

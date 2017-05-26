@@ -48,60 +48,56 @@ public class KnotxServerVerticle extends AbstractVerticle {
     Router router = Router.router(vertx);
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
 
-    configuration.getDefaultFlow().getEngineRouting().entrySet()
-        .forEach(entry -> {
-          if (entry.getKey() == HttpMethod.POST) {
-            router.route().method(entry.getKey()).handler(BodyHandler.create());
+    configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
+      if (key == HttpMethod.POST) {
+        router.route().method(key).handler(BodyHandler.create());
+      }
+      value.forEach(
+          criteria -> {
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxRepositoryHandler.create(vertx, configuration));
+
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxSplitterHandler.create(vertx, configuration));
+
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxEngineHandler
+                    .create(vertx, criteria.address(), criteria.onTransition()));
+
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxAssemblerHandler.create(vertx, configuration));
           }
-          entry.getValue().forEach(
-              criteria -> {
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxRepositoryHandler.create(vertx, configuration));
-
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxSplitterHandler.create(vertx, configuration));
-
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxEngineHandler
-                        .create(vertx, criteria.address(), criteria.onTransition()));
-
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxAssemblerHandler.create(vertx, configuration));
-              }
-          );
-        });
+      );
+    });
 
     if(configuration.getCustomFlow().getEngineRouting() != null) {
-      configuration.getCustomFlow().getEngineRouting().entrySet()
-          .forEach(entry -> {
-            if (entry.getKey() == HttpMethod.POST) {
-              router.route().method(entry.getKey()).handler(BodyHandler.create());
+      configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
+        if (key == HttpMethod.POST) {
+          router.route().method(key).handler(BodyHandler.create());
+        }
+        value.forEach(
+            criteria -> {
+              router.route()
+                  .method(key)
+                  .pathRegex(criteria.path())
+                  .handler(KnotxEngineHandler
+                      .create(vertx, criteria.address(), criteria.onTransition()));
+
+              router.route()
+                  .method(key)
+                  .pathRegex(criteria.path())
+                  .handler(KnotxGatewayResponseProviderHandler.create(vertx, configuration));
             }
-            entry.getValue().forEach(
-                criteria -> {
-
-                  router.route()
-                      .method(entry.getKey())
-                      .pathRegex(criteria.path())
-                      .handler(KnotxEngineHandler
-                          .create(vertx, criteria.address(), criteria.onTransition()));
-
-                  router.route()
-                      .method(entry.getKey())
-                      .pathRegex(criteria.path())
-                      .handler(KnotxGatewayResponseProviderHandler
-                          .create(vertx, configuration));
-                }
-            );
-          });
+        );
+      });
     }
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
