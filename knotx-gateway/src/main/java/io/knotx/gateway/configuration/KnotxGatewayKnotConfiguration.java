@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server;
+package io.knotx.gateway.configuration;
 
-import java.util.Map;
+import io.vertx.core.json.JsonObject;
 
-public class RoutingEntry {
+public class KnotxGatewayKnotConfiguration {
 
-  private String path;
-  private String address;
-  private Map<String, RoutingEntry> onTransition;
+  private final String address;
 
-  public RoutingEntry(String path, String address, Map<String, RoutingEntry> onTransition) {
-    this.path = path;
-    this.address = address;
-    this.onTransition = onTransition;
+  public KnotxGatewayKnotConfiguration(JsonObject config) {
+    address = config.getString("address");
   }
 
-  public String path() {
-    return path;
-  }
-
-  public String address() {
+  public String getAddress() {
     return address;
   }
 
-  public Map<String, RoutingEntry> onTransition() {
-    return onTransition;
-  }
 }

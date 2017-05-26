@@ -67,12 +67,20 @@ Serialization variants of MultiMap fields
 [[Fragment]]
 == Fragment
 
+++++
+ An entity representing a markup slice produced during Template fragmentation. It represents both
+ markup with static and dynamic content.
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[raw]]`raw`|`Boolean`|-
+|[[raw]]`raw`|`Boolean`|
++++
+
++++
 |===
 
 [[KnotContext]]

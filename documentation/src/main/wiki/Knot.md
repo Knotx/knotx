@@ -1,9 +1,9 @@
-#Knot
+# Knot
 A Knot defines business logic which can be applied to a particular [[Fragment|Splitter]]. It can, for 
 example, invoke an external services via [[Adapters|Adapter]], evaluate Handlebars snippets or simply 
 redirect a site visitor to a different location.
 
-##How does it work?
+## How does it work?
 The Knot reads a [Knot Context](#knot-context) containing a list of Fragments to process, takes care of the processing,
 updates the Knot Context and returns it back to the caller.
 
@@ -125,14 +125,14 @@ Server beaks routing and responds with `500` to the client.
 | `transition`| EMPTY 
 
 
-##How to configure?
+## How to configure?
 the Knot API specifies an abstract class - `KnotConfiguration` to handle JSON configuration support. This
 abstraction can be used while implementing a custom Knot but it is not required. Every Knot must be
 exposed with a unique Event Bus address - that's the only obligation (as is the case with Adapters).
 Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
 [[Service Knot|ServiceKnot#how-to-configure]].
 
-##How to implement your own Knot?
+## How to implement your own Knot?
 Implementation of a Knot does not require knowledge of how to communicate via the Vert.x event bus. It's wrapped by **Vert.x Service Proxy** functionality so any new implementation can focus on the business logic of the Knot. 
 
 In order to implement a Knot, follow the guide below:

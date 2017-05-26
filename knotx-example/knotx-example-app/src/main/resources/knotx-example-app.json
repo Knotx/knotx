@@ -13,7 +13,10 @@
     "knotx:io.knotx.RemoteRepositoryMock",
     "knotx:io.knotx.ServiceMock",
     "knotx:io.knotx.ServiceAdapterMock",
-    "knotx:io.knotx.ActionAdapterMock"
+    "knotx:io.knotx.ActionAdapterMock",
+    "knotx:io.knotx.GatewayKnot",
+    "knotx:example.io.knotx.RequestProcessorKnot",
+    "knotx:io.knotx.ResponseProviderKnot"
   ],
   "config": {
     "knotx:io.knotx.ServiceKnot": {

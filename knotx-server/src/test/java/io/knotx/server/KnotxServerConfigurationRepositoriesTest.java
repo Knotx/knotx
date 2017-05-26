@@ -19,38 +19,37 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.junit.util.FileReader;
+import io.knotx.server.configuration.KnotxFlowConfiguration;
+import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.json.JsonObject;
 import org.junit.Before;
 import org.junit.Test;
 
 public class KnotxServerConfigurationRepositoriesTest {
 
-  private JsonObject config;
+  private KnotxFlowConfiguration flowConfiguration;
 
   @Before
   public void before() throws Exception {
-    config = new JsonObject(FileReader.readText("test-config-server.json"));
+    JsonObject config = new JsonObject(FileReader.readText("test-config-server.json"));
+    flowConfiguration = new KnotxServerConfiguration(config).getDefaultFlow();
   }
 
   @Test
   public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths()
       throws Exception {
-    KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
-
-    assertThat(serverConfig.repositoryForPath("/content/local/simple.html").get().address(),
+    assertThat(flowConfiguration.repositoryForPath("/content/local/simple.html").get().address(),
         equalTo("knotx.repository.filesystem"));
-    assertThat(serverConfig.repositoryForPath("/content/simple.html").get().address(),
+    assertThat(flowConfiguration.repositoryForPath("/content/simple.html").get().address(),
         equalTo("knotx.repository.http"));
   }
 
   @Test
   public void whenConfigWithRepositoryMappings_expectNoRepositoryAddressOnNotMatchingPaths()
       throws Exception {
-    KnotxServerConfiguration serverConfig = new KnotxServerConfiguration(config);
-
-    assertThat(serverConfig.repositoryForPath("/content2/local/simple.html").isPresent(),
+    assertThat(flowConfiguration.repositoryForPath("/content2/local/simple.html").isPresent(),
         equalTo(false));
-    assertThat(serverConfig.repositoryForPath("/service/simple.html").isPresent(), equalTo(false));
+    assertThat(flowConfiguration.repositoryForPath("/service/simple.html").isPresent(), equalTo(false));
   }
 
 

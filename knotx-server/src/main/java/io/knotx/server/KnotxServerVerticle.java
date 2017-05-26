@@ -15,6 +15,10 @@
  */
 package io.knotx.server;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -25,8 +29,6 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.BodyHandler;
 import io.vertx.rxjava.ext.web.handler.ErrorHandler;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
@@ -44,45 +46,67 @@ public class KnotxServerVerticle extends AbstractVerticle {
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     Router router = Router.router(vertx);
-
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
-    configuration.getEngineRouting().entrySet()
-        .forEach(entry -> {
-          if (entry.getKey() == HttpMethod.POST) {
-            router.route().method(entry.getKey()).handler(BodyHandler.create());
+
+    configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
+      if (key == HttpMethod.POST) {
+        router.route().method(key).handler(BodyHandler.create());
+      }
+      value.forEach(
+          criteria -> {
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxRepositoryHandler.create(vertx, configuration));
+
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxSplitterHandler.create(vertx, configuration));
+
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxEngineHandler
+                    .create(vertx, criteria.address(), criteria.onTransition()));
+
+            router.route()
+                .method(key)
+                .pathRegex(criteria.path())
+                .handler(KnotxAssemblerHandler.create(vertx, configuration));
           }
-          entry.getValue().forEach(
-              criteria -> {
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxRepositoryHandler.create(vertx, configuration));
+      );
+    });
 
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxSplitterHandler.create(vertx, configuration));
+    if(configuration.getCustomFlow().getEngineRouting() != null) {
+      configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
+        if (key == HttpMethod.POST) {
+          router.route().method(key).handler(BodyHandler.create());
+        }
+        value.forEach(
+            criteria -> {
+              router.route()
+                  .method(key)
+                  .pathRegex(criteria.path())
+                  .handler(KnotxEngineHandler
+                      .create(vertx, criteria.address(), criteria.onTransition()));
 
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxEngineHandler
-                        .create(vertx, criteria.address(), criteria.onTransition()));
+              router.route()
+                  .method(key)
+                  .pathRegex(criteria.path())
+                  .handler(KnotxGatewayResponseProviderHandler.create(vertx, configuration));
+            }
+        );
+      });
+    }
 
-                router.route()
-                    .method(entry.getKey())
-                    .pathRegex(criteria.path())
-                    .handler(KnotxAssemblerHandler.create(vertx, configuration));
-              }
-          );
-        });
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 
     vertx.createHttpServer()
         .requestHandler(router::accept)
-        .rxListen(configuration.httpPort())
+        .rxListen(configuration.getHttpPort())
         .subscribe(ok -> {
-              LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.httpPort());
+              LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.getHttpPort());
               fut.complete();
             },
             error -> {

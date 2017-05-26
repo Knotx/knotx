@@ -1,4 +1,4 @@
-#Architecture
+# Architecture
 
 A simplified description of Knot.x can be `a tool which converts a static page (template) into 
 dynamic page driven by data provided by microservices`.

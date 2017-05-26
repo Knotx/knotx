@@ -35,5 +35,6 @@
     <module>knotx-example-handlebars-ext</module>
     <module>knotx-example-action-adapter-http</module>
     <module>knotx-example-app</module>
+    <module>knotx-example-gateway</module>
   </modules>
 </project>

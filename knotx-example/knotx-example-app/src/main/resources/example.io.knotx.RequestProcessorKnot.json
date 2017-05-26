@@ -1,0 +1,8 @@
+{
+  "main": "io.knotx.gateway.RequestProcessorKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.gateway.requestprocessor"
+    }
+  }
+}

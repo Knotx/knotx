@@ -1,0 +1,8 @@
+{
+  "main": "io.knotx.gateway.GatewayKnotVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.gateway.gatewayknot"
+    }
+  }
+}

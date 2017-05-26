@@ -7,6 +7,7 @@
 #include "wiki/CoreArchitecture.md"
 #include "wiki/CommunicationFlow.md"
 #include "wiki/KnotRouting.md"
+#include "wiki/GatewayMode.md"
 #include "wiki/KnotxModules.md"
 #include "wiki/Server.md"
 #include "wiki/RepositoryConnectors.md"
