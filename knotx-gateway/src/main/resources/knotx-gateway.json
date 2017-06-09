@@ -1,0 +1,6 @@
+{
+  "modules": [
+    "knotx:io.knotx.GatewayKnot",
+    "knotx:io.knotx.ResponseProviderKnot"
+  ]
+}

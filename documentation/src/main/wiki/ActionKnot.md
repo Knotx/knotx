@@ -3,7 +3,7 @@ Action Knot is an [[Knot|Knot]] implementation responsible for forms submissions
 simple (without file upload) forms including redirection to successful pages and multi-step forms flows.
 It provides also a service error handling mechanism.
 
-##How does it work?
+## How does it work?
 Action Knot is used with default Knot.x settings while both GET and POST client request processing.
 It transforms a form template to Knot.x agnostic one for GET requests. When client submits the form
 Action Knot calls configured [[Adapter|Adapter]] and based on its response redirect the client to a
@@ -73,7 +73,7 @@ Signal is basically a decision about further request processing. Value of the si
 - `_self` - that indicates that there will not be redirect, instead current page will be processed (generated view for instance).
 In other words, the page processing will be delegated to next [[Knot|Knot]] in the graph.
 
-##How to configure?
+## How to configure?
 Action Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
 Default configuration shipped with the verticle as `io.knotx.ActionKnot.json` file available in classpath.

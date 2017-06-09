@@ -16,6 +16,7 @@
 package io.knotx.server;
 
 
+import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
 import io.knotx.junit.rule.Logback;
@@ -42,7 +43,7 @@ import rx.functions.Action1;
 @RunWith(VertxUnitRunner.class)
 public class KnotxServerRoutingTest {
 
-  private static final int KNOTX_SERVER_PORT = 8092;
+  private static final int KNOTX_SERVER_PORT = 9092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -176,6 +177,15 @@ public class KnotxServerRoutingTest {
     });
   }
 
+  @Test
+  @KnotxConfiguration("test-server.json")
+  public void whenRequestingGetWithCustomFlowProcessing(TestContext context) {
+    createPassThroughKnot("responseprovider");
+    createSimpleGatewayKnot("gateway", "next");
+    createSimpleKnot("requestprocessor", "message", null);
+    testGetRequest(context, "/customFlow/remote/simple.json", "message");
+  }
+
   private void testPostRequest(String url, Action1<HttpClientResponse> expectedResponse) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     String testBody = "a=b";
@@ -215,6 +225,17 @@ public class KnotxServerRoutingTest {
     Action1<KnotContext> simpleKnot = knotContext -> {
       Buffer inBody = knotContext.getClientResponse().getBody();
       knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
+      knotContext.setTransition(transition);
+    };
+    MockKnotProxy.register(vertx.vertx(), address, simpleKnot);
+  }
+
+  private void createSimpleGatewayKnot(final String address, final String transition) {
+    Action1<KnotContext> simpleKnot = knotContext -> {
+      ClientResponse clientResponse = new ClientResponse();
+      clientResponse.setBody(Buffer.buffer());
+      clientResponse.setStatusCode(200);
+      knotContext.setClientResponse(clientResponse);
       knotContext.setTransition(transition);
     };
     MockKnotProxy.register(vertx.vertx(), address, simpleKnot);

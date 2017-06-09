@@ -48,7 +48,7 @@ public class SampleApplicationTest {
   private static final String MISSING_SERVICE_CONFIG_REQUEST_URI = "/content/local/missingServiceConfig.html";
   private static final String LOCAL_NO_BODY_REQUEST_URI = "/content/local/noBody.html";
   private static final String LOCAL_MULTIPLE_FORMS_URI = "/content/local/multiple-forms.html";
-  private static final int KNOTX_SERVER_PORT = 8092;
+  private static final int KNOTX_SERVER_PORT = 9092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
   private RunTestOnContext vertx = new RunTestOnContext();
@@ -84,14 +84,14 @@ public class SampleApplicationTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-app.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingPageWithMissingServiceWithoutConfiguration_expectServerError(
       TestContext context) {
     testGetServerError(context, MISSING_SERVICE_CONFIG_REQUEST_URI);
   }
 
   @Test
-  @KnotxConfiguration("knotx-example-app.json")
+  @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
   }

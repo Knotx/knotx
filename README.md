@@ -5,7 +5,7 @@
 [![][central-repo img]][central-repo]
 [![][gitter img]][gitter]
 
-#Knot.x is a highly-efficient and scalable integration platform for modern websites.
+# Knot.x is a highly efficient and scalable integration platform for modern websites.
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
@@ -13,9 +13,9 @@
 
 ## What problems does Knot.x solve?
 
-**Knot.x** uses data from any source (like REST / SOAP service, search engine, CRM etc.) and transforms it into an unified customer experience using a 
-template from a repository. The template can contain dynamic snippets which determine the way how data is used. The repository can be CMS system, Apache or 
-simple catalogue with static HTML pages. 
+**Knot.x** uses data from any source (like REST / SOAP service, search engine, CRM etc.) and transforms it into an unified customer experience using a
+template from a repository. The template can contain dynamic snippets which determine the way how data is used. The repository can be CMS system, Apache or
+simple catalogue with static HTML pages.
 
 <p align="center">
   <img align="right"
@@ -32,7 +32,7 @@ Asynchronous programming is a style promoting the ability to write non-blocking 
 The platform stays responsive under heavy and varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
 ### Loose coupling
-Relies on asynchronous message-passing to establish a boundary between system components that ensures 
+Relies on asynchronous message-passing to establish a boundary between system components that ensures
 loose coupling, isolation and location transparency. Base **Knot.x** component is called [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
 
 <p align="center">
@@ -42,8 +42,8 @@ loose coupling, isolation and location transparency. Base **Knot.x** component i
 </p>
 
 ### Scalability
-Various scaling options are available to suit client needs and help in cost optimization. Using a 
-simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of 
+Various scaling options are available to suit client needs and help in cost optimization. Using a
+simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of
 servers.
 
 ## Documentation
@@ -55,11 +55,11 @@ See [Wiki](https://github.com/Cognifide/knotx/wiki) for developer documentation,
 
 ## Community
 
-####Online Chat
+#### Online Chat
 
 [Gitter Chat](https://gitter.im/Knotx/Lobby) is a way for users to chat with the Knot.x team. Feel free to leave a message, even if we’re not around, we will definitely respond to you when available.
 
-####Google Groups
+#### Google Groups
 
 Google Groups are memorable ways to ask questions and communicate with the Knot.x team and other users. There are two groups available:
 

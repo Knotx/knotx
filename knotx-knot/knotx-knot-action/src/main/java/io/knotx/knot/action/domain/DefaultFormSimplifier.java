@@ -34,6 +34,7 @@ public class DefaultFormSimplifier implements FormSimplifier {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFormSimplifier.class);
 
+  @Override
   public String simplify(String content, String formIdAttrName, String formIdAttrValue) {
     Document scriptContentDocument = FragmentContentExtractor.unwrapDocument(content);
     Element actionFormElement = scriptContentDocument.getElementsByAttribute(FORM_ACTION_ATTR).first();

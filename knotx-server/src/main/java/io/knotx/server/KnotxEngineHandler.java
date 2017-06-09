@@ -15,8 +15,10 @@
  */
 package io.knotx.server;
 
+import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -59,6 +61,9 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
+    if (knotContext == null) {
+      knotContext = new KnotContext().setClientRequest(new ClientRequest(context.request()));
+    }
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
     knot.rxProcess(knotContext)

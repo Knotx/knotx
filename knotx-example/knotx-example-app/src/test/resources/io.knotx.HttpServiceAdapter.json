@@ -1,0 +1,33 @@
+{
+  "main": "io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+  "options": {
+    "config": {
+      "address": "knotx.adapter.service.http",
+      "clientOptions": {
+        "maxPoolSize": 1000,
+        "keepAlive": false,
+        "logActivity": true
+      },
+      "services": [
+        {
+          "path": "/service/mock/.*",
+          "domain": "localhost",
+          "port": 4000,
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ]
+        },
+        {
+          "path": "/service/.*",
+          "domain": "localhost",
+          "port": 8080,
+          "allowedRequestHeaders": [
+            "Content-Type",
+            "X-*"
+          ]
+        }
+      ]
+    }
+  }
+}

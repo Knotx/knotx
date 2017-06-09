@@ -87,11 +87,13 @@ http://localhost:8092/content/remote/simple.html
 http://localhost:8092/content/local/simple.html
 http://localhost:8092/content/local/multiple-forms.html
 http://localhost:8092/content/remote/multiple-forms.html
+http://localhost:8092/customFlow/remote/simple.html
 ```
 - first serves HTML template from Remote Http Repository
 - second serves HTML template from local storage
 - third one serves HTML template with multiple forms on the page, one is AJAX based - served from local storage
-- last one serves HTML template with multiple forms on the page, one is AJAX based - served from remote repository
+- fourth one serves HTML template with multiple forms on the page, one is AJAX based - served from remote repository
+- last one serves a JSON message using the [[Gateway Mode|GatewayMode]]
 
 ## Reconfigure demo
 You can play with the demo in order to get familiar with the ways how to configure Knot.x based application.

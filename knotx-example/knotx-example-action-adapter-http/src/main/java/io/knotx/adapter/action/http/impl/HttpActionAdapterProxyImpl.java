@@ -23,31 +23,31 @@ import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.ClientResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.http.HttpClient;
-import rx.Observable;
+import io.vertx.rxjava.ext.web.client.WebClient;
+import rx.Single;
 
 public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
 
   private HttpClientFacade httpClientFacade;
 
   public HttpActionAdapterProxyImpl(Vertx vertx, HttpAdapterConfiguration configuration) {
-    this.httpClientFacade = new HttpClientFacade(getHttpClient(vertx, configuration),
+    this.httpClientFacade = new HttpClientFacade(getWebClient(vertx, configuration),
         configuration.getServices());
   }
 
   @Override
-  protected Observable<AdapterResponse> processRequest(AdapterRequest request) {
+  protected Single<AdapterResponse> processRequest(AdapterRequest request) {
     return httpClientFacade.process(request, HttpMethod.POST).map(this::prepareResponse);
   }
 
-  private HttpClient getHttpClient(Vertx vertx, HttpAdapterConfiguration configuration) {
+  private WebClient getWebClient(Vertx vertx, HttpAdapterConfiguration configuration) {
     JsonObject clientOptions = configuration.getClientOptions();
-    return clientOptions.isEmpty() ?
-        vertx.createHttpClient() : vertx.createHttpClient(new HttpClientOptions(clientOptions));
+    return clientOptions.isEmpty() ? WebClient.create(vertx) :
+        WebClient.create(vertx, new WebClientOptions(clientOptions));
   }
 
   private AdapterResponse prepareResponse(ClientResponse response) {
@@ -68,10 +68,6 @@ public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
 
   private boolean isJsonBody(Buffer bodyBuffer) {
     String body = bodyBuffer.toString().trim();
-    if (body.charAt(0) == '{' && body.charAt(body.length() - 1) == '}') {
-      return true;
-    } else {
-      return false;
-    }
+    return body.charAt(0) == '{' && body.charAt(body.length() - 1) == '}';
   }
 }

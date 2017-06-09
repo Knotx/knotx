@@ -2,7 +2,7 @@
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
+      "httpPort": 9092,
       "allowedResponseHeaders": [
         "referer",
         "user-agent",
@@ -44,62 +44,82 @@
         "x-requested-with",
         "location"
       ],
-      "repositories": [
-        {
-          "path": "/content/.*",
-          "address": "knotx.repository.filesystem"
-        }
-      ],
-      "splitter": {
-        "address": "test-splitter"
-      },
-      "routing": {
-        "GET": [
+      "defaultFlow": {
+        "repositories": [
           {
-            "path": ".*/local/.*\\.html",
-            "address": "A-engine",
-            "onTransition": {
-              "go-c": {
-                "address": "C-engine"
-              }
-            }
-          },
-          {
-            "path": ".*\\.html",
-            "address": "C-engine"
+            "path": "/content/.*",
+            "address": "knotx.repository.filesystem"
           }
         ],
-        "POST": [
-          {
-            "path": ".*/local/.*\\.html",
-            "address": "A-post-engine",
-            "onTransition": {
-              "go-b": {
-                "address": "B-engine",
-                "onTransition": {
-                  "go-c": {
-                    "address": "C-engine"
-                  }
+        "splitter": {
+          "address": "test-splitter"
+        },
+        "routing": {
+          "GET": [
+            {
+              "path": ".*/local/.*\\.html",
+              "address": "A-engine",
+              "onTransition": {
+                "go-c": {
+                  "address": "C-engine"
                 }
-              },
-              "go-c": {
-                "address": "C-engine"
+              }
+            },
+            {
+              "path": ".*\\.html",
+              "address": "C-engine"
+            }
+          ],
+          "POST": [
+            {
+              "path": ".*/local/.*\\.html",
+              "address": "A-post-engine",
+              "onTransition": {
+                "go-b": {
+                  "address": "B-engine",
+                  "onTransition": {
+                    "go-c": {
+                      "address": "C-engine"
+                    }
+                  }
+                },
+                "go-c": {
+                  "address": "C-engine"
+                }
+              }
+            },
+            {
+              "path": ".*\\.html",
+              "address": "B-engine",
+              "onTransition": {
+                "go-c": {
+                  "address": "C-engine"
+                }
               }
             }
-          },
-          {
-            "path": ".*\\.html",
-            "address": "B-engine",
-            "onTransition": {
-              "go-c": {
-                "address": "C-engine"
-              }
-            }
-          }
-        ]
+          ]
+        },
+        "assembler": {
+          "address": "test-assembler"
+        }
       },
-      "assembler": {
-        "address": "test-assembler"
+      "customFlow": {
+        "routing": {
+          "GET": [
+            {
+              "path": "/customFlow/.*",
+              "address": "gateway",
+              "onTransition": {
+                "next": {
+                  "address": "requestprocessor"
+                }
+              }
+            }
+          ]
+        },
+        "responseProvider": {
+          "address": "responseprovider"
+        }
       }
     }
   }

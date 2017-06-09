@@ -35,60 +35,91 @@
         "X-UA-Compatible",
         "X-Request-ID"
       ],
-      "repositories": [
-        {
-          "path": "/content/local/.*",
-          "address": "knotx.core.repository.filesystem"
-        },
-        {
-          "path": "/content/.*",
-          "address": "knotx.core.repository.http"
-        },
-        {
-          "path": "/img/.*",
-          "address": "knotx.core.repository.http",
-          "doProcessing": false
-        }
-      ],
-      "splitter": {
-        "address": "knotx.core.splitter"
-      },
-      "routing": {
-        "GET": [
+      "defaultFlow": {
+        "repositories": [
+          {
+            "path": "/content/local/.*",
+            "address": "knotx.core.repository.filesystem"
+          },
           {
             "path": "/content/.*",
-            "address": "knotx.knot.action",
-            "onTransition": {
-              "next": {
-                "address": "knotx.knot.service",
-                "onTransition": {
-                  "next": {
-                    "address": "knotx.knot.handlebars"
-                  }
-                }
-              }
-            }
+            "address": "knotx.core.repository.http"
+          },
+          {
+            "path": "/img/.*",
+            "address": "knotx.core.repository.http",
+            "doProcessing": false
           }
         ],
-        "POST": [
-          {
-            "path": "/content/.*",
-            "address": "knotx.knot.action",
-            "onTransition": {
-              "next": {
-                "address": "knotx.knot.service",
-                "onTransition": {
-                  "next": {
-                    "address": "knotx.knot.handlebars"
+        "splitter": {
+          "address": "knotx.core.splitter"
+        },
+        "routing": {
+          "GET": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next": {
+                  "address": "knotx.knot.service",
+                  "onTransition": {
+                    "next": {
+                      "address": "knotx.knot.handlebars"
+                    }
                   }
                 }
               }
             }
-          }
-        ]
+          ],
+          "POST": [
+            {
+              "path": "/content/.*",
+              "address": "knotx.knot.action",
+              "onTransition": {
+                "next": {
+                  "address": "knotx.knot.service",
+                  "onTransition": {
+                    "next": {
+                      "address": "knotx.knot.handlebars"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "assembler": {
+          "address": "knotx.core.assembler"
+        }
       },
-      "assembler": {
-        "address": "knotx.core.assembler"
+      "customFlow": {
+        "routing": {
+          "GET": [
+            {
+              "path": "/customFlow/.*",
+              "address": "knotx.gateway.gatewayknot",
+              "onTransition": {
+                "next": {
+                  "address": "knotx.gateway.requestprocessor"
+                }
+              }
+            }
+          ],
+          "POST": [
+            {
+              "path": "/customFlow/.*",
+              "address": "knotx.gateway.gatewayknot",
+              "onTransition": {
+                "next": {
+                  "address": "knotx.gateway.requestprocessor"
+                }
+              }
+            }
+          ]
+        },
+        "responseProvider": {
+          "address": "knotx.gateway.responseprovider"
+        }
       }
     }
   }

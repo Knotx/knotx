@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,7 +60,7 @@ public final class UriTransformer {
   private static String getPlaceholderValue(ClientRequest request, String placeholder) {
     return placeholderSubstitutors.stream()
         .map(substitutor -> substitutor.getValue(request, placeholder))
-        .filter(str -> str != null)
+        .filter(Objects::nonNull)
         .findFirst()
         .orElse("");
   }

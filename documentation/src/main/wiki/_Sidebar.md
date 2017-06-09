@@ -8,6 +8,7 @@
     * [[Core Architecture|CoreArchitecture]]
     * [[Communication Flow|CommunicationFlow]]
     * [[Knot Routing|KnotRouting]]
+    * [[Gateway Mode|GatewayMode]]
   * [[Knot.x Modules|KnotxModules]]
   * [[Server|Server]]
   * [[Repository Connectors|RepositoryConnectors]]

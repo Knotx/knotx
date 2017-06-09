@@ -19,10 +19,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import io.vertx.rxjava.core.MultiMap;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
-public class DataObjectsUtil {
+public final class DataObjectsUtil {
+
+  private DataObjectsUtil() {
+    //util constructor
+  }
 
   /**
    * Equality operator for MultiMap objects.
@@ -70,9 +72,7 @@ public class DataObjectsUtil {
    * @return - hashcode of the given {@link MultiMap} object
    */
   public static int multiMapHash(MultiMap multiMap) {
-    io.vertx.core.MultiMap map = (io.vertx.core.MultiMap) multiMap.getDelegate();
-
-    return map.entries().stream().mapToInt(
+    return multiMap.getDelegate().entries().stream().mapToInt(
         entry -> 31 * entry.getKey().hashCode() + (entry.getValue() == null ? 0
             : entry.getValue().hashCode())
     ).reduce(0, (sum, hash) -> 41 * sum + hash);

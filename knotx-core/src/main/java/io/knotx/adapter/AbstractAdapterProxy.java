@@ -27,13 +27,13 @@ import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import rx.Observable;
+import rx.Single;
 
 public abstract class AbstractAdapterProxy implements AdapterProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAdapterProxy.class);
 
-  protected abstract Observable<AdapterResponse> processRequest(AdapterRequest message);
+  protected abstract Single<AdapterResponse> processRequest(AdapterRequest message);
 
   @Override
   public void process(AdapterRequest request, Handler<AsyncResult<AdapterResponse>> result) {

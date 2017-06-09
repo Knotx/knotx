@@ -19,7 +19,11 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.rxjava.core.MultiMap;
 
-public class MultiMapConverter {
+public final class MultiMapConverter {
+
+  private MultiMapConverter() {
+    //util constructor
+  }
 
   /**
    * Converts MultiMap to JsonObject<br> It expects the MultiMap key, contains List of String
@@ -38,7 +42,7 @@ public class MultiMapConverter {
   public static JsonObject toJsonObject(MultiMap multiMap) {
     JsonObject json = new JsonObject();
 
-    ((io.vertx.core.MultiMap) multiMap.getDelegate()).forEach(
+    multiMap.getDelegate().forEach(
         entry -> {
           JsonArray values;
           if (json.containsKey(entry.getKey())) {

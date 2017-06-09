@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.knotx</groupId>
     <artifactId>knotx-root</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>knotx-example</artifactId>
@@ -35,5 +35,6 @@
     <module>knotx-example-handlebars-ext</module>
     <module>knotx-example-action-adapter-http</module>
     <module>knotx-example-app</module>
+    <module>knotx-example-gateway</module>
   </modules>
 </project>

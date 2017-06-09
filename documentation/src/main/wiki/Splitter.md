@@ -1,4 +1,4 @@
-#HTML Fragment Splitter
+# HTML Fragment Splitter
 Fragment Splitter reads [[Knot Context|Knot]] having a HTML Template retrieved from Repository using configured connector, splits it into 
 static and dynamic Fragments, updates Knot Context and returns back to the caller.
 
@@ -11,7 +11,7 @@ by Knots. See example for more details.
 
 **Splitter requires `data-knotx-knots` attribute to be the first attribute in the `script` tag.**
 
-###Example
+### Example
 Fragment Splitter reads Knot Context with HTML Template:
 ```html
 <!DOCTYPE html>
@@ -65,7 +65,7 @@ and splits Template into three following Fragments:
 
 More details about Fragments you can find in next section.
 
-###Fragment
+### Fragment
 Fragment contains: 
 - list of supported Knots (list of [[Knot Election Rules|Knot]]), 
 - Fragment Content (matched script or simple HTML)
@@ -79,7 +79,7 @@ attribute which determines if it will process particular Fragment or not.
 Fragments not matching `script` tag are not supposed to be processed while Knots routing. They are 
 used at the end of processing to assemble final HTML result (see [[Fragment Assembler|Assembler]]).
 
-##How to configure?
+## How to configure?
 Splitter is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
 Default configuration shipped with the verticle as `io.knotx.FragmentSplitter.json` file available in classpath.

@@ -1,12 +1,12 @@
-#Fragment Assembler
+# Fragment Assembler
 Fragment Assembler joins all Fragments into the final output. It's executed at the end of 
 all suitable Knots processing, just before generating the response to the page visitor.
 
-##How does it work?
+## How does it work?
 Fragment Assembler reads Knot Context having Fragments, joins all Fragments into one string, updates 
 Knot Context and returns back to the caller. See examples below for more details.
 
-###How Fragments are being joined?
+### How Fragments are being joined?
 Lets explain process of fragments join using example. Fragment Assembler reads Knot Context having 
 three Fragments:
 ```html
@@ -38,7 +38,7 @@ Fragment Assembler joins all those Fragments into one string:
 </body>
 </html>
 ```
-###How does Assembler join unprocessed Fragments?
+### How does Assembler join unprocessed Fragments?
 Lets imagine that some Fragments were not processed and they still contain dynamic snippets definitions. 
 It is not expected behaviour, so Fragment Assembler must handle it. There are three possible strategies 
 provided: `AS_IS`, `UNWRAP`, `IGNORE`. They can be configured with entry `unprocessedStrategy`.
@@ -108,7 +108,7 @@ It ignores all Fragments which contains dynamic tag definitions.
 </html>
 ```
 
-##How to configure?
+## How to configure?
 Fragment Assembler is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
 Default configuration shipped with the verticle as `io.knotx.FragmentAssembler.json` file available in classpath.

@@ -23,7 +23,7 @@
 
   <groupId>io.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
@@ -67,6 +67,7 @@
     <module>knotx-server</module>
     <module>knotx-standalone</module>
     <module>knotx-example</module>
+    <module>knotx-gateway</module>
   </modules>
 
   <scm>
@@ -149,6 +150,11 @@
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web-client</artifactId>
         <version>${vertx.version}</version>
       </dependency>
       <dependency>
