@@ -24,6 +24,7 @@ public class FormConstants {
   static final String FRAGMENT_KNOT_PATTERN = "form(-)?";
   static final String FORM_SIGNAL_ATTR_PREFIX = "data-knotx-on-";
   static final String FORM_ACTION_ATTR = "data-knotx-action";
+  static final String FORM_ADAPTER_PARAMS = "data-knotx-adapter-params";
 
   static final String ACTION_FORM_ATTRIBUTES_PATTERN = "data-knotx-.*";
 

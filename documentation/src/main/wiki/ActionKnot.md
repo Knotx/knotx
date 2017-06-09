@@ -43,7 +43,7 @@ This is how form looks in the repository:
   <p class="bg-danger">Email address does not exists</p>
   {{/if}}
   <p>Please provide your email address</p>
-  <form data-knotx-action="step1" data-knotx-on-success="/content/local/login/step2.html" data-knotx-on-error="_self" method="post">
+  <form data-knotx-action="step1" data-knotx-on-success="/content/local/login/step2.html" data-knotx-on-error="_self" data-knotx-adapter-params='{"myKey":"myValue"}' method="post">
     <input type="email" name="email" value="{{#if action._result.validationError}} {{action._result.form.email}} {{/if}}" />
     <input type="submit" value="Submit"/>
   </form>
@@ -66,6 +66,9 @@ Action Handler registered under name `step1` will handle this form data submissi
 there is one signal success with the value `'/content/local/login/step2.html'` and one signal error
 with the value `'_self'`. Signal `'_self'` means that after error response (error signal returned)
 the client will stay on the same page.
+- `data-knotx-adapter-params` - JSON Object that can be passed to the corresponding `Adapter`. It will be
+available in `AdapterRequest` as `additionalAdapterParams`. 
+
 
 ### Signal
 Signal is basically a decision about further request processing. Value of the signal can be either:

@@ -27,6 +27,8 @@ public class AdapterRequest {
 
   private JsonObject params;
 
+  private JsonObject additionalAdapterParams;
+
   public AdapterRequest() {
     //Empty object
   }
@@ -64,6 +66,25 @@ public class AdapterRequest {
    */
   public JsonObject getParams() {
     return params;
+  }
+
+  /**
+   * Set the request params
+   *
+   * @param additionalAdapterParams - JsonObject consists of additional adapter parameters
+   * that can be set in the form as data-knotx-adapter-params
+   * @return a reference to this, so the API can be used fluently
+   */
+  public AdapterRequest setAdditionalAdapterParams(JsonObject additionalAdapterParams) {
+    this.additionalAdapterParams = additionalAdapterParams;
+    return this;
+  }
+
+  /**
+   * @return the JsonObject with request params
+   */
+  public JsonObject getAdditionalAdapterParams() {
+    return additionalAdapterParams;
   }
 
   /**

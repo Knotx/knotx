@@ -16,6 +16,7 @@
 package io.knotx.knot.action.domain;
 
 import static io.knotx.knot.action.domain.FormConstants.FORM_ACTION_ATTR;
+import static io.knotx.knot.action.domain.FormConstants.FORM_ADAPTER_PARAMS;
 import static io.knotx.knot.action.domain.FormConstants.FORM_DEFAULT_IDENTIFIER;
 import static io.knotx.knot.action.domain.FormConstants.FORM_SIGNAL_ATTR_PREFIX;
 import static io.knotx.knot.action.domain.FormConstants.FRAGMENT_KNOT_PATTERN;
@@ -27,6 +28,7 @@ import io.knotx.exceptions.ConfigurationException;
 import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.action.ActionKnotConfiguration;
 import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.Map;
@@ -47,6 +49,8 @@ public class FormEntity {
 
   private AdapterMetadata adapter;
 
+  private JsonObject adapterParams;
+
   private Map<String, String> signalToUrl;
 
   public static FormEntity from(Fragment fragment, ActionKnotConfiguration configuration) {
@@ -54,6 +58,7 @@ public class FormEntity {
     return new FormEntity()
         .fragment(fragment)
         .identifier(getFormIdentifier(fragment))
+        .adapterParams(getAdapterParams(scriptDocument))
         .adapter(getAdapterMetadata(configuration, getAdapterName(fragment, scriptDocument)))
         .signalToUrlMapping(getSignalToUrlMapping(scriptDocument));
 
@@ -69,6 +74,10 @@ public class FormEntity {
 
   public AdapterMetadata adapter() {
     return adapter;
+  }
+
+  public JsonObject adapterParams() {
+    return adapterParams;
   }
 
   public Optional<String> url(String signal) {
@@ -101,6 +110,11 @@ public class FormEntity {
     return this;
   }
 
+  private FormEntity adapterParams(JsonObject adapterParams) {
+    this.adapterParams = adapterParams;
+    return this;
+  }
+
   private FormEntity signalToUrlMapping(Map<String, String> signalToUrlMapping) {
     this.signalToUrl = signalToUrlMapping;
     return this;
@@ -127,6 +141,14 @@ public class FormEntity {
               fragment);
           return new NoSuchElementException("Could not find action adapter name");
         });
+  }
+
+  private static JsonObject getAdapterParams(Document scriptDocument) {
+    return Optional.ofNullable(scriptDocument
+        .getElementsByAttribute(FORM_ADAPTER_PARAMS).first())
+        .map(element -> element.attr(FORM_ADAPTER_PARAMS))
+        .map(JsonObject::new)
+        .orElse(null);
   }
 
   private static AdapterMetadata getAdapterMetadata(ActionKnotConfiguration configuration, String adapter) {
