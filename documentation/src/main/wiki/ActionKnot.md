@@ -67,7 +67,7 @@ there is one signal success with the value `'/content/local/login/step2.html'` a
 with the value `'_self'`. Signal `'_self'` means that after error response (error signal returned)
 the client will stay on the same page.
 - `data-knotx-adapter-params` - JSON Object that can be passed to the corresponding `Adapter`. It will be
-available in `AdapterRequest` as `additionalAdapterParams`. 
+available in `AdapterRequest` as `adapterParams`. 
 
 
 ### Signal

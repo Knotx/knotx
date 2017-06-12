@@ -114,7 +114,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     AdapterRequest adapterRequest = new AdapterRequest()
         .setRequest(request)
         .setParams(new JsonObject(metadata.getParams()))
-        .setAdditionalAdapterParams(formEntity.adapterParams());
+        .setAdapterParams(formEntity.adapterParams());
     LOGGER.info("Adapter [{}] call with request [{}]", metadata.getAddress(), adapterRequest);
     return adapterRequest;
   }

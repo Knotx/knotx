@@ -27,7 +27,7 @@ public class AdapterRequest {
 
   private JsonObject params;
 
-  private JsonObject additionalAdapterParams;
+  private JsonObject adapterParams;
 
   public AdapterRequest() {
     //Empty object
@@ -71,20 +71,20 @@ public class AdapterRequest {
   /**
    * Set the request params
    *
-   * @param additionalAdapterParams - JsonObject consists of additional adapter parameters
+   * @param adapterParams - JsonObject consists of additional adapter parameters
    * that can be set in the form as data-knotx-adapter-params
    * @return a reference to this, so the API can be used fluently
    */
-  public AdapterRequest setAdditionalAdapterParams(JsonObject additionalAdapterParams) {
-    this.additionalAdapterParams = additionalAdapterParams;
+  public AdapterRequest setAdapterParams(JsonObject adapterParams) {
+    this.adapterParams = adapterParams;
     return this;
   }
 
   /**
    * @return the JsonObject with request params
    */
-  public JsonObject getAdditionalAdapterParams() {
-    return additionalAdapterParams;
+  public JsonObject getAdapterParams() {
+    return adapterParams;
   }
 
   /**
@@ -108,12 +108,13 @@ public class AdapterRequest {
     }
     AdapterRequest that = (AdapterRequest) o;
     return Objects.equal(params, that.params) &&
+        Objects.equal(adapterParams, that.adapterParams) &&
         request.equals(that.request);
   }
 
   @Override
   public int hashCode() {
-    return 31 * request.hashCode() + params.hashCode();
+    return 31 * request.hashCode() + params.hashCode() + adapterParams.hashCode();
   }
 
   @Override
@@ -121,6 +122,7 @@ public class AdapterRequest {
     return new ToStringBuilder(this)
         .append("request", request)
         .append("params", params)
+        .append("adapterParams", adapterParams)
         .toString();
   }
 }
