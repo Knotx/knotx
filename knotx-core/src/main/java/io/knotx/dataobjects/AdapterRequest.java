@@ -18,6 +18,7 @@ package io.knotx.dataobjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @DataObject(generateConverter = true)
@@ -26,6 +27,8 @@ public class AdapterRequest {
   private ClientRequest request;
 
   private JsonObject params;
+
+  private JsonObject adapterParams;
 
   public AdapterRequest() {
     //Empty object
@@ -69,6 +72,25 @@ public class AdapterRequest {
   /**
    * Set the request params
    *
+   * @param adapterParams - JsonObject consists of additional adapter parameters
+   * that can be set in the form as data-knotx-adapter-params
+   * @return a reference to this, so the API can be used fluently
+   */
+  public AdapterRequest setAdapterParams(JsonObject adapterParams) {
+    this.adapterParams = adapterParams;
+    return this;
+  }
+
+  /**
+   * @return the JsonObject with request params
+   */
+  public JsonObject getAdapterParams() {
+    return adapterParams;
+  }
+
+  /**
+   * Set the request params
+   *
    * @param params - JsonObject consists of request params
    * @return a reference to this, so the API can be used fluently
    */
@@ -87,12 +109,17 @@ public class AdapterRequest {
     }
     AdapterRequest that = (AdapterRequest) o;
     return Objects.equal(params, that.params) &&
+        Objects.equal(adapterParams, that.adapterParams) &&
         request.equals(that.request);
   }
 
   @Override
   public int hashCode() {
-    return 31 * request.hashCode() + params.hashCode();
+    return new HashCodeBuilder()
+        .append(params)
+        .append(request)
+        .append(adapterParams)
+        .build();
   }
 
   @Override
@@ -100,6 +127,7 @@ public class AdapterRequest {
     return new ToStringBuilder(this)
         .append("request", request)
         .append("params", params)
+        .append("adapterParams", adapterParams)
         .toString();
   }
 }

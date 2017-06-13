@@ -26,6 +26,7 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.knot.AbstractKnotProxy;
+import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.knotx.knot.action.domain.FormEntity;
 import io.knotx.knot.action.domain.FormSimplifier;
 import io.knotx.knot.action.domain.FormsFactory;
@@ -98,18 +99,22 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   private Single<AdapterResponse> callActionAdapter(KnotContext knotContext, FormEntity current) {
     LOGGER.trace("Process form for {} ", knotContext);
     AdapterProxy adapter = AdapterProxy.createProxy(vertx, current.adapter().getAddress());
-    return adapter.rxProcess(prepareAdapterRequest(knotContext, current.adapter()));
+    return adapter.rxProcess(prepareAdapterRequest(knotContext, current));
   }
 
   private AdapterRequest prepareAdapterRequest(KnotContext knotContext,
-      ActionKnotConfiguration.AdapterMetadata metadata) {
+      FormEntity formEntity) {
+    AdapterMetadata metadata = formEntity.adapter();
     ClientRequest request = new ClientRequest().setPath(knotContext.getClientRequest().getPath())
         .setMethod(knotContext.getClientRequest().getMethod())
         .setFormAttributes(knotContext.getClientRequest().getFormAttributes())
         .setHeaders(getFilteredHeaders(knotContext.getClientRequest().getHeaders(),
             metadata.getAllowedRequestHeaders()));
 
-    AdapterRequest adapterRequest = new AdapterRequest().setRequest(request).setParams(new JsonObject(metadata.getParams()));
+    AdapterRequest adapterRequest = new AdapterRequest()
+        .setRequest(request)
+        .setParams(new JsonObject(metadata.getParams()))
+        .setAdapterParams(formEntity.adapterParams());
     LOGGER.info("Adapter [{}] call with request [{}]", metadata.getAddress(), adapterRequest);
     return adapterRequest;
   }
