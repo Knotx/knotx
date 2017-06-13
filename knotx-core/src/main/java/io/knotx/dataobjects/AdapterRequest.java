@@ -18,6 +18,7 @@ package io.knotx.dataobjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @DataObject(generateConverter = true)
@@ -114,7 +115,11 @@ public class AdapterRequest {
 
   @Override
   public int hashCode() {
-    return 31 * request.hashCode() + params.hashCode() + adapterParams.hashCode();
+    return new HashCodeBuilder()
+        .append(params)
+        .append(request)
+        .append(adapterParams)
+        .build();
   }
 
   @Override

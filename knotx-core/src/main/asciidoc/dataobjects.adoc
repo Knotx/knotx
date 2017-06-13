@@ -8,6 +8,10 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[adapterParams]]`adapterParams`|`Json object`|
++++
+Set the request params
++++
 |[[params]]`params`|`Json object`|
 +++
 Set the request params
