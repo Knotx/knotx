@@ -5,6 +5,15 @@ All notable changes to Knot.x will be documented in this file.
 List of changes that are finished but not yet released in any final version.
 
 
+## Version 1.1.0
+ - [PR-293](https://github.com/Cognifide/knotx/pull/293) - Use vert.x WebClient and RxJava Single 
+ - [PR-294](https://github.com/Cognifide/knotx/pull/294) - Replace deprecated rx methods 
+ - [PR-295](https://github.com/Cognifide/knotx/pull/295) - Javadocs for core classes 
+ - [PR-296](https://github.com/Cognifide/knotx/pull/296) - Support for params on markup and config 
+ - [PR-299](https://github.com/Cognifide/knotx/pull/299) - Customize request routing outside knots  
+ - [PR-300](https://github.com/Cognifide/knotx/pull/300) - Change the default configuration for tests execution      
+ - [PR-306](https://github.com/Cognifide/knotx/pull/306) - Additional parameters to adapter from template 
+
 ## Version 1.0.1
 - [PR-288](https://github.com/Cognifide/knotx/pull/288) - action knot refactor
 - [PR-290](https://github.com/Cognifide/knotx/pull/290) - allow defining services without default `params` configured
