@@ -4,6 +4,7 @@ All notable changes to Knot.x will be documented in this file.
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
 
+ - [PR-307](https://github.com/Cognifide/knotx/pull/307) - Fixed KnotxServer default configuration
 
 ## Version 1.1.0
  - [PR-293](https://github.com/Cognifide/knotx/pull/293) - Use vert.x WebClient and RxJava Single 
