@@ -94,4 +94,4 @@ E.g.: `src/main/resources/my.custom.Service.json`
   ]
 }
 ```
-4. If necessary, override default configuration directly in starter JSON, or through JVM properties.
+4. If necessary, override the default configuration directly in starter JSON, or through JVM properties.
