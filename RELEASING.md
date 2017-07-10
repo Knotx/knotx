@@ -1,6 +1,6 @@
-#How to release Knot.x
+# How to release Knot.x
 
-##Prerequisites
+## Prerequisites
 1. Sonatype.org [JIRA](https://issues.sonatype.org/secure/Signup!default.jspa) account
 
 2. Your Sonatype.org account needs to be added to the Knot.x project (if it isn't, please contact the Knot.x team: 
@@ -24,7 +24,7 @@ guide to get one).
    </servers>    
    ```
 
-##Steps
+## Steps
 
 1. Create a release branch from the `master` branch
 
