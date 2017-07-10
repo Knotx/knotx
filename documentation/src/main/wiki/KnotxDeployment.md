@@ -41,8 +41,8 @@ java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.Logba
 ```
 
 ### Vert.x metrics
-For monitoring purposes you might want to enable Vert.x metrics in order to monitor how Knot.x performs. 
-Currently, it's possible to enable JMX metrics, so you can use any JMX tool, like Jconsole to inspect all the metrics Vert.x collects.
+You might want to enable Vert.x metrics in order to monitor how Knot.x performs. 
+Currently, it's possible to enable JMX metrics, so you can use any JMX tool, like JConsole, to inspect all the metrics Vert.x collects.
 
 In order to enable it, add following JVM property when starting Knot.x
 ```
@@ -50,20 +50,20 @@ java -Dcom.sun.management.jmxremote -Dvertx.metrics.options.jmxEnabled=true -Dve
 ```
 Vert.x collects:
 - Vert.x elements metrics (such as amount of verticles, worker pool sizes, etc.)
-- Event bus metrics (such as bytes sent/received, messages delivered, etc. )
-- HTTP Clients metrics (such as bytes sent/received, connections, amount of requests, per http code responses, etc. )
+- Event bus metrics (such as bytes sent/received, messages delivered, etc.)
+- HTTP Clients metrics (such as bytes sent/received, connections, amount of requests, per http code responses, etc.)
 - HTTP Server metrics (such as bytes sent/received, connections, amount of requests, etc.)
 
-For a detailed description about available metrics please check [Vert.x The Metrics](http://vertx.io/docs/vertx-dropwizard-metrics/java/#_the_metrics) page
+For a detailed description of available metrics please check [Vert.x The Metrics](http://vertx.io/docs/vertx-dropwizard-metrics/java/#_the_metrics) page
 
 | ! Warning |
 |:------ |
-| **We don’t recommend that you try to gather metrics from your production environment. JMX’s RPC API is fragile and bonkers. For development purposes and browsing, though, it can be very useful.** | 
+| **We don’t recommend gathering metrics from your production environment. JMX’s RPC API is fragile and bonkers. However for development purposes and troubleshooting it can be very useful.** | 
 
 ## How to configure ?
-As mentioned above, the knotx-starter.json is the main configuration file describing what Knot.x modules (verticles) need to be started as part of Knot.x.
+As mentioned above, the `knotx-starter.json` is the main configuration file describing what Knot.x modules need to be started as part of Knot.x.
 
-`knotx-standalone.json` configuration available on Github looks like below
+`knotx-standalone.json` configuration available on GitHub looks like below
 ```json
 {
   "modules": [
@@ -78,23 +78,22 @@ As mentioned above, the knotx-starter.json is the main configuration file descri
   ]
 }
 ```
-As you see, it simply have list of modules (verticles) that Knot.x should start. Out of the box, no other configuration is required as each verticle 
-is shipped with default config.
+As you see, it simply have list of modules that Knot.x should start. Out of the box, no other configuration is required as each module is shipped with its default config.
 
-However, at the production environment you must alter the configuration parameters such as port of HTTP server, or HTTP headers that are 
-being passed, or finally addresses to the client services that are going to be used for rendering dynamic content.
+However, at the production environment you often need to alter the configuration parameters such as port of HTTP server, or HTTP headers that are 
+being passed, or addresses of the client services used for rendering dynamic content.
 
 Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are two ways:
-- in your `knotx-starter.json` file add `config` section where you can put configuration for each Verticle you want to modify - but only elements that 
-you need to change. Follow the guide of each Verticle to see the supported parameters.
-- through JVM properties, you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. 
+- In your `knotx-starter.json` file add `config` section for each module that needs default configuration to be modified. You only need to specify elements that 
+should be changed. Follow the guide of each Verticle to see the supported parameters.
+- Through JVM properties, you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. 
 Any parameter provided through system properties will always override default and starter values.
-- in some scenarios, it's also possible to create your own module that uses Knot.x core Verticle, where you can build the configuration from scratch. 
-Such module might be also overridden using starter JSON and/or JVM properties.
+- It is also possible to create your own module that uses existing Knot.x Verticle. In that module you can build the configuration file from scratch. 
+Such module configuration might be also overridden using starter JSON and/or JVM properties.
 
-### How to configure though starter JSON ?
-In your project specific `knots-starter.json` add `config` object. Inside, put field with configuration object for each module you want to change configuration for.
-For instance, you want to modify configuration of KnotxServer module, you can do it as follows:
+### How to configure Knot.x in starter JSON ?
+In your project specific `knots-starter.json` add `config` object. For each module you want to configure put a field with configuration object.
+For instance, if you want to modify configuration of KnotxServer module, you can do it as follows:
 ```json
 {
   "modules": [
@@ -120,14 +119,14 @@ For instance, you want to modify configuration of KnotxServer module, you can do
 }
 ```
 Important things to remember:
-- `options` field which maps exactly to a [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html) object. 
+- `options` field maps exactly to a [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html) object. 
 It means, that you can specify here deployment options such as how many instances of that module should be deployed, etc.
-- Inside `options` you can supply `config` object where you're actualy can provide configuration to the verticle represented by the module. 
+- Inside `options` you can supply `config` object where you override configuration for the verticle provided by the module. 
 See Knot.x Verticle documentation to see what's available on each Verticle. 
 
-If you start Knot.x with the configuration as above, it will start all modules listed in the config, but the KnotxServer will be deployed as:
+If you start Knot.x with the configuration as above, it will start all modules listed in the config, but the `io.knotx.KnotxServer` will be deployed as:
 - Two instances
-- HTTP Port it listens is 9999
+- It will listen on port 9999
 
 ### How to configure through JVM properties ?
 In some cases, you might want to provide configuration parameters through JVM properties, e.g. you can have same config used on all environments, 
