@@ -1,24 +1,24 @@
 # Deploying Knot.x with custom modules
-Thanks to the modular architecture of Knot.x, there are multiple approaches how to deploy Knot.x for 
+Thanks to the modular architecture of Knot.x, there are many ways to deploy Knot.x for 
 the production usage. However, the easiest approach is to use Knot.x as one **fat** jar together with 
 jar files specific for your target implementation (such as custom [[Adapters|Adapter]], [[Knots|Knot]] 
-or Handlebars helpers) all available in classpath.
+or Handlebars helpers). These jar files should be all available in classpath.
 
 ## Recommended Knot.x deployment
-For this example purpose, assume you have folder created on your host machine where Knot.x 
-is going to be run, let's assume it's `KNOTX_HOME`. Performing simple following steps is recommended way
+For the purpose of this example let's assume you have `KNOTX_HOME` folder created on the host machine where Knot.x 
+is going to be run. Following simple steps is recommended way
 to deploy Knot.x with custom modules:
 
-- Create subfolder `KNOTX_HOME/app` and put there **knotx-standalone-X.Y.Z-fat.jar**.
+- Create subfolder `KNOTX_HOME/app` and put **knotx-standalone-X.Y.Z-fat.jar** in that folder.
 
-- If you have custom Handlebars helpers, you can put it as JAR file here.
+- If you have custom Handlebars helpers, you can put them in that folder as well (as JAR files).
 
-- If you have project specific [[Adapters|Adapter]] or [[Knots|Knot]], you can put their jar files here.
-If you don't use external libraries, you don't have to use **fat** jar, all Knot.x dependencies 
-(e.g. `knotx-common` and `knotx-adapter-api`) will be taken from **knotx-standalone-X.Y.Z-fat.jar**.
+- If you have project specific [[Adapters|Adapter]] or [[Knots|Knot]], you can put their jar files in the same folder.
+You don't need to embed Knot.x dependencies (e.g. `knotx-common` and `knotx-adapter-api`) in your custom jar files.
+They will be taken from **knotx-standalone-X.Y.Z-fat.jar**.
 
-- Create your own configuration JSON (any location on the host) based on `knotx-standalone.json` 
-from the [latest release](https://github.com/Cognifide/knotx/releases). In this example, 
+- Create your own configuration JSON (any location on the host). Use `knotx-standalone.json` 
+from the [latest release](https://github.com/Cognifide/knotx/releases) as a reference. In this example, 
 created file is named `knotx-starter.json` and is placed in `KNOTX_HOME`.
 
 - Create your own [Logback logger configuration](http://logback.qos.ch/manual/configuration.html) 
@@ -37,7 +37,7 @@ At this step `KNOTX_HOME` should contain:
 To start Knot.x with custom modules, use following command
 
 ```
-java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-custom-starter.json
+java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-starter.json
 ```
 
 ### Vert.x metrics
