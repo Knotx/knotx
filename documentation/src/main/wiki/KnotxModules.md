@@ -1,6 +1,6 @@
 # Knot.x Module
 Knot.x is composed of set of Verticles. To simplify deployment process and configuration of each specialized Verticle, Knot.x is shipped with it's own implementation of Vert.x Service Factory.
-It means that user while configuring Knot.x need to provide set of Knot.x module names that should be deployed, without knowledge about what's Verticle classes are behind each module.
+It means that in order to configure Knot.x user needs to provide a set of Knot.x module names that should be deployed. Please notice that module name is something different than Verticle class name.
 
 As mentioned in [[Knot.x Deployment|KnotxDeployment]], the list of modules must be specified in JSON file provided as `-conf` parameter when starting Knot.x application.
 ```json
@@ -11,9 +11,9 @@ As mentioned in [[Knot.x Deployment|KnotxDeployment]], the list of modules must 
   ]
 }
 ```
-As you can notice on the example above, each module is prefixed with `knotx:` string, that tells to Vert.x engine a Knot.x Verticle Factory should be used to resolve actual Verticle.
+In the example above, each module is prefixed with `knotx:` string. This tells Vert.x engine that Knot.x Verticle Factory should be used to resolve actual Verticle.
 
-When Knot.x is starting with the config above, we're actually asking to deploy two modules `io.knotx.KnotxServer` 
+When Knot.x is starting with the above config, we're actually asking to deploy two modules `io.knotx.KnotxServer` 
 and `my.custom.Service` (`knotx:` prefix is mandatory to let the system know it's Knot.x module that should be deployed).
 
 Knot.x first looks for a descriptor file on the classpath. The descriptor file name is given by the module name concatenated with the `.json` file extension. 
@@ -58,7 +58,7 @@ When deploying a service from a service descriptor, any fields that are specifie
   }
 }
 ```
-- by JVM property (it will override also values overriden by starter JSON)
+- by JVM property (it will override also values overridden by starter JSON)
 ```
 $ java -Dio.knotx.KnotxServer.options.config.httpPort=2000 -jar knotx-xxxx-fat.jar -conf starter.json
 ```
@@ -94,4 +94,4 @@ E.g.: `src/main/resources/my.custom.Service.json`
   ]
 }
 ```
-4. Override default configuration if necessary directly in starter JSON, or through JVM properties.
+4. If necessary, override default configuration directly in starter JSON, or through JVM properties.
