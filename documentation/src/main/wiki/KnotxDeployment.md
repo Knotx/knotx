@@ -2,14 +2,14 @@
 Thanks to the modular architecture of Knot.x, there are many ways to deploy Knot.x for 
 the production usage. However, the easiest approach is to use Knot.x as one **fat** jar together with 
 jar files specific for your target implementation (such as custom [[Adapters|Adapter]], [[Knots|Knot]] 
-or Handlebars helpers). These jar files should be all available in classpath.
+or Handlebars helpers). These jar files should be all available in the classpath.
 
 ## Recommended Knot.x deployment
 For the purpose of this example let's assume you have `KNOTX_HOME` folder created on the host machine where Knot.x 
-is going to be run. Following simple steps is recommended way
+is going to be run. Following simple steps is a recommended way
 to deploy Knot.x with custom modules:
 
-- Create subfolder `KNOTX_HOME/app` and put **knotx-standalone-X.Y.Z-fat.jar** in that folder.
+- Create a subfolder `KNOTX_HOME/app` and put **knotx-standalone-X.Y.Z-fat.jar** in `KNOTX_HOME` folder.
 
 - If you have custom Handlebars helpers, you can put them in that folder as well (as JAR files).
 
