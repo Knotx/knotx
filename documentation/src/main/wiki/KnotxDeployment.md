@@ -9,7 +9,7 @@ For the purpose of this example let's assume you have `KNOTX_HOME` folder create
 is going to be run. Following simple steps is a recommended way
 to deploy Knot.x with custom modules:
 
-- Create a subfolder `KNOTX_HOME/app` and put **knotx-standalone-X.Y.Z-fat.jar** in `KNOTX_HOME` folder.
+- Create a subfolder `KNOTX_HOME/app` and put **knotx-standalone-X.Y.Z-fat.jar** in that folder.
 
 - If you have custom Handlebars helpers, you can put them in that folder as well (as JAR files).
 
