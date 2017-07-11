@@ -83,12 +83,12 @@ As you see, it simply have list of modules that Knot.x should start. Out of the 
 However, at the production environment you often need to alter the configuration parameters such as port of HTTP server, or HTTP headers that are 
 being passed, or addresses of the client services used for rendering dynamic content.
 
-Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are two ways:
-- In your `knotx-starter.json` file add `config` section for each module that needs default configuration to be modified. You only need to specify elements that 
+Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are three ways:
+1. In your `knotx-starter.json` file add `config` section for each module that needs default configuration to be modified. You only need to specify elements that 
 should be changed. Follow the guide of each Verticle to see the supported parameters.
-- Through JVM properties, you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. 
+2. With JVM properties: you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. 
 Any parameter provided through system properties will always override default and starter values.
-- It is also possible to create your own module that uses existing Knot.x Verticle. In that module you can build the configuration file from scratch. 
+3. It is also possible to create your own module that uses existing Knot.x Verticle. In that module you can build the configuration file from scratch. 
 Such module configuration might be also overridden using starter JSON and/or JVM properties.
 
 ### How to configure Knot.x in starter JSON ?
