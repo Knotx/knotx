@@ -128,17 +128,17 @@ If you start Knot.x with the configuration as above, it will start all modules l
 - Two instances
 - It will listen on port 9999
 
-### How to configure through JVM properties ?
-In some cases, you might want to provide configuration parameters through JVM properties, e.g. you can have same config used on all environments, 
-but you wanted to specify HTTP port of the server to be different on each host. 
-In such case, you can simply provide env specific port as JVM property, e.g.  
+### How to configure with JVM properties ?
+In some cases, you might want to provide configuration parameters with JVM properties, e.g. you can have same config used on all environments, 
+but you wanted to specify HTTP port of the server to be different on each host.
+In such case, you can simply provide environment specific port as JVM property, e.g.
 ```
 -Dio.knotx.KnotxServer.options.config.httpPort=9999
 ```
 
-Additionally, if you wanted to change more than one value, you can create separate JSON file with all parameters you want to modify, and inject that config using JVM property.
+Additionally, if you want to change more than one value, you can create separate JSON file with all parameters you want to modify, and inject that config using JVM property.
 
-For instance, you want to have routing of KnotxServer defined in a separate JSON file, let call it `my-routing.json` that might looks like below:
+For instance, you might want to have routing of `io.knotx.KnotxServer` defined in a separate JSON file called `my-routing.json` that might looks like below:
 ```json
 {
   "GET": [
@@ -154,7 +154,7 @@ For instance, you want to have routing of KnotxServer defined in a separate JSON
   ]
 }
 ```
-Then, you can use that config to override default routing as below:
+Then, you can use that file to override default routing as below:
 ```
 -Dio.knotx.KnotxServer.options.config.routing=file:my-routing.json
 ```
@@ -166,8 +166,8 @@ or inside folder where all JAR files you put on your installation).
 
 Name of the descriptor file is important as it's a module name used in starter JSON.
 
-For instance, you want to create KnotxServer configuration from scratch, ignoring default config available. 
-All you have to do is, to create module descriptor file, e.g. `my.KnotxServer.json` with the content as below
+For instance, you might want to create KnotxServer configuration from scratch, ignoring default config available. 
+All you have to do is to create module descriptor file, e.g. `my.KnotxServer.json` with the content as below
 ```json
 {
   "main": "io.knotx.server.KnotxServerVerticle",
@@ -200,7 +200,7 @@ Next step, is to use your new module in `knotx-starter.json`.
   }
 }
 ```
-Finally, you can still do override of that config as described above, through starter JSON as in the example, or through JVM properties:
+Finally, you can still override that config as described above: through starter JSON, or through JVM properties:
 
 Single value:
 ```
