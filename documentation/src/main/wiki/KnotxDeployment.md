@@ -129,10 +129,10 @@ If you start Knot.x with the configuration as above, it will start all modules l
 - Two instances
 - HTTP Port it listens is 9999
 
-### How to configure through JVM properties ?
-In some cases, you might want to provide configuration parameters through JVM properties, e.g. you can have same config used on all environments, 
-but you wanted to specify HTTP port of the server to be different on each host. 
-In such case, you can simply provide environment specific port as JVM property, e.g.  
+### How to configure with JVM properties ?
+In some cases, you might want to provide configuration parameters with JVM properties, e.g. you can have same config used on all environments, 
+but you wanted to specify HTTP port of the server to be different on each host.
+In such case, you can simply provide environment specific port as JVM property, e.g.
 ```
 -Dio.knotx.KnotxServer.options.config.httpPort=9999
 ```
