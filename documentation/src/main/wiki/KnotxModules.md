@@ -64,7 +64,7 @@ $ java -Dio.knotx.KnotxServer.options.config.httpPort=2000 -jar knotx-xxxx-fat.j
 ```
 See [[Knot.x Deployments|KnotxDeployment]] for details how to supply your configurations.
 
-##How to create your service ?
+## How to create your service ?
 1. Assuming you're implementing your own Knot.x Verticle (either Knot or any kind of Adapter following the appropriate guides), 
 you need to create module descriptor of your verticle to be available in class path. Simply create JSON file in `src/main/resource` folder on your maven module. 
 E.g.: `src/main/resources/my.custom.Service.json`

@@ -2,7 +2,7 @@
 Fragment Splitter reads [[Knot Context|Knot]] having a HTML Template retrieved from Repository using configured connector, splits it into 
 static and dynamic Fragments, updates Knot Context and returns back to the caller.
 
-##How does it work?
+## How does it work?
 It splits HTML Template using regexp `<script\s+data-knotx-knots\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</script>`.
 All matched `script` tags are converted into Fragments containing list of supported [[Knots|Knot]] 
 declared in `data-knotx-knots` attribute. HTML parts below, above and between matched scripts are 
