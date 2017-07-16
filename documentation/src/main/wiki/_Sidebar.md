@@ -24,14 +24,15 @@
     * [[Service Adapter|ServiceAdapter]]
     * [[Action Adapter|ActionAdapter]]
     * [[Http Service Adapter|HttpServiceAdapter]]
-  * [[Mocks|Mocks]]    
+  * [[Mocks|Mocks]]
   * [[Knot.x Deployment|KnotxDeployment]]
   * [[Performance|PerformanceTests]]
     * [[Performance Tests Methodology|PerformanceTestsMethodology]]
     * [[Performance Tests Summary|PerformanceTestsSummary]]
-    * [[Performance Tests Tuning|PerformanceTestsTuning]]  
+    * [[Performance Tests Tuning|PerformanceTestsTuning]]
   * [[Dependencies|Dependencies]]
 
 ### Released
+* [[1.1.0|Documentation-1.1.0]]
 * [[1.0.1|Documentation-1.0.1]]
 * [[1.0.0|Documentation-1.0.0]]
