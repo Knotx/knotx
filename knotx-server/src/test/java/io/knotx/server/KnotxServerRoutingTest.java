@@ -196,7 +196,7 @@ public class KnotxServerRoutingTest {
           req.write(testBody);
         });
 
-    request.subscribe(resp -> expectedResponse.call(resp));
+    request.subscribe(expectedResponse::call);
   }
 
   private void testGetRequest(TestContext context, String url, String expectedResult) {

@@ -19,73 +19,58 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.KnotProxy;
-import io.knotx.server.configuration.RoutingEntry;
-import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
 import io.vertx.rxjava.ext.web.RoutingContext;
 import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
-class KnotxEngineHandler implements Handler<RoutingContext> {
+class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxEngineHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(KnotxGatewayContextHandler.class);
   private static final String KNOT_CONTEXT_KEY = "knotContext";
 
   private Vertx vertx;
   private String address;
-  private Map<String, RoutingEntry> routing;
 
-  private KnotxEngineHandler(Vertx vertx, String address, Map<String, RoutingEntry> routing) {
+  private KnotxGatewayContextHandler(Vertx vertx, String address) {
     this.vertx = vertx;
     this.address = address;
-    this.routing = routing;
   }
 
-  static KnotxEngineHandler create(Vertx vertx, String address,
-      Map<String, RoutingEntry> routing) {
-    return new KnotxEngineHandler(vertx, address, routing);
+  static KnotxGatewayContextHandler create(Vertx vertx, String address) {
+    return new KnotxGatewayContextHandler(vertx, address);
   }
 
   @Override
   public void handle(RoutingContext context) {
     try {
-      handleRoute(context, address, routing);
+      handleRoute(context, address);
     } catch (Exception ex) {
       LOGGER.error("Something very unexpected happened", ex);
       context.fail(ex);
     }
   }
 
-  private void handleRoute(final RoutingContext context, final String address,
-      final Map<String, RoutingEntry> routing) {
-    KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
+  private void handleRoute(final RoutingContext context, final String address) {
+    KnotContext knotContext = new KnotContext()
+        .setClientRequest(new ClientRequest(context.request()));
+    String bodyAsString = context.getBodyAsString();
+    if (StringUtils.isNotBlank(bodyAsString)) {
+      knotContext.setFragments(Collections.singletonList(Fragment.raw(bodyAsString)));
+    }
+
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
     knot.rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))
         .subscribe(
-            ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
-                .ifPresent(on -> {
-                  RoutingEntry entry = routing.get(on);
-                  if (entry != null) {
-                    handleRoute(context, entry.address(), entry.onTransition());
-                  } else {
-                    LOGGER.trace(
-                        "No on criteria defined in routing for {} transition received from {}", on,
-                        address);
-                    // last knot can return default transition
-                    context.put(KNOT_CONTEXT_KEY, ctx);
-                    context.next();
-                  }
-                })
-                .ifNotPresent(() -> {
-                  context.put(KNOT_CONTEXT_KEY, ctx);
-                  context.next();
-                }),
+            ctx -> {
+              context.put(KNOT_CONTEXT_KEY, ctx);
+              context.next();
+            },
             error -> {
               LOGGER.error("Error happened while communicating with {} engine", error, address);
               context.fail(error);
