@@ -79,7 +79,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
-        if (key != HttpMethod.GET) {
+        if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
           router.route().method(key).handler(BodyHandler.create());
         }
         value.forEach(
