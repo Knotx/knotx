@@ -60,7 +60,7 @@ public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
     String responseBody = getResponseBodyAsString(inputContext);
 
     clientResponse.setBody(Buffer.buffer(responseBody))
-        .setHeaders(getHeaders(clientResponse, responseBody));
+        .setHeaders(getHeaders(clientResponse, responseBody.length()));
     clientResponse.setStatusCode(HttpResponseStatus.OK.code());
 
     return new KnotContext()
@@ -68,10 +68,10 @@ public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
         .setClientResponse(clientResponse);
   }
 
-  private MultiMap getHeaders(ClientResponse clientResponse, String response) {
+  private MultiMap getHeaders(ClientResponse clientResponse, int bodyLength) {
     MultiMap headers = clientResponse.getHeaders();
     headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
-        Integer.toString(response.length()))
+        Integer.toString(bodyLength))
         .add("Content-Type", "application/json");
     return headers;
   }
