@@ -15,15 +15,18 @@
  */
 package io.knotx.gateway.impl;
 
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import io.knotx.dataobjects.ClientResponse;
+import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.rxjava.core.MultiMap;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import rx.Single;
 
 public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
@@ -53,19 +56,30 @@ public class RequestProcessorKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private KnotContext createSuccessResponse(KnotContext inputContext) {
-
     ClientResponse clientResponse = new ClientResponse();
+    String responseBody = getResponseBodyAsString(inputContext);
 
-      io.vertx.rxjava.core.MultiMap headers = clientResponse.getHeaders();
-      headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
-          Integer.toString(RESPONSE.length()))
-          .add("Content-Type", "application/json");
-
-      clientResponse.setBody(Buffer.buffer(RESPONSE)).setHeaders(headers);
-      clientResponse.setStatusCode(HttpResponseStatus.OK.code());
+    clientResponse.setBody(Buffer.buffer(responseBody))
+        .setHeaders(getHeaders(clientResponse, responseBody.length()));
+    clientResponse.setStatusCode(HttpResponseStatus.OK.code());
 
     return new KnotContext()
         .setClientRequest(inputContext.getClientRequest())
         .setClientResponse(clientResponse);
+  }
+
+  private MultiMap getHeaders(ClientResponse clientResponse, int bodyLength) {
+    MultiMap headers = clientResponse.getHeaders();
+    headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
+        Integer.toString(bodyLength))
+        .add("Content-Type", "application/json");
+    return headers;
+  }
+
+  private String getResponseBodyAsString(KnotContext inputContext) {
+    return Optional.ofNullable(inputContext.getFragments())
+        .map(fragments -> fragments.stream().map(Fragment::content).reduce(
+            StringUtils.EMPTY, String::concat))
+        .orElse(RESPONSE);
   }
 }

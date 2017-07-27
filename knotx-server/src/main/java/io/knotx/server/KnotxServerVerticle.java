@@ -15,9 +15,6 @@
  */
 package io.knotx.server;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -29,6 +26,8 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.BodyHandler;
 import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
@@ -78,13 +77,17 @@ public class KnotxServerVerticle extends AbstractVerticle {
       );
     });
 
-    if(configuration.getCustomFlow().getEngineRouting() != null) {
+    if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
-        if (key == HttpMethod.POST) {
+        if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
           router.route().method(key).handler(BodyHandler.create());
         }
         value.forEach(
             criteria -> {
+              router.route().method(key)
+                  .pathRegex(criteria.path())
+                  .handler(KnotxGatewayContextHandler.create(vertx, criteria.address()));
+
               router.route()
                   .method(key)
                   .pathRegex(criteria.path())
@@ -106,7 +109,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
         .requestHandler(router::accept)
         .rxListen(configuration.getHttpPort())
         .subscribe(ok -> {
-              LOGGER.info("Knot.x HTTP Server started. Listening on port {}", configuration.getHttpPort());
+              LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+                  configuration.getHttpPort());
               fut.complete();
             },
             error -> {
