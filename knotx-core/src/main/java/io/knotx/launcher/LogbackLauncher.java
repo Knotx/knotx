@@ -24,7 +24,7 @@ public class LogbackLauncher extends Launcher {
   /**
    * Error code used when the knotx configuration is missing or it's empty
    */
-  public static final int KNOTX_MISSING_CONFIGURATION_EXIT_CODE = 30;
+  public static final int KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE = 30;
 
   public static void main(String[] args) {
     System.setProperty("vertx.logger-delegate-factory-class-name",
@@ -35,7 +35,7 @@ public class LogbackLauncher extends Launcher {
   @Override
   public void afterConfigParsed(JsonObject config) {
     if (config.isEmpty()) {
-      ExecUtils.exit(KNOTX_MISSING_CONFIGURATION_EXIT_CODE);
+      ExecUtils.exit(KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE);
     }
   }
 }
