@@ -115,7 +115,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
             },
             error -> {
               LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
-              fut.fail(error.getCause());
+              fut.fail(error);
             }
         );
 
