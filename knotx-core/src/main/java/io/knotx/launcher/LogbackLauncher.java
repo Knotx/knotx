@@ -16,12 +16,26 @@
 package io.knotx.launcher;
 
 import io.vertx.core.Launcher;
+import io.vertx.core.impl.launcher.commands.ExecUtils;
+import io.vertx.core.json.JsonObject;
 
 public class LogbackLauncher extends Launcher {
+
+  /**
+   * Error code used when the knotx configuration is missing or it's empty
+   */
+  public static final int KNOTX_MISSING_CONFIGURATION_EXIT_CODE = 30;
 
   public static void main(String[] args) {
     System.setProperty("vertx.logger-delegate-factory-class-name",
         "io.vertx.core.logging.SLF4JLogDelegateFactory");
     new LogbackLauncher().dispatch(args);
+  }
+
+  @Override
+  public void afterConfigParsed(JsonObject config) {
+    if (config.isEmpty()) {
+      ExecUtils.exit(KNOTX_MISSING_CONFIGURATION_EXIT_CODE);
+    }
   }
 }
