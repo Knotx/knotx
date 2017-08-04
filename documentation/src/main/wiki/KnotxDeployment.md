@@ -42,7 +42,7 @@ java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.Logba
 
 The execution of Knot.x using a launcher as above it uses a following exit codes as specified in [Vert.x documentation|http://vertx.io/docs/vertx-core/java/#_launcher_and_exit_code].
 Additionally, Knot.x adds following exit codes:
-- `20` - If the configuration is missing or it's empty
+- `30` - If the configuration is missing or it's empty
 
 ### Vert.x metrics
 You might want to enable Vert.x metrics in order to monitor how Knot.x performs. 
