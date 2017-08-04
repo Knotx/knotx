@@ -40,6 +40,10 @@ To start Knot.x with custom modules, use following command
 java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-starter.json
 ```
 
+The execution of Knot.x using a launcher as above it uses a following exit codes as specified in [Vert.x documentation|http://vertx.io/docs/vertx-core/java/#_launcher_and_exit_code].
+Additionally, Knot.x adds following exit codes:
+- `30` - If the configuration is missing or it's empty
+
 ### Vert.x metrics
 You might want to enable Vert.x metrics in order to monitor how Knot.x performs. 
 Currently, it's possible to enable JMX metrics, so you can use any JMX tool, like JConsole, to inspect all the metrics Vert.x collects.
