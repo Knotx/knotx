@@ -51,7 +51,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
       if (key == HttpMethod.POST) {
-        BodyHandler bodyHandler = StringUtils.isNoneEmpty(configuration.getFileUploadDirectory()) ?
+        BodyHandler bodyHandler = StringUtils.isNotEmpty(configuration.getFileUploadDirectory()) ?
             BodyHandler.create(configuration.getFileUploadDirectory()) : BodyHandler.create();
         router.route().method(key).handler(bodyHandler);
       }
@@ -84,7 +84,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
         if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
-          BodyHandler bodyHandler = StringUtils.isNoneEmpty(configuration.getFileUploadDirectory()) ?
+          BodyHandler bodyHandler = StringUtils.isNotEmpty(configuration.getFileUploadDirectory()) ?
               BodyHandler.create(configuration.getFileUploadDirectory()) : BodyHandler.create();
           router.route().method(key).handler(bodyHandler);
         }

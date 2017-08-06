@@ -43,7 +43,7 @@ public class KnotxServerConfiguration {
 
     defaultFlow = new KnotxFlowConfiguration(config.getJsonObject("defaultFlow"));
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
-    fileUploadDirectory =config.getString("fileUploadDirectory");
+    fileUploadDirectory = config.getString("fileUploadDirectory");
   }
 
   public boolean displayExceptionDetails() {
