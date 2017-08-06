@@ -23,6 +23,7 @@ import io.vertx.core.json.JsonObject;
 import rx.Single;
 
 import java.util.List;
+import java.util.Set;
 
 @DataObject(generateConverter = true)
 public class KnotContext {
@@ -35,7 +36,7 @@ public class KnotContext {
 
   private List<Fragment> fragments;
 
-  private List<FileData> filesData;
+  private Set<FileData> filesData;
 
   private volatile Cache<String, Single<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
@@ -94,11 +95,11 @@ public class KnotContext {
     return this;
   }
 
-  public List<FileData> getFilesData() {
+  public Set<FileData> getFilesData() {
     return filesData;
   }
 
-  public KnotContext setFilesData(List<FileData> filesData) {
+  public KnotContext setFilesData(Set<FileData> filesData) {
     this.filesData = filesData;
     return this;
   }

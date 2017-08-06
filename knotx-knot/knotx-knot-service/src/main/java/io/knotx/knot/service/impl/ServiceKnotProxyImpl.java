@@ -81,7 +81,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
         .setFragments(
             Optional.ofNullable(inputContext.getFragments()).orElse(Collections.emptyList()))
         .setFilesData(
-            Optional.ofNullable(inputContext.getFilesData()).orElse(Collections.emptyList()))
+            Optional.ofNullable(inputContext.getFilesData()).orElse(Collections.emptySet()))
         .setTransition(DEFAULT_TRANSITION);
   }
 

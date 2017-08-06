@@ -70,7 +70,7 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
     if (fileUploads != null) {
       knotContext.setFilesData(fileUploads.stream().map(fileUpload -> {
         return new FileData(fileUpload);
-      }).collect(Collectors.toList()));
+      }).collect(Collectors.toSet()));
     }
 
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
