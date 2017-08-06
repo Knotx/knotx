@@ -26,6 +26,8 @@ import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
 import io.vertx.rxjava.ext.web.handler.BodyHandler;
 import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -49,7 +51,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
       if (key == HttpMethod.POST) {
-        router.route().method(key).handler(BodyHandler.create());
+        BodyHandler bodyHandler = StringUtils.isNoneEmpty(configuration.getFileUploadDirectory()) ?
+            BodyHandler.create(configuration.getFileUploadDirectory()) : BodyHandler.create();
+        router.route().method(key).handler(bodyHandler);
       }
       value.forEach(
           criteria -> {
@@ -80,7 +84,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
         if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
-          router.route().method(key).handler(BodyHandler.create());
+          BodyHandler bodyHandler = StringUtils.isNoneEmpty(configuration.getFileUploadDirectory()) ?
+              BodyHandler.create(configuration.getFileUploadDirectory()) : BodyHandler.create();
+          router.route().method(key).handler(bodyHandler);
         }
         value.forEach(
             criteria -> {
