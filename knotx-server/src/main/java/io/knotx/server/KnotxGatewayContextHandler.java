@@ -16,6 +16,7 @@
 package io.knotx.server;
 
 import io.knotx.dataobjects.ClientRequest;
+import io.knotx.dataobjects.FileData;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.rxjava.proxy.KnotProxy;
@@ -23,9 +24,13 @@ import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.ext.web.FileUpload;
 import io.vertx.rxjava.ext.web.RoutingContext;
-import java.util.Collections;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
@@ -60,6 +65,12 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
     String bodyAsString = context.getBodyAsString();
     if (StringUtils.isNotBlank(bodyAsString)) {
       knotContext.setFragments(Collections.singletonList(Fragment.raw(bodyAsString)));
+    }
+    Set<FileUpload> fileUploads = context.fileUploads();
+    if (fileUploads != null) {
+      knotContext.setFilesData(fileUploads.stream().map(fileUpload -> {
+        return new FileData(fileUpload);
+      }).collect(Collectors.toList()));
     }
 
     KnotProxy knot = KnotProxy.createProxy(vertx, address);

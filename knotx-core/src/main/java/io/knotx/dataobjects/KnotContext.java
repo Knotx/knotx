@@ -20,8 +20,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import java.util.List;
 import rx.Single;
+
+import java.util.List;
 
 @DataObject(generateConverter = true)
 public class KnotContext {
@@ -33,6 +34,8 @@ public class KnotContext {
   private ClientResponse clientResponse;
 
   private List<Fragment> fragments;
+
+  private List<FileData> filesData;
 
   private volatile Cache<String, Single<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
@@ -91,6 +94,15 @@ public class KnotContext {
     return this;
   }
 
+  public List<FileData> getFilesData() {
+    return filesData;
+  }
+
+  public KnotContext setFilesData(List<FileData> filesData) {
+    this.filesData = filesData;
+    return this;
+  }
+
   public Cache<String, Single<JsonObject>> getCache() {
     return cache;
   }
@@ -107,12 +119,13 @@ public class KnotContext {
     return Objects.equal(transition, that.transition) &&
         Objects.equal(clientRequest, that.clientRequest) &&
         Objects.equal(clientResponse, that.clientResponse) &&
-        Objects.equal(fragments, that.fragments);
+        Objects.equal(fragments, that.fragments) &&
+        Objects.equal(filesData, that.filesData);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+    return Objects.hashCode(transition, clientRequest, clientResponse, fragments, filesData);
   }
 
 }
