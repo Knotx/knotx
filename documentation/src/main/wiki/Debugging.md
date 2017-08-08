@@ -26,3 +26,13 @@ run io.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-exampl
 9. Finally, you can now Run or Debug this configuration and play with Knot.x as usuall.
 
 [[assets/knotx-debugging-config.png|alt=Knot.x Debugging config]]
+
+## How to debug remote instance of Knot.x 
+Assuming you have running Knot.x on dedicated machine (not localhost) and you'd like to debug it. All you have to do is just add JVM properties to enable it.
+
+E.g.:
+```
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+```
+
+Then, you can connect to that instance (machine IP) on the port specified in the properties above.
