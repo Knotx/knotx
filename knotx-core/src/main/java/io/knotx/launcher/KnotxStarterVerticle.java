@@ -33,26 +33,26 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> startFuture) throws Exception {
     printLogo();
-    Observable.defer(() -> Observable.from(config().getJsonArray("modules"))
-      .flatMap(module -> deployVerticle(module)
-        .onErrorResumeNext(this::verticleCouldNotBeDeployed)
-      )
-      .compose(joinDeployments())
-    )
-    .subscribe(
-      message -> {
-        LOGGER.info("Knot.x STARTED {}", message);
-        startFuture.complete();
-      },
-      error -> {
-        LOGGER.error("Verticle could not be deployed", error);
-        startFuture.fail(error);
-      }
-    );
+    Observable.from(config().getJsonArray("modules"))
+        .flatMap(module -> deployVerticle(module)
+            .onErrorResumeNext(throwable -> verticleCouldNotBeDeployed(module, throwable))
+        )
+        .compose(joinDeployments())
+        .subscribe(
+            message -> {
+              LOGGER.info("Knot.x STARTED {}", message);
+              startFuture.complete();
+            },
+            error -> {
+              LOGGER.error("Verticle could not be deployed", error);
+              startFuture.fail(error);
+            }
+        );
   }
 
-  private Observable<Pair<String, String>> verticleCouldNotBeDeployed(Throwable throwable) {
-    LOGGER.error(throwable.getMessage());
+  private Observable<Pair<String, String>> verticleCouldNotBeDeployed(Object module,
+      Throwable throwable) {
+    LOGGER.warn("Can't deploy {}: {}", module, throwable.getMessage());
     return Observable.empty();
   }
 
