@@ -18,16 +18,16 @@ package io.knotx.junit.rule;
 import io.knotx.junit.util.FileReader;
 import io.knotx.launcher.KnotxStarterVerticle;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.rxjava.core.Vertx;
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class TestVertxDeployer implements TestRule {
 
@@ -49,26 +49,23 @@ public class TestVertxDeployer implements TestRule {
         }
         Vertx vertx = Vertx.newInstance(vertxContext.vertx());
 
-        CountDownLatch latch = new CountDownLatch(1);
-        Future<String> deployFuture = Future.future();
+        CompletableFuture<Void> toComplete = new CompletableFuture<>();
 
         vertx.deployVerticle(KnotxStarterVerticle.class.getName(),
             new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
               if (ar.succeeded()) {
-                deployFuture.complete();
+                toComplete.complete(null);
               } else {
-                deployFuture.fail(ar.cause());
+                toComplete.completeExceptionally(ar.cause());
               }
-              latch.countDown();
             });
 
-        if (!latch.await(3, TimeUnit.SECONDS)) {
-          deployFuture
-              .fail(new IllegalStateException("Knot.x did not finish deploy all verticles"));
-        }
-
-        if (deployFuture.failed()) {
-          throw deployFuture.cause();
+        try {
+          toComplete.get();
+        } catch (ExecutionException ignore) {
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw e;
         }
 
         base.evaluate();
