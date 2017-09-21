@@ -17,26 +17,18 @@ package io.knotx.junit.rule;
 
 import io.knotx.junit.util.FileReader;
 import io.knotx.launcher.KnotxStarterVerticle;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.impl.CompletionImpl;
 import io.vertx.ext.unit.impl.Helper;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.rxjava.core.Vertx;
-
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class TestVertxDeployer implements TestRule {
 
