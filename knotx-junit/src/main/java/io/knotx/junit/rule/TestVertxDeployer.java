@@ -19,7 +19,6 @@ import io.knotx.junit.util.FileReader;
 import io.knotx.launcher.KnotxStarterVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.impl.Helper;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.rxjava.core.Vertx;
 import org.junit.rules.TestRule;
@@ -66,7 +65,7 @@ public class TestVertxDeployer implements TestRule {
         } catch (ExecutionException ignore) {
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
-          Helper.uncheckedThrow(e);
+          throw e;
         }
 
         base.evaluate();
