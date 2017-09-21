@@ -17,14 +17,23 @@ package io.knotx.junit.rule;
 
 import io.knotx.junit.util.FileReader;
 import io.knotx.launcher.KnotxStarterVerticle;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.impl.CompletionImpl;
+import io.vertx.ext.unit.impl.Helper;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.rxjava.core.Vertx;
+
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -49,26 +58,23 @@ public class TestVertxDeployer implements TestRule {
         }
         Vertx vertx = Vertx.newInstance(vertxContext.vertx());
 
-        CountDownLatch latch = new CountDownLatch(1);
-        Future<String> deployFuture = Future.future();
+        CompletableFuture<String> toComplete = new CompletableFuture<>();
 
         vertx.deployVerticle(KnotxStarterVerticle.class.getName(),
             new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
               if (ar.succeeded()) {
-                deployFuture.complete();
+                toComplete.complete("Success");
               } else {
-                deployFuture.fail(ar.cause());
+                toComplete.completeExceptionally(ar.cause());
               }
-              latch.countDown();
             });
 
-        if (!latch.await(3, TimeUnit.SECONDS)) {
-          deployFuture
-              .fail(new IllegalStateException("Knot.x did not finish deploy all verticles"));
-        }
-
-        if (deployFuture.failed()) {
-          throw deployFuture.cause();
+        try {
+          toComplete.get();
+        } catch (ExecutionException ignore) {
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          Helper.uncheckedThrow(e);
         }
 
         base.evaluate();
