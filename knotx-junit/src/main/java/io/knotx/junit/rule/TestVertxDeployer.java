@@ -49,12 +49,12 @@ public class TestVertxDeployer implements TestRule {
         }
         Vertx vertx = Vertx.newInstance(vertxContext.vertx());
 
-        CompletableFuture<String> toComplete = new CompletableFuture<>();
+        CompletableFuture<Void> toComplete = new CompletableFuture<>();
 
         vertx.deployVerticle(KnotxStarterVerticle.class.getName(),
             new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
               if (ar.succeeded()) {
-                toComplete.complete("Success");
+                toComplete.complete(null);
               } else {
                 toComplete.completeExceptionally(ar.cause());
               }
