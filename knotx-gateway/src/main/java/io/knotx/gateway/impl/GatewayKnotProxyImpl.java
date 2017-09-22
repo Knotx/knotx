@@ -15,13 +15,12 @@
  */
 package io.knotx.gateway.impl;
 
-import java.util.NoSuchElementException;
-import java.util.Set;
-
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import rx.Single;
+import io.reactivex.Single;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class GatewayKnotProxyImpl extends AbstractKnotProxy {
 

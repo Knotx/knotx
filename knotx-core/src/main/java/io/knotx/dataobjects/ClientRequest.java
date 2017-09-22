@@ -25,8 +25,8 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.http.HttpServerRequest;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.http.HttpServerRequest;
 
 @DataObject(generateConverter = true)
 public class ClientRequest {

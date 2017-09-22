@@ -17,7 +17,7 @@ package io.knotx.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import java.util.Arrays;
 
 public final class DataObjectsUtil {

@@ -30,20 +30,20 @@ import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.knotx.knot.action.domain.FormEntity;
 import io.knotx.knot.action.domain.FormSimplifier;
 import io.knotx.knot.action.domain.FormsFactory;
-import io.knotx.rxjava.proxy.AdapterProxy;
+import io.knotx.reactivex.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import rx.Single;
 
 public class ActionKnotProxyImpl extends AbstractKnotProxy {
 

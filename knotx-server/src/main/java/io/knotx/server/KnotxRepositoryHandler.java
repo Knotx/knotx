@@ -18,18 +18,18 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.RepositoryConnectorProxy;
+import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpServerResponse;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Optional;
 
 public class KnotxRepositoryHandler implements Handler<RoutingContext> {

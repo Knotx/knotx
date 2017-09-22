@@ -27,15 +27,16 @@ import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.client.WebClient;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -46,7 +47,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
-import rx.Single;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpClientFacadeTest {
@@ -79,7 +79,8 @@ public class HttpClientFacadeTest {
     Async async = context.async();
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
-    HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient, getServiceConfigurations());
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
+        getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
@@ -106,7 +107,8 @@ public class HttpClientFacadeTest {
     Async async = context.async();
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
-    HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient, getServiceConfigurations());
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
+        getServiceConfigurations());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     //FIXME - params to request
@@ -193,6 +195,7 @@ public class HttpClientFacadeTest {
   private WebClient webClient() {
     return WebClient.create(Vertx.newInstance(vertx.vertx()));
   }
+
   private AdapterRequest payloadMessage(JsonObject params, ClientRequest request) {
     return new AdapterRequest().setParams(params).setRequest(request);
   }

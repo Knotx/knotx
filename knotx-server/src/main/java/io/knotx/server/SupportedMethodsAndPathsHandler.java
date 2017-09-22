@@ -22,7 +22,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> {
 

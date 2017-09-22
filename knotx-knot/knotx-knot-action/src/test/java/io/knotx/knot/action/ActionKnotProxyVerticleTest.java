@@ -28,8 +28,9 @@ import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
 import io.knotx.proxy.AdapterProxy;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.functions.Consumer;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -39,8 +40,8 @@ import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
 import io.vertx.serviceproxy.ProxyHelper;
 import java.util.Arrays;
 import java.util.Collections;
@@ -237,7 +238,7 @@ public class ActionKnotProxyVerticleTest {
 
   private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext,
       Action1<KnotContext> onSuccess,
-      Action1<Throwable> onError) {
+      Consumer<Throwable> onError) {
     Async async = context.async();
 
     KnotProxy actionKnot = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);

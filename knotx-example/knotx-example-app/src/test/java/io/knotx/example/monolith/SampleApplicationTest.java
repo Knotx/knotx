@@ -15,28 +15,28 @@
  */
 package io.knotx.example.monolith;
 
+import com.google.common.collect.Maps;
 import io.knotx.junit.rule.KnotxConfiguration;
 import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
-import com.google.common.collect.Maps;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientRequest;
-import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.http.HttpClient;
+import io.vertx.reactivex.core.http.HttpClientRequest;
+import io.vertx.reactivex.core.http.HttpClientResponse;
 import java.util.Map;
 import org.jsoup.Jsoup;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.Observable;
 import rx.functions.Action1;
 
 
@@ -61,7 +61,7 @@ public class SampleApplicationTest {
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
       int port, String domain, String uri,
       Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
+    return Observable.unsafeCreate(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();
       resp.subscribe(subscriber);

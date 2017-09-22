@@ -15,14 +15,15 @@
  */
 package io.knotx.launcher;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Observable;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
 
@@ -33,7 +34,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> startFuture) throws Exception {
     printLogo();
-    Observable.from(config().getJsonArray("modules"))
+    Observable.fromIterable(config().getJsonArray("modules"))
         .flatMap(this::deployVerticle)
         .compose(joinDeployments())
         .subscribe(
@@ -66,10 +67,11 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     return deploymentOptions;
   }
 
-  private Observable.Transformer<Pair<String, String>, String> joinDeployments() {
+  private ObservableTransformer<Pair<String, String>, String> joinDeployments() {
     return observable ->
         observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()),
             this::collectDeployment)
+            .toObservable()
             .map(StringBuilder::toString);
   }
 
