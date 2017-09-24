@@ -4,6 +4,7 @@ All notable changes to Knot.x will be documented in this file.
 ## Unreleased
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
  - [PR-332](https://github.com/Cognifide/knotx/pull/332) - Fixed timeout issues when deploying verticles in Junit Rule
+ - [PR-328](https://github.com/Cognifide/knotx/pull/328) - Knot.x ignore config parts related to not existing modules and allows to start the instance with warnings
  
 ## Version 1.1.1
 List of changes that are finished but not yet released in any final version.
@@ -11,13 +12,13 @@ List of changes that are finished but not yet released in any final version.
  - [PR-307](https://github.com/Cognifide/knotx/pull/307) - Fixed KnotxServer default configuration
 
 ## Version 1.1.0
- - [PR-293](https://github.com/Cognifide/knotx/pull/293) - Use vert.x WebClient and RxJava Single 
- - [PR-294](https://github.com/Cognifide/knotx/pull/294) - Replace deprecated rx methods 
- - [PR-295](https://github.com/Cognifide/knotx/pull/295) - Javadocs for core classes 
- - [PR-296](https://github.com/Cognifide/knotx/pull/296) - Support for params on markup and config 
- - [PR-299](https://github.com/Cognifide/knotx/pull/299) - Customize request routing outside knots  
- - [PR-300](https://github.com/Cognifide/knotx/pull/300) - Change the default configuration for tests execution      
- - [PR-306](https://github.com/Cognifide/knotx/pull/306) - Additional parameters to adapter from template 
+ - [PR-293](https://github.com/Cognifide/knotx/pull/293) - Use vert.x WebClient and RxJava Single
+ - [PR-294](https://github.com/Cognifide/knotx/pull/294) - Replace deprecated rx methods
+ - [PR-295](https://github.com/Cognifide/knotx/pull/295) - Javadocs for core classes
+ - [PR-296](https://github.com/Cognifide/knotx/pull/296) - Support for params on markup and config
+ - [PR-299](https://github.com/Cognifide/knotx/pull/299) - Customize request routing outside knots
+ - [PR-300](https://github.com/Cognifide/knotx/pull/300) - Change the default configuration for tests execution
+ - [PR-306](https://github.com/Cognifide/knotx/pull/306) - Additional parameters to adapter from template
 
 ## Version 1.0.1
 - [PR-288](https://github.com/Cognifide/knotx/pull/288) - action knot refactor
