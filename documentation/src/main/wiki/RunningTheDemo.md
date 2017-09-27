@@ -103,7 +103,7 @@ You can play with the demo in order to get familiar with the ways how to configu
 [knotx-example-app.json](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app/src/main/resources/knotx-example-app.json)
 2. Copy the file to computer that's running Demo app and make it new name for it, e.g.: `knotx-example-experiments.json`
 3. Inside that JSON add new object `config` and configure KnotxServer service (take service name from `services` section), 
-but change `httpPort` property only. Let's set it to `9999`.
+but change `port` property only. Let's set it to `9999`.
 ```json
 {
   "modules": [
@@ -125,7 +125,9 @@ but change `httpPort` property only. Let's set it to `9999`.
     "knotx:example.io.knotx.KnotxServer": {
       "options": {
         "config": {
-          "httpPort": 9999
+          "serverOptions": {
+             "port": 9999
+          }
         }
       }
     }
@@ -146,16 +148,16 @@ The syntax of the property is as follows:
 `-D<service-name>.<json-obj-path>=<value>`
 Where:
 - `<service-name>` is the name of the Knot.x service without `knotx:` prefix, e.g.: io.knotx.ServiceKnot, etc.
-- `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.httpPort`
+- `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.serverOptions.port`
 - `<value>` can be simply a value to be set on JSON property, or `file:/path/to/file.json`. Latter type of value, is the json file with JSON Object, that should be used to merge with the object pointed by `<json-obj-path>`.
   
-E.g.`-Dexample.io.knotx.KnotxServer.options.config.httpPort=7777`
+E.g.`-Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777`
 Or,`-Dexample.io.knotx.KnotxServer.options.config=file:test.json`
 
-Let's modify `httpPort` once again, but this time using JVM property.
+Let's modify `port` once again, but this time using JVM property.
 1. Restart Knot.x with your previous config, but this time start java with additional command line option:
 ```
-$ java -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
+$ java -Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
 ```
 2. Notice that HTTP Server is listening on port **7777** now, so starter JSON configuration is overridden.
 ```
@@ -173,7 +175,7 @@ In this case, the object will specify how many instances to start. (This can be 
 ```
 4. Start Knot.x once again, but this time with new JVM property
 ```
-$ java -Dexample.io.knotx.KnotxServer.options=file:server-options.json -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
+$ java -Dexample.io.knotx.KnotxServer.options=file:server-options.json -Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
 ```
 5. Notice that Knot.x is started on port **7777* but two instances of KnotxServer where started.
 ```
