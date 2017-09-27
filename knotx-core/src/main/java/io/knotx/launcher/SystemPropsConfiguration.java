@@ -63,7 +63,7 @@ public class SystemPropsConfiguration {
    * Update given JsonObject with the data provided in system property during Knotx start.<br>
    * In order to provide such overrides you can use two approches:
    * <ul>
-   * <li>-Dio.knotx.KnotxServer.httpPort=9999,
+   * <li>-Dio.knotx.KnotxServer.serverOptions.port=9999,
    * -Dio.knotx.KnotxServer.splitter.address=other-address - this will override one property
    * with the value given after '=' </li>
    * <li>-Dio.knotx.KnotxServer.splitter=file:/aaa/bb/cc.json - this will merge the given cc.json

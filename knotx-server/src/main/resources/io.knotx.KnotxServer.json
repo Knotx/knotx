@@ -2,7 +2,9 @@
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
+      "serverOptions" : {
+        "port": 8092
+      },
       "displayExceptionDetails": true,
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
