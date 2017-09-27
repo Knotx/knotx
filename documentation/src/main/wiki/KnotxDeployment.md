@@ -114,7 +114,9 @@ For instance, if you want to modify configuration of KnotxServer module, you can
     "knotx:io.knotx.KnotxServer" : {
       "options": {
         "config": {
-          "httpPort": 9999
+          "serverOptions": {
+            "port": 9999
+          }
         },
         "instances": 2
       }
@@ -137,7 +139,7 @@ In some cases, you might want to provide configuration parameters with JVM prope
 but you wanted to specify HTTP port of the server to be different on each host.
 In such case, you can simply provide environment specific port as JVM property, e.g.
 ```
--Dio.knotx.KnotxServer.options.config.httpPort=9999
+-Dio.knotx.KnotxServer.options.config.serverOptions.port=9999
 ```
 
 Additionally, if you want to change more than one value, you can create separate JSON file with all parameters you want to modify, and inject that config using JVM property.
@@ -208,7 +210,7 @@ Finally, you can still override that config as described above: through starter 
 
 Single value:
 ```
--Dmy.KnotxServer.options.config.httpPort=9999
+-Dmy.KnotxServer.options.config.serverOptions.port=9999
 ```
 
 Or, whole JSON Object from external file

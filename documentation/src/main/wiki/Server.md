@@ -55,7 +55,9 @@ Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` f
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
+      "serverOptions": {
+         "port": 8092
+      },
       "displayExceptionDetails": true,
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
@@ -139,7 +141,6 @@ Main server options available.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
-| `httpPort`                  | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
 | `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
@@ -193,6 +194,7 @@ The `serverOptions` need to be added in the following place, of the KnotsServerV
   "options": {
     "config": {
       "serverOptions": {
+        "port": 8888,
          ...
       },
       ...
@@ -205,6 +207,7 @@ Below is the sample configuration that enabled SSL:
   "options": {
     "config": {
       "serverOptions": {
+        "port": 8043,
         "ssl": true,
         "keyStoreOptions": {
           "path": "/path/to/my-keystore.jks",

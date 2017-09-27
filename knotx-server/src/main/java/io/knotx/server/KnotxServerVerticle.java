@@ -111,10 +111,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     createHttpServer()
         .requestHandler(router::accept)
-        .rxListen(configuration.getHttpPort())
+        .rxListen()
         .subscribe(ok -> {
               LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-                  configuration.getHttpPort());
+                  configuration.getServerOptions().getInteger("port"));
               fut.complete();
             },
             error -> {

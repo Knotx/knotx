@@ -23,8 +23,6 @@ public class KnotxServerConfiguration {
 
   private boolean displayExceptionDetails;
 
-  private Integer httpPort;
-
   private Set<String> allowedResponseHeaders;
 
   private KnotxFlowConfiguration defaultFlow;
@@ -36,7 +34,6 @@ public class KnotxServerConfiguration {
 
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
-    httpPort = config.getInteger("httpPort");
 
     allowedResponseHeaders = config.getJsonArray("allowedResponseHeaders").stream()
         .map(item -> ((String) item).toLowerCase())
@@ -50,10 +47,6 @@ public class KnotxServerConfiguration {
 
   public boolean displayExceptionDetails() {
     return displayExceptionDetails;
-  }
-
-  public Integer getHttpPort() {
-    return httpPort;
   }
 
   public Set<String> getAllowedResponseHeaders() {
