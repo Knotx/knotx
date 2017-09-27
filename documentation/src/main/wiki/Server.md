@@ -43,6 +43,12 @@ For more details please see [[Routing|Routing]] and [[Communication Flow|Communi
 ## How to configure?
 Server is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
+The HTTP Server configuration consists two parts:
+- Knot.x application specific configurations
+- Vert.x HTTP Server configurations
+
+### Knot.x application specific configurations
+
 Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` file available in classpath.
 ```json
 {
@@ -176,3 +182,39 @@ The `repositories`, `splitter` and `assembler` verticles are specific to the def
 | `address`      | `String`         | &#10004;       | Event bus address of the **Knot** verticle |
 | `onTransition` | `KnotRouteEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/>`"onTransition": { "go-d": {}, "go-e": {} }` |
 
+### Vert.x HTTP Server configurations
+
+Besides Knot.x specific configurations as mentioned above, the `config` field might have added Vert.x configurations related to the HTTP server.
+It can be used to control the low level aspects of the HTTP server, server tuning, SSL.
+
+The `serverOptions` need to be added in the following place, of the KnotsServerVerticle configuration
+```
+{
+  "options": {
+    "config": {
+      "serverOptions": {
+         ...
+      },
+      ...
+```
+The list of available option properties, as well as nested option objects are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
+
+Below is the sample configuration that enabled SSL:
+```
+{
+  "options": {
+    "config": {
+      "serverOptions": {
+        "ssl": true,
+        "keyStoreOptions": {
+          "path": "/path/to/my-keystore.jks",
+          "password": "foo",
+          "value": "base64-keystore"
+        }
+      },
+      ...
+```
+Where:
+- `path` - is the path where keystore is located, optional if `value` is used
+- `password` - keystore password
+- `value` - Optionally, Base64 encoded keystore value. Not required if specified `path`

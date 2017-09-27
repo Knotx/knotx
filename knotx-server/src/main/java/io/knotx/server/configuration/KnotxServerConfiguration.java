@@ -31,6 +31,8 @@ public class KnotxServerConfiguration {
 
   private KnotxFlowConfiguration customFlow;
 
+  private JsonObject serverOptions;
+
 
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
@@ -43,6 +45,7 @@ public class KnotxServerConfiguration {
     defaultFlow = new KnotxFlowConfiguration(config.getJsonObject("defaultFlow"));
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
 
+    serverOptions = config.getJsonObject("serverOptions", new JsonObject());
   }
 
   public boolean displayExceptionDetails() {
@@ -63,5 +66,9 @@ public class KnotxServerConfiguration {
 
   public KnotxFlowConfiguration getCustomFlow() {
     return customFlow;
+  }
+
+  public JsonObject getServerOptions() {
+    return serverOptions;
   }
 }
