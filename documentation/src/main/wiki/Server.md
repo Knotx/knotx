@@ -204,11 +204,11 @@ The list of remaining server options are described on the [Vert.x DataObjects pa
 ### How to configure Knot.x to listen with SSL/TLS
 
 Generate certificates for your machine (e.g. localhost)
-`keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass 123456 -validity 360 -keysize 2048`
+`keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass keyPass -validity 360 -keysize 2048`
 
 Where:
 - `keystore.jks` - is a filename of the keystore
-- `123456` - is the keystore password
+- `keyPass` - is the keystore password
 
 Below is the sample configuration that enabled SSL:
 ```
@@ -220,7 +220,7 @@ Below is the sample configuration that enabled SSL:
         "ssl": true,
         "keyStoreOptions": {
           "path": "keystore.jks",
-          "password": "123456"
+          "password": "keyPass"
         }
       },
       ...
@@ -228,3 +228,8 @@ Below is the sample configuration that enabled SSL:
 Where:
 - `path` - is the path where keystore is located, optional if `value` is used
 - `password` - keystore password
+
+Other option is to provide those parameters through JVM properties:
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.path=/path/to/keystore.jks` 
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.password=keyPass`
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.ssl=true`
