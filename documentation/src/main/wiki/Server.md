@@ -43,13 +43,21 @@ For more details please see [[Routing|Routing]] and [[Communication Flow|Communi
 ## How to configure?
 Server is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
+The HTTP Server configuration consists two parts:
+- Knot.x application specific configurations
+- Vert.x HTTP Server configurations
+
+### Knot.x application specific configurations
+
 Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` file available in classpath.
 ```json
 {
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
+      "serverOptions": {
+         "port": 8092
+      },
       "displayExceptionDetails": true,
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
@@ -133,7 +141,6 @@ Main server options available.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
-| `httpPort`                  | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
 | `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
@@ -176,3 +183,53 @@ The `repositories`, `splitter` and `assembler` verticles are specific to the def
 | `address`      | `String`         | &#10004;       | Event bus address of the **Knot** verticle |
 | `onTransition` | `KnotRouteEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/>`"onTransition": { "go-d": {}, "go-e": {} }` |
 
+### Vert.x HTTP Server configurations
+
+Besides Knot.x specific configurations as mentioned above, the `config` field might have added Vert.x configurations related to the HTTP server.
+It can be used to control the low level aspects of the HTTP server, server tuning, SSL.
+
+The `serverOptions` need to be added in the following place, of the KnotsServerVerticle configuration
+```
+{
+  "options": {
+    "config": {
+      "serverOptions": {
+        "port": 8888,
+         ...
+      },
+      ...
+```
+The list of remaining server options are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
+
+### How to configure Knot.x to listen with SSL/TLS
+
+Generate certificates for your machine (e.g. localhost)
+`keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass keyPass -validity 360 -keysize 2048`
+
+Where:
+- `keystore.jks` - is a filename of the keystore
+- `keyPass` - is the keystore password
+
+Below is the sample configuration that enabled SSL:
+```
+{
+  "options": {
+    "config": {
+      "serverOptions": {
+        "port": 8043,
+        "ssl": true,
+        "keyStoreOptions": {
+          "path": "keystore.jks",
+          "password": "keyPass"
+        }
+      },
+      ...
+```
+Where:
+- `path` - is the path where keystore is located, optional if `value` is used
+- `password` - keystore password
+
+Other option is to provide those parameters through JVM properties:
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.path=/path/to/keystore.jks` 
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.password=keyPass`
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.ssl=true`

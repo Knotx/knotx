@@ -32,6 +32,7 @@ import io.knotx.knot.action.domain.FormSimplifier;
 import io.knotx.knot.action.domain.FormsFactory;
 import io.knotx.rxjava.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -169,7 +170,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
         .setStatusCode(clientResponse.getStatusCode())
         .setHeaders(getFilteredHeaders(clientResponse.getHeaders(),
             form.adapter().getAllowedResponseHeaders()))
-        .setBody(null);
+        .setBody(Buffer.buffer());
     knotContext.clearFragments();
     return knotContext;
   }
