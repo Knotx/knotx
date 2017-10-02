@@ -20,10 +20,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import rx.Single;
-
 import java.util.List;
 import java.util.Set;
+import rx.Single;
 
 @DataObject(generateConverter = true)
 public class KnotContext {
