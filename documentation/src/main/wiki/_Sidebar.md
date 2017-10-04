@@ -31,6 +31,7 @@
     * [[Performance Tests Summary|PerformanceTestsSummary]]
     * [[Performance Tests Tuning|PerformanceTestsTuning]]
   * [[Dependencies|Dependencies]]
+  * [[Upgrade Notes|UpgradeNotes]]
 
 ### Released
 * [[1.1.2|Documentation-1.1.2]]
