@@ -4,145 +4,150 @@ modules according your needs. Additionally wiki contains base information how se
 
 User documentation is available at [http://knotx.io](http://knotx.io/).
 
-
-- [Getting started](#getting-started)
-  - [First steps](#first-steps)
-  - [Getting Binaries](#getting-binaries)
-  - [Hello world!](#hello-world)
-  - [Building](#building)
-- [Running Knot.x Demo](#running-knotx-demo)
-  - [Requirements](#requirements)
-  - [Running the demo](#running-the-demo)
-  - [Reconfigure demo](#reconfigure-demo)
-    - [Use starter JSON](#use-starter-json)
-    - [Use JVM properties](#use-jvm-properties)
-    - [Conclusions](#conclusions)
-- [Debugging Knot.x Demo](#debugging-knotx-demo)
-  - [Requirements](#requirements-1)
-  - [How to set up Knot.x debugging in Intellij IDE](#how-to-set-up-knotx-debugging-in-intellij-ide)
-- [Architecture](#architecture)
-- [High Level Architecture](#high-level-architecture)
-- [Knot.x Core Architecture](#knotx-core-architecture)
-- [Communication Flow](#communication-flow)
-- [Knot Routing](#knot-routing)
-- [Gateway Mode](#gateway-mode)
-  - [Example configuration](#example-configuration)
-- [Knot.x Module](#knotx-module)
-  - [How to create your service?](#how-to-create-your-service)
-- [Server](#server)
-  - [How does it work?](#how-does-it-work)
-    - [Routing](#routing)
-  - [How to configure?](#how-to-configure)
-  - [Server options](#server-options)
-    - [KnotxFlowConfiguration options](#knotxflowconfiguration-options)
-    - [RepositoryEntry options](#repositoryentry-options)
-    - [VerticleEntry options](#verticleentry-options)
-    - [RoutingEntry options](#routingentry-options)
-    - [KnotRouteEntry options](#knotrouteentry-options)
-- [Repository Connectors](#repository-connectors)
-  - [How does it work?](#how-does-it-work-1)
-- [HTTP Repository Connector](#http-repository-connector)
-  - [How does it work?](#how-does-it-work-2)
-  - [How to configure?](#how-to-configure-1)
-    - [Options](#options)
-    - [Destination options](#destination-options)
-- [Filesystem Repository Connector section](#filesystem-repository-connector-section)
-  - [How does it work?](#how-does-it-work-3)
-  - [How to configure?](#how-to-configure-2)
-    - [Options](#options-1)
-- [HTML Fragment Splitter](#html-fragment-splitter)
-  - [How does it work?](#how-does-it-work-4)
-    - [Example](#example)
-    - [Fragment](#fragment)
-  - [How to configure?](#how-to-configure-3)
-    - [Splitter config](#splitter-config)
-- [Fragment Assembler](#fragment-assembler)
-  - [How does it work?](#how-does-it-work-5)
-    - [How Fragments are being joined?](#how-fragments-are-being-joined)
-    - [How does Assembler join unprocessed Fragments?](#how-does-assembler-join-unprocessed-fragments)
-      - [AS_IS strategy](#as_is-strategy)
-      - [UNWRAP strategy](#unwrap-strategy)
-      - [IGNORE strategy](#ignore-strategy)
-  - [How to configure?](#how-to-configure-4)
-    - [Fragment Assembler config](#fragment-assembler-config)
-- [Knot](#knot)
-  - [How does it work?](#how-does-it-work-6)
-    - [Knot Election Rule](#knot-election-rule)
-    - [Knot Context](#knot-context)
-      - [Knot Request](#knot-request)
-      - [Knot Response](#knot-response)
-        - [Example Knot Responses](#example-knot-responses)
-  - [How to configure?](#how-to-configure-5)
-  - [How to implement your own Knot?](#how-to-implement-your-own-knot)
-- [Action Knot](#action-knot)
-  - [How does it work?](#how-does-it-work-7)
-    - [Example](#example-1)
-    - [Signal](#signal)
-  - [How to configure?](#how-to-configure-6)
-    - [Action Knot options](#action-knot-options)
-- [Service Knot](#service-knot)
-  - [How does it work?](#how-does-it-work-8)
-    - [Adapter Calls Caching](#adapter-calls-caching)
-  - [How to configure?](#how-to-configure-7)
-    - [Service Knot options](#service-knot-options)
-- [Handlebars Knot](#handlebars-knot)
-  - [How does it work?](#how-does-it-work-9)
-    - [Example](#example-2)
-  - [How to configure?](#how-to-configure-8)
-    - [Handlebars Knot options](#handlebars-knot-options)
-  - [How to extend?](#how-to-extend)
-    - [Extending handlebars with custom helpers](#extending-handlebars-with-custom-helpers)
-      - [Example extension](#example-extension)
-- [Adapters](#adapters)
-  - [How does it work?](#how-does-it-work-10)
-    - [Types of adapters](#types-of-adapters)
-  - [How to configure?](#how-to-configure-9)
-  - [How to extend?](#how-to-extend-1)
-    - [Adapters common library](#adapters-common-library)
-    - [How to run a custom Adapter with Knot.x](#how-to-run-a-custom-adapter-with-knotx)
-- [Service Adapter](#service-adapter)
-  - [How does it work?](#how-does-it-work-11)
-  - [How to configure?](#how-to-configure-10)
-  - [How to extend?](#how-to-extend-2)
-- [Action Adapter](#action-adapter)
-  - [How does it work?](#how-does-it-work-12)
-      - [Service path](#service-path)
-    - [Adapter Response](#adapter-response)
-  - [How to configure?](#how-to-configure-11)
-  - [How to extend?](#how-to-extend-3)
-- [Http Service Adapter](#http-service-adapter)
-  - [How does it work?](#how-does-it-work-13)
-    - [Service path](#service-path-1)
-    - [Service params and additional headers](#service-params-and-additional-headers)
-    - [Parametrized services calls](#parametrized-services-calls)
-    - [Adapter Response](#adapter-response-1)
-  - [How to configure?](#how-to-configure-12)
-      - [Service Knot configuration](#service-knot-configuration)
-      - [snippet](#snippet)
-      - [request](#request)
-    - [Processing](#processing)
-        - [search service](#search-service)
-        - [twitter service](#twitter-service)
-        - [Setting service query parameters](#setting-service-query-parameters)
-- [Mocks](#mocks)
-  - [HTTP Service mock](#http-service-mock)
-    - [How does it work?](#how-does-it-work-14)
-    - [How to configure ?](#how-to-configure-)
-  - [HTTP Remote repository mock](#http-remote-repository-mock)
-    - [How does it work?](#how-does-it-work-15)
-    - [How to configure ?](#how-to-configure--1)
-  - [How to configure delay ?](#how-to-configure-delay-)
-    - [Delay all responses](#delay-all-responses)
-    - [Delay reponses for specific paths](#delay-reponses-for-specific-paths)
-- [Deploying Knot.x with custom modules](#deploying-knotx-with-custom-modules)
-  - [Recommended Knot.x deployment](#recommended-knotx-deployment)
-    - [Vert.x metrics](#vertx-metrics)
-  - [How to configure ?](#how-to-configure--2)
-    - [How to configure Knot.x in starter JSON ?](#how-to-configure-knotx-in-starter-json-)
-    - [How to configure with JVM properties ?](#how-to-configure-with-jvm-properties-)
-    - [How to configure your own module ?](#how-to-configure-your-own-module-)
-- [Dependencies](#dependencies)
-- [Upgrade notes](#upgrade-notes)
+* [Getting started](#getting-started)
+  * [First steps](#first-steps)
+  * [Getting Binaries](#getting-binaries)
+  * [Hello world!](#hello-world)
+  * [Building](#building)
+* [Running Knot.x Demo](#running-knotx-demo)
+  * [Requirements](#requirements)
+  * [Running the demo](#running-the-demo)
+  * [Reconfigure demo](#reconfigure-demo)
+    * [Use starter JSON](#use-starter-json)
+    * [Use JVM properties](#use-jvm-properties)
+    * [Conclusions](#conclusions)
+* [Debugging Knot.x Demo](#debugging-knotx-demo)
+  * [Requirements](#requirements-1)
+  * [How to set up Knot.x debugging in Intellij IDE](#how-to-set-up-knotx-debugging-in-intellij-ide)
+  * [How to debug remote instance of Knot.x](#how-to-debug-remote-instance-of-knotx)
+* [Architecture](#architecture)
+* [High Level Architecture](#high-level-architecture)
+* [Knot.x Core Architecture](#knotx-core-architecture)
+* [Communication Flow](#communication-flow)
+* [Knot Routing](#knot-routing)
+* [Gateway Mode](#gateway-mode)
+  * [Configuration](#configuration)
+  * [Processing](#processing)
+* [Knot.x Module](#knotx-module)
+  * [How to create your service?](#how-to-create-your-service)
+* [Server](#server)
+  * [How does it work?](#how-does-it-work)
+    * [Routing](#routing)
+  * [How to configure?](#how-to-configure)
+    * [Knot.x application specific configurations](#knotx-application-specific-configurations)
+  * [Server options](#server-options)
+    * [KnotxFlowConfiguration options](#knotxflowconfiguration-options)
+    * [RepositoryEntry options](#repositoryentry-options)
+    * [VerticleEntry options](#verticleentry-options)
+    * [RoutingEntry options](#routingentry-options)
+    * [KnotRouteEntry options](#knotrouteentry-options)
+    * [Vert.x HTTP Server configurations](#vertx-http-server-configurations)
+    * [How to configure Knot.x to listen with SSL/TLS](#how-to-configure-knotx-to-listen-with-ssltls)
+* [Repository Connectors](#repository-connectors)
+  * [How does it work?](#how-does-it-work-1)
+* [HTTP Repository Connector](#http-repository-connector)
+  * [How does it work?](#how-does-it-work-2)
+  * [How to configure?](#how-to-configure-1)
+    * [Options](#options)
+    * [Destination options](#destination-options)
+* [Filesystem Repository Connector section](#filesystem-repository-connector-section)
+  * [How does it work?](#how-does-it-work-3)
+  * [How to configure?](#how-to-configure-2)
+    * [Options](#options-1)
+* [HTML Fragment Splitter](#html-fragment-splitter)
+  * [How does it work?](#how-does-it-work-4)
+    * [Example](#example)
+    * [Fragment](#fragment)
+  * [How to configure?](#how-to-configure-3)
+    * [Splitter config](#splitter-config)
+* [Fragment Assembler](#fragment-assembler)
+  * [How does it work?](#how-does-it-work-5)
+    * [How Fragments are being joined?](#how-fragments-are-being-joined)
+    * [How does Assembler join unprocessed Fragments?](#how-does-assembler-join-unprocessed-fragments)
+      * [AS_IS strategy](#as_is-strategy)
+      * [UNWRAP strategy](#unwrap-strategy)
+      * [IGNORE strategy](#ignore-strategy)
+  * [How to configure?](#how-to-configure-4)
+    * [Fragment Assembler config](#fragment-assembler-config)
+* [Knot](#knot)
+  * [How does it work?](#how-does-it-work-6)
+    * [Knot Election Rule](#knot-election-rule)
+    * [Knot Context](#knot-context)
+      * [Knot Request](#knot-request)
+      * [Knot Response](#knot-response)
+        * [Example Knot Responses](#example-knot-responses)
+  * [How to configure?](#how-to-configure-5)
+  * [How to implement your own Knot?](#how-to-implement-your-own-knot)
+* [Action Knot](#action-knot)
+  * [How does it work?](#how-does-it-work-7)
+    * [Example](#example-1)
+    * [Signal](#signal)
+  * [How to configure?](#how-to-configure-6)
+    * [Action Knot options](#action-knot-options)
+* [Service Knot](#service-knot)
+  * [How does it work?](#how-does-it-work-8)
+    * [Adapter Calls Caching](#adapter-calls-caching)
+  * [How to configure?](#how-to-configure-7)
+    * [Service Knot options](#service-knot-options)
+* [Handlebars Knot](#handlebars-knot)
+  * [How does it work?](#how-does-it-work-9)
+    * [Example](#example-2)
+  * [How to configure?](#how-to-configure-8)
+    * [Handlebars Knot options](#handlebars-knot-options)
+  * [How to extend?](#how-to-extend)
+    * [Extending handlebars with custom helpers](#extending-handlebars-with-custom-helpers)
+      * [Example extension](#example-extension)
+* [Adapters](#adapters)
+  * [How does it work?](#how-does-it-work-10)
+    * [Types of adapters](#types-of-adapters)
+  * [How to configure?](#how-to-configure-9)
+  * [How to extend?](#how-to-extend-1)
+    * [Adapters common library](#adapters-common-library)
+    * [How to run a custom Adapter with Knot.x](#how-to-run-a-custom-adapter-with-knotx)
+* [Service Adapter](#service-adapter)
+  * [How does it work?](#how-does-it-work-11)
+  * [How to configure?](#how-to-configure-10)
+  * [How to extend?](#how-to-extend-2)
+* [Action Adapter](#action-adapter)
+  * [How does it work?](#how-does-it-work-12)
+      * [Service path](#service-path)
+    * [Adapter Response](#adapter-response)
+  * [How to configure?](#how-to-configure-11)
+  * [How to extend?](#how-to-extend-3)
+* [Http Service Adapter](#http-service-adapter)
+  * [How does it work?](#how-does-it-work-13)
+    * [Service path](#service-path-1)
+    * [Service params and additional headers](#service-params-and-additional-headers)
+    * [Parametrized services calls](#parametrized-services-calls)
+    * [Adapter Response](#adapter-response-1)
+  * [How to configure?](#how-to-configure-12)
+      * [Service Knot configuration](#service-knot-configuration)
+      * [snippet](#snippet)
+      * [request](#request)
+    * [Processing](#processing-1)
+        * [search service](#search-service)
+        * [twitter service](#twitter-service)
+        * [Setting service query parameters](#setting-service-query-parameters)
+* [Mocks](#mocks)
+  * [HTTP Service mock](#http-service-mock)
+    * [How does it work?](#how-does-it-work-14)
+    * [How to configure ?](#how-to-configure-)
+  * [HTTP Remote repository mock](#http-remote-repository-mock)
+    * [How does it work?](#how-does-it-work-15)
+    * [How to configure ?](#how-to-configure--1)
+  * [How to configure delay ?](#how-to-configure-delay-)
+    * [Delay all responses](#delay-all-responses)
+    * [Delay reponses for specific paths](#delay-reponses-for-specific-paths)
+* [Deploying Knot.x with custom modules](#deploying-knotx-with-custom-modules)
+  * [Recommended Knot.x deployment](#recommended-knotx-deployment)
+    * [Vert.x metrics](#vertx-metrics)
+  * [How to configure ?](#how-to-configure--2)
+    * [How to configure Knot.x in starter JSON ?](#how-to-configure-knotx-in-starter-json-)
+    * [How to configure with JVM properties ?](#how-to-configure-with-jvm-properties-)
+    * [How to configure your own module ?](#how-to-configure-your-own-module-)
+    * [What happens when config refers to non-existing module?](#what-happens-when-config-refers-to-non-existing-module)
+* [Dependencies](#dependencies)
+* [Upgrade notes](#upgrade-notes)
 
 # Getting started
 
@@ -342,7 +347,7 @@ You can play with the demo in order to get familiar with the ways how to configu
 [knotx-example-app.json](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app/src/main/resources/knotx-example-app.json)
 2. Copy the file to computer that's running Demo app and make it new name for it, e.g.: `knotx-example-experiments.json`
 3. Inside that JSON add new object `config` and configure KnotxServer service (take service name from `services` section), 
-but change `httpPort` property only. Let's set it to `9999`.
+but change `port` property only. Let's set it to `9999`.
 ```json
 {
   "modules": [
@@ -364,7 +369,9 @@ but change `httpPort` property only. Let's set it to `9999`.
     "knotx:example.io.knotx.KnotxServer": {
       "options": {
         "config": {
-          "httpPort": 9999
+          "serverOptions": {
+             "port": 9999
+          }
         }
       }
     }
@@ -385,16 +392,16 @@ The syntax of the property is as follows:
 `-D<service-name>.<json-obj-path>=<value>`
 Where:
 - `<service-name>` is the name of the Knot.x service without `knotx:` prefix, e.g.: io.knotx.ServiceKnot, etc.
-- `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.httpPort`
+- `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.serverOptions.port`
 - `<value>` can be simply a value to be set on JSON property, or `file:/path/to/file.json`. Latter type of value, is the json file with JSON Object, that should be used to merge with the object pointed by `<json-obj-path>`.
   
-E.g.`-Dexample.io.knotx.KnotxServer.options.config.httpPort=7777`
+E.g.`-Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777`
 Or,`-Dexample.io.knotx.KnotxServer.options.config=file:test.json`
 
-Let's modify `httpPort` once again, but this time using JVM property.
+Let's modify `port` once again, but this time using JVM property.
 1. Restart Knot.x with your previous config, but this time start java with additional command line option:
 ```
-$ java -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
+$ java -Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
 ```
 2. Notice that HTTP Server is listening on port **7777** now, so starter JSON configuration is overridden.
 ```
@@ -412,7 +419,7 @@ In this case, the object will specify how many instances to start. (This can be 
 ```
 4. Start Knot.x once again, but this time with new JVM property
 ```
-$ java -Dexample.io.knotx.KnotxServer.options=file:server-options.json -Dexample.io.knotx.KnotxServer.options.config.httpPort=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
+$ java -Dexample.io.knotx.KnotxServer.options=file:server-options.json -Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
 ```
 5. Notice that Knot.x is started on port **7777* but two instances of KnotxServer where started.
 ```
@@ -458,6 +465,16 @@ run io.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-exampl
 9. Finally, you can now Run or Debug this configuration and play with Knot.x as usuall.
 
 [[assets/knotx-debugging-config.png|alt=Knot.x Debugging config]]
+
+## How to debug remote instance of Knot.x 
+Assuming you have running Knot.x on dedicated machine (not localhost) and you'd like to debug it. All you have to do is just add JVM properties to enable it.
+
+E.g.:
+```
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+```
+
+Then, you can connect to that instance (machine IP) on the port specified in the properties above.
 
 # Architecture
 
@@ -737,7 +754,9 @@ The JSON can also provide an `options` field which maps exactly to a **[Deployme
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 4555,
+      "serverOptions": {
+         "port": 4555
+      },
       "foo": "bar"
     },
     "instances": 2,
@@ -756,7 +775,9 @@ When deploying a service from a service descriptor, any fields that are specifie
     "knotx:io.knotx.KnotxServer": {
       "options": {
         "config": {
-          "httpPort": 6666
+          "serverOptions": {
+            "port": 6666
+          }
         },
         "instances": 1
       }
@@ -766,7 +787,7 @@ When deploying a service from a service descriptor, any fields that are specifie
 ```
 - by JVM property (it will override also values overridden by starter JSON)
 ```
-$ java -Dio.knotx.KnotxServer.options.config.httpPort=2000 -jar knotx-xxxx-fat.jar -conf starter.json
+$ java -Dio.knotx.KnotxServer.options.config.serverOptions.port=2000 -jar knotx-xxxx-fat.jar -conf starter.json
 ```
 See [[Knot.x Deployments|KnotxDeployment]] for details how to supply your configurations.
 
@@ -847,13 +868,21 @@ For more details please see [[Routing|Routing]] and [[Communication Flow|Communi
 ## How to configure?
 Server is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
+The HTTP Server configuration consists two parts:
+- Knot.x application specific configurations
+- Vert.x HTTP Server configurations
+
+### Knot.x application specific configurations
+
 Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` file available in classpath.
 ```json
 {
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
+      "serverOptions": {
+         "port": 8092
+      },
       "displayExceptionDetails": true,
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
@@ -937,7 +966,6 @@ Main server options available.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
-| `httpPort`                  | `Number (int)`                      | &#10004;       | HTTP Port on which Knot.x will listen for browser requests |
 | `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
@@ -980,6 +1008,56 @@ The `repositories`, `splitter` and `assembler` verticles are specific to the def
 | `address`      | `String`         | &#10004;       | Event bus address of the **Knot** verticle |
 | `onTransition` | `KnotRouteEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/>`"onTransition": { "go-d": {}, "go-e": {} }` |
 
+### Vert.x HTTP Server configurations
+
+Besides Knot.x specific configurations as mentioned above, the `config` field might have added Vert.x configurations related to the HTTP server.
+It can be used to control the low level aspects of the HTTP server, server tuning, SSL.
+
+The `serverOptions` need to be added in the following place, of the KnotsServerVerticle configuration
+```
+{
+  "options": {
+    "config": {
+      "serverOptions": {
+        "port": 8888,
+         ...
+      },
+      ...
+```
+The list of remaining server options are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
+
+### How to configure Knot.x to listen with SSL/TLS
+
+Generate certificates for your machine (e.g. localhost)
+`keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass keyPass -validity 360 -keysize 2048`
+
+Where:
+- `keystore.jks` - is a filename of the keystore
+- `keyPass` - is the keystore password
+
+Below is the sample configuration that enabled SSL:
+```
+{
+  "options": {
+    "config": {
+      "serverOptions": {
+        "port": 8043,
+        "ssl": true,
+        "keyStoreOptions": {
+          "path": "keystore.jks",
+          "password": "keyPass"
+        }
+      },
+      ...
+```
+Where:
+- `path` - is the path where keystore is located, optional if `value` is used
+- `password` - keystore password
+
+Other option is to provide those parameters through JVM properties:
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.path=/path/to/keystore.jks` 
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.password=keyPass`
+- `-Dio.knotx.KnotxServer.options.config.serverOptions.ssl=true`
 
 # Repository Connectors
 Knot.x gets templates from one or more repositories, processes them and serves to end users. Knot.x uses Repository Connectors to communicate with template repository.
@@ -2482,13 +2560,13 @@ Config below does:
 ```
 
 # Deploying Knot.x with custom modules
-Thanks to the modular architecture of Knot.x, there are many ways to deploy Knot.x for 
-the production usage. However, the easiest approach is to use Knot.x as one **fat** jar together with 
-jar files specific for your target implementation (such as custom [[Adapters|Adapter]], [[Knots|Knot]] 
+Thanks to the modular architecture of Knot.x, there are many ways to deploy Knot.x for
+the production usage. However, the easiest approach is to use Knot.x as one **fat** jar together with
+jar files specific for your target implementation (such as custom [[Adapters|Adapter]], [[Knots|Knot]]
 or Handlebars helpers). These jar files should be all available in the classpath.
 
 ## Recommended Knot.x deployment
-For the purpose of this example let's assume you have `KNOTX_HOME` folder created on the host machine where Knot.x 
+For the purpose of this example let's assume you have `KNOTX_HOME` folder created on the host machine where Knot.x
 is going to be run. Following simple steps is a recommended way
 to deploy Knot.x with custom modules:
 
@@ -2500,12 +2578,12 @@ to deploy Knot.x with custom modules:
 You don't need to embed Knot.x dependencies (e.g. `knotx-common` and `knotx-adapter-api`) in your custom jar files.
 They will be taken from **knotx-standalone-X.Y.Z-fat.jar**.
 
-- Create your own configuration JSON (any location on the host). Use `knotx-standalone.json` 
-from the [latest release](https://github.com/Cognifide/knotx/releases) as a reference. In this example, 
+- Create your own configuration JSON (any location on the host). Use `knotx-standalone.json`
+from the [latest release](https://github.com/Cognifide/knotx/releases) as a reference. In this example,
 created file is named `knotx-starter.json` and is placed in `KNOTX_HOME`.
 
-- Create your own [Logback logger configuration](http://logback.qos.ch/manual/configuration.html) 
-(any location on the host) basing e.g. on `logback.xml` 
+- Create your own [Logback logger configuration](http://logback.qos.ch/manual/configuration.html)
+(any location on the host) basing e.g. on `logback.xml`
 from the [latest release](https://github.com/Cognifide/knotx/releases).
 
 At this step `KNOTX_HOME` should contain:
@@ -2523,8 +2601,12 @@ To start Knot.x with custom modules, use following command
 java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-starter.json
 ```
 
+The execution of Knot.x using a launcher as above it uses a following exit codes as specified in [Vert.x documentation|http://vertx.io/docs/vertx-core/java/#_launcher_and_exit_code].
+Additionally, Knot.x adds following exit codes:
+- `30` - If the configuration is missing or it's empty
+
 ### Vert.x metrics
-You might want to enable Vert.x metrics in order to monitor how Knot.x performs. 
+You might want to enable Vert.x metrics in order to monitor how Knot.x performs.
 Currently, it's possible to enable JMX metrics, so you can use any JMX tool, like JConsole, to inspect all the metrics Vert.x collects.
 
 In order to enable it, add following JVM property when starting Knot.x
@@ -2541,7 +2623,7 @@ For a detailed description of available metrics please check [Vert.x The Metrics
 
 | ! Warning |
 |:------ |
-| **We don’t recommend gathering metrics from your production environment. JMX’s RPC API is fragile and bonkers. However for development purposes and troubleshooting it can be very useful.** | 
+| **We don’t recommend gathering metrics from your production environment. JMX’s RPC API is fragile and bonkers. However for development purposes and troubleshooting it can be very useful.** |
 
 ## How to configure ?
 As mentioned above, the `knotx-starter.json` is the main configuration file describing what Knot.x modules need to be started as part of Knot.x.
@@ -2563,15 +2645,15 @@ As mentioned above, the `knotx-starter.json` is the main configuration file desc
 ```
 As you see, it simply have list of modules that Knot.x should start. Out of the box, no other configuration is required as each module is shipped with its default config.
 
-However, at the production environment you often need to alter the configuration parameters such as port of HTTP server, or HTTP headers that are 
+However, at the production environment you often need to alter the configuration parameters such as port of HTTP server, or HTTP headers that are
 being passed, or addresses of the client services used for rendering dynamic content.
 
 Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are three ways:
-1. In your `knotx-starter.json` file add `config` section for each module that needs default configuration to be modified. You only need to specify elements that 
+1. In your `knotx-starter.json` file add `config` section for each module that needs default configuration to be modified. You only need to specify elements that
 should be changed. Follow the guide of each Verticle to see the supported parameters.
-2. With JVM properties: you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file. 
+2. With JVM properties: you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file.
 Any parameter provided through system properties will always override default and starter values.
-3. It is also possible to create your own module that uses existing Knot.x Verticle. In that module you can build the configuration file from scratch. 
+3. It is also possible to create your own module that uses existing Knot.x Verticle. In that module you can build the configuration file from scratch.
 Such module configuration might be also overridden using starter JSON and/or JVM properties.
 
 ### How to configure Knot.x in starter JSON ?
@@ -2593,7 +2675,9 @@ For instance, if you want to modify configuration of KnotxServer module, you can
     "knotx:io.knotx.KnotxServer" : {
       "options": {
         "config": {
-          "httpPort": 9999
+          "serverOptions": {
+            "port": 9999
+          }
         },
         "instances": 2
       }
@@ -2602,21 +2686,21 @@ For instance, if you want to modify configuration of KnotxServer module, you can
 }
 ```
 Important things to remember:
-- `options` field maps exactly to a [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html) object. 
+- `options` field maps exactly to a [vert.x Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html) object.
 It means, that you can specify here deployment options such as how many instances of that module should be deployed, etc.
-- Inside `options` you can supply `config` object where you override configuration for the verticle provided by the module. 
-See Knot.x Verticle documentation to see what's available on each Verticle. 
+- Inside `options` you can supply `config` object where you override configuration for the verticle provided by the module.
+See Knot.x Verticle documentation to see what's available on each Verticle.
 
 If you start Knot.x with the configuration as above, it will start all modules listed in the config, but the `io.knotx.KnotxServer` will be deployed as:
 - Two instances
 - It will listen on port 9999
 
 ### How to configure with JVM properties ?
-In some cases, you might want to provide configuration parameters with JVM properties, e.g. you can have same config used on all environments, 
+In some cases, you might want to provide configuration parameters with JVM properties, e.g. you can have same config used on all environments,
 but you wanted to specify HTTP port of the server to be different on each host.
 In such case, you can simply provide environment specific port as JVM property, e.g.
 ```
--Dio.knotx.KnotxServer.options.config.httpPort=9999
+-Dio.knotx.KnotxServer.options.config.serverOptions.port=9999
 ```
 
 Additionally, if you want to change more than one value, you can create separate JSON file with all parameters you want to modify, and inject that config using JVM property.
@@ -2643,20 +2727,20 @@ Then, you can use that file to override default routing as below:
 ```
 
 ### How to configure your own module ?
-The last option to change Verticle configuration, is to redefine Knotx module by creating your own descriptor. 
-The descriptor is simply a JSON file that must be available in classpath (e.g. in JAR file of your custom Verticle implementation, 
+The last option to change Verticle configuration, is to redefine Knotx module by creating your own descriptor.
+The descriptor is simply a JSON file that must be available in classpath (e.g. in JAR file of your custom Verticle implementation,
 or inside folder where all JAR files you put on your installation).
 
 Name of the descriptor file is important as it's a module name used in starter JSON.
 
-For instance, you might want to create KnotxServer configuration from scratch, ignoring default config available. 
+For instance, you might want to create KnotxServer configuration from scratch, ignoring default config available.
 All you have to do is to create module descriptor file, e.g. `my.KnotxServer.json` with the content as below
 ```json
 {
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      
+
     }
   }
 }
@@ -2676,7 +2760,7 @@ Next step, is to use your new module in `knotx-starter.json`.
     "knotx:my.KnotxServer": {
       "options": {
         "config": {
-        
+
         }
       }
     }
@@ -2687,13 +2771,36 @@ Finally, you can still override that config as described above: through starter 
 
 Single value:
 ```
--Dmy.KnotxServer.options.config.httpPort=9999
+-Dmy.KnotxServer.options.config.serverOptions.port=9999
 ```
 
 Or, whole JSON Object from external file
 ```
 -Dmy.KnotxServer.options.config.routing=file:/path/to/my-routing.json
 ```
+
+### What happens when config refers to non-existing module?
+Let's assume that you work over a new `io.example.MyCustomModule` module and it will be implemented inside `custom-module.jar`. As mentioned above, you should do 2 things to start using it
+within Knot.x instance. You need to add it to the list of Knot.x modules in the main config file:
+
+```json
+{
+  "modules": [
+    "knotx:io.knotx.KnotxServer",
+    ...
+    "knotx:io.example.MyCustomModule"
+  ]
+}
+```
+
+And add the `custom-module.jar` to the classpath. But what will happen if you actually forgot to add `custom-module.jar` to the classpath?
+Knot.x will start the instance with following warning:
+
+```
+2017-08-29 15:42:57 [vert.x-eventloop-thread-0] WARN i.k.launcher.KnotxStarterVerticle - Cannot find module descriptor file io.example.MyCustomModule.json on classpath
+```
+
+Instance will start as though `io.example.MyCustomModule` didn't exist.
 
 # Dependencies
 
@@ -2718,6 +2825,14 @@ If you are upgrading Knot.x from the previous version, here are notes that will 
 and snippets changes that were introduced in comparison to previous released Knot.x version. If you are upgrading
 from older than one version (e.g. 1.0.1 -> 1.1.2) be sure, to do all the steps from the Upgrade Notes of all released
 versions. You may see all changes in the [Changelog](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md).
+
+## Version 1.1.2
+- [PR-335](https://github.com/Cognifide/knotx/pull/335) - Added support for HttpServerOptions on the configuration level.
+  * **Important**: The biggest change here is the way port of [[Knot.x Server|Server#vertx-http-server-configurations]] is configured. 
+  Previously it was defined in the `config.httpPort` property. Now `serverOptions` section was introduced, see  
+  [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions) for more details. 
+  See example change of configuration
+  [here](https://github.com/Cognifide/knotx/pull/335/files#diff-9eb56f60d7dcc72e56694b1a0aeb014dL5).
 
 ## Version 1.1.1
  - [PR-307](https://github.com/Cognifide/knotx/pull/307) - Fixed KnotxServer default configuration
