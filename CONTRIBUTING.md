@@ -38,6 +38,11 @@ When changing or fixing some important part of Knot.x, please remember to update
 Your entry should be enlisted in `Unreleased` section. It will be moved to appropriate release notes when released.
 Please use convention `- [PR-ABC](https://github.com/Cognifide/knotx/pull/ABC) - short description of the PR.`.
 
+## Upgrade Notes
+When changing or fixing anything related with changes in Knot.x configuration (e.g. its structure, new property etc.) or
+snippet structure (e.g. change convention of naming services) remember to update 
+[Wiki Upgrade Notes](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/UpgradeNotes.md).
+
 ## Tests naming convention
 Tests written in Knot.x should be named with `methodName_whenStateUnderTest_expectBehavior` convention proposed as the first example in [7 Popular Unit Test Naming Conventions](https://dzone.com/articles/7-popular-unit-test-naming).
 

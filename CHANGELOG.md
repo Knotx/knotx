@@ -2,13 +2,15 @@
 All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
+List of changes that are finished but not yet released in any final version.
+
+## Version 1.1.2
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
  - [PR-332](https://github.com/Cognifide/knotx/pull/332) - Fixed timeout issues when deploying verticles in Junit Rule
  - [PR-335](https://github.com/Cognifide/knotx/pull/335) - Added support for HttpServerOptions on the configuration level.
  - [PR-328](https://github.com/Cognifide/knotx/pull/328) - Knot.x ignore config parts related to not existing modules and allows to start the instance with warnings
  
 ## Version 1.1.1
-List of changes that are finished but not yet released in any final version.
  - [PR-316](https://github.com/Cognifide/knotx/pull/316) - Gateway Processor has access to request body
  - [PR-307](https://github.com/Cognifide/knotx/pull/307) - Fixed KnotxServer default configuration
 
