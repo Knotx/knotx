@@ -82,12 +82,10 @@ public class HtmlFragmentSplitterVerticleTest {
 
     service.rxProcess(KnotContextFactory.empty(template))
         .map(ctx -> Pair.of(async, ctx))
+        .doOnSuccess(success -> testFunction.call(success.getRight()))
         .subscribe(
-            success -> {
-              testFunction.call(success.getRight());
-              async.complete();
-            },
-            error -> context.fail(error)
+            success -> async.complete(),
+            context::fail
         );
   }
 

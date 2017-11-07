@@ -89,15 +89,16 @@ public class HttpClientFacadeTest {
             HttpMethod.POST);
 
     // then
-    result.subscribe(
-        response -> {
+    result
+        .doOnSuccess(response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(mockedWebClient, Mockito.times(1))
               .request(HttpMethod.POST, PORT, DOMAIN, REQUEST_PATH);
-          async.complete();
-        },
-        error -> context.fail(error.getMessage()));
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage()));
   }
 
   @Test
@@ -122,15 +123,16 @@ public class HttpClientFacadeTest {
                 HttpMethod.POST);
 
     // then
-    result.subscribe(
-        response -> {
+    result
+        .doOnSuccess(response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(mockedWebClient, Mockito.times(1))
               .request(HttpMethod.POST, PORT, DOMAIN, REQUEST_PATH);
-          async.complete();
-        },
-        error -> context.fail(error.getMessage()));
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage()));
   }
 
   @Test
@@ -148,18 +150,17 @@ public class HttpClientFacadeTest {
         .setParams(new JsonObject()).setRequest(clientRequest), HttpMethod.POST);
 
     // then
-    result.subscribe(
-        response -> context.fail("Error should occur!"),
-        error -> {
-          {
-            context
-                .assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
-            Mockito.verify(mockedWebClient, Mockito.times(0))
-                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
-                    Matchers.anyString());
-            async.complete();
-          }
-        });
+    result
+        .doOnError(error -> {
+          context
+              .assertEquals("Parameter `path` was not defined in `params`!", error.getMessage());
+          Mockito.verify(mockedWebClient, Mockito.times(0))
+              .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                  Matchers.anyString());
+        })
+        .subscribe(
+            response -> context.fail("Error should occur!"),
+            error -> async.complete());
   }
 
   @Test
@@ -179,17 +180,16 @@ public class HttpClientFacadeTest {
             HttpMethod.POST);
 
     // then
-    result.subscribe(
-        response -> context.fail("Error should occur!"),
-        error -> {
-          {
-            context.assertEquals(UnsupportedServiceException.class, error.getClass());
-            Mockito.verify(mockedWebClient, Mockito.times(0))
-                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
-                    Matchers.anyString());
-            async.complete();
-          }
-        });
+    result
+        .doOnError(error -> {
+          context.assertEquals(UnsupportedServiceException.class, error.getClass());
+          Mockito.verify(mockedWebClient, Mockito.times(0))
+              .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                  Matchers.anyString());
+        })
+        .subscribe(
+            response -> context.fail("Error should occur!"),
+            error -> async.complete());
   }
 
   private WebClient webClient() {

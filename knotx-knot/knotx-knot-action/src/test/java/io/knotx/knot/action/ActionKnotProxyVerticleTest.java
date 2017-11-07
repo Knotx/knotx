@@ -244,11 +244,9 @@ public class ActionKnotProxyVerticleTest {
     KnotProxy actionKnot = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     actionKnot.rxProcess(knotContext)
+        .doOnSuccess(onSuccess::call)
         .subscribe(
-            success -> {
-              onSuccess.call(success);
-              async.complete();
-            },
+            success -> async.complete(),
             onError
         );
   }

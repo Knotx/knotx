@@ -90,11 +90,9 @@ public class HttpServiceAdapterProxyTest {
     AdapterProxy service = AdapterProxy.createProxy(new Vertx(vertx.vertx()), ADAPTER_ADDRESS);
 
     service.rxProcess(message)
+        .doOnSuccess(onSuccess::call)
         .subscribe(
-            success -> {
-              onSuccess.call(success);
-              async.complete();
-            },
+            success -> async.complete(),
             onError
         );
   }

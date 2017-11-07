@@ -90,16 +90,17 @@ public class HttpClientFacadeTest {
         .process(payloadMessage(REQUEST_PATH, new ClientRequest()), HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> {
+    result
+        .doOnSuccess(response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(mockedWebClient, Mockito.times(1))
               .request(HttpMethod.GET, PORT, DOMAIN, REQUEST_PATH);
-          async.complete();
-        },
-        error -> context.fail(error.getMessage())
-    );
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage())
+        );
   }
 
   @Test
@@ -121,16 +122,17 @@ public class HttpClientFacadeTest {
             HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> {
+    result
+        .doOnSuccess(response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(mockedWebClient, Mockito.times(1))
               .request(HttpMethod.GET, PORT, DOMAIN, REQUEST_PATH);
-          async.complete();
-        },
-        error -> context.fail(error.getMessage())
-    );
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage())
+        );
   }
 
   @Test
@@ -147,18 +149,17 @@ public class HttpClientFacadeTest {
     Single<ClientResponse> result = clientFacade.process(new AdapterRequest(), HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> context.fail("Error should occur!"),
-        error -> {
-          {
-            context.assertEquals(error.getClass().getSimpleName(),
-                AdapterServiceContractException.class.getSimpleName());
-            Mockito.verify(mockedWebClient, Mockito.times(0))
-                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
-                    Matchers.anyString());
-            async.complete();
-          }
-        });
+    result
+        .doOnError(error -> {
+          context.assertEquals(error.getClass().getSimpleName(),
+              AdapterServiceContractException.class.getSimpleName());
+          Mockito.verify(mockedWebClient, Mockito.times(0))
+              .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                  Matchers.anyString());
+        })
+        .subscribe(
+            response -> context.fail("Error should occur!"),
+            error -> async.complete());
   }
 
   @Test
@@ -177,17 +178,17 @@ public class HttpClientFacadeTest {
             .process(payloadMessage("/not/supported/path", new ClientRequest()), HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> context.fail("Error should occur!"),
-        error -> {
-          {
-            context.assertEquals(UnsupportedServiceException.class, error.getClass());
-            Mockito.verify(mockedWebClient, Mockito.times(0))
-                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
-                    Matchers.anyString());
-            async.complete();
-          }
-        });
+    result
+        .doOnError(error -> {
+          context.assertEquals(UnsupportedServiceException.class, error.getClass());
+          Mockito.verify(mockedWebClient, Mockito.times(0))
+              .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                  Matchers.anyString());
+        })
+        .subscribe(
+            response -> context.fail("Error should occur!"),
+            error -> async.complete()
+        );
   }
 
   private WebClient webClient() {

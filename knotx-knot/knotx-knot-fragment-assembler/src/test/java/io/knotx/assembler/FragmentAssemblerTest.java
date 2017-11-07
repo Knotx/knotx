@@ -73,7 +73,8 @@ public class FragmentAssemblerTest {
   @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
-    callAssemblerWithAssertions(context, Collections.singletonList(new ImmutablePair<>(Collections.singletonList(RAW), StringUtils.SPACE)),
+    callAssemblerWithAssertions(context, Collections
+            .singletonList(new ImmutablePair<>(Collections.singletonList(RAW), StringUtils.SPACE)),
         knotContext -> context.assertEquals(HttpResponseStatus.NO_CONTENT.code(),
             knotContext.getClientResponse().getStatusCode()));
   }
@@ -132,18 +133,17 @@ public class FragmentAssemblerTest {
         });
   }
 
-  private void callAssemblerWithAssertions(TestContext context, List<Pair<List<String>, String>> fragments,
+  private void callAssemblerWithAssertions(TestContext context,
+      List<Pair<List<String>, String>> fragments,
       Action1<KnotContext> testFunction) {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     service.rxProcess(KnotContextFactory.create(fragments))
         .map(ctx -> Pair.of(async, ctx))
+        .doOnSuccess(success -> testFunction.call(success.getRight()))
         .subscribe(
-            success -> {
-              testFunction.call(success.getRight());
-              async.complete();
-            },
+            success -> async.complete(),
             context::fail
         );
   }
