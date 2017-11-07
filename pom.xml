@@ -94,8 +94,9 @@
     <java.version>1.8</java.version>
 
     <!-- Dependency versions -->
-    <vertx.version>3.5.0.Beta1</vertx.version>
-    <rxjava.version>2.1.1</rxjava.version>
+    <vertx.version>3.5.0</vertx.version>
+    <rxjava.version>2.1.6</rxjava.version>
+    <jackson.version>2.9.2</jackson.version>
     <jsoup.version>1.10.2</jsoup.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-lang3.version>3.5</commons-lang3.version>
@@ -187,6 +188,21 @@
         <groupId>io.reactivex.rxjava2</groupId>
         <artifactId>rxjava</artifactId>
         <version>${rxjava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
 
       <!-- Vert.x Microservice toolbox -->
