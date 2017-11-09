@@ -22,13 +22,13 @@ import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.ClientResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.client.WebClient;
-import rx.Single;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.client.WebClient;
 
 public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
 

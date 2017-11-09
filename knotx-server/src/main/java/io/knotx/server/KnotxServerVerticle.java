@@ -20,12 +20,15 @@ import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.handler.BodyHandler;
-import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServer;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.handler.BodyHandler;
+import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -105,12 +108,12 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 
-    vertx.createHttpServer()
+    createHttpServer()
         .requestHandler(router::accept)
-        .rxListen(configuration.getHttpPort())
+        .rxListen()
         .subscribe(ok -> {
               LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-                  configuration.getHttpPort());
+                  configuration.getServerOptions().getInteger("port"));
               fut.complete();
             },
             error -> {
@@ -119,5 +122,13 @@ public class KnotxServerVerticle extends AbstractVerticle {
             }
         );
 
+  }
+
+  private HttpServer createHttpServer() {
+    JsonObject serverOptions = configuration.getServerOptions();
+
+    return serverOptions.isEmpty()
+        ? vertx.createHttpServer()
+        : vertx.createHttpServer(new HttpServerOptions(serverOptions));
   }
 }

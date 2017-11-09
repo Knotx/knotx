@@ -30,20 +30,21 @@ import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.knotx.knot.action.domain.FormEntity;
 import io.knotx.knot.action.domain.FormSimplifier;
 import io.knotx.knot.action.domain.FormsFactory;
-import io.knotx.rxjava.proxy.AdapterProxy;
+import io.knotx.reactivex.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
-import rx.Single;
 
 public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
@@ -53,7 +54,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   private final ActionKnotConfiguration configuration;
   private final FormSimplifier simplifier;
 
-  ActionKnotProxyImpl(Vertx vertx, ActionKnotConfiguration configuration, FormSimplifier simplifier) {
+  ActionKnotProxyImpl(Vertx vertx, ActionKnotConfiguration configuration,
+      FormSimplifier simplifier) {
     this.vertx = vertx;
     this.configuration = configuration;
     this.simplifier = simplifier;
@@ -84,7 +86,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   protected KnotContext processError(KnotContext context, Throwable error) {
     LOGGER.error("Could not process template [{}]", error, context.getClientRequest().getPath());
     KnotContext errorResponse = new KnotContext().setClientResponse(context.getClientResponse());
-    errorResponse.getClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+    errorResponse.getClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
     return errorResponse;
   }
 
@@ -92,7 +95,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     LOGGER.trace("Pass-through {} request", knotContext.getClientRequest().getMethod());
     knotContext.setTransition(DEFAULT_TRANSITION);
     forms.forEach(form -> form.fragment()
-        .content(simplifier.simplify(form.fragment().content(), configuration.formIdentifierName(), form.identifier())));
+        .content(simplifier.simplify(form.fragment().content(), configuration.formIdentifierName(),
+            form.identifier())));
     return knotContext;
   }
 
@@ -119,7 +123,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     return adapterRequest;
   }
 
-  private KnotContext processAdapterResponse(KnotContext knotContext, List<FormEntity> forms, FormEntity form, AdapterResponse response) {
+  private KnotContext processAdapterResponse(KnotContext knotContext, List<FormEntity> forms,
+      FormEntity form, AdapterResponse response) {
     final ClientResponse clientResponse = response.getResponse();
     final String signal = response.getSignal();
 
@@ -133,7 +138,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     }
   }
 
-  private KnotContext routeToNextKnotResponse(ClientResponse clientResponse, KnotContext knotContext, List<FormEntity> forms, FormEntity form) {
+  private KnotContext routeToNextKnotResponse(ClientResponse clientResponse,
+      KnotContext knotContext, List<FormEntity> forms, FormEntity form) {
     LOGGER.trace("Request next transition to [{}]", DEFAULT_TRANSITION);
     JsonObject actionContext = new JsonObject()
         .put("_result", new JsonObject(clientResponse.getBody().toString()))
@@ -145,12 +151,14 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
             form.adapter().getAllowedResponseHeaders())
         );
     forms.forEach(f -> f.fragment()
-        .content(simplifier.simplify(f.fragment().content(), configuration.formIdentifierName(), f.identifier())));
+        .content(simplifier
+            .simplify(f.fragment().content(), configuration.formIdentifierName(), f.identifier())));
     knotContext.setTransition(DEFAULT_TRANSITION);
     return knotContext;
   }
 
-  private KnotContext redirectKnotResponse(KnotContext knotContext, FormEntity form, ClientResponse clientResponse, String redirectLocation) {
+  private KnotContext redirectKnotResponse(KnotContext knotContext, FormEntity form,
+      ClientResponse clientResponse, String redirectLocation) {
     LOGGER.trace("Request redirected to [{}]", redirectLocation);
     knotContext.getClientResponse()
         .setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY.code());
@@ -164,12 +172,13 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     return knotContext;
   }
 
-  private KnotContext errorKnotResponse(ClientResponse clientResponse, KnotContext knotContext, FormEntity form) {
+  private KnotContext errorKnotResponse(ClientResponse clientResponse, KnotContext knotContext,
+      FormEntity form) {
     knotContext.getClientResponse()
         .setStatusCode(clientResponse.getStatusCode())
         .setHeaders(getFilteredHeaders(clientResponse.getHeaders(),
             form.adapter().getAllowedResponseHeaders()))
-        .setBody(null);
+        .setBody(Buffer.buffer());
     knotContext.clearFragments();
     return knotContext;
   }
@@ -182,10 +191,12 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private FormEntity currentForm(List<FormEntity> forms, KnotContext knotContext) {
-    return forms.stream().filter(form -> form.current(knotContext, configuration.formIdentifierName())).findFirst()
+    return forms.stream()
+        .filter(form -> form.current(knotContext, configuration.formIdentifierName())).findFirst()
         .orElseThrow(() -> {
           LOGGER
-              .error("No form attribute [{}] matched with forms identifiers [{}]", knotContext.getClientRequest().getFormAttributes(),
+              .error("No form attribute [{}] matched with forms identifiers [{}]",
+                  knotContext.getClientRequest().getFormAttributes(),
                   forms.stream().map(FormEntity::identifier).toArray());
           return new IllegalStateException("Could not match form identifiers!");
         });

@@ -31,7 +31,9 @@ The JSON can also provide an `options` field which maps exactly to a **[Deployme
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 4555,
+      "serverOptions": {
+         "port": 4555
+      },
       "foo": "bar"
     },
     "instances": 2,
@@ -50,7 +52,9 @@ When deploying a service from a service descriptor, any fields that are specifie
     "knotx:io.knotx.KnotxServer": {
       "options": {
         "config": {
-          "httpPort": 6666
+          "serverOptions": {
+            "port": 6666
+          }
         },
         "instances": 1
       }
@@ -60,7 +64,7 @@ When deploying a service from a service descriptor, any fields that are specifie
 ```
 - by JVM property (it will override also values overridden by starter JSON)
 ```
-$ java -Dio.knotx.KnotxServer.options.config.httpPort=2000 -jar knotx-xxxx-fat.jar -conf starter.json
+$ java -Dio.knotx.KnotxServer.options.config.serverOptions.port=2000 -jar knotx-xxxx-fat.jar -conf starter.json
 ```
 See [[Knot.x Deployments|KnotxDeployment]] for details how to supply your configurations.
 

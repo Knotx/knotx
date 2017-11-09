@@ -18,7 +18,7 @@ package io.knotx.adapter.common.post;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 

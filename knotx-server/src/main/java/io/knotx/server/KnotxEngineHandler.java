@@ -15,18 +15,15 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
-import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import java.util.Collections;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Map;
 import java.util.Optional;
 

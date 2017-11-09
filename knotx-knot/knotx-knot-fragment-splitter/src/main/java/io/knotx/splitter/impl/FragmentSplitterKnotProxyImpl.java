@@ -18,11 +18,11 @@ package io.knotx.splitter.impl;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import rx.Single;
 
 public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
 

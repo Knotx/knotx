@@ -16,7 +16,7 @@
 package io.knotx.http;
 
 import com.google.common.collect.ImmutableSet;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;

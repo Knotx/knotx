@@ -23,13 +23,13 @@ import io.knotx.knot.templating.HandlebarsKnotConfiguration;
 import io.knotx.knot.templating.handlebars.CustomHandlebarsHelper;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
-import rx.Single;
 
 public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 

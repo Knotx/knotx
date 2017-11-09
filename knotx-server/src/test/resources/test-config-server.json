@@ -1,5 +1,7 @@
 {
-  "httpPort": 9092,
+  "serverOptions": {
+    "port": 9092
+  },
   "allowedResponseHeaders": [
     "referer",
     "user-agent",

@@ -17,7 +17,7 @@ package io.knotx.util;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 
 public final class MultiMapConverter {
 

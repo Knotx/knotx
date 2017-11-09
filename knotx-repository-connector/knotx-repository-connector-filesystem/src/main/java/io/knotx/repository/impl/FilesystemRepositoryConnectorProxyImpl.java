@@ -19,19 +19,17 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.proxy.RepositoryConnectorProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rx.java.ObservableFuture;
-import io.vertx.rx.java.RxHelper;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -59,8 +57,7 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
 
     LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
 
-    ObservableFuture<Buffer> fileObservable = RxHelper.observableFuture();
-    fileObservable
+    fileSystem.readFile(localFilePath, event -> Observable.just(event).map(AsyncResult::result)
         .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
             .setHeaders(headers(contentType)).setBody(buffer))
         .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND.code()))
@@ -70,9 +67,7 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
               LOGGER.error(ERROR_MESSAGE, error);
               result.handle(Future.succeededFuture(processError(error)));
             }
-        );
-
-    fileSystem.readFile(localFilePath, fileObservable.toHandler());
+        ));
   }
 
   private MultiMap headers(Optional<String> contentType) {
