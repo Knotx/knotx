@@ -24,7 +24,7 @@ import com.googlecode.zohhak.api.Configure;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

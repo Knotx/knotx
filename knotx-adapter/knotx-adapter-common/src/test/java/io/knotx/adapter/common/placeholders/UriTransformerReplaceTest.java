@@ -16,7 +16,7 @@
 package io.knotx.adapter.common.placeholders;
 
 import io.knotx.dataobjects.ClientRequest;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Assert;

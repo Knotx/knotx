@@ -19,15 +19,15 @@ import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.service.ServiceKnotConfiguration;
-import io.knotx.rxjava.proxy.AdapterProxy;
+import io.knotx.reactivex.proxy.AdapterProxy;
+import io.reactivex.Single;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.Vertx;
 import java.util.Optional;
-import rx.Single;
 
 public class ServiceEngine {
 

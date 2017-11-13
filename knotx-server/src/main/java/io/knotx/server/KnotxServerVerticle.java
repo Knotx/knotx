@@ -24,11 +24,11 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.http.HttpServer;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.handler.BodyHandler;
-import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServer;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.handler.BodyHandler;
+import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -107,7 +107,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
     }
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
-
 
     createHttpServer()
         .requestHandler(router::accept)

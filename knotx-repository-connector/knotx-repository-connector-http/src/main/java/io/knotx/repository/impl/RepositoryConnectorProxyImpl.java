@@ -23,6 +23,7 @@ import io.knotx.http.StringToPatternFunction;
 import io.knotx.proxy.RepositoryConnectorProxy;
 import io.knotx.util.DataObjectsUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -32,18 +33,17 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.RxHelper;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpClient;
+import io.vertx.reactivex.core.http.HttpClientRequest;
+import io.vertx.reactivex.core.http.HttpClientResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import rx.Observable;
 
 public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
@@ -82,7 +82,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
       );
     }
 
-    RxHelper.get(httpClient, clientDestination.getInteger("port"),
+    get(httpClient, clientDestination.getInteger("port"),
         clientDestination.getString("domain"),
         repoUri, requestHeaders)
         .doOnNext(this::traceHttpResponse)
@@ -94,6 +94,16 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
               result.handle(Future.succeededFuture(toErrorResponse()));
             }
         );
+  }
+
+  private Observable<HttpClientResponse> get(HttpClient client, int port, String host, String requestURI, MultiMap headers) {
+    return Observable.unsafeCreate(subscriber -> {
+      HttpClientRequest req = client.get(port, host, requestURI);
+      req.headers().addAll(headers);
+      Observable<HttpClientResponse> resp = req.toObservable();
+      resp.subscribe(subscriber);
+      req.end();
+    });
   }
 
   private HttpClient createHttpClient(Vertx vertx) {
@@ -132,6 +142,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
     return Observable.just(Buffer.buffer())
         .mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
+        .toObservable()
         .map(buffer -> toSuccessResponse(buffer, response));
   }
 
