@@ -15,9 +15,10 @@
  */
 package io.knotx.server.configuration;
 
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.BodyHandler;
 import java.util.Set;
 import java.util.stream.Collectors;
-import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
 
@@ -29,8 +30,9 @@ public class KnotxServerConfiguration {
 
   private KnotxFlowConfiguration customFlow;
 
-  private JsonObject serverOptions;
+  private String fileUploadDirectory;
 
+  private JsonObject serverOptions;
 
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
@@ -41,7 +43,8 @@ public class KnotxServerConfiguration {
 
     defaultFlow = new KnotxFlowConfiguration(config.getJsonObject("defaultFlow"));
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
-
+    fileUploadDirectory = config
+        .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
   }
 
@@ -61,7 +64,12 @@ public class KnotxServerConfiguration {
     return customFlow;
   }
 
+  public String getFileUploadDirectory() {
+    return fileUploadDirectory;
+  }
+
   public JsonObject getServerOptions() {
     return serverOptions;
   }
 }
+
