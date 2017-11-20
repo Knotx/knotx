@@ -15,15 +15,15 @@
  */
 package io.knotx.dataobjects;
 
-import io.knotx.util.DataObjectsUtil;
-import io.knotx.util.MultiMapConverter;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import io.knotx.util.DataObjectsUtil;
+import io.knotx.util.MultiMapConverter;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 
 @DataObject(generateConverter = true)
 public class ClientResponse {

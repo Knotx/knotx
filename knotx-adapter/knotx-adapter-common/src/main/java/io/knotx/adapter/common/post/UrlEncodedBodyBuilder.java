@@ -16,7 +16,7 @@
 package io.knotx.adapter.common.post;
 
 import io.netty.handler.codec.http.HttpConstants;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;

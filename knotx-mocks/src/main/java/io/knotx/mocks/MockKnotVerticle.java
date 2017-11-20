@@ -20,7 +20,7 @@ import io.knotx.mocks.knot.MockKnotHandler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 
 public class MockKnotVerticle extends AbstractVerticle {
 

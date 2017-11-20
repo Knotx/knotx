@@ -18,6 +18,7 @@ package io.knotx.knot.service.impl;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.knot.service.service.ServiceAttributeUtil;
 import io.knotx.knot.service.service.ServiceEntry;
+import io.reactivex.Observable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,7 +27,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import rx.Observable;
 
 class FragmentContext {
 
@@ -80,7 +80,7 @@ class FragmentContext {
    * with current {@link Fragment}.
    */
   public Observable<ServiceEntry> services() {
-    return Observable.from(services);
+    return Observable.fromIterable(services);
   }
 
   /**

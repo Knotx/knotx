@@ -23,20 +23,20 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.ext.web.client.HttpRequest;
-import io.vertx.rxjava.ext.web.client.HttpResponse;
-import io.vertx.rxjava.ext.web.client.WebClient;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.ext.web.client.HttpRequest;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Single;
 
 public class HttpClientFacade {
 

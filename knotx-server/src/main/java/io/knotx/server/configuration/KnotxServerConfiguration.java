@@ -15,15 +15,14 @@
  */
 package io.knotx.server.configuration;
 
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.BodyHandler;
 import java.util.Set;
 import java.util.stream.Collectors;
-import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
 
   private boolean displayExceptionDetails;
-
-  private Integer httpPort;
 
   private Set<String> allowedResponseHeaders;
 
@@ -33,9 +32,10 @@ public class KnotxServerConfiguration {
 
   private String fileUploadDirectory;
 
+  private JsonObject serverOptions;
+
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
-    httpPort = config.getInteger("httpPort");
 
     allowedResponseHeaders = config.getJsonArray("allowedResponseHeaders").stream()
         .map(item -> ((String) item).toLowerCase())
@@ -43,15 +43,13 @@ public class KnotxServerConfiguration {
 
     defaultFlow = new KnotxFlowConfiguration(config.getJsonObject("defaultFlow"));
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
-    fileUploadDirectory = config.getString("fileUploadDirectory");
+    fileUploadDirectory = config
+        .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
+    serverOptions = config.getJsonObject("serverOptions", new JsonObject());
   }
 
   public boolean displayExceptionDetails() {
     return displayExceptionDetails;
-  }
-
-  public Integer getHttpPort() {
-    return httpPort;
   }
 
   public Set<String> getAllowedResponseHeaders() {
@@ -69,4 +67,9 @@ public class KnotxServerConfiguration {
   public String getFileUploadDirectory() {
     return fileUploadDirectory;
   }
+
+  public JsonObject getServerOptions() {
+    return serverOptions;
+  }
 }
+

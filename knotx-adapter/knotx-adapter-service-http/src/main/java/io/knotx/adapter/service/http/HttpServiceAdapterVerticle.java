@@ -25,7 +25,7 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.serviceproxy.ProxyHelper;
 
 public class HttpServiceAdapterVerticle extends AbstractVerticle {

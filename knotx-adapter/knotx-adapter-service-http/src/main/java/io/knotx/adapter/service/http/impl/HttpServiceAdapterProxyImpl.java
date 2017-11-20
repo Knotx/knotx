@@ -20,12 +20,12 @@ import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.adapter.common.http.HttpClientFacade;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.client.WebClient;
-import rx.Single;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.client.WebClient;
 
 public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy {
 

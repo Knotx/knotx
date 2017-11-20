@@ -18,17 +18,17 @@ package io.knotx.mocks.knot;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.rxjava.core.eventbus.Message;
-import io.vertx.rxjava.core.file.FileSystem;
+import io.vertx.reactivex.core.eventbus.Message;
+import io.vertx.reactivex.core.file.FileSystem;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Observable;
 
 public class MockKnotHandler implements Handler<Message<KnotContext>> {
 
@@ -78,11 +78,12 @@ public class MockKnotHandler implements Handler<Message<KnotContext>> {
     final JsonObject responseConfig = handlerConfig
         .getJsonObject(context.getClientRequest().getPath());
 
-    return Observable.from(KnotContextKeys.values())
+    return Observable.fromArray(KnotContextKeys.values())
         .flatMap(key -> key.valueOrDefault(fileSystem, responseConfig, context))
         .filter(value -> value.getRight().isPresent())
         .reduce(new JsonObject(), this::mergeResponseValues)
-        .map(val -> new KnotContext().setClientRequest(null));
+        .map(val -> new KnotContext().setClientRequest(null))
+        .toObservable();
   }
 
   private JsonObject mergeResponseValues(JsonObject result, Pair<String, Optional<Object>> value) {

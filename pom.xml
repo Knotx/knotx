@@ -23,7 +23,7 @@
 
   <groupId>io.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>1.1.2-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
@@ -94,8 +94,11 @@
     <java.version>1.8</java.version>
 
     <!-- Dependency versions -->
-    <vertx.version>3.4.1</vertx.version>
-    <rxjava.version>1.2.7</rxjava.version>
+    <vertx.version>3.5.0</vertx.version>
+    <rxjava.version>2.1.6</rxjava.version>
+    <!-- https://github.com/vert-x3/vertx-codegen/issues/143 -->
+    <!-- FIXME remove jackson dependency after moving to 3.5.1 -->
+    <jackson.version>2.9.0</jackson.version>
     <jsoup.version>1.10.2</jsoup.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-lang3.version>3.5</commons-lang3.version>
@@ -144,7 +147,7 @@
       </dependency>
       <dependency>
         <groupId>io.vertx</groupId>
-        <artifactId>vertx-rx-java</artifactId>
+        <artifactId>vertx-rx-java2</artifactId>
         <version>${vertx.version}</version>
       </dependency>
       <dependency>
@@ -184,9 +187,24 @@
         <optional>true</optional>
       </dependency>
       <dependency>
-        <groupId>io.reactivex</groupId>
+        <groupId>io.reactivex.rxjava2</groupId>
         <artifactId>rxjava</artifactId>
         <version>${rxjava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
       </dependency>
 
       <!-- Vert.x Microservice toolbox -->

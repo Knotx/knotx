@@ -22,14 +22,15 @@ import io.knotx.junit.rule.KnotxConfiguration;
 import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
-import io.knotx.rxjava.proxy.AdapterProxy;
+import io.knotx.reactivex.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.functions.Consumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.Vertx;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -82,18 +83,16 @@ public class HttpServiceAdapterProxyTest {
 
   private void callAdapterServiceWithAssertions(TestContext context, String servicePath,
       Action1<AdapterResponse> onSuccess,
-      Action1<Throwable> onError) {
+      Consumer<Throwable> onError) {
     AdapterRequest message = payloadMessage(servicePath);
     Async async = context.async();
 
     AdapterProxy service = AdapterProxy.createProxy(new Vertx(vertx.vertx()), ADAPTER_ADDRESS);
 
     service.rxProcess(message)
+        .doOnSuccess(onSuccess::call)
         .subscribe(
-            success -> {
-              onSuccess.call(success);
-              async.complete();
-            },
+            success -> async.complete(),
             onError
         );
   }

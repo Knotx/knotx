@@ -14,7 +14,9 @@
     "knotx:io.knotx.KnotxServer": {
       "options": {
         "config": {
-          "httpPort": 8093,
+          "serverOptions": {
+            "port": 8093
+          },
           "repositories": [
             {
               "path": "/content/.*",

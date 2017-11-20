@@ -18,6 +18,7 @@ package io.knotx.knot;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.proxy.KnotProxy;
+import io.reactivex.Single;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -30,7 +31,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import rx.Single;
 
 /**
  * Abstract class that should be root for all custom knots
