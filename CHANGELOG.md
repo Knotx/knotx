@@ -4,6 +4,7 @@ All notable changes to Knot.x will be documented in this file.
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
  - [PR-345](https://github.com/Cognifide/knotx/pull/345) - Update to Vert.x 3.5 and RxJava 2
+ - [PR-320](https://github.com/Cognifide/knotx/pull/320) - Added KnotxServer configuration parameter to configure fileUploads folder
 
 ## Version 1.1.2
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
