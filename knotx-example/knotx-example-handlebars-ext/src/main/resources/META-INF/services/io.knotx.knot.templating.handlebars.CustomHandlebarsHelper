@@ -15,3 +15,14 @@
 
 # bold helper
 io.knotx.example.monolith.handlebars.BoldHelper
+
+#conditional logic helpers
+io.knotx.example.monolith.handlebars.logic.AndHelper
+io.knotx.example.monolith.handlebars.logic.OrHelper
+
+#equality and relational helpers
+io.knotx.example.monolith.handlebars.math.GreatherThanHelper
+io.knotx.example.monolith.handlebars.math.LessThanHelper
+io.knotx.example.monolith.handlebars.math.EqualsHelper
+io.knotx.example.monolith.handlebars.math.GreatherEqualHelper
+io.knotx.example.monolith.handlebars.math.LessEqualHelper
