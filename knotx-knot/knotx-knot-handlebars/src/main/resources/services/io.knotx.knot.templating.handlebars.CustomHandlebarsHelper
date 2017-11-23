@@ -12,7 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+#conditional logic helpers
+io.knotx.example.monolith.handlebars.logic.AndHelper
+io.knotx.example.monolith.handlebars.logic.OrHelper
 
-# bold helper
-io.knotx.example.monolith.handlebars.BoldHelper
+#equality and relational helpers
+io.knotx.example.monolith.handlebars.math.GreatherThanHelper
+io.knotx.example.monolith.handlebars.math.LessThanHelper
+io.knotx.example.monolith.handlebars.math.EqualsHelper
+io.knotx.example.monolith.handlebars.math.GreatherEqualHelper
+io.knotx.example.monolith.handlebars.math.LessEqualHelper
 
+#iterables helpers
+io.knotx.example.monolith.handlebars.arrays.ElementHelper
