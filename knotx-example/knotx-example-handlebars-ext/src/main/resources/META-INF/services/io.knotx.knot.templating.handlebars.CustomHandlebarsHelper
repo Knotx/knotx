@@ -26,3 +26,6 @@ io.knotx.example.monolith.handlebars.math.LessThanHelper
 io.knotx.example.monolith.handlebars.math.EqualsHelper
 io.knotx.example.monolith.handlebars.math.GreatherEqualHelper
 io.knotx.example.monolith.handlebars.math.LessEqualHelper
+
+#iterables helpers
+io.knotx.example.monolith.handlebars.arrays.ElementHelper
