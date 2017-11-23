@@ -8,6 +8,10 @@
         "keepAlive": false,
         "logActivity": true
       },
+      "customRequestHeader": {
+        "name": "Server-User-Agent",
+        "value": "Knot.x"
+      },
       "services": [
         {
           "path": "/service/mock/.*",

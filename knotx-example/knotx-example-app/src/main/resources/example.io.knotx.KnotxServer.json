@@ -7,6 +7,10 @@
         "keyStoreOptions": {}
       },
       "displayExceptionDetails": true,
+      "customResponseHeader": {
+        "name": "X-Server",
+        "value": "Knot.x"
+      },
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
         "Allow",

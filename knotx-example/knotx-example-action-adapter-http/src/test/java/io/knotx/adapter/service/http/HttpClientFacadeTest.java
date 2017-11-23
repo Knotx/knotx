@@ -17,6 +17,7 @@ package io.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
+import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.adapter.common.http.HttpClientFacade;
 import io.knotx.adapter.common.http.ServiceMetadata;
 import io.knotx.dataobjects.AdapterRequest;
@@ -80,7 +81,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
@@ -109,7 +110,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     //FIXME - params to request
@@ -143,7 +144,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
 
     // when
     Single<ClientResponse> result = clientFacade.process(new AdapterRequest()
@@ -171,7 +172,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
 
     // when
     Single<ClientResponse> result =
@@ -198,6 +199,10 @@ public class HttpClientFacadeTest {
 
   private AdapterRequest payloadMessage(JsonObject params, ClientRequest request) {
     return new AdapterRequest().setParams(params).setRequest(request);
+  }
+
+  private HttpAdapterConfiguration getConfiguration() {
+    return new HttpAdapterConfiguration().setServices(getServiceConfigurations());
   }
 
   private List<ServiceMetadata> getServiceConfigurations() {

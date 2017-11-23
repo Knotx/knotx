@@ -36,7 +36,7 @@ public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
 
   public HttpActionAdapterProxyImpl(Vertx vertx, HttpAdapterConfiguration configuration) {
     this.httpClientFacade = new HttpClientFacade(getWebClient(vertx, configuration),
-        configuration.getServices());
+        configuration);
   }
 
   @Override
