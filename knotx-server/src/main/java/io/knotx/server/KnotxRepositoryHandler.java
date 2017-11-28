@@ -18,7 +18,7 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
+import io.knotx.proxy.reactive.RepositoryConnectorProxyFactory;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -45,7 +45,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
   }
 
-  public static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
     return new KnotxRepositoryHandler(vertx, configuration);
   }
 
@@ -56,7 +56,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = toKnotContext(context);
 
     if (repositoryEntry.isPresent()) {
-      RepositoryConnectorProxy.createProxy(vertx, repositoryEntry.get().address())
+      RepositoryConnectorProxyFactory
+          .createProxy(vertx, configuration.getRepositoryDeliveryOptions(), repositoryEntry.get().address())
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(

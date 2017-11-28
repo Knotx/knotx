@@ -15,8 +15,10 @@
  */
 package io.knotx.server.configuration;
 
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.BodyHandler;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,10 @@ public class KnotxServerConfiguration {
 
   private JsonObject serverOptions;
 
+  private DeliveryOptions repositoryDeliveryOptions;
+
+  private DeliveryOptions deliveryOptions;
+
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
@@ -46,6 +52,11 @@ public class KnotxServerConfiguration {
     fileUploadDirectory = config
         .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
+    repositoryDeliveryOptions =
+        config.containsKey("repositoryDeliveryOptions") ? new DeliveryOptions(
+            config.getJsonObject("repositoryDeliveryOptions")) : null;
+    deliveryOptions =
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions")) : null;
   }
 
   public boolean displayExceptionDetails() {
@@ -71,5 +82,12 @@ public class KnotxServerConfiguration {
   public JsonObject getServerOptions() {
     return serverOptions;
   }
-}
 
+  public Optional<DeliveryOptions> getRepositoryDeliveryOptions() {
+    return Optional.ofNullable(repositoryDeliveryOptions);
+  }
+
+  public Optional<DeliveryOptions> getDeliveryOptions() {
+    return Optional.ofNullable(deliveryOptions);
+  }
+}

@@ -19,6 +19,7 @@ import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.service.ServiceKnotConfiguration;
+import io.knotx.proxy.reactive.AdapterProxyFactory;
 import io.knotx.reactivex.proxy.AdapterProxy;
 import io.reactivex.Single;
 import io.vertx.core.json.DecodeException;
@@ -50,7 +51,8 @@ public class ServiceEngine {
         .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
-    AdapterProxy serviceProxy = AdapterProxy.createProxy(vertx, serviceEntry.getAddress());
+    AdapterProxy serviceProxy = AdapterProxyFactory
+        .createProxy(vertx, configuration.getDeliveryOptions(), serviceEntry.getAddress());
 
     return serviceProxy.rxProcess(adapterRequest).map(this::buildResultObject);
   }

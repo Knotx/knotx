@@ -30,6 +30,7 @@ import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.knotx.knot.action.domain.FormEntity;
 import io.knotx.knot.action.domain.FormSimplifier;
 import io.knotx.knot.action.domain.FormsFactory;
+import io.knotx.proxy.reactive.AdapterProxyFactory;
 import io.knotx.reactivex.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
@@ -102,7 +103,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   private Single<AdapterResponse> callActionAdapter(KnotContext knotContext, FormEntity current) {
     LOGGER.trace("Process form for {} ", knotContext);
-    AdapterProxy adapter = AdapterProxy.createProxy(vertx, current.adapter().getAddress());
+    AdapterProxy adapter = AdapterProxyFactory
+        .createProxy(vertx, configuration.getDeliveryOptions(), current.adapter().getAddress());
     return adapter.rxProcess(prepareAdapterRequest(knotContext, current));
   }
 

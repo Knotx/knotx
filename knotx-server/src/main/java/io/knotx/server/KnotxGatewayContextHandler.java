@@ -18,7 +18,9 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.proxy.reactive.KnotProxyFactory;
 import io.knotx.reactivex.proxy.KnotProxy;
+import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -33,15 +35,17 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
   private static final String KNOT_CONTEXT_KEY = "knotContext";
 
   private Vertx vertx;
+  private KnotxServerConfiguration configuration;
   private String address;
 
-  private KnotxGatewayContextHandler(Vertx vertx, String address) {
+  private KnotxGatewayContextHandler(Vertx vertx, KnotxServerConfiguration configuration, String address) {
     this.vertx = vertx;
+    this.configuration = configuration;
     this.address = address;
   }
 
-  static KnotxGatewayContextHandler create(Vertx vertx, String address) {
-    return new KnotxGatewayContextHandler(vertx, address);
+  static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerConfiguration configuration, String address) {
+    return new KnotxGatewayContextHandler(vertx, configuration, address);
   }
 
   @Override
@@ -62,7 +66,7 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
       knotContext.setFragments(Collections.singletonList(Fragment.raw(bodyAsString)));
     }
 
-    KnotProxy knot = KnotProxy.createProxy(vertx, address);
+    KnotProxy knot = KnotProxyFactory.createProxy(vertx, configuration.getDeliveryOptions(), address);
 
     knot.rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))

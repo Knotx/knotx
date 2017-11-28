@@ -17,6 +17,7 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.proxy.reactive.KnotProxyFactory;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -39,7 +40,8 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
 
   private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.responseProviderProxy = KnotProxy.createProxy(vertx, configuration.getCustomFlow().responseProviderAddress());
+    this.responseProviderProxy = KnotProxyFactory.createProxy(vertx, configuration.getDeliveryOptions(),
+        configuration.getCustomFlow().responseProviderAddress());
   }
 
   static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -90,7 +92,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
   }
 
   private void writeHeaders(final HttpServerResponse response,
-                            final ClientResponse clientResponse) {
+      final ClientResponse clientResponse) {
     clientResponse.getHeaders().names().stream()
         .filter(this::headerFilter)
         .forEach(
