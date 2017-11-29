@@ -22,7 +22,6 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -61,7 +60,8 @@ public class ActionKnotConfiguration {
           return metadata;
         }).collect(Collectors.toList());
     deliveryOptions =
-        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions")) : null;
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions"))
+            : new DeliveryOptions();
   }
 
   public List<AdapterMetadata> adapterMetadatas() {
@@ -76,8 +76,8 @@ public class ActionKnotConfiguration {
     return address;
   }
 
-  public Optional<DeliveryOptions> getDeliveryOptions() {
-    return Optional.ofNullable(deliveryOptions);
+  public DeliveryOptions getDeliveryOptions() {
+    return deliveryOptions;
   }
 
   public static class AdapterMetadata {

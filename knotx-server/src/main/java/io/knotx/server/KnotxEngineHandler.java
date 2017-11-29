@@ -16,7 +16,6 @@
 package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.proxy.reactive.KnotProxyFactory;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RoutingEntry;
@@ -65,7 +64,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
-    KnotProxy knot = KnotProxyFactory.createProxy(vertx, configuration.getDeliveryOptions(), address);
+    KnotProxy knot = KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
     knot.rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))

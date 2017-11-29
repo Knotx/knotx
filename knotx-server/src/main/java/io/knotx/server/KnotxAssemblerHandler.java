@@ -17,7 +17,6 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.proxy.reactive.KnotProxyFactory;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -40,8 +39,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.assembler = KnotProxyFactory
-        .createProxy(vertx, configuration.getDeliveryOptions(), configuration.getDefaultFlow().assemblerAddress());
+    this.assembler = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().assemblerAddress(),
+        configuration.getDeliveryOptions());
   }
 
   static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {

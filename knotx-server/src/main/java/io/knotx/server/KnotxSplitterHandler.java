@@ -16,7 +16,6 @@
 package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.proxy.reactive.KnotProxyFactory;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -35,8 +34,8 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
   private KnotxServerConfiguration configuration;
 
   private KnotxSplitterHandler(Vertx vertx, KnotxServerConfiguration configuration) {
-    this.splitter = KnotProxyFactory
-        .createProxy(vertx, configuration.getDeliveryOptions(), configuration.getDefaultFlow().splitterAddress());
+    this.splitter = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().splitterAddress(),
+        configuration.getDeliveryOptions());
     this.configuration = configuration;
   }
 

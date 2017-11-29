@@ -18,7 +18,6 @@ package io.knotx.knot.service;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -43,7 +42,8 @@ public class ServiceKnotConfiguration {
           return metadata;
         }).collect(Collectors.toList());
     deliveryOptions =
-        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions")) : null;
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions"))
+            : new DeliveryOptions();
   }
 
   public List<ServiceMetadata> getServices() {
@@ -54,8 +54,8 @@ public class ServiceKnotConfiguration {
     return address;
   }
 
-  public Optional<DeliveryOptions> getDeliveryOptions() {
-    return Optional.ofNullable(deliveryOptions);
+  public DeliveryOptions getDeliveryOptions() {
+    return deliveryOptions;
   }
 
   public static class ServiceMetadata {
