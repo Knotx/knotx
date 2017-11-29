@@ -238,9 +238,12 @@ Other option is to provide those parameters through JVM properties:
 
 ### Vert.x Event Bus delivery options
 
-While HTTP request processing, Server calls other Knot.x modules like Repository Connectors, Knots using [Vert.x Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html). 
-The `config` field can contain [Vert.x Delivery Options](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html) related to the event bus.
-It can be used to control the low level aspects of the event bus communication like timeouts.
+While HTTP request processing, Server calls other modules like Repository Connectors, Knots using 
+[Vert.x Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html). 
+The `config` field can contain [Vert.x Delivery Options](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html)
+related to the event bus. It can be used to control the low level aspects of the event bus communication like timeouts, 
+headers, message codec names.
+
 
 The `repositoryDeliveryOptions` need to be added in the following place, of the KnotxServerVerticle configuration to define 
 the timeout for the Repository Connector response.
@@ -255,7 +258,7 @@ the timeout for the Repository Connector response.
       ...
 ```
 The `deliveryOptions` need to be added in the following place, of the KnotxServerVerticle configuration to define the 
-timeout for the Knot response (both Splitter, Knots and Assembler).
+timeout for the Knot response (Splitter, Knots configured in routing, Assembler, etc).
 ```
 {
   "options": {
