@@ -17,7 +17,7 @@ requested path with the regexp from config, and sends **Not Found** response if 
 - Builds [[KnotContext|Knot]] communication model (that consists of original request, response from
 repository & split HTML fragments)
 - Calls **[[Knots|Knot]]** according to the [routing](#routing) configuration, with the **KnotContext**
-- Once the last Knot returns processed **KnotContext**, server calls **assembler ** to create HTTP Response based on data from the KnotContext
+- Once the last Knot returns processed **KnotContext**, server calls **assembler** to create HTTP Response based on data from the KnotContext
 - Filters the response headers according to the `allowed.response.headers` configuration and returns to the browser.
 
 The diagram below depicts flow of data coordinated by the **Server** based on the hypothetical
