@@ -24,7 +24,6 @@ import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.util.DataObjectsUtil;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -70,9 +69,9 @@ public class HttpClientFacade {
   }
 
   private void logResponse(Pair<ClientRequest, ServiceMetadata> request,
-      HttpResponse<Buffer> resp) {
-    if (resp.statusCode() != HttpResponseStatus.OK.code()) {
-      LOGGER.warn("{} {} -> Got response {}, headers[{}]",
+                           HttpResponse<Buffer> resp) {
+    if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
+      LOGGER.error("{} {} -> Got response {}, headers[{}]",
           request.getLeft().getMethod(),
           toUrl(request),
           resp.statusCode(),
@@ -86,9 +85,9 @@ public class HttpClientFacade {
   }
 
   /**
-   * Method to validate contract or params JsonObject for the AdapterProxy Service<br> The contract
-   * checks if all required fields exists in the object. throwing AdapterServiceContractException in
-   * case of contract violation.<br>
+   * Method to validate contract or params JsonObject for the AdapterProxy Service<br> The
+   * contract checks if all required fields exists in the object.throwing
+   * AdapterServiceContractException incase of contract violation.<br>
    *
    * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params'
    * objects.
@@ -187,7 +186,7 @@ public class HttpClientFacade {
   }
 
   private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
-      ServiceMetadata serviceMetadata) {
+                                    ServiceMetadata serviceMetadata) {
 
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());

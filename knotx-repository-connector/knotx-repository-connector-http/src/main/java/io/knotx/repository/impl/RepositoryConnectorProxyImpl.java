@@ -151,7 +151,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
   private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse) {
     if (httpResponse.statusCode() >= 300 && httpResponse.statusCode() < 400) { //redirect responses
-      LOGGER.warn("Repository 3xx response: {}, Headers[{}]", httpResponse.statusCode(),
+      LOGGER.info("Repository 3xx response: {}, Headers[{}]", httpResponse.statusCode(),
           DataObjectsUtil.toString(httpResponse.headers()));
     } else if (httpResponse.statusCode() != 200) {
       LOGGER.error("Repository error response: {}, Headers[{}]", httpResponse.statusCode(),
