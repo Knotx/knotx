@@ -92,7 +92,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private KnotContext handleGetMethod(List<FormEntity> forms, KnotContext knotContext) {
-    LOGGER.trace("Pass-through {} request", knotContext.getClientRequest().getMethod());
+    LOGGER.debug("Pass-through {} request", knotContext.getClientRequest().getMethod());
     knotContext.setTransition(DEFAULT_TRANSITION);
     forms.forEach(form -> form.fragment()
         .content(simplifier.simplify(form.fragment().content(), configuration.formIdentifierName(),
@@ -140,7 +140,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   private KnotContext routeToNextKnotResponse(ClientResponse clientResponse,
       KnotContext knotContext, List<FormEntity> forms, FormEntity form) {
-    LOGGER.trace("Request next transition to [{}]", DEFAULT_TRANSITION);
+    LOGGER.debug("Request next transition to [{}]", DEFAULT_TRANSITION);
     JsonObject actionContext = new JsonObject()
         .put("_result", new JsonObject(clientResponse.getBody().toString()))
         .put("_response", clientResponse.toMetadataJson());
@@ -159,7 +159,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   private KnotContext redirectKnotResponse(KnotContext knotContext, FormEntity form,
       ClientResponse clientResponse, String redirectLocation) {
-    LOGGER.trace("Request redirected to [{}]", redirectLocation);
+    LOGGER.debug("Request redirected to [{}]", redirectLocation);
     knotContext.getClientResponse()
         .setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY.code());
     MultiMap headers = MultiMap.caseInsensitiveMultiMap();

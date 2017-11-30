@@ -76,7 +76,7 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
     String repoUri = buildRepoUri(request);
 
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("GET Http Repository: http://{}:{}{} with headers [{}]",
+      LOGGER.debug("GET Http Repository: http://{}:{}{} with headers [{}]",
           clientDestination.getString("domain"),
           clientDestination.getInteger("port"),
           repoUri,

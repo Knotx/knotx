@@ -39,7 +39,9 @@ public class FragmentProcessor {
 
   public Single<FragmentContext> processSnippet(final FragmentContext fragmentContext,
       KnotContext request) {
-    LOGGER.debug("Processing Handlebars snippet {}", fragmentContext.fragment());
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Processing Handlebars snippet {}", fragmentContext.fragment());
+    }
     return Observable.just(fragmentContext)
         .flatMap(FragmentContext::services)
         .map(serviceEngine::mergeWithConfiguration)
@@ -70,8 +72,8 @@ public class FragmentProcessor {
   }
 
   private void traceService(ServiceEntry serviceEntry) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(),
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Found service call definition: {} {}", serviceEntry.getAddress(),
           serviceEntry.getParams());
     }
   }

@@ -72,11 +72,22 @@ public class HttpClientFacade {
                            HttpResponse<Buffer> resp) {
     if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
       LOGGER.error("{} {} -> Got response {}, headers[{}]",
-          request.getLeft().getMethod(),
-          toUrl(request),
-          resp.statusCode(),
-          DataObjectsUtil.toString(resp.headers()));
+          logResponseData(request, resp));
+    } else if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{} {} -> Got response {}, headers[{}]",
+          logResponseData(request, resp));
     }
+  }
+
+  private Object[] logResponseData(Pair<ClientRequest, ServiceMetadata> request,
+                                   HttpResponse<Buffer> resp) {
+    Object[] data = {
+        request.getLeft().getMethod(),
+        toUrl(request),
+        resp.statusCode(),
+        DataObjectsUtil.toString(resp.headers())};
+
+    return data;
   }
 
   private String toUrl(Pair<ClientRequest, ServiceMetadata> request) {

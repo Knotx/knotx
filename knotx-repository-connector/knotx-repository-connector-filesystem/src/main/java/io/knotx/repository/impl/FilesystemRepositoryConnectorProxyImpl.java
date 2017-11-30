@@ -54,7 +54,7 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
     final Optional<String> contentType = Optional
         .ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
 
-    LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
+    LOGGER.debug("Fetching file `{}` from local repository.", localFilePath);
 
     fileSystem.rxReadFile(localFilePath)
         .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())

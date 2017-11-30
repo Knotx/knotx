@@ -71,7 +71,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                   if (entry != null) {
                     handleRoute(context, entry.address(), entry.onTransition());
                   } else {
-                    LOGGER.trace(
+                    LOGGER.error(
                         "No on criteria defined in routing for {} transition received from {}", on,
                         address);
                     // last knot can return default transition

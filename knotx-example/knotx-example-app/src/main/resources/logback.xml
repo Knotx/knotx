@@ -26,12 +26,23 @@
     </layout>
   </appender>
 
-  <logger name="io.knotx" level="DEBUG"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
+  <appender name="netty-wire" class="ch.qos.logback.core.FileAppender">
+    <file>netty-wire.log</file>
+    <append>true</append>
+    <immediateFlush>true</immediateFlush>
+
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>
+        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+      </Pattern>
+    </layout>
+  </appender>
+
+  <logger name="io.netty.handler.logging" level="TRACE" additivity="false">
+    <appender-ref ref="netty-wire"/>
   </logger>
 
-  <logger name="io.netty.handler.logging" level="DEBUG"
+  <logger name="io.knotx" level="DEBUG"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
