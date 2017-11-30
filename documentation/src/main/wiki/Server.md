@@ -56,9 +56,14 @@ Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` f
   "options": {
     "config": {
       "serverOptions": {
-         "port": 8092
+        "port": 8092,
+        "keyStoreOptions": {}
       },
       "displayExceptionDetails": true,
+      "customResponseHeader": {
+        "name": "X-Server",
+        "value": "Knot.x"
+      },
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
         "Allow",
@@ -73,6 +78,7 @@ Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` f
         "Content-Length",
         "Content-Security-Policy",
         "Date",
+        "Edge-Control",
         "ETag",
         "Expires",
         "Last-Modified",
@@ -82,13 +88,15 @@ Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` f
         "Server",
         "Set-Cookie",
         "Status",
+        "Surrogate-Control",
         "Vary",
         "Via",
         "X-Frame-Options",
         "X-XSS-Protection",
         "X-Content-Type-Options",
         "X-UA-Compatible",
-        "X-Request-ID"
+        "X-Request-ID",
+        "X-Server"
       ],
       "defaultFlow": {
         "repositories": [
@@ -129,6 +137,7 @@ In short, by default, server does:
 - Listens on port 8092
 - Displays exception details on error pages (for development purposes)
 - Returns certain headers in Http Response to the client (as shown above)
+- Always sets custom header in response **X-Server:Knot.x**
 - Uses the [[default Knot.X routing mechanism|KnotRouting]]
 - Communicates with two types of repositories: HTTP and Filesystem
 - Uses core [[Splitter|Splitter]]
@@ -139,13 +148,21 @@ Detailed description of each configuration option that's available is described 
 ## Server options
 Main server options available.
 
-| Name                        | Type                                | Mandatory | Description  |
-|-------:                     |:-------:                            |:-------:  |-------|
+| Name                        | Type                                | Mandatory      | Description  |
+|-------:                     |:-------:                            |:-------:       |-------|
 | `fileUploadDirectory`       | `String`                            |                | Uploads directory on server for file uploads - used during POST, PUT request methods. **file-uploads** if not set.|
 | `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
+| `customResponseHeader`      | `KnotxServerCustomHeader`           |                | Sets the custom header in each response from Knot.x to the client. Default value is **X-Server:Knot.x** |
 | `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
 | `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
 | `customFlow`                | `KnotxFlowConfiguration`            |                | Configuration of [[Gateway Mode|GatewayMode]] |
+
+### KnotxServerCustomHeader options
+ Name  | Type  | Mandatory | Description  |
+|-------:|:-------:|:-------:  |-------|
+| `name`      | `String`  | &#10004;       | Name of the response header. |
+| `value`   | `String`  | &#10004;       | Value of the response header. |
+
 
 ### KnotxFlowConfiguration options
 
