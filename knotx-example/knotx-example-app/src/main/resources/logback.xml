@@ -16,22 +16,33 @@
     limitations under the License.
 
 -->
-<configuration>
+<configuration scan="true">
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
+    <encoder>
       <Pattern>
         %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
       </Pattern>
-    </layout>
+    </encoder>
   </appender>
 
-  <logger name="io.knotx" level="DEBUG"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
+  <appender name="netty-wire" class="ch.qos.logback.core.FileAppender">
+    <file>netty-wire.log</file>
+    <append>true</append>
+
+    <encoder>
+      <Pattern>
+        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+      </Pattern>
+    </encoder>
+  </appender>
+
+  <logger name="io.netty.handler.logging" level="TRACE" additivity="false">
+    <appender-ref ref="netty-wire"/>
   </logger>
 
-  <logger name="io.netty.handler.logging" level="DEBUG"
+  <logger name="io.knotx" level="DEBUG"
           additivity="false">
     <appender-ref ref="STDOUT"/>
   </logger>
