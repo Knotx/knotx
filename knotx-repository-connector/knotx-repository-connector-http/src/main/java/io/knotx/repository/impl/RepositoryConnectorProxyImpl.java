@@ -55,11 +55,13 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
   private final JsonObject clientDestination;
   private final List<Pattern> allowedRequestHeaders;
   private final HttpClient httpClient;
+  private final JsonObject customRequestHeader;
 
 
   public RepositoryConnectorProxyImpl(Vertx vertx, JsonObject configuration) {
     clientOptions = configuration.getJsonObject("clientOptions", new JsonObject());
     clientDestination = configuration.getJsonObject("clientDestination");
+    customRequestHeader = configuration.getJsonObject("customRequestHeader", new JsonObject());
     allowedRequestHeaders = configuration.getJsonArray("allowedRequestHeaders", new JsonArray())
         .stream()
         .map(object -> (String) object)
@@ -70,11 +72,11 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    MultiMap requestHeaders = getFilteredHeaders(request.getHeaders());
+    MultiMap requestHeaders = buildHeaders(request.getHeaders());
     String repoUri = buildRepoUri(request);
 
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("GET Http Repository: http://{}:{}{} with headers [{}]",
+      LOGGER.debug("GET Http Repository: http://{}:{}{} with headers [{}]",
           clientDestination.getString("domain"),
           clientDestination.getInteger("port"),
           repoUri,
@@ -91,12 +93,13 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
             response -> result.handle(Future.succeededFuture(response)),
             error -> {
               LOGGER.error(ERROR_MESSAGE, error);
-              result.handle(Future.succeededFuture(toErrorResponse()));
+              result.handle(Future.succeededFuture(toInternalError()));
             }
         );
   }
 
-  private Observable<HttpClientResponse> get(HttpClient client, int port, String host, String requestURI, MultiMap headers) {
+  private Observable<HttpClientResponse> get(HttpClient client, int port, String host,
+      String requestURI, MultiMap headers) {
     return Observable.unsafeCreate(subscriber -> {
       HttpClientRequest req = client.get(port, host, requestURI);
       req.headers().addAll(headers);
@@ -143,22 +146,44 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
         .mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
         .toObservable()
-        .map(buffer -> toSuccessResponse(buffer, response));
+        .map(buffer -> toResponse(buffer, response));
   }
 
-  private ClientResponse toSuccessResponse(Buffer buffer,
-      final HttpClientResponse httpClientResponse) {
-    return new ClientResponse()
-        .setStatusCode(httpClientResponse.statusCode())
-        .setHeaders(httpClientResponse.headers())
-        .setBody((io.vertx.core.buffer.Buffer) buffer.getDelegate());
+  private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse) {
+    if (httpResponse.statusCode() >= 300 && httpResponse.statusCode() < 400) { //redirect responses
+      LOGGER.info("Repository 3xx response: {}, Headers[{}]", httpResponse.statusCode(),
+          DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (httpResponse.statusCode() != 200) {
+      LOGGER.error("Repository error response: {}, Headers[{}]", httpResponse.statusCode(),
+          DataObjectsUtil.toString(httpResponse.headers()));
+    }
+
+    ClientResponse response = new ClientResponse()
+        .setStatusCode(httpResponse.statusCode())
+        .setHeaders(httpResponse.headers())
+        .setBody(buffer.getDelegate());
+    return response;
+
   }
 
-  private ClientResponse toErrorResponse() {
+  private ClientResponse toInternalError() {
     return new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
   }
 
-  private MultiMap getFilteredHeaders(MultiMap headers) {
+  private MultiMap buildHeaders(MultiMap headers) {
+    MultiMap result = filteredHeaders(headers);
+
+    if (customRequestHeader.containsKey("name") && customRequestHeader.containsKey("value")) {
+      result.set(
+          customRequestHeader.getString("name"),
+          customRequestHeader.getString("value")
+      );
+    }
+
+    return result;
+  }
+
+  private MultiMap filteredHeaders(MultiMap headers) {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(allowedRequestHeaders))
         .collect(MultiMapCollector.toMultiMap(o -> o, headers::getAll));

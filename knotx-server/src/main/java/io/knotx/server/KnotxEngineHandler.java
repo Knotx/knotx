@@ -43,7 +43,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   }
 
   static KnotxEngineHandler create(Vertx vertx, String address,
-      Map<String, RoutingEntry> routing) {
+                                   Map<String, RoutingEntry> routing) {
     return new KnotxEngineHandler(vertx, address, routing);
   }
 
@@ -58,7 +58,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   }
 
   private void handleRoute(final RoutingContext context, final String address,
-      final Map<String, RoutingEntry> routing) {
+                           final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
@@ -71,8 +71,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                   if (entry != null) {
                     handleRoute(context, entry.address(), entry.onTransition());
                   } else {
-                    LOGGER.trace(
-                        "No on criteria defined in routing for {} transition received from {}", on,
+                    LOGGER.error(
+                        "No criteria defined in routing for {} transition received from {}", on,
                         address);
                     // last knot can return default transition
                     context.put(KNOT_CONTEXT_KEY, ctx);
@@ -80,6 +80,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                   }
                 })
                 .ifNotPresent(() -> {
+                  LOGGER.debug("Request processing finished by {} Knot. Sending response to the client", address);
                   context.put(KNOT_CONTEXT_KEY, ctx);
                   context.next();
                 }),

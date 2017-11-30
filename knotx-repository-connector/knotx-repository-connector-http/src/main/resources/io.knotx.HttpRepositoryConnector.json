@@ -12,17 +12,23 @@
         "domain": "localhost",
         "port": 3001
       },
+      "customRequestHeader": {
+        "name": "Server-User-Agent",
+        "value": "Knot.x"
+      },
       "allowedRequestHeaders": [
         "Accept*",
         "Authorization",
         "Connection",
         "Cookie",
         "Date",
+        "Edge*",
         "Host",
         "If*",
         "Origin",
         "Pragma",
         "Proxy-Authorization",
+        "Surrogate*",
         "User-Agent",
         "Via",
         "X-*"

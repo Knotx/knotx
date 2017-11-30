@@ -23,6 +23,7 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
+import io.knotx.util.DataObjectsUtil;
 import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -49,17 +50,49 @@ public class HttpClientFacade {
 
   private final WebClient webClient;
 
-  public HttpClientFacade(WebClient webClient, List<ServiceMetadata> services) {
+  private final JsonObject customRequestHeader;
+
+  public HttpClientFacade(WebClient webClient, HttpAdapterConfiguration configuration) {
     this.webClient = webClient;
-    this.services = services;
+    this.services = configuration.getServices();
+    this.customRequestHeader = configuration.getCustomRequestHeader();
   }
 
   public Single<ClientResponse> process(AdapterRequest message, HttpMethod method) {
     return Single.just(message)
         .doOnSuccess(this::validateContract)
         .map(this::prepareRequestData)
-        .flatMap(serviceRequest -> callService(serviceRequest, method))
+        .flatMap(
+            serviceRequest -> callService(serviceRequest, method)
+                .doOnSuccess(resp -> logResponse(serviceRequest, resp)))
         .flatMap(this::wrapResponse);
+  }
+
+  private void logResponse(Pair<ClientRequest, ServiceMetadata> request,
+                           HttpResponse<Buffer> resp) {
+    if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
+      LOGGER.error("{} {} -> Got response {}, headers[{}]",
+          logResponseData(request, resp));
+    } else if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{} {} -> Got response {}, headers[{}]",
+          logResponseData(request, resp));
+    }
+  }
+
+  private Object[] logResponseData(Pair<ClientRequest, ServiceMetadata> request,
+                                   HttpResponse<Buffer> resp) {
+    Object[] data = {
+        request.getLeft().getMethod(),
+        toUrl(request),
+        resp.statusCode(),
+        DataObjectsUtil.toString(resp.headers())};
+
+    return data;
+  }
+
+  private String toUrl(Pair<ClientRequest, ServiceMetadata> request) {
+    return new StringBuilder(request.getRight().getDomain()).append(request.getRight().getPort())
+        .append(request.getLeft().getPath()).toString();
   }
 
   /**
@@ -169,12 +202,20 @@ public class HttpClientFacade {
   }
 
   private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
-      ServiceMetadata serviceMetadata) {
+                                    ServiceMetadata serviceMetadata) {
+
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());
     filteredHeaders.names().forEach(
         headerName -> filteredHeaders.getAll(headerName)
-            .forEach(value -> request.putHeader(headerName, value)));
+            .forEach(value -> request.headers().add(headerName, value)));
+
+    if (customRequestHeader.containsKey("name") && customRequestHeader.containsKey("value")) {
+      request.headers().set(
+          customRequestHeader.getString("name"),
+          customRequestHeader.getString("value")
+      );
+    }
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
