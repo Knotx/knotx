@@ -19,13 +19,13 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.service.ServiceKnotConfiguration;
 import io.knotx.knot.service.service.ServiceEngine;
 import io.knotx.knot.service.service.ServiceEntry;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.Vertx;
 import java.util.concurrent.ExecutionException;
-import rx.Observable;
-import rx.Single;
 
 public class FragmentProcessor {
 
@@ -37,9 +37,11 @@ public class FragmentProcessor {
     this.serviceEngine = new ServiceEngine(vertx, configuration);
   }
 
-  public Observable<FragmentContext> processSnippet(final FragmentContext fragmentContext,
+  public Single<FragmentContext> processSnippet(final FragmentContext fragmentContext,
       KnotContext request) {
-    LOGGER.debug("Processing Handlebars snippet {}", fragmentContext.fragment());
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Processing Handlebars snippet {}", fragmentContext.fragment());
+    }
     return Observable.just(fragmentContext)
         .flatMap(FragmentContext::services)
         .map(serviceEngine::mergeWithConfiguration)
@@ -70,8 +72,8 @@ public class FragmentProcessor {
   }
 
   private void traceService(ServiceEntry serviceEntry) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Found service call definition: {} {}", serviceEntry.getAddress(),
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Found service call definition: {} {}", serviceEntry.getAddress(),
           serviceEntry.getParams());
     }
   }

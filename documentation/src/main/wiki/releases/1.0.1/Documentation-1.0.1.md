@@ -139,6 +139,7 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
     - [How to configure through JVM properties ?](#how-to-configure-through-jvm-properties-)
     - [How to configure your own module ?](#how-to-configure-your-own-module-)
 - [Dependencies](#dependencies)
+- [Upgrade notes](#upgrade-notes)
 
 # Getting started
 
@@ -2672,3 +2673,12 @@ Or, whole JSON Object from external file
 - zohhak
 - com.github.stefanbirkner.system-rules
 
+# Upgrade Notes
+If you are upgrading Knot.x from the previous version, here are notes that will help you do all necessary config
+and snippets changes that were introduced in comparison to previous released Knot.x version. If you are upgrading
+from older than one version (e.g. 1.0.1 -> 1.1.2) be sure, to do all the steps from the Upgrade Notes of all released
+versions. You may see all changes in the [Changelog](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md).
+
+## Version 1.0.1
+- [PR-290](https://github.com/Cognifide/knotx/pull/290) - allow defining services without default `params` configured
+  * You no longer have to define empty `params` value in `ServiceKnot` config if you don't use any.

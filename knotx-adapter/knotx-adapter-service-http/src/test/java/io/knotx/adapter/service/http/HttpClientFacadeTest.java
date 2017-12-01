@@ -18,6 +18,7 @@ package io.knotx.adapter.service.http;
 import com.google.common.collect.Lists;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
+import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.adapter.common.http.HttpClientFacade;
 import io.knotx.adapter.common.http.ServiceMetadata;
 import io.knotx.dataobjects.AdapterRequest;
@@ -28,15 +29,16 @@ import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.client.WebClient;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -47,7 +49,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
-import rx.Single;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpClientFacadeTest {
@@ -82,7 +83,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
@@ -90,16 +91,17 @@ public class HttpClientFacadeTest {
         .process(payloadMessage(REQUEST_PATH, new ClientRequest()), HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> {
+    result
+        .doOnSuccess(response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(mockedWebClient, Mockito.times(1))
               .request(HttpMethod.GET, PORT, DOMAIN, REQUEST_PATH);
-          async.complete();
-        },
-        error -> context.fail(error.getMessage())
-    );
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage())
+        );
   }
 
   @Test
@@ -110,7 +112,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
     final ClientRequest request = new ClientRequest()
         .setParams(MultiMap.caseInsensitiveMultiMap().add("dynamicValue", "first"));
@@ -121,16 +123,17 @@ public class HttpClientFacadeTest {
             HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> {
+    result
+        .doOnSuccess(response -> {
           context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
           context.assertEquals(expectedResponse, response.getBody().toJsonObject());
           Mockito.verify(mockedWebClient, Mockito.times(1))
               .request(HttpMethod.GET, PORT, DOMAIN, REQUEST_PATH);
-          async.complete();
-        },
-        error -> context.fail(error.getMessage())
-    );
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage())
+        );
   }
 
   @Test
@@ -141,24 +144,23 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
 
     // when
     Single<ClientResponse> result = clientFacade.process(new AdapterRequest(), HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> context.fail("Error should occur!"),
-        error -> {
-          {
-            context.assertEquals(error.getClass().getSimpleName(),
-                AdapterServiceContractException.class.getSimpleName());
-            Mockito.verify(mockedWebClient, Mockito.times(0))
-                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
-                    Matchers.anyString());
-            async.complete();
-          }
-        });
+    result
+        .doOnError(error -> {
+          context.assertEquals(error.getClass().getSimpleName(),
+              AdapterServiceContractException.class.getSimpleName());
+          Mockito.verify(mockedWebClient, Mockito.times(0))
+              .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                  Matchers.anyString());
+        })
+        .subscribe(
+            response -> context.fail("Error should occur!"),
+            error -> async.complete());
   }
 
   @Test
@@ -169,7 +171,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
 
     // when
     Single<ClientResponse> result =
@@ -177,17 +179,17 @@ public class HttpClientFacadeTest {
             .process(payloadMessage("/not/supported/path", new ClientRequest()), HttpMethod.GET);
 
     // then
-    result.subscribe(
-        response -> context.fail("Error should occur!"),
-        error -> {
-          {
-            context.assertEquals(UnsupportedServiceException.class, error.getClass());
-            Mockito.verify(mockedWebClient, Mockito.times(0))
-                .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
-                    Matchers.anyString());
-            async.complete();
-          }
-        });
+    result
+        .doOnError(error -> {
+          context.assertEquals(UnsupportedServiceException.class, error.getClass());
+          Mockito.verify(mockedWebClient, Mockito.times(0))
+              .request(Matchers.any(), Matchers.anyInt(), Matchers.anyString(),
+                  Matchers.anyString());
+        })
+        .subscribe(
+            response -> context.fail("Error should occur!"),
+            error -> async.complete()
+        );
   }
 
   private WebClient webClient() {
@@ -197,6 +199,10 @@ public class HttpClientFacadeTest {
   private AdapterRequest payloadMessage(String servicePath, ClientRequest request) {
     return new AdapterRequest().setRequest(request)
         .setParams(new JsonObject().put("path", servicePath));
+  }
+
+  private HttpAdapterConfiguration getConfiguration() {
+    return new HttpAdapterConfiguration().setServices(getServiceConfigurations());
   }
 
   private List<ServiceMetadata> getServiceConfigurations() {

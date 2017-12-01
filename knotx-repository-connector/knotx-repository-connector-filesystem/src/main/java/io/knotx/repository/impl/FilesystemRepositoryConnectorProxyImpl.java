@@ -23,15 +23,12 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rx.java.ObservableFuture;
-import io.vertx.rx.java.RxHelper;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.file.FileSystem;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +44,7 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
   private final FileSystem fileSystem;
 
   public FilesystemRepositoryConnectorProxyImpl(Vertx vertx, JsonObject configuration) {
-    this.fileSystem = vertx.fileSystem();
+    this.fileSystem = FileSystem.newInstance(vertx.fileSystem());
     this.catalogue = configuration.getString("catalogue");
   }
 
@@ -57,13 +54,11 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
     final Optional<String> contentType = Optional
         .ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
 
-    LOGGER.trace("Fetching file `{}` from local repository.", localFilePath);
+    LOGGER.debug("Fetching file `{}` from local repository.", localFilePath);
 
-    ObservableFuture<Buffer> fileObservable = RxHelper.observableFuture();
-    fileObservable
+    fileSystem.rxReadFile(localFilePath)
         .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
-            .setHeaders(headers(contentType)).setBody(buffer))
-        .defaultIfEmpty(new ClientResponse().setStatusCode(HttpResponseStatus.NOT_FOUND.code()))
+            .setHeaders(headers(contentType)).setBody(buffer.getDelegate()))
         .subscribe(
             response -> result.handle(Future.succeededFuture(response)),
             error -> {
@@ -71,8 +66,6 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
               result.handle(Future.succeededFuture(processError(error)));
             }
         );
-
-    fileSystem.readFile(localFilePath, fileObservable.toHandler());
   }
 
   private MultiMap headers(Optional<String> contentType) {

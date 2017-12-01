@@ -5,6 +5,10 @@
       "serverOptions": {
         "port": 9092
       },
+      "customResponseHeader": {
+        "name": "X-Server",
+        "value": "Knot.x"
+      },
       "allowedResponseHeaders": [
         "referer",
         "user-agent",

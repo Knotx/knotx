@@ -18,15 +18,15 @@ package io.knotx.mocks.knot;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.file.AsyncFile;
-import io.vertx.rxjava.core.file.FileSystem;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.file.AsyncFile;
+import io.vertx.reactivex.core.file.FileSystem;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Observable;
-import rx.Single;
 
 enum KnotContextKeys {
   RESPONSE("clientResponse") {

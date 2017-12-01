@@ -16,14 +16,14 @@
 package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class KnotxSplitterHandler implements Handler<RoutingContext> {
 

@@ -22,22 +22,22 @@ import io.knotx.junit.rule.KnotxConfiguration;
 import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.http.HttpClient;
-import io.vertx.rxjava.core.http.HttpClientRequest;
-import io.vertx.rxjava.core.http.HttpClientResponse;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.http.HttpClient;
+import io.vertx.reactivex.core.http.HttpClientRequest;
+import io.vertx.reactivex.core.http.HttpClientResponse;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.Observable;
 import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
@@ -45,6 +45,8 @@ public class KnotxServerRoutingTest {
 
   private static final int KNOTX_SERVER_PORT = 9092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
+  public static final String EXPECTED_XSERVER_HEADER_VALUE = "Knot.x";
+  public static final String EXPECTED_RESPONSE_HEADER = "X-Server";
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -56,7 +58,7 @@ public class KnotxServerRoutingTest {
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
       int port, String domain, String uri,
       Action1<HttpClientRequest> requestBuilder) {
-    return Observable.create(subscriber -> {
+    return Observable.unsafeCreate(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();
       resp.subscribe(subscriber);
@@ -98,6 +100,9 @@ public class KnotxServerRoutingTest {
     testPostRequest("/content/local/simple.html",
         resp -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+          context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+              resp.getHeader(EXPECTED_RESPONSE_HEADER));
           resp.bodyHandler(body -> {
             try {
               context.assertEquals(body.toString(), "local+Apost+B+C",
@@ -123,6 +128,9 @@ public class KnotxServerRoutingTest {
     testPostRequest("/content/local/simple.html",
         resp -> {
           context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+          context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+              resp.getHeader(EXPECTED_RESPONSE_HEADER));
           resp.bodyHandler(body -> {
             try {
               context.assertEquals(body.toString(), "local+Apost+C",
@@ -147,6 +155,9 @@ public class KnotxServerRoutingTest {
 
     testPostRequest("/content/simple.html", resp -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+      context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+      context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+          resp.getHeader(EXPECTED_RESPONSE_HEADER));
       resp.bodyHandler(body -> {
         try {
           context.assertEquals(body.toString(), "global+B+C",
@@ -173,6 +184,9 @@ public class KnotxServerRoutingTest {
     testPostRequest("/content/local/simple.html", resp -> {
       context.assertEquals(resp.statusCode(), HttpResponseStatus.MOVED_PERMANENTLY.code());
       context.assertEquals(resp.getHeader("location"), "/content/failed.html");
+      context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+      context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+          resp.getHeader(EXPECTED_RESPONSE_HEADER));
       async.complete();
     });
   }
@@ -204,7 +218,10 @@ public class KnotxServerRoutingTest {
     Async async = context.async();
     client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
         resp -> resp.bodyHandler(body -> {
-          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
+          context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+          context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+              resp.getHeader(EXPECTED_RESPONSE_HEADER));
           try {
             context.assertEquals(body.toString(),
                 expectedResult, "Wrong engines processed request, expected " + expectedResult);

@@ -16,7 +16,7 @@
 package io.knotx.http;
 
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.vertx.rxjava.core.MultiMap;
+import io.vertx.reactivex.core.MultiMap;
 import java.util.List;
 import java.util.Map;
 

@@ -15,18 +15,15 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
-import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import java.util.Collections;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,7 +43,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   }
 
   static KnotxEngineHandler create(Vertx vertx, String address,
-      Map<String, RoutingEntry> routing) {
+                                   Map<String, RoutingEntry> routing) {
     return new KnotxEngineHandler(vertx, address, routing);
   }
 
@@ -61,7 +58,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   }
 
   private void handleRoute(final RoutingContext context, final String address,
-      final Map<String, RoutingEntry> routing) {
+                           final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
     KnotProxy knot = KnotProxy.createProxy(vertx, address);
 
@@ -74,15 +71,15 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                   if (entry != null) {
                     handleRoute(context, entry.address(), entry.onTransition());
                   } else {
-                    LOGGER.trace(
-                        "No on criteria defined in routing for {} transition received from {}", on,
-                        address);
+                    LOGGER.debug(
+                        "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.", on, address);
                     // last knot can return default transition
                     context.put(KNOT_CONTEXT_KEY, ctx);
                     context.next();
                   }
                 })
                 .ifNotPresent(() -> {
+                  LOGGER.debug("Request processing finished by {} Knot. Go to the response generation", address);
                   context.put(KNOT_CONTEXT_KEY, ctx);
                   context.next();
                 }),

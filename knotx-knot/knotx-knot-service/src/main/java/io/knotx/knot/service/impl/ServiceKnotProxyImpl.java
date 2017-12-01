@@ -21,14 +21,14 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
 import io.knotx.knot.service.ServiceKnotConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.Vertx;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import rx.Observable;
-import rx.Single;
 
 public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
@@ -45,14 +45,14 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
   @Override
   protected Single<KnotContext> processRequest(KnotContext knotContext) {
     return Optional.ofNullable(knotContext.getFragments())
-        .map(fragments -> Observable.from(fragments)
+        .map(fragments ->
+            Observable.fromIterable(fragments)
             .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
             .flatMap(this::compileHtmlFragment)
-            .flatMap(
+            .flatMapSingle(
                 compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
             .toList()
-            .toSingle()
         ).orElse(Single.just(Collections.emptyList()))
         .map(result -> createSuccessResponse(knotContext))
         .onErrorReturn(error -> processError(knotContext, error));

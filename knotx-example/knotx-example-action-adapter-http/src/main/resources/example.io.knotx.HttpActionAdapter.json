@@ -7,6 +7,10 @@
         "maxPoolSize": 1000,
         "keepAlive": false
       },
+      "customRequestHeader": {
+        "name": "Server-User-Agent",
+        "value": "Knot.x"
+      },
       "services": [
         {
           "path": "/service/mock/.*",

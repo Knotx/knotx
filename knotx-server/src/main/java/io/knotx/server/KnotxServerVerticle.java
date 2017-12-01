@@ -24,11 +24,11 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.http.HttpServer;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.handler.BodyHandler;
-import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServer;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.handler.BodyHandler;
+import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -48,11 +48,13 @@ public class KnotxServerVerticle extends AbstractVerticle {
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     Router router = Router.router(vertx);
+    router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
       if (key == HttpMethod.POST) {
-        router.route().method(key).handler(BodyHandler.create());
+        router.route().method(key)
+            .handler(BodyHandler.create(configuration.getFileUploadDirectory()));
       }
       value.forEach(
           criteria -> {
@@ -83,7 +85,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
         if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
-          router.route().method(key).handler(BodyHandler.create());
+          router.route().method(key)
+              .handler(BodyHandler.create(configuration.getFileUploadDirectory()));
         }
         value.forEach(
             criteria -> {
@@ -107,7 +110,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
     }
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
-
 
     createHttpServer()
         .requestHandler(router::accept)
