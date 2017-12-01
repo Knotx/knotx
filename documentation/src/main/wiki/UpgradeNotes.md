@@ -10,6 +10,9 @@ List of changes that are finished but not yet released in any final version.
 The API is changed, so your custom implementations need to adopt to the latest APIs both of Vert.x and RxJava.
 - [PR-320](https://github.com/Cognifide/knotx/pull/320) - Now you can configure the file-uploads folder for POST requests. See [Server options](https://github.com/Cognifide/knotx/wiki/Server#server-options) for details.
 - [PR-347](https://github.com/Cognifide/knotx/pull/320) - You can now add [custom response header](https://github.com/Cognifide/knotx/wiki/Server#server-options) to the Server. Also custom header can be added to [repository](https://github.com/Cognifide/knotx/wiki/HttpRepositoryConnector#options) & [service](https://github.com/Cognifide/knotx/wiki/HttpServiceAdapter#how-to-configure) requests.
+- [PR-349](https://github.com/Cognifide/knotx/pull/349) - You can pass [`Delivery Options`](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html) to Knot.x Verticles e.g. to manipulate eventbus response timeouts. 
+For more details see documentation sections in [[Server|Server#vertx-event-bus-delivery-options]], [[Action Knot|ActionKnot#vertx-event-bus-delivery-options]] and [[Service Knot|ServiceKnot#vertx-event-bus-delivery-options]].
+
 
 ## Version 1.1.2
 - [PR-335](https://github.com/Cognifide/knotx/pull/335) - Added support for HttpServerOptions on the configuration level.
