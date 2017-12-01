@@ -71,16 +71,15 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                   if (entry != null) {
                     handleRoute(context, entry.address(), entry.onTransition());
                   } else {
-                    LOGGER.error(
-                        "No criteria defined in routing for {} transition received from {}", on,
-                        address);
+                    LOGGER.debug(
+                        "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.", on, address);
                     // last knot can return default transition
                     context.put(KNOT_CONTEXT_KEY, ctx);
                     context.next();
                   }
                 })
                 .ifNotPresent(() -> {
-                  LOGGER.debug("Request processing finished by {} Knot. Sending response to the client", address);
+                  LOGGER.debug("Request processing finished by {} Knot. Go to the response generation", address);
                   context.put(KNOT_CONTEXT_KEY, ctx);
                   context.next();
                 }),
