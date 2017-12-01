@@ -35,8 +35,6 @@ public class KnotxServerConfiguration {
 
   private JsonObject serverOptions;
 
-  private DeliveryOptions repositoryDeliveryOptions;
-
   private DeliveryOptions deliveryOptions;
 
   public KnotxServerConfiguration(JsonObject config) {
@@ -51,9 +49,6 @@ public class KnotxServerConfiguration {
     fileUploadDirectory = config
         .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
-    repositoryDeliveryOptions =
-        config.containsKey("repositoryDeliveryOptions") ? new DeliveryOptions(
-            config.getJsonObject("repositoryDeliveryOptions")) : new DeliveryOptions();
     deliveryOptions =
         config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions"))
             : new DeliveryOptions();
@@ -81,10 +76,6 @@ public class KnotxServerConfiguration {
 
   public JsonObject getServerOptions() {
     return serverOptions;
-  }
-
-  public DeliveryOptions getRepositoryDeliveryOptions() {
-    return repositoryDeliveryOptions;
   }
 
   public DeliveryOptions getDeliveryOptions() {

@@ -244,28 +244,21 @@ The `config` field can contain [Vert.x Delivery Options](http://vertx.io/docs/ap
 related to the event bus. It can be used to control the low level aspects of the event bus communication like timeouts, 
 headers, message codec names.
 
-
-The `repositoryDeliveryOptions` need to be added in the following place, of the KnotxServerVerticle configuration to define 
-the timeout for the Repository Connector response.
+For example, add `deliveryOptions` section in the KnotxServer configuration to define the 
+timeout for all eventbus responses (Repositories, Splitter, Knots configured in routing, Assembler, etc) 
+for eventubs requests that come from `KnotxServer`.
 ```
 {
+  "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "repositoryDeliveryOptions": {
-        "timeout": 60000,
-         ...
-      },
-      ...
-```
-The `deliveryOptions` need to be added in the following place, of the KnotxServerVerticle configuration to define the 
-timeout for the Knot response (Splitter, Knots configured in routing, Assembler, etc).
-```
-{
-  "options": {
-    "config": {
+      "httpPort": 8092,
+      "displayExceptionDetails": true,
       "deliveryOptions": {
-        "timeout": 15000,
-         ...
+        "timeout": 15000
       },
       ...
+    }
+  }
+}
 ```
