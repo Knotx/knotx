@@ -18,6 +18,7 @@ package io.knotx.adapter.service.http;
 import com.google.common.collect.Lists;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
+import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.adapter.common.http.HttpClientFacade;
 import io.knotx.adapter.common.http.ServiceMetadata;
 import io.knotx.dataobjects.AdapterRequest;
@@ -82,7 +83,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
 
     // when
@@ -111,7 +112,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
     final ClientRequest request = new ClientRequest()
         .setParams(MultiMap.caseInsensitiveMultiMap().add("dynamicValue", "first"));
@@ -143,7 +144,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
 
     // when
     Single<ClientResponse> result = clientFacade.process(new AdapterRequest(), HttpMethod.GET);
@@ -170,7 +171,7 @@ public class HttpClientFacadeTest {
     // given
     final WebClient mockedWebClient = PowerMockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
-        getServiceConfigurations());
+        getConfiguration());
 
     // when
     Single<ClientResponse> result =
@@ -198,6 +199,10 @@ public class HttpClientFacadeTest {
   private AdapterRequest payloadMessage(String servicePath, ClientRequest request) {
     return new AdapterRequest().setRequest(request)
         .setParams(new JsonObject().put("path", servicePath));
+  }
+
+  private HttpAdapterConfiguration getConfiguration() {
+    return new HttpAdapterConfiguration().setServices(getServiceConfigurations());
   }
 
   private List<ServiceMetadata> getServiceConfigurations() {

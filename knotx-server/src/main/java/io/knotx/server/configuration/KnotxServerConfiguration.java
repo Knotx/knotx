@@ -37,8 +37,13 @@ public class KnotxServerConfiguration {
 
   private DeliveryOptions deliveryOptions;
 
+  private JsonObject customResponseHeader;
+
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
+
+    customResponseHeader = config
+        .getJsonObject("customResponseHeader", new JsonObject());
 
     allowedResponseHeaders = config.getJsonArray("allowedResponseHeaders").stream()
         .map(item -> ((String) item).toLowerCase())
@@ -56,6 +61,10 @@ public class KnotxServerConfiguration {
 
   public boolean displayExceptionDetails() {
     return displayExceptionDetails;
+  }
+
+  public JsonObject getCustomResponseHeader() {
+    return customResponseHeader;
   }
 
   public Set<String> getAllowedResponseHeaders() {

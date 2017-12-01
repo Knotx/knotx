@@ -48,6 +48,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     Router router = Router.router(vertx);
+    router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
