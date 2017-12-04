@@ -15,8 +15,6 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
-import io.knotx.dataobjects.FileData;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
@@ -25,16 +23,12 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxGatewayContextHandler.class);
-  private static final String KNOT_CONTEXT_KEY = "knotContext";
 
   private Vertx vertx;
   private String address;
@@ -50,35 +44,20 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    try {
-      handleRoute(context, address);
-    } catch (Exception ex) {
-      LOGGER.error("Something very unexpected happened", ex);
-      context.fail(ex);
-    }
-  }
+    KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
 
-  private void handleRoute(final RoutingContext context, final String address) {
-    KnotContext knotContext = new KnotContext()
-        .setClientRequest(new ClientRequest(context.request()));
     String bodyAsString = context.getBodyAsString();
     if (StringUtils.isNotBlank(bodyAsString)) {
       knotContext.setFragments(Collections.singletonList(Fragment.raw(bodyAsString)));
     }
-    Set<FileUpload> fileUploads = context.fileUploads();
-    if (fileUploads != null) {
-      knotContext.setFilesData(fileUploads.stream()
-          .map(FileData::new)
-          .collect(Collectors.toSet()));
-    }
 
-    KnotProxy knot = KnotProxy.createProxy(vertx, address);
-
-    knot.rxProcess(knotContext)
-        .doOnSuccess(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))
+    LOGGER.debug("CustomFlow: Routing the traffic to '{}'", address);
+    KnotProxy.createProxy(vertx, address)
+        .rxProcess(knotContext)
+        .doOnSuccess(ctx -> context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx))
         .subscribe(
             ctx -> {
-              context.put(KNOT_CONTEXT_KEY, ctx);
+              context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx);
               context.next();
             },
             error -> {
@@ -86,6 +65,6 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
               context.fail(error);
             }
         );
-  }
 
+  }
 }

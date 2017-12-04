@@ -22,6 +22,11 @@ import java.util.stream.Collectors;
 
 public class KnotxServerConfiguration {
 
+  //Default limit=-1 - Unlimited size
+  private final static long DEFAULT_UPLOAD_LIMIT = -1;
+
+  private final Long fileUploadLimit;
+
   private boolean displayExceptionDetails;
 
   private Set<String> allowedResponseHeaders;
@@ -50,6 +55,7 @@ public class KnotxServerConfiguration {
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
     fileUploadDirectory = config
         .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
+    fileUploadLimit = config.getLong("fileUploadLimit", DEFAULT_UPLOAD_LIMIT);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
   }
 
@@ -79,6 +85,10 @@ public class KnotxServerConfiguration {
 
   public JsonObject getServerOptions() {
     return serverOptions;
+  }
+
+  public Long getFileUploadLimit() {
+    return fileUploadLimit;
   }
 }
 

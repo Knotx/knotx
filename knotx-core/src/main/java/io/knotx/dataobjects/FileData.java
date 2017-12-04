@@ -19,7 +19,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import io.vertx.rxjava.ext.web.FileUpload;
+import io.vertx.reactivex.ext.web.FileUpload;
 
 
 @DataObject(generateConverter = true)
