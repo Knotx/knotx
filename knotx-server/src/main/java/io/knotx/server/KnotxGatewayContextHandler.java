@@ -35,13 +35,15 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
   private KnotxServerConfiguration configuration;
   private String address;
 
-  private KnotxGatewayContextHandler(Vertx vertx, KnotxServerConfiguration configuration, String address) {
+  private KnotxGatewayContextHandler(Vertx vertx, KnotxServerConfiguration configuration,
+      String address) {
     this.vertx = vertx;
     this.configuration = configuration;
     this.address = address;
   }
 
-  static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerConfiguration configuration, String address) {
+  static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerConfiguration configuration,
+      String address) {
     return new KnotxGatewayContextHandler(vertx, configuration, address);
   }
 
@@ -55,7 +57,7 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
     }
 
     LOGGER.debug("CustomFlow: Routing the traffic to '{}'", address);
-    KnotProxy.createProxy(vertx, address)
+    KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions())
         .rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx))
         .subscribe(

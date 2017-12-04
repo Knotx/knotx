@@ -45,7 +45,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
     this.routing = routing;
   }
 
-  static KnotxEngineHandler create(Vertx vertx, String address,
+  static KnotxEngineHandler create(Vertx vertx, KnotxServerConfiguration configuration,
+      String address,
       Map<String, RoutingEntry> routing) {
     return new KnotxEngineHandler(vertx, configuration, address, routing);
   }
@@ -63,7 +64,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
-    KnotProxy knot = KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
+    KnotProxy knot = KnotProxy
+        .createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
     knot.rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx))
