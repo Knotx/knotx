@@ -39,7 +39,9 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
 
   private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.responseProviderProxy = KnotProxy.createProxy(vertx, configuration.getCustomFlow().responseProviderAddress());
+    this.responseProviderProxy = KnotProxy
+        .createProxyWithOptions(vertx, configuration.getCustomFlow().responseProviderAddress(),
+            configuration.getDeliveryOptions());
   }
 
   static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -90,7 +92,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
   }
 
   private void writeHeaders(final HttpServerResponse response,
-                            final ClientResponse clientResponse) {
+      final ClientResponse clientResponse) {
     clientResponse.getHeaders().names().stream()
         .filter(this::headerFilter)
         .forEach(

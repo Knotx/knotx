@@ -72,7 +72,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 .method(key)
                 .pathRegex(criteria.path())
                 .handler(KnotxEngineHandler
-                    .create(vertx, criteria.address(), criteria.onTransition()));
+                    .create(vertx, configuration, criteria.address(), criteria.onTransition()));
 
             router.route()
                 .method(key)
@@ -92,13 +92,13 @@ public class KnotxServerVerticle extends AbstractVerticle {
             criteria -> {
               router.route().method(key)
                   .pathRegex(criteria.path())
-                  .handler(KnotxGatewayContextHandler.create(vertx, criteria.address()));
+                  .handler(KnotxGatewayContextHandler.create(vertx, configuration, criteria.address()));
 
               router.route()
                   .method(key)
                   .pathRegex(criteria.path())
                   .handler(KnotxEngineHandler
-                      .create(vertx, criteria.address(), criteria.onTransition()));
+                      .create(vertx, configuration, criteria.address(), criteria.onTransition()));
 
               router.route()
                   .method(key)

@@ -39,7 +39,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.assembler = KnotProxy.createProxy(vertx, configuration.getDefaultFlow().assemblerAddress());
+    this.assembler = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().assemblerAddress(),
+        configuration.getDeliveryOptions());
   }
 
   static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {

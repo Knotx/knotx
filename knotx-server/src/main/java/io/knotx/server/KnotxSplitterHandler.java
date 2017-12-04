@@ -34,7 +34,8 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
   private KnotxServerConfiguration configuration;
 
   private KnotxSplitterHandler(Vertx vertx, KnotxServerConfiguration configuration) {
-    this.splitter = KnotProxy.createProxy(vertx, configuration.getDefaultFlow().splitterAddress());
+    this.splitter = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().splitterAddress(),
+        configuration.getDeliveryOptions());
     this.configuration = configuration;
   }
 
@@ -70,4 +71,5 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
       LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx);
     }
   }
+
 }

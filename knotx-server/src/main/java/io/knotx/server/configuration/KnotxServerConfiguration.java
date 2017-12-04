@@ -15,6 +15,7 @@
  */
 package io.knotx.server.configuration;
 
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.BodyHandler;
 import java.util.Set;
@@ -34,6 +35,8 @@ public class KnotxServerConfiguration {
 
   private JsonObject serverOptions;
 
+  private DeliveryOptions deliveryOptions;
+
   private JsonObject customResponseHeader;
 
   public KnotxServerConfiguration(JsonObject config) {
@@ -51,6 +54,9 @@ public class KnotxServerConfiguration {
     fileUploadDirectory = config
         .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
+    deliveryOptions =
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions"))
+            : new DeliveryOptions();
   }
 
   public boolean displayExceptionDetails() {
@@ -80,5 +86,8 @@ public class KnotxServerConfiguration {
   public JsonObject getServerOptions() {
     return serverOptions;
   }
-}
 
+  public DeliveryOptions getDeliveryOptions() {
+    return deliveryOptions;
+  }
+}

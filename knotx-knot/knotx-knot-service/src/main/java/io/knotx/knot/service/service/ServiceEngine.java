@@ -50,7 +50,8 @@ public class ServiceEngine {
         .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
-    AdapterProxy serviceProxy = AdapterProxy.createProxy(vertx, serviceEntry.getAddress());
+    AdapterProxy serviceProxy = AdapterProxy
+        .createProxyWithOptions(vertx, serviceEntry.getAddress(), configuration.getDeliveryOptions());
 
     return serviceProxy.rxProcess(adapterRequest)
         .map(resp -> buildResultObject(adapterRequest, resp));
