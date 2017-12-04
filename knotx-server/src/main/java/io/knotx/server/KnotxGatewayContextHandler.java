@@ -18,6 +18,7 @@ package io.knotx.server;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
+import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -31,15 +32,17 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxGatewayContextHandler.class);
 
   private Vertx vertx;
+  private KnotxServerConfiguration configuration;
   private String address;
 
-  private KnotxGatewayContextHandler(Vertx vertx, String address) {
+  private KnotxGatewayContextHandler(Vertx vertx, KnotxServerConfiguration configuration, String address) {
     this.vertx = vertx;
+    this.configuration = configuration;
     this.address = address;
   }
 
-  static KnotxGatewayContextHandler create(Vertx vertx, String address) {
-    return new KnotxGatewayContextHandler(vertx, address);
+  static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerConfiguration configuration, String address) {
+    return new KnotxGatewayContextHandler(vertx, configuration, address);
   }
 
   @Override

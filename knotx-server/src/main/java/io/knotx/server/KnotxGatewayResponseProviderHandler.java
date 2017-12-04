@@ -40,7 +40,8 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
   private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
     this.responseProviderProxy = KnotProxy
-        .createProxy(vertx, configuration.getCustomFlow().responseProviderAddress());
+        .createProxyWithOptions(vertx, configuration.getCustomFlow().responseProviderAddress(),
+            configuration.getDeliveryOptions());
   }
 
   static KnotxGatewayResponseProviderHandler create(Vertx vertx,

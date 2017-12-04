@@ -17,7 +17,7 @@ requested path with the regexp from config, and sends **Not Found** response if 
 - Builds [[KnotContext|Knot]] communication model (that consists of original request, response from
 repository & split HTML fragments)
 - Calls **[[Knots|Knot]]** according to the [routing](#routing) configuration, with the **KnotContext**
-- Once the last Knot returns processed **KnotContext**, server creates HTTP Response based on data from the KnotContext
+- Once the last Knot returns processed **KnotContext**, server calls **assembler** to create HTTP Response based on data from the KnotContext
 - Filters the response headers according to the `allowed.response.headers` configuration and returns to the browser.
 
 The diagram below depicts flow of data coordinated by the **Server** based on the hypothetical
@@ -46,6 +46,7 @@ Server is deployed using Vert.x service factory as a separate [verticle](http://
 The HTTP Server configuration consists two parts:
 - Knot.x application specific configurations
 - Vert.x HTTP Server configurations
+- Vert.x Event Bus delivery options
 
 ### Knot.x application specific configurations
 
@@ -252,3 +253,30 @@ Other option is to provide those parameters through JVM properties:
 - `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.path=/path/to/keystore.jks` 
 - `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.password=keyPass`
 - `-Dio.knotx.KnotxServer.options.config.serverOptions.ssl=true`
+
+### Vert.x Event Bus delivery options
+
+While HTTP request processing, Server calls other modules like Repository Connectors, Knots using 
+[Vert.x Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html). 
+The `config` field can contain [Vert.x Delivery Options](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html)
+related to the event bus. It can be used to control the low level aspects of the event bus communication like timeouts, 
+headers, message codec names.
+
+For example, add `deliveryOptions` section in the KnotxServer configuration to define the 
+timeout for all eventbus responses (Repositories, Splitter, Knots configured in routing, Assembler, etc) 
+for eventubs requests that come from `KnotxServer`.
+```
+{
+  "main": "io.knotx.server.KnotxServerVerticle",
+  "options": {
+    "config": {
+      "httpPort": 8092,
+      "displayExceptionDetails": true,
+      "deliveryOptions": {
+        "timeout": 15000
+      },
+      ...
+    }
+  }
+}
+```

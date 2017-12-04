@@ -111,3 +111,24 @@ ServiceMetadata options available.
 | `address`                   | `String`                            | &#10004;       | Event bus address of the **Adapter** verticle. |
 | `params`                    | `JSON object`                       | &#10004;       | Json Object with default params which are sent to Adapter. |
 | `cacheKey`                  | `String`                            |                | Cache key which is used for Adapters calls caching. **No** means that cache key has value `{NAME}|{PARAMS}` |
+
+### Vert.x Event Bus delivery options
+
+While HTTP request processing, Service Knot calls Adapter / Adapters using 
+[Vert.x Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html). The `config` field can contain 
+[Vert.x Delivery Options](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html) related to the event 
+bus. It can be used to control the low level aspects of the event bus communication like timeouts, headers, message 
+codec names.
+
+The `deliveryOptions` need to be added in the following place, of the Service Knot configuration to define the 
+timeout for the Adapter response.
+```
+{
+  "options": {
+    "config": {
+      "deliveryOptions": {
+        "timeout": 15000,
+         ...
+      },
+      ...
+```

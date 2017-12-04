@@ -137,3 +137,24 @@ Adapter metadata options available. Take into consideration that Adapters are us
 | `params`                    | `JSON object`                       | &#10004;       | Default params which are sent to Adapter. |
 | `allowedRequestHeaders`     | `String`                            | &#10004;       | Array of HTTP client request headers that are allowed to be passed to Adapter. **No** request headers are allowed if not set. |
 | `allowedResponseHeaders`    | `String`                            | &#10004;       | Array of HTTP response headers that are allowed to be sent in a client response. **No** response headers are allowed if not set. |
+
+### Vert.x Event Bus delivery options
+
+While HTTP request processing, Action Knot calls Adapter using 
+[Vert.x Event Bus](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/EventBus.html). The `config` field can contain 
+[Vert.x Delivery Options](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html) related to the event 
+bus. It can be used to control the low level aspects of the event bus communication like timeouts, headers, message 
+codec names.
+
+The `deliveryOptions` need to be added in the following place, of the Action Knot configuration to define the 
+timeout for the Adapter response.
+```
+{
+  "options": {
+    "config": {
+      "deliveryOptions": {
+        "timeout": 15000,
+         ...
+      },
+      ...
+```

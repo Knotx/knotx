@@ -102,7 +102,8 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   private Single<AdapterResponse> callActionAdapter(KnotContext knotContext, FormEntity current) {
     LOGGER.trace("Process form for {} ", knotContext);
-    AdapterProxy adapter = AdapterProxy.createProxy(vertx, current.adapter().getAddress());
+    AdapterProxy adapter = AdapterProxy
+        .createProxyWithOptions(vertx, current.adapter().getAddress(), configuration.getDeliveryOptions());
     return adapter.rxProcess(prepareAdapterRequest(knotContext, current));
   }
 

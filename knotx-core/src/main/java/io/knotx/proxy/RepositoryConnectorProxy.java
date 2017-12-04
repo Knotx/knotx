@@ -22,6 +22,7 @@ import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.DeliveryOptions;
 
 @ProxyGen
 @VertxGen
@@ -29,6 +30,10 @@ public interface RepositoryConnectorProxy {
 
   static RepositoryConnectorProxy createProxy(Vertx vertx, String address) {
     return new RepositoryConnectorProxyVertxEBProxy(vertx, address);
+  }
+
+  static RepositoryConnectorProxy createProxyWithOptions(Vertx vertx, String address, DeliveryOptions deliveryOptions) {
+    return new RepositoryConnectorProxyVertxEBProxy(vertx, address, deliveryOptions);
   }
 
   void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result);

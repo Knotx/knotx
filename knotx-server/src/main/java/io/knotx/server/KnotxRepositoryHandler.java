@@ -44,7 +44,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
   }
 
-  public static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
     return new KnotxRepositoryHandler(vertx, configuration);
   }
 
@@ -55,7 +55,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
 
     if (repositoryEntry.isPresent()) {
-      RepositoryConnectorProxy.createProxy(vertx, repositoryEntry.get().address())
+      RepositoryConnectorProxy
+          .createProxyWithOptions(vertx, repositoryEntry.get().address(), configuration.getDeliveryOptions())
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
