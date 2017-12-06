@@ -42,7 +42,7 @@ import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceBinder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -280,11 +280,11 @@ public class ActionKnotProxyVerticleTest {
         .trim();
   }
 
-  private void createMockAdapter(String adddress, String addToBody, String signal) {
-    createMockAdapter(adddress, addToBody, signal, Collections.emptyMap());
+  private void createMockAdapter(String address, String addToBody, String signal) {
+    createMockAdapter(address, addToBody, signal, Collections.emptyMap());
   }
 
-  private void createMockAdapter(String adddress, String addToBody, String signal,
+  private void createMockAdapter(String address, String addToBody, String signal,
       Map<String, List<String>> headers) {
     Func1<AdapterRequest, AdapterResponse> adapter = adapterRequest -> {
       ClientResponse response = new ClientResponse();
@@ -295,11 +295,9 @@ public class ActionKnotProxyVerticleTest {
       return new AdapterResponse().setResponse(response).setSignal(signal);
     };
 
-    ProxyHelper
-        .registerService(
-            io.knotx.proxy.AdapterProxy.class, vertx.vertx(),
-            new MockAdapterImpl(adapter),
-            adddress);
+    new ServiceBinder(vertx.vertx())
+        .setAddress(address)
+        .register(AdapterProxy.class, new MockAdapterImpl(adapter));
   }
 
   private class MockAdapterImpl implements AdapterProxy {

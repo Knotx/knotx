@@ -21,7 +21,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceBinder;
 import rx.functions.Action1;
 
 
@@ -38,7 +38,9 @@ public class MockKnotProxy implements KnotProxy {
   }
 
   public static void register(Vertx vertx, String address, Action1<KnotContext> knot) {
-    ProxyHelper.registerService(KnotProxy.class, vertx, new MockKnotProxy(knot), address);
+    new ServiceBinder(vertx)
+        .setAddress(address)
+        .register(KnotProxy.class, new MockKnotProxy(knot));
   }
 
   @Override
