@@ -69,7 +69,7 @@ public class HttpClientFacade {
   }
 
   private void logResponse(Pair<ClientRequest, ServiceMetadata> request,
-                           HttpResponse<Buffer> resp) {
+      HttpResponse<Buffer> resp) {
     if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
       LOGGER.error("{} {} -> Got response {}, headers[{}]",
           logResponseData(request, resp));
@@ -80,7 +80,7 @@ public class HttpClientFacade {
   }
 
   private Object[] logResponseData(Pair<ClientRequest, ServiceMetadata> request,
-                                   HttpResponse<Buffer> resp) {
+      HttpResponse<Buffer> resp) {
     Object[] data = {
         request.getLeft().getMethod(),
         toUrl(request),
@@ -202,7 +202,7 @@ public class HttpClientFacade {
   }
 
   private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
-                                    ServiceMetadata serviceMetadata) {
+      ServiceMetadata serviceMetadata) {
 
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());
@@ -225,13 +225,22 @@ public class HttpClientFacade {
   }
 
   private Single<ClientResponse> wrapResponse(HttpResponse<Buffer> response) {
-    return Single.just(response.body())
+    return toBody(response)
         .doOnSuccess(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
             .setBody(buffer.getDelegate())
             .setHeaders(response.headers())
             .setStatusCode(response.statusCode())
         );
+  }
+
+  private Single<Buffer> toBody(HttpResponse<Buffer> response) {
+    if (response.body() != null) {
+      return Single.just(response.body());
+    } else {
+      LOGGER.warn("Service returned empty body");
+      return Single.just(Buffer.buffer());
+    }
   }
 
   private void traceServiceCall(Buffer results) {
