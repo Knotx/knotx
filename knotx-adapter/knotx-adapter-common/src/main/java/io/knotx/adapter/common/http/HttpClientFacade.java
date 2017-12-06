@@ -69,7 +69,7 @@ public class HttpClientFacade {
   }
 
   private void logResponse(Pair<ClientRequest, ServiceMetadata> request,
-                           HttpResponse<Buffer> resp) {
+      HttpResponse<Buffer> resp) {
     if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
       LOGGER.error("{} {} -> Got response {}, headers[{}]",
           logResponseData(request, resp));
@@ -80,7 +80,7 @@ public class HttpClientFacade {
   }
 
   private Object[] logResponseData(Pair<ClientRequest, ServiceMetadata> request,
-                                   HttpResponse<Buffer> resp) {
+      HttpResponse<Buffer> resp) {
     Object[] data = {
         request.getLeft().getMethod(),
         toUrl(request),
@@ -96,9 +96,9 @@ public class HttpClientFacade {
   }
 
   /**
-   * Method to validate contract or params JsonObject for the AdapterProxy Service<br>
-   * The contract checks if all required fields exists in the object.
-   * throwing AdapterServiceContractException in case of contract violation.<br>
+   * Method to validate contract or params JsonObject for the AdapterProxy Service<br> The contract
+   * checks if all required fields exists in the object. throwing AdapterServiceContractException in
+   * case of contract violation.<br>
    *
    * @param message - Event Bus Json Object message that contains 'clientRequest' and 'params'
    * objects.
@@ -110,17 +110,12 @@ public class HttpClientFacade {
   }
 
   /**
-   * Method responsible for building request to the service.
-   * <br>
-   * <br>
-   * The responsibility of the method is to build ClientRequest based on the original Http
-   * Request<br>
-   * - It must set path property of the request based on the params<br>
-   * - It might set headers of the request if needed.<br>
-   * <br>
-   * In case of headers created modified in this method, ensure that your service configuration
-   * allows passing those headers to the target service. See 'allowedRequestHeaders' section
-   * of the configuration <br>
+   * Method responsible for building request to the service. <br> <br> The responsibility of the
+   * method is to build ClientRequest based on the original Http Request<br> - It must set path
+   * property of the request based on the params<br> - It might set headers of the request if
+   * needed.<br> <br> In case of headers created modified in this method, ensure that your service
+   * configuration allows passing those headers to the target service. See 'allowedRequestHeaders'
+   * section of the configuration <br>
    *
    * @param originalRequest - ClientRequest representing original request comming to the Knot.x
    * @param params - JsonObject of the params to be used to build request.
@@ -202,7 +197,7 @@ public class HttpClientFacade {
   }
 
   private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
-                                    ServiceMetadata serviceMetadata) {
+      ServiceMetadata serviceMetadata) {
 
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());
@@ -225,13 +220,22 @@ public class HttpClientFacade {
   }
 
   private Single<ClientResponse> wrapResponse(HttpResponse<Buffer> response) {
-    return Single.just(response.body())
+    return toBody(response)
         .doOnSuccess(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
             .setBody(buffer.getDelegate())
             .setHeaders(response.headers())
             .setStatusCode(response.statusCode())
         );
+  }
+
+  private Single<Buffer> toBody(HttpResponse<Buffer> response) {
+    if (response.body() != null) {
+      return Single.just(response.body());
+    } else {
+      LOGGER.warn("Service returned empty body");
+      return Single.just(Buffer.buffer());
+    }
   }
 
   private void traceServiceCall(Buffer results) {
