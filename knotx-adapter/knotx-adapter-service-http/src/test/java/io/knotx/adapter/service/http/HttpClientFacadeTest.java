@@ -192,6 +192,34 @@ public class HttpClientFacadeTest {
         );
   }
 
+  @Test
+  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  public void whenServiceEmptyResponse_expectNoFailure(
+      TestContext context) throws Exception {
+    Async async = context.async();
+    // given
+    final WebClient mockedWebClient = PowerMockito.spy(webClient());
+    HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
+        getConfiguration());
+
+    // when
+    Single<ClientResponse> result = clientFacade
+        .process(payloadMessage("/services/mock/empty.json", new ClientRequest()), HttpMethod.GET);
+
+    // then
+    result
+        .doOnSuccess(response -> {
+          context.assertEquals(HttpResponseStatus.OK.code(), response.getStatusCode());
+          context.assertEquals(0, Integer.valueOf(response.getHeaders().get("Content-Length")));
+          Mockito.verify(mockedWebClient, Mockito.times(1))
+              .request(HttpMethod.GET, PORT, DOMAIN, "/services/mock/empty.json");
+        })
+        .subscribe(
+            response -> async.complete(),
+            error -> context.fail(error.getMessage())
+        );
+  }
+
   private WebClient webClient() {
     return WebClient.create(Vertx.newInstance(vertx.vertx()));
   }
