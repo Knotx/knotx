@@ -24,7 +24,7 @@ public class KnotxContextHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    context.put(KnotxConsts.KNOT_CONTEXT_KEY,
+    context.put(KnotContext.KEY,
         new KnotContext().setClientRequest(new ClientRequest(context.request())));
     context.next();
   }

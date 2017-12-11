@@ -25,13 +25,13 @@ public class KnotxFileUploadsHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (!context.fileUploads().isEmpty()) {
       knotContext.setFilesData(
           context.fileUploads().stream().map(FileData::new).collect(Collectors.toSet()));
 
-      context.put(KnotxConsts.KNOT_CONTEXT_KEY, knotContext);
+      context.put(KnotContext.KEY, knotContext);
     }
 
     context.next();

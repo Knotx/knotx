@@ -51,7 +51,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
       responseProviderProxy.rxProcess(knotContext)

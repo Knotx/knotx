@@ -52,7 +52,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     final Optional<RepositoryEntry> repositoryEntry = configuration
         .getDefaultFlow().repositoryForPath(context.request().path());
-    final KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
+    final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
       RepositoryConnectorProxy
@@ -64,7 +64,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                 if (isSuccessResponse(repoResponse)) {
                   if (repositoryEntry.get().doProcessing()) {
                     knotContext.setClientResponse(repoResponse);
-                    context.put(KnotxConsts.KNOT_CONTEXT_KEY, knotContext);
+                    context.put(KnotContext.KEY, knotContext);
                     context.next();
                   } else {
                     writeHeaders(context.response(), repoResponse.getHeaders());

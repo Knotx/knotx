@@ -63,12 +63,12 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
-    KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
+    KnotContext knotContext = context.get(KnotContext.KEY);
     KnotProxy knot = KnotProxy
         .createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
     knot.rxProcess(knotContext)
-        .doOnSuccess(ctx -> context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx))
+        .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
                 .ifPresent(on -> {
@@ -80,7 +80,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                         "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.",
                         on, address);
                     // last knot can return default transition
-                    context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx);
+                    context.put(KnotContext.KEY, ctx);
                     context.next();
                   }
                 })
@@ -88,7 +88,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                   LOGGER.debug(
                       "Request processing finished by {} Knot. Go to the response generation",
                       address);
-                  context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx);
+                  context.put(KnotContext.KEY, ctx);
                   context.next();
                 }),
             error -> {

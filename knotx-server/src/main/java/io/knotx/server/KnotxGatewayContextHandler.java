@@ -49,7 +49,7 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get(KnotxConsts.KNOT_CONTEXT_KEY);
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     String bodyAsString = context.getBodyAsString();
     if (StringUtils.isNotBlank(bodyAsString)) {
@@ -59,10 +59,10 @@ class KnotxGatewayContextHandler implements Handler<RoutingContext> {
     LOGGER.debug("CustomFlow: Routing the traffic to '{}'", address);
     KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions())
         .rxProcess(knotContext)
-        .doOnSuccess(ctx -> context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx))
+        .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
             ctx -> {
-              context.put(KnotxConsts.KNOT_CONTEXT_KEY, ctx);
+              context.put(KnotContext.KEY, ctx);
               context.next();
             },
             error -> {

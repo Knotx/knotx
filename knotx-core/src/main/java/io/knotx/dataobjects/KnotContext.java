@@ -27,6 +27,8 @@ import java.util.Set;
 @DataObject(generateConverter = true)
 public class KnotContext {
 
+  public static final String KEY = "knotContext";
+
   private String transition;
 
   private ClientRequest clientRequest;
