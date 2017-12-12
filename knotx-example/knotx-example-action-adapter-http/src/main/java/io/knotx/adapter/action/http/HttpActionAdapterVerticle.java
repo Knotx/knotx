@@ -19,14 +19,14 @@ package io.knotx.adapter.action.http;
 import io.knotx.adapter.action.http.impl.HttpActionAdapterProxyImpl;
 import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.proxy.AdapterProxy;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.serviceproxy.ServiceBinder;
 
 public class HttpActionAdapterVerticle extends AbstractVerticle {
 
@@ -35,6 +35,8 @@ public class HttpActionAdapterVerticle extends AbstractVerticle {
   private HttpAdapterConfiguration configuration;
 
   private MessageConsumer<JsonObject> consumer;
+
+  private ServiceBinder serviceBinder;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -47,15 +49,15 @@ public class HttpActionAdapterVerticle extends AbstractVerticle {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
-    consumer = ProxyHelper
-        .registerService(AdapterProxy.class, vertx,
-            new HttpActionAdapterProxyImpl(new io.vertx.reactivex.core.Vertx(vertx), configuration),
-            configuration.getAddress());
+    serviceBinder = new ServiceBinder(getVertx());
+    consumer = serviceBinder
+        .setAddress(configuration.getAddress())
+        .register(AdapterProxy.class, new HttpActionAdapterProxyImpl(vertx, configuration));
   }
 
   @Override
   public void stop() throws Exception {
-    ProxyHelper.unregisterService(consumer);
+    serviceBinder.unregister(consumer);
   }
 
 }

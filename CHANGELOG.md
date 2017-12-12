@@ -9,6 +9,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-349](https://github.com/Cognifide/knotx/pull/349) - Enable to pass [`Delivery Options`](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html) to Knot.x Verticles to manipulate eventbus response timeouts.
  - [PR-350](https://github.com/Cognifide/knotx/pull/350) - Cosmetic cleanup of default logback.xml config files. Fixed URLs to the bootstrap CSS on example app.
  - [PR-352](https://github.com/Cognifide/knotx/pull/352) - Fix for #351 - Prevent NPE if service returns empty body
+ - [PR-353](https://github.com/Cognifide/knotx/pull/353) - Fix for #351 - Deprecated [`ProxyHelper`](http://vertx.io/docs/apidocs/io/vertx/serviceproxy/ProxyHelper.html) replaced with [`ServiceBinder`](http://vertx.io/docs/apidocs/io/vertx/serviceproxy/ServiceBinder.html)
  - [PR-354](https://github.com/Cognifide/knotx/pull/354) - Improvement - added CSRF protection and ability to configure it on any route.
 
 
