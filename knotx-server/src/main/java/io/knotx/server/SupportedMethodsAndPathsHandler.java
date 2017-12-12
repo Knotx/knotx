@@ -47,9 +47,6 @@ public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> 
     final String path = context.request().path();
     final HttpMethod method = context.request().method();
 
-    boolean defaultFlowNotAllowedMethod = false;
-    boolean customFlowNotAllowedMethod = false;
-
     if (isPathSupportedByFlow(path, defaultFlow)) {
       if (isMethodAllowedInFlow(method, defaultFlow)) {
         context.next();

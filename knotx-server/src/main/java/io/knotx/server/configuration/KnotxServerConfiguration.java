@@ -23,6 +23,11 @@ import java.util.stream.Collectors;
 
 public class KnotxServerConfiguration {
 
+  //Default limit=-1 - Unlimited size
+  private final static long DEFAULT_UPLOAD_LIMIT = -1;
+
+  private final Long fileUploadLimit;
+
   private boolean displayExceptionDetails;
 
   private Set<String> allowedResponseHeaders;
@@ -39,6 +44,8 @@ public class KnotxServerConfiguration {
 
   private JsonObject customResponseHeader;
 
+  private KnotxCSRFConfig csrfConfig;
+
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
@@ -53,10 +60,13 @@ public class KnotxServerConfiguration {
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
     fileUploadDirectory = config
         .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
+    fileUploadLimit = config.getLong("fileUploadLimit", DEFAULT_UPLOAD_LIMIT);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
     deliveryOptions =
-        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions"))
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(
+            config.getJsonObject("deliveryOptions"))
             : new DeliveryOptions();
+    csrfConfig = new KnotxCSRFConfig(config.getJsonObject("csrf", new JsonObject()));
   }
 
   public boolean displayExceptionDetails() {
@@ -89,5 +99,13 @@ public class KnotxServerConfiguration {
 
   public DeliveryOptions getDeliveryOptions() {
     return deliveryOptions;
+  }
+
+  public KnotxCSRFConfig getCsrfConfig() {
+    return csrfConfig;
+  }
+
+  public Long getFileUploadLimit() {
+    return fileUploadLimit;
   }
 }

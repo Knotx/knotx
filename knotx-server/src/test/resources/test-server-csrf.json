@@ -1,0 +1,48 @@
+{
+  "modules": [
+    "knotx:io.knotx.KnotxServer",
+    "knotx:test.io.knotx.FileSystemConnector"
+  ],
+  "config": {
+    "knotx:io.knotx.KnotxServer": {
+      "options": {
+        "config": {
+          "serverOptions": {
+            "port": 9092
+          },
+          "csrf": {
+            "enabled": true
+          },
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/.*",
+                "address": "knotx.repository.filesystem"
+              }
+            ],
+            "splitter": {
+              "address": "test-splitter"
+            },
+            "routing": {
+              "GET": [
+                {
+                  "path": ".*",
+                  "address": "some-knot"
+                }
+              ],
+              "POST": [
+                {
+                  "path": ".*",
+                  "address": "some-knot"
+                }
+              ]
+            },
+            "assembler": {
+              "address": "test-assembler"
+            }
+          }
+        }
+      }
+    }
+  }
+}

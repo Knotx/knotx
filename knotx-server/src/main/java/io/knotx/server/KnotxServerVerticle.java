@@ -15,6 +15,7 @@
  */
 package io.knotx.server;
 
+import io.knotx.server.configuration.KnotxCSRFConfig;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -28,6 +29,8 @@ import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.http.HttpServer;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
+import io.vertx.reactivex.ext.web.handler.CSRFHandler;
+import io.vertx.reactivex.ext.web.handler.CookieHandler;
 import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -50,12 +53,23 @@ public class KnotxServerVerticle extends AbstractVerticle {
     Router router = Router.router(vertx);
     router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
+    router.route().handler(CookieHandler.create());
+
+    if (configuration.getCsrfConfig().isEnabled()) {
+      KnotxCSRFConfig csrfConfig = configuration.getCsrfConfig();
+      router.route().handler(
+          CSRFHandler.create(csrfConfig.getSecret())
+              .setNagHttps(true) //Generates warning message in log if https is not used
+              .setCookieName(csrfConfig.getCookieName()).setCookiePath(csrfConfig.getCookiePath())
+              .setHeaderName(csrfConfig.getHeaderName()));
+    }
+
+    router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
+        .setBodyLimit(configuration.getFileUploadLimit()));
+
+    router.route().handler(KnotxContextHandler.create());
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
-      if (key == HttpMethod.POST) {
-        router.route().method(key)
-            .handler(BodyHandler.create(configuration.getFileUploadDirectory()));
-      }
       value.forEach(
           criteria -> {
             router.route()
@@ -84,15 +98,12 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
-        if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
-          router.route().method(key)
-              .handler(BodyHandler.create(configuration.getFileUploadDirectory()));
-        }
         value.forEach(
             criteria -> {
               router.route().method(key)
                   .pathRegex(criteria.path())
-                  .handler(KnotxGatewayContextHandler.create(vertx, configuration, criteria.address()));
+                  .handler(
+                      KnotxGatewayContextHandler.create(vertx, configuration, criteria.address()));
 
               router.route()
                   .method(key)
