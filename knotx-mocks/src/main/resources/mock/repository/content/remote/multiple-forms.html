@@ -56,7 +56,13 @@
         <p>Submitted: {{action._result.form.name}}</p>
         {{else}}
         <p>Please subscribe to our new competition:</p>
-        <form data-knotx-action="subscribe-competition" data-knotx-on-success="_self" data-knotx-adapter-params='{"myKey":"myValue"}' data-knotx-on-error="_self" method="post" class="form-inline">
+        <form data-knotx-action="subscribe-competition"
+              data-knotx-on-success="_self"
+              data-knotx-adapter-params='{"myKey":"myValue"}'
+              data-knotx-on-error="_self"
+              method="post"
+              class="form-inline"
+              enctype="multipart/form-data">
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" name="name" id="name"/>
@@ -64,6 +70,10 @@
           <div class="form-group">
             <label for="email">Email</label>
             <input type="email" name="email" id="email"/>
+          </div>
+          <div class="form-group">
+            <label for="email">Competition file</label>
+            <input type="file" id="file" name="file" multiple>
           </div>
           <button type="submit" class="btn btn-default">Submit</button>
         </form>

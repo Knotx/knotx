@@ -39,8 +39,9 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.assembler = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().assemblerAddress(),
-        configuration.getDeliveryOptions());
+    this.assembler = KnotProxy
+        .createProxyWithOptions(vertx, configuration.getDefaultFlow().assemblerAddress(),
+            configuration.getDeliveryOptions());
   }
 
   static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -49,7 +50,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
       assembler.rxProcess(knotContext)

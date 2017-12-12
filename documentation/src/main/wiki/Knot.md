@@ -25,7 +25,8 @@ The Knot Context is a communication model passed between [[Server|Server]], [[Fr
 [[Knots|Knot]] and [[Fragment Assembler|Assembler]]. 
 
 The flow is driven by [[Server|Server]] forwarding and getting back KnotContext to/from Splitter, Knots and Assembler. 
-Knot Context keeps information about a site visitor request, current processing status and a site visitor response. 
+Knot Context keeps information about a site visitor request, current processing status, site visitor response 
+and optionally uploaded files. 
 
 From now on, we will be using the terms *client* and *site visitor* interchangeably.
 
@@ -33,6 +34,7 @@ Knot Context contains:
 * client request with path, headers, form attributes and parameters
 * client response with body, headers and status code
 * [[fragments|Splitter]]
+* uploaded files
 * transition value
 
 *Client request* includes site visitor path (requested URL), HTTP headers, form attributes 
@@ -41,12 +43,14 @@ Knot Context contains:
 *Client response* includes a body (which represents final response body), HTTP headers (which are narrowed finally
 by Server) and HTTP status code.
 
-Please see [[Splitter|Splitter]] section to find out what Fragments are and how they are produced. 
+Please see [[*Splitter*|Splitter]] section to find out what Fragments are and how they are produced. 
 Fragments contain a template fragment content and a context. Knots can process a configured fragment content, 
 call required Adapters and put responses from Adapters to the fragment context (fragment context is a JSON 
 object).
 
-**Transition** is a text value which determines next step in [[request routing|KnotRouting]].
+*Uploaded files* is a set of file-uploads from an HTTP multipart form submission.
+
+*Transition* is a text value which determines next step in [[request routing|KnotRouting]].
 
 #### Knot Request
 A table below represents an event model consumed by Knot. First rows relates to client request attributes

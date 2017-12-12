@@ -45,14 +45,14 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     splitter.rxProcess(knotContext)
         .doOnSuccess(this::traceMessage)
         .subscribe(
             ctx -> {
               if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
-                context.put("knotContext", ctx);
+                context.put(KnotContext.KEY, ctx);
                 context.next();
               } else {
                 context.fail(ctx.getClientResponse().getStatusCode());

@@ -19,7 +19,6 @@ import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -50,12 +49,12 @@ public class KnotxServerVerticle extends AbstractVerticle {
     Router router = Router.router(vertx);
     router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
+    router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
+        .setBodyLimit(configuration.getFileUploadLimit()));
+    router.route().handler(KnotxContextHandler.create());
+    router.route().handler(KnotxFileUploadsHandler.create());
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
-      if (key == HttpMethod.POST) {
-        router.route().method(key)
-            .handler(BodyHandler.create(configuration.getFileUploadDirectory()));
-      }
       value.forEach(
           criteria -> {
             router.route()
@@ -84,10 +83,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
-        if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
-          router.route().method(key)
-              .handler(BodyHandler.create(configuration.getFileUploadDirectory()));
-        }
         value.forEach(
             criteria -> {
               router.route().method(key)

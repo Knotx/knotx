@@ -15,7 +15,6 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
@@ -53,7 +52,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     final Optional<RepositoryEntry> repositoryEntry = configuration
         .getDefaultFlow().repositoryForPath(context.request().path());
-    final KnotContext knotContext = toKnotContext(context);
+    final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
       RepositoryConnectorProxy
@@ -65,7 +64,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                 if (isSuccessResponse(repoResponse)) {
                   if (repositoryEntry.get().doProcessing()) {
                     knotContext.setClientResponse(repoResponse);
-                    context.put("knotContext", knotContext);
+                    context.put(KnotContext.KEY, knotContext);
                     context.next();
                   } else {
                     writeHeaders(context.response(), repoResponse.getHeaders());
@@ -95,10 +94,6 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   private boolean isErrorResponse(ClientResponse repoResponse) {
     return HttpResponseStatus.INTERNAL_SERVER_ERROR.code() == repoResponse.getStatusCode() ||
         HttpResponseStatus.NOT_FOUND.code() == repoResponse.getStatusCode();
-  }
-
-  private KnotContext toKnotContext(RoutingContext context) {
-    return new KnotContext().setClientRequest(new ClientRequest(context.request()));
   }
 
   private void traceMessage(ClientResponse message) {

@@ -22,9 +22,12 @@ import io.reactivex.Single;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
+import java.util.Set;
 
 @DataObject(generateConverter = true)
 public class KnotContext {
+
+  public static final String KEY = "knotContext";
 
   private String transition;
 
@@ -33,6 +36,8 @@ public class KnotContext {
   private ClientResponse clientResponse;
 
   private List<Fragment> fragments;
+
+  private Set<FileData> filesData;
 
   private volatile Cache<String, Single<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
@@ -91,6 +96,15 @@ public class KnotContext {
     return this;
   }
 
+  public Set<FileData> getFilesData() {
+    return filesData;
+  }
+
+  public KnotContext setFilesData(Set<FileData> filesData) {
+    this.filesData = filesData;
+    return this;
+  }
+
   public Cache<String, Single<JsonObject>> getCache() {
     return cache;
   }
@@ -107,12 +121,13 @@ public class KnotContext {
     return Objects.equal(transition, that.transition) &&
         Objects.equal(clientRequest, that.clientRequest) &&
         Objects.equal(clientResponse, that.clientResponse) &&
-        Objects.equal(fragments, that.fragments);
+        Objects.equal(fragments, that.fragments) &&
+        Objects.equal(filesData, that.filesData);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+    return Objects.hashCode(transition, clientRequest, clientResponse, fragments, filesData);
   }
 
 }

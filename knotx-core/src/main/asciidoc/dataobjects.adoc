@@ -68,6 +68,23 @@ Serialization variants of MultiMap fields
 |[[statusCode]]`statusCode`|`Number (int)`|-
 |===
 
+[[FileData]]
+== FileData
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[charSet]]`charSet`|`String`|-
+|[[contentTransferEncoding]]`contentTransferEncoding`|`String`|-
+|[[contentType]]`contentType`|`String`|-
+|[[fileName]]`fileName`|`String`|-
+|[[name]]`name`|`String`|-
+|[[size]]`size`|`Number (long)`|-
+|[[uploadedFileName]]`uploadedFileName`|`String`|-
+|===
+
 [[Fragment]]
 == Fragment
 
@@ -97,6 +114,7 @@ Serialization variants of MultiMap fields
 ^|Name | Type ^| Description
 |[[clientRequest]]`clientRequest`|`link:dataobjects.html#ClientRequest[ClientRequest]`|-
 |[[clientResponse]]`clientResponse`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
+|[[filesData]]`filesData`|`Array of link:dataobjects.html#FileData[FileData]`|-
 |[[fragments]]`fragments`|`Array of link:dataobjects.html#Fragment[Fragment]`|-
 |[[transition]]`transition`|`String`|-
 |===

@@ -44,13 +44,14 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
             configuration.getDeliveryOptions());
   }
 
-  static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxGatewayResponseProviderHandler create(Vertx vertx,
+      KnotxServerConfiguration configuration) {
     return new KnotxGatewayResponseProviderHandler(vertx, configuration);
   }
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
       responseProviderProxy.rxProcess(knotContext)
