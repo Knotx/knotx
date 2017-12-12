@@ -24,9 +24,7 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.serviceproxy.ProxyHelper;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import io.vertx.serviceproxy.ServiceBinder;
 
 public class FragmentAssemblerVerticle extends AbstractVerticle {
 
@@ -36,6 +34,8 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
 
   private FragmentAssemblerConfiguration configuration;
 
+  private ServiceBinder serviceBinder;
+
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
@@ -43,19 +43,19 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start() throws IOException, URISyntaxException {
+  public void start() throws Exception {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
-    KnotProxy assemblerModule = new FragmentAssemblerKnotProxyImpl(config());
-
     //register the service proxy on event bus
-    consumer = ProxyHelper
-        .registerService(KnotProxy.class, vertx, assemblerModule, configuration.address());
+    serviceBinder = new ServiceBinder(getVertx());
+    consumer = serviceBinder
+        .setAddress(configuration.address())
+        .register(KnotProxy.class, new FragmentAssemblerKnotProxyImpl(config()));
   }
 
   @Override
   public void stop() throws Exception {
-    ProxyHelper.unregisterService(consumer);
+    serviceBinder.unregister(consumer);
   }
 
 }

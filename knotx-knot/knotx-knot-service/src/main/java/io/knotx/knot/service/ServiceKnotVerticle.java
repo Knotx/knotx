@@ -17,14 +17,14 @@ package io.knotx.knot.service;
 
 import io.knotx.knot.service.impl.ServiceKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.serviceproxy.ServiceBinder;
 
 public class ServiceKnotVerticle extends AbstractVerticle {
 
@@ -33,6 +33,8 @@ public class ServiceKnotVerticle extends AbstractVerticle {
   private ServiceKnotConfiguration configuration;
 
   private MessageConsumer<JsonObject> consumer;
+
+  private ServiceBinder serviceBinder;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -45,14 +47,14 @@ public class ServiceKnotVerticle extends AbstractVerticle {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
-    consumer = ProxyHelper
-        .registerService(KnotProxy.class, vertx,
-            new ServiceKnotProxyImpl(new io.vertx.reactivex.core.Vertx(vertx), configuration),
-            configuration.getAddress());
+    serviceBinder = new ServiceBinder(getVertx());
+    consumer = serviceBinder
+        .setAddress(configuration.getAddress())
+        .register(KnotProxy.class, new ServiceKnotProxyImpl(vertx, configuration));
   }
 
   @Override
   public void stop() throws Exception {
-    ProxyHelper.unregisterService(consumer);
+    serviceBinder.unregister(consumer);
   }
 }
