@@ -10,9 +10,6 @@
           "serverOptions": {
             "port": 9092
           },
-          "csrf": {
-            "enabled": true
-          },
           "defaultFlow": {
             "repositories": [
               {
@@ -27,12 +24,18 @@
               "GET": [
                 {
                   "path": ".*",
+                  "csrf": true,
                   "address": "some-knot"
                 }
               ],
               "POST": [
                 {
-                  "path": ".*",
+                  "path": "/content/local/simple.*",
+                  "csrf": true,
+                  "address": "some-knot"
+                },
+                {
+                  "path": "/content/local/public.*",
                   "address": "some-knot"
                 }
               ]

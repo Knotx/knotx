@@ -64,6 +64,7 @@
             {
               "path": ".*",
               "address": "knotx.knot.service",
+              "csrf": true,
               "onTransition": {
                 "next": {
                   "address": "knotx.knot.handlebars"

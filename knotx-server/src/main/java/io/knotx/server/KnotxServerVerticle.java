@@ -20,7 +20,6 @@ import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -50,20 +49,18 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
+    KnotxCSRFConfig csrfConfig = configuration.getCsrfConfig();
+    CSRFHandler csrfHandler = CSRFHandler.create(csrfConfig.getSecret())
+        .setNagHttps(true) //Generates warning message in log if https is not used
+        .setCookieName(csrfConfig.getCookieName())
+        .setCookiePath(csrfConfig.getCookiePath())
+        .setHeaderName(csrfConfig.getHeaderName())
+        .setTimeout(csrfConfig.getTimeout());
+
     Router router = Router.router(vertx);
     router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
     router.route().handler(CookieHandler.create());
-
-    if (configuration.getCsrfConfig().isEnabled()) {
-      KnotxCSRFConfig csrfConfig = configuration.getCsrfConfig();
-      router.route().handler(
-          CSRFHandler.create(csrfConfig.getSecret())
-              .setNagHttps(true) //Generates warning message in log if https is not used
-              .setCookieName(csrfConfig.getCookieName()).setCookiePath(csrfConfig.getCookiePath())
-              .setHeaderName(csrfConfig.getHeaderName()));
-    }
-
     router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
         .setBodyLimit(configuration.getFileUploadLimit()));
 
@@ -72,6 +69,11 @@ public class KnotxServerVerticle extends AbstractVerticle {
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
       value.forEach(
           criteria -> {
+            if (criteria.isCsrfEnabled()) {
+              router.route().method(key)
+                  .pathRegex(criteria.path())
+                  .handler(csrfHandler);
+            }
             router.route()
                 .method(key)
                 .pathRegex(criteria.path())
@@ -100,6 +102,11 @@ public class KnotxServerVerticle extends AbstractVerticle {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
         value.forEach(
             criteria -> {
+              if (criteria.isCsrfEnabled()) {
+                router.route().method(key)
+                    .pathRegex(criteria.path())
+                    .handler(csrfHandler);
+              }
               router.route().method(key)
                   .pathRegex(criteria.path())
                   .handler(

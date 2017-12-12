@@ -21,11 +21,9 @@ import io.vertx.ext.web.handler.CSRFHandler;
 
 public class KnotxCSRFConfig {
 
-  private static final Boolean DEFAULT_DISABLED = false;
+  private long DEFAULT_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 
   private static final String DEFAULT_SECRET = "a31DDUam$D{h{x5*ah2j0,EQhkA`Su";
-
-  private boolean enabled;
 
   private String cookieName;
 
@@ -35,16 +33,14 @@ public class KnotxCSRFConfig {
 
   private String secret;
 
+  private long timeout;
+
   public KnotxCSRFConfig(JsonObject config) {
-    enabled = config.getBoolean("enabled", DEFAULT_DISABLED);
     secret = config.getString("secret", DEFAULT_SECRET);
     cookieName = config.getString("cookieName", CSRFHandler.DEFAULT_HEADER_NAME);
     cookiePath = config.getString("cookiePath", CSRFHandler.DEFAULT_COOKIE_PATH);
     headerName = config.getString("headerName", CSRFHandler.DEFAULT_HEADER_NAME);
-  }
-
-  public boolean isEnabled() {
-    return enabled;
+    timeout = config.getLong("timeout", DEFAULT_TIMEOUT);
   }
 
   public String getCookieName() {
@@ -61,5 +57,9 @@ public class KnotxCSRFConfig {
 
   public String getSecret() {
     return secret;
+  }
+
+  public long getTimeout() {
+    return timeout;
   }
 }

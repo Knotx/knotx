@@ -84,7 +84,7 @@ public class KnotxServerCsrfTest {
 
   @Test
   @KnotxConfiguration("test-server-csrf.json")
-  public void whenDoPostWithoutCSRF_expectForbidden(
+  public void whenDoPostSecureWithoutCSRF_expectForbidden(
       TestContext context) {
     Async async = context.async();
 
@@ -109,7 +109,32 @@ public class KnotxServerCsrfTest {
 
   @Test
   @KnotxConfiguration("test-server-csrf.json")
-  public void whenDoPostWithCSRF_expectOK(
+  public void whenDoPostPublicWithoutCSRF_expectOk(
+      TestContext context) {
+    Async async = context.async();
+
+    createPassThroughKnot("test-splitter");
+    createPassThroughKnot("test-assembler");
+    createSimpleKnot("some-knot", "test", null);
+
+    MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
+
+    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+    client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/public.html")
+        .sendForm(body, ar -> {
+          if (ar.succeeded()) {
+            context.assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
+            async.complete();
+          } else {
+            context.fail(ar.cause());
+            async.complete();
+          }
+        });
+  }
+
+  @Test
+  @KnotxConfiguration("test-server-csrf.json")
+  public void whenDoPostSecureWithCSRF_expectOK(
       TestContext context) {
     Async async = context.async();
 
