@@ -15,7 +15,6 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
@@ -57,29 +56,13 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
     if (repositoryEntry.isPresent()) {
       RepositoryConnectorProxy
-          .createProxyWithOptions(vertx, repositoryEntry.get().address(), configuration.getDeliveryOptions())
+          .createProxyWithOptions(vertx, repositoryEntry.get().address(),
+              configuration.getDeliveryOptions())
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
-              repoResponse -> {
-                if (isSuccessResponse(repoResponse)) {
-                  if (repositoryEntry.get().doProcessing()) {
-                    knotContext.setClientResponse(repoResponse);
-                    context.put(KnotContext.KEY, knotContext);
-                    context.next();
-                  } else {
-                    writeHeaders(context.response(), repoResponse.getHeaders());
-                    context.response().setStatusCode(repoResponse.getStatusCode())
-                        .end(Buffer.newInstance(repoResponse.getBody()));
-                  }
-                } else if (isErrorResponse(repoResponse)) {
-                  context.fail(repoResponse.getStatusCode());
-                } else {
-                  writeHeaders(context.response(),
-                      repoResponse.getHeaders().add("Content-Length", "0"));
-                  context.response().setStatusCode(repoResponse.getStatusCode()).end();
-                }
-              },
+              repoResponse -> handleRepositoryResponse(repoResponse, context, repositoryEntry.get(),
+                  knotContext),
               context::fail
           );
 
@@ -88,13 +71,29 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     }
   }
 
-  private boolean isSuccessResponse(ClientResponse repoResponse) {
-    return HttpResponseStatus.OK.code() == repoResponse.getStatusCode();
+  void handleRepositoryResponse(ClientResponse repoResponse, RoutingContext context,
+      RepositoryEntry repositoryEntry, KnotContext knotContext) {
+    if (isSuccessResponse(repoResponse)) {
+      if (repositoryEntry.doProcessing()) {
+        knotContext.setClientResponse(repoResponse);
+        context.put(KnotContext.KEY, knotContext);
+        context.next();
+      } else {
+        endResponse(repoResponse, context);
+      }
+    } else {
+      endResponse(repoResponse, context);
+    }
   }
 
-  private boolean isErrorResponse(ClientResponse repoResponse) {
-    return HttpResponseStatus.INTERNAL_SERVER_ERROR.code() == repoResponse.getStatusCode() ||
-        HttpResponseStatus.NOT_FOUND.code() == repoResponse.getStatusCode();
+  private void endResponse(ClientResponse repoResponse, RoutingContext context) {
+    writeHeaders(context.response(), repoResponse.getHeaders());
+    context.response().setStatusCode(repoResponse.getStatusCode())
+        .end(Buffer.newInstance(repoResponse.getBody()));
+  }
+
+  private boolean isSuccessResponse(ClientResponse repoResponse) {
+    return HttpResponseStatus.OK.code() == repoResponse.getStatusCode();
   }
 
   private void traceMessage(ClientResponse message) {
