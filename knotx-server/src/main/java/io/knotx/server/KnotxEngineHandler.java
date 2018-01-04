@@ -31,7 +31,6 @@ import java.util.Optional;
 class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxEngineHandler.class);
-  private static final String KNOT_CONTEXT_KEY = "knotContext";
 
   private Vertx vertx;
   private KnotxServerConfiguration configuration;
@@ -63,11 +62,11 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
 
   private void handleRoute(final RoutingContext context, final String address,
                            final Map<String, RoutingEntry> routing) {
-    KnotContext knotContext = context.get(KNOT_CONTEXT_KEY);
+    KnotContext knotContext = context.get(KnotContext.KEY);
     KnotProxy knot = KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
     knot.rxProcess(knotContext)
-        .doOnSuccess(ctx -> context.put(KNOT_CONTEXT_KEY, ctx))
+        .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
                 .ifPresent(on -> {
@@ -78,13 +77,13 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                     LOGGER.debug(
                         "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.", on, address);
                     // last knot can return default transition
-                    context.put(KNOT_CONTEXT_KEY, ctx);
+                    context.put(KnotContext.KEY, ctx);
                     context.next();
                   }
                 })
                 .ifNotPresent(() -> {
                   LOGGER.debug("Request processing finished by {} Knot. Go to the response generation", address);
-                  context.put(KNOT_CONTEXT_KEY, ctx);
+                  context.put(KnotContext.KEY, ctx);
                   context.next();
                 }),
             error -> {

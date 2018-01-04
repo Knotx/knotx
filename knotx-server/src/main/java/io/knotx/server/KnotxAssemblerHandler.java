@@ -49,7 +49,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
       assembler.rxProcess(knotContext)
