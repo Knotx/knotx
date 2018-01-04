@@ -26,6 +26,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,11 +40,19 @@ public class ServiceEngine {
 
   private final ServiceKnotConfiguration configuration;
 
-  private final Vertx vertx;
+  private final Map<String, AdapterProxy> adapters;
 
   public ServiceEngine(Vertx vertx, ServiceKnotConfiguration serviceConfiguration) {
-    this.vertx = vertx;
     this.configuration = serviceConfiguration;
+    this.adapters = new HashMap<>();
+    this.configuration.getServices().stream().forEach(
+        service -> adapters.put(service.getAddress(),
+            AdapterProxy.createProxyWithOptions(
+                vertx,
+                service.getAddress(),
+                configuration.getDeliveryOptions())
+        )
+    );
   }
 
   public Single<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
@@ -50,10 +60,7 @@ public class ServiceEngine {
         .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
-    AdapterProxy serviceProxy = AdapterProxy
-        .createProxyWithOptions(vertx, serviceEntry.getAddress(), configuration.getDeliveryOptions());
-
-    return serviceProxy.rxProcess(adapterRequest)
+    return adapters.get(serviceEntry.getAddress()).rxProcess(adapterRequest)
         .map(resp -> buildResultObject(adapterRequest, resp));
   }
 
