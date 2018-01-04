@@ -45,9 +45,14 @@ public class ServiceEngine {
   public ServiceEngine(Vertx vertx, ServiceKnotConfiguration serviceConfiguration) {
     this.configuration = serviceConfiguration;
     this.adapters = new HashMap<>();
-    this.configuration.getServices().stream().forEach(service -> adapters
-        .put(service.getAddress(), AdapterProxy.createProxyWithOptions(vertx, service.getAddress(),
-            configuration.getDeliveryOptions())));
+    this.configuration.getServices().stream().forEach(
+        service -> adapters.put(service.getAddress(),
+            AdapterProxy.createProxyWithOptions(
+                vertx,
+                service.getAddress(),
+                configuration.getDeliveryOptions())
+        )
+    );
   }
 
   public Single<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
