@@ -16,7 +16,8 @@
     "knotx:io.knotx.ActionAdapterMock",
     "knotx:io.knotx.GatewayKnot",
     "knotx:example.io.knotx.RequestProcessorKnot",
-    "knotx:io.knotx.ResponseProviderKnot"
+    "knotx:io.knotx.ResponseProviderKnot",
+    "knotx:example.io.knotx.ExampleBlockingAdapter"
   ],
   "config": {
     "knotx:io.knotx.ServiceKnot": {
@@ -40,7 +41,7 @@
             },
             {
               "name": "third-service",
-              "address": "knotx.adapter.service.http",
+              "address": "example.knotx.blocking.adapter",
               "params": {
                 "path": "/service/mock/third.json"
               }

@@ -32,9 +32,10 @@
   <name>Knot.x - Reactive microservice assembler - Example</name>
 
   <modules>
-    <module>knotx-example-handlebars-ext</module>
-    <module>knotx-example-action-adapter-http</module>
     <module>knotx-example-app</module>
+    <module>knotx-example-blocking-adapter</module>
+    <module>knotx-example-action-adapter-http</module>
     <module>knotx-example-gateway</module>
+    <module>knotx-example-handlebars-ext</module>
   </modules>
 </project>
