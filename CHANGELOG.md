@@ -10,7 +10,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-350](https://github.com/Cognifide/knotx/pull/350) - Cosmetic cleanup of default logback.xml config files. Fixed URLs to the bootstrap CSS on example app.
  - [PR-352](https://github.com/Cognifide/knotx/pull/352) - Fix for #351 - Prevent NPE if service returns empty body
  - [PR-353](https://github.com/Cognifide/knotx/pull/353) - Fix for #351 - Deprecated [`ProxyHelper`](http://vertx.io/docs/apidocs/io/vertx/serviceproxy/ProxyHelper.html) replaced with [`ServiceBinder`](http://vertx.io/docs/apidocs/io/vertx/serviceproxy/ServiceBinder.html)
-
+ - [PR-357](https://github.com/Cognifide/knotx/pull/357) - Fix for #356 - Create AdapterProxies on serviceKnot start instead for each request
 
 ## Version 1.1.2
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
