@@ -20,17 +20,23 @@ import java.util.Map;
 public class RoutingEntry {
 
   private String path;
+  private boolean csrfEnabled;
   private String address;
   private Map<String, RoutingEntry> onTransition;
 
-  public RoutingEntry(String path, String address, Map<String, RoutingEntry> onTransition) {
+  public RoutingEntry(String path, boolean csrfEnabled, String address, Map<String, RoutingEntry> onTransition) {
     this.path = path;
+    this.csrfEnabled = csrfEnabled;
     this.address = address;
     this.onTransition = onTransition;
   }
 
   public String path() {
     return path;
+  }
+
+  public boolean isCsrfEnabled() {
+    return csrfEnabled;
   }
 
   public String address() {
