@@ -152,6 +152,7 @@ Main server options available.
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `fileUploadDirectory`       | `String`                            |                | Uploads directory on server for file uploads - used during POST, PUT request methods. **file-uploads** if not set.|
+| `fileUploadLimit`           | `Long`                              |                | Limits the size of file that can be uploaded to Knot.x using POST or PUT request methods. Default is **unlimited**.|
 | `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
 | `customResponseHeader`      | `KnotxServerCustomHeader`           |                | Sets the custom header in each response from Knot.x to the client. Default value is **X-Server:Knot.x** |
 | `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |

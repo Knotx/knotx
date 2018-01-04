@@ -21,7 +21,7 @@ import io.vertx.ext.web.handler.CSRFHandler;
 
 public class KnotxCSRFConfig {
 
-  private long DEFAULT_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+  private static final long DEFAULT_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 
   private static final String DEFAULT_SECRET = "a31DDUam$D{h{x5*ah2j0,EQhkA`Su";
 
