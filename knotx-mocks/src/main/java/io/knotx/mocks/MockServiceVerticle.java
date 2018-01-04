@@ -16,7 +16,7 @@
 package io.knotx.mocks;
 
 
-import io.knotx.mocks.adapter.MockServiceHandler;
+import io.knotx.mocks.handler.MockServiceHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpMethod;
