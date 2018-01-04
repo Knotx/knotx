@@ -265,7 +265,7 @@ Other option is to provide those parameters through JVM properties:
 - `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.password=keyPass`
 - `-Dio.knotx.KnotxServer.options.config.serverOptions.ssl=true`
 
-### How to enable CSRF Token generation & validation
+### How to enable CSRF Token generation and validation
 
 As soon as you start implementing the REST API or form capturing via Knot.x, you might want to enable CSRF attack protection to prevent unwanted actions on your application. E.g. to prevent accepting POST requests if the request is unauthenticated by the Knot.x.
 In order to do so, you need to configure two things:
