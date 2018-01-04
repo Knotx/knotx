@@ -18,18 +18,18 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.RepositoryConnectorProxy;
+import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpServerResponse;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Optional;
 
 public class KnotxRepositoryHandler implements Handler<RoutingContext> {
@@ -45,7 +45,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
   }
 
-  public static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
     return new KnotxRepositoryHandler(vertx, configuration);
   }
 
@@ -53,10 +53,11 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext context) {
     final Optional<RepositoryEntry> repositoryEntry = configuration
         .getDefaultFlow().repositoryForPath(context.request().path());
-    final KnotContext knotContext = toKnotContext(context);
+    final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
-      RepositoryConnectorProxy.createProxy(vertx, repositoryEntry.get().address())
+      RepositoryConnectorProxy
+          .createProxyWithOptions(vertx, repositoryEntry.get().address(), configuration.getDeliveryOptions())
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
@@ -64,7 +65,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
                 if (isSuccessResponse(repoResponse)) {
                   if (repositoryEntry.get().doProcessing()) {
                     knotContext.setClientResponse(repoResponse);
-                    context.put("knotContext", knotContext);
+                    context.put(KnotContext.KEY, knotContext);
                     context.next();
                   } else {
                     writeHeaders(context.response(), repoResponse.getHeaders());
@@ -94,10 +95,6 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   private boolean isErrorResponse(ClientResponse repoResponse) {
     return HttpResponseStatus.INTERNAL_SERVER_ERROR.code() == repoResponse.getStatusCode() ||
         HttpResponseStatus.NOT_FOUND.code() == repoResponse.getStatusCode();
-  }
-
-  private KnotContext toKnotContext(RoutingContext context) {
-    return new KnotContext().setClientRequest(new ClientRequest(context.request()));
   }
 
   private void traceMessage(ClientResponse message) {

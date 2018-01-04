@@ -15,20 +15,22 @@
  */
 package io.knotx.server;
 
+import io.knotx.server.configuration.KnotxCSRFConfig;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.core.http.HttpServer;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.handler.BodyHandler;
-import io.vertx.rxjava.ext.web.handler.ErrorHandler;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServer;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.handler.BodyHandler;
+import io.vertx.reactivex.ext.web.handler.CSRFHandler;
+import io.vertx.reactivex.ext.web.handler.CookieHandler;
+import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -47,15 +49,31 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
+    KnotxCSRFConfig csrfConfig = configuration.getCsrfConfig();
+    CSRFHandler csrfHandler = CSRFHandler.create(csrfConfig.getSecret())
+        .setNagHttps(true) //Generates warning message in log if https is not used
+        .setCookieName(csrfConfig.getCookieName())
+        .setCookiePath(csrfConfig.getCookiePath())
+        .setHeaderName(csrfConfig.getHeaderName())
+        .setTimeout(csrfConfig.getTimeout());
+
     Router router = Router.router(vertx);
+    router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
+    router.route().handler(CookieHandler.create());
+    router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
+        .setBodyLimit(configuration.getFileUploadLimit()));
+
+    router.route().handler(KnotxContextHandler.create());
 
     configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
-      if (key == HttpMethod.POST) {
-        router.route().method(key).handler(BodyHandler.create());
-      }
       value.forEach(
           criteria -> {
+            if (criteria.isCsrfEnabled()) {
+              router.route().method(key)
+                  .pathRegex(criteria.path())
+                  .handler(csrfHandler);
+            }
             router.route()
                 .method(key)
                 .pathRegex(criteria.path())
@@ -70,7 +88,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
                 .method(key)
                 .pathRegex(criteria.path())
                 .handler(KnotxEngineHandler
-                    .create(vertx, criteria.address(), criteria.onTransition()));
+                    .create(vertx, configuration, criteria.address(), criteria.onTransition()));
 
             router.route()
                 .method(key)
@@ -82,20 +100,23 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     if (configuration.getCustomFlow().getEngineRouting() != null) {
       configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
-        if (key == HttpMethod.POST || key == HttpMethod.PUT || key == HttpMethod.DELETE) {
-          router.route().method(key).handler(BodyHandler.create());
-        }
         value.forEach(
             criteria -> {
+              if (criteria.isCsrfEnabled()) {
+                router.route().method(key)
+                    .pathRegex(criteria.path())
+                    .handler(csrfHandler);
+              }
               router.route().method(key)
                   .pathRegex(criteria.path())
-                  .handler(KnotxGatewayContextHandler.create(vertx, criteria.address()));
+                  .handler(
+                      KnotxGatewayContextHandler.create(vertx, configuration, criteria.address()));
 
               router.route()
                   .method(key)
                   .pathRegex(criteria.path())
                   .handler(KnotxEngineHandler
-                      .create(vertx, criteria.address(), criteria.onTransition()));
+                      .create(vertx, configuration, criteria.address(), criteria.onTransition()));
 
               router.route()
                   .method(key)
@@ -107,7 +128,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
     }
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
-
 
     createHttpServer()
         .requestHandler(router::accept)

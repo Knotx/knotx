@@ -25,8 +25,8 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.serviceproxy.ServiceBinder;
 
 public class HttpServiceAdapterVerticle extends AbstractVerticle {
 
@@ -35,6 +35,8 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
   private HttpAdapterConfiguration configuration;
 
   private MessageConsumer<JsonObject> consumer;
+
+  private ServiceBinder serviceBinder;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -47,14 +49,15 @@ public class HttpServiceAdapterVerticle extends AbstractVerticle {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
-    consumer = ProxyHelper
-        .registerService(AdapterProxy.class, getVertx(),
-            new HttpServiceAdapterProxyImpl(vertx, configuration),
-            configuration.getAddress());
+
+    serviceBinder = new ServiceBinder(getVertx());
+    consumer = serviceBinder
+        .setAddress(configuration.getAddress())
+        .register(AdapterProxy.class, new HttpServiceAdapterProxyImpl(vertx, configuration));
   }
 
   @Override
   public void stop() throws Exception {
-    ProxyHelper.unregisterService(consumer);
+    serviceBinder.unregister(consumer);
   }
 }

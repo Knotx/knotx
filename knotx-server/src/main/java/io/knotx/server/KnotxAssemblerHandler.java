@@ -17,17 +17,17 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpServerResponse;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
@@ -39,7 +39,8 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.assembler = KnotProxy.createProxy(vertx, configuration.getDefaultFlow().assemblerAddress());
+    this.assembler = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().assemblerAddress(),
+        configuration.getDeliveryOptions());
   }
 
   static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -48,7 +49,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
       assembler.rxProcess(knotContext)

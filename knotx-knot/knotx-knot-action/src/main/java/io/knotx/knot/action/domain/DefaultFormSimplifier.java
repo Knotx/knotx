@@ -39,7 +39,7 @@ public class DefaultFormSimplifier implements FormSimplifier {
     Document scriptContentDocument = FragmentContentExtractor.unwrapDocument(content);
     Element actionFormElement = scriptContentDocument.getElementsByAttribute(FORM_ACTION_ATTR).first();
 
-    LOGGER.trace("Changing form with identifier [{}]", formIdAttrValue);
+    LOGGER.debug("Changing form with identifier [{}]", formIdAttrValue);
     addHiddenInputTag(actionFormElement, formIdAttrName, formIdAttrValue);
     clearFromActionAttributes(actionFormElement);
     return getFragmentContent(content, scriptContentDocument);

@@ -21,6 +21,7 @@ import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.DeliveryOptions;
 
 @ProxyGen
 @VertxGen
@@ -28,6 +29,10 @@ public interface KnotProxy {
 
   static KnotProxy createProxy(Vertx vertx, String address) {
     return new KnotProxyVertxEBProxy(vertx, address);
+  }
+
+  static KnotProxy createProxyWithOptions(Vertx vertx, String address, DeliveryOptions deliveryOptions) {
+    return new KnotProxyVertxEBProxy(vertx, address, deliveryOptions);
   }
 
   void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);

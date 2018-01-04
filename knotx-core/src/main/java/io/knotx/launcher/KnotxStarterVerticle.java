@@ -1,4 +1,5 @@
 /*
+/*
  * Copyright (C) 2016 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +16,15 @@
  */
 package io.knotx.launcher;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Observable;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
 
@@ -33,9 +35,11 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> startFuture) throws Exception {
     printLogo();
-    Observable.from(config().getJsonArray("modules"))
+    Observable.fromIterable(config().getJsonArray("modules"))
         .flatMap(module -> deployVerticle(module)
-            .onErrorResumeNext(throwable -> verticleCouldNotBeDeployed(module, throwable))
+            .onErrorResumeNext(
+                throwable -> (Observable<Pair<String, String>>) verticleCouldNotBeDeployed(module,
+                    throwable))
         )
         .compose(joinDeployments())
         .subscribe(
@@ -74,10 +78,11 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     return deploymentOptions;
   }
 
-  private Observable.Transformer<Pair<String, String>, String> joinDeployments() {
+  private ObservableTransformer<Pair<String, String>, String> joinDeployments() {
     return observable ->
         observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()),
             this::collectDeployment)
+            .toObservable()
             .map(StringBuilder::toString);
   }
 
@@ -90,7 +95,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   }
 
   private void printLogo() {
-    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    System.out.println("@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     System.out.println("@@                                  ,,,,,,,,,                                 @@");
     System.out.println("@@                                *,,,,,,,,,,,*                               @@");
     System.out.println("@@                              @@&,,,,,,,,,,,,,*                             @@");
@@ -125,7 +130,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     System.out.println("@@                       @@@@@@@@@@@@@@@*,,,,,,,,,,,,,,*                      @@");
     System.out.println("@@                         @@@@@@@@@@@@,,,,,,,,,,,,,,*                        @@");
     System.out.println("@@                           @@@@@@@@%,,,,,,,,,,,,,*                          @@");
-    System.out.println("@@                             @@@@@/,,,,,,,,,,,,*                            @@");
+    System.out.println("@@                            @@@@@/,,,,,,,,,,,,*                            @@");
     System.out.println("@@                               @@,,,,,,,,,,,,*                              @@");
     System.out.println("@@                                 *,,,,,,,,,*                                @@");
     System.out.println("@@                                    ,,,*/                                   @@");

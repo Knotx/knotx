@@ -19,15 +19,17 @@ import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.service.ServiceKnotConfiguration;
-import io.knotx.rxjava.proxy.AdapterProxy;
-import io.vertx.core.json.DecodeException;
+import io.knotx.reactivex.proxy.AdapterProxy;
+import io.reactivex.Single;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
+import io.vertx.reactivex.core.Vertx;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import rx.Single;
+import org.apache.commons.lang3.StringUtils;
 
 public class ServiceEngine {
 
@@ -38,11 +40,19 @@ public class ServiceEngine {
 
   private final ServiceKnotConfiguration configuration;
 
-  private final Vertx vertx;
+  private final Map<String, AdapterProxy> adapters;
 
   public ServiceEngine(Vertx vertx, ServiceKnotConfiguration serviceConfiguration) {
-    this.vertx = vertx;
     this.configuration = serviceConfiguration;
+    this.adapters = new HashMap<>();
+    this.configuration.getServices().stream().forEach(
+        service -> adapters.put(service.getAddress(),
+            AdapterProxy.createProxyWithOptions(
+                vertx,
+                service.getAddress(),
+                configuration.getDeliveryOptions())
+        )
+    );
   }
 
   public Single<JsonObject> doServiceCall(ServiceEntry serviceEntry, KnotContext knotContext) {
@@ -50,9 +60,8 @@ public class ServiceEngine {
         .setRequest(knotContext.getClientRequest())
         .setParams(serviceEntry.getParams());
 
-    AdapterProxy serviceProxy = AdapterProxy.createProxy(vertx, serviceEntry.getAddress());
-
-    return serviceProxy.rxProcess(adapterRequest).map(this::buildResultObject);
+    return adapters.get(serviceEntry.getAddress()).rxProcess(adapterRequest)
+        .map(resp -> buildResultObject(adapterRequest, resp));
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
@@ -73,7 +82,8 @@ public class ServiceEngine {
         });
   }
 
-  private JsonObject buildResultObject(AdapterResponse adapterResponse) {
+  private JsonObject buildResultObject(AdapterRequest adapterRequest,
+      AdapterResponse adapterResponse) {
     JsonObject object = new JsonObject();
 
     String rawData = adapterResponse.getResponse().getBody().toString().trim();
@@ -83,7 +93,9 @@ public class ServiceEngine {
     } else if (rawData.charAt(0) == '{') {
       object.put(RESULT_NAMESPACE_KEY, new JsonObject(rawData));
     } else {
-      throw new DecodeException("Result is neither Json Array nor Json Object");
+      LOGGER.error("Result of [{} {}] neither Json Array nor Json Object: [{}]",
+          adapterRequest.getRequest().getMethod(), adapterRequest.getRequest().getPath(),
+          StringUtils.abbreviate(rawData, 15));
     }
     object.put(RESPONSE_NAMESPACE_KEY, new JsonObject()
         .put("statusCode", Integer.toString(adapterResponse.getResponse().getStatusCode())));

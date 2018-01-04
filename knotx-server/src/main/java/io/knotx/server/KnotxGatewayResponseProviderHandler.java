@@ -17,17 +17,17 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.core.http.HttpServerResponse;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpServerResponse;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class KnotxGatewayResponseProviderHandler implements Handler<RoutingContext> {
 
@@ -39,7 +39,9 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
 
   private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.configuration = configuration;
-    this.responseProviderProxy = KnotProxy.createProxy(vertx, configuration.getCustomFlow().responseProviderAddress());
+    this.responseProviderProxy = KnotProxy
+        .createProxyWithOptions(vertx, configuration.getCustomFlow().responseProviderAddress(),
+            configuration.getDeliveryOptions());
   }
 
   static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -48,7 +50,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (isOkClientResponse(knotContext.getClientResponse())) {
       responseProviderProxy.rxProcess(knotContext)
@@ -90,7 +92,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
   }
 
   private void writeHeaders(final HttpServerResponse response,
-                            final ClientResponse clientResponse) {
+      final ClientResponse clientResponse) {
     clientResponse.getHeaders().names().stream()
         .filter(this::headerFilter)
         .forEach(

@@ -21,13 +21,13 @@ import io.knotx.dataobjects.AdapterResponse;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.proxy.AdapterProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import rx.Single;
 
 public abstract class AbstractAdapterProxy implements AdapterProxy {
 

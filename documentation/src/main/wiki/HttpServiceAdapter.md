@@ -63,6 +63,10 @@ Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.
         "keepAlive": false,
         "logActivity": true
       },
+      "customRequestHeader": {
+        "name": "Server-User-Agent",
+        "value": "Knot.x"
+      },
       "services": [
         {
           "path": "/service/mock/.*",
@@ -86,6 +90,7 @@ Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.
     }
   }
 }
+
 ```
 In general, the default configuration covers:
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
@@ -94,6 +99,7 @@ will be processed by Http Service Adapter.
 Any HttpClientOption may be defined in this section, at this example two options are defined:
   - `maxPoolSize` -  maximum pool size for simultaneous connections,
   - `keepAlive` - that shows keep alive should be disabled on the client.
+- `customRequestHeader` - an JSON object that consists of name and value of the header to be sent in each request to any service configured. If the same header comes from the client request, it will be always overwritten with the value configured here.
 - `services` - an JSON array of services that Http Service Adapter can connect to. Each service is distinguished by `path` parameter which is regex.
 In example above, two services are configured:
   - `/service/mock/.*` that will call `http://localhost:3000` domain with defined [path](#service-path),

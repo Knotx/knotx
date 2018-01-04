@@ -83,7 +83,10 @@ public class KnotxFlowConfiguration {
   }
 
   private RoutingEntry parseRoutingCriteria(JsonObject object) {
-    return new RoutingEntry(object.getString("path"), object.getString("address"),
+    return new RoutingEntry(
+        object.getString("path"),
+        object.getBoolean("csrf", false),
+        object.getString("address"),
         parseOnTransition(object.getJsonObject("onTransition")));
   }
 

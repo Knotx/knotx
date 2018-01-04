@@ -15,7 +15,9 @@
  */
 package io.knotx.adapter.common.http;
 
+import com.google.common.collect.Lists;
 import io.knotx.http.StringToPatternFunction;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
@@ -23,11 +25,19 @@ import java.util.stream.Collectors;
 
 public class HttpAdapterConfiguration {
 
+  private JsonObject customRequestHeader;
+
   private String address;
 
   private List<ServiceMetadata> services;
 
   private JsonObject clientOptions;
+
+  public HttpAdapterConfiguration() {
+    customRequestHeader = new JsonObject();
+    services = Lists.newArrayList();
+    clientOptions = new HttpClientOptions().toJson();
+  }
 
   public HttpAdapterConfiguration(JsonObject config) {
     address = config.getString("address");
@@ -48,10 +58,35 @@ public class HttpAdapterConfiguration {
           return metadata;
         }).collect(Collectors.toList());
     clientOptions = config.getJsonObject("clientOptions", new JsonObject());
+    customRequestHeader = config.getJsonObject("customRequestHeader", new JsonObject());
+  }
+
+  public HttpAdapterConfiguration setAddress(String address) {
+    this.address = address;
+    return this;
+  }
+
+  public HttpAdapterConfiguration setServices(List<ServiceMetadata> services) {
+    this.services = Lists.newArrayList(services);
+    return this;
+  }
+
+  public HttpAdapterConfiguration setClientOptions(JsonObject clientOptions) {
+    this.clientOptions = clientOptions.copy();
+    return this;
+  }
+
+  public HttpAdapterConfiguration setCustomRequestHeader(JsonObject customRequestHeader) {
+    this.customRequestHeader = customRequestHeader.copy();
+    return this;
   }
 
   public JsonObject getClientOptions() {
     return clientOptions;
+  }
+
+  public JsonObject getCustomRequestHeader() {
+    return customRequestHeader;
   }
 
   public List<ServiceMetadata> getServices() {

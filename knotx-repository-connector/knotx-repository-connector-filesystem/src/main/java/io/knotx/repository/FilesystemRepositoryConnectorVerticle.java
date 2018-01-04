@@ -24,7 +24,7 @@ import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.serviceproxy.ProxyHelper;
+import io.vertx.serviceproxy.ServiceBinder;
 
 public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
 
@@ -34,6 +34,8 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
   private String address;
 
   private MessageConsumer<JsonObject> consumer;
+
+  private ServiceBinder serviceBinder;
 
   @Override
   public void init(Vertx vertx, Context context) {
@@ -46,13 +48,16 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
-    consumer = ProxyHelper
-        .registerService(RepositoryConnectorProxy.class, vertx,
-            new FilesystemRepositoryConnectorProxyImpl(vertx, config()), address);
+    serviceBinder = new ServiceBinder(getVertx());
+    consumer = serviceBinder
+        .setAddress(address)
+        .register(RepositoryConnectorProxy.class,
+            new FilesystemRepositoryConnectorProxyImpl(vertx, config()));
   }
 
   @Override
   public void stop() throws Exception {
-    ProxyHelper.unregisterService(consumer);
+    serviceBinder.unregister(consumer);
   }
+
 }

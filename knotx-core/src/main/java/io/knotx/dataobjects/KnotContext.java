@@ -18,13 +18,15 @@ package io.knotx.dataobjects;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.reactivex.Single;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
-import rx.Single;
 
 @DataObject(generateConverter = true)
 public class KnotContext {
+
+  public static final String KEY = "knotContext";
 
   private String transition;
 

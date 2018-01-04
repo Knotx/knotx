@@ -6,7 +6,11 @@
       "clientOptions": {
         "maxPoolSize": 1000,
         "keepAlive": false,
-        "logActivity": true
+        "logActivity": false
+      },
+      "customRequestHeader": {
+        "name": "Server-User-Agent",
+        "value": "Knot.x"
       },
       "services": [
         {

@@ -23,20 +23,21 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
+import io.knotx.util.DataObjectsUtil;
+import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.MultiMap;
-import io.vertx.rxjava.core.buffer.Buffer;
-import io.vertx.rxjava.ext.web.client.HttpRequest;
-import io.vertx.rxjava.ext.web.client.HttpResponse;
-import io.vertx.rxjava.ext.web.client.WebClient;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.ext.web.client.HttpRequest;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
-import rx.Single;
 
 public class HttpClientFacade {
 
@@ -49,17 +50,49 @@ public class HttpClientFacade {
 
   private final WebClient webClient;
 
-  public HttpClientFacade(WebClient webClient, List<ServiceMetadata> services) {
+  private final JsonObject customRequestHeader;
+
+  public HttpClientFacade(WebClient webClient, HttpAdapterConfiguration configuration) {
     this.webClient = webClient;
-    this.services = services;
+    this.services = configuration.getServices();
+    this.customRequestHeader = configuration.getCustomRequestHeader();
   }
 
   public Single<ClientResponse> process(AdapterRequest message, HttpMethod method) {
     return Single.just(message)
         .doOnSuccess(this::validateContract)
         .map(this::prepareRequestData)
-        .flatMap(serviceRequest -> callService(serviceRequest, method))
+        .flatMap(
+            serviceRequest -> callService(serviceRequest, method)
+                .doOnSuccess(resp -> logResponse(serviceRequest, resp)))
         .flatMap(this::wrapResponse);
+  }
+
+  private void logResponse(Pair<ClientRequest, ServiceMetadata> request,
+      HttpResponse<Buffer> resp) {
+    if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
+      LOGGER.error("{} {} -> Got response {}, headers[{}]",
+          logResponseData(request, resp));
+    } else if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("{} {} -> Got response {}, headers[{}]",
+          logResponseData(request, resp));
+    }
+  }
+
+  private Object[] logResponseData(Pair<ClientRequest, ServiceMetadata> request,
+      HttpResponse<Buffer> resp) {
+    Object[] data = {
+        request.getLeft().getMethod(),
+        toUrl(request),
+        resp.statusCode(),
+        DataObjectsUtil.toString(resp.headers())};
+
+    return data;
+  }
+
+  private String toUrl(Pair<ClientRequest, ServiceMetadata> request) {
+    return new StringBuilder(request.getRight().getDomain()).append(request.getRight().getPort())
+        .append(request.getLeft().getPath()).toString();
   }
 
   /**
@@ -170,11 +203,19 @@ public class HttpClientFacade {
 
   private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
       ServiceMetadata serviceMetadata) {
+
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
         serviceMetadata.getAllowedRequestHeaderPatterns());
     filteredHeaders.names().forEach(
         headerName -> filteredHeaders.getAll(headerName)
-            .forEach(value -> request.putHeader(headerName, value)));
+            .forEach(value -> request.headers().add(headerName, value)));
+
+    if (customRequestHeader.containsKey("name") && customRequestHeader.containsKey("value")) {
+      request.headers().set(
+          customRequestHeader.getString("name"),
+          customRequestHeader.getString("value")
+      );
+    }
   }
 
   private MultiMap getFilteredHeaders(MultiMap headers, List<Pattern> allowedHeaders) {
@@ -184,13 +225,22 @@ public class HttpClientFacade {
   }
 
   private Single<ClientResponse> wrapResponse(HttpResponse<Buffer> response) {
-    return Single.just(response.body())
+    return toBody(response)
         .doOnSuccess(this::traceServiceCall)
         .map(buffer -> new ClientResponse()
             .setBody(buffer.getDelegate())
             .setHeaders(response.headers())
             .setStatusCode(response.statusCode())
         );
+  }
+
+  private Single<Buffer> toBody(HttpResponse<Buffer> response) {
+    if (response.body() != null) {
+      return Single.just(response.body());
+    } else {
+      LOGGER.warn("Service returned empty body");
+      return Single.just(Buffer.buffer());
+    }
   }
 
   private void traceServiceCall(Buffer results) {

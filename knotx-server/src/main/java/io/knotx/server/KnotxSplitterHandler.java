@@ -16,14 +16,14 @@
 package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.rxjava.proxy.KnotProxy;
+import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.rxjava.core.Vertx;
-import io.vertx.rxjava.ext.web.RoutingContext;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
@@ -34,7 +34,8 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
   private KnotxServerConfiguration configuration;
 
   private KnotxSplitterHandler(Vertx vertx, KnotxServerConfiguration configuration) {
-    this.splitter = KnotProxy.createProxy(vertx, configuration.getDefaultFlow().splitterAddress());
+    this.splitter = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().splitterAddress(),
+        configuration.getDeliveryOptions());
     this.configuration = configuration;
   }
 
@@ -44,14 +45,14 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext context) {
-    KnotContext knotContext = context.get("knotContext");
+    KnotContext knotContext = context.get(KnotContext.KEY);
 
     splitter.rxProcess(knotContext)
         .doOnSuccess(this::traceMessage)
         .subscribe(
             ctx -> {
               if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
-                context.put("knotContext", ctx);
+                context.put(KnotContext.KEY, ctx);
                 context.next();
               } else {
                 context.fail(ctx.getClientResponse().getStatusCode());
@@ -70,4 +71,5 @@ public class KnotxSplitterHandler implements Handler<RoutingContext> {
       LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx);
     }
   }
+
 }

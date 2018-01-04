@@ -15,11 +15,18 @@
  */
 package io.knotx.server.configuration;
 
+import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.BodyHandler;
 import java.util.Set;
 import java.util.stream.Collectors;
-import io.vertx.core.json.JsonObject;
 
 public class KnotxServerConfiguration {
+
+  //Default limit=-1 - Unlimited size
+  private final static long DEFAULT_UPLOAD_LIMIT = -1;
+
+  private final Long fileUploadLimit;
 
   private boolean displayExceptionDetails;
 
@@ -29,11 +36,21 @@ public class KnotxServerConfiguration {
 
   private KnotxFlowConfiguration customFlow;
 
+  private String fileUploadDirectory;
+
   private JsonObject serverOptions;
 
+  private DeliveryOptions deliveryOptions;
+
+  private JsonObject customResponseHeader;
+
+  private KnotxCSRFConfig csrfConfig;
 
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
+
+    customResponseHeader = config
+        .getJsonObject("customResponseHeader", new JsonObject());
 
     allowedResponseHeaders = config.getJsonArray("allowedResponseHeaders").stream()
         .map(item -> ((String) item).toLowerCase())
@@ -41,12 +58,23 @@ public class KnotxServerConfiguration {
 
     defaultFlow = new KnotxFlowConfiguration(config.getJsonObject("defaultFlow"));
     customFlow = new KnotxFlowConfiguration(config.getJsonObject("customFlow"));
-
+    fileUploadDirectory = config
+        .getString("fileUploadDirectory", BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
+    fileUploadLimit = config.getLong("fileUploadLimit", DEFAULT_UPLOAD_LIMIT);
     serverOptions = config.getJsonObject("serverOptions", new JsonObject());
+    deliveryOptions =
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(
+            config.getJsonObject("deliveryOptions"))
+            : new DeliveryOptions();
+    csrfConfig = new KnotxCSRFConfig(config.getJsonObject("csrf", new JsonObject()));
   }
 
   public boolean displayExceptionDetails() {
     return displayExceptionDetails;
+  }
+
+  public JsonObject getCustomResponseHeader() {
+    return customResponseHeader;
   }
 
   public Set<String> getAllowedResponseHeaders() {
@@ -61,7 +89,23 @@ public class KnotxServerConfiguration {
     return customFlow;
   }
 
+  public String getFileUploadDirectory() {
+    return fileUploadDirectory;
+  }
+
   public JsonObject getServerOptions() {
     return serverOptions;
+  }
+
+  public DeliveryOptions getDeliveryOptions() {
+    return deliveryOptions;
+  }
+
+  public KnotxCSRFConfig getCsrfConfig() {
+    return csrfConfig;
+  }
+
+  public Long getFileUploadLimit() {
+    return fileUploadLimit;
   }
 }

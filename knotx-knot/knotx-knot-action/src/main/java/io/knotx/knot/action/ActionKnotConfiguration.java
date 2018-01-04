@@ -15,8 +15,9 @@
  */
 package io.knotx.knot.action;
 
-import io.knotx.http.StringToPatternFunction;
 import com.google.common.base.MoreObjects;
+import io.knotx.http.StringToPatternFunction;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
@@ -34,10 +35,12 @@ public class ActionKnotConfiguration {
 
   private final String formIdentifierName;
 
-  public ActionKnotConfiguration(JsonObject config) {
-    this.address = config.getString("address");
-    this.formIdentifierName = config.getString("formIdentifierName");
-    this.adapterMetadataList = config.getJsonArray("adapters").stream()
+  private DeliveryOptions deliveryOptions;
+
+  ActionKnotConfiguration(JsonObject config) {
+    address = config.getString("address");
+    formIdentifierName = config.getString("formIdentifierName");
+    adapterMetadataList = config.getJsonArray("adapters").stream()
         .map(item -> (JsonObject) item)
         .map(item -> {
           AdapterMetadata metadata = new AdapterMetadata();
@@ -56,6 +59,9 @@ public class ActionKnotConfiguration {
               .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
+    deliveryOptions =
+        config.containsKey("deliveryOptions") ? new DeliveryOptions(config.getJsonObject("deliveryOptions"))
+            : new DeliveryOptions();
   }
 
   public List<AdapterMetadata> adapterMetadatas() {
@@ -68,6 +74,10 @@ public class ActionKnotConfiguration {
 
   public String address() {
     return address;
+  }
+
+  public DeliveryOptions getDeliveryOptions() {
+    return deliveryOptions;
   }
 
   public static class AdapterMetadata {

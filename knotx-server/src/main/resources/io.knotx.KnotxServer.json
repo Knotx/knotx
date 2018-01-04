@@ -2,11 +2,15 @@
   "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "serverOptions" : {
+      "serverOptions": {
         "port": 8092,
         "keyStoreOptions": {}
       },
       "displayExceptionDetails": true,
+      "customResponseHeader": {
+        "name": "X-Server",
+        "value": "Knot.x"
+      },
       "allowedResponseHeaders": [
         "Access-Control-Allow-Origin",
         "Allow",
@@ -21,6 +25,7 @@
         "Content-Length",
         "Content-Security-Policy",
         "Date",
+        "Edge-Control",
         "ETag",
         "Expires",
         "Last-Modified",
@@ -30,13 +35,15 @@
         "Server",
         "Set-Cookie",
         "Status",
+        "Surrogate-Control",
         "Vary",
         "Via",
         "X-Frame-Options",
         "X-XSS-Protection",
         "X-Content-Type-Options",
         "X-UA-Compatible",
-        "X-Request-ID"
+        "X-Request-ID",
+        "X-Server"
       ],
       "defaultFlow": {
         "repositories": [
@@ -57,6 +64,7 @@
             {
               "path": ".*",
               "address": "knotx.knot.service",
+              "csrf": true,
               "onTransition": {
                 "next": {
                   "address": "knotx.knot.handlebars"
