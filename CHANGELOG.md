@@ -12,6 +12,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-353](https://github.com/Cognifide/knotx/pull/353) - Fix for #351 - Deprecated [`ProxyHelper`](http://vertx.io/docs/apidocs/io/vertx/serviceproxy/ProxyHelper.html) replaced with [`ServiceBinder`](http://vertx.io/docs/apidocs/io/vertx/serviceproxy/ServiceBinder.html)
  - [PR-354](https://github.com/Cognifide/knotx/pull/354) - Improvement - added CSRF protection and ability to configure it on any route.
  - [PR-357](https://github.com/Cognifide/knotx/pull/357) - Fix for #356 - Create AdapterProxies on serviceKnot start instead for each request
+ - [PR-359](https://github.com/Cognifide/knotx/pull/359) - Fix for #355 - Knot.x responses with the response of a repository in case of response with status code different than 200.
 
 ## Version 1.1.2
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
