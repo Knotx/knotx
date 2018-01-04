@@ -1,6 +1,6 @@
 {
   "modules": [
-    "knotx:test.io.knotx.HttpServiceAdapter",
-    "knotx:test.io.knotx.MockService"
+    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "knotx:io.knotx.ServiceMock"
   ]
 }

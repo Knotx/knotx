@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
@@ -56,8 +57,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @RunWith(VertxUnitRunner.class)
 public class ActionKnotProxyVerticleTest {
@@ -237,14 +236,14 @@ public class ActionKnotProxyVerticleTest {
   }
 
   private void callActionKnotWithAssertions(TestContext context, KnotContext knotContext,
-      Action1<KnotContext> onSuccess,
+      Consumer<KnotContext> onSuccess,
       Consumer<Throwable> onError) {
     Async async = context.async();
 
     KnotProxy actionKnot = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     actionKnot.rxProcess(knotContext)
-        .doOnSuccess(onSuccess::call)
+        .doOnSuccess(onSuccess)
         .subscribe(
             success -> async.complete(),
             onError
@@ -286,7 +285,7 @@ public class ActionKnotProxyVerticleTest {
 
   private void createMockAdapter(String address, String addToBody, String signal,
       Map<String, List<String>> headers) {
-    Func1<AdapterRequest, AdapterResponse> adapter = adapterRequest -> {
+    Function<AdapterRequest, AdapterResponse> adapter = adapterRequest -> {
       ClientResponse response = new ClientResponse();
       response.setStatusCode(HttpResponseStatus.OK.code());
       response.setBody(Buffer.buffer().appendString(addToBody));
@@ -302,15 +301,15 @@ public class ActionKnotProxyVerticleTest {
 
   private class MockAdapterImpl implements AdapterProxy {
 
-    private final Func1<AdapterRequest, AdapterResponse> adapter;
+    private final Function<AdapterRequest, AdapterResponse> adapter;
 
-    private MockAdapterImpl(Func1<AdapterRequest, AdapterResponse> adapter) {
+    private MockAdapterImpl(Function<AdapterRequest, AdapterResponse> adapter) {
       this.adapter = adapter;
     }
 
     @Override
     public void process(AdapterRequest request, Handler<AsyncResult<AdapterResponse>> result) {
-      result.handle(Future.succeededFuture(adapter.call(request)));
+      result.handle(Future.succeededFuture(adapter.apply(request)));
     }
   }
 

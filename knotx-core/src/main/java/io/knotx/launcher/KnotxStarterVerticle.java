@@ -56,7 +56,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
 
   private Observable<Pair<String, String>> verticleCouldNotBeDeployed(Object module,
       Throwable throwable) {
-    LOGGER.warn("Can't deploy {}: {}", module, throwable.getMessage());
+    LOGGER.error("Can't deploy {}: {}", module, throwable);
     return Observable.empty();
   }
 
@@ -95,7 +95,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   }
 
   private void printLogo() {
-    System.out.println("@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     System.out.println("@@                                  ,,,,,,,,,                                 @@");
     System.out.println("@@                                *,,,,,,,,,,,*                               @@");
     System.out.println("@@                              @@&,,,,,,,,,,,,,*                             @@");
@@ -130,7 +130,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     System.out.println("@@                       @@@@@@@@@@@@@@@*,,,,,,,,,,,,,,*                      @@");
     System.out.println("@@                         @@@@@@@@@@@@,,,,,,,,,,,,,,*                        @@");
     System.out.println("@@                           @@@@@@@@%,,,,,,,,,,,,,*                          @@");
-    System.out.println("@@                            @@@@@/,,,,,,,,,,,,*                            @@");
+    System.out.println("@@                            @@@@@/,,,,,,,,,,,,*                             @@");
     System.out.println("@@                               @@,,,,,,,,,,,,*                              @@");
     System.out.println("@@                                 *,,,,,,,,,*                                @@");
     System.out.println("@@                                    ,,,*/                                   @@");

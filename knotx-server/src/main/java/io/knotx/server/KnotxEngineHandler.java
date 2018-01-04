@@ -19,14 +19,14 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RoutingEntry;
-import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.BiConsumer;
+import org.apache.commons.lang3.StringUtils;
 
 class KnotxEngineHandler implements Handler<RoutingContext> {
 
@@ -45,7 +45,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
     this.routing = routing;
   }
 
-  static KnotxEngineHandler create(Vertx vertx, KnotxServerConfiguration configuration, String address,
+  static KnotxEngineHandler create(Vertx vertx, KnotxServerConfiguration configuration,
+      String address,
       Map<String, RoutingEntry> routing) {
     return new KnotxEngineHandler(vertx, configuration, address, routing);
   }
@@ -61,36 +62,46 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   }
 
   private void handleRoute(final RoutingContext context, final String address,
-                           final Map<String, RoutingEntry> routing) {
+      final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KnotContext.KEY);
-    KnotProxy knot = KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
+    KnotProxy knot = KnotProxy
+        .createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
     knot.rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
-        .subscribe(
-            ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
-                .ifPresent(on -> {
-                  RoutingEntry entry = routing.get(on);
-                  if (entry != null) {
-                    handleRoute(context, entry.address(), entry.onTransition());
-                  } else {
-                    LOGGER.debug(
-                        "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.", on, address);
-                    // last knot can return default transition
-                    context.put(KnotContext.KEY, ctx);
-                    context.next();
-                  }
-                })
-                .ifNotPresent(() -> {
-                  LOGGER.debug("Request processing finished by {} Knot. Go to the response generation", address);
-                  context.put(KnotContext.KEY, ctx);
-                  context.next();
-                }),
+        .subscribe(ctx -> {
+              if (StringUtils.isNotBlank(ctx.getTransition())) {
+                doTransition(context, ctx, routing);
+              } else {
+                doEndProcessing(context, ctx);
+              }
+            },
             error -> {
               LOGGER.error("Error happened while communicating with {} engine", error, address);
               context.fail(error);
             }
         );
   }
+
+  private void doTransition(RoutingContext context, KnotContext ctx, final Map<String, RoutingEntry> routing) {
+    RoutingEntry entry = routing.get(ctx.getTransition());
+    if (entry != null) {
+      handleRoute(context, entry.address(), entry.onTransition());
+    } else {
+      LOGGER.debug(
+          "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.",
+          ctx.getTransition(), address);
+      // last knot can return default transition
+      context.put(KnotContext.KEY, ctx);
+      context.next();
+    }
+  }
+
+  private void doEndProcessing(RoutingContext context, KnotContext ctx) {
+    LOGGER.debug("Request processing finished by {} Knot. Go to the response generation",
+        address);
+    context.put(KnotContext.KEY, ctx);
+    context.next();
+  };
 
 }

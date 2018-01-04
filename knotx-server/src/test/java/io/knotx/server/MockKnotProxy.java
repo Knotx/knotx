@@ -22,14 +22,14 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.serviceproxy.ServiceBinder;
-import rx.functions.Action1;
+import java.util.function.Consumer;
 
 
 public class MockKnotProxy implements KnotProxy {
 
-  private Action1<KnotContext> knot;
+  private Consumer<KnotContext> knot;
 
-  private MockKnotProxy(Action1<KnotContext> knot) {
+  private MockKnotProxy(Consumer<KnotContext> knot) {
     this.knot = knot;
   }
 
@@ -37,7 +37,7 @@ public class MockKnotProxy implements KnotProxy {
     register(vertx, address, null);
   }
 
-  public static void register(Vertx vertx, String address, Action1<KnotContext> knot) {
+  public static void register(Vertx vertx, String address, Consumer<KnotContext> knot) {
     new ServiceBinder(vertx)
         .setAddress(address)
         .register(KnotProxy.class, new MockKnotProxy(knot));
@@ -46,7 +46,7 @@ public class MockKnotProxy implements KnotProxy {
   @Override
   public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
     if (knot != null) {
-      knot.call(knotContext);
+      knot.accept(knotContext);
     }
     result.handle(Future.succeededFuture(knotContext));
   }

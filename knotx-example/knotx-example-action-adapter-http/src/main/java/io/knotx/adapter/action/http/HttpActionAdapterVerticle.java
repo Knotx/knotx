@@ -17,7 +17,7 @@ package io.knotx.adapter.action.http;
 
 
 import io.knotx.adapter.action.http.impl.HttpActionAdapterProxyImpl;
-import io.knotx.adapter.common.http.HttpAdapterConfiguration;
+import io.knotx.adapter.common.configuration.ServiceAdapterOptions;
 import io.knotx.proxy.AdapterProxy;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -32,7 +32,7 @@ public class HttpActionAdapterVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpActionAdapterVerticle.class);
 
-  private HttpAdapterConfiguration configuration;
+  private ServiceAdapterOptions configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -41,7 +41,7 @@ public class HttpActionAdapterVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new HttpAdapterConfiguration(config());
+    this.configuration = new ServiceAdapterOptions(config());
   }
 
   @Override

@@ -28,7 +28,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Optional;
 import java.util.Set;
-import rx.functions.Action0;
 
 public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
 
@@ -95,13 +94,13 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     }
   }
 
-  private void generateResponse(String path, Action0 action) {
+  private void generateResponse(String path, Runnable action) {
     long delay = getDelay(path);
     if (delay > 0) {
       LOGGER.info("Delaying response for path {} by {} ms", path, delay);
-      vertx.setTimer(delay, timerId -> action.call());
+      vertx.setTimer(delay, timerId -> action.run());
     } else {
-      action.call();
+      action.run();
     }
   }
 

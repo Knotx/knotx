@@ -16,10 +16,10 @@
 package io.knotx.adapter.service.http;
 
 import com.google.common.collect.Lists;
+import io.knotx.adapter.common.configuration.ServiceAdapterOptions;
+import io.knotx.adapter.common.configuration.ServiceSettings;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
-import io.knotx.adapter.common.http.HttpAdapterConfiguration;
 import io.knotx.adapter.common.http.HttpClientFacade;
-import io.knotx.adapter.common.http.ServiceMetadata;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
@@ -201,13 +201,13 @@ public class HttpClientFacadeTest {
     return new AdapterRequest().setParams(params).setRequest(request);
   }
 
-  private HttpAdapterConfiguration getConfiguration() {
-    return new HttpAdapterConfiguration().setServices(getServiceConfigurations());
+  private ServiceAdapterOptions getConfiguration() {
+    return new ServiceAdapterOptions().setServices(getServiceConfigurations());
   }
 
-  private List<ServiceMetadata> getServiceConfigurations() {
+  private List<ServiceSettings> getServiceConfigurations() {
     return Lists.newArrayList(
-        new ServiceMetadata()
+        new ServiceSettings()
             .setPort(PORT)
             .setDomain(DOMAIN)
             .setPath(PATH)

@@ -28,12 +28,12 @@ import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.reactivex.core.Vertx;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
 public class HtmlFragmentSplitterVerticleTest {
@@ -76,13 +76,13 @@ public class HtmlFragmentSplitterVerticleTest {
   }
 
   private void callFragmentSplitterWithAssertions(TestContext context, String template,
-      Action1<KnotContext> testFunction) {
+      Consumer<KnotContext> testFunction) {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     service.rxProcess(KnotContextFactory.empty(template))
         .map(ctx -> Pair.of(async, ctx))
-        .doOnSuccess(success -> testFunction.call(success.getRight()))
+        .doOnSuccess(success -> testFunction.accept(success.getRight()))
         .subscribe(
             success -> async.complete(),
             context::fail

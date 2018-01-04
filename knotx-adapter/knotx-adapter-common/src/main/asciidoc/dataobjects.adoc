@@ -1,0 +1,90 @@
+= Cheatsheets
+
+[[CustomRequestHeader]]
+== CustomRequestHeader
+
+++++
+ Describes a custom request header to be sent in every request to the services.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[name]]`name`|`String`|
++++
+Set the name of the request header
++++
+|[[value]]`value`|`String`|
++++
+Set the value of the request header
++++
+|===
+
+[[ServiceAdapterOptions]]
+== ServiceAdapterOptions
+
+++++
+ Options describing how an ServiceAdapter will make connections with external HTTP services.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+The <code>address</code> on event bus that the service adapter is listening for requests from
++++
+|[[clientOptions]]`clientOptions`|`link:dataobjects.html#WebClientOptions[WebClientOptions]`|
++++
+Set the link of the link used
+ by the ServiceAdapter to communicate with external services.
++++
+|[[customRequestHeader]]`customRequestHeader`|`link:dataobjects.html#CustomRequestHeader[CustomRequestHeader]`|
++++
+Set the header (name & value) to be sent in every request to the services
++++
+|[[services]]`services`|`Array of link:dataobjects.html#ServiceSettings[ServiceSettings]`|
++++
+Set the list of link that ServiceAdapter is able to communicate with
++++
+|===
+
+[[ServiceSettings]]
+== ServiceSettings
+
+++++
+ Describes a physical details of HTTP service endpoint the ServiceAdapter will use.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[additionalHeaders]]`additionalHeaders`|`Json object`|
++++
+Set the additional request headers (and values) to be send in each request to the service
++++
+|[[allowedRequestHeaders]]`allowedRequestHeaders`|`Array of String`|
++++
+Sets the allowed requests headers that should be passed-through to the service
++++
+|[[domain]]`domain`|`String`|
++++
+Set the <code>domain</code> of the external service
++++
+|[[path]]`path`|`String`|-
+|[[port]]`port`|`Number (int)`|
++++
+Sets the HTTP <code>port</code> the external service (under <code>domain</code>) is listening on,
++++
+|[[queryParams]]`queryParams`|`Json object`|
++++
+Set the additional request query parameters to be send in each request
++++
+|===
+

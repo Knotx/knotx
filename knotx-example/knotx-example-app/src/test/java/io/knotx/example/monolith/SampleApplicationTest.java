@@ -32,12 +32,12 @@ import io.vertx.reactivex.core.http.HttpClient;
 import io.vertx.reactivex.core.http.HttpClientRequest;
 import io.vertx.reactivex.core.http.HttpClientResponse;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.jsoup.Jsoup;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
 
 
 @RunWith(VertxUnitRunner.class)
@@ -60,12 +60,12 @@ public class SampleApplicationTest {
 
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
       int port, String domain, String uri,
-      Action1<HttpClientRequest> requestBuilder) {
+      Consumer<HttpClientRequest> requestBuilder) {
     return Observable.unsafeCreate(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();
       resp.subscribe(subscriber);
-      requestBuilder.call(req);
+      requestBuilder.accept(req);
       req.end();
     });
   }

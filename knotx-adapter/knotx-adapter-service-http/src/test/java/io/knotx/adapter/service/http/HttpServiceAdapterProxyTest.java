@@ -35,7 +35,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpServiceAdapterProxyTest {
@@ -82,7 +81,7 @@ public class HttpServiceAdapterProxyTest {
   }
 
   private void callAdapterServiceWithAssertions(TestContext context, String servicePath,
-      Action1<AdapterResponse> onSuccess,
+      Consumer<AdapterResponse> onSuccess,
       Consumer<Throwable> onError) {
     AdapterRequest message = payloadMessage(servicePath);
     Async async = context.async();
@@ -90,7 +89,7 @@ public class HttpServiceAdapterProxyTest {
     AdapterProxy service = AdapterProxy.createProxy(new Vertx(vertx.vertx()), ADAPTER_ADDRESS);
 
     service.rxProcess(message)
-        .doOnSuccess(onSuccess::call)
+        .doOnSuccess(onSuccess)
         .subscribe(
             success -> async.complete(),
             onError
