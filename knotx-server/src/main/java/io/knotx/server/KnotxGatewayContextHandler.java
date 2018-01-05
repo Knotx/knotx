@@ -22,7 +22,6 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Handler;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
@@ -64,7 +63,8 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
     LOGGER.debug("CustomFlow: Routing the traffic to '{}'", address);
 
-    getProxyWithOptions(address, configuration.getDeliveryOptions())
+    proxies.computeIfAbsent(address,
+        adr -> KnotProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
         .rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
@@ -77,12 +77,5 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
               context.fail(error);
             }
         );
-  }
-
-  private KnotProxy getProxyWithOptions(String address, DeliveryOptions deliveryOptions) {
-    KnotProxy proxy = proxies
-        .getOrDefault(address, KnotProxy.createProxyWithOptions(vertx, address, deliveryOptions));
-    proxies.putIfAbsent(address, proxy);
-    return proxy;
   }
 }

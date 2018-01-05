@@ -22,7 +22,6 @@ import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -61,7 +60,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
-      getProxyWithOptions(repositoryEntry.get().address(), configuration.getDeliveryOptions())
+      proxies.computeIfAbsent(repositoryEntry.get().address(),
+          adr -> RepositoryConnectorProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
@@ -120,13 +120,5 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private Boolean headerFilter(String name) {
     return configuration.getAllowedResponseHeaders().contains(name.toLowerCase());
-  }
-
-
-  private RepositoryConnectorProxy getProxyWithOptions(String address, DeliveryOptions deliveryOptions) {
-    RepositoryConnectorProxy proxy = proxies
-        .getOrDefault(address, RepositoryConnectorProxy.createProxyWithOptions(vertx, address, deliveryOptions));
-    proxies.putIfAbsent(address, proxy);
-    return proxy;
   }
 }

@@ -21,7 +21,6 @@ import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.util.OptionalAction;
 import io.vertx.core.Handler;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
@@ -68,7 +67,9 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
       final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KnotContext.KEY);
 
-    getProxyWithOptions(address, configuration.getDeliveryOptions()).rxProcess(knotContext)
+    proxies.computeIfAbsent(address,
+        adr -> KnotProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
+        .rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
@@ -95,12 +96,5 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
               context.fail(error);
             }
         );
-  }
-
-  private KnotProxy getProxyWithOptions(String address, DeliveryOptions deliveryOptions) {
-    KnotProxy proxy = proxies
-        .getOrDefault(address, KnotProxy.createProxyWithOptions(vertx, address, deliveryOptions));
-    proxies.putIfAbsent(address, proxy);
-    return proxy;
   }
 }
