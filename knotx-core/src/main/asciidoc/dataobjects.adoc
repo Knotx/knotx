@@ -68,28 +68,6 @@ Serialization variants of MultiMap fields
 |[[statusCode]]`statusCode`|`Number (int)`|-
 |===
 
-[[CustomRequestHeader]]
-== CustomRequestHeader
-
-++++
- Describes a custom request header to be sent in every request to the services.
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[name]]`name`|`String`|
-+++
-Set the name of the request header
-+++
-|[[value]]`value`|`String`|
-+++
-Set the value of the request header
-+++
-|===
-
 [[Fragment]]
 == Fragment
 

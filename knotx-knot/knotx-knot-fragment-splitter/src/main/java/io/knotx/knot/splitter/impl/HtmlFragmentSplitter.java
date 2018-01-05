@@ -28,7 +28,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
   @Override
   public List<Fragment> split(String html) {
     List<Fragment> fragments = Lists.newLinkedList();
-    if (html.matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
+    if (FragmentConstants.ANY_SNIPPET_PATTERN.matcher(html).matches()) {
       Matcher matcher = FragmentConstants.SNIPPET_PATTERN.matcher(html);
       int idx = 0;
       while (matcher.find()) {
