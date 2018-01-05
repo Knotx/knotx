@@ -31,7 +31,7 @@ public enum UnprocessedFragmentStrategy {
   UNWRAP {
     @Override
     protected String get(Fragment fragment) {
-      if (!fragment.isRaw() && fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)) {
+      if (!fragment.isRaw() && FragmentConstants.ANY_SNIPPET_PATTERN.matcher(fragment.content()).matches()) {
         return "<!-- SNIPPET UNWRAPED START -->" + FragmentContentExtractor.unwrapContent(fragment)
             + "<!-- SNIPPET UNWRAPED STOP -->";
       } else {
@@ -43,7 +43,7 @@ public enum UnprocessedFragmentStrategy {
   IGNORE {
     @Override
     protected String get(Fragment fragment) {
-      return fragment.content().matches(FragmentConstants.ANY_SNIPPET_PATTERN)
+      return FragmentConstants.ANY_SNIPPET_PATTERN.matcher(fragment.content()).matches()
           ? "<!-- SNIPPET IGNORED -->" : fragment.content();
     }
   };
