@@ -31,7 +31,7 @@ public class KnotxCoercers {
 
     Fragment fragmentMock = Mockito.mock(Fragment.class);
     when(fragmentMock.content()).thenReturn(fragmentContent);
-    when(fragmentMock.isRaw()).thenReturn(!fragmentContent.matches(FragmentConstants.ANY_SNIPPET_PATTERN));
+    when(fragmentMock.isRaw()).thenReturn(!FragmentConstants.ANY_SNIPPET_PATTERN.matcher(fragmentContent).matches());
     return fragmentMock;
   }
 

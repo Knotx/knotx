@@ -25,6 +25,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,6 +37,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private KnotxServerConfiguration configuration;
   private String address;
   private Map<String, RoutingEntry> routing;
+  private Map<String, KnotProxy> proxies;
 
   private KnotxEngineHandler(Vertx vertx, KnotxServerConfiguration configuration, String address,
       Map<String, RoutingEntry> routing) {
@@ -43,6 +45,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
     this.address = address;
     this.routing = routing;
+    this.proxies = new HashMap<>();
   }
 
   static KnotxEngineHandler create(Vertx vertx, KnotxServerConfiguration configuration, String address,
@@ -61,11 +64,12 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   }
 
   private void handleRoute(final RoutingContext context, final String address,
-                           final Map<String, RoutingEntry> routing) {
+      final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KnotContext.KEY);
-    KnotProxy knot = KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
-    knot.rxProcess(knotContext)
+    proxies.computeIfAbsent(address,
+        adr -> KnotProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
+        .rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
             ctx -> OptionalAction.of(Optional.ofNullable(ctx.getTransition()))
@@ -75,7 +79,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
                     handleRoute(context, entry.address(), entry.onTransition());
                   } else {
                     LOGGER.debug(
-                        "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.", on, address);
+                        "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.",
+                        on, address);
                     // last knot can return default transition
                     context.put(KnotContext.KEY, ctx);
                     context.next();
@@ -92,5 +97,4 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
             }
         );
   }
-
 }
