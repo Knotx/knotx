@@ -15,7 +15,6 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
@@ -30,6 +29,8 @@ import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.http.HttpServerResponse;
 import io.vertx.reactivex.ext.web.RoutingContext;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class KnotxRepositoryHandler implements Handler<RoutingContext> {
@@ -40,9 +41,12 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private KnotxServerConfiguration configuration;
 
+  private Map<String, RepositoryConnectorProxy> proxies;
+
   private KnotxRepositoryHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.vertx = vertx;
     this.configuration = configuration;
+    this.proxies = new HashMap<>();
   }
 
   static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
@@ -56,8 +60,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
-      RepositoryConnectorProxy
-          .createProxyWithOptions(vertx, repositoryEntry.get().address(), configuration.getDeliveryOptions())
+      proxies.computeIfAbsent(repositoryEntry.get().address(),
+          adr -> RepositoryConnectorProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
