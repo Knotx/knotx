@@ -31,6 +31,7 @@
     * [[Performance Tests Summary|PerformanceTestsSummary]]
     * [[Performance Tests Tuning|PerformanceTestsTuning]]
   * [[Dependencies|Dependencies]]
+  * [[FAQ|FAQ]]
   * [[Upgrade Notes|UpgradeNotes]]
 
 ### Released
