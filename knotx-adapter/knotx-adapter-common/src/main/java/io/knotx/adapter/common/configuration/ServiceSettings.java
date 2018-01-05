@@ -39,7 +39,6 @@ public class ServiceSettings {
   private JsonObject additionalHeaders;
 
   private List<Pattern> allowedRequestHeadersPatterns;
-  private List<Pattern> allowedRequestHeaderPatterns;
 
   /**
    * Default constructor
@@ -192,7 +191,7 @@ public class ServiceSettings {
 
   @GenIgnore
   public ServiceSettings setAllowedRequestHeaderPatterns(List<Pattern> allowedRequestHeaderPatterns) {
-    this.allowedRequestHeaderPatterns = allowedRequestHeaderPatterns;
+    this.allowedRequestHeadersPatterns = allowedRequestHeaderPatterns;
     return this;
   }
 }

@@ -15,12 +15,12 @@
  */
 package io.knotx.adapter.common.http;
 
-import io.knotx.adapter.common.configuration.CustomRequestHeader;
 import io.knotx.adapter.common.configuration.ServiceAdapterOptions;
 import io.knotx.adapter.common.configuration.ServiceSettings;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
 import io.knotx.adapter.common.placeholders.UriTransformer;
+import io.knotx.configuration.CustomRequestHeader;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;

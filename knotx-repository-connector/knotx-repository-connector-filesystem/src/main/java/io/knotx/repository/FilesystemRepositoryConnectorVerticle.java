@@ -31,7 +31,7 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FilesystemRepositoryConnectorVerticle.class);
 
-  private String address;
+  private FilesystemRepositoryOptions configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -40,7 +40,7 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.address = config().getString("address");
+    this.configuration = new FilesystemRepositoryOptions(config());
   }
 
   @Override
@@ -50,9 +50,9 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
     //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(address)
+        .setAddress(configuration.getAddress())
         .register(RepositoryConnectorProxy.class,
-            new FilesystemRepositoryConnectorProxyImpl(vertx, config()));
+            new FilesystemRepositoryConnectorProxyImpl(vertx, configuration));
   }
 
   @Override

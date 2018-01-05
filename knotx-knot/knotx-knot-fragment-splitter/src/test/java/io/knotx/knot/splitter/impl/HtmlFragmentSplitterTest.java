@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter.impl;
+package io.knotx.knot.splitter.impl;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
+import io.knotx.knot.splitter.impl.HtmlFragmentSplitter;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.Before;

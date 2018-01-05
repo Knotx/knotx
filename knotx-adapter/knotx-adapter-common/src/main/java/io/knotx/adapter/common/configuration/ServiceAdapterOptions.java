@@ -17,6 +17,7 @@ package io.knotx.adapter.common.configuration;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.knotx.configuration.CustomRequestHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;

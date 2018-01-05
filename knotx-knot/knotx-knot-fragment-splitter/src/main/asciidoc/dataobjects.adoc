@@ -1,0 +1,16 @@
+= Cheatsheets
+
+[[FragmentSplitterConfiguration]]
+== FragmentSplitterConfiguration
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+Set the EB address of the verticle
++++
+|===
+

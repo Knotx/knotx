@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+package io.knotx.knot.splitter.impl;
 
-import io.vertx.core.json.JsonObject;
+import io.knotx.dataobjects.Fragment;
+import java.util.List;
 
-public class FragmentSplitterConfiguration {
+@FunctionalInterface
+public interface FragmentSplitter {
 
-  private final String address;
+  /**
+   * Splits a template (markup) into list of fragments (see {@link io.knotx.dataobjects.Fragment}).
+   *
+   * @param template - a string containing the template content which will be split.
+   * @return list of fragments (see {@link io.knotx.dataobjects.Fragment}).
+   */
+  List<Fragment> split(String template);
 
-  public FragmentSplitterConfiguration(JsonObject config) {
-    address = config.getString("address");
-  }
-
-  public String getAddress() {
-    return address;
-  }
 }

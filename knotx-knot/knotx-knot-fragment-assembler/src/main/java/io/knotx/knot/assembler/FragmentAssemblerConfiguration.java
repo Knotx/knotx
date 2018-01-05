@@ -16,26 +16,116 @@
 package io.knotx.knot.assembler;
 
 import io.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
+import io.vertx.codegen.annotations.DataObject;
+import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.json.JsonObject;
+import java.util.Optional;
 
+@DataObject(generateConverter = true, publicConverter = false)
 public class FragmentAssemblerConfiguration {
 
-  private final String address;
+  private final static String DEFAULT_ADDRESS = "knotx.core.assembler";
 
-  private final UnprocessedFragmentStrategy assemblyStrategy;
+  private final static String DEFAULT_UNPROCESSED_STRATEGY = "UNWRAP";
 
-  public FragmentAssemblerConfiguration(JsonObject config) {
-    address = config.getString("address");
-    assemblyStrategy = UnprocessedFragmentStrategy
-        .valueOf(config.getString("unprocessedStrategy", UnprocessedFragmentStrategy.UNWRAP.name())
-            .toUpperCase());
+  private String address;
+
+  private String unprocessedStrategy;
+
+  /**
+   * Default constructor
+   */
+  public FragmentAssemblerConfiguration() {
+    init();
   }
 
-  public String address() {
+  /**
+   * Copy constructor
+   *
+   * @param other the instance to copy
+   */
+  public FragmentAssemblerConfiguration(FragmentAssemblerConfiguration other) {
+    this.address = other.address;
+    this.unprocessedStrategy = other.unprocessedStrategy;
+  }
+
+  /**
+   * Create an settings from JSON
+   *
+   * @param json the JSON
+   */
+  public FragmentAssemblerConfiguration(JsonObject json) {
+    init();
+    FragmentAssemblerConfigurationConverter.fromJson(json, this);
+  }
+
+  /**
+   * Convert to JSON
+   *
+   * @return the JSON
+   */
+  public JsonObject toJson() {
+    JsonObject json = new JsonObject();
+    FragmentAssemblerConfigurationConverter.toJson(this, json);
+    return json;
+  }
+
+  private void init() {
+    address = DEFAULT_ADDRESS;
+    unprocessedStrategy = DEFAULT_UNPROCESSED_STRATEGY;
+  }
+
+  /**
+   * @return EB address of the verticle
+   */
+  public String getAddress() {
     return address;
   }
 
+  /**
+   * Set the EB address of the verticle
+   *
+   * @param address EB address
+   * @return a reference to this, so the API can be used fluently
+   */
+  public FragmentAssemblerConfiguration setAddress(String address) {
+    this.address = address;
+    return this;
+  }
+
+  /**
+   * @return Unprocessed snippets strategy name
+   */
+  public String getUnprocessedStrategy() {
+    return unprocessedStrategy;
+  }
+
+  /**
+   * Set the strategy how to assembly markup with snippets that were not processed by any Knot.
+   * Allowed values are:
+   * <ul>
+   * <li>AS_IS - Keep the whole unprocessed snippet as is</li>
+   * <li>UNWRAP - Remove the wrapping script tag from the snippet</li>
+   * <li>IGNORE - Remove snippet from the markup</li>
+   * </ul>
+   * If not set, a default value is <b>UNWRAP</b>
+   *
+   * @param unprocessedStrategy a strategy name
+   * @return a reference to this, so the API can be used fluently
+   */
+  public FragmentAssemblerConfiguration setUnprocessedStrategy(String unprocessedStrategy) {
+    this.unprocessedStrategy = unprocessedStrategy;
+    return this;
+  }
+
+  @GenIgnore
+  /**
+   * Gets the {@link UnprocessedFragmentStrategy} enum representing strategy
+   */
   public UnprocessedFragmentStrategy unprocessedFragmentStrategy() {
-    return assemblyStrategy;
+    return Optional.ofNullable(unprocessedStrategy)
+        .map(String::toUpperCase)
+        .map(UnprocessedFragmentStrategy::valueOf)
+        .orElse(UnprocessedFragmentStrategy.UNWRAP);
   }
 }

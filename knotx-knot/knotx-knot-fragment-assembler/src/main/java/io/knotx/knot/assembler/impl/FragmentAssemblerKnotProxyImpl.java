@@ -23,7 +23,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -38,8 +37,8 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
   private FragmentAssemblerConfiguration configuration;
 
-  public FragmentAssemblerKnotProxyImpl(JsonObject config) {
-    this.configuration = new FragmentAssemblerConfiguration(config);
+  public FragmentAssemblerKnotProxyImpl(FragmentAssemblerConfiguration configuration) {
+    this.configuration = configuration;
   }
 
   @Override

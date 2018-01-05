@@ -1,0 +1,27 @@
+= Cheatsheets
+
+[[FragmentAssemblerConfiguration]]
+== FragmentAssemblerConfiguration
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+Set the EB address of the verticle
++++
+|[[unprocessedStrategy]]`unprocessedStrategy`|`String`|
++++
+Set the strategy how to assembly markup with snippets that were not processed by any Knot.
+ Allowed values are:
+ <ul>
+ <li>AS_IS - Keep the whole unprocessed snippet as is</li>
+ <li>UNWRAP - Remove the wrapping script tag from the snippet</li>
+ <li>IGNORE - Remove snippet from the markup</li>
+ </ul>
+ If not set, a default value is <b>UNWRAP</b>
++++
+|===
+

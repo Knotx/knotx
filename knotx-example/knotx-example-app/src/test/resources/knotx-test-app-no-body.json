@@ -1,14 +1,14 @@
 {
   "modules": [
     "knotx:test.io.knotx.KnotxServer",
-    "knotx:io.knotx.HttpRepositoryConnector",
-    "knotx:io.knotx.FilesystemRepositoryConnector",
-    "knotx:io.knotx.FragmentSplitter",
-    "knotx:io.knotx.FragmentAssembler",
+    "java:io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "java:io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "java:io.knotx.knot.assembler.FragmentAssemblerVerticle",
     "knotx:io.knotx.HandlebarsKnot",
     "knotx:io.knotx.ServiceKnot",
     "knotx:example.io.knotx.ActionKnot",
-    "knotx:io.knotx.HttpServiceAdapter",
+    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
     "knotx:example.io.knotx.HttpActionAdapter",
     "knotx:io.knotx.RemoteRepositoryMock",
     "knotx:io.knotx.ServiceMock",
@@ -16,6 +16,16 @@
     "knotx:io.knotx.ActionAdapterMock"
   ],
   "config": {
+    "java:io.knotx.repository.HttpRepositoryConnectorVerticle": {
+      "options": {
+        "config": {
+          "clientDestination": {
+            "domain": "localhost",
+            "port": 4001
+          }
+        }
+      }
+    },
     "knotx:io.knotx.ServiceKnot": {
       "options": {
         "config": {
@@ -36,6 +46,32 @@
         "config": {
           "allowedRequestHeaders": [
             "Cookie"
+          ]
+        }
+      }
+    },
+    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
+      "options": {
+        "config": {
+          "services": [
+            {
+              "path": "/service/mock/.*",
+              "domain": "localhost",
+              "port": 4000,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            },
+            {
+              "path": "/service/.*",
+              "domain": "localhost",
+              "port": 8080,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            }
           ]
         }
       }

@@ -49,8 +49,8 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
     //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(configuration.address())
-        .register(KnotProxy.class, new FragmentAssemblerKnotProxyImpl(config()));
+        .setAddress(configuration.getAddress())
+        .register(KnotProxy.class, new FragmentAssemblerKnotProxyImpl(configuration));
   }
 
   @Override

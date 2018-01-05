@@ -1,0 +1,52 @@
+= Cheatsheets
+
+[[ClientDestination]]
+== ClientDestination
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[domain]]`domain`|`String`|
++++
+Set the domain of the http repository
++++
+|[[port]]`port`|`Number (int)`|
++++
+Set the HTTP port of the http repository
++++
+|===
+
+[[HttpRepositoryOptions]]
+== HttpRepositoryOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+Set the EB address of the HTTP repository verticle
++++
+|[[allowedRequestHeaders]]`allowedRequestHeaders`|`Array of String`|
++++
+Set the collection of patterns of allowed request headers. Only headers matching any
+ of the pattern from the set will be sent to the HTTP repository
++++
+|[[clientDestination]]`clientDestination`|`link:dataobjects.html#ClientDestination[ClientDestination]`|
++++
+Set the remote location of the repository
++++
+|[[clientOptions]]`clientOptions`|`link:dataobjects.html#HttpClientOptions[HttpClientOptions]`|
++++
+Set the link used by the HTTP client
+ to communicate with remote http repository
++++
+|[[customRequestHeader]]`customRequestHeader`|`link:dataobjects.html#CustomRequestHeader[CustomRequestHeader]`|
++++
+Set the header (name & value) to be sent in every request to the remote repository
++++
+|===
+

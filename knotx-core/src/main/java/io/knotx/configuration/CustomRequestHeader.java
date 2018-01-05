@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.adapter.common.configuration;
+package io.knotx.configuration;
 
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
@@ -21,7 +21,7 @@ import io.vertx.core.json.JsonObject;
 /**
  * Describes a custom request header to be sent in every request to the services.
  */
-@DataObject(generateConverter = true, publicConverter = false)
+@DataObject(generateConverter = true)
 public class CustomRequestHeader {
 
   /**
