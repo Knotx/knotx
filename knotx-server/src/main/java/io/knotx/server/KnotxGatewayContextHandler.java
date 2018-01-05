@@ -15,17 +15,21 @@
  */
 package io.knotx.server;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.vertx.core.Handler;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Collections;
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
@@ -34,12 +38,14 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
   private Vertx vertx;
   private KnotxServerConfiguration configuration;
   private String address;
+  private Map<String, KnotProxy> proxies;
 
   private KnotxGatewayContextHandler(Vertx vertx, KnotxServerConfiguration configuration,
       String address) {
     this.vertx = vertx;
     this.configuration = configuration;
     this.address = address;
+    this.proxies = new HashMap<>();
   }
 
   static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerConfiguration configuration,
@@ -58,7 +64,7 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
 
     LOGGER.debug("CustomFlow: Routing the traffic to '{}'", address);
 
-    KnotProxy.createProxyWithOptions(vertx, address, configuration.getDeliveryOptions())
+    getProxyWithOptions(address, configuration.getDeliveryOptions())
         .rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(
@@ -71,5 +77,12 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
               context.fail(error);
             }
         );
+  }
+
+  private KnotProxy getProxyWithOptions(String address, DeliveryOptions deliveryOptions) {
+    KnotProxy proxy = proxies
+        .getOrDefault(address, KnotProxy.createProxyWithOptions(vertx, address, deliveryOptions));
+    proxies.putIfAbsent(address, proxy);
+    return proxy;
   }
 }
