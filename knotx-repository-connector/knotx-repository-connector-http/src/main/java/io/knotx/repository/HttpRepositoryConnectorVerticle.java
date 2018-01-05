@@ -16,7 +16,7 @@
 package io.knotx.repository;
 
 import io.knotx.proxy.RepositoryConnectorProxy;
-import io.knotx.repository.impl.RepositoryConnectorProxyImpl;
+import io.knotx.repository.impl.HttpRepositoryConnectorProxyImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -51,7 +51,7 @@ public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
     consumer = serviceBinder
         .setAddress(address)
         .register(RepositoryConnectorProxy.class,
-            new RepositoryConnectorProxyImpl(vertx, config()));
+            new HttpRepositoryConnectorProxyImpl(vertx, config()));
   }
 
   @Override

@@ -16,7 +16,7 @@
 package io.knotx.mocks;
 
 
-import io.knotx.mocks.adapter.MockAdapterHandler;
+import io.knotx.mocks.handler.MockAdapterHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;

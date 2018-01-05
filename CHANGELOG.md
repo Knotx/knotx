@@ -14,7 +14,8 @@ List of changes that are finished but not yet released in any final version.
  - [PR-357](https://github.com/Cognifide/knotx/pull/357) - Fix for #356 - Create AdapterProxies on serviceKnot start instead for each request
  - [PR-364](https://github.com/Cognifide/knotx/pull/364) - Fixed #358 - Use compiled regexp instead of String while matching the fragment
  - [PR-361](https://github.com/Cognifide/knotx/pull/361) - Improved Adapter / Knots creation - we do not create them with every request.
- 
+ - [PR-359](https://github.com/Cognifide/knotx/pull/359) - Fix for #355 - Knot.x responses with the response of a repository in case of response with status code different than 200.
+
 ## Version 1.1.2
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
  - [PR-332](https://github.com/Cognifide/knotx/pull/332) - Fixed timeout issues when deploying verticles in Junit Rule
