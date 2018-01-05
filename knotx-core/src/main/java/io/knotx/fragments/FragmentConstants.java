@@ -21,8 +21,8 @@ public final class FragmentConstants {
 
   public static final String SNIPPET_IDENTIFIER_NAME = "data-knotx-knots";
 
-  public static final String ANY_SNIPPET_PATTERN =
-      "(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*";
+  public static final Pattern ANY_SNIPPET_PATTERN =
+      Pattern.compile("(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*", Pattern.DOTALL);
 
   public static final Pattern SNIPPET_PATTERN =
       Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME
