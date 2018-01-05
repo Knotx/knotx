@@ -44,14 +44,22 @@ class HandlebarsFragment {
   String compileWith(Handlebars handlebars) {
     try {
       Template compiledFragment = handlebars.compileInline(unwrappedContent);
-      LOGGER.trace("Applying context [{}] to fragment [{}]", fragment.context(),
-          StringUtils
-              .abbreviate(fragment.content().replaceAll("[\n\r\t]", ""),
-                  MAX_FRAGMENT_CONTENT_LOG_LENGTH));
-      return compiledFragment.apply(
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Applying context [{}] to fragment [{}]", fragment.context(),
+            StringUtils
+                .abbreviate(fragment.content().replaceAll("[\n\r\t]", ""),
+                    MAX_FRAGMENT_CONTENT_LOG_LENGTH));
+      }
+
+      String result = compiledFragment.apply(
           Context.newBuilder(fragment.context())
               .push(JsonObjectValueResolver.INSTANCE)
               .build());
+
+      if (LOGGER.isTraceEnabled()) {
+        LOGGER.trace("Result of handlebars: [{}]", result);
+      }
+      return result;
     } catch (IOException e) {
       LOGGER.error("Could not process fragment [{}]", fragment.content(), e);
       throw new IllegalStateException("Handlebars fragment can not be evaluated correctly.");

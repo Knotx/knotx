@@ -5,7 +5,7 @@
     "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle",
     "java:io.knotx.knot.splitter.FragmentSplitterVerticle",
     "java:io.knotx.knot.assembler.FragmentAssemblerVerticle",
-    "knotx:io.knotx.HandlebarsKnot",
+    "java:io.knotx.knot.templating.HandlebarsKnotVerticle",
     "knotx:io.knotx.ServiceKnot",
     "knotx:example.io.knotx.ActionKnot",
     "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",

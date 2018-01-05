@@ -16,6 +16,7 @@
 package io.knotx.knot.service.service;
 
 
+import com.google.common.base.MoreObjects;
 import io.vertx.core.json.JsonObject;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
@@ -123,4 +124,14 @@ public class ServiceEntry {
     return result;
   }
 
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("namespace", namespace)
+        .add("name", name)
+        .add("address", address)
+        .add("cacheKey", cacheKey)
+        .add("params", params)
+        .toString();
+  }
 }

@@ -95,7 +95,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
   private String snippetComment(String commentTemplate) {
     String debugLine = StringUtils.EMPTY;
-    if (configuration.templateDebug()) {
+    if (configuration.isTemplateDebug()) {
       debugLine = commentTemplate;
     }
     return debugLine;
