@@ -13,6 +13,7 @@ The API is changed, so your custom implementations need to adopt to the latest A
 - [PR-349](https://github.com/Cognifide/knotx/pull/349) - You can pass [`Delivery Options`](http://vertx.io/docs/apidocs/io/vertx/core/eventbus/DeliveryOptions.html) to Knot.x Verticles e.g. to manipulate eventbus response timeouts. 
 For more details see documentation sections in [[Server|Server#vertx-event-bus-delivery-options]], [[Action Knot|ActionKnot#vertx-event-bus-delivery-options]] and [[Service Knot|ServiceKnot#vertx-event-bus-delivery-options]].
 - [PR-354](https://github.com/Cognifide/knotx/pull/354) - You can now enable XSRF protection on default or custom flow at any path. See [[Server|Server#how-to-enable-csrf-token-generation-and-validation]] for details.
+- [PR-361](https://github.com/Cognifide/knotx/pull/361) - Improved Adapter / Knots creation - we do not create them with every request.
 
 ## Version 1.1.2
 - [PR-335](https://github.com/Cognifide/knotx/pull/335) - Added support for HttpServerOptions on the configuration level.
