@@ -12,11 +12,18 @@
     "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle",
     "java:io.knotx.mocks.MockRemoteRepositoryVerticle",
     "java:io.knotx.mocks.MockServiceVerticle",
-    "knotx:io.knotx.GatewayKnot",
-    "knotx:example.io.knotx.RequestProcessorKnot",
-    "knotx:io.knotx.ResponseProviderKnot"
+    "java:io.knotx.gateway.GatewayKnotVerticle",
+    "java:io.knotx.gateway.RequestProcessorKnotVerticle",
+    "java:io.knotx.gateway.ResponseProviderKnotVerticle"
   ],
   "config": {
+    "java:io.knotx.gateway.RequestProcessorKnotVerticle": {
+      "options": {
+        "config": {
+          "address": "knotx.gateway.requestprocessor"
+        }
+      }
+    },
     "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle": {
       "options": {
         "config": {
@@ -54,7 +61,7 @@
     },
     "java:io.knotx.knot.action.ActionKnotVerticle": {
       "options": {
-        "config" : {
+        "config": {
           "adapters": [
             {
               "name": "subscribe-competition",
