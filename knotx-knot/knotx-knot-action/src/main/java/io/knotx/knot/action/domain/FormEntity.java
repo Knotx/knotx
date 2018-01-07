@@ -26,8 +26,8 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.exceptions.ConfigurationException;
 import io.knotx.fragments.FragmentContentExtractor;
-import io.knotx.knot.action.ActionKnotConfiguration;
-import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
+import io.knotx.knot.action.ActionAdapterMetadata;
+import io.knotx.knot.action.ActionKnotOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -47,13 +47,13 @@ public class FormEntity {
 
   private String identifier;
 
-  private AdapterMetadata adapter;
+  private ActionAdapterMetadata adapter;
 
   private JsonObject adapterParams;
 
   private Map<String, String> signalToUrl;
 
-  public static FormEntity from(Fragment fragment, ActionKnotConfiguration configuration) {
+  public static FormEntity from(Fragment fragment, ActionKnotOptions configuration) {
     Document scriptDocument = FragmentContentExtractor.unwrapDocument(fragment);
     return new FormEntity()
         .fragment(fragment)
@@ -72,7 +72,7 @@ public class FormEntity {
     return identifier;
   }
 
-  public AdapterMetadata adapter() {
+  public ActionAdapterMetadata adapter() {
     return adapter;
   }
 
@@ -105,7 +105,7 @@ public class FormEntity {
     return this;
   }
 
-  private FormEntity adapter(AdapterMetadata adapterMetadata) {
+  private FormEntity adapter(ActionAdapterMetadata adapterMetadata) {
     this.adapter = adapterMetadata;
     return this;
   }
@@ -151,13 +151,13 @@ public class FormEntity {
         .orElse(null);
   }
 
-  private static AdapterMetadata getAdapterMetadata(ActionKnotConfiguration configuration, String adapter) {
-    return configuration.adapterMetadatas().stream()
+  private static ActionAdapterMetadata getAdapterMetadata(ActionKnotOptions configuration, String adapter) {
+    return configuration.getAdapters().stream()
         .filter(metadata -> metadata.getName().equals(adapter))
         .findFirst()
         .orElseThrow(() -> {
           LOGGER.error("Could not find adapter name [{}] mapping in configuration [{}].",
-              adapter, configuration.adapterMetadatas());
+              adapter, configuration.getAdapters());
           return new ConfigurationException("Could not find action adapter name!");
         });
   }

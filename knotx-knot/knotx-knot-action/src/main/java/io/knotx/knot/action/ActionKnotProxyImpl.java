@@ -26,7 +26,6 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
 import io.knotx.knot.action.domain.FormEntity;
 import io.knotx.knot.action.domain.FormSimplifier;
 import io.knotx.knot.action.domain.FormsFactory;
@@ -51,10 +50,10 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);
 
   private final Vertx vertx;
-  private final ActionKnotConfiguration configuration;
+  private final ActionKnotOptions configuration;
   private final FormSimplifier simplifier;
 
-  ActionKnotProxyImpl(Vertx vertx, ActionKnotConfiguration configuration,
+  ActionKnotProxyImpl(Vertx vertx, ActionKnotOptions configuration,
       FormSimplifier simplifier) {
     this.vertx = vertx;
     this.configuration = configuration;
@@ -95,7 +94,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     LOGGER.debug("Pass-through {} request", knotContext.getClientRequest().getMethod());
     knotContext.setTransition(DEFAULT_TRANSITION);
     forms.forEach(form -> form.fragment()
-        .content(simplifier.simplify(form.fragment().content(), configuration.formIdentifierName(),
+        .content(simplifier.simplify(form.fragment().content(), configuration.getFormIdentifierName(),
             form.identifier())));
     return knotContext;
   }
@@ -109,16 +108,16 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   private AdapterRequest prepareAdapterRequest(KnotContext knotContext,
       FormEntity formEntity) {
-    AdapterMetadata metadata = formEntity.adapter();
+    ActionAdapterMetadata metadata = formEntity.adapter();
     ClientRequest request = new ClientRequest().setPath(knotContext.getClientRequest().getPath())
         .setMethod(knotContext.getClientRequest().getMethod())
         .setFormAttributes(knotContext.getClientRequest().getFormAttributes())
         .setHeaders(getFilteredHeaders(knotContext.getClientRequest().getHeaders(),
-            metadata.getAllowedRequestHeaders()));
+            metadata.getAllowedRequestHeadersPatterns()));
 
     AdapterRequest adapterRequest = new AdapterRequest()
         .setRequest(request)
-        .setParams(new JsonObject(metadata.getParams()))
+        .setParams(metadata.getParams())
         .setAdapterParams(formEntity.adapterParams());
     LOGGER.info("Adapter [{}] call with request [{}]", metadata.getAddress(), adapterRequest);
     return adapterRequest;
@@ -149,11 +148,11 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     form.fragment().context().put("action", actionContext);
     knotContext.getClientResponse()
         .setHeaders(getFilteredHeaders(clientResponse.getHeaders(),
-            form.adapter().getAllowedResponseHeaders())
+            form.adapter().getAllowedResponseHeadersPatterns())
         );
     forms.forEach(f -> f.fragment()
         .content(simplifier
-            .simplify(f.fragment().content(), configuration.formIdentifierName(), f.identifier())));
+            .simplify(f.fragment().content(), configuration.getFormIdentifierName(), f.identifier())));
     knotContext.setTransition(DEFAULT_TRANSITION);
     return knotContext;
   }
@@ -165,7 +164,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
         .setStatusCode(HttpResponseStatus.MOVED_PERMANENTLY.code());
     MultiMap headers = MultiMap.caseInsensitiveMultiMap();
     headers.addAll(getFilteredHeaders(clientResponse.getHeaders(),
-        form.adapter().getAllowedResponseHeaders()));
+        form.adapter().getAllowedResponseHeadersPatterns()));
     headers.add(HttpHeaders.LOCATION.toString(), redirectLocation);
 
     knotContext.getClientResponse().setHeaders(headers);
@@ -178,7 +177,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
     knotContext.getClientResponse()
         .setStatusCode(clientResponse.getStatusCode())
         .setHeaders(getFilteredHeaders(clientResponse.getHeaders(),
-            form.adapter().getAllowedResponseHeaders()))
+            form.adapter().getAllowedResponseHeadersPatterns()))
         .setBody(Buffer.buffer());
     knotContext.clearFragments();
     return knotContext;
@@ -193,7 +192,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   private FormEntity currentForm(List<FormEntity> forms, KnotContext knotContext) {
     return forms.stream()
-        .filter(form -> form.current(knotContext, configuration.formIdentifierName())).findFirst()
+        .filter(form -> form.current(knotContext, configuration.getFormIdentifierName())).findFirst()
         .orElseThrow(() -> {
           LOGGER
               .error("No form attribute [{}] matched with forms identifiers [{}]",

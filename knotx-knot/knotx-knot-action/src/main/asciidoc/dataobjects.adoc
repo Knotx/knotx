@@ -1,0 +1,53 @@
+= Cheatsheets
+
+[[ActionAdapterMetadata]]
+== ActionAdapterMetadata
+
+++++
+ Describes a physical details of HTTP service endpoint the ServiceAdapter will use.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+Sets the EB address of the service adapter
++++
+|[[allowedRequestHeaders]]`allowedRequestHeaders`|`Array of String`|-
+|[[allowedResponseHeaders]]`allowedResponseHeaders`|`Array of String`|-
+|[[name]]`name`|`String`|
++++
+Set the name of the service the will be used on html snippet level.
++++
+|[[params]]`params`|`Json object`|
++++
+Set the service parameters to be consumed by the adapter.
++++
+|===
+
+[[ActionKnotOptions]]
+== ActionKnotOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[adapters]]`adapters`|`Array of link:dataobjects.html#ActionAdapterMetadata[ActionAdapterMetadata]`|
++++
+
++++
+|[[address]]`address`|`String`|
++++
+Sets the EB address of the verticle
++++
+|[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
++++
+
++++
+|[[formIdentifierName]]`formIdentifierName`|`String`|-
+|===
+

@@ -1,5 +1,44 @@
 {
   "modules": [
-    "knotx:test.io.knotx.ActionKnot"
-  ]
+    "java:io.knotx.knot.action.ActionKnotVerticle"
+  ],
+  "config": {
+    "java:io.knotx.knot.action.ActionKnotVerticle": {
+      "options": {
+        "config": {
+          "formIdentifierName": "snippet-identifier",
+          "adapters": [
+            {
+              "name": "action-self",
+              "address": "address-self",
+              "params": {
+                "example": "example-value"
+              },
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ],
+              "allowedResponseHeaders": [
+                "X-*"
+              ]
+            },
+            {
+              "name": "action-redirect",
+              "address": "address-redirect",
+              "params": {
+                "example": "example-value"
+              },
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ],
+              "allowedResponseHeaders": [
+                "X-*"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
 }

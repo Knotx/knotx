@@ -18,7 +18,7 @@ package io.knotx.knot.action.domain;
 import static io.knotx.knot.action.domain.FormConstants.FRAGMENT_KNOT_PREFIX;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.knot.action.ActionKnotConfiguration;
+import io.knotx.knot.action.ActionKnotOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.List;
@@ -32,7 +32,7 @@ public final class FormsFactory {
     // util class
   }
 
-  public static List<FormEntity> create(KnotContext context, ActionKnotConfiguration conf) {
+  public static List<FormEntity> create(KnotContext context, ActionKnotOptions conf) {
     List<FormEntity> forms = context.getFragments().stream()
         .filter(f -> f.knots().stream().anyMatch(id -> id.startsWith(FRAGMENT_KNOT_PREFIX)))
         .map(f -> FormEntity.from(f, conf))

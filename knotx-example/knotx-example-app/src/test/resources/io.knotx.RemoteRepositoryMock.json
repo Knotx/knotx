@@ -1,9 +1,0 @@
-{
-  "main": "io.knotx.mocks.MockRemoteRepositoryVerticle",
-  "options": {
-    "config": {
-      "mockDataRoot": "mock/repository",
-      "httpPort": 4001
-    }
-  }
-}

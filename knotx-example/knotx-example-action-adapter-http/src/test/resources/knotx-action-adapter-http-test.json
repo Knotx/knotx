@@ -1,6 +1,44 @@
 {
   "modules": [
-    "knotx:test.io.knotx.HttpActionAdapter",
-    "knotx:test.io.knotx.MockService"
-  ]
+    "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle",
+    "java:io.knotx.mocks.MockServiceVerticle"
+  ],
+  "config": {
+    "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle": {
+      "options": {
+        "config": {
+          "address": "knotx.adapter.action.http",
+          "clientOptions": {
+            "maxPoolSize": 1000,
+            "keepAlive": false
+          },
+          "services": [
+            {
+              "path": "/service/mock/.*",
+              "domain": "localhost",
+              "port": 4000,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            },
+            {
+              "path": "/service/.*",
+              "domain": "localhost",
+              "port": 8080
+            }
+          ]
+        }
+      }
+    },
+    "java:io.knotx.mocks.MockServiceVerticle": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/service",
+          "bouncing": true,
+          "httpPort": 4000
+        }
+      }
+    }
+  }
 }
