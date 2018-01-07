@@ -153,7 +153,7 @@ files requires to run Knot.x with the custom Knot according to [[deployment reco
 
 1. Generate the Knot module
 
-   `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-adapter-archetype -DarchetypeVersion=X.Y.Z`
+   `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-knot-archetype -DarchetypeVersion=X.Y.Z`
 
 2. Compile, run tests and build a jar package
 
