@@ -30,7 +30,7 @@ public class ServiceKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
-  private ServiceKnotConfiguration configuration;
+  private ServiceKnotOptions configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -39,7 +39,7 @@ public class ServiceKnotVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new ServiceKnotConfiguration(config());
+    this.configuration = new ServiceKnotOptions(config());
   }
 
   @Override

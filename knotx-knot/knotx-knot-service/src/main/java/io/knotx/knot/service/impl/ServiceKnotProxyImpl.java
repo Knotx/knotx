@@ -19,7 +19,7 @@ import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.service.ServiceKnotConfiguration;
+import io.knotx.knot.service.ServiceKnotOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -38,7 +38,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private FragmentProcessor snippetProcessor;
 
-  public ServiceKnotProxyImpl(Vertx vertx, ServiceKnotConfiguration configuration) {
+  public ServiceKnotProxyImpl(Vertx vertx, ServiceKnotOptions configuration) {
     this.snippetProcessor = new FragmentProcessor(vertx, configuration);
   }
 

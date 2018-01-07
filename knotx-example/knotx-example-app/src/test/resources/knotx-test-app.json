@@ -6,7 +6,7 @@
     "java:io.knotx.knot.splitter.FragmentSplitterVerticle",
     "java:io.knotx.knot.assembler.FragmentAssemblerVerticle",
     "java:io.knotx.knot.templating.HandlebarsKnotVerticle",
-    "knotx:io.knotx.ServiceKnot",
+    "java:io.knotx.knot.service.ServiceKnotVerticle",
     "knotx:example.io.knotx.ActionKnot",
     "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
     "knotx:example.io.knotx.HttpActionAdapter",
@@ -26,7 +26,7 @@
         }
       }
     },
-    "knotx:io.knotx.ServiceKnot": {
+    "java:io.knotx.knot.service.ServiceKnotVerticle": {
       "options": {
         "config": {
           "services": [

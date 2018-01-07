@@ -16,7 +16,7 @@
 package io.knotx.knot.service.impl;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.knot.service.ServiceKnotConfiguration;
+import io.knotx.knot.service.ServiceKnotOptions;
 import io.knotx.knot.service.service.ServiceEngine;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.reactivex.Observable;
@@ -33,7 +33,7 @@ public class FragmentProcessor {
 
   private final ServiceEngine serviceEngine;
 
-  public FragmentProcessor(Vertx vertx, ServiceKnotConfiguration configuration) {
+  public FragmentProcessor(Vertx vertx, ServiceKnotOptions configuration) {
     this.serviceEngine = new ServiceEngine(vertx, configuration);
   }
 
