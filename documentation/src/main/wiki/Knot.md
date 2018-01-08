@@ -4,33 +4,27 @@ example, invoke an external services via [[Adapter|Adapter]], evaluate Handlebar
 redirect a site visitor to a different location. 
 
 ## How does it work?
-Knots are invoked by [[Server|Server]] **sequentially** according to [[Knots Routing|KnotRouting]].
-Every Knot reads [Knot Context](#knot-context) containing a list of Fragments to process, takes care of a processing,
-updates Knot Context and returns it back to the caller.
+Knots are invoked by the [[Server|Server]] **sequentially** according to [[Knots Routing|KnotRouting]] configuration.
+Every Knot operates on [Knot Context](#knot-context) which contains a list of Fragments to process. Knot takes care of a processing, optionally updates the Knot Context and returns it back to the caller so that it will be an input for the next called Knot.
 
-The particular Knot is applied to Fragments if two conditions are met:
+A particular Knot will process a Fragment only when those two conditions are met:
 
 - it is defined in [[Knots Routing|KnotRouting]]
 - there is at least one Fragment that declares matching [Knot Election Rule](#knot-election-rule)
 
 ### Knot Election Rule
-Knot Election Rule determines if Knot should be applied to Fragment or not. Knot reads a Knot Context, checks if there is 
-any Fragment that needs to be processed by it. 
-
-Knot Election Rule is a simple `String` value coming from a `data-knotx-knots` attribute from the [[Fragment script tag|Splitter#example]]. 
+Knot Election Rule determines if Knot should process a Fragment or not.
+Knot Election Rule is a simple `String` value that comes from a `data-knotx-knots` attribute from the [[Fragment script tag|Splitter#example]]. 
 The attribute contains a comma-separated list of Knot Election Rules which *can* be used by Knot to determine if it should
 process that particular Fragment or not.
 
-Knots **can** simply filter Fragments which do not contain the certain Knot Election Rule (for example `services` or `handlebars`).
+Knots **can** simply filter out Fragments which do not contain the certain Knot Election Rule (for example `services` or `handlebars`).
 
 ### Knot Context
 Knot Context is a communication model passed between [[Server|Server]], [[Fragment Splitter|Splitter]], 
 [[Knots|Knot]] and [[Fragment Assembler|Assembler]]. 
 
-The flow is driven by [[Server|Server]] forwarding and getting back KnotContext to/from Splitter, Knots and Assembler. 
-Knot Context keeps an information about a site visitor request, a current processing status and a site visitor response. 
-
-From now, we will be using terms *client* and *site visitor* interchangeably.
+The flow is driven by the [[Server|Server]] forwarding. Originally KnotContext is created by the [[Fragment Splitter|Splitter]] module basing on the [[Repository|RepositoryConnectors]] template input. 
 
 Knot Context contains:
 * a client request with a path, headers, form attributes and parameters
@@ -38,14 +32,16 @@ Knot Context contains:
 * [[Fragments|Splitter]]
 * [[Transition|KnotRouting]]] value
 
+From now, we will be using terms *client* and *site visitor* interchangeably.
+
 *A client request* includes a site visitor path (a requested URL), HTTP headers, form attributes 
 (for POST requests) and request query parameters.
 
 *A client response* includes a body (which represents the final response body set by [[Fragment Assembler|Assembler]]), 
-HTTP headers (which are narrowed finally by [[Server|Server]]) and HTTP status code.
+HTTP headers (which are narrowed finally by [[Server|Server]] according to `allowedResponseHeaders` parameter) and HTTP status code.
 
 Please see [[Splitter|Splitter]] section to find out what Fragments are and how they are produced. 
-Fragments contain [[Fragment Content|Splitter]] and [[Fragment Context|Splitter]]. Knots can, for example, process 
+Fragments are documented [[here|Splitter#fragment]]. Knots can, for example, process 
 Fragment Content, call required Adapters and put responses from Adapters to Fragment Context (a JSON object).
 
 **Transition** is a text value which determines the next step in [[Knots Routing|KnotRouting]].
