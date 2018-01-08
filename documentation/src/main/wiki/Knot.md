@@ -1,57 +1,54 @@
 # Knot
-A Knot defines business logic which can be applied to a particular [[Fragment|Splitter]]. It can, for 
-example, invoke an external services via [[Adapters|Adapter]], evaluate Handlebars snippets or simply 
-redirect a site visitor to a different location.
+Knot defines a business logic which can be applied to a particular [[Fragment|Splitter]]. It can, for 
+example, invoke an external services via [[Adapter|Adapter]], evaluate Handlebars snippets or simply 
+redirect a site visitor to a different location. 
 
 ## How does it work?
-The Knot reads a [Knot Context](#knot-context) containing a list of Fragments to process, takes care of the processing,
-updates the Knot Context and returns it back to the caller.
+Knots are invoked by the [[Server|Server]] **sequentially** according to [[Knots Routing|KnotRouting]] configuration.
+Every Knot operates on [Knot Context](#knot-context) which contains a list of Fragments to process. Knot takes care of a processing, optionally updates the Knot Context and returns it back to the caller so that it will be an input for the next called Knot.
 
-A particular Knot is applied to Fragments if two conditions are met:
+A particular Knot will process a Fragment only when those two conditions are met:
 
-- it is defined in [[Knot routing|KnotRouting]]
-- there is at least one Fragment that declares a matching [Knot Election Rule](#knot-election-rule)
+- it is defined in [[Knots Routing|KnotRouting]]
+- there is at least one Fragment that declares matching [Knot Election Rule](#knot-election-rule)
 
 ### Knot Election Rule
-A Knot Election Rule determines if a Knot should be applied to a particular Fragment. Every time
-a Knot reads the Knot Context, it checks if there is any Fragment that needs to be processed by it. 
+Knot Election Rule determines if Knot should process a Fragment or not.
+Knot Election Rule is a simple `String` value that comes from a `data-knotx-knots` attribute from the [[Fragment script tag|Splitter#example]]. 
+The attribute contains a comma-separated list of Knot Election Rules which *can* be used by Knot to determine if it should
+process that particular Fragment or not.
 
-The Knot Election Rule is simple `String` value coming from the `data-knotx-knots` attribute (the attribute contains a comma-separated list of Knot Election Rules). 
-
-Knots can simply filter Fragments which do not contain a certain Knot Election Rule (for example `services` or `handlebars`).
+Knots **can** simply filter out Fragments which do not contain the certain Knot Election Rule (for example `services` or `handlebars`).
 
 ### Knot Context
-The Knot Context is a communication model passed between [[Server|Server]], [[Fragment Splitter|Splitter]], 
+Knot Context is a communication model passed between [[Server|Server]], [[Fragment Splitter|Splitter]], 
 [[Knots|Knot]] and [[Fragment Assembler|Assembler]]. 
 
-The flow is driven by [[Server|Server]] forwarding and getting back KnotContext to/from Splitter, Knots and Assembler. 
-Knot Context keeps information about a site visitor request, current processing status and a site visitor response. 
-
-From now on, we will be using the terms *client* and *site visitor* interchangeably.
+The flow is driven by the [[Server|Server]] forwarding. Originally KnotContext is created by the [[Fragment Splitter|Splitter]] module basing on the [[Repository|RepositoryConnectors]] template input. 
 
 Knot Context contains:
-* client request with path, headers, form attributes and parameters
-* client response with body, headers and status code
-* [[fragments|Splitter]]
-* transition value
+* a client request with a path, headers, form attributes and parameters
+* a client response with a body, headers and a status code
+* [[Fragments|Splitter]]
+* [[Transition|KnotRouting]]] value
 
-*Client request* includes site visitor path (requested URL), HTTP headers, form attributes 
+From now, we will be using terms *client* and *site visitor* interchangeably.
+
+*A client request* includes a site visitor path (a requested URL), HTTP headers, form attributes 
 (for POST requests) and request query parameters.
 
-*Client response* includes a body (which represents final response body), HTTP headers (which are narrowed finally
-by Server) and HTTP status code.
+*A client response* includes a body (which represents the final response body set by [[Fragment Assembler|Assembler]]), 
+HTTP headers (which are narrowed finally by [[Server|Server]] according to `allowedResponseHeaders` parameter) and HTTP status code.
 
 Please see [[Splitter|Splitter]] section to find out what Fragments are and how they are produced. 
-Fragments contain a template fragment content and a context. Knots can process a configured fragment content, 
-call required Adapters and put responses from Adapters to the fragment context (fragment context is a JSON 
-object).
+Fragments are documented [[here|Splitter#fragment]]. Knots can, for example, process 
+Fragment Content, call required Adapters and put responses from Adapters to Fragment Context (a JSON object).
 
-**Transition** is a text value which determines next step in [[request routing|KnotRouting]].
+**Transition** is a text value which determines the next step in [[Knots Routing|KnotRouting]].
 
 #### Knot Request
-A table below represents an event model consumed by Knot. First rows relates to client request attributes
-which are not modifiable within Knots. Next, rows are connected with client response attributes and 
-transition. Those rows are modified by Knots according to required behaviour (continue routing, redirect
+The table below represents an event model consumed by Knot. Client request attributes are not modifiable within Knots. 
+Client response and Transition attributes are modified by Knots according to required behaviour (continue routing, redirect
 to another url, return an error response).
 
 | Name                        | Type                                | Mandatory | Description  |
@@ -69,13 +66,13 @@ to another url, return an error response).
 
 
 #### Knot Response 
-Knot responds with Knot Context. So Knot Context from a request is consumed and updated according to required behaviour.
+Knot responds with Knot Context that is consumed and updated according to required behaviour Knot Context object from a request.
 
-Knots are designed to process Knot Context and finally decides what next step in routing is valid.
-It is the default Knot behaviour. Knots can also beak routing and decide to return an error or redirect 
+Knots are designed to process Knot Context and finally decides what a next step in Knots Routing is valid (via Transition).
+It is the default Knot behaviour. Knots can also break Knots Routing and decide to return an error or redirect 
 response to the client.
 
-A table below represents Knot response values.
+The table below represents Knot response values.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
@@ -88,15 +85,15 @@ A table below represents Knot response values.
 | `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response headers, can be updated by Knot |
 | `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last Handlebars Knot |
 | `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created by Splitter |
-| `transition`                 | `String`                      |        | defines next routing step (Knot), empty for redirects, errors and last routing step |
+| `transition`                 | `String`                      |        | defines the next routing step (Knot), empty for redirects, errors and last routing step |
 
 ##### Example Knot Responses
-Knots can decide what next routing step is valid. They can also break the routing. This section shows
-example responses.
+Knot can decide what next routing step (Knot) should be invoked (via `transition` property) or even break Knots Routing. This section 
+contains a few example responses.
 
 *Next Routing Step*
 
-Knot decides that routing should be continued. It sets `transition` to `next` and then Server continues 
+Knot decides that routing should be continued. It sets Transition value to `next` and then Server continues 
 routing according to its [[configuration|Server]].
 
 | Name | Value
@@ -106,7 +103,7 @@ routing according to its [[configuration|Server]].
 
 *Redirect response*
 
-Knot finds out that client must be redirected to an other URL.
+Knot finds out that a client must be redirected to another URL.
 
 | Name | Value
 |-------:                     | :-------  
@@ -116,8 +113,8 @@ Knot finds out that client must be redirected to an other URL.
 
 *Error response*
 
-Knot calls Adapter Service and gets **500**. Knot is not aware how this error should be processed so it sets clientResponse.statusCode to `500`.
-Server beaks routing and responds with `500` to the client.
+Knot calls Adapter Service and gets **500**. Knot is not aware how this error should be processed so it sets `clientResponse.statusCode` to `500`.
+Server breaks the routing and responds with `500` to the client.
 
 | Name | Value
 |-------:                     | :-------  
@@ -126,35 +123,109 @@ Server beaks routing and responds with `500` to the client.
 
 
 ## How to configure?
-the Knot API specifies an abstract class - `KnotConfiguration` to handle JSON configuration support. This
-abstraction can be used while implementing a custom Knot but it is not required. Every Knot must be
-exposed with a unique Event Bus address - that's the only obligation (as is the case with Adapters).
-Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
+Knots are exposed with an unique Event Bus address - that's the only obligation (this is also true for Adapters).
+Please see the example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
 [[Service Knot|ServiceKnot#how-to-configure]].
 
 ## How to implement your own Knot?
-Implementation of a Knot does not require knowledge of how to communicate via the Vert.x event bus. It's wrapped by **Vert.x Service Proxy** functionality so any new implementation can focus on the business logic of the Knot. 
 
-In order to implement a Knot, follow the guide below:
+Knot.x provides the [maven archetypes](https://github.com/Knotx/knotx-extension-archetype) to generate custom Knots / [[Adapters|Adapter]]. 
+It is the **recommended** way to create your own Knots.
 
-1. Create your Knot by extending `io.knotx.knot.AbstractKnotProxy` class, and implement your business logic in the `processRequest()` method with the return type of `Observable<KnotContext>` (a promise of the modified `KnotContext`).
+A Knot code is executed on a [Vert.x event loop](http://vertx.io/docs/vertx-core/java/#_reactor_and_multi_reactor). [The 
+Vert.x Golden Rule](http://vertx.io/docs/vertx-core/java/#golden_rule) says that the code should **never block** the 
+event loop. So all time consuming operations should be coded in an asynchronous way. By default Knots uses [RxJava](http://vertx.io/docs/vertx-rx/java/) 
+which is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+RxJava introduce Reactive Programming what is a development model structured around asynchronous data streams. 
 
-   See `io.knotx.knot.service.impl.ServiceKnotProxyImpl.java` as an example.
+| ! Note |
+|:------ |
+| Reactive programming code first requires a mind-shift. You are notified of asynchronous events. Then, the API can be hard to grasp (just look at the list of operators). Don’t abuse, write comments, explain, or draw diagrams. RX is powerful, abusing it or not explaining it will make your coworkers grumpy. [Read more](https://developers.redhat.com/blog/2017/06/30/5-things-to-know-about-reactive-programming/) |
 
-2. Create a class extending `AbstractVerticle` that will read the configuration and register your `KnotProxy` implementation at the given `address`.
 
-   Have a look at `io.knotx.knot.service.ServiceKnotVerticle.java` to see how the `ServiceKnotProxyImpl` is registered.
+In order to implement Knot, follow the guide below. Note that the Knot archetype generates both the code and all configuration
+files required to run a Knot.x instance containing the custom Knot. More details about the Knot.x deployment can be found in the
+[[deployment section|KnotxDeployment]].
 
-The `AbstractKnotProxy` class provides the following methods that you can override in your implementation in order to control the processing of Fragments:
+1. Generate the Knot module
 
-- `boolean shouldProcess(Set<String> knots)` is executed on each Fragment from the given KnotContext, from each fragment it gets a set of Knot names (from the `data-knotx-knots` snippet attribute), and lets you decide whether the Fragment should be processed by your Knot or not (no pun intended).
-- `Single<KnotContext> processRequest(KnotContext knotContext)` consumes `KnotContext` messages from a [[Server|Server]] and returns the modified `KnotContext` object as an instance of [`rx.Single`](http://reactivex.io/RxJava/javadoc/rx/Single.html).
-- `KnotContext processError(KnotContext knotContext, Throwable error)` handles any Exception thrown during processing, and is responsible for preparing the proper KnotContext on such occasions, these will simply finish processing flows, as any error generated by a Knot will be immediately returned to the page visitor.
+   `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-knot-archetype -DarchetypeVersion=X.Y.Z`
+
+2. Compile, run tests and build a jar package
+
+   `mvn package`
+
+3. Copy the [Knot.x standalone fat jar](https://github.com/Cognifide/knotx/releases/latest) and the custom Knot jar (`target/*-1.0-SNAPSHOT-fat.jar`) to the `app` folder
+
+4. Execute `run.sh` script.
+
+5. A console log should contain an entry with ExampleKnot
+
+```
+2018-01-08 09:53:46 [vert.x-eventloop-thread-2] INFO  i.k.r.FilesystemRepositoryConnectorVerticle - Starting <FilesystemRepositoryConnectorVerticle>
+2018-01-08 09:53:46 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Starting <KnotxServerVerticle>
+2018-01-08 09:53:46 [vert.x-eventloop-thread-0] INFO  i.k.e.knot.example.ExampleKnot - Starting <ExampleKnot>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-3] INFO  i.k.s.FragmentSplitterVerticle - Starting <FragmentSplitterVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-4] INFO  i.k.k.a.FragmentAssemblerVerticle - Starting <FragmentAssemblerVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-5] INFO  i.k.knot.service.ServiceKnotVerticle - Starting <ServiceKnotVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-7] INFO  i.k.k.t.HandlebarsKnotVerticle - Starting <HandlebarsKnotVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-6] INFO  i.k.knot.action.ActionKnotVerticle - Starting <ActionKnotVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2018-01-08 09:53:47 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+
+                Deployed 7e0a0bb8-4704-431f-9a21-0d6a6f013587 [knotx:io.knotx.FilesystemRepositoryConnector]
+                Deployed 67c6c8e9-5249-4b58-bda6-7f78361c50c5 [knotx:io.knotx.exampleknot.knot.example.ExampleKnot]
+                Deployed eee726c5-2e12-4455-95c6-32b2e02eef0f [knotx:io.knotx.FragmentAssembler]
+                Deployed 4920772b-dd96-4325-adef-488b1d541d0b [knotx:io.knotx.FragmentSplitter]
+                Deployed 947721ba-e107-4500-a282-fb73d4316eac [knotx:io.knotx.ServiceKnot]
+                Deployed d987e3a2-acad-4e93-89b3-216b1551426a [knotx:io.knotx.ActionKnot]
+                Deployed 906ea442-6863-4a89-bddc-f538a6e27084 [knotx:io.knotx.HandlebarsKnot]
+                Deployed 0b2e0245-4afa-4e9d-8a39-5e8fbbaab810 [knotx:io.knotx.KnotxServer]
+```
+
+6. Open a [http://localhost:8092/content/local/template.html](http://localhost:8092/content/local/template.html) link in your 
+browser to validate a Knot header message (`Knot example`).
+
+The `ExampleKnotProxy` class contains the Knot processing logic. It extends [`io.knotx.knot.AbstractKnotProxy`](https://github.com/Cognifide/knotx/blob/master/knotx-core/src/main/java/io/knotx/knot/AbstractKnotProxy.java) 
+class, and implements the example processing logic in the `processRequest()` method with the return type of `Single<KnotContext>` 
+(a promise of the modified `KnotContext`).
+
+The `AbstractKnotProxy` class provides the following methods that you can override in your implementation in order to 
+control the processing of Fragments:
+
+- `boolean shouldProcess(Set<String> knots)` is executed on each Fragment from the given KnotContext, from each fragment it gets a set of Knot Election Rules (from the `data-knotx-knots` snippet attribute), and lets you decide whether Fragment should be processed by your Knot or not (no pun intended).
+- `Single<KnotContext> processRequest(KnotContext knotContext)` consumes `KnotContext` messages from the [[Server|Server]] and returns the modified `KnotContext` object as an instance of [`rx.Single`](http://reactivex.io/RxJava/javadoc/rx/Single.html).
+- `KnotContext processError(KnotContext knotContext, Throwable error)` handles any Exception thrown during processing, and is responsible for preparing the proper KnotContext on such occasions, these will simply finish processing flows, as any error generated by Knot will be immediately returned to the page visitor.
 
 | ! Note |
 |:------ |
 | Please note that while this section focuses on the Java language specifically, it's not the only choice you have. Thanks to [the polyglot nature of Vert.x](http://vertx.io), you can implement your Adapters and Knots using other languages. |
 
-| ! Note |
-|:------ |
-| Besides the Verticle implementation itself, a custom implementation of your Knot must be built as a Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] documentation in order to see how to make your Knot a module. | 
+### How to run blocking code in your own Knot?
+The easiest way to handle a blocking code inside your Knot is to deploy it as a [Vert.x worker](http://vertx.io/docs/vertx-core/java/#worker_verticles).
+No change in your code is required.
+
+To do so you need to tell Vert.x that your custom Knot should be processed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
+```
+{
+  "main": "some.package.knot.example.ExampleKnot",
+  "options": {
+    "worker": true,
+    "multiThreaded": true,
+    "config": {
+      ...
+    }
+  }
+}
+```
+Now in your Knot.x instance log file you should see
+```
+2018-01-08 10:00:16 [vert.x-worker-thread-0] INFO  i.k.e.knot.example.ExampleKnot - Starting <ExampleKnot>
+```
+
+### How to implement your own Knot without Rx Java?
+Extending `AbstractKnotProxy` is the **recommended** way to implement your custom Knots. But still you can resign from
+this approach and implement your custom Knots with Vert.x handlers (without using RxJava). The only one thing to change 
+is to implement `KnotProxy` instead of extending `AbstractKnotProxy`. Then you need to implement a 
+method `void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result)` where you should implement your 
+custom Knot Election Rule and processing logic. 
