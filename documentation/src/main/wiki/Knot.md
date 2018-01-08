@@ -130,22 +130,23 @@ Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]
 
 ## How to implement your own Knot?
 
-Knot.x provides the [maven archetype](https://github.com/Knotx/knotx-extension-archetype) to generate a custom Knot. 
-It is the **recommended** approach.
+Knot.x provides the [maven archetypes](https://github.com/Knotx/knotx-extension-archetype) to generate custom Knots / [[Adapters|Adapter]]. 
+It is the **recommended** way to create your own Knots.
 
 A Knot code is executed on a [Vert.x event loop](http://vertx.io/docs/vertx-core/java/#_reactor_and_multi_reactor). [The 
 Vert.x Golden Rule](http://vertx.io/docs/vertx-core/java/#golden_rule) says that the code should **never block** the 
 event loop. So all time consuming operations should be coded in an asynchronous way. By default Knots uses [RxJava](http://vertx.io/docs/vertx-rx/java/) 
-which is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+what is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
 RxJava introduce Reactive Programming what is a development model structured around asynchronous data streams. 
 
 | ! Note |
 |:------ |
-| Reactive programming code first requires a mind-shift. You are notified of asynchronous events. Then, the API can be hard to grasp (just look at the list of operators). Don’t abuse, write comments, explain, or draw diagrams (I’m sure you are an asciiart artist). RX is powerful, abusing it or not explaining it will make your coworkers grumpy. [Read more](https://developers.redhat.com/blog/2017/06/30/5-things-to-know-about-reactive-programming/) |
+| Reactive programming code first requires a mind-shift. You are notified of asynchronous events. Then, the API can be hard to grasp (just look at the list of operators). Don’t abuse, write comments, explain, or draw diagrams. RX is powerful, abusing it or not explaining it will make your coworkers grumpy. [Read more](https://developers.redhat.com/blog/2017/06/30/5-things-to-know-about-reactive-programming/) |
 
 
-In order to implement a Knot, follow the guide below. Note that the Knot archetype generates both the code and all configuration
-files requires to run Knot.x with the custom Knot according to [[deployment recommendations|KnotxDeployment]].
+In order to implement Knot, follow the guide below. Note that the Knot archetype generates both the code and all configuration
+files required to run a Knot.x instance containing the custom Knot. More details about the Knot.x deployment can be found in a
+[[deployment section|KnotxDeployment]].
 
 1. Generate the Knot module
 
@@ -155,14 +156,39 @@ files requires to run Knot.x with the custom Knot according to [[deployment reco
 
    `mvn package`
 
-3. Copy [the released Knot.x standalone fat jar](https://github.com/Cognifide/knotx/releases/tag/1.1.2) to `app` folder
+3. Copy the [Knot.x standalone fat jar](https://github.com/Cognifide/knotx/releases/latest) and the custom Knot jar (`target/*-1.0-SNAPSHOT-fat.jar`) to the `app` folder
 
 4. Execute `run.sh` script.
 
-5. A console log should contain an entry with ExampleKnot.
+5. A console log should contain an entry with ExampleKnot
 
-The class with the Knot business logic is named `ExampleKnotProxy`. It extends `io.knotx.knot.AbstractKnotProxy` class, and 
-implements the example business logic in the `processRequest()` method with the return type of `Single<KnotContext>` 
+```
+2018-01-08 09:53:46 [vert.x-eventloop-thread-2] INFO  i.k.r.FilesystemRepositoryConnectorVerticle - Starting <FilesystemRepositoryConnectorVerticle>
+2018-01-08 09:53:46 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Starting <KnotxServerVerticle>
+2018-01-08 09:53:46 [vert.x-eventloop-thread-0] INFO  i.k.e.knot.example.ExampleKnot - Starting <ExampleKnot>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-3] INFO  i.k.s.FragmentSplitterVerticle - Starting <FragmentSplitterVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-4] INFO  i.k.k.a.FragmentAssemblerVerticle - Starting <FragmentAssemblerVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-5] INFO  i.k.knot.service.ServiceKnotVerticle - Starting <ServiceKnotVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-7] INFO  i.k.k.t.HandlebarsKnotVerticle - Starting <HandlebarsKnotVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-6] INFO  i.k.knot.action.ActionKnotVerticle - Starting <ActionKnotVerticle>
+2018-01-08 09:53:47 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2018-01-08 09:53:47 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+
+                Deployed 7e0a0bb8-4704-431f-9a21-0d6a6f013587 [knotx:io.knotx.FilesystemRepositoryConnector]
+                Deployed 67c6c8e9-5249-4b58-bda6-7f78361c50c5 [knotx:io.knotx.exampleknot.knot.example.ExampleKnot]
+                Deployed eee726c5-2e12-4455-95c6-32b2e02eef0f [knotx:io.knotx.FragmentAssembler]
+                Deployed 4920772b-dd96-4325-adef-488b1d541d0b [knotx:io.knotx.FragmentSplitter]
+                Deployed 947721ba-e107-4500-a282-fb73d4316eac [knotx:io.knotx.ServiceKnot]
+                Deployed d987e3a2-acad-4e93-89b3-216b1551426a [knotx:io.knotx.ActionKnot]
+                Deployed 906ea442-6863-4a89-bddc-f538a6e27084 [knotx:io.knotx.HandlebarsKnot]
+                Deployed 0b2e0245-4afa-4e9d-8a39-5e8fbbaab810 [knotx:io.knotx.KnotxServer]
+```
+
+6. Open a [http://localhost:8092/content/local/template.html](http://localhost:8092/content/local/template.html) link in your 
+browser to validate a Knot header message (`Knot example`).
+
+The `ExampleKnotProxy` class contains the Knot processing logic. It extends `io.knotx.knot.AbstractKnotProxy` 
+class, and implements the example processing logic in the `processRequest()` method with the return type of `Single<KnotContext>` 
 (a promise of the modified `KnotContext`).
 
 The `AbstractKnotProxy` class provides the following methods that you can override in your implementation in order to 
@@ -178,11 +204,12 @@ control the processing of Fragments:
 
 ### How to run blocking code in your own Knot?
 The easiest way to handle a blocking code inside your Knot is to deploy it as a [Vert.x worker](http://vertx.io/docs/vertx-core/java/#worker_verticles).
-No change in your code is required - it is only the matter of a configuration:
+No change in your code is required.
 
+So now you need to tell Vert.x that your custom Knot should be processed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
 ```
 {
-  "main": "io.knot.example.ExampleKnot",
+  "main": "some.package.knot.example.ExampleKnot",
   "options": {
     "worker": true,
     ""multiThreaded": true,
@@ -191,10 +218,15 @@ No change in your code is required - it is only the matter of a configuration:
     }
   }
 }
-
+```
+Now in your Knot.x instance log file you should see
+```
+2018-01-08 10:00:16 [vert.x-worker-thread-0] INFO  i.k.e.knot.example.ExampleKnot - Starting <ExampleKnot>
 ```
 
 ### How to implement your own Knot without Rx Java?
-Extending `AbstractKnotProxy` is the **recommended way** to implement your custom Knots. But still you can resign from
-this approach and implement your custom Knots with Vert.x handlers. The only one thing to change is to implement `KnotProxy`
-instead of extending `AbstractKnotProxy`. Then your process you need to implement a method `void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);`
+Extending `AbstractKnotProxy` is the **recommended** way to implement your custom Knots. But still you can resign from
+this approach and implement your custom Knots with Vert.x handlers (without using RxJava). The only one thing to change 
+is to implement `KnotProxy` instead of extending `AbstractKnotProxy`. Then you need to implement a 
+method `void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result)` where you should implement your 
+custom Knot Election Rule and processing logic. 
