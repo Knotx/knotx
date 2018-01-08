@@ -47,9 +47,8 @@ Fragment Content, call required Adapters and put responses from Adapters to Frag
 **Transition** is a text value which determines the next step in [[Knots Routing|KnotRouting]].
 
 #### Knot Request
-A table below represents an event model consumed by Knot. First rows relate to client request attributes
-which are not modifiable within Knots. Next rows are connected with client response attributes and 
-Transition. Those rows are modified by Knots according to required behaviour (continue routing, redirect
+The table below represents an event model consumed by Knot. Client request attributes are not modifiable within Knots. 
+Client response and Transition attributes are modified by Knots according to required behaviour (continue routing, redirect
 to another url, return an error response).
 
 | Name                        | Type                                | Mandatory | Description  |
@@ -67,13 +66,13 @@ to another url, return an error response).
 
 
 #### Knot Response 
-Knot responds with Knot Context. So Knot Context from a request is consumed and updated according to required behaviour.
+Knot responds with Knot Context that is consumed and updated according to required behaviour Knot Context object from a request.
 
 Knots are designed to process Knot Context and finally decides what a next step in Knots Routing is valid (via Transition).
-It is the default Knot behaviour. Knots can also beak Knots Routing and decide to return an error or redirect 
+It is the default Knot behaviour. Knots can also break Knots Routing and decide to return an error or redirect 
 response to the client.
 
-A table below represents Knot response values.
+The table below represents Knot response values.
 
 | Name                        | Type                                | Mandatory | Description  |
 |-------:                     |:-------:                            |:-------:  |-------|
@@ -86,15 +85,15 @@ A table below represents Knot response values.
 | `clientResponse.headers`                 | `MultiMap`                      | &#10004;       | client response headers, can be updated by Knot |
 | `clientResponse.body`                 | `Buffer`                      |        | final response body, can be empty until last Handlebars Knot |
 | `fragments`                 | `List<Fragment>`                      |   &#10004;    | list of Fragments created by Splitter |
-| `Transition`                 | `String`                      |        | defines a next routing step (Knot), empty for redirects, errors and last routing step |
+| `transition`                 | `String`                      |        | defines the next routing step (Knot), empty for redirects, errors and last routing step |
 
 ##### Example Knot Responses
-Knot can decide what next routing step (Knot) should be invoked (via Transition) or even break Knots Routing. This section 
+Knot can decide what next routing step (Knot) should be invoked (via `transition` property) or even break Knots Routing. This section 
 contains a few example responses.
 
 *Next Routing Step*
 
-Knot decides that routing should be continued. It sets `Transition` to `next` and then Server continues 
+Knot decides that routing should be continued. It sets Transition value to `next` and then Server continues 
 routing according to its [[configuration|Server]].
 
 | Name | Value
@@ -104,7 +103,7 @@ routing according to its [[configuration|Server]].
 
 *Redirect response*
 
-Knot finds out that a client must be redirected to an ohter URL.
+Knot finds out that a client must be redirected to another URL.
 
 | Name | Value
 |-------:                     | :-------  
@@ -114,7 +113,7 @@ Knot finds out that a client must be redirected to an ohter URL.
 
 *Error response*
 
-Knot calls Adapter Service and gets **500**. Knot is not aware how this error should be processed so it sets clientResponse.statusCode to `500`.
+Knot calls Adapter Service and gets **500**. Knot is not aware how this error should be processed so it sets `clientResponse.statusCode` to `500`.
 Server breaks the routing and responds with `500` to the client.
 
 | Name | Value
@@ -124,8 +123,8 @@ Server breaks the routing and responds with `500` to the client.
 
 
 ## How to configure?
-Knots are exposed with an unique Event Bus address - that's the only one obligation (as is the case with Adapters).
-Please see example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
+Knots are exposed with an unique Event Bus address - that's the only obligation (this is also true for Adapters).
+Please see the example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
 [[Service Knot|ServiceKnot#how-to-configure]].
 
 ## How to implement your own Knot?
@@ -136,7 +135,7 @@ It is the **recommended** way to create your own Knots.
 A Knot code is executed on a [Vert.x event loop](http://vertx.io/docs/vertx-core/java/#_reactor_and_multi_reactor). [The 
 Vert.x Golden Rule](http://vertx.io/docs/vertx-core/java/#golden_rule) says that the code should **never block** the 
 event loop. So all time consuming operations should be coded in an asynchronous way. By default Knots uses [RxJava](http://vertx.io/docs/vertx-rx/java/) 
-what is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+which is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
 RxJava introduce Reactive Programming what is a development model structured around asynchronous data streams. 
 
 | ! Note |
@@ -145,7 +144,7 @@ RxJava introduce Reactive Programming what is a development model structured aro
 
 
 In order to implement Knot, follow the guide below. Note that the Knot archetype generates both the code and all configuration
-files required to run a Knot.x instance containing the custom Knot. More details about the Knot.x deployment can be found in a
+files required to run a Knot.x instance containing the custom Knot. More details about the Knot.x deployment can be found in the
 [[deployment section|KnotxDeployment]].
 
 1. Generate the Knot module
@@ -187,7 +186,7 @@ files required to run a Knot.x instance containing the custom Knot. More details
 6. Open a [http://localhost:8092/content/local/template.html](http://localhost:8092/content/local/template.html) link in your 
 browser to validate a Knot header message (`Knot example`).
 
-The `ExampleKnotProxy` class contains the Knot processing logic. It extends `io.knotx.knot.AbstractKnotProxy` 
+The `ExampleKnotProxy` class contains the Knot processing logic. It extends [`io.knotx.knot.AbstractKnotProxy`](https://github.com/Cognifide/knotx/blob/master/knotx-core/src/main/java/io/knotx/knot/AbstractKnotProxy.java) 
 class, and implements the example processing logic in the `processRequest()` method with the return type of `Single<KnotContext>` 
 (a promise of the modified `KnotContext`).
 
@@ -195,7 +194,7 @@ The `AbstractKnotProxy` class provides the following methods that you can overri
 control the processing of Fragments:
 
 - `boolean shouldProcess(Set<String> knots)` is executed on each Fragment from the given KnotContext, from each fragment it gets a set of Knot Election Rules (from the `data-knotx-knots` snippet attribute), and lets you decide whether Fragment should be processed by your Knot or not (no pun intended).
-- `Single<KnotContext> processRequest(KnotContext knotContext)` consumes `KnotContext` messages from a [[Server|Server]] and returns the modified `KnotContext` object as an instance of [`rx.Single`](http://reactivex.io/RxJava/javadoc/rx/Single.html).
+- `Single<KnotContext> processRequest(KnotContext knotContext)` consumes `KnotContext` messages from the [[Server|Server]] and returns the modified `KnotContext` object as an instance of [`rx.Single`](http://reactivex.io/RxJava/javadoc/rx/Single.html).
 - `KnotContext processError(KnotContext knotContext, Throwable error)` handles any Exception thrown during processing, and is responsible for preparing the proper KnotContext on such occasions, these will simply finish processing flows, as any error generated by Knot will be immediately returned to the page visitor.
 
 | ! Note |
@@ -206,13 +205,13 @@ control the processing of Fragments:
 The easiest way to handle a blocking code inside your Knot is to deploy it as a [Vert.x worker](http://vertx.io/docs/vertx-core/java/#worker_verticles).
 No change in your code is required.
 
-So now you need to tell Vert.x that your custom Knot should be processed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
+To do so you need to tell Vert.x that your custom Knot should be processed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
 ```
 {
   "main": "some.package.knot.example.ExampleKnot",
   "options": {
     "worker": true,
-    ""multiThreaded": true,
+    "multiThreaded": true,
     "config": {
       ...
     }
