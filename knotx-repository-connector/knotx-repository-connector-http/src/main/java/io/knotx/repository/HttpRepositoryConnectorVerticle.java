@@ -43,7 +43,7 @@ public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
@@ -51,11 +51,11 @@ public class HttpRepositoryConnectorVerticle extends AbstractVerticle {
     consumer = serviceBinder
         .setAddress(configuration.getAddress())
         .register(RepositoryConnectorProxy.class,
-            new HttpRepositoryConnectorProxyImpl(vertx, config()));
+            new HttpRepositoryConnectorProxyImpl(vertx, configuration));
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     serviceBinder.unregister(consumer);
   }
 

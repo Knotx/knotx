@@ -44,7 +44,7 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
@@ -56,7 +56,7 @@ public class FilesystemRepositoryConnectorVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     serviceBinder.unregister(consumer);
   }
 
