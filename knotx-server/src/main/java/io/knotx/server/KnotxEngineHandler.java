@@ -24,6 +24,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +36,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private KnotxServerOptions configuration;
   private String address;
   private Map<String, RoutingEntry> routing;
+  private Map<String, KnotProxy> proxies;
 
   private KnotxEngineHandler(Vertx vertx, KnotxServerOptions configuration, String address,
       Map<String, RoutingEntry> routing) {
@@ -42,6 +44,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
     this.configuration = configuration;
     this.address = address;
     this.routing = routing;
+    this.proxies = new HashMap<>();
   }
 
   static KnotxEngineHandler create(Vertx vertx, KnotxServerOptions configuration,
@@ -63,10 +66,10 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private void handleRoute(final RoutingContext context, final String address,
       final Map<String, RoutingEntry> routing) {
     KnotContext knotContext = context.get(KnotContext.KEY);
-    KnotProxy knot = KnotProxy
-        .createProxyWithOptions(vertx, address, configuration.getDeliveryOptions());
 
-    knot.rxProcess(knotContext)
+    proxies.computeIfAbsent(address,
+        adr -> KnotProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
+        .rxProcess(knotContext)
         .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
         .subscribe(ctx -> {
               if (StringUtils.isNotBlank(ctx.getTransition())) {
@@ -81,7 +84,6 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
             }
         );
   }
-
   private void doTransition(RoutingContext context, KnotContext ctx,
       final Map<String, RoutingEntry> routing) {
     RoutingEntry entry = routing.get(ctx.getTransition());

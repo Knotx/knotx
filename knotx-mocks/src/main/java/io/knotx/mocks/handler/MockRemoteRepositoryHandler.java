@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.mocks.adapter;
+package io.knotx.mocks.handler;
 
 import com.google.common.collect.Sets;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -28,14 +28,13 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 
 public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
 
   private static final String SEPARATOR = "/";
   private static final Logger LOGGER = LoggerFactory.getLogger(MockRemoteRepositoryHandler.class);
-  private static final Set<String> TEST_FILES_EXTENSIONS =
-      Sets.newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml",
-          "xsm", "xsl", "xsd", "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
+
 
   private final Vertx vertx;
   private final String catalogue;
@@ -50,22 +49,14 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
     this.delayPerPath = delayPerPath;
   }
 
-  private static String getFileExtension(String filename) {
-    int li = filename.lastIndexOf('.');
-    if (li != -1 && li != filename.length() - 1) {
-      return filename.substring(li + 1, filename.length());
-    }
-    return null;
-  }
 
   @Override
   public void handle(RoutingContext context) {
     String resourcePath = catalogue + SEPARATOR + getContentPath(context.request().path());
     final Optional<String> contentType = Optional
         .ofNullable(MimeMapping.getMimeTypeForFilename(resourcePath));
-    final String fileExtension = getFileExtension(resourcePath);
-    final boolean isTextFile =
-        fileExtension != null && TEST_FILES_EXTENSIONS.contains(fileExtension);
+
+    RepositoryFileExtension fileExtension = RepositoryFileExtension.fromFilename(resourcePath);
 
     vertx.fileSystem().readFile(resourcePath, ar -> {
       HttpServerResponse response = context.response();
@@ -74,8 +65,8 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
             resourcePath);
         Buffer fileContent = ar.result();
         generateResponse(context.request().path(), () -> {
-          setHeaders(response, contentType, isTextFile);
-          response.setStatusCode(HttpResponseStatus.OK.code()).end(fileContent);
+          setHeaders(response, contentType, fileExtension.isTextFile());
+          response.setStatusCode(fileExtension.responseStatus.code()).end(fileContent);
         });
       } else {
         LOGGER.error("Unable to read file.", ar.cause());
@@ -126,6 +117,57 @@ public class MockRemoteRepositoryHandler implements Handler<RoutingContext> {
       return path.replaceFirst("/", "");
     } else {
       return path;
+    }
+  }
+
+  private static final class RepositoryFileExtension {
+
+    private static final Set<String> TEXT_FILES_EXTENSIONS =
+        Sets.newHashSet("html", "php", "html", "js", "css", "txt", "text", "json", "xml",
+            "xsm", "xsl", "xsd", "xslt", "dtd", "yml", "svg", "csv", "log", "sgml", "sgm");
+
+    private final String extensions;
+    private final HttpResponseStatus responseStatus;
+
+    private RepositoryFileExtension(String extensions, HttpResponseStatus responseStatus) {
+      this.extensions = extensions;
+      this.responseStatus = responseStatus;
+    }
+
+    static RepositoryFileExtension fromFilename(String filename) {
+      HttpResponseStatus responseCode = HttpResponseStatus.OK;
+      String ext = StringUtils.substringAfterLast(filename, ".");
+      responseCode = extractStatusCode(filename, responseCode);
+
+      return new RepositoryFileExtension(ext, responseCode);
+    }
+
+    private static HttpResponseStatus extractStatusCode(String filename, HttpResponseStatus responseCode) {
+      final String fileWithoutExt = StringUtils.substringBeforeLast(filename, ".");
+      if (StringUtils.isNotBlank(fileWithoutExt)) {
+        final String statusCodeStr = StringUtils.substringAfterLast(fileWithoutExt, ".");
+        try {
+          final int statusCode = Integer.parseInt(statusCodeStr);
+          responseCode = HttpResponseStatus.valueOf(statusCode);
+        } catch (NumberFormatException e) {
+          responseCode = HttpResponseStatus.OK;
+        }
+      }
+      return responseCode;
+    }
+
+    Optional<String> getExtensions() {
+      return Optional.ofNullable(extensions);
+    }
+
+    public HttpResponseStatus getResponseStatus() {
+      return responseStatus;
+    }
+
+    boolean isTextFile() {
+      return getExtensions()
+          .filter(TEXT_FILES_EXTENSIONS::contains)
+          .isPresent();
     }
   }
 

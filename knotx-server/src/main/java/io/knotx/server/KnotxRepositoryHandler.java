@@ -29,6 +29,8 @@ import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.http.HttpServerResponse;
 import io.vertx.reactivex.ext.web.RoutingContext;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class KnotxRepositoryHandler implements Handler<RoutingContext> {
@@ -39,9 +41,12 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private KnotxServerOptions configuration;
 
-  private KnotxRepositoryHandler(Vertx vertx, KnotxServerOptions configuration) {
+  private Map<String, RepositoryConnectorProxy> proxies;
+
+  private KnotxRepositoryHandler(Vertx vertx, KnotxServerConfiguration configuration) {
     this.vertx = vertx;
     this.configuration = configuration;
+    this.proxies = new HashMap<>();
   }
 
   static KnotxRepositoryHandler create(Vertx vertx, KnotxServerOptions configuration) {
@@ -55,31 +60,12 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
-      RepositoryConnectorProxy
-          .createProxyWithOptions(vertx, repositoryEntry.get().getAddress(),
-              configuration.getDeliveryOptions())
+      proxies.computeIfAbsent( repositoryEntry.get().address(),adr -> RepositoryConnectorProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
-              repoResponse -> {
-                if (isSuccessResponse(repoResponse)) {
-                  if (repositoryEntry.get().isDoProcessing()) {
-                    knotContext.setClientResponse(repoResponse);
-                    context.put(KnotContext.KEY, knotContext);
-                    context.next();
-                  } else {
-                    writeHeaders(context.response(), repoResponse.getHeaders());
-                    context.response().setStatusCode(repoResponse.getStatusCode())
-                        .end(Buffer.newInstance(repoResponse.getBody()));
-                  }
-                } else if (isErrorResponse(repoResponse)) {
-                  context.fail(repoResponse.getStatusCode());
-                } else {
-                  writeHeaders(context.response(),
-                      repoResponse.getHeaders().add("Content-Length", "0"));
-                  context.response().setStatusCode(repoResponse.getStatusCode()).end();
-                }
-              },
+              repoResponse -> handleRepositoryResponse(repoResponse, context, repositoryEntry.get(),
+                  knotContext),
               context::fail
           );
 
@@ -88,13 +74,29 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     }
   }
 
-  private boolean isSuccessResponse(ClientResponse repoResponse) {
-    return HttpResponseStatus.OK.code() == repoResponse.getStatusCode();
+  void handleRepositoryResponse(ClientResponse repoResponse, RoutingContext context,
+      RepositoryEntry repositoryEntry, KnotContext knotContext) {
+    if (isSuccessResponse(repoResponse)) {
+      if (repositoryEntry.doProcessing()) {
+        knotContext.setClientResponse(repoResponse);
+        context.put(KnotContext.KEY, knotContext);
+        context.next();
+      } else {
+        endResponse(repoResponse, context);
+      }
+    } else {
+      endResponse(repoResponse, context);
+    }
   }
 
-  private boolean isErrorResponse(ClientResponse repoResponse) {
-    return HttpResponseStatus.INTERNAL_SERVER_ERROR.code() == repoResponse.getStatusCode() ||
-        HttpResponseStatus.NOT_FOUND.code() == repoResponse.getStatusCode();
+  private void endResponse(ClientResponse repoResponse, RoutingContext context) {
+    writeHeaders(context.response(), repoResponse.getHeaders());
+    context.response().setStatusCode(repoResponse.getStatusCode())
+        .end(Buffer.newInstance(repoResponse.getBody()));
+  }
+
+  private boolean isSuccessResponse(ClientResponse repoResponse) {
+    return HttpResponseStatus.OK.code() == repoResponse.getStatusCode();
   }
 
   private void traceMessage(ClientResponse message) {
