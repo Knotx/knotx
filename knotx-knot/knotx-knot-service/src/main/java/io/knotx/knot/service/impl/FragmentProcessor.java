@@ -57,7 +57,11 @@ public class FragmentProcessor {
     LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
       return request.getCache()
-          .get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
+          .get(service.getCacheKey(), () -> {
+            LOGGER.debug("Requesting data from adapter {} with params {}", service.getAddress(),
+                service.getParams());
+            return serviceEngine.doServiceCall(service, request).cache();
+          });
     } catch (ExecutionException e) {
       LOGGER.fatal("Unable to get service data {}", e);
       return Single.error(e);

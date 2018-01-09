@@ -25,6 +25,7 @@ import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.handler.BodyHandler;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @DataObject(generateConverter = true, publicConverter = false)
 public class KnotxServerOptions {
@@ -137,6 +138,8 @@ public class KnotxServerOptions {
   public KnotxServerOptions(JsonObject json) {
     init();
     KnotxServerOptionsConverter.fromJson(json, this);
+    allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -155,6 +158,9 @@ public class KnotxServerOptions {
     fileUploadDirectory = DEFAULT_UPLOAD_DIRECTORY;
     displayExceptionDetails = DEFAULT_DISPLAY_EXCEPTIONS;
     allowedResponseHeaders = DEFAULT_RESPONSE_HEADERS;
+    allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
+        .collect(Collectors.toSet());
+
     serverOptions = new HttpServerOptions()
         .setPort(DEFAULT_HTTP_PORT)
         .setKeyStoreOptions(new JksOptions());
@@ -324,7 +330,8 @@ public class KnotxServerOptions {
    */
   public KnotxServerOptions setAllowedResponseHeaders(
       Set<String> allowedResponseHeaders) {
-    this.allowedResponseHeaders = allowedResponseHeaders;
+    this.allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
+        .collect(Collectors.toSet());
     return this;
   }
 

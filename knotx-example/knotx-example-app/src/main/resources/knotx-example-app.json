@@ -112,7 +112,7 @@
       "options": {
         "config": {
           "mockDataRoot": "mock/repository",
-          "httpPort": 4001
+          "httpPort": 3001
         }
       }
     },
@@ -121,7 +121,7 @@
         "config": {
           "mockDataRoot": "mock/service",
           "bouncing": true,
-          "httpPort": 4000
+          "httpPort": 3000
         }
       }
     },

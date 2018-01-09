@@ -47,7 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotProxyImpl.class);
 
   private final Vertx vertx;
   private final ActionKnotOptions configuration;
@@ -119,7 +119,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
         .setRequest(request)
         .setParams(metadata.getParams())
         .setAdapterParams(formEntity.adapterParams());
-    LOGGER.info("Adapter [{}] call with request [{}]", metadata.getAddress(), adapterRequest);
+    LOGGER.debug("Adapter [{}] call with request [{}]", metadata.getAddress(), adapterRequest);
     return adapterRequest;
   }
 

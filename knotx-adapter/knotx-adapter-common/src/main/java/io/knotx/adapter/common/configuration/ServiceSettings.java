@@ -147,6 +147,8 @@ public class ServiceSettings {
    */
   public ServiceSettings setAllowedRequestHeaders(Set<String> allowedRequestHeaders) {
     this.allowedRequestHeaders = allowedRequestHeaders;
+    allowedRequestHeadersPatterns = allowedRequestHeaders.stream()
+        .map(expr -> Pattern.compile(expr)).collect(Collectors.toList());
     return this;
   }
 

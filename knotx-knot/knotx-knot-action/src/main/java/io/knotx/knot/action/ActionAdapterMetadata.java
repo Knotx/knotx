@@ -156,6 +156,8 @@ public class ActionAdapterMetadata {
 
   public ActionAdapterMetadata setAllowedRequestHeaders(List<String> allowedRequestHeaders) {
     this.allowedRequestHeaders = allowedRequestHeaders;
+    allowedRequestHeadersPatterns = allowedRequestHeaders.stream().map(Pattern::compile)
+        .collect(Collectors.toList());
     return this;
   }
 
@@ -165,6 +167,8 @@ public class ActionAdapterMetadata {
 
   public ActionAdapterMetadata setAllowedResponseHeaders(List<String> allowedResponseHeaders) {
     this.allowedResponseHeaders = allowedResponseHeaders;
+    allowedResponseHeadersPatterns = allowedResponseHeaders.stream().map(Pattern::compile)
+        .collect(Collectors.toList());
     return this;
   }
 
