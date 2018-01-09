@@ -185,6 +185,6 @@ public class KnotxServerCsrfTest {
 
   private String getToken(List<String> result) {
     String val = result.get(0);
-    return val.split("X-XSRF-TOKEN=")[1].split(";")[0];
+    return val.split("XSRF-TOKEN=")[1].split(";")[0];
   }
 }

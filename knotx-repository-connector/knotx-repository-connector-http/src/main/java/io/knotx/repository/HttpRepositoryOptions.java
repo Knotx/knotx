@@ -16,7 +16,7 @@
 package io.knotx.repository;
 
 import com.google.common.collect.Sets;
-import io.knotx.configuration.CustomRequestHeader;
+import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpClientOptions;
@@ -78,7 +78,7 @@ public class HttpRepositoryOptions {
   private Set<String> allowedRequestHeaders;
   private List<Pattern> allowedRequestHeaderPatterns;
 
-  private CustomRequestHeader customRequestHeader;
+  private CustomHttpHeader customHttpHeader;
 
   /**
    * Default constructor
@@ -98,7 +98,7 @@ public class HttpRepositoryOptions {
     this.clientDestination = null;
     this.allowedRequestHeaders = new HashSet<>(other.allowedRequestHeaders);
     this.allowedRequestHeaderPatterns = new ArrayList<>(other.allowedRequestHeaderPatterns);
-    this.customRequestHeader = new CustomRequestHeader(other.customRequestHeader);
+    this.customHttpHeader = new CustomHttpHeader(other.customHttpHeader);
   }
 
   /**
@@ -135,7 +135,7 @@ public class HttpRepositoryOptions {
 
     clientDestination = new ClientDestination();
     allowedRequestHeaders = DEFAULT_ALLOWED_REQUEST_HEADERS;
-    customRequestHeader = new CustomRequestHeader();
+    customHttpHeader = new CustomHttpHeader();
   }
 
   /**
@@ -215,18 +215,18 @@ public class HttpRepositoryOptions {
   /**
    * @return a Custom Header to be sent in every request to the remote repository
    */
-  public CustomRequestHeader getCustomRequestHeader() {
-    return customRequestHeader;
+  public CustomHttpHeader getCustomHttpHeader() {
+    return customHttpHeader;
   }
 
   /**
    * Set the header (name & value) to be sent in every request to the remote repository
    *
-   * @param customRequestHeader the header name & value
+   * @param customHttpHeader the header name & value
    * @return a reference to this, so the API can be used fluently
    */
-  public HttpRepositoryOptions setCustomRequestHeader(CustomRequestHeader customRequestHeader) {
-    this.customRequestHeader = customRequestHeader;
+  public HttpRepositoryOptions setCustomHttpHeader(CustomHttpHeader customHttpHeader) {
+    this.customHttpHeader = customHttpHeader;
     return this;
   }
 

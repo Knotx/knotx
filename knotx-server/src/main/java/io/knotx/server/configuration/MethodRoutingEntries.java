@@ -17,20 +17,18 @@ package io.knotx.server.configuration;
 
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 
 @DataObject(generateConverter = true, publicConverter = false)
-public class RepositoryEntry {
+public class MethodRoutingEntries {
 
-  public final static boolean DEFAULT_DO_PROCESSING = true;
-
-  private String path;
-  private String address;
-  private boolean doProcessing;
+  private List<RoutingEntry> items;
 
   /**
    * Default constructor
    */
-  public RepositoryEntry() {
+  public MethodRoutingEntries() {
     init();
   }
 
@@ -40,10 +38,8 @@ public class RepositoryEntry {
    *
    * @param other the instance to copy
    */
-  public RepositoryEntry(RepositoryEntry other) {
-    this.path = other.path;
-    this.address = other.address;
-    this.doProcessing = other.doProcessing;
+  public MethodRoutingEntries(MethodRoutingEntries other) {
+    this.items = new ArrayList<>(other.items);
   }
 
   /**
@@ -51,9 +47,9 @@ public class RepositoryEntry {
    *
    * @param json the JSON
    */
-  public RepositoryEntry(JsonObject json) {
+  public MethodRoutingEntries(JsonObject json) {
     init();
-    RepositoryEntryConverter.fromJson(json, this);
+    MethodRoutingEntriesConverter.fromJson(json, this);
   }
 
   /**
@@ -63,38 +59,20 @@ public class RepositoryEntry {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    RepositoryEntryConverter.toJson(this, json);
+    MethodRoutingEntriesConverter.toJson(this, json);
     return json;
   }
 
   private void init() {
-    doProcessing = DEFAULT_DO_PROCESSING;
+    items = new ArrayList<>();
   }
 
-  public String getPath() {
-    return path;
+  public List<RoutingEntry> getItems() {
+    return items;
   }
 
-  public RepositoryEntry setPath(String path) {
-    this.path = path;
-    return this;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public RepositoryEntry setAddress(String address) {
-    this.address = address;
-    return this;
-  }
-
-  public boolean isDoProcessing() {
-    return doProcessing;
-  }
-
-  public RepositoryEntry setDoProcessing(boolean doProcessing) {
-    this.doProcessing = doProcessing;
+  public MethodRoutingEntries setItems(List<RoutingEntry> items) {
+    this.items = items;
     return this;
   }
 }

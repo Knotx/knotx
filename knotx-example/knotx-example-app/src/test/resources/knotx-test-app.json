@@ -1,6 +1,6 @@
 {
   "modules": [
-    "knotx:test.io.knotx.KnotxServer",
+    "java:io.knotx.server.KnotxServerVerticle",
     "java:io.knotx.repository.HttpRepositoryConnectorVerticle",
     "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle",
     "java:io.knotx.knot.splitter.FragmentSplitterVerticle",
@@ -14,6 +14,71 @@
     "java:io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
+    "java:io.knotx.server.KnotxServerVerticle": {
+      "options": {
+        "config": {
+          "serverOptions": {
+            "port": 9092
+          },
+          "displayExceptionDetails": true,
+          "allowedResponseHeaders": [
+            "Access-Control-Allow-Origin",
+            "Content-Type",
+            "Content-Length"
+          ],
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/local/.*",
+                "address": "knotx.core.repository.filesystem"
+              },
+              {
+                "path": "/content/.*",
+                "address": "knotx.core.repository.http"
+              }
+            ],
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": ".*\\.html",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": ".*\\.html",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "java:io.knotx.mocks.MockRemoteRepositoryVerticle": {
       "options": {
         "config": {
@@ -207,3 +272,4 @@
     }
   }
 }
+

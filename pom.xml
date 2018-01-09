@@ -325,6 +325,7 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -348,6 +349,7 @@
             </execution>
           </executions>
         </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>

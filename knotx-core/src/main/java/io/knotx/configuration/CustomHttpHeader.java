@@ -19,10 +19,10 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Describes a custom request header to be sent in every request to the services.
+ * Describes a custom header
  */
 @DataObject(generateConverter = true)
-public class CustomRequestHeader {
+public class CustomHttpHeader {
 
   /**
    * The default request header = Service-User-Agent
@@ -40,7 +40,7 @@ public class CustomRequestHeader {
   /**
    * Default Constructor
    */
-  public CustomRequestHeader() {
+  public CustomHttpHeader() {
     init();
   }
 
@@ -49,7 +49,7 @@ public class CustomRequestHeader {
    *
    * @param other the customHeader configuration to copy
    */
-  public CustomRequestHeader(CustomRequestHeader other) {
+  public CustomHttpHeader(CustomHttpHeader other) {
     this.name = other.name;
     this.value = other.value;
   }
@@ -59,9 +59,9 @@ public class CustomRequestHeader {
    *
    * @param json the JSON
    */
-  public CustomRequestHeader(JsonObject json) {
+  public CustomHttpHeader(JsonObject json) {
     init();
-    CustomRequestHeaderConverter.fromJson(json, this);
+    CustomHttpHeaderConverter.fromJson(json, this);
   }
 
   /**
@@ -71,7 +71,7 @@ public class CustomRequestHeader {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    CustomRequestHeaderConverter.toJson(this, json);
+    CustomHttpHeaderConverter.toJson(this, json);
     return json;
   }
 
@@ -84,7 +84,7 @@ public class CustomRequestHeader {
   /**
    * Set the name of the request header
    */
-  public CustomRequestHeader setName(String name) {
+  public CustomHttpHeader setName(String name) {
     this.name = name;
     return this;
   }
@@ -92,7 +92,7 @@ public class CustomRequestHeader {
   /**
    * Set the value of the request header
    */
-  public CustomRequestHeader setValue(String value) {
+  public CustomHttpHeader setValue(String value) {
     this.value = value;
     return this;
   }

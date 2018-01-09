@@ -68,11 +68,11 @@ Serialization variants of MultiMap fields
 |[[statusCode]]`statusCode`|`Number (int)`|-
 |===
 
-[[CustomRequestHeader]]
-== CustomRequestHeader
+[[CustomHttpHeader]]
+== CustomHttpHeader
 
 ++++
- Describes a custom request header to be sent in every request to the services.
+ Describes a custom header
 ++++
 '''
 

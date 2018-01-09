@@ -15,35 +15,102 @@
  */
 package io.knotx.server.configuration;
 
+import com.google.common.collect.Maps;
+import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
 import java.util.Map;
 
+@DataObject(generateConverter = true, publicConverter = false)
 public class RoutingEntry {
 
+  public final static boolean DEFAULT_CSRF_ENABLED = false;
+
   private String path;
-  private boolean csrfEnabled;
+  private boolean csrf;
   private String address;
   private Map<String, RoutingEntry> onTransition;
 
-  public RoutingEntry(String path, boolean csrfEnabled, String address, Map<String, RoutingEntry> onTransition) {
-    this.path = path;
-    this.csrfEnabled = csrfEnabled;
-    this.address = address;
-    this.onTransition = onTransition;
+  /**
+   * Default constructor
+   */
+  public RoutingEntry() {
+    init();
   }
 
-  public String path() {
+
+  /**
+   * Copy constructor
+   *
+   * @param other the instance to copy
+   */
+  public RoutingEntry(RoutingEntry other) {
+    this.path = other.path;
+    this.csrf = other.csrf;
+    this.address = other.address;
+    this.onTransition = Maps.newHashMap(other.onTransition);
+  }
+
+  /**
+   * Create an settings from JSON
+   *
+   * @param json the JSON
+   */
+  public RoutingEntry(JsonObject json) {
+    init();
+    RoutingEntryConverter.fromJson(json, this);
+  }
+
+  /**
+   * Convert to JSON
+   *
+   * @return the JSON
+   */
+  public JsonObject toJson() {
+    JsonObject json = new JsonObject();
+    RoutingEntryConverter.toJson(this, json);
+    return json;
+  }
+
+  private void init() {
+    csrf = DEFAULT_CSRF_ENABLED;
+    onTransition = new HashMap<>();
+  }
+
+  public String getPath() {
     return path;
   }
 
-  public boolean isCsrfEnabled() {
-    return csrfEnabled;
+  public RoutingEntry setPath(String path) {
+    this.path = path;
+    return this;
   }
 
-  public String address() {
+  public boolean isCsrf() {
+    return csrf;
+  }
+
+  public RoutingEntry setCsrf(boolean csrfEnabled) {
+    this.csrf = csrfEnabled;
+    return this;
+  }
+
+  public String getAddress() {
     return address;
   }
 
-  public Map<String, RoutingEntry> onTransition() {
+  public RoutingEntry setAddress(String address) {
+    this.address = address;
+    return this;
+  }
+
+  public Map<String, RoutingEntry> getOnTransition() {
     return onTransition;
+  }
+
+  public RoutingEntry setOnTransition(
+      Map<String, RoutingEntry> onTransition) {
+    this.onTransition = onTransition;
+    return this;
   }
 }

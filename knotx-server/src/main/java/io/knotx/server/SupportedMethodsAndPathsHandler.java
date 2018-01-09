@@ -15,8 +15,8 @@
  */
 package io.knotx.server;
 
-import io.knotx.server.configuration.KnotxFlowConfiguration;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxFlowSettings;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
@@ -29,16 +29,16 @@ public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(SupportedMethodsAndPathsHandler.class);
 
-  private final KnotxFlowConfiguration defaultFlow;
+  private final KnotxFlowSettings defaultFlow;
 
-  private final KnotxFlowConfiguration customFlow;
+  private final KnotxFlowSettings customFlow;
 
-  private SupportedMethodsAndPathsHandler(KnotxServerConfiguration configuration) {
+  private SupportedMethodsAndPathsHandler(KnotxServerOptions configuration) {
     this.defaultFlow = configuration.getDefaultFlow();
     this.customFlow = configuration.getCustomFlow();
   }
 
-  public static SupportedMethodsAndPathsHandler create(KnotxServerConfiguration configuration) {
+  public static SupportedMethodsAndPathsHandler create(KnotxServerOptions configuration) {
     return new SupportedMethodsAndPathsHandler(configuration);
   }
 
@@ -67,13 +67,13 @@ public class SupportedMethodsAndPathsHandler implements Handler<RoutingContext> 
     }
   }
 
-  private boolean isPathSupportedByFlow(final String path, KnotxFlowConfiguration flow) {
-    return flow.getEngineRouting() != null && flow.getEngineRouting().values().stream()
-        .anyMatch(list -> list.stream().anyMatch(item -> path.matches(item.path())));
+  private boolean isPathSupportedByFlow(final String path, KnotxFlowSettings flow) {
+    return flow != null && flow.getRouting() != null && flow.getRouting().values().stream()
+        .anyMatch(list -> list.getItems().stream().anyMatch(item -> path.matches(item.getPath())));
   }
 
-  private boolean isMethodAllowedInFlow(final HttpMethod method, KnotxFlowConfiguration flow) {
-    return flow.getEngineRouting() != null && flow.getEngineRouting().keySet().stream()
-        .anyMatch(item -> item == method);
+  private boolean isMethodAllowedInFlow(final HttpMethod method, KnotxFlowSettings flow) {
+    return flow != null & flow.getRouting() != null && flow.getRouting().keySet().stream()
+        .anyMatch(item -> HttpMethod.valueOf(item.toUpperCase()) == method);
   }
 }

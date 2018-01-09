@@ -17,7 +17,7 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.RoutingEntry;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
@@ -25,7 +25,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import org.apache.commons.lang3.StringUtils;
 
 class KnotxEngineHandler implements Handler<RoutingContext> {
@@ -33,11 +32,11 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxEngineHandler.class);
 
   private Vertx vertx;
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
   private String address;
   private Map<String, RoutingEntry> routing;
 
-  private KnotxEngineHandler(Vertx vertx, KnotxServerConfiguration configuration, String address,
+  private KnotxEngineHandler(Vertx vertx, KnotxServerOptions configuration, String address,
       Map<String, RoutingEntry> routing) {
     this.vertx = vertx;
     this.configuration = configuration;
@@ -45,7 +44,7 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
     this.routing = routing;
   }
 
-  static KnotxEngineHandler create(Vertx vertx, KnotxServerConfiguration configuration,
+  static KnotxEngineHandler create(Vertx vertx, KnotxServerOptions configuration,
       String address,
       Map<String, RoutingEntry> routing) {
     return new KnotxEngineHandler(vertx, configuration, address, routing);
@@ -83,10 +82,11 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
         );
   }
 
-  private void doTransition(RoutingContext context, KnotContext ctx, final Map<String, RoutingEntry> routing) {
+  private void doTransition(RoutingContext context, KnotContext ctx,
+      final Map<String, RoutingEntry> routing) {
     RoutingEntry entry = routing.get(ctx.getTransition());
     if (entry != null) {
-      handleRoute(context, entry.address(), entry.onTransition());
+      handleRoute(context, entry.getAddress(), entry.getOnTransition());
     } else {
       LOGGER.debug(
           "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.",
@@ -102,6 +102,8 @@ class KnotxEngineHandler implements Handler<RoutingContext> {
         address);
     context.put(KnotContext.KEY, ctx);
     context.next();
-  };
+  }
+
+  ;
 
 }

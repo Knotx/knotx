@@ -15,11 +15,10 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -38,14 +37,14 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private Vertx vertx;
 
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
 
-  private KnotxRepositoryHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+  private KnotxRepositoryHandler(Vertx vertx, KnotxServerOptions configuration) {
     this.vertx = vertx;
     this.configuration = configuration;
   }
 
-  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerOptions configuration) {
     return new KnotxRepositoryHandler(vertx, configuration);
   }
 
@@ -57,13 +56,14 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
     if (repositoryEntry.isPresent()) {
       RepositoryConnectorProxy
-          .createProxyWithOptions(vertx, repositoryEntry.get().address(), configuration.getDeliveryOptions())
+          .createProxyWithOptions(vertx, repositoryEntry.get().getAddress(),
+              configuration.getDeliveryOptions())
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
               repoResponse -> {
                 if (isSuccessResponse(repoResponse)) {
-                  if (repositoryEntry.get().doProcessing()) {
+                  if (repositoryEntry.get().isDoProcessing()) {
                     knotContext.setClientResponse(repoResponse);
                     context.put(KnotContext.KEY, knotContext);
                     context.next();

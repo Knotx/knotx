@@ -18,7 +18,7 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
@@ -35,16 +35,16 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
 
   private KnotProxy responseProviderProxy;
 
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
 
-  private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+  private KnotxGatewayResponseProviderHandler(Vertx vertx, KnotxServerOptions configuration) {
     this.configuration = configuration;
     this.responseProviderProxy = KnotProxy
-        .createProxyWithOptions(vertx, configuration.getCustomFlow().responseProviderAddress(),
+        .createProxyWithOptions(vertx, configuration.getCustomFlow().getResponseProvider(),
             configuration.getDeliveryOptions());
   }
 
-  static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxGatewayResponseProviderHandler create(Vertx vertx, KnotxServerOptions configuration) {
     return new KnotxGatewayResponseProviderHandler(vertx, configuration);
   }
 
@@ -65,7 +65,7 @@ public class KnotxGatewayResponseProviderHandler implements Handler<RoutingConte
               },
               error -> {
                 LOGGER.error("Error {} happened while communicating with `{}` engine", error,
-                    configuration.getCustomFlow().responseProviderAddress());
+                    configuration.getCustomFlow().getResponseProvider());
                 context.fail(error);
               }
           );

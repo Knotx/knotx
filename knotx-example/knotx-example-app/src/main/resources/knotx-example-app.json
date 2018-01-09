@@ -1,6 +1,6 @@
 {
   "modules": [
-    "knotx:example.io.knotx.KnotxServer",
+    "java:io.knotx.server.KnotxServerVerticle",
     "java:io.knotx.repository.HttpRepositoryConnectorVerticle",
     "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle",
     "java:io.knotx.knot.splitter.FragmentSplitterVerticle",
@@ -17,6 +17,114 @@
     "java:io.knotx.gateway.ResponseProviderKnotVerticle"
   ],
   "config": {
+    "java:io.knotx.server.KnotxServerVerticle": {
+      "options": {
+        "config": {
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/local/.*",
+                "address": "knotx.core.repository.filesystem"
+              },
+              {
+                "path": "/content/.*",
+                "address": "knotx.core.repository.http"
+              },
+              {
+                "path": "/img/.*",
+                "address": "knotx.core.repository.http",
+                "doProcessing": false
+              }
+            ],
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": "/content/.*",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": "/content/.*",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "customFlow": {
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": "/customFlow/.*",
+                    "address": "knotx.gateway.gatewayknot",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.gateway.requestprocessor"
+                      }
+                    }
+                  }
+                ]
+              },
+              "PUT": {
+                "items": [
+                  {
+                    "path": "/customFlow/.*",
+                    "address": "knotx.gateway.gatewayknot",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.gateway.requestprocessor"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "java:io.knotx.mocks.MockRemoteRepositoryVerticle": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/repository",
+          "httpPort": 4001
+        }
+      }
+    },
+    "java:io.knotx.mocks.MockServiceVerticle": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/service",
+          "bouncing": true,
+          "httpPort": 4000
+        }
+      }
+    },
     "java:io.knotx.gateway.RequestProcessorKnotVerticle": {
       "options": {
         "config": {

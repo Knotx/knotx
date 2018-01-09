@@ -44,7 +44,7 @@ Set the remote location of the repository
 Set the link used by the HTTP client
  to communicate with remote http repository
 +++
-|[[customRequestHeader]]`customRequestHeader`|`link:dataobjects.html#CustomRequestHeader[CustomRequestHeader]`|
+|[[customHttpHeader]]`customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Set the header (name & value) to be sent in every request to the remote repository
 +++

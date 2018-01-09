@@ -15,17 +15,15 @@
  */
 package io.knotx.server;
 
-import io.knotx.server.configuration.KnotxCSRFConfig;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxCSRFOptions;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.reactivex.core.http.HttpServer;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
@@ -38,18 +36,18 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
 
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    configuration = new KnotxServerConfiguration(config());
+    configuration = new KnotxServerOptions(config());
   }
 
   @Override
   public void start(Future<Void> fut) throws IOException, URISyntaxException {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
-    KnotxCSRFConfig csrfConfig = configuration.getCsrfConfig();
+    KnotxCSRFOptions csrfConfig = configuration.getCsrfConfig();
     CSRFHandler csrfHandler = CSRFHandler.create(csrfConfig.getSecret())
         .setNagHttps(true) //Generates warning message in log if https is not used
         .setCookieName(csrfConfig.getCookieName())
@@ -66,75 +64,80 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     router.route().handler(KnotxContextHandler.create());
 
-    configuration.getDefaultFlow().getEngineRouting().forEach((key, value) -> {
-      value.forEach(
+    configuration.getDefaultFlow().getRouting().forEach((key, value) -> {
+      value.getItems().forEach(
           criteria -> {
-            if (criteria.isCsrfEnabled()) {
-              router.route().method(key)
-                  .pathRegex(criteria.path())
+            HttpMethod method = HttpMethod.valueOf(key.toUpperCase());
+            if (criteria.isCsrf()) {
+              router.route().method(method)
+                  .pathRegex(criteria.getPath())
                   .handler(csrfHandler);
             }
             router.route()
-                .method(key)
-                .pathRegex(criteria.path())
+                .method(method)
+                .pathRegex(criteria.getPath())
                 .handler(KnotxRepositoryHandler.create(vertx, configuration));
 
             router.route()
-                .method(key)
-                .pathRegex(criteria.path())
+                .method(method)
+                .pathRegex(criteria.getPath())
                 .handler(KnotxSplitterHandler.create(vertx, configuration));
 
             router.route()
-                .method(key)
-                .pathRegex(criteria.path())
+                .method(method)
+                .pathRegex(criteria.getPath())
                 .handler(KnotxEngineHandler
-                    .create(vertx, configuration, criteria.address(), criteria.onTransition()));
+                    .create(vertx, configuration, criteria.getAddress(),
+                        criteria.getOnTransition()));
 
             router.route()
-                .method(key)
-                .pathRegex(criteria.path())
+                .method(method)
+                .pathRegex(criteria.getPath())
                 .handler(KnotxAssemblerHandler.create(vertx, configuration));
           }
       );
     });
 
-    if (configuration.getCustomFlow().getEngineRouting() != null) {
-      configuration.getCustomFlow().getEngineRouting().forEach((key, value) -> {
-        value.forEach(
+    if (configuration.getCustomFlow() != null) {
+      configuration.getCustomFlow().getRouting().forEach((key, value) -> {
+        value.getItems().forEach(
             criteria -> {
-              if (criteria.isCsrfEnabled()) {
-                router.route().method(key)
-                    .pathRegex(criteria.path())
+              HttpMethod method = HttpMethod.valueOf(key.toUpperCase());
+              if (criteria.isCsrf()) {
+                router.route().method(method)
+                    .pathRegex(criteria.getPath())
                     .handler(csrfHandler);
               }
-              router.route().method(key)
-                  .pathRegex(criteria.path())
+              router.route().method(method)
+                  .pathRegex(criteria.getPath())
                   .handler(
-                      KnotxGatewayContextHandler.create(vertx, configuration, criteria.address()));
+                      KnotxGatewayContextHandler
+                          .create(vertx, configuration, criteria.getAddress()));
 
               router.route()
-                  .method(key)
-                  .pathRegex(criteria.path())
+                  .method(method)
+                  .pathRegex(criteria.getPath())
                   .handler(KnotxEngineHandler
-                      .create(vertx, configuration, criteria.address(), criteria.onTransition()));
+                      .create(vertx, configuration, criteria.getAddress(),
+                          criteria.getOnTransition()));
 
               router.route()
-                  .method(key)
-                  .pathRegex(criteria.path())
+                  .method(method)
+                  .pathRegex(criteria.getPath())
                   .handler(KnotxGatewayResponseProviderHandler.create(vertx, configuration));
             }
         );
       });
     }
 
-    router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
+    router.route().failureHandler(ErrorHandler.create(configuration.isDisplayExceptionDetails()));
 
-    createHttpServer()
+    vertx.createHttpServer(configuration.getServerOptions())
         .requestHandler(router::accept)
         .rxListen()
         .subscribe(ok -> {
               LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-                  configuration.getServerOptions().getInteger("port"));
+                  configuration.getServerOptions().getPort());
               fut.complete();
             },
             error -> {
@@ -143,13 +146,5 @@ public class KnotxServerVerticle extends AbstractVerticle {
             }
         );
 
-  }
-
-  private HttpServer createHttpServer() {
-    JsonObject serverOptions = configuration.getServerOptions();
-
-    return serverOptions.isEmpty()
-        ? vertx.createHttpServer()
-        : vertx.createHttpServer(new HttpServerOptions(serverOptions));
   }
 }

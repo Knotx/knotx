@@ -154,10 +154,10 @@ public class RepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
   private MultiMap buildHeaders(MultiMap headers) {
     MultiMap result = filteredHeaders(headers);
 
-    if (configuration.getCustomRequestHeader() != null) {
+    if (configuration.getCustomHttpHeader() != null) {
       result.set(
-          configuration.getCustomRequestHeader().getName(),
-          configuration.getCustomRequestHeader().getValue()
+          configuration.getCustomHttpHeader().getName(),
+          configuration.getCustomHttpHeader().getValue()
       );
     }
 

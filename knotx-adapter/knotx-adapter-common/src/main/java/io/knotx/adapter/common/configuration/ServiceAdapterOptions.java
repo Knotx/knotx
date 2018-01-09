@@ -17,7 +17,7 @@ package io.knotx.adapter.common.configuration;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import io.knotx.configuration.CustomRequestHeader;
+import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -52,7 +52,7 @@ public class ServiceAdapterOptions {
   private String address;
   private WebClientOptions clientOptions;
   private List<ServiceSettings> services;
-  private CustomRequestHeader customRequestHeader;
+  private CustomHttpHeader customHttpHeader;
 
   /**
    * Default constructor
@@ -71,7 +71,7 @@ public class ServiceAdapterOptions {
     this.address = other.address;
     this.clientOptions = new WebClientOptions(other.clientOptions);
     this.services = new ArrayList<>(other.services);
-    this.customRequestHeader = new CustomRequestHeader(other.customRequestHeader);
+    this.customHttpHeader = new CustomHttpHeader(other.customHttpHeader);
   }
 
   /**
@@ -100,7 +100,7 @@ public class ServiceAdapterOptions {
     clientOptions = new WebClientOptions().setMaxPoolSize(DEFAULT_WEBCLIENT_MAX_POOL_SIZE)
         .setKeepAlive(DEFAULT_WEBCLIENT_KEEP_ALIVE);
     services = DEFAULT_SERVICES;
-    customRequestHeader = new CustomRequestHeader();
+    customHttpHeader = new CustomHttpHeader();
   }
 
   /**
@@ -162,19 +162,19 @@ public class ServiceAdapterOptions {
   /**
    * @return a Custom Header to be sent in every request to the services
    */
-  public CustomRequestHeader getCustomRequestHeader() {
-    return customRequestHeader;
+  public CustomHttpHeader getCustomHttpHeader() {
+    return customHttpHeader;
   }
 
   /**
    * Set the header (name & value) to be sent in every request to the services
    *
-   * @param customRequestHeader the header name & value
+   * @param customHttpHeader the header name & value
    * @return a reference to this, so the API can be used fluently
    */
-  public ServiceAdapterOptions setCustomRequestHeader(
-      CustomRequestHeader customRequestHeader) {
-    this.customRequestHeader = customRequestHeader;
+  public ServiceAdapterOptions setCustomHttpHeader(
+      CustomHttpHeader customHttpHeader) {
+    this.customHttpHeader = customHttpHeader;
     return this;
   }
 }

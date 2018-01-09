@@ -27,7 +27,7 @@ Default configuration shipped with the verticle as `io.knotx.HttpRepositoryConne
         "domain": "localhost",
         "port": 3001
       },
-      "customRequestHeader": {
+      "customHttpHeader": {
         "name": "Server-User-Agent",
         "value": "Knot.x"
       },
@@ -69,7 +69,7 @@ Main options available.
 | `address`                   | `String`                            | &#10004;       | Event Bus address of Http Repository Connector Verticle |
 | `clientOptions`             | `HttpClientOptions`                 | &#10004;       | HTTP Client options used when communicating with the destination repository. See [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) to get all options supported.|
 | `clientDestination`         | `JsonObject`                        | &#10004;       | Allows to specify **domain** and **port** of the HTTP Repository endpoint |
-| `customRequestHeader`       | `JsonObject`                        |                | Allows to specify header **name** and its **value**. The header will be send in each request to the configured services. |
+| `customHttpHeader`       | `JsonObject`                        |                | Allows to specify header **name** and its **value**. The header will be send in each request to the configured services. |
 
 ### Destination options
 

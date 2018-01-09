@@ -19,28 +19,28 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.junit.util.FileReader;
-import io.knotx.server.configuration.KnotxFlowConfiguration;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxFlowSettings;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.json.JsonObject;
 import org.junit.Before;
 import org.junit.Test;
 
-public class KnotxServerConfigurationRepositoriesTest {
+public class KnotxServerOptionsRepositoriesTest {
 
-  private KnotxFlowConfiguration flowConfiguration;
+  private KnotxFlowSettings flowConfiguration;
 
   @Before
   public void before() throws Exception {
     JsonObject config = new JsonObject(FileReader.readText("test-config-server.json"));
-    flowConfiguration = new KnotxServerConfiguration(config).getDefaultFlow();
+    flowConfiguration = new KnotxServerOptions(config).getDefaultFlow();
   }
 
   @Test
   public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths()
       throws Exception {
-    assertThat(flowConfiguration.repositoryForPath("/content/local/simple.html").get().address(),
+    assertThat(flowConfiguration.repositoryForPath("/content/local/simple.html").get().getAddress(),
         equalTo("knotx.repository.filesystem"));
-    assertThat(flowConfiguration.repositoryForPath("/content/simple.html").get().address(),
+    assertThat(flowConfiguration.repositoryForPath("/content/simple.html").get().getAddress(),
         equalTo("knotx.repository.http"));
   }
 

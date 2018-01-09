@@ -21,7 +21,7 @@ The <code>address</code> on event bus that the service adapter is listening for 
 Set the link of the link used
  by the ServiceAdapter to communicate with external services.
 +++
-|[[customRequestHeader]]`customRequestHeader`|`link:dataobjects.html#CustomRequestHeader[CustomRequestHeader]`|
+|[[customHttpHeader]]`customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Set the header (name & value) to be sent in every request to the services
 +++

@@ -53,56 +53,56 @@
         "address": "knotx.repository.http"
       }
     ],
-    "splitter": {
-      "address": "knotx.core.splitter"
-    },
+    "splitter": "knotx.core.splitter",
     "routing": {
-      "GET": [
-        {
-          "path": ".*/local/.*\\.html",
-          "address": "A-engine",
-          "onTransition": {
-            "go-c": {
-              "address": "C-engine"
-            }
-          }
-        },
-        {
-          "path": ".*\\.html",
-          "address": "C-engine"
-        }
-      ],
-      "POST": [
-        {
-          "path": ".*/local/.*\\.html",
-          "address": "A-post-engine",
-          "onTransition": {
-            "go-b": {
-              "address": "B-engine",
-              "onTransition": {
-                "go-c": {
-                  "address": "C-engine"
-                }
+      "GET": {
+        "items": [
+          {
+            "path": ".*/local/.*\\.html",
+            "address": "A-engine",
+            "onTransition": {
+              "go-c": {
+                "address": "C-engine"
               }
-            },
-            "go-c": {
-              "address": "C-engine"
+            }
+          },
+          {
+            "path": ".*\\.html",
+            "address": "C-engine"
+          }
+        ]
+      },
+      "POST": {
+        "items": [
+          {
+            "path": ".*/local/.*\\.html",
+            "address": "A-post-engine",
+            "onTransition": {
+              "go-b": {
+                "address": "B-engine",
+                "onTransition": {
+                  "go-c": {
+                    "address": "C-engine"
+                  }
+                }
+              },
+              "go-c": {
+                "address": "C-engine"
+              }
+            }
+          },
+          {
+            "path": ".*\\.html",
+            "address": "B-engine",
+            "onTransition": {
+              "go-c": {
+                "address": "C-engine"
+              }
             }
           }
-        },
-        {
-          "path": ".*\\.html",
-          "address": "B-engine",
-          "onTransition": {
-            "go-c": {
-              "address": "C-engine"
-            }
-          }
-        }
-      ]
+        ]
+      }
     },
-    "assembler": {
-      "address": "knotx.core.assembler"
-    }
+    "assembler": "knotx.core.assembler"
   }
 }

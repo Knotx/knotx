@@ -20,7 +20,7 @@ import io.knotx.adapter.common.configuration.ServiceSettings;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
 import io.knotx.adapter.common.placeholders.UriTransformer;
-import io.knotx.configuration.CustomRequestHeader;
+import io.knotx.configuration.CustomHttpHeader;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
@@ -53,12 +53,12 @@ public class HttpClientFacade {
 
   private final WebClient webClient;
 
-  private final CustomRequestHeader customRequestHeader;
+  private final CustomHttpHeader customHttpHeader;
 
   public HttpClientFacade(WebClient webClient, ServiceAdapterOptions configuration) {
     this.webClient = webClient;
     this.services = configuration.getServices();
-    this.customRequestHeader = configuration.getCustomRequestHeader();
+    this.customHttpHeader = configuration.getCustomHttpHeader();
   }
 
   public Single<ClientResponse> process(AdapterRequest message, HttpMethod method) {
@@ -213,10 +213,10 @@ public class HttpClientFacade {
         headerName -> filteredHeaders.getAll(headerName)
             .forEach(value -> request.headers().add(headerName, value)));
 
-    if (customRequestHeader != null) {
+    if (customHttpHeader != null) {
       request.headers().set(
-          customRequestHeader.getName(),
-          customRequestHeader.getValue()
+          customHttpHeader.getName(),
+          customHttpHeader.getValue()
       );
     }
   }
