@@ -224,15 +224,6 @@
         }
       }
     },
-    "knotx:io.knotx.HttpActionAdapter": {
-      "options": {
-        "config": {
-          "allowedRequestHeaders": [
-            "Cookie"
-          ]
-        }
-      }
-    },
     "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
       "options": {
         "config": {

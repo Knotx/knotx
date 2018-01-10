@@ -268,17 +268,6 @@
           ]
         }
       }
-    },
-    "knotx:example.io.knotx.HttpActionAdapter": {
-      "options": {
-        "config": {
-          "allowedRequestHeaders": [
-            "Cookie",
-            "Content-Type",
-            "Content-Length"
-          ]
-        }
-      }
     }
   }
 }
