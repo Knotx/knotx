@@ -1,12 +1,12 @@
 {
   "configRetrieverOptions": {
-    "scanPeriod": 5000,
+    "scanPeriod": 10000,
     "stores": [
       {
         "type": "file",
         "format": "json",
         "config": {
-          "path": "config/knotx-standalone.json"
+          "path": "config/application.json"
         }
       }
     ]

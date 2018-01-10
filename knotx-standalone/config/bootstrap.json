@@ -1,0 +1,14 @@
+{
+  "configRetrieverOptions": {
+    "scanPeriod": 10000,
+    "stores": [
+      {
+        "type": "file",
+        "format": "json",
+        "config": {
+          "path": "config/application.json"
+        }
+      }
+    ]
+  }
+}
