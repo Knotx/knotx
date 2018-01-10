@@ -15,13 +15,14 @@
  */
 package io.knotx.junit.rule;
 
-import io.knotx.junit.util.FileReader;
+import com.google.common.collect.Lists;
 import io.knotx.launcher.KnotxStarterVerticle;
+import io.vertx.config.ConfigRetrieverOptions;
+import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.reactivex.core.Vertx;
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.rules.TestRule;
@@ -51,7 +52,7 @@ public class TestVertxDeployer implements TestRule {
         CompletableFuture<Void> toComplete = new CompletableFuture<>();
 
         vertx.deployVerticle(KnotxStarterVerticle.class.getName(),
-            new DeploymentOptions().setConfig(readJson(knotxConfig.value())), ar -> {
+            createConfig(knotxConfig.value()), ar -> {
               if (ar.succeeded()) {
                 toComplete.complete(null);
               } else {
@@ -72,7 +73,12 @@ public class TestVertxDeployer implements TestRule {
     };
   }
 
-  private JsonObject readJson(String path) throws IOException {
-    return new JsonObject(FileReader.readText(path));
+  private DeploymentOptions createConfig(String path) {
+    return new DeploymentOptions()
+        .setConfig(new JsonObject().put("configRetrieverOptions", new ConfigRetrieverOptions()
+            .setStores(Lists.newArrayList(
+                new ConfigStoreOptions().setType("file").setFormat("json")
+                    .setConfig(new JsonObject().put("path", path))
+            )).toJson()));
   }
 }

@@ -15,6 +15,8 @@
  */
 package io.knotx.server.configuration;
 
+import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
+
 import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
@@ -31,10 +33,9 @@ import java.util.stream.Collectors;
 public class KnotxServerOptions {
 
   /**
-   * Default HTTP port Knotx listens on
+   * The default value for Knot.x HTTP Server port = the value of the system property "knotx.port" or 8092
    */
-  public final static int DEFAULT_HTTP_PORT = 8092;
-
+  public final static int DEFAULT_HTTP_PORT = Integer.getInteger(KNOTX_PORT_PROP_NAME, 8092);
   /**
    * Default name of the custom response header
    */

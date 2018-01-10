@@ -37,7 +37,7 @@ At this step `KNOTX_HOME` should contain:
 To start Knot.x with custom modules, use following command
 
 ```
-java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-starter.json
+java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.KnotxLauncher -conf knotx-starter.json
 ```
 
 The execution of Knot.x using a launcher as above it uses a following exit codes as specified in [Vert.x documentation|http://vertx.io/docs/vertx-core/java/#_launcher_and_exit_code].

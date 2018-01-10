@@ -34,6 +34,8 @@ import java.net.URISyntaxException;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
+  public static final String KNOTX_PORT_PROP_NAME = "knotx.port";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
 
   private KnotxServerOptions configuration;

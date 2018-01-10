@@ -16,11 +16,11 @@
 package io.knotx.dataobjects;
 
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import io.knotx.http.UriHelper;
 import io.knotx.util.DataObjectsUtil;
 import io.knotx.util.MultiMapConverter;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpMethod;
@@ -155,12 +155,12 @@ public class ClientRequest {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ClientRequest)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     ClientRequest that = (ClientRequest) o;
     return Objects.equal(path, that.path) &&
-        Objects.equal(method, that.method) &&
+        method == that.method &&
         DataObjectsUtil.equalsMultiMap(headers, that.headers) &&
         DataObjectsUtil.equalsMultiMap(params, that.params) &&
         DataObjectsUtil.equalsMultiMap(formAttributes, that.formAttributes);
@@ -183,6 +183,5 @@ public class ClientRequest {
         .add("formAttributes", DataObjectsUtil.toString(formAttributes))
         .toString();
   }
-
 }
 

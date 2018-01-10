@@ -16,61 +16,115 @@
  */
 package io.knotx.launcher;
 
+import com.google.common.collect.Lists;
 import io.reactivex.Observable;
-import io.reactivex.ObservableTransformer;
+import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.reactivex.config.ConfigRetriever;
 import io.vertx.reactivex.core.AbstractVerticle;
-import org.apache.commons.lang3.tuple.Pair;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
 
+  private static final String MODULES_ARRAY = "modules";
   private static final String CONFIG_OVERRIDE = "config";
   private static final String MODULE_OPTIONS = "options";
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
 
+  private List<ModuleDeploymentId> deploymentIds;
+  private ConfigRetriever configRetriever;
+
   @Override
-  public void start(Future<Void> startFuture) throws Exception {
+  public void start(Future<Void> startFuture) {
     printLogo();
-    Observable.fromIterable(config().getJsonArray("modules"))
-        .flatMap(module -> deployVerticle(module)
-            .onErrorResumeNext(
-                throwable -> (Observable<Pair<String, String>>) verticleCouldNotBeDeployed(module,
-                    throwable))
+
+    if (config().getJsonObject("configRetrieverOptions") == null) {
+      startFuture.fail("Missing 'configRetrieverOptions' in the main config file");
+    }
+
+    configRetriever = ConfigRetriever.create(vertx,
+        new ConfigRetrieverOptions(
+            config().getJsonObject("configRetrieverOptions", new JsonObject())));
+
+    configRetriever.listen(conf -> {
+      if (!deploymentIds.isEmpty()) {
+        LOGGER.warn("Configuration changed - Re-deploying Knot.x");
+        Observable.fromIterable(deploymentIds)
+            .flatMap(item -> vertx.rxUndeploy(item.deploymentId).toObservable())
+            .collect(() -> Lists.newArrayList(),
+                (collector, result) -> collector.add(result))
+            .subscribe(
+                success -> {
+                  LOGGER.warn("Knot.x STOPPED.");
+                  deployVerticles(conf.getNewConfiguration(), null);
+                },
+                error -> {
+                  LOGGER.error("Unable to undeploy verticles", error);
+                  startFuture.fail(error);
+                }
+            );
+      }
+    });
+
+    configRetriever.getConfig(ar -> {
+      if (ar.succeeded()) {
+        JsonObject configuration = ar.result();
+        deployVerticles(configuration, startFuture);
+      } else {
+        LOGGER.fatal("Unable to start Knot.x", ar.cause());
+        startFuture.fail(ar.cause());
+      }
+    });
+  }
+
+  private void deployVerticles(JsonObject config, Future<Void> completion) {
+    LOGGER.info("STARTING Knot.x");
+    Observable.fromIterable(config.getJsonArray(MODULES_ARRAY))
+        .flatMap(module ->
+            deployVerticle(module, config.getJsonObject(CONFIG_OVERRIDE, new JsonObject()))
         )
-        .compose(joinDeployments())
+        .reduce(new ArrayList<ModuleDeploymentId>(), (accumulator, item) -> {
+          accumulator.add(item);
+          return accumulator;
+        })
         .subscribe(
-            message -> {
-              LOGGER.info("Knot.x STARTED {}", message);
-              startFuture.complete();
+            ids -> {
+              deploymentIds = Lists.newArrayList(ids);
+              LOGGER.info("Knot.x STARTED {}", buildMessage(ids));
+              if (completion != null) {
+                completion.complete();
+              }
             },
             error -> {
               LOGGER.error("Verticle could not be deployed", error);
-              startFuture.fail(error);
+              if (completion != null) {
+                completion.fail(error);
+              }
             }
         );
   }
 
-  private Observable<Pair<String, String>> verticleCouldNotBeDeployed(Object module,
-      Throwable throwable) {
-    LOGGER.error("Can't deploy {}: {}", module, throwable);
-    return Observable.empty();
+  private Observable<ModuleDeploymentId> deployVerticle(final Object module, JsonObject config) {
+    return vertx.rxDeployVerticle((String) module, getModuleOptions(config, (String) module))
+        .map(deploymentID -> ModuleDeploymentId.of((String) module, deploymentID))
+        .toObservable()
+        .onErrorResumeNext(error -> {
+          LOGGER.warn("Can't deploy {}", module, error);
+          return Observable.empty();
+        });
   }
 
-  private Observable<Pair<String, String>> deployVerticle(final Object module) {
-    return vertx.rxDeployVerticle((String) module, getModuleOptions((String) module))
-        .map(deploymentID -> Pair.of((String) module, deploymentID))
-        .toObservable();
-  }
-
-  private DeploymentOptions getModuleOptions(final String module) {
+  private DeploymentOptions getModuleOptions(JsonObject config,
+      final String module) {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
-    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE)
-        .containsKey(module)) {
-      JsonObject moduleConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(module);
+    if (config.containsKey(module)) {
+      JsonObject moduleConfig = config.getJsonObject(module);
       if (moduleConfig.containsKey(MODULE_OPTIONS)) {
         deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
       }
@@ -78,63 +132,113 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     return deploymentOptions;
   }
 
-  private ObservableTransformer<Pair<String, String>, String> joinDeployments() {
-    return observable ->
-        observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()),
-            this::collectDeployment)
-            .toObservable()
-            .map(StringBuilder::toString);
+  private String buildMessage(List<ModuleDeploymentId> ids) {
+    return new StringBuilder(System.lineSeparator())
+        .append(System.lineSeparator())
+        .append(
+            ids.stream()
+                .map(item -> String.format("\t\tDeployed %s [%s]", item.name,
+                    item.deploymentId))
+                .collect(Collectors.joining(System.lineSeparator())))
+        .append(System.lineSeparator())
+        .toString();
   }
 
-  private StringBuilder collectDeployment(StringBuilder accumulator,
-      Pair<String, String> deploymentId) {
-    return accumulator
-        .append(
-            String.format("\t\tDeployed %s [%s]", deploymentId.getRight(), deploymentId.getLeft()))
-        .append(System.lineSeparator());
+  private static class ModuleDeploymentId {
+
+    private String name;
+    private String deploymentId;
+
+    public static ModuleDeploymentId of(String name, String deploymentId) {
+      ModuleDeploymentId item = new ModuleDeploymentId();
+      item.name = name;
+      item.deploymentId = deploymentId;
+
+      return item;
+    }
   }
 
   private void printLogo() {
-    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    System.out.println("@@                                  ,,,,,,,,,                                 @@");
-    System.out.println("@@                                *,,,,,,,,,,,*                               @@");
-    System.out.println("@@                              @@&,,,,,,,,,,,,,*                             @@");
-    System.out.println("@@                            @@@@@@,,,,,,,,,,,,,,*                           @@");
-    System.out.println("@@                          @@@@@@@@@,,,,,,,,,,,,,,,*                         @@");
-    System.out.println("@@                        @@@@@@@@@@@@/,,,,,,,,,,,,,,,*                       @@");
-    System.out.println("@@                      @@@@@@@@@@@@@@@#,,,,,,,,,,,,,,,,*                     @@");
-    System.out.println("@@                    &@@@@@@@@@@@@@@@@@&,,,,,,,,,,,,,,*@@#                   @@");
-    System.out.println("@@                  @@&,@@@@@@@@@@@@@@@@@@,,,,,,,,,,,,(@@@@@#                 @@");
-    System.out.println("@@                @@@@&,,%@@@@@@@@@@@@@@@@@*,,,,,,,,,%@@@@@@@@#               @@");
-    System.out.println("@@              @@@@@@&,,,*@@@@@@@@@@@@@@@@@(,,,,,,,@@@@@@@@@@@@#             @@");
-    System.out.println("@@            @@@@@@@@&,,,,,@@@@@@@@@@@@@@@@@&,,,,,@@@@@@@@@@@@@@@#           @@");
-    System.out.println("@@          @@@@@@@@@@&,,,,,,%@@@@@@@@@@@@@@@@@,,/@@@@@@@@@@@@@@@@@,*         @@");
-    System.out.println("@@        @@@@@@@@@@@@&,,,,,,,*@@@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@#,,,,*       @@");
-    System.out.println("@@      ,@@@@@@@@@@@@@&,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*,,,,,,,*     @@");
-    System.out.println("@@    ,,,@@@@@@@@@@@@@&,,,,,,,,,,#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,,,*   @@");
-    System.out.println("@@  *,,,,#@@@@@@@@@@@@&,,,,,,,,,,,*@@@@@@@@@@@@@@@@@@@@@@@@@@(,,,,,,,,,,,,,,* @@");
-    System.out.println("@@ ,,,,,,*@@@@@@@@@@@@&,,,,,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,,,,,,,,,*@@");
-    System.out.println("@@,,,,,,,,@@@@@@@@@@@@&,,,,,,,,,,,,,,(@@@@@@@@@@@@@@@@@@@@&,,,,,,,,,,,,,,,,,,,@@");
-    System.out.println("@@/,,,,,,,&@@@@@@@@@@@&,,,,,,,,,,,,,,,*@@@@@@@@@@@@@@@@@@@/,,,,,,,,,,,,,,,,,,,@@");
-    System.out.println("@@ *,,,,,,(@@@@@@@@@@@&,,,,,,,,,,,,,,#@@@@@@@@@@@@@@@@@@@@@&,,,,,,,,,,,,,,,,, @@");
-    System.out.println("@@   ,,,,,*@@@@@@@@@@@&,,,,,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,,,,,,*  @@");
-    System.out.println("@@     ,,,,@@@@@@@@@@@&,,,,,,,,,,,*@@@@@@@@@@@@@@@@@@@@@@@@@@@(,,,,,,,,,,*    @@");
-    System.out.println("@@       ,,,,,,,,,,,,,,,,,,,,,,,,%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,*      @@");
-    System.out.println("@@         ,,&@@@@@@@%,,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*,,,*        @@");
-    System.out.println("@@           @@@@@@@@@@*,,,,,,/@@@@@@@@@@@@@@@@@*@@@@@@@@@@@@@@@@@#*          @@");
-    System.out.println("@@             @@@@@@@@@,,,,,&@@@@@@@@@@@@@@@@#,,,@@@@@@@@@@@@@@@@            @@");
-    System.out.println("@@               @@@@@@@,,,,@@@@@@@@@@@@@@@@@*,,,,,%@@@@@@@@@@@@              @@");
-    System.out.println("@@                 @@@@*,,(@@@@@@@@@@@@@@@@@,,,,,,,,/@@@@@@@@@                @@");
-    System.out.println("@@                   @,,,&@@@@@@@@@@@@@@@@&,,,,,,,,,,,@@@@@@                  @@");
-    System.out.println("@@                     *@@@@@@@@@@@@@@@@@(,,,,,,,,,,,,,&@@                    @@");
-    System.out.println("@@                       @@@@@@@@@@@@@@@*,,,,,,,,,,,,,,*                      @@");
-    System.out.println("@@                         @@@@@@@@@@@@,,,,,,,,,,,,,,*                        @@");
-    System.out.println("@@                           @@@@@@@@%,,,,,,,,,,,,,*                          @@");
-    System.out.println("@@                            @@@@@/,,,,,,,,,,,,*                             @@");
-    System.out.println("@@                               @@,,,,,,,,,,,,*                              @@");
-    System.out.println("@@                                 *,,,,,,,,,*                                @@");
-    System.out.println("@@                                    ,,,*/                                   @@");
-    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    System.out.println(
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    System.out.println(
+        "@@                                  ,,,,,,,,,                                 @@");
+    System.out.println(
+        "@@                                *,,,,,,,,,,,*                               @@");
+    System.out.println(
+        "@@                              @@&,,,,,,,,,,,,,*                             @@");
+    System.out.println(
+        "@@                            @@@@@@,,,,,,,,,,,,,,*                           @@");
+    System.out.println(
+        "@@                          @@@@@@@@@,,,,,,,,,,,,,,,*                         @@");
+    System.out.println(
+        "@@                        @@@@@@@@@@@@/,,,,,,,,,,,,,,,*                       @@");
+    System.out.println(
+        "@@                      @@@@@@@@@@@@@@@#,,,,,,,,,,,,,,,,*                     @@");
+    System.out.println(
+        "@@                    &@@@@@@@@@@@@@@@@@&,,,,,,,,,,,,,,*@@#                   @@");
+    System.out.println(
+        "@@                  @@&,@@@@@@@@@@@@@@@@@@,,,,,,,,,,,,(@@@@@#                 @@");
+    System.out.println(
+        "@@                @@@@&,,%@@@@@@@@@@@@@@@@@*,,,,,,,,,%@@@@@@@@#               @@");
+    System.out.println(
+        "@@              @@@@@@&,,,*@@@@@@@@@@@@@@@@@(,,,,,,,@@@@@@@@@@@@#             @@");
+    System.out.println(
+        "@@            @@@@@@@@&,,,,,@@@@@@@@@@@@@@@@@&,,,,,@@@@@@@@@@@@@@@#           @@");
+    System.out.println(
+        "@@          @@@@@@@@@@&,,,,,,%@@@@@@@@@@@@@@@@@,,/@@@@@@@@@@@@@@@@@,*         @@");
+    System.out.println(
+        "@@        @@@@@@@@@@@@&,,,,,,,*@@@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@#,,,,*       @@");
+    System.out.println(
+        "@@      ,@@@@@@@@@@@@@&,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*,,,,,,,*     @@");
+    System.out.println(
+        "@@    ,,,@@@@@@@@@@@@@&,,,,,,,,,,#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,,,*   @@");
+    System.out.println(
+        "@@  *,,,,#@@@@@@@@@@@@&,,,,,,,,,,,*@@@@@@@@@@@@@@@@@@@@@@@@@@(,,,,,,,,,,,,,,* @@");
+    System.out.println(
+        "@@ ,,,,,,*@@@@@@@@@@@@&,,,,,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,,,,,,,,,*@@");
+    System.out.println(
+        "@@,,,,,,,,@@@@@@@@@@@@&,,,,,,,,,,,,,,(@@@@@@@@@@@@@@@@@@@@&,,,,,,,,,,,,,,,,,,,@@");
+    System.out.println(
+        "@@/,,,,,,,&@@@@@@@@@@@&,,,,,,,,,,,,,,,*@@@@@@@@@@@@@@@@@@@/,,,,,,,,,,,,,,,,,,,@@");
+    System.out.println(
+        "@@ *,,,,,,(@@@@@@@@@@@&,,,,,,,,,,,,,,#@@@@@@@@@@@@@@@@@@@@@&,,,,,,,,,,,,,,,,, @@");
+    System.out.println(
+        "@@   ,,,,,*@@@@@@@@@@@&,,,,,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,,,,,,,,*  @@");
+    System.out.println(
+        "@@     ,,,,@@@@@@@@@@@&,,,,,,,,,,,*@@@@@@@@@@@@@@@@@@@@@@@@@@@(,,,,,,,,,,*    @@");
+    System.out.println(
+        "@@       ,,,,,,,,,,,,,,,,,,,,,,,,%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@,,,,,,,*      @@");
+    System.out.println(
+        "@@         ,,&@@@@@@@%,,,,,,,,,,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*,,,*        @@");
+    System.out.println(
+        "@@           @@@@@@@@@@*,,,,,,/@@@@@@@@@@@@@@@@@*@@@@@@@@@@@@@@@@@#*          @@");
+    System.out.println(
+        "@@             @@@@@@@@@,,,,,&@@@@@@@@@@@@@@@@#,,,@@@@@@@@@@@@@@@@            @@");
+    System.out.println(
+        "@@               @@@@@@@,,,,@@@@@@@@@@@@@@@@@*,,,,,%@@@@@@@@@@@@              @@");
+    System.out.println(
+        "@@                 @@@@*,,(@@@@@@@@@@@@@@@@@,,,,,,,,/@@@@@@@@@                @@");
+    System.out.println(
+        "@@                   @,,,&@@@@@@@@@@@@@@@@&,,,,,,,,,,,@@@@@@                  @@");
+    System.out.println(
+        "@@                     *@@@@@@@@@@@@@@@@@(,,,,,,,,,,,,,&@@                    @@");
+    System.out.println(
+        "@@                       @@@@@@@@@@@@@@@*,,,,,,,,,,,,,,*                      @@");
+    System.out.println(
+        "@@                         @@@@@@@@@@@@,,,,,,,,,,,,,,*                        @@");
+    System.out.println(
+        "@@                           @@@@@@@@%,,,,,,,,,,,,,*                          @@");
+    System.out.println(
+        "@@                            @@@@@/,,,,,,,,,,,,*                             @@");
+    System.out.println(
+        "@@                               @@,,,,,,,,,,,,*                              @@");
+    System.out.println(
+        "@@                                 *,,,,,,,,,*                                @@");
+    System.out.println(
+        "@@                                    ,,,*/                                   @@");
+    System.out.println(
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     System.out.println();
   }
 }
