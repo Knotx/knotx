@@ -192,6 +192,11 @@
         <version>${vertx.version}</version>
       </dependency>
       <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-config-hocon</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
         <groupId>io.reactivex.rxjava2</groupId>
         <artifactId>rxjava</artifactId>
         <version>${rxjava.version}</version>
@@ -506,6 +511,7 @@
                   <transformer
                       implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                     <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+                    <resource>META-INF/services/io.vertx.config.spi.ConfigProcessor</resource>
                   </transformer>
                 </transformers>
                 <artifactSet/>

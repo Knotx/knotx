@@ -4,9 +4,9 @@
     "stores": [
       {
         "type": "file",
-        "format": "json",
+        "format": "hocon",
         "config": {
-          "path": "config/knotx-example-app.json"
+          "path": "config/application.conf"
         }
       }
     ]
