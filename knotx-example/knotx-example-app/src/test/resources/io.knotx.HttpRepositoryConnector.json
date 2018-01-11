@@ -9,8 +9,10 @@
         "tryUseCompression": true
       },
       "clientDestination": {
+        "scheme": "http",
         "domain": "localhost",
-        "port": 4001
+        "port": 4001,
+        "host": "localhost"
       },
       "allowedRequestHeaders": [
         "Accept*",

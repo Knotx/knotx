@@ -9,8 +9,10 @@
         "tryUseCompression": true
       },
       "clientDestination": {
+        "scheme": "http",
         "domain": "localhost",
-        "port": 3001
+        "port": 3001,
+        "host": "localhost"
       },
       "customRequestHeader": {
         "name": "Server-User-Agent",
