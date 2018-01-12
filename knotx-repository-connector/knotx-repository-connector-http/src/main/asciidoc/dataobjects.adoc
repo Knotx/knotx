@@ -12,9 +12,18 @@
 +++
 Set the domain of the http repository
 +++
+|[[hostHeader]]`hostHeader`|`String`|
++++
+Set the host header override to be used with a communication to the repository.
+ If it's set, it overrides any value in the 'Host' header, and sets the SNI SSL to the same value.
++++
 |[[port]]`port`|`Number (int)`|
 +++
 Set the HTTP port of the http repository
++++
+|[[scheme]]`scheme`|`String`|
++++
+Set the URL scheme used to communicate with the repository
 +++
 |===
 

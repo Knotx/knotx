@@ -20,15 +20,16 @@ import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.proxy.RepositoryConnectorProxy;
-import io.knotx.repository.ClientDestination;
 import io.knotx.repository.HttpRepositoryOptions;
 import io.knotx.util.DataObjectsUtil;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.RequestOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -40,10 +41,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryConnectorProxyImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(HttpRepositoryConnectorProxyImpl.class);
 
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
@@ -60,22 +63,22 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    ClientDestination clientDestination = configuration.getClientDestination();
-    MultiMap requestHeaders = buildHeaders(request.getHeaders());
-    String repoUri = buildRepoUri(request);
+    MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
+        request.getHeaders());
+
+    RequestOptions httpRequestData = buildRequestData(request);
 
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.debug("GET Http Repository: http://{}:{}{} with headers [{}]",
-          clientDestination.getDomain(),
-          clientDestination.getPort(),
-          repoUri,
+      LOGGER.debug("GET HTTPRepository: {}://{}:{}{} with headers [{}]",
+          httpRequestData.isSsl() ? "https" : "http",
+          httpRequestData.getHost(),
+          httpRequestData.getPort(),
+          httpRequestData.getURI(),
           DataObjectsUtil.toString(requestHeaders)
       );
     }
 
-    get(httpClient, clientDestination.getPort(),
-        clientDestination.getDomain(),
-        repoUri, requestHeaders)
+    get(httpClient, httpRequestData, requestHeaders)
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
         .subscribe(
@@ -87,11 +90,22 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
         );
   }
 
-  private Observable<HttpClientResponse> get(HttpClient client, int port, String host,
-      String requestURI, MultiMap headers) {
+  private RequestOptions buildRequestData(ClientRequest request) {
+    return new RequestOptions()
+        .setSsl(configuration.getClientDestination().getScheme().equals("https") ? true : false)
+        .setURI(buildRepoUri(request))
+        .setPort(configuration.getClientDestination().getPort())
+        .setHost(configuration.getClientDestination().getDomain());
+  }
+
+  private Observable<HttpClientResponse> get(HttpClient client, RequestOptions requestOptions,
+      MultiMap headers) {
     return Observable.unsafeCreate(subscriber -> {
-      HttpClientRequest req = client.get(port, host, requestURI);
+      HttpClientRequest req = client.get(requestOptions);
       req.headers().addAll(headers);
+      if (headers.get(HttpHeaderNames.HOST.toString()) != null) {
+        req.setHost(headers.get(HttpHeaderNames.HOST.toString()));
+      }
       Observable<HttpClientResponse> resp = req.toObservable();
       resp.subscribe(subscriber);
       req.end();
@@ -150,7 +164,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     return new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
   }
 
-  private MultiMap buildHeaders(MultiMap headers) {
+  private MultiMap buildHeaders(String hostHeader, MultiMap headers) {
     MultiMap result = filteredHeaders(headers);
 
     if (configuration.getCustomHttpHeader() != null) {
@@ -158,6 +172,11 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
           configuration.getCustomHttpHeader().getName(),
           configuration.getCustomHttpHeader().getValue()
       );
+    }
+
+    //Overide host header if provided in client destination
+    if (StringUtils.isNotBlank(hostHeader)) {
+      result.set(HttpHeaderNames.HOST.toString(), hostHeader);
     }
 
     return result;

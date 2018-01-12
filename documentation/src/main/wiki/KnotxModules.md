@@ -1,101 +1,107 @@
 # Knot.x Module
-Knot.x is composed of set of Verticles. To simplify deployment process and configuration of each specialized Verticle, Knot.x is shipped with it's own implementation of Vert.x Service Factory.
-It means that in order to configure Knot.x user needs to provide a set of Knot.x module names that should be deployed. Please notice that module name is something different than Verticle class name.
+Knot.x is composed of set of Verticles. The Vert.x provides a Service Factory functionality that allows to deploy Verticles from different sources such as classpath, Http, Maven, etc. (see [[Service Factories|http://vertx.io/docs/vertx-service-factory/java/]).
+In any case the verticle need to be supplied with a corresponding configuration.
+By default, Knot.x uses **java** service factory. It means during an Knot.x start the verticles is being looked up in classpath as java classes.
+Each module is supplied with a default configuration that can be override on the application config file.
 
 As mentioned in [[Knot.x Deployment|KnotxDeployment]], the list of modules must be specified in JSON file provided as `-conf` parameter when starting Knot.x application.
 ```json
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
-    "knotx:my.custom.Service"
+    "java:io.knotx.server.KnotxServerVerticle",
+    "java:my.custom.ServiceVerticle"
   ]
 }
 ```
-In the example above, each module is prefixed with `knotx:` string. This tells Vert.x engine that Knot.x Verticle Factory should be used to resolve actual Verticle.
+In the example above, each module is prefixed with `java:` string. This tells Vert.x engine that Java classpath Verticle Factory should be used to resolve actual Verticle.
 
-When Knot.x is starting with the above config, we're actually asking to deploy two modules `io.knotx.KnotxServer` 
-and `my.custom.Service` (`knotx:` prefix is mandatory to let the system know it's Knot.x module that should be deployed).
+When Knot.x is starting with the above config, we're actually asking to deploy two verticles `io.knotx.server.KnotxServerVerticle` 
+and `my.custom.ServiceVerticle` (`java:` prefix is mandatory to let the system know it need to look for them in the classpath).
 
-Knot.x first looks for a descriptor file on the classpath. The descriptor file name is given by the module name concatenated with the `.json` file extension. 
-In our case two descriptors are going to be looked up: `io.knotx.KnotxServer.json` and `my.custom.Service.json`
-
-The descriptor file is simply a text file which must contain a valid JSON object. At minimum the JSON must provide a `main` field which determines the actual verticle that will be deployed, e.g.:
-```json
-{
-  "main": "io.knotx.server.KnotxServerVerticle"
-}
-```
-The JSON can also provide an `options` field which maps exactly to a **[Deployment Options](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html)** object.
-```json
-{
-  "main": "io.knotx.server.KnotxServerVerticle",
-  "options": {
-    "config": {
-      "serverOptions": {
-         "port": 4555
-      },
-      "foo": "bar"
-    },
-    "instances": 2,
-    "isolationGroup": "myGroup"
-  }
-}
-```
-When deploying a service from a service descriptor, any fields that are specified in the descriptor can be overridden:
-- in the starter JSON at `config` object
+During start of the Verticle, it's being supplied by default configuration, e.g. [[KnotxServerOptions|https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-server/src/main/asciidoc/dataobjects.adoc#knotxserveroptions]] for KnotxServerVerticle.
+However, a default configuration can still be overridden in the application configuration file in the `config` section, e.g.:
 ```json
 {
   "modules": [
-    "knotx;io.knotx.KnotxServer"
+    "java:io.knotx.server.KnotxServerVerticle"
   ],
   "config": {
-    "knotx:io.knotx.KnotxServer": {
+    "java:io.knotx.server.KnotxServerVerticle": {
       "options": {
         "config": {
           "serverOptions": {
             "port": 6666
           }
         },
-        "instances": 1
+        "instances": 2
       }
     }
   }
 }
 ```
-- by JVM property (it will override also values overridden by starter JSON)
-```
-$ java -Dio.knotx.KnotxServer.options.config.serverOptions.port=2000 -jar knotx-xxxx-fat.jar -conf starter.json
-```
-See [[Knot.x Deployments|KnotxDeployment]] for details how to supply your configurations.
+See [[Knot.x Deployments|KnotxDeployment]] for details how to manage your configurations.
 
 ## How to create your service?
-1. Assuming you're implementing your own Knot.x Verticle (either Knot or any kind of Adapter following the appropriate guides), 
-you need to create module descriptor of your verticle to be available in class path. Simply create JSON file in `src/main/resource` folder on your maven module. 
-E.g.: `src/main/resources/my.custom.Service.json`
-2. Define verticle class and default configuration for it's implementation
-```json
-{
-  "main": "com.example.knot.MyCustomKnot",
-  "options": {
-    "config": {
-      "foo": "bar",
-      "flag": true,
-      "data": {
-        "first": 333,
-        "second": 122,
-        "msg": "some message"
-      }
-    }
-  }
+Assuming you're implementing your own Knot.x Verticle (either Knot or any kind of Adapter following the appropriate guides).
+1. Create a configuration data object. You can follow the pattern used in [[KnotxerverOptions|]] that's pretty much is as follows:
+```java
+@DataObject(generateConverter = true, publicConverter = false)
+public class MyVerticleOptions {
+   public final static int DEFAULT_SAMPLE_PARAMETER = 1234;
+   
+   private int sampleParameter;
+   
+   public MyVerticleOptions() {
+     init();
+   }
+   
+   public MyVerticleOptions(MyVerticleOptions other) {
+     //copy constructor impl
+   }
+   
+   public MyVerticleOptions(JsonObject obj) {
+     init();
+     MyVerticleOptionsConverter.fromJson(obj, this);
+   }
+   
+   public JsonObject toJson() {
+       JsonObject json = new JsonObject();
+       MyVerticleOptions.toJson(this, json);
+       return json;
+   }
+   
+   private init() {
+     //Initiate a parameter value from System props if exists, otherwise use dafault value
+     this.sampleParameter = Integer.getInteger("my.sampleParam", DEFAULT_SAMPLE_PARAMETER);
+   }
+  
+   //Getter
+   public int getSampleParameter() {
+     return sampleParameter;
+   }
+   
+   //Fluent setter
+   public MyVerticleOptions setSampleParameter(int param) {
+     this.sampleParameter = param;
+     return this;
+   }
 }
+
 ```
+- JSON converters of this class will be automatically generated (during compilation) if field names follows the [[Vert.x Data Objects|https://github.com/vert-x3/vertx-codegen#data-objects]] 
+- Data object must have **Default & Copy Constructors**, **Constructor from JsonObject** and **toJson()** method
+- Any defaults in the configuration need to be implemented in a data object
+- If some of the configuration variables might need to be overridden through JVM system properties (e.g. -Dmy.setting=123) use a convenient Java methods, such as `Integer.getInteger("my.setting)` for integers (same methods available for Strings, Booleans, etc.)
+- Use fluent setters
+
+2. Implement your verticle that uses your configuration object
 3. After building your project, put result JAR file into the Knot.x classpath ([[Knot.x Deployments|KnotxDeployment]]) and add your module name to the starter JSON
 ```json
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
-    "knotx:my.custom.Service"
+    "java:io.knotx.server.KnotxServerVerticle",
+    "java:my.custom.ServiceVerticle"
   ]
 }
 ```
-4. If necessary, override the default configuration directly in starter JSON, or through JVM properties.
+4. If necessary, override the default configuration directly in starter JSON, or through JVM properties if implemented.
