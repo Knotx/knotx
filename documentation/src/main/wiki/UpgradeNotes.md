@@ -16,7 +16,7 @@ For more details see documentation sections in [[Server|Server#vertx-event-bus-d
 - [PR-359](https://github.com/Cognifide/knotx/pull/359) - From now on Knot.x responses with the response of a repository in case of response with status code different than 200. 
  You may play with [`displayExceptionDetails`](https://github.com/Cognifide/knotx/wiki/Server#server-options) flag
  in order to receive errors stack traces.
-- [PR-369](https://github.com/Cognifide/knotx/pull/369) - Better support for SSL for Repository Connector. Please check the documentation of [HttpRepositoryConnector](https://github.com/Cognifide/knotx/wiki/HttpRepositoryConnector#how-to-configure-ssl-connection-to-the-repository) for details of how to setup SSL connection.
+- [PR-369](https://github.com/Cognifide/knotx/pull/369) - Better support for SSL for Repository Connector. Please check the documentation of [[HttpRepositoryConnector|HttpRepositoryConnector#how-to-configure-ssl-connection-to-the-repository]] for details of how to setup SSL connection.
 
 
 ## Version 1.1.2

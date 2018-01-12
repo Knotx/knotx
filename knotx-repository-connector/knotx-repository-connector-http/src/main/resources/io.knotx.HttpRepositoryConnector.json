@@ -11,8 +11,7 @@
       "clientDestination": {
         "scheme": "http",
         "domain": "localhost",
-        "port": 3001,
-        "host": "localhost"
+        "port": 3001
       },
       "customRequestHeader": {
         "name": "Server-User-Agent",
