@@ -76,7 +76,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    MultiMap requestHeaders = buildHeaders(clientDestination.getString("host"),
+    MultiMap requestHeaders = buildHeaders(clientDestination.getString("hostHeader"),
         request.getHeaders());
 
     RequestOptions httpRequestData = buildRequestData(request);
@@ -184,7 +184,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     return new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
   }
 
-  private MultiMap buildHeaders(String host, MultiMap headers) {
+  private MultiMap buildHeaders(String hostHeader, MultiMap headers) {
     MultiMap result = filteredHeaders(headers);
 
     if (customRequestHeader.containsKey("name") && customRequestHeader.containsKey("value")) {
@@ -195,8 +195,8 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     }
 
     //Overide host header if provided in client destination
-    if (StringUtils.isNotBlank(host)) {
-      result.set("host", host);
+    if (StringUtils.isNotBlank(hostHeader)) {
+      result.set(HttpHeaderNames.HOST.toString(), hostHeader);
     }
 
     return result;

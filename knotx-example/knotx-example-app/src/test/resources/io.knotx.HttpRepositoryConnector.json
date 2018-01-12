@@ -11,8 +11,7 @@
       "clientDestination": {
         "scheme": "http",
         "domain": "localhost",
-        "port": 4001,
-        "host": "localhost"
+        "port": 4001
       },
       "allowedRequestHeaders": [
         "Accept*",
