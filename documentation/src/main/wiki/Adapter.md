@@ -89,9 +89,10 @@ In order to implement an Adapter generate a new Adapter module using maven arche
    `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-adapter-archetype -DarchetypeVersion=X.Y.Z`
 
    There will be 3 important java files created:
-     - `ExampleServiceAdapterConfiguration ` a simple POJO with configuration of the Adapter,
-     - `ExampleServiceAdapterProxy` implement your business logic here in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
-     - `ExampleServiceAdapter` that extends `AbstractVerticle`. It will simply read the configuration and register your `AdapterProxy` implementation at the provided `address`. 
+   
+   - `ExampleServiceAdapterConfiguration` a simple POJO with configuration of the Adapter,
+   - `ExampleServiceAdapterProxy` implement your business logic here in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
+   - `ExampleServiceAdapter` that extends `AbstractVerticle`. It will simply read the configuration and register your `AdapterProxy` implementation at the provided `address`. 
 
 The `AbstractAdapterProxy` class provides the following methods that you can extend in your implementation:
 
