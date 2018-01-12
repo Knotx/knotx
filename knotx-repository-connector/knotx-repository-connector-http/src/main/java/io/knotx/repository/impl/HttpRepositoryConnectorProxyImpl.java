@@ -63,12 +63,13 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(), request.getHeaders());
+    MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
+        request.getHeaders());
 
     RequestOptions httpRequestData = buildRequestData(request);
 
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.debug("GET HTTP Repository: {}://{}:{}{} with headers [{}]",
+      LOGGER.debug("GET HTTPRepository: {}://{}:{}{} with headers [{}]",
           httpRequestData.isSsl() ? "https" : "http",
           httpRequestData.getHost(),
           httpRequestData.getPort(),

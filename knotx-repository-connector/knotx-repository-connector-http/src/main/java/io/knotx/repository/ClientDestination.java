@@ -22,17 +22,24 @@ import io.vertx.core.json.JsonObject;
 public class ClientDestination {
 
   /**
-   * Default domain of the Http repository
+   * Default scheme of the Http repository connection = http
+   */
+  public final static String DEFAULT_SCHEME = "http";
+
+  /**
+   * Default domain of the Http repository = localhost
    */
   public static final String DEFAULT_DOMAIN = "localhost";
 
   /**
-   * Default port of the http repository
+   * Default port of the http repository = 3001
    */
   public static final int DEFAULT_PORT = 3001;
 
+  private String scheme;
   private String domain;
   private int port;
+  private String hostHeader;
 
   /**
    * Default constructor
@@ -48,8 +55,10 @@ public class ClientDestination {
    * @param other the instance to copy
    */
   public ClientDestination(ClientDestination other) {
+    this.scheme = other.scheme;
     this.domain = other.domain;
     this.port = other.port;
+    this.hostHeader = other.hostHeader;
   }
 
   /**
@@ -76,6 +85,25 @@ public class ClientDestination {
   private void init() {
     domain = DEFAULT_DOMAIN;
     port = DEFAULT_PORT;
+    scheme = DEFAULT_SCHEME;
+  }
+
+  /**
+   *
+   * @return URL scheme to be used to communicate with repository
+   */
+  public String getScheme() {
+    return scheme;
+  }
+
+  /**
+   * Set the URL scheme used to communicate with the repository
+   * @param scheme an URL scheme (http, https)
+   * @return a reference to this, so the API can be used fluently
+   */
+  public ClientDestination setScheme(String scheme) {
+    this.scheme = scheme;
+    return this;
   }
 
   /**
@@ -111,6 +139,25 @@ public class ClientDestination {
    */
   public ClientDestination setPort(int port) {
     this.port = port;
+    return this;
+  }
+
+  /**
+   *
+   * @return Host header override to be used with a communication to the repository
+   */
+  public String getHostHeader() {
+    return hostHeader;
+  }
+
+  /**
+   * Set the host header override to be used with a communication to the repository.
+   * If it's set, it overrides any value in the 'Host' header, and sets the SNI SSL to the same value.
+   * @param hostHeader a host header value
+   * @return a reference to this, so the API can be used fluently
+   */
+  public ClientDestination setHostHeader(String hostHeader) {
+    this.hostHeader = hostHeader;
     return this;
   }
 }
