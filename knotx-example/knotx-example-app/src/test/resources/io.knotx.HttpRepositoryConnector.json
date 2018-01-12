@@ -9,6 +9,7 @@
         "tryUseCompression": true
       },
       "clientDestination": {
+        "scheme": "http",
         "domain": "localhost",
         "port": 4001
       },
