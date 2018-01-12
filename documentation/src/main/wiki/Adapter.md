@@ -79,7 +79,6 @@ RxJava introduce a Reactive Programming that is a development model structured a
 |:------ |
 | Reactive programming code first requires a mind-shift. You are notified of asynchronous events. Then, the API can be hard to grasp (just look at the list of operators). Don’t abuse, write comments, explain, or draw diagrams. RX is powerful, abusing it or not explaining it will make your coworkers grumpy. [Read more](https://developers.redhat.com/blog/2017/06/30/5-things-to-know-about-reactive-programming/) |
 
-
 Implementation of an Adapter does not require knowledge of how to communicate via the Vert.x event bus.
 It's wrapped by the **Vert.x Service Proxy** functionality so any new implementation can focus on 
 the business logic of the Adapter.
@@ -88,11 +87,15 @@ In order to implement an Adapter generate a new Adapter module using maven arche
 
    `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-adapter-archetype -DarchetypeVersion=X.Y.Z`
 
-   There will be 3 important java files created:
-   
-   - `ExampleServiceAdapterConfiguration` a simple POJO with configuration of the Adapter,
-   - `ExampleServiceAdapterProxy` implement your business logic here in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
-   - `ExampleServiceAdapter` that extends `AbstractVerticle`. It will simply read the configuration and register your `AdapterProxy` implementation at the provided `address`. 
+Note that the Adapter archetype generates both the code and all configuration
+files required to run a Knot.x instance containing the custom Adapter. 
+More details about the Knot.x deployment can be found in the [[deployment section|KnotxDeployment]].
+
+Archetype generates 3 important java files:
+ 
+ - `ExampleServiceAdapterConfiguration` a simple POJO with configuration of the Adapter,
+ - `ExampleServiceAdapterProxy` implement your business logic here in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
+ - `ExampleServiceAdapter` that extends `AbstractVerticle`. It will simply read the configuration and register your `AdapterProxy` implementation at the provided `address`. 
 
 The `AbstractAdapterProxy` class provides the following methods that you can extend in your implementation:
 
@@ -112,7 +115,38 @@ error message in response body.
 |:------ |
 | Besides the Verticle implementation itself, a custom implementation of your Adapter must be built as a Knot.x module in order to be deployed as part of Knot.x. Follow the [Knot.x Modules](https://github.com/Cognifide/knotx/wiki/KnotxModules) documentation in order to learn how to make your Adapter a module. | 
 
-### How to run blocking code in your own Adapter?
+#### Building and running example Adapter
+To run the extension:
+
+1. [Download the Knot.x fat jar](https://github.com/Cognifide/knotx/releases/latest) and  it to the `apps` folder.
+2. Build the extension using `mvn package`
+3. Copy custom Adapter fat jar from the `target` directory into the `apps` directory
+4. Execute the `run.sh` bash script. You will see output similar to the following:
+```
+2017-08-04 15:10:21 [vert.x-eventloop-thread-2] INFO  i.k.r.FilesystemRepositoryConnectorVerticle - Starting <FilesystemRepositoryConnectorVerticle>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-3] INFO  i.k.s.FragmentSplitterVerticle - Starting <FragmentSplitterVerticle>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Starting <KnotxServerVerticle>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-0] INFO  i.k.a.example.ExampleServiceAdapter - Starting <ExampleServiceAdapter>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-4] INFO  i.k.k.a.FragmentAssemblerVerticle - Starting <FragmentAssemblerVerticle>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-7] INFO  i.k.k.t.HandlebarsKnotVerticle - Starting <HandlebarsKnotVerticle>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-6] INFO  i.k.knot.action.ActionKnotVerticle - Starting <ActionKnotVerticle>
+2017-08-04 15:10:21 [vert.x-eventloop-thread-5] INFO  i.k.knot.service.ServiceKnotVerticle - Starting <ServiceKnotVerticle>
+2017-08-04 15:10:22 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2017-08-04 15:10:22 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+
+                Deployed 3bd0365c-10ba-4a53-a29c-59b4df06eaff [knotx:io.knotx.FragmentSplitter]
+                Deployed defc43bc-ffe0-40cf-8c0c-1be06c5e8739 [knotx:com.example.adapter.example.ExampleServiceAdapter]
+                Deployed 6891d9d6-bcfc-42fa-8b21-bd4ea11154da [knotx:io.knotx.FragmentAssembler]
+                Deployed 59a2967f-0d87-4dea-ad37-b8fe1dafb898 [knotx:io.knotx.FilesystemRepositoryConnector]
+                Deployed b923df1c-f8f9-4615-9b9e-4fba3806a575 [knotx:io.knotx.ActionKnot]
+                Deployed c135524e-b4b1-452c-b8e7-628dfc58195d [knotx:io.knotx.ServiceKnot]
+                Deployed 93ea2509-e045-49f8-9ddb-fc167e16f020 [knotx:io.knotx.HandlebarsKnot]
+                Deployed 880116cf-54a7-4849-954e-dfb4eb536685 [knotx:io.knotx.KnotxServer]
+```
+5. Open a page: [http://localhost:8092/content/local/template.html](http://localhost:8092/content/local/template.html) in your 
+browser to validate a page displays value `Hello Knot.x`.
+
+### How to handle blocking code in your own Adapter?
 The easiest way to handle a blocking code inside your Adapter is to deploy it as a [Vert.x worker](http://vertx.io/docs/vertx-core/java/#worker_verticles).
 No change in your code is required.
 
