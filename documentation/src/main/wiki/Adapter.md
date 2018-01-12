@@ -36,7 +36,7 @@ Communication contract between [[Service Knot|ServiceKnot]] and [[Http Service A
 - `AdapterRequest` input,
 - `AdapterResponse` output.
 
-####Adapter Request
+#### Adapter Request
 The table below describes the communication model between Knot.x Service Knot and Service Adapters.
 
 | Name                        | Type           | Mandatory | Description  |
@@ -48,7 +48,7 @@ The table below describes the communication model between Knot.x Service Knot an
 | `params`                    | `JsonObject`   | &#10004;   | `JsonObject` with additional params that can be passed via configuration file |
 | `adapterParams`             | `JsonObject`   |            |  `JsonObject` with additional adapter parameters that can be set in the form of `data-knotx-adapter-params` in the snippet |
 
-####Adapter Response
+#### Adapter Response
 The table below describes the result that Service Adapter returns to Service Knot.
 
 | Name                        | Type          | Mandatory   | Description  |
