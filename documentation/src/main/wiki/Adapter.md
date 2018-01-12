@@ -4,13 +4,13 @@ and external services.
 
 [[assets/knotx-adapters.png|alt=Adapters]]
 
-
 ## How does it work?
 Adapters can be thought as extension points where project specific logic appears. With custom [[Knots|Knot]] 
 they provides very flexible mechanism to inject project specific requirements.
 
-We recommend to create dedicated Adapter every time some service-level business logic or service 
-response adaption to other format is required.
+We recommend to create a dedicated Adapter every time some service-level business logic or service 
+response adaption to other format is required. E.g. we need to 
+[inject the data directly form the database](http://knotx.io/blog/adapt-service-without-webapi/).
 
 
 ### Types of adapters
@@ -19,7 +19,9 @@ Knot.x Core by default introduces two types of Adapters connected with Knot impl
 - [[Action Adapter|ActionAdapter]] for [[Action Knot|ActionKnot]]
 
 Knot.x comes with a generic implementation of [[Service Adapter|ServiceAdapter]], that enables communication 
-with external services using HTTP Protocol (only GET requests). See [[Http Service Adapter|HttpServiceAdapter]] 
+with external services using HTTP Protocol (only GET requests).
+This [Hello Rest Service Tutorial](http://knotx.io/blog/hello-rest-service/) contains an example of
+integrating external Web based service data into your webpage. See also [[Http Service Adapter|HttpServiceAdapter]] 
 for more information. Please note, that this implementation is very generic and we recommend to create 
 project-specific Adapters for any custom requirements.
 
@@ -28,7 +30,34 @@ is not going to provide any generic Action Adapters.
 
 For custom Knots we can introduce custom Adapter types. As far as Knots must follow [[Knot contract|Knot#how-does-it-work]],
 Adapters are coupled with Knot directly so they can define their custom request, response or 
-configuration. The communication between Knot and Adapter can be custom too. 
+configuration. The communication between Knot and Adapter can be custom too.
+
+Communication contract between [[Service Knot|ServiceKnot]] and [[Http Service Adapter|HttpServiceAdapter]] is defined by:
+- `AdapterRequest` input,
+- `AdapterResponse` output.
+
+####Adapter Request
+The table below describes the communication model between Knot.x Service Knot and Service Adapters.
+
+| Name                        | Type           | Mandatory | Description  |
+|-------:                     |:-------:       |:-------:   |-------|
+| `clientRequest.path`        | `String`       | &#10004;   | client request url |
+| `clientRequest.method`      | `HttpMethod`   | &#10004;   | client request method |
+| `clientRequest.headers`     | `MultiMap`     | &#10004;   | client request headers |
+| `clientRequest.params`      | `MultiMap`     | &#10004;   | client request parameters |
+| `params`                    | `JsonObject`   | &#10004;   | `JsonObject` with additional params that can be passed via configuration file |
+| `adapterParams`             | `JsonObject`   |            |  `JsonObject` with additional adapter parameters that can be set in the form of `data-knotx-adapter-params` in the snippet |
+
+####Adapter Response
+The table below describes the result that Service Adapter returns to Service Knot.
+
+| Name                        | Type          | Mandatory   | Description  |
+|-------:                      |:-------:     |:-------:    |-------|
+| `clientResponse.statusCode`  | `int`        |   &#10004;  | status code of service response |
+| `clientResponse.headers`     | `MultiMap`   | &#10004;    | client response headers |
+| `clientResponse.body`        | `Buffer`     |             | final response body |
+| `signal`                     | `String`     |             | defines how original request processing should be handled (currently used only by Action Knot) |
+
 
 ## How to configure?
 The Adapter API specifies an abstract class - `AdapterConfiguration` to handle JSON configuration support. This
@@ -36,23 +65,43 @@ abstraction can be used while implementing a custom Adapter but it is not requir
 exposed with a unique Event Bus address - that's the only obligation (as is the case with Knots).
 Please see an example configuration for [[Http Service Adapter|HttpServiceAdapter#how-to-configure]]
 
-## How to extend?
-Implementation of an Adapter does not require knowledge of how to communicate via the Vert.x event bus. It's wrapped by the **Vert.x Service Proxy** functionality so any new implementation can focus on the business logic of the Adapter. 
+## How to implement your own Adapter?
+Knot.x provides the [maven archetypes](https://github.com/Knotx/knotx-extension-archetype) to generate custom Adapters. 
+It is the **recommended** way to create your own Adapter.
 
-In order to implement an Adapter, follow the guide below:
+An Adapter logic is executed on a [Vert.x event loop](http://vertx.io/docs/vertx-core/java/#_reactor_and_multi_reactor). [The 
+Vert.x Golden Rule](http://vertx.io/docs/vertx-core/java/#golden_rule) says that the code should **never block** the 
+event loop. So all time consuming operations should be coded in an asynchronous way. Default Knot.x Adapters use [RxJava](http://vertx.io/docs/vertx-rx/java/) 
+which is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
+RxJava introduce a Reactive Programming that is a development model structured around asynchronous data streams. 
 
-1. Create your Knot by extending the `io.knotx.adapter.AbstractAdapterProxy` class and implement your business logic in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
+| Note |
+|:------ |
+| Reactive programming code first requires a mind-shift. You are notified of asynchronous events. Then, the API can be hard to grasp (just look at the list of operators). Don’t abuse, write comments, explain, or draw diagrams. RX is powerful, abusing it or not explaining it will make your coworkers grumpy. [Read more](https://developers.redhat.com/blog/2017/06/30/5-things-to-know-about-reactive-programming/) |
 
-   You can refer to `io.knotx.adapter.service.http.impl.HttpServiceAdapterProxyImpl.java` as an example.
 
-2. Create a class extending `AbstractVerticle` that will simply read the configuration and register your `AdapterProxy` implementation at the `address` provided.
+Implementation of an Adapter does not require knowledge of how to communicate via the Vert.x event bus.
+It's wrapped by the **Vert.x Service Proxy** functionality so any new implementation can focus on 
+the business logic of the Adapter.
 
-   Have a look at `io.knotx.adapter.service.http.HttpServiceAdapterVerticle.java` to see how the `HttpServiceAdapterProxyImpl` is registered.
+In order to implement an Adapter generate a new Adapter module using maven archetype:
+
+   `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-adapter-archetype -DarchetypeVersion=X.Y.Z`
+
+   There will be 3 important java files created:
+     - `ExampleServiceAdapterConfiguration ` a simple POJO with configuration of the Adapter,
+     - `ExampleServiceAdapterProxy` implement your business logic here in the `processRequest()` method with the return type of `Observable<AdapterResponse>` (promise of the `AdapterResponse`).
+     - `ExampleServiceAdapter` that extends `AbstractVerticle`. It will simply read the configuration and register your `AdapterProxy` implementation at the provided `address`. 
 
 The `AbstractAdapterProxy` class provides the following methods that you can extend in your implementation:
 
-- `Observable<AdapterResponse> processRequest(AdapterRequest message)` method that consumes `AdapterRequest` messages from [[Knot|Knot]] and returns `AdapterResponse` object as `rx.Observable`
-- Optionally, `AdapterResponse getErrorResponse(AdapterRequest request, Throwable error)` method which handles any Exception thrown during processing, and is responsible for preparing proper AdapterResponse on such situations. By default `AbstractAdapterProxy` implements this method, and returns `AdapterResponse` with the `ClientResponse` object having `500` status code and the error message in response body. 
+- `Observable<AdapterResponse> processRequest(AdapterRequest message)` method that consumes 
+`AdapterRequest` messages from [[Knot|Knot]] and returns [`AdapterResponse`](#adapter-response) object as `rx.Observable`
+- Optionally, `AdapterResponse getErrorResponse(AdapterRequest request, Throwable error)` method 
+which handles any Exception thrown during processing, and is responsible for preparing proper 
+[AdapterResponse](#adapter-response) on such situations. By default `AbstractAdapterProxy` implements this method, 
+and returns `AdapterResponse` with the `ClientResponse` object having `500` status code and the 
+error message in response body. 
 
 | ! Note |
 |:------ |
@@ -60,7 +109,36 @@ The `AbstractAdapterProxy` class provides the following methods that you can ext
 
 | ! Note |
 |:------ |
-| Besides the Verticle implementation itself, a custom implementation of your Knot must be built as a Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] documentation in order to learn how to make your Knot a module. | 
+| Besides the Verticle implementation itself, a custom implementation of your Adapter must be built as a Knot.x module in order to be deployed as part of Knot.x. Follow the [Knot.x Modules](https://github.com/Cognifide/knotx/wiki/KnotxModules) documentation in order to learn how to make your Adapter a module. | 
+
+### How to run blocking code in your own Adapter?
+The easiest way to handle a blocking code inside your Adapter is to deploy it as a [Vert.x worker](http://vertx.io/docs/vertx-core/java/#worker_verticles).
+No change in your code is required.
+
+To do so you need to tell Vert.x that your custom Adapter should be processed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
+```
+{
+  "main": "com.example.SomeAdapter",
+  "options": {
+    "worker": true,
+    "config": {
+      ...
+    }
+  }
+}
+```
+Now in your Knot.x instance log file you should see
+```
+2018-01-08 10:00:16 [vert.x-worker-thread-0] INFO  com.example.SomeAdapter - Starting <SomeAdapter>
+```
+For more information about deployment options of Worker verticles see [Vert.x documentation](http://vertx.io/docs/vertx-core/java/#worker_verticles).
+
+### How to implement your own Adapter without Rx Java?
+Extending `AbstractAdapterProxy` is the **recommended** way to implement your custom Adapter. But still you can resign from
+this approach and implement your custom Adapter with Vert.x handlers (without using RxJava). The only one thing to change 
+is to implement `AdapterProxy` instead of extending `AbstractAdapterProxy`. Then you need to implement a 
+method `void process(AdapterRequest request, Handler<AsyncResult<AdapterResponse>> result)` where you should implement your 
+custom Adapter business logic. 
 
 ### Adapters common library
 For many useful and reusable Adapters concept, please check our [knotx-adapter-common](https://github.com/Cognifide/knotx/tree/master/knotx-adapter/knotx-adapter-common)

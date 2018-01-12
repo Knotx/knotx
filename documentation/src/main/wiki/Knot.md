@@ -211,7 +211,6 @@ To do so you need to tell Vert.x that your custom Knot should be processed in wo
   "main": "some.package.knot.example.ExampleKnot",
   "options": {
     "worker": true,
-    "multiThreaded": true,
     "config": {
       ...
     }
@@ -222,6 +221,7 @@ Now in your Knot.x instance log file you should see
 ```
 2018-01-08 10:00:16 [vert.x-worker-thread-0] INFO  i.k.e.knot.example.ExampleKnot - Starting <ExampleKnot>
 ```
+For more information about deployment options of Worker verticles see [Vert.x documentation](http://vertx.io/docs/vertx-core/java/#worker_verticles).
 
 ### How to implement your own Knot without Rx Java?
 Extending `AbstractKnotProxy` is the **recommended** way to implement your custom Knots. But still you can resign from

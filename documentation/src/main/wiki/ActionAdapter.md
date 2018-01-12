@@ -26,7 +26,7 @@ Find out more about contract described above in [[Action Knot|ActionKnot]].
 Configuration of Action Adapter is specific to its implementation. You may see example configuration 
 of [[Http Service Adapter|HttpServiceAdapter#how-to-configure]].
 
-## How to extend?
+## How to implement your own Action Adapter?
 Implementing Action Adapter that meets your project requirements allows 
 you to adopt request from Knot.x into request understandable by an endpoint service, and adopts 
 responses from that service into unified message understandable by Knot.x.
@@ -34,9 +34,9 @@ responses from that service into unified message understandable by Knot.x.
 For you convenience, Knot.x is shipped with a default Action Adapter called `HttpActionAdapter`.
 
 Writing custom Service Adapter requires fulfilling [[Action Knot|ActionKnot]] contract.
-Please refer also to [[Adapter|Adapter#how-to-extend]].
+Please refer also to [[Adapter|Adapter#how-to-implement-your-own-adapter]].
 
 | ! Note |
 |:------ |
-| Besides Verticle implementation itself, a custom implementation of your Action Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Action Adapter a module. | 
+| Besides Verticle implementation itself, a custom implementation of your Action Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [Knot.x Modules](https://github.com/Cognifide/knotx/wiki/KnotxModules) in order to see how to make your Action Adapter a module. | 
 
