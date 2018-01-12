@@ -26,6 +26,7 @@
     * [[Http Service Adapter|HttpServiceAdapter]]
   * [[Mocks|Mocks]]
   * [[Knot.x Deployment|KnotxDeployment]]
+    * [[Knot.x Tuning|KnotxTuning]]
   * [[Performance|PerformanceTests]]
     * [[Performance Tests Methodology|PerformanceTestsMethodology]]
     * [[Performance Tests Summary|PerformanceTestsSummary]]
