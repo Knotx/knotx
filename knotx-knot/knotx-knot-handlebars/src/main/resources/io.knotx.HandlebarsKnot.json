@@ -3,7 +3,7 @@
   "options": {
     "config": {
       "address": "knotx.knot.handlebars",
-      "templateDebug": true
+      "cacheSize": 1000
     }
   }
 }

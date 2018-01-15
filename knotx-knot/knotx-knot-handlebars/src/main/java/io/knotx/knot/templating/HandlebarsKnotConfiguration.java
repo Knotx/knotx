@@ -19,19 +19,25 @@ import io.vertx.core.json.JsonObject;
 
 public class HandlebarsKnotConfiguration {
 
-  private final boolean templateDebug;
   private final String address;
+  private final String cacheKeyAlgorithm;
+  private final Long cacheSize;
 
-  public HandlebarsKnotConfiguration(JsonObject config) {
+  HandlebarsKnotConfiguration(JsonObject config) {
     this.address = config.getString("address");
-    this.templateDebug = config.getBoolean("templateDebug", false);
-  }
-
-  public boolean templateDebug() {
-    return templateDebug;
+    this.cacheKeyAlgorithm = config.getString("cacheKeyAlgorithm", "MD5");
+    this.cacheSize = config.getLong("cacheSize", 1000L);
   }
 
   public String address() {
     return address;
+  }
+
+  public String getCacheKeyAlgorithm() {
+    return cacheKeyAlgorithm;
+  }
+
+  public Long getCacheSize() {
+    return cacheSize;
   }
 }
