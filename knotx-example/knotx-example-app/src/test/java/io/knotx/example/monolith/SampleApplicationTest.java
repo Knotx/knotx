@@ -22,6 +22,7 @@ import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Observable;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -153,7 +154,8 @@ public class SampleApplicationTest {
   }
 
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    HttpClient client = Vertx.newInstance(vertx.vertx())
+        .createHttpClient(new HttpClientOptions());
     Async async = context.async();
     client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
         resp -> resp.bodyHandler(body -> {

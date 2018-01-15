@@ -1,10 +1,10 @@
 {
   "modules": [
-    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
-    "java:io.knotx.mocks.MockServiceVerticle"
+    "adapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "serviceMock=io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
-    "java:io.knotx.mocks.MockServiceVerticle": {
+    "serviceMock": {
       "options": {
         "config": {
           "mockDataRoot": "mock/service",

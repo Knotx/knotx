@@ -1,20 +1,20 @@
 {
   "modules": [
-    "java:io.knotx.server.KnotxServerVerticle",
-    "java:io.knotx.repository.HttpRepositoryConnectorVerticle",
-    "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle",
-    "java:io.knotx.knot.splitter.FragmentSplitterVerticle",
-    "java:io.knotx.knot.assembler.FragmentAssemblerVerticle",
-    "java:io.knotx.knot.templating.HandlebarsKnotVerticle",
-    "java:io.knotx.knot.service.ServiceKnotVerticle",
-    "java:io.knotx.knot.action.ActionKnotVerticle",
-    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
-    "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle",
-    "java:io.knotx.mocks.MockRemoteRepositoryVerticle",
-    "java:io.knotx.mocks.MockServiceVerticle"
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "actionAdapter=io.knotx.adapter.action.http.HttpActionAdapterVerticle",
+    "mockRepo=io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "mockService=io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
-    "java:io.knotx.server.KnotxServerVerticle": {
+    "server": {
       "options": {
         "config": {
           "serverOptions": {
@@ -79,7 +79,7 @@
         }
       }
     },
-    "java:io.knotx.mocks.MockRemoteRepositoryVerticle": {
+    "mockRepo": {
       "options": {
         "config": {
           "mockDataRoot": "mock/repository",
@@ -87,7 +87,7 @@
         }
       }
     },
-    "java:io.knotx.mocks.MockServiceVerticle": {
+    "mockService": {
       "options": {
         "config": {
           "mockDataRoot": "mock/service",
@@ -96,7 +96,7 @@
         }
       }
     },
-    "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle": {
+    "actionAdapter": {
       "options": {
         "config": {
           "address": "knotx.adapter.action.http",
@@ -123,7 +123,7 @@
         }
       }
     },
-    "java:io.knotx.knot.action.ActionKnotVerticle": {
+    "actionKnot": {
       "options": {
         "config": {
           "adapters": [
@@ -191,7 +191,7 @@
         }
       }
     },
-    "java:io.knotx.repository.HttpRepositoryConnectorVerticle": {
+    "httpRepo": {
       "options": {
         "config": {
           "clientDestination": {
@@ -201,7 +201,7 @@
         }
       }
     },
-    "java:io.knotx.knot.service.ServiceKnotVerticle": {
+    "serviceKnot": {
       "options": {
         "config": {
           "services": [
@@ -235,7 +235,7 @@
         }
       }
     },
-    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle": {
+    "serviceAdapter": {
       "options": {
         "config": {
           "services": [

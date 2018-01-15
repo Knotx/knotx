@@ -18,7 +18,9 @@ package io.knotx.launcher;
 
 import com.google.common.collect.Lists;
 import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.vertx.config.ConfigRetrieverOptions;
+import io.reactivex.Single;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
@@ -29,6 +31,7 @@ import io.vertx.reactivex.core.AbstractVerticle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
 
@@ -85,48 +88,50 @@ public class KnotxStarterVerticle extends AbstractVerticle {
 
   private void deployVerticles(JsonObject config, Future<Void> completion) {
     LOGGER.info("STARTING Knot.x");
-    Observable.fromIterable(config.getJsonArray(MODULES_ARRAY))
-        .flatMap(module ->
-            deployVerticle(module, config.getJsonObject(CONFIG_OVERRIDE, new JsonObject()))
-        )
-        .reduce(new ArrayList<ModuleDeploymentId>(), (accumulator, item) -> {
+    Observable.fromIterable(config().getJsonArray(MODULES_ARRAY))
+        .cast(String.class)
+        .map(ModuleDescriptor::parse)
+        .flatMap(this::deployVerticle)
+        .reduce(new ArrayList<ModuleDescriptor>(), (accumulator, item) -> {
           accumulator.add(item);
           return accumulator;
         })
         .subscribe(
-            ids -> {
-              deploymentIds = Lists.newArrayList(ids);
-              LOGGER.info("Knot.x STARTED {}", buildMessage(ids));
-              if (completion != null) {
-                completion.complete();
-              }
+            message -> {
+              LOGGER.info("Knot.x STARTED {}", message);
+              startFuture.complete();
             },
             error -> {
               LOGGER.error("Verticle could not be deployed", error);
-              if (completion != null) {
-                completion.fail(error);
-              }
+              startFuture.fail(error);
             }
         );
   }
 
-  private Observable<ModuleDeploymentId> deployVerticle(final Object module, JsonObject config) {
-    return vertx.rxDeployVerticle((String) module, getModuleOptions(config, (String) module))
-        .map(deploymentID -> ModuleDeploymentId.of((String) module, deploymentID))
-        .toObservable()
-        .onErrorResumeNext(error -> {
-          LOGGER.warn("Can't deploy {}", module, error);
-          return Observable.empty();
-        });
+  private Observable<ModuleDescriptor> deployVerticle(final ModuleDescriptor module) {
+    return vertx
+        .rxDeployVerticle(module.getName(), getModuleOptions(module.getAlias()))
+        .map(new ModuleDescriptor(module)::setDeploymentId)
+        .doOnError(error -> LOGGER.error("Can't deploy {}: {}", module.toDescriptorLine(), error))
+        .onErrorResumeNext(Single::error)
+        .toObservable();
   }
 
-  private DeploymentOptions getModuleOptions(JsonObject config,
-      final String module) {
+  private DeploymentOptions getModuleOptions(final String module) {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
-    if (config.containsKey(module)) {
-      JsonObject moduleConfig = config.getJsonObject(module);
-      if (moduleConfig.containsKey(MODULE_OPTIONS)) {
-        deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
+    if (config().containsKey(CONFIG_OVERRIDE)) {
+      if (config().getJsonObject(CONFIG_OVERRIDE).containsKey(module)) {
+        JsonObject moduleConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(module);
+        if (moduleConfig.containsKey(MODULE_OPTIONS)) {
+          deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
+        } else {
+          LOGGER.warn(
+              "Module '{}' has override config, but missing 'options' object. "
+                  + "Default configuration is to be used", module);
+        }
+      } else {
+        LOGGER.info("Module '{}' does not have override. Default configuration is to be used",
+            module);
       }
     }
     return deploymentOptions;
@@ -144,18 +149,11 @@ public class KnotxStarterVerticle extends AbstractVerticle {
         .toString();
   }
 
-  private static class ModuleDeploymentId {
-
-    private String name;
-    private String deploymentId;
-
-    public static ModuleDeploymentId of(String name, String deploymentId) {
-      ModuleDeploymentId item = new ModuleDeploymentId();
-      item.name = name;
-      item.deploymentId = deploymentId;
-
-      return item;
-    }
+  private StringBuilder collectDeployment(StringBuilder accumulator,
+      ModuleDescriptor deployedDescriptor) {
+    return accumulator
+        .append(String.format("\t\tDeployed %s", deployedDescriptor.toString()))
+        .append(System.lineSeparator());
   }
 
   private void printLogo() {

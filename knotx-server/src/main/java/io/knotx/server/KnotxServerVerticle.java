@@ -47,7 +47,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void start(Future<Void> fut) throws IOException, URISyntaxException {
+  public void start(Future<Void> fut) {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     KnotxCSRFOptions csrfConfig = configuration.getCsrfConfig();
     CSRFHandler csrfHandler = CSRFHandler.create(csrfConfig.getSecret())

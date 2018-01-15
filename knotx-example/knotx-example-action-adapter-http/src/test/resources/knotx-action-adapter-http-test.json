@@ -1,10 +1,10 @@
 {
   "modules": [
-    "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle",
-    "java:io.knotx.mocks.MockServiceVerticle"
+    "actionAdapter=java:io.knotx.adapter.action.http.HttpActionAdapterVerticle",
+    "serviceMock=java:io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
-    "java:io.knotx.adapter.action.http.HttpActionAdapterVerticle": {
+    "actionAdapter": {
       "options": {
         "config": {
           "address": "knotx.adapter.action.http",
@@ -31,7 +31,7 @@
         }
       }
     },
-    "java:io.knotx.mocks.MockServiceVerticle": {
+    "serviceMock": {
       "options": {
         "config": {
           "mockDataRoot": "mock/service",

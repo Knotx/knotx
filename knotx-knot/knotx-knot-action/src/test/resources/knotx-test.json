@@ -1,9 +1,9 @@
 {
   "modules": [
-    "java:io.knotx.knot.action.ActionKnotVerticle"
+    "actionKnot=java:io.knotx.knot.action.ActionKnotVerticle"
   ],
   "config": {
-    "java:io.knotx.knot.action.ActionKnotVerticle": {
+    "actionKnot": {
       "options": {
         "config": {
           "formIdentifierName": "snippet-identifier",

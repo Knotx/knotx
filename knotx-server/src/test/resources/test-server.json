@@ -1,10 +1,10 @@
 {
   "modules": [
-    "java:io.knotx.server.KnotxServerVerticle",
-    "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle"
+    "server=java:io.knotx.server.KnotxServerVerticle",
+    "fsRepo=java:io.knotx.repository.FilesystemRepositoryConnectorVerticle"
   ],
   "config": {
-    "java:io.knotx.repository.FilesystemRepositoryConnectorVerticle": {
+    "fsRepo": {
       "options": {
         "config": {
           "address": "knotx.repository.filesystem",
@@ -12,7 +12,7 @@
         }
       }
     },
-    "java:io.knotx.server.KnotxServerVerticle": {
+    "server": {
       "options": {
         "config": {
           "serverOptions": {

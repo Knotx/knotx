@@ -14,7 +14,7 @@ such as far.jar (bundled with all dependencies allowing to run itself) and confi
 for three modules:
 - knotx-mocks
 - knotx-standalone
-- knotx-sample-app
+- knotx-example-app
 
 To run Knot.x you need Java 8.
 

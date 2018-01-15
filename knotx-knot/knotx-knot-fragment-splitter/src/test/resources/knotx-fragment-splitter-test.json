@@ -1,5 +1,5 @@
 {
   "modules": [
-    "java:io.knotx.knot.splitter.FragmentSplitterVerticle"
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle"
   ]
 }
