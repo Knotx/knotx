@@ -134,7 +134,7 @@ It is the **recommended** way to create your own Knots.
 
 A Knot code is executed on a [Vert.x event loop](http://vertx.io/docs/vertx-core/java/#_reactor_and_multi_reactor). [The 
 Vert.x Golden Rule](http://vertx.io/docs/vertx-core/java/#golden_rule) says that the code should **never block** the 
-event loop. So all time consuming operations should be coded in an asynchronous way. By default Knots uses [RxJava](http://vertx.io/docs/vertx-rx/java/) 
+event loop. So all time-consuming operations should be coded in an asynchronous way. By default Knots uses [RxJava](http://vertx.io/docs/vertx-rx/java/) 
 which is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
 RxJava introduce Reactive Programming what is a development model structured around asynchronous data streams. 
 

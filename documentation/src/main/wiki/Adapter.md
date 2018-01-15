@@ -21,7 +21,7 @@ Knot.x Core by default introduces two types of Adapters connected with Knot impl
 Knot.x comes with a generic implementation of [[Service Adapter|ServiceAdapter]], that enables communication 
 with external services using HTTP Protocol (only GET requests).
 This [Hello Rest Service Tutorial](http://knotx.io/blog/hello-rest-service/) contains an example of
-integrating external Web based service data into your webpage. See also [[Http Service Adapter|HttpServiceAdapter]] 
+how to integrate external Web based service data into your webpage. See also [[Http Service Adapter|HttpServiceAdapter]] 
 for more information. Please note, that this implementation is very generic and we recommend to create 
 project-specific Adapters for any custom requirements.
 
@@ -37,26 +37,26 @@ Communication contract between [[Service Knot|ServiceKnot]] and [[Http Service A
 - `AdapterResponse` output.
 
 #### Adapter Request
-The table below describes the communication model between Knot.x Service Knot and Service Adapters.
+The table below shows all the fields in the `AdapterRequest` - the communication model between Knot.x Service Knot and Service Adapters.
 
 | Name                        | Type           | Mandatory | Description  |
 |-------:                     |:-------:       |:-------:   |-------|
-| `clientRequest.path`        | `String`       | &#10004;   | client request url |
-| `clientRequest.method`      | `HttpMethod`   | &#10004;   | client request method |
+| `clientRequest.path`        | `String`       | &#10004;   | client request url, e.g. `/services/mock/first.json` |
+| `clientRequest.method`      | `HttpMethod`   | &#10004;   | client request method, e.g. `GET`, `PUT`, etc. |
 | `clientRequest.headers`     | `MultiMap`     | &#10004;   | client request headers |
 | `clientRequest.params`      | `MultiMap`     | &#10004;   | client request parameters |
-| `params`                    | `JsonObject`   | &#10004;   | `JsonObject` with additional params that can be passed via configuration file |
-| `adapterParams`             | `JsonObject`   |            |  `JsonObject` with additional adapter parameters that can be set in the form of `data-knotx-adapter-params` in the snippet |
+| `params`                    | `JsonObject`   | &#10004;   | `JsonObject` with additional params that can be passed via configuration file, e.g. `"params": { "example": "example-value" }` |
+| `adapterParams`             | `JsonObject`   |            |  `JsonObject` with additional adapter parameters that can be set in the form of `data-knotx-adapter-params` in the snippet, e.g. `data-knotx-adapter-params='{"myKey":"myValue"}'` |
 
 #### Adapter Response
-The table below describes the result that Service Adapter returns to Service Knot.
+The table below shows all the fields in the `AdapterResponse` - an object returned by the Adapter to the Service Knot.
 
 | Name                        | Type          | Mandatory   | Description  |
 |-------:                      |:-------:     |:-------:    |-------|
-| `clientResponse.statusCode`  | `int`        |   &#10004;  | status code of service response |
+| `clientResponse.statusCode`  | `int`        | &#10004;    | status code of service response, e.g. `200`, `302`, `404` |
 | `clientResponse.headers`     | `MultiMap`   | &#10004;    | client response headers |
 | `clientResponse.body`        | `Buffer`     |             | final response body |
-| `signal`                     | `String`     |             | defines how original request processing should be handled (currently used only by Action Knot) |
+| `signal`                     | `String`     |             | defines how original request processing should be handled (currently used only by Action Knot), e.g. `next` |
 
 
 ## How to configure?
@@ -71,7 +71,7 @@ It is the **recommended** way to create your own Adapter.
 
 An Adapter logic is executed on a [Vert.x event loop](http://vertx.io/docs/vertx-core/java/#_reactor_and_multi_reactor). [The 
 Vert.x Golden Rule](http://vertx.io/docs/vertx-core/java/#golden_rule) says that the code should **never block** the 
-event loop. So all time consuming operations should be coded in an asynchronous way. Default Knot.x Adapters use [RxJava](http://vertx.io/docs/vertx-rx/java/) 
+event loop. So all time-consuming operations should be coded in an asynchronous way. Default Knot.x Adapters use [RxJava](http://vertx.io/docs/vertx-rx/java/) 
 which is a popular library for composing asynchronous and event-based programs using observable sequences for the Java VM.
 RxJava introduce a Reactive Programming that is a development model structured around asynchronous data streams. 
 
@@ -87,8 +87,8 @@ In order to implement an Adapter generate a new Adapter module using maven arche
 
    `mvn archetype:generate -DarchetypeGroupId=io.knotx.archetypes -DarchetypeArtifactId=knotx-adapter-archetype -DarchetypeVersion=X.Y.Z`
 
-Note that the Adapter archetype generates both the code and all configuration
-files required to run a Knot.x instance containing the custom Adapter. 
+Note that, the Adapter archetype generates not only a skeleton of your custom Adapter, but also all
+the configuration files that's required to run a Knot.x instance. 
 More details about the Knot.x deployment can be found in the [[deployment section|KnotxDeployment]].
 
 Archetype generates 3 important java files:
