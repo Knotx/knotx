@@ -65,12 +65,13 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     this.handlebars = createHandlebars();
     this.cache = CacheBuilder.newBuilder()
         .maximumSize(configuration.getCacheSize())
+        .removalListener(listener -> LOGGER.warn("A cache limit is exceeded. See a 'cacheSize' configuration option."))
         .build();
     try {
       this.digest = MessageDigest.getInstance(configuration.getCacheKeyAlgorithm());
     } catch (NoSuchAlgorithmException e) {
       LOGGER.error("Could not initialize fragment hashing algorithm!", e);
-      throw new IllegalStateException(e);
+      throw new IllegalArgumentException(e);
     }
   }
 
@@ -106,7 +107,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         return handlebars.compileInline(FragmentContentExtractor.unwrapContent(fragment));
       });
     } catch (ExecutionException e) {
-      LOGGER.error("Could compile fragment [{}]", fragment.content(), e);
+      LOGGER.error("Could not compile fragment [{}]", fragment.content(), e);
       throw new IllegalStateException(e);
     }
   }

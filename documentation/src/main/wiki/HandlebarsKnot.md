@@ -57,8 +57,7 @@ Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json
   "main": "io.knotx.knot.templating.HandlebarsKnotVerticle",
   "options": {
     "config": {
-      "address": "knotx.knot.handlebars",
-      "cacheSize": 1000
+      "address": "knotx.knot.handlebars"
     }
   }
 }
@@ -76,7 +75,7 @@ Main Handlebars Knot options available.
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Handlebars Knot verticle. |
-| `cacheSize`                 | `Long`                              | &#10004;       | Max cache size for compiled Handlebars snippets.|
+| `cacheSize`                 | `Long`                              |                | Max cache size for compiled Handlebars snippets. The default is 1000. |
 | `cacheKeyAlgorithm`         | `String: MD5,SHA-1,SHA-256`         |                | Fragment content hashing algorithm. The default is `MD5`. |
 
 ## How to extend?
