@@ -65,7 +65,8 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     this.handlebars = createHandlebars();
     this.cache = CacheBuilder.newBuilder()
         .maximumSize(configuration.getCacheSize())
-        .removalListener(listener -> LOGGER.warn("A cache limit is exceeded. See a 'cacheSize' configuration option."))
+        .removalListener(listener -> LOGGER.warn(
+            "Cache limit exceeded. If this information occurs frequently, check 'cacheSize' configuration option because your cache is too small"))
         .build();
     try {
       this.digest = MessageDigest.getInstance(configuration.getCacheKeyAlgorithm());
