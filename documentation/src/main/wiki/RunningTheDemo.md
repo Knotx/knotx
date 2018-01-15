@@ -29,40 +29,38 @@ Where:
 You will see output similar to the following:
 ```
 ...
-2017-01-18 09:18:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Starting <io.knotx.server.KnotxServerVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-2] INFO  i.k.r.HttpRepositoryConnectorVerticle - Starting <HttpRepositoryConnectorVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-3] INFO  i.k.r.FilesystemRepositoryConnectorVerticle - Starting <FilesystemRepositoryConnectorVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-0] INFO  i.k.knot.action.ActionKnotVerticle - Starting <io.knotx.knot.action.ActionKnotVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-4] INFO  i.k.s.FragmentSplitterVerticle - Starting <io.knotx.splitter.FragmentSplitterVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-5] INFO  i.k.k.a.FragmentAssemblerVerticle - Starting <io.knotx.knot.assembler.FragmentAssemblerVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-6] INFO  i.k.k.t.HandlebarsKnotVerticle - Starting <io.knotx.knot.templating.HandlebarsKnotVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-7] INFO  i.k.knot.service.ServiceKnotVerticle - Starting <io.knotx.knot.service.ServiceKnotVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-4] INFO  io.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-3] INFO  i.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-5] INFO  i.k.mocks.MockServiceAdapterVerticle - Starting <MockServiceAdapterVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-6] INFO  i.k.k.t.impl.HandlebarsKnotProxyImpl - Registered custom Handlebars helper: bold
-2017-01-18 09:18:40 [vert.x-eventloop-thread-6] INFO  i.k.mocks.MockActionAdapterVerticle - Starting <MockActionAdapterVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-2] INFO  i.k.a.a.h.HttpActionAdapterVerticle - Starting <io.knotx.adapter.action.http.HttpActionAdapterVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-1] INFO  i.k.a.s.h.HttpServiceAdapterVerticle - Starting <io.knotx.adapter.service.http.HttpServiceAdapterVerticle>
-2017-01-18 09:18:40 [vert.x-eventloop-thread-3] INFO  i.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
-2017-01-18 09:18:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
-2017-01-18 09:18:40 [vert.x-eventloop-thread-4] INFO  io.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
-2017-01-18 09:18:40 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+2018-01-15 23:45:40 [vert.x-eventloop-thread-5] INFO  io.knotx.mocks.MockServiceVerticle - Starting <MockServiceVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-4] INFO  i.k.m.MockRemoteRepositoryVerticle - Starting <MockRemoteRepositoryVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-6] INFO  io.knotx.gateway.GatewayKnotVerticle - Starting <GatewayKnotVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-0] INFO  i.k.knot.service.ServiceKnotVerticle - Starting <ServiceKnotVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-3] INFO  i.k.r.HttpRepositoryConnectorVerticle - Starting <HttpRepositoryConnectorVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-0] INFO  i.k.g.ResponseProviderKnotVerticle - Starting <ResponseProviderKnotVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-2] INFO  io.knotx.server.KnotxServerVerticle - Starting <KnotxServerVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-7] INFO  i.k.k.t.impl.HandlebarsKnotProxyImpl - Registered custom Handlebars helper: bold
+2018-01-15 23:45:40 [vert.x-eventloop-thread-7] INFO  i.k.g.RequestProcessorKnotVerticle - Starting <RequestProcessorKnotVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-3] INFO  i.k.a.a.h.HttpActionAdapterVerticle - Starting <HttpActionAdapterVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-2] INFO  i.k.a.s.h.HttpServiceAdapterVerticle - Starting <HttpServiceAdapterVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-1] INFO  i.k.knot.action.ActionKnotVerticle - Starting <ActionKnotVerticle>
+2018-01-15 23:45:40 [vert.x-eventloop-thread-4] INFO  i.k.m.MockRemoteRepositoryVerticle - Mock Remote Repository server started. Listening on port 3001
+2018-01-15 23:45:40 [vert.x-eventloop-thread-5] INFO  io.knotx.mocks.MockServiceVerticle - Mock Service server started. Listening on port 3000
+2018-01-15 23:45:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
+2018-01-15 23:45:40 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
-                Deployed bf28d297-87e1-40de-9328-d03a24428370 [knotx:io.knotx.FragmentSplitter]
-                Deployed a86383e3-1f15-475f-a8e1-14cbc515d295 [knotx:io.knotx.ServiceKnot]
-                Deployed 2ba723be-f68f-4636-95a2-1794ed5cc9c5 [knotx:io.knotx.FilesystemRepositoryConnector]
-                Deployed df9f9967-8211-419a-8558-51b2aa378020 [knotx:io.knotx.FragmentAssembler]
-                Deployed 0ea49334-888c-4f1a-9892-f2caab816b45 [knotx:io.knotx.ServiceAdapterMock]
-                Deployed 4922cd4c-b5d1-4b61-adb1-4fd9f61e8867 [knotx:example.io.knotx.ActionKnot]
-                Deployed 269bdf78-4701-4fde-8f8a-8479df7cbde6 [knotx:io.knotx.HandlebarsKnot]
-                Deployed 623f93cd-656a-4dc4-87b4-fe3b665ea629 [knotx:io.knotx.ActionAdapterMock]
-                Deployed 4ca0b3c7-01b2-4fbc-aea7-28adc7cc0d9c [knotx:io.knotx.HttpRepositoryConnector]
-                Deployed a8faf376-f333-401c-9988-7f2288044ed5 [knotx:example.io.knotx.HttpActionAdapter]
-                Deployed 70539977-9337-48bb-9b76-7c2c1c9a1898 [knotx:io.knotx.HttpServiceAdapter]
-                Deployed 35797434-b27d-45d2-91f2-af2a86c1b6b0 [knotx:io.knotx.RemoteRepositoryMock]
-                Deployed 32d14454-a3c8-4b6f-b5f0-0954be5ad763 [knotx:example.io.knotx.KnotxServer]
-                Deployed 06c5a193-4a37-4da2-b8ee-015a42357a35 [knotx:io.knotx.ServiceMock]
+		Deployed splitter [java:io.knotx.knot.splitter.FragmentSplitterVerticle] [66517b40-e562-4f30-a579-58a7ec9ce727]
+		Deployed assembler [java:io.knotx.knot.assembler.FragmentAssemblerVerticle] [18050737-c066-493a-bc68-e67e170ae8ab]
+		Deployed fsRepo [java:io.knotx.repository.FilesystemRepositoryConnectorVerticle] [31c6974e-6b76-4953-8073-14a37b9d24c5]
+		Deployed gatewatKnot [java:io.knotx.gateway.GatewayKnotVerticle] [50ce760b-cb7c-4598-95f6-d41976b7730b]
+		Deployed serviceKnot [java:io.knotx.knot.service.ServiceKnotVerticle] [8b62c8d0-4168-4deb-aa8d-e486f208cc7c]
+		Deployed respProviderKnot [java:io.knotx.gateway.ResponseProviderKnotVerticle] [3a02f6c4-4c6e-4c04-b8a4-9f21c74f620c]
+		Deployed hbsKnot [java:io.knotx.knot.templating.HandlebarsKnotVerticle] [ea703d28-7025-49a8-8953-45283271413c]
+		Deployed reqProcessorKnot [java:io.knotx.gateway.RequestProcessorKnotVerticle] [c4e50af8-5a3c-4a11-abde-f2bf1b8edc08]
+		Deployed httpRepo [java:io.knotx.repository.HttpRepositoryConnectorVerticle] [b9027423-38f0-4448-ae3d-12e7cea61116]
+		Deployed actionAdapter [java:io.knotx.adapter.action.http.HttpActionAdapterVerticle] [51db1515-4349-43d7-ab2b-78d50d56cf06]
+		Deployed serviceAdapter [java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle] [b0bcf7a4-fbdd-45d1-ac90-71879479d198]
+		Deployed actionKnot [java:io.knotx.knot.action.ActionKnotVerticle] [222a95b0-30d5-480c-a183-ced823e48b3c]
+		Deployed mockRepo [java:io.knotx.mocks.MockRemoteRepositoryVerticle] [eabbd720-d179-4824-a8df-e68097aeb73f]
+		Deployed mockService [java:io.knotx.mocks.MockServiceVerticle] [d3982da1-aebc-48de-8ecc-3f696bd509e2]
+		Deployed server [java:io.knotx.server.KnotxServerVerticle] [41970d7d-bc2a-4d12-86a5-76e19ca507bc]
 ```
 
 This example app simulates Vert.x based application running Knot.x core verticles:
@@ -87,7 +85,7 @@ http://localhost:8092/content/remote/simple.html
 http://localhost:8092/content/local/simple.html
 http://localhost:8092/content/local/multiple-forms.html
 http://localhost:8092/content/remote/multiple-forms.html
-http://localhost:8092/customFlow/remote/simple.html
+http://localhost:8092/customFlow/remote/simple.json
 ```
 - first serves HTML template from Remote Http Repository
 - second serves HTML template from local storage
@@ -102,8 +100,8 @@ You can play with the demo in order to get familiar with the ways how to configu
 1. Let's start with the starter JSON, the file which defines what Verticles Knot.x is composed of. Let's check the one from our demo application
 [knotx-example-app.json](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app/src/main/resources/knotx-example-app.json)
 2. Copy the file to computer that's running Demo app and make it new name for it, e.g.: `knotx-example-experiments.json`
-3. Inside that JSON add new object `config` and configure KnotxServer service (take service name from `services` section), 
-but change `port` property only. Let's set it to `9999`.
+3. Inside that JSON, locate `config.server.options` object.
+4. Put the `serverOptions` object with port set to `9999` as in the example below.
 ```json
 {
   "modules": [
@@ -129,68 +127,22 @@ but change `port` property only. Let's set it to `9999`.
         "config": {
           "serverOptions": {
              "port": 9999
-          }
+          },
+          "defaultFlow": {
+            ....
+          },
+          .....
         }
       }
     }
   }
 }
 ```
-4. Start Knot.x with your new configuration. Notice in the console, the HTTP Server is now listening on port 9999
+5. Start Knot.x with your new configuration. Notice in the console, the HTTP Server is now listening on port 9999
 ```
 ...
 2017-01-03 12:25:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 9999
 2017-01-03 12:25:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 ...
-```
+````
 
-### Use JVM properties
-Knot.x can be also reconfigured using JVM properties. With this method, you can set simple values through JVM properties, or provide JSON with the more complex object you want to use to override configuration.
-The syntax of the property is as follows:
-`-D<service-name>.<json-obj-path>=<value>`
-Where:
-- `<service-name>` is the name of the Knot.x service without `knotx:` prefix, e.g.: io.knotx.ServiceKnot, etc.
-- `<json-obj-path>` is simply a **dot** delimited path in the Knot.x service configuration. E.g. `options.config.serverOptions.port`
-- `<value>` can be simply a value to be set on JSON property, or `file:/path/to/file.json`. Latter type of value, is the json file with JSON Object, that should be used to merge with the object pointed by `<json-obj-path>`.
-  
-E.g.`-Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777`
-Or,`-Dexample.io.knotx.KnotxServer.options.config=file:test.json`
-
-Let's modify `port` once again, but this time using JVM property.
-1. Restart Knot.x with your previous config, but this time start java with additional command line option:
-```
-$ java -Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
-```
-2. Notice that HTTP Server is listening on port **7777** now, so starter JSON configuration is overridden.
-```
-...
-2017-01-03 12:35:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777
-2017-01-03 12:35:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
-...
-```
-3. Now, create new file on your computer, e.g. `server-options.json` which will have JSON object that should be merged with `options` object of the KnotxServer service.
-In this case, the object will specify how many instances to start. (This can be supplied by simple value instead of JSON file, but for demonstration purposes let do it as below)
-```json
-{
-  "instances": 2
-}
-```
-4. Start Knot.x once again, but this time with new JVM property
-```
-$ java -Dexample.io.knotx.KnotxServer.options=file:server-options.json -Dexample.io.knotx.KnotxServer.options.config.serverOptions.port=7777 -jar target/knotx-example-app-X.Y.Z-SNAPSHOT-fat.jar -conf knotx-example-experiments.json
-```
-5. Notice that Knot.x is started on port **7777* but two instances of KnotxServer where started.
-```
-...
-2017-01-03 12:35:31 [vert.x-eventloop-thread-1] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777
-2017-01-03 12:35:31 [vert.x-eventloop-thread-2] INFO  c.c.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 7777
-2017-01-03 12:35:31 [vert.x-eventloop-thread-0] INFO  c.c.k.launcher.KnotxStarterVerticle - Knot.x STARTED
-...
-```
-
-### Conclusions
-- You can configure Knot.x using starter JSON by providing properties that should be added, or modified.
-- You can configure Knot.x using JVM properties
-- On JVM property, you can specify service and path to the property in service configuration and the value to be set on it
-- On JVM property, instead of the simple value, you can provide JSON file that will be put into the service JSON at appropriate property
-- JVM properties have highest priority
