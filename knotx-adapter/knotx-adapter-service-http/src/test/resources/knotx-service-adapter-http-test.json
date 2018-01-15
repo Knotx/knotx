@@ -1,6 +1,17 @@
 {
   "modules": [
-    "java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
-    "knotx:io.knotx.ServiceMock"
-  ]
+    "adapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "serviceMock=io.knotx.mocks.MockServiceVerticle"
+  ],
+  "config": {
+    "serviceMock": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/service",
+          "bouncing": true,
+          "httpPort": 3000
+        }
+      }
+    }
+  }
 }

@@ -1,6 +1,25 @@
 {
   "modules": [
-    "knotx:io.knotx.RemoteRepositoryMock",
-    "knotx:io.knotx.ServiceMock"
-  ]
+    "java:io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "java:io.knotx.mocks.MockServiceVerticle"
+  ],
+  "config": {
+    "java:io.knotx.mocks.MockRemoteRepositoryVerticle": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/repository",
+          "httpPort": 3001
+        }
+      }
+    },
+    "java:io.knotx.mocks.MockServiceVerticle": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/service",
+          "bouncing": true,
+          "httpPort": 3000
+        }
+      }
+    }
+  }
 }

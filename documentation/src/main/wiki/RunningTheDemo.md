@@ -107,22 +107,24 @@ but change `port` property only. Let's set it to `9999`.
 ```json
 {
   "modules": [
-    "knotx:example.io.knotx.KnotxServer",
-    "knotx:io.knotx.HttpRepositoryConnector",
-    "knotx:io.knotx.FilesystemRepositoryConnector",
-    "knotx:io.knotx.FragmentSplitter",
-    "knotx:io.knotx.HandlebarsKnot",
-    "knotx:io.knotx.ServiceKnot",
-    "knotx:example.io.knotx.ActionKnot",
-    "knotx:io.knotx.HttpServiceAdapter",
-    "knotx:example.io.knotx.HttpActionAdapter",
-    "knotx:io.knotx.RemoteRepositoryMock",
-    "knotx:io.knotx.ServiceMock",
-    "knotx:io.knotx.ServiceAdapterMock",
-    "knotx:io.knotx.ActionAdapterMock"
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "actionAdapter=io.knotx.adapter.action.http.HttpActionAdapterVerticle",
+    "mockRepo=io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "mockService=io.knotx.mocks.MockServiceVerticle",
+    "gatewatKnot=io.knotx.gateway.GatewayKnotVerticle",
+    "reqProcessorKnot=io.knotx.gateway.RequestProcessorKnotVerticle",
+    "respProviderKnot=io.knotx.gateway.ResponseProviderKnotVerticle"
   ],
   "config": {
-    "knotx:example.io.knotx.KnotxServer": {
+    "server": {
       "options": {
         "config": {
           "serverOptions": {

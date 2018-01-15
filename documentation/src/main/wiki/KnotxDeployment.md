@@ -71,14 +71,15 @@ As mentioned above, the `knotx-starter.json` is the main configuration file desc
 ```json
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
-    "knotx:io.knotx.HttpRepositoryConnector",
-    "knotx:io.knotx.FilesystemRepositoryConnector",
-    "knotx:io.knotx.FragmentSplitter",
-    "knotx:io.knotx.ServiceKnot",
-    "knotx:io.knotx.ActionKnot",
-    "knotx:io.knotx.HandlebarsKnot",
-    "knotx:io.knotx.HttpServiceAdapter"
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle"
   ]
 }
 ```
@@ -101,17 +102,18 @@ For instance, if you want to modify configuration of KnotxServer module, you can
 ```json
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
-    "knotx:io.knotx.HttpRepositoryConnector",
-    "knotx:io.knotx.FilesystemRepositoryConnector",
-    "knotx:io.knotx.FragmentSplitter",
-    "knotx:io.knotx.ServiceKnot",
-    "knotx:io.knotx.ActionKnot",
-    "knotx:io.knotx.HandlebarsKnot",
-    "knotx:io.knotx.HttpServiceAdapter"
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle"
   ],
   "config": {
-    "knotx:io.knotx.KnotxServer" : {
+    "server" : {
       "options": {
         "config": {
           "serverOptions": {
@@ -192,11 +194,11 @@ Next step, is to use your new module in `knotx-starter.json`.
 ```json
 {
   "modules": [
-    "knotx:my.KnotxServer",
+    "myServer=com.acme.my.KnotxServer",
     "......"
   ],
   "config": {
-    "knotx:my.KnotxServer": {
+    "myServer": {
       "options": {
         "config": {
 
@@ -219,15 +221,15 @@ Or, whole JSON Object from external file
 ```
 
 ### What happens when config refers to non-existing module?
-Let's assume that you work over a new `io.example.MyCustomModule` module and it will be implemented inside `custom-module.jar`. As mentioned above, you should do 2 things to start using it
+Let's assume that you work over a new `com.acme.MyCustomModuleVerticle` module and it will be implemented inside `custom-module.jar`. As mentioned above, you should do 2 things to start using it
 within Knot.x instance. You need to add it to the list of Knot.x modules in the main config file:
 
 ```json
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
+    "server=io.knotx.server.KnotxServerVerticle",
     ...
-    "knotx:io.example.MyCustomModule"
+    "myFancyModule=com.acme.MyCustomModuleVerticle"
   ]
 }
 ```
@@ -239,4 +241,4 @@ Knot.x will start the instance with following warning:
 2017-08-29 15:42:57 [vert.x-eventloop-thread-0] WARN i.k.launcher.KnotxStarterVerticle - Cannot find module descriptor file io.example.MyCustomModule.json on classpath
 ```
 
-Instance will start as though `io.example.MyCustomModule` didn't exist.
+Instance will start as though `com.acme.MyCustomModuleVerticle` didn't exist.

@@ -1,5 +1,5 @@
 {
   "modules": [
-    "java:io.knotx.knot.assembler.FragmentAssemblerVerticle"
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle"
   ]
 }
