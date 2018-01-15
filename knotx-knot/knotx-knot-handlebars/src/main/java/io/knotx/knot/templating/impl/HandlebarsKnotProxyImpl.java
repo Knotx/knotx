@@ -15,7 +15,8 @@
  */
 package io.knotx.knot.templating.impl;
 
-import org.apache.commons.lang3.StringUtils;
+import static io.knotx.fragments.FragmentContentExtractor.abbreviate;
+import static io.knotx.fragments.FragmentContentExtractor.unwrapContent;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
@@ -52,8 +53,6 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
   private static final String SUPPORTED_FRAGMENT_KNOT = "handlebars";
 
-  private static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
-
   private Handlebars handlebars;
 
   private Cache<String, Template> cache;
@@ -73,6 +72,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
       LOGGER.error("Could not initialize fragment hashing algorithm!", e);
       throw new IllegalArgumentException(e);
     }
+    FragmentContentExtractor.abbreviate("asdas");
   }
 
   @Override
@@ -132,9 +132,10 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         if (LOGGER.isDebugEnabled()) {
           LOGGER.debug("Compiles Handlebars fragment [{}]", abbreviate(fragment.content()));
         }
-        return handlebars.compileInline(FragmentContentExtractor.unwrapContent(fragment));
+        return handlebars.compileInline(unwrapContent(fragment));
       });
     } catch (ExecutionException e) {
+      FragmentContentExtractor.abbreviate(fragment.content());
       LOGGER.error("Could not compile fragment [{}]", abbreviate(fragment.content()), e);
       throw new IllegalStateException(e);
     }
@@ -156,10 +157,5 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     });
 
     return newHandlebars;
-  }
-
-  private String abbreviate(String content) {
-    return StringUtils.abbreviate(content.replaceAll("[\n\r\t]", ""),
-        DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH);
   }
 }
