@@ -58,7 +58,7 @@ Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json
   "options": {
     "config": {
       "address": "knotx.knot.handlebars",
-      "templateDebug": true
+      "cacheSize": 1000
     }
   }
 }
@@ -76,7 +76,8 @@ Main Handlebars Knot options available.
 | Name                        | Type                                | Mandatory      | Description  |
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Handlebars Knot verticle. |
-| `templateDebug`             | `Boolean`                           | &#10004;       | Template debug enabled option.|
+| `cacheSize`                 | `Long`                              | &#10004;       | Max cache size for compiled Handlebars snippets.|
+| `cacheKeyAlgorithm`         | `String: MD5,SHA-1,SHA-256`         |                | Fragment content hashing algorithm. The default is `MD5`. |
 
 ## How to extend?
 
