@@ -35,7 +35,6 @@ import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.io.IOException;
@@ -84,48 +83,13 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
                 .filter(fragment -> shouldProcess(Sets.newHashSet(fragment.knots())))
-                .forEach(fragment -> fragment.content(evaluate(template(fragment), fragment.context())))
+                .forEach(fragment -> fragment.content(evaluate(fragment)))
         );
         observer.onSuccess(knotContext);
       } catch (Exception e) {
         observer.onError(e);
       }
     });
-  }
-
-  private Template template(Fragment fragment) {
-    try {
-      byte[] cacheKeyBytes = digest.digest(fragment.content().getBytes(StandardCharsets.UTF_8));
-      String cacheKey = new String(cacheKeyBytes);
-
-      return cache.get(cacheKey, () -> {
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER.debug("Compiles Handlebars fragment [{}]",
-              StringUtils
-                  .abbreviate(fragment.content().replaceAll("[\n\r\t]", ""),
-                      DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH));
-        }
-        return handlebars.compileInline(FragmentContentExtractor.unwrapContent(fragment));
-      });
-    } catch (ExecutionException e) {
-      LOGGER.error("Could not compile fragment [{}]", fragment.content(), e);
-      throw new IllegalStateException(e);
-    }
-  }
-
-  private String evaluate(Template template, JsonObject context) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Applying context [{}] to template [{}]!", context, template.text());
-    }
-    try {
-      return template.apply(
-          Context.newBuilder(context)
-              .push(JsonObjectValueResolver.INSTANCE)
-              .build());
-    } catch (IOException e) {
-      LOGGER.error("Could not apply context [{}] to template [{}]", context, template.text());
-      throw new IllegalStateException(e);
-    }
   }
 
   @Override
@@ -144,6 +108,43 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         .setClientResponse(errorResponse);
   }
 
+  private String evaluate(Fragment fragment) {
+    Template template = template(fragment);
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Applying context [{}] to template [{}]!", fragment.context(), abbreviate(template.text()));
+    }
+    try {
+      return template.apply(
+          Context.newBuilder(fragment.context())
+              .push(JsonObjectValueResolver.INSTANCE)
+              .build());
+    } catch (IOException e) {
+      LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(), abbreviate(template.text()), e);
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private Template template(Fragment fragment) {
+    try {
+      String cacheKey = getCacheKey(fragment);
+
+      return cache.get(cacheKey, () -> {
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Compiles Handlebars fragment [{}]", abbreviate(fragment.content()));
+        }
+        return handlebars.compileInline(FragmentContentExtractor.unwrapContent(fragment));
+      });
+    } catch (ExecutionException e) {
+      LOGGER.error("Could not compile fragment [{}]", abbreviate(fragment.content()), e);
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private String getCacheKey(Fragment fragment) {
+    byte[] cacheKeyBytes = digest.digest(fragment.content().getBytes(StandardCharsets.UTF_8));
+    return new String(cacheKeyBytes);
+  }
+
   private Handlebars createHandlebars() {
     Handlebars newHandlebars = new Handlebars();
     DefaultHandlebarsHelpers.registerFor(newHandlebars);
@@ -155,5 +156,10 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     });
 
     return newHandlebars;
+  }
+
+  private String abbreviate(String content) {
+    return StringUtils.abbreviate(content.replaceAll("[\n\r\t]", ""),
+        DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH);
   }
 }
