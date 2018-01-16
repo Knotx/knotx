@@ -5,7 +5,7 @@
 
 ## Motivation and Context
 <!--- Why is this change required? What problem does it solve? -->
-<!--- If it fixes an open issue, please link to the issue here. -->>
+<!--- If it fixes an open issue, please link to the issue here. -->
 
 ## Screenshots (if appropriate):
 
@@ -21,3 +21,6 @@
 - [ ] My code follows the [code style](https://github.com/Cognifide/knotx/blob/master/CONTRIBUTING.md#coding-conventions) of this project.
 - [ ] My change requires a change to the documentation.
 - [ ] I have updated the documentation accordingly.
+
+---
+I hereby agree to the terms of the Knot.x Contributor License Agreement.
