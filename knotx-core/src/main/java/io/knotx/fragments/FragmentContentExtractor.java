@@ -15,13 +15,12 @@
  */
 package io.knotx.fragments;
 
+import io.knotx.dataobjects.Fragment;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
-
-import io.knotx.dataobjects.Fragment;
 
 public final class FragmentContentExtractor {
 
