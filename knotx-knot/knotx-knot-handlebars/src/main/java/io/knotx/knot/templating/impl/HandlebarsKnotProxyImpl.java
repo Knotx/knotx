@@ -15,39 +15,62 @@
  */
 package io.knotx.knot.templating.impl;
 
+import static io.knotx.fragments.FragmentContentExtractor.abbreviate;
+import static io.knotx.fragments.FragmentContentExtractor.unwrapContent;
+
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Sets;
 import io.knotx.dataobjects.ClientResponse;
+import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.AbstractKnotProxy;
 import io.knotx.knot.templating.HandlebarsKnotConfiguration;
 import io.knotx.knot.templating.handlebars.CustomHandlebarsHelper;
+import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.ExecutionException;
 
 public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotProxyImpl.class);
 
-  private static final String START_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- start compiled snippet -->";
-
-  private static final String END_WEBSERVICE_CALL_DEBUG_MARKER = "<!-- end compiled snippet -->";
-
   private static final String SUPPORTED_FRAGMENT_KNOT = "handlebars";
 
   private Handlebars handlebars;
 
-  private HandlebarsKnotConfiguration configuration;
+  private Cache<String, Template> cache;
+
+  private MessageDigest digest;
 
   public HandlebarsKnotProxyImpl(HandlebarsKnotConfiguration configuration) {
-    this.configuration = configuration;
     this.handlebars = createHandlebars();
+    this.cache = CacheBuilder.newBuilder()
+        .maximumSize(configuration.getCacheSize())
+        .removalListener(listener -> LOGGER.warn(
+            "Cache limit exceeded. If this information occurs frequently, check 'cacheSize' configuration option because your cache is too small"))
+        .build();
+    try {
+      this.digest = MessageDigest.getInstance(configuration.getCacheKeyAlgorithm());
+    } catch (NoSuchAlgorithmException e) {
+      LOGGER.error("Could not initialize fragment hashing algorithm!", e);
+      throw new IllegalArgumentException(e);
+    }
   }
 
   @Override
@@ -57,10 +80,8 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         knotContext.setTransition(DEFAULT_TRANSITION);
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
-                .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_KNOT))
-                .forEach(fragment -> fragment.content(startComment() +
-                    new HandlebarsFragment(fragment).compileWith(handlebars)
-                    + endComment()))
+                .filter(fragment -> shouldProcess(Sets.newHashSet(fragment.knots())))
+                .forEach(fragment -> fragment.content(evaluate(fragment)))
         );
         observer.onSuccess(knotContext);
       } catch (Exception e) {
@@ -85,20 +106,44 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         .setClientResponse(errorResponse);
   }
 
-  private String startComment() {
-    return snippetComment(START_WEBSERVICE_CALL_DEBUG_MARKER);
-  }
-
-  private String endComment() {
-    return snippetComment(END_WEBSERVICE_CALL_DEBUG_MARKER);
-  }
-
-  private String snippetComment(String commentTemplate) {
-    String debugLine = StringUtils.EMPTY;
-    if (configuration.isTemplateDebug()) {
-      debugLine = commentTemplate;
+  private String evaluate(Fragment fragment) {
+    Template template = template(fragment);
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Applying context [{}] to template [{}]!", fragment.context(),
+          abbreviate(template.text()));
     }
-    return debugLine;
+    try {
+      return template.apply(
+          Context.newBuilder(fragment.context())
+              .push(JsonObjectValueResolver.INSTANCE)
+              .build());
+    } catch (IOException e) {
+      LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(),
+          abbreviate(template.text()), e);
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private Template template(Fragment fragment) {
+    try {
+      String cacheKey = getCacheKey(fragment);
+
+      return cache.get(cacheKey, () -> {
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Compiles Handlebars fragment [{}]", abbreviate(fragment.content()));
+        }
+        return handlebars.compileInline(unwrapContent(fragment));
+      });
+    } catch (ExecutionException e) {
+      FragmentContentExtractor.abbreviate(fragment.content());
+      LOGGER.error("Could not compile fragment [{}]", abbreviate(fragment.content()), e);
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private String getCacheKey(Fragment fragment) {
+    byte[] cacheKeyBytes = digest.digest(fragment.content().getBytes(StandardCharsets.UTF_8));
+    return new String(cacheKeyBytes);
   }
 
   private Handlebars createHandlebars() {

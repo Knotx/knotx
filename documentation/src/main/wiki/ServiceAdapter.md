@@ -18,8 +18,8 @@ Find out more about contract described above in [[Service Knot|ServiceKnot]] sec
 Configuration of Service Adapter is specific to its implementation. You may see example configuration 
 of [[Http Service Adapter|HttpServiceAdapter#how-to-configure]].
 
-## How to extend?
-Implementing custom Service Adapter that meet your project requirements allows 
+## How to implement your own Service Adapter?
+Implementing custom Service Adapter that meets your project requirements allows 
 you to adopt request from Knot.x into request understandable by an endpoint service, and adopts 
 responses from that service into unified message understandable by Knot.x.
 
@@ -31,9 +31,9 @@ Please note, that this implementation is very generic and we recommend to create
 adapters for your setup.
 
 Writing custom Service Adapter requires fulfilling [[Service Knot|ServiceKnot]] contract.
-Please refer also to [[Adapter|Adapter#how-to-extend]].
+Please refer also to [[Adapter|Adapter#how-to-implement-your-own-adapter]].
 
 | ! Note |
 |:------ |
-| Besides Verticle implementation itself, a custom implementation of your Service Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [[Knot.x Modules|KnotxModules]] in order to see how to make your Service Adapter a module. | 
+| Besides Verticle implementation itself, a custom implementation of your Service Adapter must be build as Knot.x module in order to be deployed as part of Knot.x. Follow the [Knot.x Modules](https://github.com/Cognifide/knotx/wiki/KnotxModules) in order to see how to make your Service Adapter a module. | 
 

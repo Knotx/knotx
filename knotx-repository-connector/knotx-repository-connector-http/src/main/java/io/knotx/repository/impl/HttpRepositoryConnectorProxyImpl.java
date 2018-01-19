@@ -68,8 +68,8 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
     RequestOptions httpRequestData = buildRequestData(request);
 
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.debug("GET HTTPRepository: {}://{}:{}{} with headers [{}]",
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("GET HTTP Repository: {}://{}:{}/{} with headers [{}]",
           httpRequestData.isSsl() ? "https" : "http",
           httpRequestData.getHost(),
           httpRequestData.getPort(),
