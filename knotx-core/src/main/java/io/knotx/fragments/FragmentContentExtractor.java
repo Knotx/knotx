@@ -16,6 +16,7 @@
 package io.knotx.fragments;
 
 import io.knotx.dataobjects.Fragment;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,8 +29,7 @@ public final class FragmentContentExtractor {
   }
 
   /**
-   * Extracts pure markup from the given {@link Fragment}'s content removing a script tag with
-   * Knot.x specific data.
+   * Extracts pure markup from the given {@link Fragment}'s content removing a script tag with Knot.x specific data.
    *
    * @param fragment that content will be unwrapped.
    * @return markup without Knotx data processing instructions.
@@ -45,8 +45,7 @@ public final class FragmentContentExtractor {
   }
 
   /**
-   * Extracts pure markup from the given {@link Fragment}'s content removing a script tag with
-   * Knot.x specific data.
+   * Extracts pure markup from the given {@link Fragment}'s content removing a script tag with Knot.x specific data.
    *
    * @param fragment that content will be unwrapped.
    * @return markup without Knotx data processing instructions in a form of jsoup {@link Document}.
@@ -67,5 +66,16 @@ public final class FragmentContentExtractor {
   public static Document unwrapDocument(String content) {
     Element scriptTag = Jsoup.parseBodyFragment(content).body().child(0);
     return Jsoup.parse(scriptTag.unwrap().toString(), "UTF-8", Parser.xmlParser());
+  }
+
+  /**
+   * Abbreviate fragment content.
+   *
+   * @param Fragment content
+   * @return short fragment content used for logging purposes
+   */
+  public static String abbreviate(String content) {
+    return StringUtils.abbreviate(content.replaceAll("[\n\r\t]", ""),
+        FragmentConstants.DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH);
   }
 }

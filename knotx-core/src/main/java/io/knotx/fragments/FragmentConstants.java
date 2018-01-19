@@ -30,6 +30,8 @@ public final class FragmentConstants {
 
   public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
+  static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
+
   private FragmentConstants() {
     //constants util class constructor
   }
