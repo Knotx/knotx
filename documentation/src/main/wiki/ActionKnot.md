@@ -20,7 +20,6 @@ it is used to distinguish a requested snippet). {NAME} can contain only small an
 The client opens a `/content/local/login/step1.html` page. The final form markup returned by Knot.x looks like:
 
 ```html
-<!-- start compiled snippet -->
 <form method="post">
   <input name="_frmId" value="1" type="hidden">
   <input name="email" value="" type="email">
@@ -30,7 +29,6 @@ The client opens a `/content/local/login/step1.html` page. The final form markup
  <div>
   <strong>Pro tip: All emails that starts with <kbd>john.doe</kbd> will be accepted.</strong>
  </div>
- <!-- end compiled snippet -->
 ```
 
 There are no Knot.x specific attributes in a final markup besides one **hidden input tag**.

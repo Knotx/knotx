@@ -22,6 +22,7 @@ import io.knotx.http.MultiMapCollector;
 import io.knotx.http.StringToPatternFunction;
 import io.knotx.proxy.RepositoryConnectorProxy;
 import io.knotx.util.DataObjectsUtil;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
@@ -29,6 +30,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.RequestOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -44,10 +46,12 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryConnectorProxyImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(HttpRepositoryConnectorProxyImpl.class);
 
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
@@ -72,21 +76,22 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    MultiMap requestHeaders = buildHeaders(request.getHeaders());
-    String repoUri = buildRepoUri(request);
+    MultiMap requestHeaders = buildHeaders(clientDestination.getString("hostHeader"),
+        request.getHeaders());
 
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.debug("GET Http Repository: http://{}:{}{} with headers [{}]",
-          clientDestination.getString("domain"),
-          clientDestination.getInteger("port"),
-          repoUri,
+    RequestOptions httpRequestData = buildRequestData(request);
+
+    if (LOGGER.isDebugEnabled()) {
+      LOGGER.debug("GET HTTP Repository: {}://{}:{}/{} with headers [{}]",
+          httpRequestData.isSsl() ? "https" : "http",
+          httpRequestData.getHost(),
+          httpRequestData.getPort(),
+          httpRequestData.getURI(),
           DataObjectsUtil.toString(requestHeaders)
       );
     }
 
-    get(httpClient, clientDestination.getInteger("port"),
-        clientDestination.getString("domain"),
-        repoUri, requestHeaders)
+    get(httpClient, httpRequestData, requestHeaders)
         .doOnNext(this::traceHttpResponse)
         .flatMap(this::processResponse)
         .subscribe(
@@ -98,11 +103,22 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
         );
   }
 
-  private Observable<HttpClientResponse> get(HttpClient client, int port, String host,
-      String requestURI, MultiMap headers) {
+  private RequestOptions buildRequestData(ClientRequest request) {
+    return new RequestOptions()
+        .setSsl(clientDestination.getString("scheme", "http").equals("https") ? true : false)
+        .setURI(buildRepoUri(request))
+        .setPort(clientDestination.getInteger("port"))
+        .setHost(clientDestination.getString("domain"));
+  }
+
+  private Observable<HttpClientResponse> get(HttpClient client, RequestOptions requestOptions,
+      MultiMap headers) {
     return Observable.unsafeCreate(subscriber -> {
-      HttpClientRequest req = client.get(port, host, requestURI);
+      HttpClientRequest req = client.get(requestOptions);
       req.headers().addAll(headers);
+      if (headers.get(HttpHeaderNames.HOST.toString()) != null) {
+        req.setHost(headers.get(HttpHeaderNames.HOST.toString()));
+      }
       Observable<HttpClientResponse> resp = req.toObservable();
       resp.subscribe(subscriber);
       req.end();
@@ -110,11 +126,10 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
   }
 
   private HttpClient createHttpClient(Vertx vertx) {
-    io.vertx.core.http.HttpClient vertxHttpClient =
-        clientOptions.isEmpty() ? vertx.createHttpClient()
-            : vertx.createHttpClient(new HttpClientOptions(clientOptions));
-
-    return HttpClient.newInstance(vertxHttpClient);
+    return clientOptions.isEmpty()
+        ? io.vertx.reactivex.core.Vertx.newInstance(vertx).createHttpClient()
+        : io.vertx.reactivex.core.Vertx.newInstance(vertx)
+            .createHttpClient(new HttpClientOptions(clientOptions));
   }
 
   private String buildRepoUri(ClientRequest repoRequest) {
@@ -169,7 +184,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     return new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
   }
 
-  private MultiMap buildHeaders(MultiMap headers) {
+  private MultiMap buildHeaders(String hostHeader, MultiMap headers) {
     MultiMap result = filteredHeaders(headers);
 
     if (customRequestHeader.containsKey("name") && customRequestHeader.containsKey("value")) {
@@ -177,6 +192,11 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
           customRequestHeader.getString("name"),
           customRequestHeader.getString("value")
       );
+    }
+
+    //Overide host header if provided in client destination
+    if (StringUtils.isNotBlank(hostHeader)) {
+      result.set(HttpHeaderNames.HOST.toString(), hostHeader);
     }
 
     return result;

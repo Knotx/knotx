@@ -2,8 +2,7 @@
   "main": "io.knotx.knot.templating.HandlebarsKnotVerticle",
   "options": {
     "config": {
-      "address": "knotx.knot.handlebars",
-      "templateDebug": true
+      "address": "knotx.knot.handlebars"
     }
   }
 }
