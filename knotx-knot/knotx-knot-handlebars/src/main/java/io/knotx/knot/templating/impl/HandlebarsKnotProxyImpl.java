@@ -24,7 +24,6 @@ import com.github.jknack.handlebars.Template;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
-
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
@@ -72,7 +71,6 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
       LOGGER.error("Could not initialize fragment hashing algorithm!", e);
       throw new IllegalArgumentException(e);
     }
-    FragmentContentExtractor.abbreviate("asdas");
   }
 
   @Override
@@ -111,7 +109,8 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
   private String evaluate(Fragment fragment) {
     Template template = template(fragment);
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Applying context [{}] to template [{}]!", fragment.context(), abbreviate(template.text()));
+      LOGGER.trace("Applying context [{}] to template [{}]!", fragment.context(),
+          abbreviate(template.text()));
     }
     try {
       return template.apply(
@@ -119,7 +118,8 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
               .push(JsonObjectValueResolver.INSTANCE)
               .build());
     } catch (IOException e) {
-      LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(), abbreviate(template.text()), e);
+      LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(),
+          abbreviate(template.text()), e);
       throw new IllegalStateException(e);
     }
   }
