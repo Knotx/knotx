@@ -17,6 +17,7 @@ For more details see documentation sections in [[Server|Server#vertx-event-bus-d
  You may play with [`displayExceptionDetails`](https://github.com/Cognifide/knotx/wiki/Server#server-options) flag
  in order to receive errors stack traces.
 - [PR-369](https://github.com/Cognifide/knotx/pull/369) - Better support for SSL for Repository Connector. Please check the documentation of [[HttpRepositoryConnector|HttpRepositoryConnector#how-to-configure-ssl-connection-to-the-repository]] for details of how to setup SSL connection.
+- [PR-372](https://github.com/Cognifide/knotx/pull/372) - Added cache for compiled Handlebars snippets, you may configure it in Handlebars config, see more in [[Handlebars Knot docs|HandlebarsKnot#how-to-configure]].
 
 
 ## Version 1.1.2
