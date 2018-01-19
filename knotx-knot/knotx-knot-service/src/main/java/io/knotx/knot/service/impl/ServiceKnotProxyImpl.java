@@ -38,8 +38,8 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private FragmentProcessor snippetProcessor;
 
-  public ServiceKnotProxyImpl(Vertx vertx, ServiceKnotOptions configuration) {
-    this.snippetProcessor = new FragmentProcessor(vertx, configuration);
+  public ServiceKnotProxyImpl(Vertx vertx, ServiceKnotOptions options) {
+    this.snippetProcessor = new FragmentProcessor(vertx, options);
   }
 
   @Override

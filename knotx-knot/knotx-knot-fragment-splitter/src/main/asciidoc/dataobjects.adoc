@@ -1,7 +1,7 @@
 = Cheatsheets
 
-[[FragmentSplitterConfiguration]]
-== FragmentSplitterConfiguration
+[[FragmentSplitterOptions]]
+== FragmentSplitterOptions
 
 
 [cols=">25%,^25%,50%"]

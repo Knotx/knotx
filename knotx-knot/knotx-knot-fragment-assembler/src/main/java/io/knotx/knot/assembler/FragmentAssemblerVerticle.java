@@ -31,30 +31,28 @@ public class FragmentAssemblerVerticle extends AbstractVerticle {
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerVerticle.class);
 
   private MessageConsumer<JsonObject> consumer;
-
-  private FragmentAssemblerConfiguration configuration;
-
+  private FragmentAssemblerOptions options;
   private ServiceBinder serviceBinder;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    configuration = new FragmentAssemblerConfiguration(config());
+    options = new FragmentAssemblerOptions(config());
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(configuration.getAddress())
-        .register(KnotProxy.class, new FragmentAssemblerKnotProxyImpl(configuration));
+        .setAddress(options.getAddress())
+        .register(KnotProxy.class, new FragmentAssemblerKnotProxyImpl(options));
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     serviceBinder.unregister(consumer);
   }
 

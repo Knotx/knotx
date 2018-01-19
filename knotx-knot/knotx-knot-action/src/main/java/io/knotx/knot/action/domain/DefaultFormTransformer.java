@@ -30,12 +30,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 
-public class DefaultFormSimplifier implements FormSimplifier {
+public class DefaultFormTransformer implements FormTransformer {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFormSimplifier.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFormTransformer.class);
 
   @Override
-  public String simplify(String content, String formIdAttrName, String formIdAttrValue) {
+  public String transform(String content, String formIdAttrName, String formIdAttrValue) {
     Document scriptContentDocument = FragmentContentExtractor.unwrapDocument(content);
     Element actionFormElement = scriptContentDocument.getElementsByAttribute(FORM_ACTION_ATTR).first();
 

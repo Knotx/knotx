@@ -1,7 +1,7 @@
 = Cheatsheets
 
-[[FragmentAssemblerConfiguration]]
-== FragmentAssemblerConfiguration
+[[FragmentAssemblerOptions]]
+== FragmentAssemblerOptions
 
 
 [cols=">25%,^25%,50%"]
@@ -12,7 +12,7 @@
 +++
 Set the EB address of the verticle
 +++
-|[[unprocessedStrategy]]`unprocessedStrategy`|`String`|
+|[[unprocessedStrategy]]`unprocessedStrategy`|`link:enums.html#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
 +++
 Set the strategy how to assembly markup with snippets that were not processed by any Knot.
  Allowed values are:

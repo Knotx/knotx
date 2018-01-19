@@ -19,8 +19,11 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 @DataObject(generateConverter = true, publicConverter = false)
-public class FragmentSplitterConfiguration {
+public class FragmentSplitterOptions {
 
+  /**
+   * Default address of the verticle on the event bus
+   */
   private final static String DEFAULT_ADDRESS = "knotx.core.splitter";
 
   private String address;
@@ -28,7 +31,7 @@ public class FragmentSplitterConfiguration {
   /**
    * Default constructor
    */
-  public FragmentSplitterConfiguration() {
+  public FragmentSplitterOptions() {
     init();
   }
 
@@ -37,7 +40,7 @@ public class FragmentSplitterConfiguration {
    *
    * @param other the instance to copy
    */
-  public FragmentSplitterConfiguration(FragmentSplitterConfiguration other) {
+  public FragmentSplitterOptions(FragmentSplitterOptions other) {
     this.address = other.address;
   }
 
@@ -46,9 +49,9 @@ public class FragmentSplitterConfiguration {
    *
    * @param json the JSON
    */
-  public FragmentSplitterConfiguration(JsonObject json) {
+  public FragmentSplitterOptions(JsonObject json) {
     init();
-    FragmentSplitterConfigurationConverter.fromJson(json, this);
+    FragmentSplitterOptionsConverter.fromJson(json, this);
   }
 
   /**
@@ -58,7 +61,7 @@ public class FragmentSplitterConfiguration {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    FragmentSplitterConfigurationConverter.toJson(this, json);
+    FragmentSplitterOptionsConverter.toJson(this, json);
     return json;
   }
 
@@ -79,7 +82,7 @@ public class FragmentSplitterConfiguration {
    * @param address EB address
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentSplitterConfiguration setAddress(String address) {
+  public FragmentSplitterOptions setAddress(String address) {
     this.address = address;
     return this;
   }

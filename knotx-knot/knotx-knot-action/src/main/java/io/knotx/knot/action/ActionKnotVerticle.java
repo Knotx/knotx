@@ -15,7 +15,7 @@
  */
 package io.knotx.knot.action;
 
-import io.knotx.knot.action.domain.DefaultFormSimplifier;
+import io.knotx.knot.action.domain.DefaultFormTransformer;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;
@@ -30,7 +30,7 @@ public class ActionKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);
 
-  private ActionKnotOptions configuration;
+  private ActionKnotOptions options;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -39,22 +39,22 @@ public class ActionKnotVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new ActionKnotOptions(config());
+    this.options = new ActionKnotOptions(config());
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(configuration.getAddress())
-        .register(KnotProxy.class, new ActionKnotProxyImpl(vertx, configuration, new DefaultFormSimplifier()));
+        .setAddress(options.getAddress())
+        .register(KnotProxy.class, new ActionKnotProxyImpl(vertx, options, new DefaultFormTransformer()));
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     serviceBinder.unregister(consumer);
   }
 

@@ -30,7 +30,7 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FragmentSplitterVerticle.class);
 
-  private FragmentSplitterConfiguration configuration;
+  private FragmentSplitterOptions options;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -39,22 +39,22 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new FragmentSplitterConfiguration(config());
+    this.options = new FragmentSplitterOptions(config());
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(configuration.getAddress())
+        .setAddress(options.getAddress())
         .register(KnotProxy.class, new FragmentSplitterKnotProxyImpl());
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     serviceBinder.unregister(consumer);
   }
 }

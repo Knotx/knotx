@@ -16,17 +16,18 @@
 package io.knotx.knot.action.domain;
 
 @FunctionalInterface
-public interface FormSimplifier {
+public interface FormTransformer {
 
   /**
-   * Removes all Knot.x specific tags from form fragment (form definition).
-   * Additionally it adds hidden input field with from identifier.
+   * Transforms a snippet that contains a HTML form.
+   * 1. Removes all Knot.x specific tags from form fragment (form definition).
+   * 2. Adds hidden input field with the from identifier.
    *
    * @param content - content of a fragment that should be processed.
    * @param formIdAttrName - unique identifier of a hidden form field.
-   * @param formIdAttrValue - value of identifier hidden field.
-   * @return processed content.
+   * @param formIdAttrValue - value of the form identifier.
+   * @return transformed content.
    */
-  String simplify(String content, String formIdAttrName, String formIdAttrValue);
+  String transform(String content, String formIdAttrName, String formIdAttrValue);
 
 }

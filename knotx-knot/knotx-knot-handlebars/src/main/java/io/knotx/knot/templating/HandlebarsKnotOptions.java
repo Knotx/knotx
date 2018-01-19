@@ -19,12 +19,17 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 @DataObject(generateConverter = true, publicConverter = false)
-public class HandlebarsKnotConfiguration {
+public class HandlebarsKnotOptions {
 
   /**
-   * Default flag for template debugging = false
+   * Default key hash algorithm = MD5
    */
-  public final static boolean DEFAULT_TEMPLATE_DEBUG = false;
+  public final static String DEFAULT_CACHE_KEY_ALGORITHM = "MD5";
+
+  /**
+   * Default size of the compiled handlebars snippets cache = 1000 items
+   */
+  public final static Long DEFAULT_CACHE_SIZE = 1000L;
 
   /**
    * Default EB address of the verticle
@@ -38,7 +43,7 @@ public class HandlebarsKnotConfiguration {
   /**
    * Default constructor
    */
-  public HandlebarsKnotConfiguration() {
+  public HandlebarsKnotOptions() {
     init();
   }
 
@@ -47,7 +52,7 @@ public class HandlebarsKnotConfiguration {
    *
    * @param other the instance to copy
    */
-  public HandlebarsKnotConfiguration(HandlebarsKnotConfiguration other) {
+  public HandlebarsKnotOptions(HandlebarsKnotOptions other) {
     this.address = other.address;
     this.cacheKeyAlgorithm = other.cacheKeyAlgorithm;
     this.cacheSize = other.cacheSize;
@@ -58,9 +63,9 @@ public class HandlebarsKnotConfiguration {
    *
    * @param json the JSON
    */
-  public HandlebarsKnotConfiguration(JsonObject json) {
+  public HandlebarsKnotOptions(JsonObject json) {
     init();
-    HandlebarsKnotConfigurationConverter.fromJson(json, this);
+    HandlebarsKnotOptionsConverter.fromJson(json, this);
   }
 
   /**
@@ -70,7 +75,7 @@ public class HandlebarsKnotConfiguration {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    HandlebarsKnotConfigurationConverter.toJson(this, json);
+    HandlebarsKnotOptionsConverter.toJson(this, json);
     return json;
   }
 
@@ -93,8 +98,29 @@ public class HandlebarsKnotConfiguration {
    * @param cacheSize size of the cache
    * @return a reference to this, so the API can be used fluently
    */
-  public HandlebarsKnotConfiguration setCacheSize(Long cacheSize) {
+  public HandlebarsKnotOptions setCacheSize(Long cacheSize) {
     this.cacheSize = cacheSize;
+    return this;
+  }
+
+  /**
+   * @return name of the algorithm used to generate hash from the handlebars snippet
+   */
+  public String getCacheKeyAlgorithm() {
+    return cacheKeyAlgorithm;
+  }
+
+  /**
+   * Set the algorithm used to build a hash from the handlebars snippet.
+   * The hash is to be used as a cache key.
+   *
+   * The name should be a standard Java Security name (such as "SHA", "MD5", and so on).
+   *
+   * @param cacheKeyAlgorithm algorithm name
+   * @return a reference to this, so the API can be used fluently
+   */
+  public HandlebarsKnotOptions setCacheKeyAlgorithm(String cacheKeyAlgorithm) {
+    this.cacheKeyAlgorithm = cacheKeyAlgorithm;
     return this;
   }
 
@@ -111,7 +137,7 @@ public class HandlebarsKnotConfiguration {
    * @param address EB address of the verticle
    * @return a reference to this, so the API can be used fluently
    */
-  public HandlebarsKnotConfiguration setAddress(String address) {
+  public HandlebarsKnotOptions setAddress(String address) {
     this.address = address;
     return this;
   }

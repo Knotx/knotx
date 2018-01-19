@@ -18,7 +18,7 @@ package io.knotx.knot.assembler.impl;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.assembler.FragmentAssemblerConfiguration;
+import io.knotx.knot.assembler.FragmentAssemblerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.buffer.Buffer;
@@ -35,10 +35,10 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FragmentAssemblerKnotProxyImpl.class);
 
-  private FragmentAssemblerConfiguration configuration;
+  private FragmentAssemblerOptions options;
 
-  public FragmentAssemblerKnotProxyImpl(FragmentAssemblerConfiguration configuration) {
-    this.configuration = configuration;
+  public FragmentAssemblerKnotProxyImpl(FragmentAssemblerOptions options) {
+    this.options = options;
   }
 
   @Override
@@ -46,7 +46,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
-            .map(configuration.unprocessedFragmentStrategy()::get)
+            .map(options.getUnprocessedStrategy()::get)
             .collect(Collectors.joining());
 
         return Single.just(createSuccessResponse(knotContext, joinedFragments));
