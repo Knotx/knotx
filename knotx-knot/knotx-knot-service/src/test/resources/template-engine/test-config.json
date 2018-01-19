@@ -2,7 +2,8 @@
   "address": "knotx.knot.service",
   "clientOptions": {
     "maxPoolSize": 100,
-    "keepAlive": false
+    "setIdleTimeout": 600,
+    "tryUseCompression": true
   },
   "services": [
     {
