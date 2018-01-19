@@ -64,14 +64,9 @@ public class HttpRepositoryOptions {
   private static final int DEFAULT_CLIENT_OPTIONS_MAX_POOL_SIZE = 1000;
 
   /**
-   * Default Vert.x HTTP Client keep alive = false
+   * Default idle time for a pooled connection = 120 seconds
    */
-  private static final boolean DEFAULT_CLIENT_OPTIONS_KEEP_ALIVE = true;
-
-  /**
-   * Default idle time for a pooled connection = 10 seconds
-   */
-  private static final int DEFAULT_CLIENT_OPTIONS_IDLE_TIMEOUT = 10;
+  private static final int DEFAULT_CLIENT_OPTIONS_IDLE_TIMEOUT = 120;
 
   /**
    * Default Vert.x HTTP Client try use compression = false
@@ -136,8 +131,7 @@ public class HttpRepositoryOptions {
     address = DEFAULT_ADDRESS;
     clientOptions = new HttpClientOptions()
         .setMaxPoolSize(DEFAULT_CLIENT_OPTIONS_MAX_POOL_SIZE)
-        .setKeepAlive(DEFAULT_CLIENT_OPTIONS_KEEP_ALIVE)
-        .setIdleTimeout(TCPSSLOptions.DEFAULT_IDLE_TIMEOUT)
+        .setIdleTimeout(DEFAULT_CLIENT_OPTIONS_IDLE_TIMEOUT)
         .setTryUseCompression(DEFAULT_CLIENT_OPTIONS_TRY_USE_COMPRESSION);
 
     clientDestination = new ClientDestination();

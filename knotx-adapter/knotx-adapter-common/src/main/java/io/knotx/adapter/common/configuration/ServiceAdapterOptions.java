@@ -20,7 +20,6 @@ import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +41,9 @@ public class ServiceAdapterOptions {
   public final static int DEFAULT_WEBCLIENT_MAX_POOL_SIZE = 1000;
 
   /**
-   * Defaul settting of using the vert.x HTTP connection pooling. Client keep alive = true
+   * Default idle timeout for the connections in the pool = 120 seconds
    */
-  public final static boolean DEFAULT_WEBCLIENT_KEEP_ALIVE = true;
-
-
-  /**
-   * Default idle timeout for the connections in the pool = 10 seconds
-   */
-  public final static int DEFAULT_WEBCLIENT_IDLE_TIMEOUT = 10;
+  public final static int DEFAULT_WEBCLIENT_IDLE_TIMEOUT = 120;
 
   /**
    * Default services configured for a adapter
@@ -119,8 +112,7 @@ public class ServiceAdapterOptions {
     address = DEFAULT_ADDRESS;
     clientOptions = new WebClientOptions()
         .setMaxPoolSize(DEFAULT_WEBCLIENT_MAX_POOL_SIZE)
-        .setKeepAlive(DEFAULT_WEBCLIENT_KEEP_ALIVE)
-        .setIdleTimeout(TCPSSLOptions.DEFAULT_IDLE_TIMEOUT);
+        .setIdleTimeout(DEFAULT_WEBCLIENT_IDLE_TIMEOUT);
     services = DEFAULT_SERVICES;
     customHttpHeader = new CustomHttpHeader();
   }
