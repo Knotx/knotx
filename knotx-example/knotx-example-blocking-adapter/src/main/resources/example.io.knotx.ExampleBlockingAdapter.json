@@ -1,0 +1,11 @@
+{
+  "main": "io.knotx.example.blockingadapter.ExampleBlockingAdapter",
+  "options": {
+    "config": {
+      "address": "example.knotx.blocking.adapter",
+      "protocol": "http",
+      "domain": "localhost",
+      "port": 3000
+    }
+  }
+}
