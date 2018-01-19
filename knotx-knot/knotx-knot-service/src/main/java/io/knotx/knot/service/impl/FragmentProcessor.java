@@ -33,8 +33,8 @@ public class FragmentProcessor {
 
   private final ServiceEngine serviceEngine;
 
-  public FragmentProcessor(Vertx vertx, ServiceKnotOptions configuration) {
-    this.serviceEngine = new ServiceEngine(vertx, configuration);
+  public FragmentProcessor(Vertx vertx, ServiceKnotOptions options) {
+    this.serviceEngine = new ServiceEngine(vertx, options);
   }
 
   public Single<FragmentContext> processSnippet(final FragmentContext fragmentContext,

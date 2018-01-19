@@ -26,10 +26,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Describes a physical details of HTTP service endpoint the ServiceAdapter will use.
+ * Describes a physical details of HTTP service endpoint that consumes form submitions
+ * from AdapterServiceKnot.
  */
 @DataObject(generateConverter = true, publicConverter = false)
-public class ActionAdapterMetadata {
+public class ActionSettings {
 
   private String name;
 
@@ -48,7 +49,7 @@ public class ActionAdapterMetadata {
   /**
    * Default constructor
    */
-  public ActionAdapterMetadata() {
+  public ActionSettings() {
     init();
   }
 
@@ -58,7 +59,7 @@ public class ActionAdapterMetadata {
    *
    * @param other the instance to copy
    */
-  public ActionAdapterMetadata(ActionAdapterMetadata other) {
+  public ActionSettings(ActionSettings other) {
     this.name = other.name;
     this.address = other.address;
     this.params = other.params.copy();
@@ -71,9 +72,9 @@ public class ActionAdapterMetadata {
    *
    * @param json the JSON
    */
-  public ActionAdapterMetadata(JsonObject json) {
+  public ActionSettings(JsonObject json) {
     init();
-    ActionAdapterMetadataConverter.fromJson(json, this);
+    ActionSettingsConverter.fromJson(json, this);
     allowedRequestHeadersPatterns = allowedRequestHeaders.stream().map(Pattern::compile)
         .collect(Collectors.toList());
     allowedResponseHeadersPatterns = allowedResponseHeaders.stream().map(Pattern::compile)
@@ -87,7 +88,7 @@ public class ActionAdapterMetadata {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    ActionAdapterMetadataConverter.toJson(this, json);
+    ActionSettingsConverter.toJson(this, json);
     return json;
   }
 
@@ -109,7 +110,7 @@ public class ActionAdapterMetadata {
    * @param name name of the service
    * @return a reference to this, so the API can be used fluently
    */
-  public ActionAdapterMetadata setName(String name) {
+  public ActionSettings setName(String name) {
     this.name = name;
     return this;
   }
@@ -127,7 +128,7 @@ public class ActionAdapterMetadata {
    * @param address EB address of the service adapter
    * @return a reference to this, so the API can be used fluently
    */
-  public ActionAdapterMetadata setAddress(String address) {
+  public ActionSettings setAddress(String address) {
     this.address = address;
     return this;
   }
@@ -145,7 +146,7 @@ public class ActionAdapterMetadata {
    * @param params JsonObject with the additional parameters
    * @return a reference to this, so the API can be used fluently
    */
-  public ActionAdapterMetadata setParams(JsonObject params) {
+  public ActionSettings setParams(JsonObject params) {
     this.params = params;
     return this;
   }
@@ -154,7 +155,7 @@ public class ActionAdapterMetadata {
     return allowedRequestHeaders;
   }
 
-  public ActionAdapterMetadata setAllowedRequestHeaders(List<String> allowedRequestHeaders) {
+  public ActionSettings setAllowedRequestHeaders(List<String> allowedRequestHeaders) {
     this.allowedRequestHeaders = allowedRequestHeaders;
     allowedRequestHeadersPatterns = allowedRequestHeaders.stream().map(Pattern::compile)
         .collect(Collectors.toList());
@@ -165,7 +166,7 @@ public class ActionAdapterMetadata {
     return allowedResponseHeaders;
   }
 
-  public ActionAdapterMetadata setAllowedResponseHeaders(List<String> allowedResponseHeaders) {
+  public ActionSettings setAllowedResponseHeaders(List<String> allowedResponseHeaders) {
     this.allowedResponseHeaders = allowedResponseHeaders;
     allowedResponseHeadersPatterns = allowedResponseHeaders.stream().map(Pattern::compile)
         .collect(Collectors.toList());
@@ -190,7 +191,7 @@ public class ActionAdapterMetadata {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ActionAdapterMetadata that = (ActionAdapterMetadata) o;
+    ActionSettings that = (ActionSettings) o;
     return Objects.equal(name, that.name) &&
         Objects.equal(address, that.address) &&
         Objects.equal(params, that.params) &&

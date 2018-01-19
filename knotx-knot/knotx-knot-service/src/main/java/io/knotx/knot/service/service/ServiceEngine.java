@@ -39,19 +39,19 @@ public class ServiceEngine {
   private static final String RESULT_NAMESPACE_KEY = "_result";
   private static final String RESPONSE_NAMESPACE_KEY = "_response";
 
-  private final ServiceKnotOptions configuration;
+  private final ServiceKnotOptions options;
 
   private final Map<String, AdapterProxy> adapters;
 
-  public ServiceEngine(Vertx vertx, ServiceKnotOptions serviceConfiguration) {
-    this.configuration = serviceConfiguration;
+  public ServiceEngine(Vertx vertx, ServiceKnotOptions options) {
+    this.options = options;
     this.adapters = new HashMap<>();
-    this.configuration.getServices().stream().forEach(
+    this.options.getServices().stream().forEach(
         service -> adapters.put(service.getAddress(),
             AdapterProxy.createProxyWithOptions(
                 vertx,
                 service.getAddress(),
-                configuration.getDeliveryOptions())
+                this.options.getDeliveryOptions())
         )
     );
   }
@@ -66,7 +66,7 @@ public class ServiceEngine {
   }
 
   public ServiceEntry mergeWithConfiguration(final ServiceEntry serviceEntry) {
-    Optional<ServiceMetadata> serviceMetadata = configuration.getServices()
+    Optional<ServiceMetadata> serviceMetadata = options.getServices()
         .stream()
         .filter(service -> serviceEntry.getName().matches(service.getName()))
         .findFirst();

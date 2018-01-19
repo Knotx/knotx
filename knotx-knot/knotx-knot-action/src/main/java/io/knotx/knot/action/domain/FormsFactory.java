@@ -32,10 +32,10 @@ public final class FormsFactory {
     // util class
   }
 
-  public static List<FormEntity> create(KnotContext context, ActionKnotOptions conf) {
+  public static List<FormEntity> create(KnotContext context, ActionKnotOptions options) {
     List<FormEntity> forms = context.getFragments().stream()
         .filter(f -> f.knots().stream().anyMatch(id -> id.startsWith(FRAGMENT_KNOT_PREFIX)))
-        .map(f -> FormEntity.from(f, conf))
+        .map(f -> FormEntity.from(f, options))
         .collect(Collectors.toList());
     if (areUnique(forms)) {
       LOGGER.error("Form identifiers are not unique [{}]", forms.stream().map(FormEntity::identifier).toArray());

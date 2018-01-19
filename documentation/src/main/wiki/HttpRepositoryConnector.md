@@ -20,7 +20,7 @@ Default configuration shipped with the verticle as `io.knotx.HttpRepositoryConne
       "address": "knotx.core.repository.http",
       "clientOptions": {
         "maxPoolSize": 1000,
-        "keepAlive": false,
+        "setIdleTimeout": 600,
         "tryUseCompression": true
       },
       "clientDestination": {

@@ -17,25 +17,28 @@ package io.knotx.knot.assembler;
 
 import io.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
 import io.vertx.codegen.annotations.DataObject;
-import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.json.JsonObject;
-import java.util.Optional;
 
 @DataObject(generateConverter = true, publicConverter = false)
-public class FragmentAssemblerConfiguration {
+public class FragmentAssemblerOptions {
 
+  /**
+   * Default address of the verticle on the event bus = knotx.core.assembler
+   */
   private final static String DEFAULT_ADDRESS = "knotx.core.assembler";
 
-  private final static String DEFAULT_UNPROCESSED_STRATEGY = "UNWRAP";
+  /**
+   * Default strategy of handling unprocessed knotx snippets = UNWRAP
+   */
+  private final static UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.UNWRAP;
 
   private String address;
-
-  private String unprocessedStrategy;
+  private UnprocessedFragmentStrategy unprocessedStrategy;
 
   /**
    * Default constructor
    */
-  public FragmentAssemblerConfiguration() {
+  public FragmentAssemblerOptions() {
     init();
   }
 
@@ -44,7 +47,7 @@ public class FragmentAssemblerConfiguration {
    *
    * @param other the instance to copy
    */
-  public FragmentAssemblerConfiguration(FragmentAssemblerConfiguration other) {
+  public FragmentAssemblerOptions(FragmentAssemblerOptions other) {
     this.address = other.address;
     this.unprocessedStrategy = other.unprocessedStrategy;
   }
@@ -54,9 +57,9 @@ public class FragmentAssemblerConfiguration {
    *
    * @param json the JSON
    */
-  public FragmentAssemblerConfiguration(JsonObject json) {
+  public FragmentAssemblerOptions(JsonObject json) {
     init();
-    FragmentAssemblerConfigurationConverter.fromJson(json, this);
+    FragmentAssemblerOptionsConverter.fromJson(json, this);
   }
 
   /**
@@ -66,7 +69,7 @@ public class FragmentAssemblerConfiguration {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    FragmentAssemblerConfigurationConverter.toJson(this, json);
+    FragmentAssemblerOptionsConverter.toJson(this, json);
     return json;
   }
 
@@ -88,7 +91,7 @@ public class FragmentAssemblerConfiguration {
    * @param address EB address
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentAssemblerConfiguration setAddress(String address) {
+  public FragmentAssemblerOptions setAddress(String address) {
     this.address = address;
     return this;
   }
@@ -96,7 +99,7 @@ public class FragmentAssemblerConfiguration {
   /**
    * @return Unprocessed snippets strategy name
    */
-  public String getUnprocessedStrategy() {
+  public UnprocessedFragmentStrategy getUnprocessedStrategy() {
     return unprocessedStrategy;
   }
 
@@ -110,22 +113,12 @@ public class FragmentAssemblerConfiguration {
    * </ul>
    * If not set, a default value is <b>UNWRAP</b>
    *
-   * @param unprocessedStrategy a strategy name
+   * @param unprocessedStrategy a strategy enum
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentAssemblerConfiguration setUnprocessedStrategy(String unprocessedStrategy) {
+  public FragmentAssemblerOptions setUnprocessedStrategy(
+      UnprocessedFragmentStrategy unprocessedStrategy) {
     this.unprocessedStrategy = unprocessedStrategy;
     return this;
-  }
-
-  @GenIgnore
-  /**
-   * Gets the {@link UnprocessedFragmentStrategy} enum representing strategy
-   */
-  public UnprocessedFragmentStrategy unprocessedFragmentStrategy() {
-    return Optional.ofNullable(unprocessedStrategy)
-        .map(String::toUpperCase)
-        .map(UnprocessedFragmentStrategy::valueOf)
-        .orElse(UnprocessedFragmentStrategy.UNWRAP);
   }
 }

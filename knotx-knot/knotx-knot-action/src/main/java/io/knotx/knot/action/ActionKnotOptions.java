@@ -30,8 +30,8 @@ public class ActionKnotOptions {
    */
   public final static String DEFAULT_ADDRESS = "knotx.knot.action";
 
-  public final static List<ActionAdapterMetadata> DEFAULT_ADAPTER_MOCK = Lists.newArrayList(
-      new ActionAdapterMetadata()
+  public final static List<ActionSettings> DEFAULT_ADAPTER_MOCK = Lists.newArrayList(
+      new ActionSettings()
           .setAddress("test")
           .setName("action-self")
           .setParams(new JsonObject().put("example", "example-value"))
@@ -51,7 +51,7 @@ public class ActionKnotOptions {
   public final static String DEFAULT_FORM_IDENTIFIER = "_frmId";
 
   private String address;
-  private List<ActionAdapterMetadata> adapters;
+  private List<ActionSettings> adapters;
   private String formIdentifierName;
   private DeliveryOptions deliveryOptions;
 
@@ -121,17 +121,17 @@ public class ActionKnotOptions {
   }
 
   /**
-   * @return list of {@link ActionAdapterMetadata}
+   * @return list of {@link ActionSettings}
    */
-  public List<ActionAdapterMetadata> getAdapters() {
+  public List<ActionSettings> getAdapters() {
     return adapters;
   }
 
   /**
-   * @param adapters of {@link ActionAdapterMetadata} objects representing service
+   * @param adapters of {@link ActionSettings} objects representing service
    * @return a reference to this, so the API can be used fluently
    */
-  public ActionKnotOptions setAdapters(List<ActionAdapterMetadata> adapters) {
+  public ActionKnotOptions setAdapters(List<ActionSettings> adapters) {
     this.adapters = adapters;
     return this;
   }

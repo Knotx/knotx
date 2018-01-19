@@ -30,7 +30,7 @@ public class HandlebarsKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotVerticle.class);
 
-  private HandlebarsKnotConfiguration configuration;
+  private HandlebarsKnotOptions options;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -39,22 +39,22 @@ public class HandlebarsKnotVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new HandlebarsKnotConfiguration(config());
+    this.options = new HandlebarsKnotOptions(config());
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
-    //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(configuration.getAddress())
-        .register(KnotProxy.class, new HandlebarsKnotProxyImpl(configuration));
+        .setAddress(options.getAddress())
+        .register(KnotProxy.class, new HandlebarsKnotProxyImpl(options));
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
+    LOGGER.info("Stopping <{}>", this.getClass().getSimpleName());
     serviceBinder.unregister(consumer);
   }
 

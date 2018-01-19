@@ -60,7 +60,8 @@ Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.
       "address": "knotx.adapter.service.http",
       "clientOptions": {
         "maxPoolSize": 1000,
-        "keepAlive": false,
+        "setIdleTimeout": 600,
+        "tryUseCompression": true,
         "logActivity": true
       },
       "customHttpHeader": {
@@ -98,7 +99,8 @@ will be processed by Http Service Adapter.
 - `clientOptions` are [HttpClientOptions](http://vertx.io/docs/apidocs/io/vertx/core/http/HttpClientOptions.html) used to configure HTTP connection.
 Any HttpClientOption may be defined in this section, at this example two options are defined:
   - `maxPoolSize` -  maximum pool size for simultaneous connections,
-  - `keepAlive` - that shows keep alive should be disabled on the client.
+  - `setIdleTimeout` - any connections not used within this timeout will be closed, set in seconds,
+  - `keepAlive` - that shows keep alive, we recommend to leave it set to `true` as the default value in Vert.x. You can find more information [here](http://vertx.io/docs/vertx-core/java/#_http_1_x_pooling_and_keep_alive).
 - `customHttpHeader` - an JSON object that consists of name and value of the header to be sent in each request to any service configured. If the same header comes from the client request, it will be always overwritten with the value configured here.
 - `services` - an JSON array of services that Http Service Adapter can connect to. Each service is distinguished by `path` parameter which is regex.
 In example above, two services are configured:
