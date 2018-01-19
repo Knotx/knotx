@@ -55,6 +55,7 @@ public class HandlebarsKnotVerticle extends AbstractVerticle {
 
   @Override
   public void stop() throws Exception {
+    LOGGER.info("Stopping <{}>", this.getClass().getSimpleName());
     serviceBinder.unregister(consumer);
   }
 
