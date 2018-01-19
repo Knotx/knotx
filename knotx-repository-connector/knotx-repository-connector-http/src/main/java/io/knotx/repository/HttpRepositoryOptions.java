@@ -21,6 +21,7 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.net.TCPSSLOptions;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +66,12 @@ public class HttpRepositoryOptions {
   /**
    * Default Vert.x HTTP Client keep alive = false
    */
-  private static final boolean DEFAULT_CLIENT_OPTIONS_KEEP_ALIVE = false;
+  private static final boolean DEFAULT_CLIENT_OPTIONS_KEEP_ALIVE = true;
+
+  /**
+   * Default idle time for a pooled connection = 10 seconds
+   */
+  private static final int DEFAULT_CLIENT_OPTIONS_IDLE_TIMEOUT = 10;
 
   /**
    * Default Vert.x HTTP Client try use compression = false
@@ -131,6 +137,7 @@ public class HttpRepositoryOptions {
     clientOptions = new HttpClientOptions()
         .setMaxPoolSize(DEFAULT_CLIENT_OPTIONS_MAX_POOL_SIZE)
         .setKeepAlive(DEFAULT_CLIENT_OPTIONS_KEEP_ALIVE)
+        .setIdleTimeout(TCPSSLOptions.DEFAULT_IDLE_TIMEOUT)
         .setTryUseCompression(DEFAULT_CLIENT_OPTIONS_TRY_USE_COMPRESSION);
 
     clientDestination = new ClientDestination();

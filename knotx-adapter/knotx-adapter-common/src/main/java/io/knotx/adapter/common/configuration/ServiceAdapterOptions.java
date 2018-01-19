@@ -20,6 +20,7 @@ import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.net.TCPSSLOptions;
 import io.vertx.ext.web.client.WebClientOptions;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +31,31 @@ import java.util.List;
 @DataObject(generateConverter = true, publicConverter = false)
 public class ServiceAdapterOptions {
 
+  /**
+   * Default EB address of the adapter = knotx.adapter.service.http
+   */
   public final static String DEFAULT_ADDRESS = "knotx.adapter.service.http";
 
+  /**
+   * Default webclient HTTP connection pool size = 1000
+   */
   public final static int DEFAULT_WEBCLIENT_MAX_POOL_SIZE = 1000;
 
-  public final static boolean DEFAULT_WEBCLIENT_KEEP_ALIVE = false;
+  /**
+   * Defaul settting of using the vert.x HTTP connection pooling. Client keep alive = true
+   */
+  public final static boolean DEFAULT_WEBCLIENT_KEEP_ALIVE = true;
 
+
+  /**
+   * Default idle timeout for the connections in the pool = 10 seconds
+   */
+  public final static int DEFAULT_WEBCLIENT_IDLE_TIMEOUT = 10;
+
+  /**
+   * Default services configured for a adapter
+   * FIXME: Consider removing this - as it's example-app specific
+   */
   public final static List<ServiceSettings> DEFAULT_SERVICES =
       Lists.newArrayList(
           new ServiceSettings().setPath("/service/mock/.*")
@@ -97,8 +117,10 @@ public class ServiceAdapterOptions {
 
   private void init() {
     address = DEFAULT_ADDRESS;
-    clientOptions = new WebClientOptions().setMaxPoolSize(DEFAULT_WEBCLIENT_MAX_POOL_SIZE)
-        .setKeepAlive(DEFAULT_WEBCLIENT_KEEP_ALIVE);
+    clientOptions = new WebClientOptions()
+        .setMaxPoolSize(DEFAULT_WEBCLIENT_MAX_POOL_SIZE)
+        .setKeepAlive(DEFAULT_WEBCLIENT_KEEP_ALIVE)
+        .setIdleTimeout(TCPSSLOptions.DEFAULT_IDLE_TIMEOUT);
     services = DEFAULT_SERVICES;
     customHttpHeader = new CustomHttpHeader();
   }
