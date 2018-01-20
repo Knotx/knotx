@@ -5,7 +5,8 @@
       "address": "knotx.adapter.service.http",
       "clientOptions": {
         "maxPoolSize": 1000,
-        "keepAlive": false,
+        "setIdleTimeout": 600,
+        "tryUseCompression": true,
         "logActivity": true
       },
       "services": [

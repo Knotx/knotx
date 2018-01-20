@@ -5,7 +5,7 @@
       "address": "knotx.core.repository.http",
       "clientOptions": {
         "maxPoolSize": 1000,
-        "keepAlive": false,
+        "setIdleTimeout": 600,
         "tryUseCompression": true
       },
       "clientDestination": {
