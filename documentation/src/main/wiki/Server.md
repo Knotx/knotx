@@ -50,176 +50,22 @@ The HTTP Server configuration consists two parts:
 
 ### Knot.x application specific configurations
 
-Default configuration shipped with the verticle as `io.knotx.KnotxServer.json` file available in classpath.
-```json
-{
-  "main": "io.knotx.server.KnotxServerVerticle",
-  "options": {
-    "config": {
-      "serverOptions": {
-        "port": 8092,
-        "keyStoreOptions": {}
-      },
-      "displayExceptionDetails": true,
-      "customResponseHeader": {
-        "name": "X-Server",
-        "value": "Knot.x"
-      },
-      "allowedResponseHeaders": [
-        "Access-Control-Allow-Origin",
-        "Allow",
-        "Cache-Control",
-        "Content-Disposition",
-        "Content-Encoding",
-        "Content-Language",
-        "Content-Location",
-        "Content-MD5",
-        "Content-Range",
-        "Content-Type",
-        "Content-Length",
-        "Content-Security-Policy",
-        "Date",
-        "Edge-Control",
-        "ETag",
-        "Expires",
-        "Last-Modified",
-        "Location",
-        "Pragma",
-        "Proxy-Authenticate",
-        "Server",
-        "Set-Cookie",
-        "Status",
-        "Surrogate-Control",
-        "Vary",
-        "Via",
-        "X-Frame-Options",
-        "X-XSS-Protection",
-        "X-Content-Type-Options",
-        "X-UA-Compatible",
-        "X-Request-ID",
-        "X-Server"
-      ],
-      "defaultFlow": {
-        "repositories": [
-          {
-            "path": "/content/local/.*",
-            "address": "knotx.core.repository.filesystem"
-          },
-          {
-            "path": "/content/.*",
-            "address": "knotx.core.repository.http"
-          }
-        ],
-        "splitter": {
-          "address": "knotx.core.splitter"
-        },
-        "routing": {
-          "GET": [
-            {
-              "path": ".*",
-              "address": "knotx.knot.service",
-              "onTransition": {
-                "next": {
-                  "address": "knotx.knot.handlebars"
-                }
-              }
-            }
-          ]
-        },
-        "assembler": {
-          "address": "knotx.core.assembler"
-        }
-      }
-    }
-  }
-}
-```
-In short, by default, server does:
+For all configuration fields and their defaults consult [KnotxServerOptions](https://github.com/Cognifide/knotx/blob/master/knotx-server/src/main/asciidoc/dataobjects.adoc#knotxserveroptions)
+
+In short, by default, server:
 - Listens on port 8092
 - Displays exception details on error pages (for development purposes)
 - Returns certain headers in Http Response to the client (as shown above)
 - Always sets custom header in response **X-Server:Knot.x**
 - Uses the [[default Knot.X routing mechanism|KnotRouting]]
 - Communicates with two types of repositories: HTTP and Filesystem
-- Uses core [[Splitter|Splitter]]
+- Uses core [[Splitter|Splitter]] and [[Assembler|Assembler]]
 - Each GET request for any resource (`.*`) is routed through [[Service Knot|ServiceKnot]] and then [[Handlebars rendering engine|HandlebarsKnot]]
 
-Detailed description of each configuration option that's available is described in next section.
+### Vert.x HTTP Server Options
 
-## Server options
-Main server options available.
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `fileUploadDirectory`       | `String`                            |                | Uploads directory on server for file uploads - used during POST, PUT request methods. **file-uploads** if not set.|
-| `fileUploadLimit`           | `Long`                              |                | Limits the size of file that can be uploaded to Knot.x using POST or PUT request methods. Default is **unlimited**.|
-| `displayExceptionDetails`   | `Boolean`                           |                | (Debuging only) Displays exception stacktrace on error page. **False** if not set.|
-| `customResponseHeader`      | `KnotxServerCustomHeader`           |                | Sets the custom header in each response from Knot.x to the client. Default value is **X-Server:Knot.x** |
-| `allowedResponseHeaders`    | `Array of String`                   |                | Array of HTTP headers that are allowed to be send in response. **No** response headers are allowed if not set. |
-| `csrf`                      | `KnotxCSRFConfiguration`            |                | Configuration of the CSRF tokens |
-| `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
-| `customFlow`                | `KnotxFlowConfiguration`            |                | Configuration of [[Gateway Mode|GatewayMode]] |
-
-### KnotxServerCustomHeader options
- Name  | Type  | Mandatory | Description  |
-|-------:|:-------:|:-------:  |-------|
-| `name`      | `String`  | &#10004;       | Name of the response header. |
-| `value`   | `String`  | &#10004;       | Value of the response header. |
-
-### KnotxCSRFConfiguration options
- Name  | Type  | Mandatory | Description  |
-|-------:|:-------:|:-------:  |-------|
-| `secret`       | `String`  |       | Server secret to sign the token. Knot.x by default sets it's own secret. |
-| `cookieName`   | `String`  |       | Set the cookie name. By default `XSRF-TOKEN` is used as it is the expected name by AngularJS however other frameworks might use other names. |
-| `cookiePath`   | `String`  |       | Set the cookie path. By default `/` is used. |
-| `headerName`   | `String`  |       | Set the header name. By default `X-XSRF-TOKEN` is used as it is the expected name by AngularJS however other frameworks might use other names. |
-| `timeout`      | `long`    |       | Set the timeout for tokens generated by the handler, by default is `1800000`ms - `30 min` |
-
-
-### KnotxFlowConfiguration options
-
-| Name                        | Type                                | Mandatory | Description  |
-|-------:                     |:-------:                            |:-------:  |-------|
-| `repositories`              | `Array of RepositoryEntry`          | &#10004;       | Array of repositories configurations |
-| `splitter`                  | `VerticleEntry`                     | &#10004;       | **Splitter** communication options |
-| `assembler`                 | `VerticleEntry`                     | &#10004;       | **Assembler** communication options |
-| `routing`                   | `Object of Method to RoutingEntry`  | &#10004;       | Set of HTTP method based routing entries, describing communication between **Knots**<br/>`"routing": {"GET": {}, "POST": {}}` |
-
-The `repositories`, `splitter` and `assembler` verticles are specific to the default Knot.X processing flow.
-
-### RepositoryEntry options
-
-| Name  | Type  | Mandatory | Description  |
-|-------:|:-------:|:-------:  |-------|
-| `path`      | `String`  | &#10004;       | Regular expression of the HTTP Request path |
-| `csrf`      | `Boolean` |                | Enables CSRF Token generation (on **GET**) /validation (**POST/PUT/PATCH/DELETE**). Default value is `false` meaning the CSRF is disabled in this route.
-| `address`   | `String`  | &#10004;       | Event bus address of the **Repository Connector** modules, that should deliver content for the requested path matching the regexp in `path` |
-
-### VerticleEntry options
-
-| Name  | Type  | Mandatory | Description  |
-|-------:|:-------:|:-------:  |-------|
-| `address`  | `String`  | &#10004;       | Sets the event bus address of the verticle |
-
-### RoutingEntry options
-| Name  | Type  | Mandatory | Description  |
-|-------:|:-------:|:-------:  |-------|
-| `path`           | `String`                               | &#10004;       | Regular expression of HTTP Request path |
-| `address`        | `String`                               | &#10004;       | Event bus address of the **Knot** verticle, that should process the message, for the requested path matching the regexp in `path` |
-| `onTransition`   | `Object of Strings to TransitionEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/> `"onTransition": { "go-a": {}, "go-b": {} }` |
-
-### KnotRouteEntry options
-| Name  | Type  | Mandatory | Description  |
-|-------:|:-------:|:-------:  |-------|
-| `address`      | `String`         | &#10004;       | Event bus address of the **Knot** verticle |
-| `onTransition` | `KnotRouteEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/>`"onTransition": { "go-d": {}, "go-e": {} }` |
-
-### Vert.x HTTP Server configurations
-
-Besides Knot.x specific configurations as mentioned above, the `config` field might have added Vert.x configurations related to the HTTP server.
-It can be used to control the low level aspects of the HTTP server, server tuning, SSL.
-
-The `serverOptions` need to be added in the following place, of the KnotsServerVerticle configuration
+Besides Knot.x specific configurations as mentioned above, you can tune the HTTP server itself and its low level details. 
+The `serverOptions` is the place to do so, e.g. set server port as follows:
 ```
 {
   "options": {
@@ -230,7 +76,7 @@ The `serverOptions` need to be added in the following place, of the KnotsServerV
       },
       ...
 ```
-The list of remaining server options are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
+The details of remaining server options are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
 
 ### How to configure Knot.x to listen with SSL/TLS
 
@@ -259,11 +105,6 @@ Below is the sample configuration that enabled SSL:
 Where:
 - `path` - is the path where keystore is located, optional if `value` is used
 - `password` - keystore password
-
-Other option is to provide those parameters through JVM properties:
-- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.path=/path/to/keystore.jks` 
-- `-Dio.knotx.KnotxServer.options.config.serverOptions.keyStoreOptions.password=keyPass`
-- `-Dio.knotx.KnotxServer.options.config.serverOptions.ssl=true`
 
 ### How to enable CSRF Token generation and validation
 
@@ -332,11 +173,8 @@ timeout for all eventbus responses (Repositories, Splitter, Knots configured in 
 for eventubs requests that come from `KnotxServer`.
 ```
 {
-  "main": "io.knotx.server.KnotxServerVerticle",
   "options": {
     "config": {
-      "httpPort": 8092,
-      "displayExceptionDetails": true,
       "deliveryOptions": {
         "timeout": 15000
       },

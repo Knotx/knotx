@@ -13,24 +13,24 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
   * [[Communication Flow|CommunicationFlow]] <!--DONE -->
   * [[Knot Routing|KnotRouting]] <!--DONE -->
   * [[Gateway Mode|GatewayMode]] <!--DONE -->
-* [[Knot.x Modules|KnotxModules]]
-* [[Server|Server]]
-* [[Repository Connectors|RepositoryConnectors]]
-  * [[Http Repository Connector|HttpRepositoryConnector]]
-  * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
-* [[Splitter|Splitter]]
-* [[Assembler|Assembler]]
-* [[Knot|Knot]]
+* [[Knot.x Modules|KnotxModules]] <!-- DONE -->
+* [[Server|Server]] <!-- DONE -->
+* [[Repository Connectors|RepositoryConnectors]] <!-- DONE -->
+  * [[Http Repository Connector|HttpRepositoryConnector]] <!-- DONE -->
+  * [[Filesystem Repository Connector|FilesystemRepositoryConnector]] <!-- DONE -->
+* [[Splitter|Splitter]] <!-- DONE -->
+* [[Assembler|Assembler]] <!-- DONE -->
+* [[Knot|Knot]] <!-- DONE -->
   * [[Action Knot|ActionKnot]]
   * [[Service Knot|ServiceKnot]]
   * [[Handlebars Knot|HandlebarsKnot]]
-* [[Adapter|Adapter]]
+* [[Adapter|Adapter]] <!-- DONE -->
   * [[Service Adapter|ServiceAdapter]]
   * [[Action Adapter|ActionAdapter]]
   * [[Http Service Adapter|HttpServiceAdapter]]
 * [[Mocks|Mocks]]
 * [[Knot.x Deployment|KnotxDeployment]]
-  * [[Knot.x Tuning|KnotxTuning]]
+  * [[Knot.x Tuning|KnotxTuning]] <!--DONE -->
 * [[Performance|PerformanceTests]] <!--DONE -->
   * [[Performance Tests Methodology|PerformanceTestsMethodology]]<!--DONE -->
   * [[Performance Tests Summary|PerformanceTestsSummary]]<!--DONE -->
