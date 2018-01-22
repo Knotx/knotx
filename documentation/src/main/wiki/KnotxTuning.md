@@ -65,7 +65,7 @@ It is very important to set specific system properties to keep Knot.x instance a
 We performed our tests on *CentOS 7* and following recommendations consider this OS.
 
 ### System settings
-Following sysctl properties are recommended for the basic Knot.x setup:
+Following sysctl properties are recommended for the production Knot.x setup:
 
 ```
   net.core.netdev_max_backlog=2048
@@ -98,4 +98,4 @@ java.net.SocketException: Too many open files (Accept failed)
         at sun.rmi.transport.tcp.TCPTransport$AcceptLoop.run(TCPTransport.java:372)
         at java.lang.Thread.run(Thread.java:748)
 ```
-Which means that Knot.x tried to open more connections than the OS allows - Knot.x is no longer able to work after such exception.
+This warning means that Knot.x tried to open more connections than the OS allows.
