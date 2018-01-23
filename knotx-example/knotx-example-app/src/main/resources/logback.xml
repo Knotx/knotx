@@ -38,6 +38,20 @@
     </encoder>
   </appender>
 
+  <appender name="access" class="ch.qos.logback.core.FileAppender">
+    <file>access.log</file>
+    <append>true</append>
+    <!-- set immediateFlush to false for much higher logging throughput -->
+    <immediateFlush>true</immediateFlush>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO" additivity="false">
+    <appender-ref ref="access"/>
+  </logger>
+
   <logger name="io.netty.handler.logging" level="TRACE" additivity="false">
     <appender-ref ref="netty-wire"/>
   </logger>
