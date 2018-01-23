@@ -46,6 +46,8 @@ public class KnotxServerConfiguration {
 
   private KnotxCSRFConfig csrfConfig;
 
+  private AccessLogConfig accessLogConfig;
+
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
 
@@ -67,6 +69,8 @@ public class KnotxServerConfiguration {
             config.getJsonObject("deliveryOptions"))
             : new DeliveryOptions();
     csrfConfig = new KnotxCSRFConfig(config.getJsonObject("csrf", new JsonObject()));
+
+    accessLogConfig = new AccessLogConfig(config.getJsonObject("accessLog", new JsonObject()));
   }
 
   public boolean displayExceptionDetails() {
@@ -107,5 +111,9 @@ public class KnotxServerConfiguration {
 
   public Long getFileUploadLimit() {
     return fileUploadLimit;
+  }
+
+  public AccessLogConfig getAccessLogConfig() {
+    return accessLogConfig;
   }
 }

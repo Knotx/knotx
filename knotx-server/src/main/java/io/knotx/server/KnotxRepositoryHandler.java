@@ -60,7 +60,8 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
-      proxies.computeIfAbsent( repositoryEntry.get().address(),adr -> RepositoryConnectorProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
+      proxies.computeIfAbsent(repositoryEntry.get().address(), adr -> RepositoryConnectorProxy
+          .createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
@@ -91,8 +92,12 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private void endResponse(ClientResponse repoResponse, RoutingContext context) {
     writeHeaders(context.response(), repoResponse.getHeaders());
-    context.response().setStatusCode(repoResponse.getStatusCode())
-        .end(Buffer.newInstance(repoResponse.getBody()));
+    context.response().setStatusCode(repoResponse.getStatusCode());
+    if (repoResponse.getBody() != null) {
+      context.response().end(Buffer.newInstance(repoResponse.getBody()));
+    } else {
+      context.response().end();
+    }
   }
 
   private boolean isSuccessResponse(ClientResponse repoResponse) {
