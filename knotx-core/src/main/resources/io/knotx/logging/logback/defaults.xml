@@ -16,10 +16,15 @@
     limitations under the License.
 
 -->
-<configuration>
-  <property name="LOG_PATH" value="${PWD}/logs"/>
+<!--
+Default logback configuration provided for import
+-->
 
-  <include resource="io/knotx/logging/logback/base.xml" />
-  <include resource="io/knotx/logging/logback/access.xml" />
+<included>
+  <property name="CONSOLE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
+  <property name="FILE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
 
-</configuration>
+  <logger name="io.netty" level="ERROR"/>
+  <logger name="io.vertx" level="ERROR"/>
+  <logger name="io.knotx" level="INFO"/>
+</included>

@@ -4,7 +4,8 @@
     "config": {
       "serverOptions": {
         "port": 8092,
-        "keyStoreOptions": {}
+        "keyStoreOptions": {},
+        "logActivity": true
       },
       "displayExceptionDetails": true,
       "customResponseHeader": {

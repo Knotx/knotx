@@ -16,10 +16,16 @@
     limitations under the License.
 
 -->
-<configuration>
-  <property name="LOG_PATH" value="${PWD}/logs"/>
+<!--
+File appender logback configuration for knotx access logs provided for import
+-->
 
-  <include resource="io/knotx/logging/logback/base.xml" />
-  <include resource="io/knotx/logging/logback/access.xml" />
+<included>
+  <property name="FILE_ACCESS_LOG_PATTERN" value="%msg%n"/>
+  <property name="ACCESS_LOG_FILE" value="${ACCESS_LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/knotx-access.log}"/>
+  <include resource="io/knotx/logging/logback/access-file-appender.xml"/>
 
-</configuration>
+  <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO" additivity="false">
+    <appender-ref ref="ACCESS" />
+  </logger>
+</included>

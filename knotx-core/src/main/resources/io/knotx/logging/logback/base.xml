@@ -16,10 +16,22 @@
     limitations under the License.
 
 -->
-<configuration>
+<!--
+Base logback configuration for knot.x
+-->
+<included>
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
   <property name="LOG_PATH" value="${PWD}/logs"/>
 
-  <include resource="io/knotx/logging/logback/base.xml" />
-  <include resource="io/knotx/logging/logback/access.xml" />
+  <include resource="io/knotx/logging/logback/defaults.xml" />
+  <property name="KNOTX_LOG_FILE" value="${KNOTX_LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/knotx.log}"/>
 
-</configuration>
+  <include resource="io/knotx/logging/logback/console-appender.xml" />
+  <include resource="io/knotx/logging/logback/file-appender.xml" />
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="FILE" />
+  </root>
+</included>

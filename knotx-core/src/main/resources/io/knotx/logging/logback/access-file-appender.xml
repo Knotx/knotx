@@ -16,10 +16,20 @@
     limitations under the License.
 
 -->
-<configuration>
-  <property name="LOG_PATH" value="${PWD}/logs"/>
+<!--
+File appender logback configuration provided for import
+-->
 
-  <include resource="io/knotx/logging/logback/base.xml" />
-  <include resource="io/knotx/logging/logback/access.xml" />
-
-</configuration>
+<included>
+  <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+      <pattern>${FILE_ACCESS_LOG_PATTERN}</pattern>
+    </encoder>
+    <file>${ACCESS_LOG_FILE}</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${ACCESS_LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <maxFileSize>${ACCESS_LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+      <maxHistory>${ACCESS_LOG_FILE_MAX_HISTORY:-0}</maxHistory>
+    </rollingPolicy>
+  </appender>
+</included>

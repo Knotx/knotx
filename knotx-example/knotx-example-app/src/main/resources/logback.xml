@@ -17,52 +17,30 @@
 
 -->
 <configuration scan="true">
-  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+  <property name="LOG_PATH" value="${PWD}/logs"/>
+  <property name="NETTY_LOG_FILE_MAX_SIZE" value="1KB"/>
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </encoder>
-  </appender>
+  <include resource="io/knotx/logging/logback/base.xml" />
+  <include resource="io/knotx/logging/logback/access.xml" />
+  <include resource="io/knotx/logging/logback/netty.xml" />
 
-  <appender name="netty-wire" class="ch.qos.logback.core.FileAppender">
-    <file>netty-wire.log</file>
-    <append>true</append>
+  <!-- Increase logging level for Knot.x -->
+  <logger name="io.knotx" level="DEBUG" />
 
-    <encoder>
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </encoder>
-  </appender>
-
-  <appender name="access" class="ch.qos.logback.core.FileAppender">
-    <file>access.log</file>
+  <appender name="ALOG" class="ch.qos.logback.core.FileAppender">
+    <file>logger.log</file>
     <append>true</append>
     <!-- set immediateFlush to false for much higher logging throughput -->
     <immediateFlush>true</immediateFlush>
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     <encoder>
-      <pattern>%msg%n</pattern>
+      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
     </encoder>
   </appender>
 
-  <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO" additivity="false">
-    <appender-ref ref="access"/>
+  <logger name="ch.qos.logback" level="INFO" additivity="false">
+    <appender-ref ref="ALOG" />
   </logger>
-
-  <logger name="io.netty.handler.logging" level="TRACE" additivity="false">
-    <appender-ref ref="netty-wire"/>
-  </logger>
-
-  <logger name="io.knotx" level="DEBUG"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
-  </root>
 
 </configuration>

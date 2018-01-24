@@ -19,6 +19,15 @@
     "knotx:io.knotx.ResponseProviderKnot"
   ],
   "config": {
+    "knotx:io.knotx.HttpServiceAdapter": {
+      "options": {
+        "config": {
+          "clientOptions": {
+            "logActivity": true
+          }
+        }
+      }
+    },
     "knotx:io.knotx.ServiceKnot": {
       "options": {
         "config": {
@@ -56,6 +65,9 @@
     "knotx:example.io.knotx.HttpActionAdapter": {
       "options": {
         "config": {
+          "clientOptions": {
+            "logActivity": true
+          },
           "allowedRequestHeaders": [
             "Cookie",
             "Content-Type",

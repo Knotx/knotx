@@ -16,10 +16,14 @@
     limitations under the License.
 
 -->
-<configuration>
-  <property name="LOG_PATH" value="${PWD}/logs"/>
+<!--
+Console appender logback configuration provided for import
+-->
 
-  <include resource="io/knotx/logging/logback/base.xml" />
-  <include resource="io/knotx/logging/logback/access.xml" />
-
-</configuration>
+<included>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_KNOTX_LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+</included>

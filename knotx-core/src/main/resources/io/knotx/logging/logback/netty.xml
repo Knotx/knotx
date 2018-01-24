@@ -16,10 +16,16 @@
     limitations under the License.
 
 -->
-<configuration>
-  <property name="LOG_PATH" value="${PWD}/logs"/>
+<!--
+File appender logback configuration for netty debug logs provided for import
+-->
 
-  <include resource="io/knotx/logging/logback/base.xml" />
-  <include resource="io/knotx/logging/logback/access.xml" />
+<included>
+  <property name="FILE_NETTY_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
+  <property name="NETTY_LOG_FILE" value="${NETTY_LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/knotx-netty.log}"/>
+  <include resource="io/knotx/logging/logback/netty-file-appender.xml"/>
 
-</configuration>
+  <logger name="io.netty.handler.logging.LoggingHandler" level="DEBUG" additivity="false">
+    <appender-ref ref="NETTY" />
+  </logger>
+</included>
