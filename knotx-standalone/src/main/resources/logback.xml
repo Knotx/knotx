@@ -17,9 +17,6 @@
 
 -->
 <configuration>
-  <property name="LOG_PATH" value="${PWD}/logs"/>
-
   <include resource="io/knotx/logging/logback/base.xml" />
   <include resource="io/knotx/logging/logback/access.xml" />
-
 </configuration>

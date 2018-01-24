@@ -21,8 +21,12 @@ Default logback configuration provided for import
 -->
 
 <included>
+  <property name="LOG_PATH" value="${LOG_PATH:-./logs}"/>
+
   <property name="CONSOLE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
   <property name="FILE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
+
+  <property name="KNOTX_LOG_FILE" value="${LOG_PATH}/knotx.log"/>
 
   <logger name="io.netty" level="ERROR"/>
   <logger name="io.vertx" level="ERROR"/>

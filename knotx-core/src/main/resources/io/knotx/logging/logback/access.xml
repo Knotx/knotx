@@ -22,7 +22,7 @@ File appender logback configuration for knotx access logs provided for import
 
 <included>
   <property name="FILE_ACCESS_LOG_PATTERN" value="%msg%n"/>
-  <property name="ACCESS_LOG_FILE" value="${ACCESS_LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/knotx-access.log}"/>
+  <property name="ACCESS_LOG_FILE" value="${LOG_PATH}/knotx-access.log"/>
   <include resource="io/knotx/logging/logback/access-file-appender.xml"/>
 
   <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO" additivity="false">

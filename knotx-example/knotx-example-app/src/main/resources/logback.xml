@@ -17,30 +17,11 @@
 
 -->
 <configuration scan="true">
-  <property name="LOG_PATH" value="${PWD}/logs"/>
-  <property name="NETTY_LOG_FILE_MAX_SIZE" value="1KB"/>
-
   <include resource="io/knotx/logging/logback/base.xml" />
   <include resource="io/knotx/logging/logback/access.xml" />
   <include resource="io/knotx/logging/logback/netty.xml" />
 
   <!-- Increase logging level for Knot.x -->
   <logger name="io.knotx" level="DEBUG" />
-
-  <appender name="ALOG" class="ch.qos.logback.core.FileAppender">
-    <file>logger.log</file>
-    <append>true</append>
-    <!-- set immediateFlush to false for much higher logging throughput -->
-    <immediateFlush>true</immediateFlush>
-    <!-- encoders are assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
-    <encoder>
-      <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <logger name="ch.qos.logback" level="INFO" additivity="false">
-    <appender-ref ref="ALOG" />
-  </logger>
 
 </configuration>
