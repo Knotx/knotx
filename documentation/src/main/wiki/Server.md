@@ -221,7 +221,7 @@ The `repositories`, `splitter` and `assembler` verticles are specific to the def
 |-------:|:-------:|:-------:  |-------|
 | `enabled`   | `boolean` |       | Enable/Disable access log. Default is `true` |
 | `immediate` | `boolean` |       | Log before request or after. Default is `false` - log after request |
-| `format`    | `String` |        | Format of the access log. Allowed valueds are `DEFAULT`, `SHORT`, `TINY`. Default tries to log in a format similar to Apache log format, while the other 2 are more suited to development mode. Default format is `DEFAULT` |
+| `format`    | `String` |        | Format of the access log. Allowed valueds are `DEFAULT`, `SHORT`, `TINY`. See [[Configure Access Log|#configure-access-log]]. Default format is `DEFAULT` |
 
 
 ### Vert.x HTTP Server configurations
@@ -359,7 +359,7 @@ for eventubs requests that come from `KnotxServer`.
 ### Configure access log
 Knot.x uses a default Logging handler from the Vert.x web distribution that allows to log all incomming requests to the Http server.
 It supports three log line formats that are:
-- DEFAULT that tries to log in a format similar to Apache log format
+- DEFAULT that tries to log in a format similar to Apache log format (APACHE/NCSA COMBINED LOG FORMAT)
 `127.0.0.1 - - [Tue, 23 Jan 2018 14:16:34 GMT] "GET /content/local/simple.html HTTP/1.1" 200 2963 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"`
 - SHORT
 `127.0.0.1 - GET /content/local/simple.html HTTP/1.1 200 2963 - 19 ms`

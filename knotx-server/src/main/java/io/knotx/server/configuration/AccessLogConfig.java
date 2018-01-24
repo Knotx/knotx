@@ -20,9 +20,9 @@ import io.vertx.ext.web.handler.LoggerFormat;
 
 public class AccessLogConfig {
 
-  public static final boolean DEFAULT_ENABLED = true;
-  public static final boolean DEFAULT_LOGGER_IMMEDIATE = false;
-  public static final String DEFAULT_LOGGER_FORMAT = LoggerFormat.DEFAULT.toString();
+  private static final boolean DEFAULT_ENABLED = true;
+  private static final boolean DEFAULT_LOGGER_IMMEDIATE = false;
+  private static final String DEFAULT_LOGGER_FORMAT = LoggerFormat.DEFAULT.toString();
 
   private boolean enabled;
   private boolean immediate;
