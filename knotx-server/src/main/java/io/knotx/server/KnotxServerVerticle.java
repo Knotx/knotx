@@ -57,9 +57,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
         .setTimeout(csrfConfig.getTimeout());
 
     Router router = Router.router(vertx);
-    if (configuration.getAccessLogConfig().isEnabled()) {
-      router.route().handler(LoggerHandler.create(configuration.getAccessLogConfig().isImmediate(),
-          configuration.getAccessLogConfig().getFormat()));
+    if (configuration.getAccessLog().isEnabled()) {
+      router.route().handler(LoggerHandler.create(configuration.getAccessLog().isImmediate(),
+          configuration.getAccessLog().getFormat()));
     }
     router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));

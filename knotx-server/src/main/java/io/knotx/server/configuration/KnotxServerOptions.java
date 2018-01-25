@@ -23,7 +23,6 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.handler.BodyHandler;
 import java.util.HashSet;
 import java.util.Set;
@@ -104,6 +103,7 @@ public class KnotxServerOptions {
   private KnotxFlowSettings customFlow;
   private Set<String> allowedResponseHeaders;
   private CustomHttpHeader customResponseHeader;
+  private AccessLogOptions accessLog;
 
   /**
    * Default constructor
@@ -129,6 +129,7 @@ public class KnotxServerOptions {
     this.csrfConfig = new KnotxCSRFOptions(other.csrfConfig);
     this.defaultFlow = new KnotxFlowSettings(other.defaultFlow);
     this.customFlow = new KnotxFlowSettings(other.customFlow);
+    this.accessLog = new AccessLogOptions(other.accessLog);
   }
 
   /**
@@ -141,6 +142,9 @@ public class KnotxServerOptions {
     KnotxServerOptionsConverter.fromJson(json, this);
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
         .collect(Collectors.toSet());
+
+    serverOptions
+        .setPort(json.getJsonObject("serverOptions").getInteger("port", DEFAULT_HTTP_PORT));
   }
 
   /**
@@ -161,15 +165,12 @@ public class KnotxServerOptions {
     allowedResponseHeaders = DEFAULT_RESPONSE_HEADERS;
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
         .collect(Collectors.toSet());
-
-    serverOptions = new HttpServerOptions()
-        .setPort(DEFAULT_HTTP_PORT)
-        .setKeyStoreOptions(new JksOptions());
     deliveryOptions = new DeliveryOptions();
     customResponseHeader = new CustomHttpHeader().setName(DEFAULT_CUSTOM_RESPONSE_HEADER_NAME);
     csrfConfig = new KnotxCSRFOptions();
     defaultFlow = new KnotxFlowSettings();
     customFlow = null;
+    accessLog = new AccessLogOptions();
   }
 
   /**
@@ -352,6 +353,24 @@ public class KnotxServerOptions {
   public KnotxServerOptions setCustomResponseHeader(
       CustomHttpHeader customResponseHeader) {
     this.customResponseHeader = customResponseHeader;
+    return this;
+  }
+
+  /**
+   * @return access log configuration options
+   */
+  public AccessLogOptions getAccessLog() {
+    return accessLog;
+  }
+
+  /**
+   * Set the access log options
+   *
+   * @param accessLog a {@link AccessLogOptions} object
+   * @return reference to this, so the API can be used fluently
+   */
+  public KnotxServerOptions setAccessLog(AccessLogOptions accessLog) {
+    this.accessLog = accessLog;
     return this;
   }
 }

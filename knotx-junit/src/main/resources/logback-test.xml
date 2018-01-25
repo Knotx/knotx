@@ -17,12 +17,15 @@
 
 -->
 <configuration>
-  <include resource="io/knotx/logging/logback/defaults.xml" />
+  <property name="CONSOLE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
   <include resource="io/knotx/logging/logback/console-appender.xml" />
 
   <root level="INFO">
     <appender-ref ref="CONSOLE" />
   </root>
+
+  <logger name="io.netty" level="ERROR"/>
+  <logger name="io.vertx" level="ERROR"/>
 
   <logger name="io.knotx" level="TRACE">
     <appender-ref ref="CONSOLE"/>

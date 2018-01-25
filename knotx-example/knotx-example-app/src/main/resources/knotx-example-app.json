@@ -20,6 +20,10 @@
     "server": {
       "options": {
         "config": {
+          "serverOptions": {
+            "port": 8092,
+            "logActivity": true
+          },
           "defaultFlow": {
             "repositories": [
               {
@@ -138,7 +142,8 @@
           "address": "knotx.adapter.action.http",
           "clientOptions": {
             "maxPoolSize": 1000,
-            "keepAlive": false
+            "keepAlive": false,
+            "logActivity": true
           },
           "customRequestHeader": {
             "name": "Server-User-Agent",
@@ -266,6 +271,24 @@
               "address": "knotx.adapter.service.http"
             }
           ]
+        }
+      }
+    },
+    "serviceAdapter": {
+      "options": {
+        "config": {
+          "clientOptions": {
+            "logActivity": true
+          }
+        }
+      }
+    },
+    "httpRepo": {
+      "options": {
+        "config": {
+          "clientOptions": {
+            "logActivity": true
+          }
         }
       }
     }
