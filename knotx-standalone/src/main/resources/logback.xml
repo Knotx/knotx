@@ -17,6 +17,12 @@
 
 -->
 <configuration>
-  <include resource="io/knotx/logging/logback/base.xml" />
+  <include resource="io/knotx/logging/logback/defaults.xml"/>
+  <include resource="io/knotx/logging/logback/file-appender.xml"/>
   <include resource="io/knotx/logging/logback/access.xml" />
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="FILE"/>
+  </root>
 </configuration>

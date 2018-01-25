@@ -17,22 +17,14 @@
 
 -->
 <configuration>
+  <include resource="io/knotx/logging/logback/defaults.xml" />
+  <include resource="io/knotx/logging/logback/console-appender.xml" />
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </layout>
-  </appender>
-
-  <logger name="io.knotx.action.http" level="INFO"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
+  <root level="INFO">
+    <appender-ref ref="CONSOLE" />
   </root>
 
+  <logger name="io.knotx" level="TRACE">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 </configuration>

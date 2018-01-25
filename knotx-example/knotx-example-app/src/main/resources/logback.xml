@@ -23,5 +23,4 @@
 
   <!-- Increase logging level for Knot.x -->
   <logger name="io.knotx" level="DEBUG" />
-
 </configuration>

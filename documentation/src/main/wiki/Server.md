@@ -359,7 +359,7 @@ for eventubs requests that come from `KnotxServer`.
 ### Configure access log
 Knot.x uses a default Logging handler from the Vert.x web distribution that allows to log all incomming requests to the Http server.
 It supports three log line formats that are:
-- DEFAULT that tries to log in a format similar to Apache log format (APACHE/NCSA COMBINED LOG FORMAT)
+- DEFAULT that tries to log in a format similar to Apache log format (APACHE/NCSA COMBINED LOG FORMAT) as in the example
 `127.0.0.1 - - [Tue, 23 Jan 2018 14:16:34 GMT] "GET /content/local/simple.html HTTP/1.1" 200 2963 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"`
 - SHORT
 `127.0.0.1 - GET /content/local/simple.html HTTP/1.1 200 2963 - 19 ms`
@@ -382,23 +382,4 @@ By default access log is enabled with a `DEFAULT` format. If you want to change 
   }
 }
 ```
-In order to log the access log to a separate file, just configure your logger in `logback.xml` file as follows
-```xml
-  <appender name="access" class="ch.qos.logback.core.FileAppender">
-    <file>access.log</file>
-    <append>true</append>
-    <!-- set immediateFlush to false for much higher logging throughput -->
-    <immediateFlush>true</immediateFlush>
-    <encoder>
-      <pattern>%msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO" additivity="false">
-    <appender-ref ref="access"/>
-  </logger>
-```
-This configures log appender as file, with the pattern being just a message.
-Next step, is to add logger for `io.vertx.ext.web.handler.impl.LoggerHandlerImpl` to be flushed out into your new appender.
-
-See [logback.xml](https://github.com/Cognifide/knotx/blob/master/knotx-example/knotx-example-app/src/main/resources/logback.xml) from the example app as an example.
+In order to configure logger for access log, see [[Logging|Logging]].
