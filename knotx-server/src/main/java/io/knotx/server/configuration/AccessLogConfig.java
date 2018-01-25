@@ -24,9 +24,9 @@ public class AccessLogConfig {
   private static final boolean DEFAULT_LOGGER_IMMEDIATE = false;
   private static final String DEFAULT_LOGGER_FORMAT = LoggerFormat.DEFAULT.toString();
 
-  private boolean enabled;
-  private boolean immediate;
-  private LoggerFormat format;
+  private final boolean enabled;
+  private final boolean immediate;
+  private final LoggerFormat format;
 
   public AccessLogConfig(JsonObject config) {
     enabled = config.getBoolean("enabled", DEFAULT_ENABLED);
