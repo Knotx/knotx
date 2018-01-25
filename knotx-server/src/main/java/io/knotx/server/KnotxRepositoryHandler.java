@@ -91,8 +91,12 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private void endResponse(ClientResponse repoResponse, RoutingContext context) {
     writeHeaders(context.response(), repoResponse.getHeaders());
-    context.response().setStatusCode(repoResponse.getStatusCode())
-        .end(Buffer.newInstance(repoResponse.getBody()));
+    context.response().setStatusCode(repoResponse.getStatusCode());
+    if (repoResponse.getBody() != null) {
+      context.response().end(Buffer.newInstance(repoResponse.getBody()));
+    } else {
+      context.response().end();
+    }
   }
 
   private boolean isSuccessResponse(ClientResponse repoResponse) {

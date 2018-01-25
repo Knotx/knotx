@@ -183,3 +183,31 @@ for eventubs requests that come from `KnotxServer`.
   }
 }
 ```
+
+### Configure access log
+Knot.x uses a default Logging handler from the Vert.x web distribution that allows to log all incomming requests to the Http server.
+It supports three log line formats that are:
+- DEFAULT that tries to log in a format similar to Apache log format (APACHE/NCSA COMBINED LOG FORMAT) as in the example
+`127.0.0.1 - - [Tue, 23 Jan 2018 14:16:34 GMT] "GET /content/local/simple.html HTTP/1.1" 200 2963 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"`
+- SHORT
+`127.0.0.1 - GET /content/local/simple.html HTTP/1.1 200 2963 - 19 ms`
+- TINY
+`GET /content/local/simple.html 200 2963 - 24 ms`
+
+By default access log is enabled with a `DEFAULT` format. If you want to change it, just add access logging section on the KnotxServer configuration in your application.json config file :
+```json
+{
+  "config": {
+    "server": {
+      "options": {
+        "config": {
+          "accessLog": {
+            "format": "TINY"
+          }
+        }
+      }
+    }
+  }
+}
+```
+In order to configure logger for access log, see [[Logging|Logging]].
