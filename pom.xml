@@ -99,7 +99,7 @@
     <!-- https://github.com/vert-x3/vertx-codegen/issues/143 -->
     <!-- FIXME remove jackson dependency after moving to 3.5.1 -->
     <jackson.version>2.9.0</jackson.version>
-    <jsoup.version>1.10.2</jsoup.version>
+    <jsoup.version>1.11.2</jsoup.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-lang3.version>3.5</commons-lang3.version>
     <guava.version>20.0</guava.version>
