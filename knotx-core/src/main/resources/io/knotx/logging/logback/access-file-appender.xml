@@ -16,15 +16,20 @@
     limitations under the License.
 
 -->
-<configuration>
-  <include resource="io/knotx/logging/logback/defaults.xml" />
-  <include resource="io/knotx/logging/logback/console-appender.xml" />
+<!--
+File appender logback configuration provided for import
+-->
 
-  <root level="INFO">
-    <appender-ref ref="CONSOLE" />
-  </root>
-
-  <logger name="io.knotx" level="TRACE">
-    <appender-ref ref="CONSOLE"/>
-  </logger>
-</configuration>
+<included>
+  <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+      <pattern>${FILE_ACCESS_LOG_PATTERN}</pattern>
+    </encoder>
+    <file>${ACCESS_LOG_FILE}</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${ACCESS_LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <maxFileSize>${ACCESS_LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+      <maxHistory>${ACCESS_LOG_FILE_MAX_HISTORY:-0}</maxHistory>
+    </rollingPolicy>
+  </appender>
+</included>

@@ -31,6 +31,7 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
 * [[Mocks|Mocks]]
 * [[Knot.x Deployment|KnotxDeployment]]
   * [[Knot.x Tuning|KnotxTuning]]
+* [[Logging|Logging]]
 * [[Performance|PerformanceTests]]
   * [[Performance Tests Methodology|PerformanceTestsMethodology]]
   * [[Performance Tests Summary|PerformanceTestsSummary]]

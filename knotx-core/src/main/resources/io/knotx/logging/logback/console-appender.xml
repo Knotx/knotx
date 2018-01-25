@@ -16,15 +16,14 @@
     limitations under the License.
 
 -->
-<configuration>
-  <include resource="io/knotx/logging/logback/defaults.xml" />
-  <include resource="io/knotx/logging/logback/console-appender.xml" />
+<!--
+Console appender logback configuration provided for import
+-->
 
-  <root level="INFO">
-    <appender-ref ref="CONSOLE" />
-  </root>
-
-  <logger name="io.knotx" level="TRACE">
-    <appender-ref ref="CONSOLE"/>
-  </logger>
-</configuration>
+<included>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_KNOTX_LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+</included>

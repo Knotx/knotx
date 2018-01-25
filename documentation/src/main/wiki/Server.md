@@ -159,6 +159,7 @@ Main server options available.
 | `csrf`                      | `KnotxCSRFConfiguration`            |                | Configuration of the CSRF tokens |
 | `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
 | `customFlow`                | `KnotxFlowConfiguration`            |                | Configuration of [[Gateway Mode|GatewayMode]] |
+| `accessLog`                 | `AccessLogConfiguration`            |                | Configuration of the KnotxServer access log |
 
 ### KnotxServerCustomHeader options
  Name  | Type  | Mandatory | Description  |
@@ -213,6 +214,15 @@ The `repositories`, `splitter` and `assembler` verticles are specific to the def
 |-------:|:-------:|:-------:  |-------|
 | `address`      | `String`         | &#10004;       | Event bus address of the **Knot** verticle |
 | `onTransition` | `KnotRouteEntry` |        | Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.<br/>`"onTransition": { "go-d": {}, "go-e": {} }` |
+
+
+### AccessLogConfiguration options
+| Name  | Type  | Mandatory | Description  |
+|-------:|:-------:|:-------:  |-------|
+| `enabled`   | `boolean` |       | Enable/Disable access log. Default is `true` |
+| `immediate` | `boolean` |       | Log before request or after. Default is `false` - log after request |
+| `format`    | `String` |        | Format of the access log. Allowed valueds are `DEFAULT`, `SHORT`, `TINY`. See [[Configure Access Log|#configure-access-log]]. Default format is `DEFAULT` |
+
 
 ### Vert.x HTTP Server configurations
 
@@ -345,3 +355,31 @@ for eventubs requests that come from `KnotxServer`.
   }
 }
 ```
+
+### Configure access log
+Knot.x uses a default Logging handler from the Vert.x web distribution that allows to log all incomming requests to the Http server.
+It supports three log line formats that are:
+- DEFAULT that tries to log in a format similar to Apache log format (APACHE/NCSA COMBINED LOG FORMAT) as in the example
+`127.0.0.1 - - [Tue, 23 Jan 2018 14:16:34 GMT] "GET /content/local/simple.html HTTP/1.1" 200 2963 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"`
+- SHORT
+`127.0.0.1 - GET /content/local/simple.html HTTP/1.1 200 2963 - 19 ms`
+- TINY
+`GET /content/local/simple.html 200 2963 - 24 ms`
+
+By default access log is enabled with a `DEFAULT` format. If you want to change it, just add access logging section on the KnotxServer configuration in your application.json config file :
+```json
+{
+  "config": {
+    "knotx:io.knotx.KnotxServer": {
+      "options": {
+        "config": {
+          "accessLog": {
+            "format": "TINY"
+          }
+        }
+      }
+    }
+  }
+}
+```
+In order to configure logger for access log, see [[Logging|Logging]].

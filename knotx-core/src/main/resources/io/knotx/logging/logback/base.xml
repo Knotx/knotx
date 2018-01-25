@@ -16,15 +16,16 @@
     limitations under the License.
 
 -->
-<configuration>
-  <include resource="io/knotx/logging/logback/defaults.xml" />
-  <include resource="io/knotx/logging/logback/console-appender.xml" />
+<!--
+Base logback configuration for knot.x
+-->
+<included>
+  <include resource="io/knotx/logging/logback/defaults.xml"/>
+  <include resource="io/knotx/logging/logback/console-appender.xml"/>
+  <include resource="io/knotx/logging/logback/file-appender.xml"/>
 
   <root level="INFO">
-    <appender-ref ref="CONSOLE" />
-  </root>
-
-  <logger name="io.knotx" level="TRACE">
     <appender-ref ref="CONSOLE"/>
-  </logger>
-</configuration>
+    <appender-ref ref="FILE"/>
+  </root>
+</included>
