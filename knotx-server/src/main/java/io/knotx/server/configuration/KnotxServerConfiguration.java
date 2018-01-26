@@ -26,6 +26,8 @@ public class KnotxServerConfiguration {
   //Default limit=-1 - Unlimited size
   private final static long DEFAULT_UPLOAD_LIMIT = -1;
 
+  private static final Long DEFAULT_REQUEST_BUFFER_SIZE = 100L;
+
   private final Long fileUploadLimit;
 
   private boolean displayExceptionDetails;
@@ -47,6 +49,8 @@ public class KnotxServerConfiguration {
   private KnotxCSRFConfig csrfConfig;
 
   private AccessLogConfig accessLogConfig;
+
+  private Long requestsBufferSize;
 
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
@@ -71,6 +75,7 @@ public class KnotxServerConfiguration {
     csrfConfig = new KnotxCSRFConfig(config.getJsonObject("csrf", new JsonObject()));
 
     accessLogConfig = new AccessLogConfig(config.getJsonObject("accessLog", new JsonObject()));
+    requestsBufferSize = config.getLong("requestsBufferSize", DEFAULT_REQUEST_BUFFER_SIZE);
   }
 
   public boolean displayExceptionDetails() {
@@ -115,5 +120,9 @@ public class KnotxServerConfiguration {
 
   public AccessLogConfig getAccessLogConfig() {
     return accessLogConfig;
+  }
+
+  public Long getRequestsBufferSize() {
+    return requestsBufferSize;
   }
 }
