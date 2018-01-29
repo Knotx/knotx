@@ -43,7 +43,7 @@ public class MockServiceVerticle extends AbstractVerticle {
   private HttpServer httpServer;
 
   @Override
-  public void start(Future<Void> fut) throws IOException, URISyntaxException {
+  public void start(Future<Void> fut) {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();
 
@@ -68,7 +68,7 @@ public class MockServiceVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     httpServer.close();
   }
 

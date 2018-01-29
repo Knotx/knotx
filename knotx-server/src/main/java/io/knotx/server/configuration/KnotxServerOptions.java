@@ -20,6 +20,7 @@ import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
 import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
@@ -32,9 +33,9 @@ import java.util.stream.Collectors;
 public class KnotxServerOptions {
 
   /**
-   * The default value for Knot.x HTTP Server port = the value of the system property "knotx.port" or 8092
+   * The default value for Knot.x HTTP Server port = 8092
    */
-  public final static int DEFAULT_HTTP_PORT = Integer.getInteger(KNOTX_PORT_PROP_NAME, 8092);
+  public final static int DEFAULT_HTTP_PORT = 8092;
   /**
    * Default name of the custom response header
    */
@@ -140,11 +141,27 @@ public class KnotxServerOptions {
   public KnotxServerOptions(JsonObject json) {
     init();
     KnotxServerOptionsConverter.fromJson(json, this);
+
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
         .collect(Collectors.toSet());
 
-    serverOptions
-        .setPort(json.getJsonObject("serverOptions").getInteger("port", DEFAULT_HTTP_PORT));
+    //If port wasn't customized by the configuration file (it will get the vertx default = 80)
+    if (serverOptions.getPort() == HttpServerOptions.DEFAULT_PORT) {
+      setPort(DEFAULT_HTTP_PORT);
+    } else { //port was specified in config, try to overwrite with system props
+      setPort(serverOptions.getPort());
+    }
+  }
+
+  /**
+   * Sets the port to the value from system property `knotx.port` if specified.
+   * Otherwise, set to the provided value
+   *
+   * @param port a desired HTTP port to be used if not specified in 'knotx.port' system property
+   */
+  @GenIgnore
+  private void setPort(int port) {
+    serverOptions.setPort(Integer.getInteger(KNOTX_PORT_PROP_NAME, port));
   }
 
   /**
@@ -166,6 +183,7 @@ public class KnotxServerOptions {
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
         .collect(Collectors.toSet());
     deliveryOptions = new DeliveryOptions();
+    serverOptions = new HttpServerOptions();
     customResponseHeader = new CustomHttpHeader().setName(DEFAULT_CUSTOM_RESPONSE_HEADER_NAME);
     csrfConfig = new KnotxCSRFOptions();
     defaultFlow = new KnotxFlowSettings();
