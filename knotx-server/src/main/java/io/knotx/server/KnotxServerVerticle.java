@@ -28,9 +28,13 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.RxHelper;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.http.HttpServer;
+import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
+import io.vertx.reactivex.ext.web.handler.CookieHandler;
 import io.vertx.reactivex.ext.web.handler.ErrorHandler;
+import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
@@ -56,15 +60,15 @@ public class KnotxServerVerticle extends AbstractVerticle {
         .setTimeout(csrfConfig.getTimeout());
 
     Router router = Router.router(vertx);
-//    if (configuration.getAccessLogConfig().isEnabled()) {
-//      router.route().handler(LoggerHandler.create(configuration.getAccessLogConfig().isImmediate(),
-//          configuration.getAccessLogConfig().getFormat()));
-//    }
-//    router.route().handler(KnotxHeaderHandler.create(configuration));
-//    router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
-//    router.route().handler(CookieHandler.create());
-//    router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
-//        .setBodyLimit(configuration.getFileUploadLimit()));
+    if (configuration.getAccessLogConfig().isEnabled()) {
+      router.route().handler(LoggerHandler.create(configuration.getAccessLogConfig().isImmediate(),
+          configuration.getAccessLogConfig().getFormat()));
+    }
+    router.route().handler(KnotxHeaderHandler.create(configuration));
+    router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
+    router.route().handler(CookieHandler.create());
+    router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
+        .setBodyLimit(configuration.getFileUploadLimit()));
 
     router.route().handler(KnotxContextHandler.create());
 
@@ -135,12 +139,16 @@ public class KnotxServerVerticle extends AbstractVerticle {
     httpServer
         .requestStream()
         .toFlowable()
+        .map(HttpServerRequest::pause)
         .onBackpressureBuffer(configuration.getRequestsBufferSize(),
             () -> LOGGER.warn("Server buffer is overflown!"),
             BackpressureOverflowStrategy.DROP_LATEST)
         .onBackpressureDrop(req -> req.response().setStatusCode(503).end())
         .observeOn(RxHelper.scheduler(vertx.getDelegate()))
-        .subscribe(router::accept, error -> LOGGER.error("Exception while processing!", error));
+        .subscribe(req -> {
+          req.resume();
+          router.accept(req);
+        }, error -> LOGGER.error("Exception while processing!", error));
     httpServer.listen(server -> {
       if (server.succeeded()) {
         LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
