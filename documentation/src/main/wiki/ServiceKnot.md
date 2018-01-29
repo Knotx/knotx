@@ -64,53 +64,14 @@ to avoid multiple calls for the same data.
 Caching is performed within page request scope, this means another request will not get cached data.
 
 ## How to configure?
-Service Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+For all configuration fields and their defaults consult [ServiceKnotOptions](https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-knot/knotx-knot-service/src/main/asciidoc/dataobjects.adoc#serviceknotoptions)
 
-Default configuration shipped with the verticle as `io.knotx.ServiceKnot.json` file available in classpath.
-
-```json
-{
-  "main": "io.knotx.knot.service.ServiceKnotVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.knot.service",
-      "services": [
-        {
-          "name": "mock",
-          "address": "mock-service-adapter",
-          "params": {
-            "path": "/service/mock/.*"
-          }
-        }
-      ]
-    }
-  }
-}
-```
 In general, it:
 - Listens on event bus address `knotx.knot.service` on messages to process
 - It communicates with the [[Service Adapter|ServiceAdapter]] on event bus address `mock-service-adapter` for processing GET requests to the services
 - It defines service adapter configuration
 
 Detailed description of each configuration option is described in the next subsection.
-
-### Service Knot options
-
-Main Service Knot options available.
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | Event bus address of the Service Knot verticle. |
-| `services`                  | `Array of ServiceMetadata`          | &#10004;       | Array of [ServiceMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-view/src/main/java/com/cognifide/knotx/knot/service/ServiceKnotConfiguration.java).|
-
-ServiceMetadata options available.
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-knotx-service-{NAMESPACE}={ADAPTERNAME}`. |
-| `address`                   | `String`                            | &#10004;       | Event bus address of the **Adapter** verticle. |
-| `params`                    | `JSON object`                       | &#10004;       | Json Object with default params which are sent to Adapter. |
-| `cacheKey`                  | `String`                            |                | Cache key which is used for Adapters calls caching. **No** means that cache key has value `{NAME}|{PARAMS}` |
 
 ### Vert.x Event Bus delivery options
 

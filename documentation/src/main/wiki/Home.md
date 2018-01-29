@@ -4,35 +4,35 @@ modules according your needs. Additionally wiki contains base information how se
 
 User documentation is available at [http://knotx.io](http://knotx.io/).
 
-* [[Getting started|GettingStarted]] <!--DONE -->
-  * [[Running The Demo|RunningTheDemo]] <!--DONE -->
-  * [[Debugging Knot.x|Debugging]] <!--DONE -->
-* [[Architecture|Architecture]] <!--DONE -->
-  * [[High Level Architecture|HighLevelArchitecture]] <!--DONE -->
-  * [[Core Architecture|CoreArchitecture]] <!--DONE -->
-  * [[Communication Flow|CommunicationFlow]] <!--DONE -->
-  * [[Knot Routing|KnotRouting]] <!--DONE -->
-  * [[Gateway Mode|GatewayMode]] <!--DONE -->
-* [[Knot.x Modules|KnotxModules]] <!-- DONE -->
-* [[Server|Server]] <!-- DONE -->
-* [[Repository Connectors|RepositoryConnectors]] <!-- DONE -->
-  * [[Http Repository Connector|HttpRepositoryConnector]] <!-- DONE -->
-  * [[Filesystem Repository Connector|FilesystemRepositoryConnector]] <!-- DONE -->
-* [[Splitter|Splitter]] <!-- DONE -->
-* [[Assembler|Assembler]] <!-- DONE -->
-* [[Knot|Knot]] <!-- DONE -->
+* [[Getting started|GettingStarted]]
+  * [[Running The Demo|RunningTheDemo]]
+  * [[Debugging Knot.x|Debugging]]
+* [[Architecture|Architecture]]
+  * [[High Level Architecture|HighLevelArchitecture]]
+  * [[Core Architecture|CoreArchitecture]]
+  * [[Communication Flow|CommunicationFlow]]
+  * [[Knot Routing|KnotRouting]]
+  * [[Gateway Mode|GatewayMode]]
+* [[Knot.x Modules|KnotxModules]]
+* [[Server|Server]]
+* [[Repository Connectors|RepositoryConnectors]]
+  * [[Http Repository Connector|HttpRepositoryConnector]]
+  * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
+* [[Splitter|Splitter]]
+* [[Assembler|Assembler]]
+* [[Knot|Knot]]
   * [[Action Knot|ActionKnot]]
   * [[Service Knot|ServiceKnot]]
   * [[Handlebars Knot|HandlebarsKnot]]
-* [[Adapter|Adapter]] <!-- DONE -->
+* [[Adapter|Adapter]]
   * [[Service Adapter|ServiceAdapter]]
   * [[Action Adapter|ActionAdapter]]
   * [[Http Service Adapter|HttpServiceAdapter]]
 * [[Mocks|Mocks]]
 * [[Knot.x Deployment|KnotxDeployment]]
-  * [[Knot.x Tuning|KnotxTuning]] <!--DONE -->
+  * [[Knot.x Tuning|KnotxTuning]]
 * [[Logging|Logging]]
-* [[Performance|PerformanceTests]] <!--DONE -->
-  * [[Performance Tests Methodology|PerformanceTestsMethodology]]<!--DONE -->
-  * [[Performance Tests Summary|PerformanceTestsSummary]]<!--DONE -->
-  * [[Performance Tests Tuning|PerformanceTestsTuning]]<!--DONE -->
+* [[Performance|PerformanceTests]]
+  * [[Performance Tests Methodology|PerformanceTestsMethodology]]
+  * [[Performance Tests Summary|PerformanceTestsSummary]]
+  * [[Performance Tests Tuning|PerformanceTestsTuning]]

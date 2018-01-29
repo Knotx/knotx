@@ -78,6 +78,11 @@ The `serverOptions` is the place to do so, e.g. set server port as follows:
 ```
 The details of remaining server options are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
 
+A HTTP server port can be also specified through system property `knotx.port` that takes precedence over the value in the configuration file.
+```
+java -Dknotx.port=9999 ...
+```
+
 ### How to configure Knot.x to listen with SSL/TLS
 
 Generate certificates for your machine (e.g. localhost)

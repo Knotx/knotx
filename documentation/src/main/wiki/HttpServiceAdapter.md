@@ -49,50 +49,8 @@ Http Service Adapter replies with `ClientResponse` that contains:
 | `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
 ## How to configure?
-Http Service Adapter is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+For all configuration fields and their defaults consult [ServiceAdapterOptions](https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-adapter/knotx-adapter-common/src/main/asciidoc/dataobjects.adoc#serviceadapteroptions)
 
-Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.json` file available in classpath.
-```json
-{
-  "main": "io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.adapter.service.http",
-      "clientOptions": {
-        "maxPoolSize": 1000,
-        "setIdleTimeout": 600,
-        "tryUseCompression": true,
-        "logActivity": true
-      },
-      "customHttpHeader": {
-        "name": "Server-User-Agent",
-        "value": "Knot.x"
-      },
-      "services": [
-        {
-          "path": "/service/mock/.*",
-          "domain": "localhost",
-          "port": 3000,
-          "allowedRequestHeaders": [
-            "Content-Type",
-            "X-*"
-          ]
-        },
-        {
-          "path": "/service/.*",
-          "domain": "localhost",
-          "port": 8080,
-          "allowedRequestHeaders": [
-            "Content-Type",
-            "X-*"
-          ]
-        }
-      ]
-    }
-  }
-}
-
-```
 In general, the default configuration covers:
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
 will be processed by Http Service Adapter.
@@ -106,7 +64,6 @@ Any HttpClientOption may be defined in this section, at this example two options
 In example above, two services are configured:
   - `/service/mock/.*` that will call `http://localhost:3000` domain with defined [path](#service-path),
   - `/service/.*` that will call `http://localhost:8080` domain with defined [path](#service-path).
-
 
 #### Service Knot configuration
 Example configuration of a [[Service Knot|ServiceKnot]]:

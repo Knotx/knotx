@@ -21,23 +21,22 @@ They will be taken from **knotx-standalone-X.Y.Z-fat.jar**.
 from the [latest release](https://github.com/Cognifide/knotx/releases) as a reference. In this example,
 created file is named `knotx-starter.json` and is placed in `KNOTX_HOME`.
 
-- Create your own [Logback logger configuration](http://logback.qos.ch/manual/configuration.html)
-(any location on the host) basing e.g. on `logback.xml`
-from the [latest release](https://github.com/Cognifide/knotx/releases).
+- Create your own logger configuration. See [[Knot.x Logging|Logging]] on how to do it.
 
 At this step `KNOTX_HOME` should contain:
 ```
 - app
-    - knotx-standalone-X.Y.Z-fat.jar
-    - custom-modules.jar
-- knotx-starter.json
-- logback.xml
+  - custom-modules.jar
+- config
+  - knotx-starter.json
+  - logback.xml
+- knotx-standalone-X.Y.Z-fat.jar
 ```
 
 To start Knot.x with custom modules, use following command
 
 ```
-java -Dlogback.configurationFile=logback.xml -cp "app/*" io.knotx.launcher.LogbackLauncher -conf knotx-starter.json
+java -Dlogback.configurationFile=config/logback.xml -jar knotx-standalone-X.Y.Z-fat.jar -conf config/knotx-starter.json -cp "app/*" 
 ```
 
 The execution of Knot.x using a launcher as above it uses a following exit codes as specified in [Vert.x documentation|http://vertx.io/docs/vertx-core/java/#_launcher_and_exit_code].
@@ -83,18 +82,16 @@ As mentioned above, the `knotx-starter.json` is the main configuration file desc
   ]
 }
 ```
-As you see, it simply have list of modules that Knot.x should start. Out of the box, no other configuration is required as each module is shipped with its default config.
+As you see, it simply have list of modules that Knot.x should start in the form of:
+`<alias>=<verticle.class.name>`.
 
-However, at the production environment you often need to alter the configuration parameters such as port of HTTP server, or HTTP headers that are
-being passed, or addresses of the client services used for rendering dynamic content.
+In order to reconfigure Knot.x to your needs, e.g. to set port of HTTP server, or HTTP headers that are
+being passed, or addresses of the client services used for rendering dynamic content you can use your configuration json file.
 
-Thanks to the Knot.x capabilities you can provide your configurations that modifies defaults. There are three ways:
-1. In your `knotx-starter.json` file add `config` section for each module that needs default configuration to be modified. You only need to specify elements that
-should be changed. Follow the guide of each Verticle to see the supported parameters.
-2. With JVM properties: you can provide single values for desired fields (e.g. http port) or even whole json objects from external JSON file.
-Any parameter provided through system properties will always override default and starter values.
-3. It is also possible to create your own module that uses existing Knot.x Verticle. In that module you can build the configuration file from scratch.
-Such module configuration might be also overridden using starter JSON and/or JVM properties.
+Just add `config` section for each module (using **alias** as the reference) that needs default configuration to be modified. 
+You only need to specify elements that should be changed. Follow the guide of each Verticle to see the supported parameters.
+
+Some of the verticles, might respect System properties to alter some configurations. E.g. see the [[Servcer|Server]] 
 
 ### How to configure Knot.x in starter JSON ?
 In your project specific `knots-starter.json` add `config` object. For each module you want to configure put a field with configuration object.
@@ -132,97 +129,15 @@ It means, that you can specify here deployment options such as how many instance
 - Inside `options` you can supply `config` object where you override configuration for the verticle provided by the module.
 See Knot.x Verticle documentation to see what's available on each Verticle.
 
-If you start Knot.x with the configuration as above, it will start all modules listed in the config, but the `io.knotx.KnotxServer` will be deployed as:
-- Two instances
-- It will listen on port 9999
+If you start Knot.x with the configuration as above, it will start all modules listed in the config, but the `server` will be deployed as:
+- Two KnotxServer Verticle instances
+- Both will listen on port 9999 (vert.x will do load balancing for you)
 
-### How to configure with JVM properties ?
-In some cases, you might want to provide configuration parameters with JVM properties, e.g. you can have same config used on all environments,
-but you wanted to specify HTTP port of the server to be different on each host.
-In such case, you can simply provide environment specific port as JVM property, e.g.
-```
--Dio.knotx.KnotxServer.options.config.serverOptions.port=9999
-```
-
-Additionally, if you want to change more than one value, you can create separate JSON file with all parameters you want to modify, and inject that config using JVM property.
-
-For instance, you might want to have routing of `io.knotx.KnotxServer` defined in a separate JSON file called `my-routing.json` that might looks like below:
-```json
-{
-  "GET": [
-    {
-      "path": "/content/custom-path/.*",
-      "address": "knotx.knot.service",
-      "onTransition": {
-        "next": {
-          "address": "knotx.knot.handlebars"
-        }
-      }
-    }
-  ]
-}
-```
-Then, you can use that file to override default routing as below:
-```
--Dio.knotx.KnotxServer.options.config.routing=file:my-routing.json
-```
-
-### How to configure your own module ?
-The last option to change Verticle configuration, is to redefine Knotx module by creating your own descriptor.
-The descriptor is simply a JSON file that must be available in classpath (e.g. in JAR file of your custom Verticle implementation,
-or inside folder where all JAR files you put on your installation).
-
-Name of the descriptor file is important as it's a module name used in starter JSON.
-
-For instance, you might want to create KnotxServer configuration from scratch, ignoring default config available.
-All you have to do is to create module descriptor file, e.g. `my.KnotxServer.json` with the content as below
-```json
-{
-  "main": "io.knotx.server.KnotxServerVerticle",
-  "options": {
-    "config": {
-
-    }
-  }
-}
-```
-Where:
-- `main` is the fully qualified class name of the Verticle the module represents
-- `options` object, where you can specify deployment options, and inside it a `config` object that should have Verticle specific configuration
-
-Next step, is to use your new module in `knotx-starter.json`.
-```json
-{
-  "modules": [
-    "myServer=com.acme.my.KnotxServer",
-    "......"
-  ],
-  "config": {
-    "myServer": {
-      "options": {
-        "config": {
-
-        }
-      }
-    }
-  }
-}
-```
-Finally, you can still override that config as described above: through starter JSON, or through JVM properties:
-
-Single value:
-```
--Dmy.KnotxServer.options.config.serverOptions.port=9999
-```
-
-Or, whole JSON Object from external file
-```
--Dmy.KnotxServer.options.config.routing=file:/path/to/my-routing.json
-```
 
 ### What happens when config refers to non-existing module?
-Let's assume that you work over a new `com.acme.MyCustomModuleVerticle` module and it will be implemented inside `custom-module.jar`. As mentioned above, you should do 2 things to start using it
-within Knot.x instance. You need to add it to the list of Knot.x modules in the main config file:
+Let's assume that you work over a new `com.acme.MyCustomModuleVerticle` verticle and it will be implemented inside `custom-module.jar`. 
+As mentioned above, you should do 2 things to start using it within Knot.x instance. 
+You need to add it to the list of Knot.x modules in the main config file:
 
 ```json
 {
@@ -234,11 +149,11 @@ within Knot.x instance. You need to add it to the list of Knot.x modules in the 
 }
 ```
 
-And add the `custom-module.jar` to the classpath. But what will happen if you actually forgot to add `custom-module.jar` to the classpath?
+And add the `custom-module.jar` to the classpath. But what will happen, if you actually forgot to add `custom-module.jar` to the classpath?
 Knot.x will start the instance with following warning:
 
 ```
-2017-08-29 15:42:57 [vert.x-eventloop-thread-0] WARN i.k.launcher.KnotxStarterVerticle - Cannot find module descriptor file io.example.MyCustomModule.json on classpath
+2018-01-27 10:05:05.841 [vert.x-eventloop-thread-0] WARN  i.k.launcher.KnotxStarterVerticle - Can't deploy com.acme.MyCustomModuleVerticle
 ```
 
 Instance will start as though `com.acme.MyCustomModuleVerticle` didn't exist.
