@@ -16,23 +16,16 @@
     limitations under the License.
 
 -->
-<configuration>
+<!--
+File appender logback configuration for netty debug logs provided for import
+-->
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </layout>
-  </appender>
+<included>
+  <property name="FILE_NETTY_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
+  <property name="NETTY_LOG_FILE" value="${LOG_PATH}/knotx-netty.log"/>
+  <include resource="io/knotx/logging/logback/netty-file-appender.xml"/>
 
-  <logger name="io.knotx.knot.templating" level="TEST"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
+  <logger name="io.netty.handler.logging.LoggingHandler" level="DEBUG" additivity="false">
+    <appender-ref ref="NETTY" />
   </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
-  </root>
-
-</configuration>
+</included>

@@ -16,23 +16,14 @@
     limitations under the License.
 
 -->
-<configuration>
+<!--
+Console appender logback configuration provided for import
+-->
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<included>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
+      <pattern>${CONSOLE_KNOTX_LOG_PATTERN}</pattern>
     </encoder>
   </appender>
-
-  <logger name="io.knotx" level="TRACE"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
-  </root>
-
-</configuration>
+</included>

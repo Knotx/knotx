@@ -12,24 +12,28 @@ For the prototyping or development purposes Knot.x is shipped with the Mocks Ver
 - On POST request, does the same as above. Optionally, if `bouncing=true` it adds to the response JSON Object form attributes from the POST request.  
 
 ### How to configure ?
-Default configuration shipped with the verticle as `io.knotx.ServiceMock.json` file available in classpath.
+A service mock has following configuration parameters that you need to set in your application configuration json
 ```json
 {
-  "main": "io.knotx.mocks.MockServiceVerticle",
-  "options": {
-    "config": {
-      "mockDataRoot": "mock/service",
-      "bouncing": true,
-      "httpPort": 3000
+  "io.knotx.mocks.MockServiceVerticle" : {
+    "options": {
+      "config": {
+        "mockDataRoot": "mock/service",
+        "bouncing": true,
+        "httpPort": 3000
+      }
     }
   }
 }
 
 ```
-In short, the default configuration defines:
-- Mock listens on HTTP port 3000 for requests
-- Root folder of mocked responses is `mock/service` relative to the classpath. If path starts from `/` it will search for files in local filesystem instead.
-- Do bouncing of POST requests - Adds to the response JSON object form attributes from POST request.
+The configuration options are:
+- `httpPort` - HTTP port on which the service mock listens for requests
+- `mockDataRoot` - Root folder of mocked responses. If path starts from `/` it will search for files in local filesystem, or on classpath if not leading slash.
+- `bouncing` - Adds to the mock response a JSON object form attributes of the received POST request.
+
+Mock service is already shipped with some mock responses for testing example project. If you want to use them, specify:
+`mockDataRoot: "mock/service"`
 
 Besides simple configuration as above, you can introduce delays to the service responses, to simulate real cases.
 See [[how to configure delay ?|#how-to-configure-delay-]] section for details.
@@ -42,21 +46,25 @@ See [[how to configure delay ?|#how-to-configure-delay-]] section for details.
   - Sends response to the client with the content of the file setting proper response headers and status code `200` (Or `404` is no requested mock file)
 
 ### How to configure ?
-Default configuration shipped with the verticle as `io.knotx.RemoteRepositoryMock.json` file available in classpath.
+A service mock has following configuration parameters that you need to set in your application configuration json
 ```json
 {
-  "main": "io.knotx.mocks.MockRemoteRepositoryVerticle",
-  "options": {
-    "config": {
-      "mockDataRoot": "mock/repository",
-      "httpPort": 3001
+  "io.knotx.mocks.MockRemoteRepositoryVerticle": {
+    "options": {
+      "config": {
+        "mockDataRoot": "mock/repository",
+        "httpPort": 3001
+      }
     }
   }
 }
 ```
-In short, the default configuration defines:
-- Mock listens on HTTP port 3001 for requests
-- Root folder of mocked responses is `mock/repository` relative to the classpath. If path starts from `/` it will search for files in local filesystem instead.
+The configuration options are:
+- `httpPort` - HTTP port on which the service mock listens for requests
+- `mockDataRoot` - Root folder of mocked responses. If path starts from `/` it will search for files in local filesystem, or on classpath if not leading slash.
+
+Mock service is already shipped with some mock responses for testing example project. If you want to use them, specify:
+`mockDataRoot: "mock/repository"`
 
 Besides simple configuration as above, you can introduce delays to the repository responses, to simulate real cases.
 See [[how to configure delay ?|#how-to-configure-delay-]] section for details.
@@ -72,18 +80,18 @@ Delay all responses of Service Mock by `100ms` and Remote Repository Mock respon
 ```json
 {
   "modules": [
-    "io.knotx.ServiceMock",
-    "io.knotx.RemoteRepositoryMock"
+    "repo=io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "service=io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
-    "io.knotx.ServiceMock": {
+    "service": {
       "options" : {
         "config": {
           "delayAllMs": 100
         }
       }
     },
-    "io.knotx.RemoteRepositoryMock": {
+    "repo": {
       "options" : {
         "config": {
           "delayAllMs": 20
@@ -92,10 +100,6 @@ Delay all responses of Service Mock by `100ms` and Remote Repository Mock respon
     }    
   }
 }
-```
-Alternatively, instead of configuring using starter JSON, you can supply it using JVM properties when starting mocks, e.g.:
-```
-$ java -Dio.knotx.ServiceMock.options.config.delayAllMs=100 -Dio.knotx.RemoteRepositoryMock.options.config.delayAllMs=20 -jar knotx-mocks-XXXX.jar ....
 ```
 
 ### Delay reponses for specific paths
@@ -109,11 +113,11 @@ Config below does:
 ```json
 {
   "modules": [
-    "io.knotx.ServiceMock",
-    "io.knotx.RemoteRepositoryMock"
+    "repo=io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "service=io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
-    "io.knotx.ServiceMock": {
+    "service": {
       "options": {
         "config": {
           "delay": {
@@ -124,7 +128,7 @@ Config below does:
         }
       }
     },
-    "io.knotx.RemoteRepositoryMock": {
+    "repo": {
       "options": {
         "config": {
           "delay": {

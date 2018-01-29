@@ -80,25 +80,5 @@ Fragments not matching `script` tag are not supposed to be processed while Knots
 used at the end of processing to assemble final HTML result (see [[Fragment Assembler|Assembler]]).
 
 ## How to configure?
-Splitter is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
 
-Default configuration shipped with the verticle as `io.knotx.FragmentSplitter.json` file available in classpath.
-```json
-{
-  "main": "io.knotx.splitter.FragmentSplitterVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.core.splitter"
-    }
-  }
-}
-```
-In short, the default configuration just defines event bus address on which the Splitter listens for jobs to process.
-
-Detailed description of each configuration option is described in the next subsection.
-
-### Splitter config
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | Event bus address of the Splitter verticle. |
+See the [Fragment Splitter Options](https://github.com/Cognifide/knotx/blob/master/knotx-knot/knotx-knot-fragment-splitter/src/main/asciidoc/dataobjects.adoc#fragmentsplitteroptions) for all configuration options and its defaults.

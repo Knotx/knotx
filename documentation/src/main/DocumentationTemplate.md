@@ -25,6 +25,8 @@
 #include "wiki/HttpServiceAdapter.md"
 #include "wiki/Mocks.md"
 #include "wiki/KnotxDeployment.md"
+#include "wiki/KnotxTuning.md"
+#include "wiki/Logging.md"
 #include "wiki/Dependencies.md"
 #include "wiki/FAQ.md"
 #include "wiki/UpgradeNotes.md"

@@ -16,26 +16,20 @@
     limitations under the License.
 
 -->
-<configuration>
+<!--
+File appender logback configuration provided for import
+-->
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<included>
+  <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <encoder>
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
+      <pattern>${FILE_ACCESS_LOG_PATTERN}</pattern>
     </encoder>
+    <file>${ACCESS_LOG_FILE}</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${ACCESS_LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <maxFileSize>${ACCESS_LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+      <maxHistory>${ACCESS_LOG_FILE_MAX_HISTORY:-0}</maxHistory>
+    </rollingPolicy>
   </appender>
-
-  <logger name="io.knotx" level="INFO" additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <logger name="io.knotx.assembler" level="INFO" additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <root level="error">
-    <appender-ref ref="STDOUT"/>
-  </root>
-
-</configuration>
+</included>

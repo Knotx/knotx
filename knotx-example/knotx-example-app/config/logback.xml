@@ -17,38 +17,10 @@
 
 -->
 <configuration scan="true">
-  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+  <include resource="io/knotx/logging/logback/base.xml" />
+  <include resource="io/knotx/logging/logback/access.xml" />
+  <include resource="io/knotx/logging/logback/netty.xml" />
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </encoder>
-  </appender>
-
-  <appender name="netty-wire" class="ch.qos.logback.core.FileAppender">
-    <file>netty-wire.log</file>
-    <append>true</append>
-
-    <encoder>
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </encoder>
-  </appender>
-
-  <logger name="io.netty.handler.logging" level="TRACE" additivity="false">
-    <appender-ref ref="netty-wire"/>
-  </logger>
-
-  <logger name="io.knotx" level="DEBUG"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
-  </root>
-
+  <!-- Increase logging level for Knot.x -->
+  <logger name="io.knotx" level="DEBUG" />
 </configuration>

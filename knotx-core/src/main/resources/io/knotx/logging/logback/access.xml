@@ -16,23 +16,16 @@
     limitations under the License.
 
 -->
-<configuration>
+<!--
+File appender logback configuration for knotx access logs provided for import
+-->
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </layout>
-  </appender>
+<included>
+  <property name="FILE_ACCESS_LOG_PATTERN" value="%msg%n"/>
+  <property name="ACCESS_LOG_FILE" value="${LOG_PATH}/knotx-access.log"/>
+  <include resource="io/knotx/logging/logback/access-file-appender.xml"/>
 
-  <logger name="io.knotx.knot.action" level="INFO"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
+  <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO" additivity="false">
+    <appender-ref ref="ACCESS" />
   </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
-  </root>
-
-</configuration>
+</included>

@@ -34,7 +34,7 @@ public class KnotxLauncher extends Launcher {
    */
   public static final int KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE = 30;
 
-  public static void main(String[] args) {
+  public static void main(String[] args){
     new KnotxLauncher().dispatch(args);
   }
 

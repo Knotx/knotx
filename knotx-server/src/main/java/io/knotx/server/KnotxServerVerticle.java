@@ -29,8 +29,7 @@ import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
 import io.vertx.reactivex.ext.web.handler.CookieHandler;
 import io.vertx.reactivex.ext.web.handler.ErrorHandler;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
@@ -58,6 +57,10 @@ public class KnotxServerVerticle extends AbstractVerticle {
         .setTimeout(csrfConfig.getTimeout());
 
     Router router = Router.router(vertx);
+    if (configuration.getAccessLog().isEnabled()) {
+      router.route().handler(LoggerHandler.create(configuration.getAccessLog().isImmediate(),
+          configuration.getAccessLog().getFormat()));
+    }
     router.route().handler(KnotxHeaderHandler.create(configuration));
     router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
     router.route().handler(CookieHandler.create());

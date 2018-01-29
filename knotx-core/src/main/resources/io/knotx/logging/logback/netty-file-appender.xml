@@ -16,23 +16,20 @@
     limitations under the License.
 
 -->
-<configuration>
+<!--
+File appender logback configuration provided for import
+-->
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>
-        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-      </Pattern>
-    </layout>
+<included>
+  <appender name="NETTY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+      <pattern>${FILE_NETTY_LOG_PATTERN}</pattern>
+    </encoder>
+    <file>${NETTY_LOG_FILE}</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${NETTY_LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+      <maxFileSize>${NETTY_LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+      <maxHistory>${NETTY_LOG_FILE_MAX_HISTORY:-0}</maxHistory>
+    </rollingPolicy>
   </appender>
-
-  <logger name="io.knotx.adapter.common" level="INFO"
-          additivity="false">
-    <appender-ref ref="STDOUT"/>
-  </logger>
-
-  <root level="ERROR">
-    <appender-ref ref="STDOUT"/>
-  </root>
-
-</configuration>
+</included>
