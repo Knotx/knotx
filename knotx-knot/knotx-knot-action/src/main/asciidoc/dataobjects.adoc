@@ -3,6 +3,10 @@
 [[ActionKnotOptions]]
 == ActionKnotOptions
 
+++++
+ Configuration options for Knot.x ActionKnot.
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
@@ -10,7 +14,8 @@
 ^|Name | Type ^| Description
 |[[adapters]]`adapters`|`Array of link:dataobjects.html#ActionSettings[ActionSettings]`|
 +++
-
+Sets the adapters that will be responsible for communicating with external services in order to
+ process the request.
 +++
 |[[address]]`address`|`String`|
 +++
@@ -18,9 +23,12 @@ Sets the EB address of the verticle
 +++
 |[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
 +++
-
+Sets the  of the ActionKnot.
 +++
-|[[formIdentifierName]]`formIdentifierName`|`String`|-
+|[[formIdentifierName]]`formIdentifierName`|`String`|
++++
+Sets the name of the hidden input tag which is added by Action Knot.
++++
 |===
 
 [[ActionSettings]]

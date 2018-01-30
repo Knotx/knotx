@@ -75,7 +75,7 @@ Signal is basically a decision about further request processing. Value of the si
 In other words, the page processing will be delegated to next [[Knot|Knot]] in the graph.
 
 ## How to configure?
-For all configuration fields and their defaults consult [ActionKnotOptions](https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-knot/knotx-knot-action/src/main/asciidoc/dataobjects.adoc#actionknotoptions)
+For all configuration fields and their defaults consult [ActionKnotOptions](https://github.com/Cognifide/knotx/blob/master/knotx-knot/knotx-knot-action/src/main/asciidoc/dataobjects.adoc#actionknotoptions)
 
 In short, by default, server:
 - Listens on event bus address `knotx.knot.action` on messages to process
