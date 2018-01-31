@@ -18,7 +18,6 @@ package io.knotx.server;
 import io.knotx.server.configuration.KnotxCSRFConfig;
 import io.knotx.server.configuration.KnotxServerConfiguration;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.reactivex.BackpressureOverflowStrategy;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -26,10 +25,8 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.reactivex.RxHelper;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.http.HttpServer;
-import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
@@ -40,8 +37,6 @@ import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
-
-  private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 
   private KnotxServerConfiguration configuration;
 
@@ -138,38 +133,30 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 
-    HttpServer httpServer = createHttpServer();
-    httpServer
-        .requestStream()
-        .toFlowable()
-        .map(HttpServerRequest::pause)
-        .onBackpressureBuffer(configuration.getRequestsBufferSize(),
-            () -> LOGGER.warn("Server buffer is overflown!"),
-            BackpressureOverflowStrategy.DROP_LATEST)
-        .onBackpressureDrop(req -> req.response().setStatusCode(503).end())
-        .observeOn(RxHelper.scheduler(vertx.getDelegate()))
-        .subscribe(request -> {
-          request.resume();
+    createHttpServer()
+        .requestHandler(request -> {
           try {
             router.accept(request);
           } catch (IllegalArgumentException ex) {
+            HttpResponseStatus status = HttpResponseStatus.BAD_REQUEST;
+
             LOGGER.warn("Problem decoding Query String", ex);
-            request.response()
-                .setStatusCode(BAD_REQUEST.code())
-                .setStatusMessage(BAD_REQUEST.reasonPhrase())
+
+            request.response().setStatusCode(status.code()).setStatusMessage(status.reasonPhrase())
                 .end("Invalid characters in Query Parameter");
           }
-        }, error -> LOGGER.error("Exception while processing!", error));
-    httpServer.listen(server -> {
-      if (server.succeeded()) {
-        LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-            configuration.getServerOptions().getInteger("port"));
-        fut.complete();
-      } else {
-        LOGGER.error("Unable to start Knot.x HTTP Server.", server.cause());
-        fut.fail(server.cause());
-      }
-    });
+        })
+        .rxListen()
+        .subscribe(ok -> {
+              LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+                  configuration.getServerOptions().getInteger("port"));
+              fut.complete();
+            },
+            error -> {
+              LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
+              fut.fail(error);
+            }
+        );
 
   }
 
