@@ -17,6 +17,7 @@ package io.knotx.server;
 
 import io.knotx.server.configuration.KnotxCSRFConfig;
 import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -36,6 +37,8 @@ import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
+
+  private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 
   private KnotxServerConfiguration configuration;
 
@@ -133,7 +136,18 @@ public class KnotxServerVerticle extends AbstractVerticle {
     router.route().failureHandler(ErrorHandler.create(configuration.displayExceptionDetails()));
 
     createHttpServer()
-        .requestHandler(router::accept)
+        .requestHandler(request -> {
+          try {
+            router.accept(request);
+          } catch (IllegalArgumentException ex) {
+            LOGGER.warn("Problem decoding Query String", ex);
+
+            request.response()
+                .setStatusCode(BAD_REQUEST.code())
+                .setStatusMessage(BAD_REQUEST.reasonPhrase())
+                .end("Invalid characters in Query Parameter");
+          }
+        })
         .rxListen()
         .subscribe(ok -> {
               LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
