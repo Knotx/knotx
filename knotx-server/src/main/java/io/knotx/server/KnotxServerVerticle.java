@@ -38,6 +38,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
 
+  private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
+
   private KnotxServerOptions configuration;
 
   @Override
@@ -143,11 +145,11 @@ public class KnotxServerVerticle extends AbstractVerticle {
           try {
             router.accept(request);
           } catch (IllegalArgumentException ex) {
-            HttpResponseStatus status = HttpResponseStatus.BAD_REQUEST;
-
             LOGGER.warn("Problem decoding Query String", ex);
 
-            request.response().setStatusCode(status.code()).setStatusMessage(status.reasonPhrase())
+            request.response()
+                .setStatusCode(BAD_REQUEST.code())
+                .setStatusMessage(BAD_REQUEST.reasonPhrase())
                 .end("Invalid characters in Query Parameter");
           }
         })
