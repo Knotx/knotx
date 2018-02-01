@@ -17,6 +17,7 @@ package io.knotx.server;
 
 import io.knotx.server.configuration.KnotxCSRFConfig;
 import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.BackpressureOverflowStrategy;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -39,6 +40,8 @@ import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
+
+  private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 
   private KnotxServerConfiguration configuration;
 
@@ -145,9 +148,17 @@ public class KnotxServerVerticle extends AbstractVerticle {
             BackpressureOverflowStrategy.DROP_LATEST)
         .onBackpressureDrop(req -> req.response().setStatusCode(503).end())
         .observeOn(RxHelper.scheduler(vertx.getDelegate()))
-        .subscribe(req -> {
-          req.resume();
-          router.accept(req);
+        .subscribe(request -> {
+          request.resume();
+          try {
+            router.accept(request);
+          } catch (IllegalArgumentException ex) {
+            LOGGER.warn("Problem decoding Query String", ex);
+            request.response()
+                .setStatusCode(BAD_REQUEST.code())
+                .setStatusMessage(BAD_REQUEST.reasonPhrase())
+                .end("Invalid characters in Query Parameter");
+          }
         }, error -> LOGGER.error("Exception while processing!", error));
     httpServer.listen(server -> {
       if (server.succeeded()) {

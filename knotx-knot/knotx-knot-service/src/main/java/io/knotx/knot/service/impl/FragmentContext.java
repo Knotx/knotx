@@ -19,6 +19,7 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.knot.service.service.ServiceAttributeUtil;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.reactivex.Observable;
+import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

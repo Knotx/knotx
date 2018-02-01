@@ -49,9 +49,9 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
             Observable.fromIterable(fragments)
             .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
             .doOnNext(this::traceFragment)
-            .flatMap(this::compileHtmlFragment)
+            .map(FragmentContext::from)
             .flatMapSingle(
-                compiledFragment -> snippetProcessor.processSnippet(compiledFragment, knotContext))
+                fragmentContext -> snippetProcessor.processSnippet(fragmentContext, knotContext))
             .toList()
         ).orElse(Single.just(Collections.emptyList()))
         .map(result -> createSuccessResponse(knotContext))
@@ -81,10 +81,6 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
         .setFragments(
             Optional.ofNullable(inputContext.getFragments()).orElse(Collections.emptyList()))
         .setTransition(DEFAULT_TRANSITION);
-  }
-
-  private Observable<FragmentContext> compileHtmlFragment(Fragment fragment) {
-    return Single.just(FragmentContext.from(fragment)).toObservable();
   }
 
   private void traceFragment(Fragment fragment) {

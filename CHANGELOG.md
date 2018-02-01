@@ -21,6 +21,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-374](https://github.com/Cognifide/knotx/pull/374) - Enable keepAlive connection in http client options
  - [PR-380](https://github.com/Cognifide/knotx/pull/380) - Upgrade jsoup to 1.11.2
  - [PR-379](https://github.com/Cognifide/knotx/pull/379) - Added access logging capabilities to the Knotx HTTP Server. Establish standard configuration of logback logger.
+ - [PR-383](https://github.com/Cognifide/knotx/pull/383) - Fix for #382 - Unhandled exception if query parameter consists of reserved characters.
 
 ## Version 1.1.2
  - [PR-318](https://github.com/Cognifide/knotx/pull/318) - Knot.x returns exit code `30` in case of missing config
