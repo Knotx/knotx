@@ -78,7 +78,7 @@ It leaves fragments untouched. So, result of join will look like below for our e
 </html>
 ```
 #### UNWRAP strategy
-It unwraps the snippet, by removing `<script>` tag leaving just body of the snippet. So, the result of 
+It unwraps the snippet, by removing snippet tag tag leaving just body of the snippet. So, the result of 
 join will look like this:
 ```
 <html>
@@ -134,4 +134,9 @@ Detailed description of each configuration option is described in the next subse
 |-------:                     |:-------:                            |:-------:       |-------|
 | `address`                   | `String`                            | &#10004;       | Event bus address of the Fragment Assembler verticle. |
 | `unprocessedStrategy`       | `String`                             | &#10004;       | Strategy for unprocessed Fragments (`AS_IS`, `UNWRAP`, `IGNORE`). `UNWRAP` is default strategy if no strategy defined. |
+| `snippetTagName`            | `String`                            | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. Remember to update [[Splitter configuration\|Splitter#how-to-configure]] |
 
+**Important - whenever you change `snippetTagName` to custom one remember that Knot.x splits 
+template into fragments using text parsing and it does not analyse markup tree. Remember to use tag
+that is uniqe for the document e.g. `knotx:snippet`. Do not use standard html tags like `div` or 
+`span` etc.**
