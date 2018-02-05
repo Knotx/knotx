@@ -23,65 +23,37 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-//FIXME: rename tests to meet naming convention
-//TODO: more tests
 public class HtmlFragmentSplitterTest {
-
 
   @Rule
   public final ExpectedException expectedException = ExpectedException.none();
-  private String TEST_NO_SNIPPETS_HTML = "test-no-fragments.html";
 
   private static final String DEFAULT_SCRIPT_TAG = "script";
-  private String TEST_ONE_SNIPPET_MIDDLE_HTML = "test-one-fragment-middle.html";
-  private String TEST_ONE_SNIPPET_BEGIN_HTML = "test-one-fragment-begin.html";
-  private String TEST_ONE_SNIPPET_END_HTML = "test-one-fragment-end.html";
-  private String ONLY_ONE_SNIPPET_WHOLE_HTML = "test-one-fragment-whole.html";
-
-  private String TEST_MANY_SNIPPETS_HTML = "test-many-fragments.html";
-
-  private String EXPECTED_ONE_FRAGMENT = "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></script>";
-
-  private List<Fragment> testNoSnippets;
-  private List<Fragment> testOneSnippetBegin;
-  private List<Fragment> testOneSnippetMiddle;
-  private List<Fragment> testOneSnippetEnd;
-  private List<Fragment> testOnlyOneSnippetWhole;
-  private List<Fragment> testManySnippets;
-
-  @Before
-  public void setUp() throws Exception {
-    testNoSnippets = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
-        .split(FileReader.readText(TEST_NO_SNIPPETS_HTML));
-    testManySnippets = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
-        .split(FileReader.readText(TEST_MANY_SNIPPETS_HTML));
-    testOneSnippetBegin = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
-        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    testOneSnippetMiddle = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
-        .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
-    testOneSnippetEnd = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
-        .split(FileReader.readText(TEST_ONE_SNIPPET_END_HTML));
-    testOnlyOneSnippetWhole = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
-        .split(FileReader.readText(ONLY_ONE_SNIPPET_WHOLE_HTML));
-  }
+  private static final String CUSTOM_SCRIPT_TAG = "knotx:snippet";
+  private static final String EXPECTED_ONE_FRAGMENT =
+      "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></script>";
 
   @Test
-  public void testJoinFragments() throws Exception {
+  public void split_whenManyFragments_expectNoChangesInMarkupAfterSplitting() throws Exception {
     StringBuilder result = new StringBuilder();
+    List<Fragment> testManySnippets = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText("test-many-fragments.html"));
     IntStream.rangeClosed(0, testManySnippets.size() - 1)
         .forEach(idx -> result.append(testManySnippets.get(idx).content()));
 
     assertThat(result.toString().trim(),
-        equalTo(FileReader.readText(TEST_MANY_SNIPPETS_HTML).trim()));
+        equalTo(FileReader.readText("test-many-fragments.html").trim()));
   }
 
   @Test
-  public void testNoFragments() throws Exception {
+  public void split_whenNoSnippetsInTemplate_expectOneRawFragment() throws Exception {
+    String TEST_NO_SNIPPETS_HTML = "test-no-fragments.html";
+    List<Fragment> testNoSnippets = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_NO_SNIPPETS_HTML));
     assertThat(testNoSnippets.size(), equalTo(1));
     assertThat(testNoSnippets.get(0).isRaw(), equalTo(true));
     assertThat(testNoSnippets.get(0).content(),
@@ -89,7 +61,10 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void testOneFragmentBegin() throws Exception {
+  public void split_whenOneSnippetAtTheBeginning_expectOneSnippetOneRawFragment() throws Exception {
+    String TEST_ONE_SNIPPET_BEGIN_HTML = "test-one-fragment-begin.html";
+    List<Fragment> testOneSnippetBegin = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
     assertThat(testOneSnippetBegin.size(), equalTo(2));
     assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
     assertThat(testOneSnippetBegin.get(0).content(), equalTo(EXPECTED_ONE_FRAGMENT));
@@ -97,7 +72,10 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void testOneFragmentMiddle() throws Exception {
+  public void split_whenOneSnippetInTheMiddle_expectThreeFragments() throws Exception {
+    String TEST_ONE_SNIPPET_MIDDLE_HTML = "test-one-fragment-middle.html";
+    List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
     assertThat(testOneSnippetMiddle.size(), equalTo(3));
     assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
     assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
@@ -106,7 +84,10 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void testOneFragmentEnd() throws Exception {
+  public void split_whenOneSnippetAtTheEnd_expectRawAndSnippetFragments() throws Exception {
+    String TEST_ONE_SNIPPET_END_HTML = "test-one-fragment-end.html";
+    List<Fragment> testOneSnippetEnd = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_ONE_SNIPPET_END_HTML));
     assertThat(testOneSnippetEnd.size(), equalTo(2));
     assertThat(testOneSnippetEnd.get(0).isRaw(), equalTo(true));
     assertThat(testOneSnippetEnd.get(1).isRaw(), equalTo(false));
@@ -114,10 +95,42 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void testOneFragmentWholeHtml() throws Exception {
+  public void split_whenOneSnippetIsWholeHtml_expectOneSnippetFragment() throws Exception {
+    String ONLY_ONE_SNIPPET_WHOLE_HTML = "test-one-fragment-whole.html";
+    List<Fragment> testOnlyOneSnippetWhole = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText(ONLY_ONE_SNIPPET_WHOLE_HTML));
     assertThat(testOnlyOneSnippetWhole.size(), equalTo(1));
     assertThat(testOnlyOneSnippetWhole.get(0).isRaw(), equalTo(false));
     assertThat(testOnlyOneSnippetWhole.get(0).content(), equalTo(EXPECTED_ONE_FRAGMENT));
   }
 
+  @Test
+  public void split_whenCustomSnippetTagOneSnippet_expectThreeFragmentsAndSnippetInTheMiddle()
+      throws Exception {
+    String TEST_ONE_SNIPPET_MIDDLE_HTML = "test-custom-snippet-tag.html";
+    List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(CUSTOM_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
+    assertThat(testOneSnippetMiddle.size(), equalTo(3));
+    assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
+    assertThat(testOneSnippetMiddle.get(1).content(), equalTo(
+        "<knotx:snippet data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></knotx:snippet>"));
+    assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
+  }
+
+  @Test
+  public void split_whenCustomSnippetTagManySnippets_expectThreeSnippetsFound()
+      throws Exception {
+    String TEST_ONE_SNIPPET_MIDDLE_HTML = "test-many-fragments-custom-snippet.html";
+    List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(CUSTOM_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
+    assertThat(testOneSnippetMiddle.size(), equalTo(7));
+    assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
+    assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(3).isRaw(), equalTo(false));
+    assertThat(testOneSnippetMiddle.get(4).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(5).isRaw(), equalTo(false));
+    assertThat(testOneSnippetMiddle.get(6).isRaw(), equalTo(true));
+  }
 }
