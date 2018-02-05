@@ -15,17 +15,24 @@
  */
 package io.knotx.splitter;
 
+import io.knotx.fragments.FragmentConstants;
 import io.vertx.core.json.JsonObject;
 
 public class FragmentSplitterConfiguration {
 
   private final String address;
+  private final String snippetTagName;
 
   public FragmentSplitterConfiguration(JsonObject config) {
     address = config.getString("address");
+    snippetTagName = config.getString("snippetTagName", FragmentConstants.DEFAULT_SNIPPET_TAG_NAME);
   }
 
   public String getAddress() {
     return address;
+  }
+
+  public String getSnippetTagName() {
+    return snippetTagName;
   }
 }

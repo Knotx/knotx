@@ -30,6 +30,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 //FIXME: rename tests to meet naming convention
+//TODO: more tests
 @RunWith(value = Parameterized.class)
 public class HtmlFragmentSplitterContentTest {
 
@@ -60,7 +61,7 @@ public class HtmlFragmentSplitterContentTest {
 
   @Before
   public void setUp() throws Exception {
-    FragmentSplitter splitter = new HtmlFragmentSplitter();
+    FragmentSplitter splitter = new HtmlFragmentSplitter("script");
     fragments = splitter.split(FileReader.readText("test-many-fragments.html"));
   }
 

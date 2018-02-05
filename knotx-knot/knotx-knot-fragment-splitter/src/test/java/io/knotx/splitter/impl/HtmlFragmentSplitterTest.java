@@ -29,12 +29,15 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 //FIXME: rename tests to meet naming convention
+//TODO: more tests
 public class HtmlFragmentSplitterTest {
+
 
   @Rule
   public final ExpectedException expectedException = ExpectedException.none();
   private String TEST_NO_SNIPPETS_HTML = "test-no-fragments.html";
 
+  private static final String DEFAULT_SCRIPT_TAG = "script";
   private String TEST_ONE_SNIPPET_MIDDLE_HTML = "test-one-fragment-middle.html";
   private String TEST_ONE_SNIPPET_BEGIN_HTML = "test-one-fragment-begin.html";
   private String TEST_ONE_SNIPPET_END_HTML = "test-one-fragment-end.html";
@@ -53,16 +56,17 @@ public class HtmlFragmentSplitterTest {
 
   @Before
   public void setUp() throws Exception {
-    testNoSnippets = new HtmlFragmentSplitter().split(FileReader.readText(TEST_NO_SNIPPETS_HTML));
-    testManySnippets = new HtmlFragmentSplitter()
+    testNoSnippets = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
+        .split(FileReader.readText(TEST_NO_SNIPPETS_HTML));
+    testManySnippets = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
         .split(FileReader.readText(TEST_MANY_SNIPPETS_HTML));
-    testOneSnippetBegin = new HtmlFragmentSplitter()
+    testOneSnippetBegin = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
         .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    testOneSnippetMiddle = new HtmlFragmentSplitter()
+    testOneSnippetMiddle = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
         .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
-    testOneSnippetEnd = new HtmlFragmentSplitter()
+    testOneSnippetEnd = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
         .split(FileReader.readText(TEST_ONE_SNIPPET_END_HTML));
-    testOnlyOneSnippetWhole = new HtmlFragmentSplitter()
+    testOnlyOneSnippetWhole = new HtmlFragmentSplitter(DEFAULT_SCRIPT_TAG)
         .split(FileReader.readText(ONLY_ONE_SNIPPET_WHOLE_HTML));
   }
 

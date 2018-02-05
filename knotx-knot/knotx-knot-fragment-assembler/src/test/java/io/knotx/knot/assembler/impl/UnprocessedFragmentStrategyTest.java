@@ -22,6 +22,7 @@ import com.googlecode.zohhak.api.Configure;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
+import io.knotx.fragments.SnippetPatterns;
 import io.knotx.junit.coercers.KnotxCoercers;
 import io.knotx.junit.util.FileReader;
 import org.junit.runner.RunWith;
@@ -30,13 +31,15 @@ import org.junit.runner.RunWith;
 @Configure(separator = ";", coercers = KnotxCoercers.class)
 public class UnprocessedFragmentStrategyTest {
 
+  private SnippetPatterns snippetPatterns = new SnippetPatterns("script");
+
   @TestWith({
       "simple_snippet.txt;simple_snippet.txt",
       "raw_fragment.txt;raw_fragment.txt"
   })
   public void asIs_whenFragment_expectIgnoredContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS.get(fragment);
+    final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS.get(fragment, snippetPatterns);
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
@@ -48,7 +51,7 @@ public class UnprocessedFragmentStrategyTest {
   })
   public void unwrap_withFragment_expectDefinedContentWithComments(Fragment fragment,
       String expectedContentFileName) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP.get(fragment);
+    final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP.get(fragment, snippetPatterns);
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
@@ -60,7 +63,7 @@ public class UnprocessedFragmentStrategyTest {
   })
   public void ignore_whenFragment_expectIgnoredContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE.get(fragment);
+    final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE.get(fragment, snippetPatterns);
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));

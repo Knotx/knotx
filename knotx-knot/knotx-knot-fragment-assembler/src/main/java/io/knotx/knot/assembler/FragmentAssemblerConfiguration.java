@@ -15,17 +15,19 @@
  */
 package io.knotx.knot.assembler;
 
+import io.knotx.fragments.FragmentConstants;
 import io.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
 import io.vertx.core.json.JsonObject;
 
 public class FragmentAssemblerConfiguration {
 
   private final String address;
-
+  private final String snippetTagName;
   private final UnprocessedFragmentStrategy assemblyStrategy;
 
   public FragmentAssemblerConfiguration(JsonObject config) {
     address = config.getString("address");
+    snippetTagName = config.getString("snippetTagName", FragmentConstants.DEFAULT_SNIPPET_TAG_NAME);
     assemblyStrategy = UnprocessedFragmentStrategy
         .valueOf(config.getString("unprocessedStrategy", UnprocessedFragmentStrategy.UNWRAP.name())
             .toUpperCase());
@@ -33,6 +35,10 @@ public class FragmentAssemblerConfiguration {
 
   public String address() {
     return address;
+  }
+
+  public String getSnippetTagName() {
+    return snippetTagName;
   }
 
   public UnprocessedFragmentStrategy unprocessedFragmentStrategy() {

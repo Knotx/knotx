@@ -15,9 +15,10 @@
  */
 package io.knotx.splitter.impl;
 
+import com.google.common.collect.Lists;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
-import com.google.common.collect.Lists;
+import io.knotx.fragments.SnippetPatterns;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -25,11 +26,17 @@ import java.util.regex.Matcher;
 
 class HtmlFragmentSplitter implements FragmentSplitter {
 
+  private final SnippetPatterns snippetPatterns;
+
+  HtmlFragmentSplitter(String snippetTag) {
+    snippetPatterns = new SnippetPatterns(snippetTag);
+  }
+
   @Override
   public List<Fragment> split(String html) {
     List<Fragment> fragments = Lists.newLinkedList();
-    if (FragmentConstants.ANY_SNIPPET_PATTERN.matcher(html).matches()) {
-      Matcher matcher = FragmentConstants.SNIPPET_PATTERN.matcher(html);
+    if (snippetPatterns.getAnySnippetPattern().matcher(html).matches()) {
+      Matcher matcher = snippetPatterns.getSnippetPattern().matcher(html);
       int idx = 0;
       while (matcher.find()) {
         MatchResult matchResult = matcher.toMatchResult();
