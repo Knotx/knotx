@@ -27,10 +27,18 @@ import org.mockito.Mockito;
 
 public class KnotxCoercers {
 
-  public Fragment provideFragment(String fragmentContentFile) throws IOException {
+  public Fragment provideFragment(String fragmentContentFileWithDefinedSnippetTagName)
+      throws IOException {
+    final String[] params = fragmentContentFileWithDefinedSnippetTagName.split("\\|");
+    final String fragmentContentFile = params[0];
+    final String snippetTagName;
+    if (params.length > 1) {
+      snippetTagName = params[1];
+    } else {
+      snippetTagName = FragmentConstants.DEFAULT_SNIPPET_TAG_NAME;
+    }
     final String fragmentContent = FileReader.readText(fragmentContentFile);
-    final SnippetPatterns patterns = new SnippetPatterns(
-        FragmentConstants.DEFAULT_SNIPPET_TAG_NAME);
+    final SnippetPatterns patterns = new SnippetPatterns(snippetTagName);
 
     Fragment fragmentMock = Mockito.mock(Fragment.class);
     when(fragmentMock.content()).thenReturn(fragmentContent);

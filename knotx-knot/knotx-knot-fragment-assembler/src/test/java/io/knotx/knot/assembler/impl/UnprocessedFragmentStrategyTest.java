@@ -31,39 +31,43 @@ import org.junit.runner.RunWith;
 @Configure(separator = ";", coercers = KnotxCoercers.class)
 public class UnprocessedFragmentStrategyTest {
 
-  private SnippetPatterns snippetPatterns = new SnippetPatterns("script");
-
   @TestWith({
-      "simple_snippet.txt;simple_snippet.txt",
-      "raw_fragment.txt;raw_fragment.txt"
+      "simple_snippet.txt;simple_snippet.txt;script",
+      "customTag_snippet.txt;customTag_snippet.txt;knotx:snippet",
+      "raw_fragment.txt;raw_fragment.txt;script"
   })
-  public void asIs_whenFragment_expectIgnoredContent(Fragment fragment,
-      String expectedContentFileName) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS.get(fragment, snippetPatterns);
+  public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
+      String expectedContentFileName, String snippetTagName) throws Exception {
+    final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
+        .get(fragment, new SnippetPatterns(snippetTagName));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
   @TestWith({
-      "simple_snippet.txt;simple_snippet-expected_unwrapped_content.txt",
-      "big_snippet.txt;big_snippet-expected_unwrapped_content.txt"
+      "simple_snippet.txt;simple_snippet-expected_unwrapped_content.txt;script",
+      "customTag_snippet.txt|knotx:snippet;simple_snippet-expected_unwrapped_content.txt;knotx:snippet",
+      "big_snippet.txt;big_snippet-expected_unwrapped_content.txt;script"
   })
-  public void unwrap_withFragment_expectDefinedContentWithComments(Fragment fragment,
-      String expectedContentFileName) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP.get(fragment, snippetPatterns);
+  public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(Fragment fragment,
+      String expectedContentFileName, String snippetTagName) throws Exception {
+    final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
+        .get(fragment, new SnippetPatterns(snippetTagName));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
   @TestWith({
-      "simple_snippet.txt;simple_snippet-expected_ignored_content.txt",
-      "raw_fragment.txt;raw_fragment.txt" //when fragment is a raw fragment, it is not ignored
+      "simple_snippet.txt;simple_snippet-expected_ignored_content.txt;script",
+      "customTag_snippet.txt;simple_snippet-expected_ignored_content.txt;knotx:snippet",
+      "raw_fragment.txt;raw_fragment.txt;script" //when fragment is a raw fragment, it is not ignored
   })
-  public void ignore_whenFragment_expectIgnoredContent(Fragment fragment,
-      String expectedContentFileName) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE.get(fragment, snippetPatterns);
+  public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
+      String expectedContentFileName, String snippetTagName) throws Exception {
+    final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
+        .get(fragment, new SnippetPatterns(snippetTagName));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
