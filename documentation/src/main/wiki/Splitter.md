@@ -118,10 +118,11 @@ Detailed description of each configuration option is described in the next subse
 | Name                        | Type         | Mandatory      | Description  |
 |-------:                     |:-------:     |:-------:       |-------|
 | `address`                   | `String`     | &#10004;       | Event bus address of the Splitter verticle. |
-| `snippetTagName`            | `String`     | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. Remember to update [[Assembler configuration\|Assembler#how-to-configure]] |
+| `snippetTagName`            | `String`     | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. The default value is `script`. Remember to update [[Assembler configuration\|Assembler#how-to-configure]] |
 
-**Important - whenever you change `snippetTagName` to custom one remember that Knot.x splits 
-template into fragments using text parsing and it does not analyse markup tree. To make the searching
-snippet operation efficient Knot.x just scans the markup for the opening of snippet tag and the first
-occurrence of end of the tag. Remember to use the tag name that is uniqe for the document 
-e.g. `knotx:snippet`. Do not use standard html tags like `div` or `span` etc.**
+**Important - when specifying `snippetTagName` remember to not use standard HTML tags like `div`, `span`, etc.
+Knot.x splits an HTML into fragments by parsing it as a string to get the best possible performance. 
+It simply search the text for the opening and first matching closing tag. It does not analyse the text 
+as HTML. So, if you use `div` as fragmentTagName, and inside your will use multiple `div` tags too, 
+then it will not pick the one that matches first opening, instead it will get the fragment up to the 
+first closing `div` tag. It will result in a broken HTML structure.**
