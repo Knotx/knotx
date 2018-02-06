@@ -3,6 +3,10 @@
 [[FragmentSplitterOptions]]
 == FragmentSplitterOptions
 
+++++
+ Describes FragmentSplitter Knot configuration
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]

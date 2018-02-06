@@ -3,6 +3,10 @@
 [[HandlebarsKnotOptions]]
 == HandlebarsKnotOptions
 
+++++
+ Describes Handlebars Knot configuration
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]

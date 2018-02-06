@@ -82,7 +82,7 @@ public class CustomHttpHeader {
 
 
   /**
-   * Set the name of the request header
+   * Set the name of the request header. If not set a {@code Server-User-Agent} is used.
    */
   public CustomHttpHeader setName(String name) {
     this.name = name;
@@ -90,7 +90,7 @@ public class CustomHttpHeader {
   }
 
   /**
-   * Set the value of the request header
+   * Set the value of the request header. If not set a @{code Knot.x} is used.
    */
   public CustomHttpHeader setValue(String value) {
     this.value = value;

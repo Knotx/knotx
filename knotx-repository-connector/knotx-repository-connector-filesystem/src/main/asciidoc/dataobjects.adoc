@@ -3,6 +3,10 @@
 [[FilesystemRepositoryOptions]]
 == FilesystemRepositoryOptions
 
+++++
+ Describes a file system repository configuration
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]

@@ -3,6 +3,10 @@
 [[ServiceKnotOptions]]
 == ServiceKnotOptions
 
+++++
+ Describes Service Knot configuration
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
@@ -10,15 +14,15 @@
 ^|Name | Type ^| Description
 |[[address]]`address`|`String`|
 +++
-Sets the EB address of the verticle
+Sets the EB address of the verticle. Default is 'knotx.knot.service'
 +++
 |[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
 +++
-
+Sets the Vert.x EventBusDeliveryOptions for a given verticle
 +++
 |[[services]]`services`|`Array of link:dataobjects.html#ServiceMetadata[ServiceMetadata]`|
 +++
-
+Sets the mapping between service aliases and service adapters that will serve the data.
 +++
 |===
 

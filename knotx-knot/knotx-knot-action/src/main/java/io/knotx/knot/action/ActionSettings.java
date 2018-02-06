@@ -151,10 +151,21 @@ public class ActionSettings {
     return this;
   }
 
+  /**
+   * A list of allowed request header names
+   *
+   * @return a reference to this, so the API can be used fluently
+   */
   public List<String> getAllowedRequestHeaders() {
     return allowedRequestHeaders;
   }
 
+  /**
+   * Sets list of HTTP client request headers that are allowed to be passed to Adapter. No request headers are allowed if not set.
+   *
+   * @param allowedRequestHeaders list of header names
+   * @return a reference to this, so the API can be used fluently
+   */
   public ActionSettings setAllowedRequestHeaders(List<String> allowedRequestHeaders) {
     this.allowedRequestHeaders = allowedRequestHeaders;
     allowedRequestHeadersPatterns = allowedRequestHeaders.stream().map(Pattern::compile)
@@ -162,10 +173,19 @@ public class ActionSettings {
     return this;
   }
 
+  /**
+   * @return a list of allowed response header names
+   */
   public List<String> getAllowedResponseHeaders() {
     return allowedResponseHeaders;
   }
 
+  /**
+   * Sets list of HTTP response headers that are allowed to be sent in a client response. No response headers are allowed if not set.
+   *
+   * @param allowedResponseHeaders list of header names
+   * @return a reference to this, so the API can be used fluently
+   */
   public ActionSettings setAllowedResponseHeaders(List<String> allowedResponseHeaders) {
     this.allowedResponseHeaders = allowedResponseHeaders;
     allowedResponseHeadersPatterns = allowedResponseHeaders.stream().map(Pattern::compile)

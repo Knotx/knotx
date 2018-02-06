@@ -3,6 +3,10 @@
 [[GatewayKnotOptions]]
 == GatewayKnotOptions
 
+++++
+ Describes a configuration of Knot.x Gateway knot
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
@@ -10,7 +14,8 @@
 ^|Name | Type ^| Description
 |[[address]]`address`|`String`|
 +++
-The <code>address</code> on event bus that the service adapter is listening for requests from link
+The event bus <code>address</code> the knot is listening on.
+ Default is <code>knotx.gateway.gatewayknot</code>
 +++
 |===
 

@@ -4,7 +4,7 @@
 == ActionKnotOptions
 
 ++++
- Configuration options for Knot.x ActionKnot.
+ Describes an Action Knot configuration options
 ++++
 '''
 
@@ -14,6 +14,8 @@
 ^|Name | Type ^| Description
 |[[adapters]]`adapters`|`Array of link:dataobjects.html#ActionSettings[ActionSettings]`|
 +++
+
+Configures the available ActionAdapters to be used by the knot
 Sets the adapters that will be responsible for communicating with external services in order to
  process the request.
 +++
@@ -23,10 +25,9 @@ Sets the EB address of the verticle
 +++
 |[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
 +++
-Sets the  of the ActionKnot.
-+++
-|[[formIdentifierName]]`formIdentifierName`|`String`|
-+++
+Sets the Vert.x Event Bus Delivery Options
+Sets the value of the 'name' attribute of the <code><form></code> tag.
+ If not set, a default value is <code>_frmId</code>
 Sets the name of the hidden input tag which is added by Action Knot.
 +++
 |===
@@ -48,8 +49,14 @@ Sets the name of the hidden input tag which is added by Action Knot.
 +++
 Sets the EB address of the service adapter
 +++
-|[[allowedRequestHeaders]]`allowedRequestHeaders`|`Array of String`|-
-|[[allowedResponseHeaders]]`allowedResponseHeaders`|`Array of String`|-
+|[[allowedRequestHeaders]]`allowedRequestHeaders`|`Array of String`|
++++
+Sets list of HTTP client request headers that are allowed to be passed to Adapter. No request headers are allowed if not set.
++++
+|[[allowedResponseHeaders]]`allowedResponseHeaders`|`Array of String`|
++++
+Sets list of HTTP response headers that are allowed to be sent in a client response. No response headers are allowed if not set.
++++
 |[[name]]`name`|`String`|
 +++
 Set the name of the service the will be used on html snippet level.

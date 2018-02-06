@@ -14,20 +14,20 @@
 ^|Name | Type ^| Description
 |[[address]]`address`|`String`|
 +++
-The <code>address</code> on event bus that the service adapter is listening for requests from
+Event Bus <code>address</code> the service adapter listening on. Default value is 'knotx.adapter.service.http'
 +++
 |[[clientOptions]]`clientOptions`|`link:dataobjects.html#WebClientOptions[WebClientOptions]`|
 +++
-Set the link of the link used
- by the ServiceAdapter to communicate with external services.
+Sets the Vert.x Web Client options of the Web client.
 +++
 |[[customHttpHeader]]`customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|
 +++
-Set the header (name & value) to be sent in every request to the services
+Sets the header (name & value) to be sent in every request to the services.
+ If not set, it sends <code>Server-User-Agent=Knot.x</code> header
 +++
 |[[services]]`services`|`Array of link:dataobjects.html#ServiceSettings[ServiceSettings]`|
 +++
-Set the list of link that ServiceAdapter is able to communicate with
+Sets the configuration of each service endpoint used by the adapter.
 +++
 |===
 
@@ -45,11 +45,12 @@ Set the list of link that ServiceAdapter is able to communicate with
 ^|Name | Type ^| Description
 |[[additionalHeaders]]`additionalHeaders`|`Json object`|
 +++
-Set the additional request headers (and values) to be send in each request to the service
+Set the additional request headers (and values) to be send in each request
 +++
 |[[allowedRequestHeaders]]`allowedRequestHeaders`|`Array of String`|
 +++
-Sets the allowed requests headers that should be passed-through to the service
+Sets the allowed requests headers that should be send to the service.
+ The selected headers from the original client HTTP request are being send.
 +++
 |[[domain]]`domain`|`String`|
 +++
@@ -58,7 +59,7 @@ Set the <code>domain</code> of the external service
 |[[path]]`path`|`String`|-
 |[[port]]`port`|`Number (int)`|
 +++
-Sets the HTTP <code>port</code> the external service (under <code>domain</code>) is listening on,
+Sets the HTTP <code>port</code> the external service
 +++
 |[[queryParams]]`queryParams`|`Json object`|
 +++

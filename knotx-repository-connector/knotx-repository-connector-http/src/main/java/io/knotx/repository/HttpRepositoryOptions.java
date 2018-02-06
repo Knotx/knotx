@@ -29,6 +29,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Describes a configuration of Http Repository connector
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class HttpRepositoryOptions {
 

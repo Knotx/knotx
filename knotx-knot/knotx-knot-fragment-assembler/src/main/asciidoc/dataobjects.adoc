@@ -3,6 +3,10 @@
 [[FragmentAssemblerOptions]]
 == FragmentAssemblerOptions
 
+++++
+ Describes FragmentAssembler Knot configuration
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]

@@ -85,6 +85,10 @@ Set the timeout of the CSRF token
 [[KnotxServerOptions]]
 == KnotxServerOptions
 
+++++
+ Describes a Knot.x HTTP Server configuration
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
@@ -139,12 +143,19 @@ Set the HTTP Server options
 [[MethodRoutingEntries]]
 == MethodRoutingEntries
 
+++++
+ Describes a collection of server routing entries
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[items]]`items`|`Array of link:dataobjects.html#RoutingEntry[RoutingEntry]`|-
+|[[items]]`items`|`Array of link:dataobjects.html#RoutingEntry[RoutingEntry]`|
++++
+Sets the list of routing entries
++++
 |===
 
 [[RepositoryEntry]]
@@ -155,22 +166,52 @@ Set the HTTP Server options
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[address]]`address`|`String`|-
-|[[doProcessing]]`doProcessing`|`Boolean`|-
-|[[path]]`path`|`String`|-
+|[[address]]`address`|`String`|
++++
+Event bus address of the Repository Connector modules, that should deliver content for the requested path matching the regexp in path
++++
+|[[doProcessing]]`doProcessing`|`Boolean`|
++++
+Defines if the given repository path should be processed by the Knots or not. If not set, a processing is enabled by default.
++++
+|[[path]]`path`|`String`|
++++
+Sets the Regular expression of the HTTP Request path
++++
 |===
 
 [[RoutingEntry]]
 == RoutingEntry
 
+++++
+ Describes a routing entry of Knot.x Server
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[address]]`address`|`String`|-
-|[[csrf]]`csrf`|`Boolean`|-
-|[[onTransition]]`onTransition`|`link:dataobjects.html#RoutingEntry[RoutingEntry]`|-
-|[[path]]`path`|`String`|-
+|[[address]]`address`|`String`|
++++
+Sets the event bus address of the Knot that should process the request for a given path
++++
+|[[csrf]]`csrf`|`Boolean`|
++++
+Enables/Disabled CSRF support for a given routing entry
++++
+|[[onTransition]]`onTransition`|`link:dataobjects.html#RoutingEntry[RoutingEntry]`|
++++
+Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.
+ <code>"onTransition": {
+    "go-a": {</code>,
+    "go-b": {}
+   }
+ }
++++
+|[[path]]`path`|`String`|
++++
+Sets the Regular expression of HTTP Request path
++++
 |===
 

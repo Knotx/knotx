@@ -18,6 +18,9 @@ package io.knotx.gateway;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Describes a configuration of Knot.x Gateway knot
+ */
 @DataObject(generateConverter = true)
 public class GatewayKnotOptions {
 
@@ -75,8 +78,8 @@ public class GatewayKnotOptions {
   }
 
   /**
-   * The {@code address} on event bus that the service adapter is listening for requests from {@link
-   * }
+   * The event bus {@code address} the knot is listening on.
+   * Default is {@code knotx.gateway.gatewayknot}
    *
    * @param address an event bus address
    * @return a reference to this, so the API can be used fluently

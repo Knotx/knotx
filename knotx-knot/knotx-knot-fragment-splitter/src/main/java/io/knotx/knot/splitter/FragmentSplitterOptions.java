@@ -18,6 +18,9 @@ package io.knotx.knot.splitter;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Describes FragmentSplitter Knot configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class FragmentSplitterOptions {
 

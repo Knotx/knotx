@@ -18,6 +18,9 @@ package io.knotx.knot.templating;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Describes Handlebars Knot configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class HandlebarsKnotOptions {
 

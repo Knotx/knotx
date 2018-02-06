@@ -19,6 +19,9 @@ import io.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Describes FragmentAssembler Knot configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class FragmentAssemblerOptions {
 

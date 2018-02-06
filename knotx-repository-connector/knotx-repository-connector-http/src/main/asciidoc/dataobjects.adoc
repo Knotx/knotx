@@ -30,6 +30,10 @@ Set the URL scheme used to communicate with the repository
 [[HttpRepositoryOptions]]
 == HttpRepositoryOptions
 
+++++
+ Describes a configuration of Http Repository connector
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Configuration options for Knot.x ActionKnot.
+ * Describes an Action Knot configuration options
  */
 @DataObject(generateConverter = true, publicConverter = false)
 public class ActionKnotOptions {
@@ -150,7 +150,7 @@ public class ActionKnotOptions {
   }
 
   /**
-   * Sets the {@link DeliveryOptions} of the ActionKnot.
+   * Sets the Vert.x Event Bus Delivery Options
    *
    * @param deliveryOptions EB {@link DeliveryOptions}
    * @return a reference to this, so the API can be used fluently

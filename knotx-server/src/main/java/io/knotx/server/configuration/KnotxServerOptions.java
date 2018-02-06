@@ -29,6 +29,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Describes a Knot.x HTTP Server configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class KnotxServerOptions {
 
