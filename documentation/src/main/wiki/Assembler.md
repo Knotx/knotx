@@ -3,8 +3,9 @@ Fragment Assembler joins all Fragments into the final output. It's executed at t
 all suitable Knots processing, just before generating the response to the page visitor.
 
 ## How does it work?
-Fragment Assembler reads Knot Context having Fragments, joins all Fragments into one string, updates 
-Knot Context and returns back to the caller. See examples below for more details.
+Fragment Assembler reads Fragments from Knot Context, joins them all into one string (future body 
+of the response), packs it back to Knot Context and returns back to the caller. 
+See examples below for more details.
 
 ### How Fragments are being joined?
 Lets explain process of fragments join using example. Fragment Assembler reads Knot Context having 
@@ -63,7 +64,7 @@ See Fragments below and then compare those strategies.
 ```
 #### AS_IS strategy
 It leaves fragments untouched. So, result of join will look like below for our example:
-```
+```html
 <html>
 <head>
   <title>Test</title>
@@ -80,7 +81,7 @@ It leaves fragments untouched. So, result of join will look like below for our e
 #### UNWRAP strategy
 It unwraps the snippet, by removing snippet tag tag leaving just body of the snippet. So, the result of 
 join will look like this:
-```
+```html
 <html>
 <head>
   <title>Test</title>
@@ -96,7 +97,7 @@ join will look like this:
 ```
 #### IGNORE strategy
 It ignores all Fragments which contains dynamic tag definitions.
-```
+```html
 <html>
 <head>
   <title>Test</title>
@@ -109,7 +110,9 @@ It ignores all Fragments which contains dynamic tag definitions.
 ```
 
 ## How to configure?
-Fragment Assembler is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+Fragment Assembler is deployed using Vert.x service factory as a separate
+[verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default 
+configuration.
 
 Default configuration shipped with the verticle as `io.knotx.FragmentAssembler.json` file available in classpath.
 ```json
@@ -130,13 +133,14 @@ Detailed description of each configuration option is described in the next subse
 
 ### Fragment Assembler config
 
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | Event bus address of the Fragment Assembler verticle. |
-| `unprocessedStrategy`       | `String`                             | &#10004;       | Strategy for unprocessed Fragments (`AS_IS`, `UNWRAP`, `IGNORE`). `UNWRAP` is default strategy if no strategy defined. |
-| `snippetTagName`            | `String`                            | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. Remember to update [[Splitter configuration\|Splitter#how-to-configure]] |
+| Name                        | Type      | Mandatory      | Description  |
+|-------:                     |:-------:  |:-------:       |-------|
+| `address`                   | `String`  | &#10004;       | Event bus address of the Fragment Assembler verticle. |
+| `unprocessedStrategy`       | `String`  | &#10004;       | Strategy for unprocessed Fragments (`AS_IS`, `UNWRAP`, `IGNORE`). `UNWRAP` is default strategy if no strategy defined. |
+| `snippetTagName`            | `String`  | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. Remember to update [[Splitter configuration\|Splitter#how-to-configure]] |
 
 **Important - whenever you change `snippetTagName` to custom one remember that Knot.x splits 
-template into fragments using text parsing and it does not analyse markup tree. Remember to use tag
-that is uniqe for the document e.g. `knotx:snippet`. Do not use standard html tags like `div` or 
-`span` etc.**
+template into fragments using text parsing and it does not analyse markup tree. To make the searching
+snippet operation efficient Knot.x just scans the markup for the opening of snippet tag and the first
+occurrence of end of the tag. Remember to use the tag name that is uniqe for the document 
+e.g. `knotx:snippet`. Do not use standard html tags like `div` or `span` etc.**
