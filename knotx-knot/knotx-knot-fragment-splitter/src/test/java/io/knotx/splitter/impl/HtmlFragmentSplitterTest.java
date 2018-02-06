@@ -119,18 +119,20 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void split_whenCustomSnippetTagManySnippets_expectThreeSnippetsFound()
+  public void split_whenCustomSnippetTagManySnippets_expectFiveSnippetsFound()
       throws Exception {
     String TEST_ONE_SNIPPET_MIDDLE_HTML = "test-many-fragments-custom-snippet.html";
     List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(CUSTOM_SCRIPT_TAG)
         .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
-    assertThat(testOneSnippetMiddle.size(), equalTo(7));
+    assertThat(testOneSnippetMiddle.size(), equalTo(9));
     assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
     assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
     assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
     assertThat(testOneSnippetMiddle.get(3).isRaw(), equalTo(false));
-    assertThat(testOneSnippetMiddle.get(4).isRaw(), equalTo(true));
-    assertThat(testOneSnippetMiddle.get(5).isRaw(), equalTo(false));
-    assertThat(testOneSnippetMiddle.get(6).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(4).isRaw(), equalTo(false));
+    assertThat(testOneSnippetMiddle.get(5).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(6).isRaw(), equalTo(false));
+    assertThat(testOneSnippetMiddle.get(7).isRaw(), equalTo(true));
+    assertThat(testOneSnippetMiddle.get(8).isRaw(), equalTo(false));
   }
 }

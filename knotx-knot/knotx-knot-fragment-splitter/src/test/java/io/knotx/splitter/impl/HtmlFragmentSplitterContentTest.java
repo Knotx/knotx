@@ -18,56 +18,61 @@ package io.knotx.splitter.impl;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import com.googlecode.zohhak.api.Configure;
+import com.googlecode.zohhak.api.TestWith;
+import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-//FIXME: rename tests to meet naming convention
-//TODO: more tests
-@RunWith(value = Parameterized.class)
+@RunWith(ZohhakRunner.class)
+@Configure(separator = ";")
 public class HtmlFragmentSplitterContentTest {
 
-  private List<Fragment> fragments;
-
-  private int fragmentId;
-
-  private String fragmentFile;
-
-  public HtmlFragmentSplitterContentTest(int fragmentId, String fragmentFile) {
-    this.fragmentId = fragmentId;
-    this.fragmentFile = fragmentFile;
-  }
-
-  @Parameters
-  public static Collection<Object[]> data() {
-    return Arrays.asList(new Object[][]{
-        {0, "fragment1.txt"},
-        {1, "fragment2.txt"},
-        {2, "fragment3.txt"},
-        {3, "fragment4.txt"},
-        {4, "fragment5.txt"},
-        {5, "fragment6.txt"},
-        {6, "fragment7.txt"},
-        {7, "fragment8.txt"}
-    });
-  }
+  private List<Fragment> defaultSnippetTagFragments;
+  private List<Fragment> customSnippetTagFragments;
 
   @Before
   public void setUp() throws Exception {
-    FragmentSplitter splitter = new HtmlFragmentSplitter("script");
-    fragments = splitter.split(FileReader.readText("test-many-fragments.html"));
+    defaultSnippetTagFragments = new HtmlFragmentSplitter("script")
+        .split(FileReader.readText("test-many-fragments.html"));
+    customSnippetTagFragments = new HtmlFragmentSplitter("knotx:snippet")
+        .split(FileReader.readText("test-many-fragments-custom-snippet.html"));
   }
 
-  @Test
-  public void testFragment() throws Exception {
-    assertThat(fragments.get(fragmentId).content().trim(),
+  @TestWith({
+      "0;fragment1.txt",
+      "1;fragment2-snippet.txt",
+      "2;fragment3.txt",
+      "3;fragment4-snippet.txt",
+      "4;fragment5-snippet.txt",
+      "5;fragment6.txt",
+      "6;fragment7-snippet.txt",
+      "7;fragment8.txt",
+      "8;fragment9-snippet.txt"
+  })
+  public void split_whenDefaultSnippetTag_expectNineFragments(int fragmentId, String fragmentFile)
+      throws Exception {
+    assertThat(defaultSnippetTagFragments.get(fragmentId).content().trim(),
+        equalTo(FileReader.readText(fragmentFile).trim()));
+  }
+
+  @TestWith({
+      "0;fragment1.txt",
+      "1;fragment2-custom-snippet.txt",
+      "2;fragment3.txt",
+      "3;fragment4-custom-snippet.txt",
+      "4;fragment5-custom-snippet.txt",
+      "5;fragment6.txt",
+      "6;fragment7-custom-snippet.txt",
+      "7;fragment8.txt",
+      "8;fragment9-custom-snippet.txt"
+  })
+  public void split_whenCustomSnippetTag_expect8Fragments(int fragmentId, String fragmentFile)
+      throws Exception {
+    assertThat(customSnippetTagFragments.get(fragmentId).content().trim(),
         equalTo(FileReader.readText(fragmentFile).trim()));
   }
 }
