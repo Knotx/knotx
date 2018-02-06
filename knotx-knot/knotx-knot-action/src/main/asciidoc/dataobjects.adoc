@@ -14,8 +14,6 @@
 ^|Name | Type ^| Description
 |[[adapters]]`adapters`|`Array of link:dataobjects.html#ActionSettings[ActionSettings]`|
 +++
-
-Configures the available ActionAdapters to be used by the knot
 Sets the adapters that will be responsible for communicating with external services in order to
  process the request.
 +++
@@ -26,8 +24,9 @@ Sets the EB address of the verticle
 |[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
 +++
 Sets the Vert.x Event Bus Delivery Options
-Sets the value of the 'name' attribute of the <code><form></code> tag.
- If not set, a default value is <code>_frmId</code>
++++
+|[[formIdentifierName]]`formIdentifierName`|`String`|
++++
 Sets the name of the hidden input tag which is added by Action Knot.
 +++
 |===
