@@ -1,0 +1,32 @@
+<html>
+<head>
+  <title>Test</title>
+</head>
+<body>
+<h1>single snippet</h1>
+<knotx:snippet data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:snippet>
+<h2>two snippets in a row</h2>
+<knotx:snippet data-knotx-knots="form-1,services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:snippet><knotx:snippet data-knotx-knots="auth-3,services" data-knotx-service="first-service" type="text/knotx-snippet">
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:snippet>
+<h3>single snippet again</h3>
+<knotx:snippet data-knotx-knots="auth-3,services" data-knotx-service="first-service" type="text/knotx-snippet">
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:snippet>
+<h4>End</h4>
+</body>
+<script>
+  var test = "this is not a snippet";
+</script>
+</html>
+<knotx:snippet data-knotx-knots="auth-4">
+  <h1>test</h1>
+</knotx:snippet>

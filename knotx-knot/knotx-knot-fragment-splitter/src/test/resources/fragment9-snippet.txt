@@ -1,0 +1,3 @@
+<script data-knotx-knots="auth-4">
+  <h1>test</h1>
+</script>

@@ -3,8 +3,9 @@ Fragment Assembler joins all Fragments into the final output. It's executed at t
 all suitable Knots processing, just before generating the response to the page visitor.
 
 ## How does it work?
-Fragment Assembler reads Knot Context having Fragments, joins all Fragments into one string, updates 
-Knot Context and returns back to the caller. See examples below for more details.
+Fragment Assembler reads Fragments from Knot Context, joins them all into one string (future body 
+of the response), packs it back to Knot Context and returns back to the caller. 
+See examples below for more details.
 
 ### How Fragments are being joined?
 Lets explain process of fragments join using example. Fragment Assembler reads Knot Context having 
@@ -63,7 +64,7 @@ See Fragments below and then compare those strategies.
 ```
 #### AS_IS strategy
 It leaves fragments untouched. So, result of join will look like below for our example:
-```
+```html
 <html>
 <head>
   <title>Test</title>
@@ -78,9 +79,9 @@ It leaves fragments untouched. So, result of join will look like below for our e
 </html>
 ```
 #### UNWRAP strategy
-It unwraps the snippet, by removing `<script>` tag leaving just body of the snippet. So, the result of 
+It unwraps the snippet, by removing snippet tag tag leaving just body of the snippet. So, the result of 
 join will look like this:
-```
+```html
 <html>
 <head>
   <title>Test</title>
@@ -96,7 +97,7 @@ join will look like this:
 ```
 #### IGNORE strategy
 It ignores all Fragments which contains dynamic tag definitions.
-```
+```html
 <html>
 <head>
   <title>Test</title>
@@ -109,7 +110,9 @@ It ignores all Fragments which contains dynamic tag definitions.
 ```
 
 ## How to configure?
-Fragment Assembler is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+Fragment Assembler is deployed using Vert.x service factory as a separate
+[verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default 
+configuration.
 
 Default configuration shipped with the verticle as `io.knotx.FragmentAssembler.json` file available in classpath.
 ```json
@@ -130,8 +133,15 @@ Detailed description of each configuration option is described in the next subse
 
 ### Fragment Assembler config
 
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | Event bus address of the Fragment Assembler verticle. |
-| `unprocessedStrategy`       | `String`                             | &#10004;       | Strategy for unprocessed Fragments (`AS_IS`, `UNWRAP`, `IGNORE`). `UNWRAP` is default strategy if no strategy defined. |
+| Name                        | Type      | Mandatory      | Description  |
+|-------:                     |:-------:  |:-------:       |-------|
+| `address`                   | `String`  | &#10004;       | Event bus address of the Fragment Assembler verticle. |
+| `unprocessedStrategy`       | `String`  | &#10004;       | Strategy for unprocessed Fragments (`AS_IS`, `UNWRAP`, `IGNORE`). `UNWRAP` is default strategy if no strategy defined. |
+| `snippetTagName`            | `String`  | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. The default value is `script`. Remember to update [[Splitter configuration\|Splitter#how-to-configure]] |
 
+**Important - when specifying `snippetTagName` remember to not use standard HTML tags like `div`, `span`, etc.
+Knot.x splits an HTML into fragments by parsing it as a string to get the best possible performance. 
+It simply search the text for the opening and first matching closing tag. It does not analyse the text 
+as HTML. So, if you use `div` as fragmentTagName, and inside your will use multiple `div` tags too, 
+then it will not pick the one that matches first opening, instead it will get the fragment up to the 
+first closing `div` tag. It will result in a broken HTML structure.**
