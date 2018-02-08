@@ -7,14 +7,14 @@
     "knotx:io.knotx.RemoteRepositoryMock": {
       "options": {
         "config": {
-          "mockDataRoot": "/content/mocks-files"
+          "mockDataRoot": "repository"
         }
       }
     },
     "knotx:io.knotx.ServiceMock": {
       "options": {
         "config": {
-          "mockDataRoot": "/content/mocks-files/services"
+          "mockDataRoot": "services"
         }
       }
     }
