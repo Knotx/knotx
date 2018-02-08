@@ -1,5 +1,40 @@
 # Performance
 
+- [What do we measure - KPIs](#what-do-we-measure---kpis)
+  - [KPI #1 - 1 second response time (90% line)](#kpi-1---1-second-response-time-90%25-line)
+  - [KPI #2 - No error responses](#kpi-2---no-error-responses)
+  - [KPI #3 - stability](#kpi-3---stability)
+  - [KPI #4 - 1 hour of 1 second response time (90% line)](#kpi-4---1-hour-of-1-second-response-time-90%25-line)
+- [Performance infrastructure and setup](#performance-infrastructure-and-setup)
+  - [Knot.x instance VM and GC settings](#knotx-instance-vm-and-gc-settings)
+- [Tools](#tools)
+- [Performance tests](#performance-tests)
+  - [Scenarios](#scenarios)
+    - [1. One snippet and one service](#1-one-snippet-and-one-service)
+      - [Details](#details)
+    - [2. One snippet and five services](#2-one-snippet-and-five-services)
+      - [Details](#details-1)
+    - [3. Five snippets one service each](#3-five-snippets-one-service-each)
+      - [Details](#details-2)
+    - [4. Heavy template with one snippet one services](#4-heavy-template-with-one-snippet-one-services)
+      - [Details](#details-3)
+    - [5. Heavy template with 100 snippets and one heavy service](#5-heavy-template-with-100-snippets-and-one-heavy-service)
+      - [Details](#details-4)
+    - [6. Heavy template with one big snippet and one heavy service](#6-heavy-template-with-one-big-snippet-and-one-heavy-service)
+      - [Details](#details-5)
+  - [Results](#results)
+  - [Observations](#observations)
+- [Soak test](#soak-test)
+  - [Results](#results-1)
+    - [Users/throughput](#usersthroughput)
+    - [CPU utilization](#cpu-utilization)
+    - [CPU load](#cpu-load)
+    - [JVM memory heap space](#jvm-memory-heap-space)
+    - [GC collections per second](#gc-collections-per-second)
+    - [Network traffic](#network-traffic)
+    - [Event bus usage](#event-bus-usage)
+  - [Observations](#observations-1)
+- [Terminology](#terminology)
 
 ## What do we measure - KPIs
 
@@ -153,7 +188,7 @@ Traffic throughput plan (notice that since we have 2 jMeter slaves, the final nu
 
 | Scenario | Results | Remarks |
 | -------- | ------ | ------ |
-| 24h soak test | <ul><li>Throughput: `168 req/sec`</li><li>Peak: `400 req/sec`</li><li>Average response in: `16 ms`</li><li>90% line avg: `49 ms`</li><li>99% line avg: `89 ms`</li><li>avg CPU load: `21.3 %`</li><li>`1` error within `7.31 milion` requests</li></ul> | - |
+| 24h soak test | <ul><li>Throughput: `168 req/sec`</li><li>Peak: `400 req/sec`</li><li>Average response in: `16 ms`</li><li>90% line avg: `49 ms`</li><li>99% line avg: `89 ms`</li><li>avg CPU load: `21.3 %`</li><li>`1` error within `7.31 milion` requests</li></ul> | Error was a single `404`. |
 
 #### Users/throughput
 [[assets/soak-users-throughput.png|alt=Users/throughput]]
