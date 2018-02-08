@@ -6,6 +6,9 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 List of changes that are finished but not yet released in any final version.
+- [PR-385](https://github.com/Cognifide/knotx/pull/385) - From now on you can define the custom 
+`snippetTagName` and use that tag name to define dynamic snippets in the templates (instead of 
+default `<script>`). Read more about that chang in [[Splitter|Splitter]] and [[Assembler|Assembler]] docs.
 
 ## Version 1.2.0
 - [PR-345](https://github.com/Cognifide/knotx/pull/335) - Update to Vert.x 3.5 and RxJava 2. Most notable changes are upgrade of Vert.x and RxJava.
@@ -22,9 +25,6 @@ For more details see documentation sections in [[Server|Server#vertx-event-bus-d
 - [PR-372](https://github.com/Cognifide/knotx/pull/372) - Added cache for compiled Handlebars snippets, you may configure it in Handlebars config, see more in [[Handlebars Knot docs|HandlebarsKnot#how-to-configure]].
 - [PR-374](https://github.com/Cognifide/knotx/pull/374) - Enable keepAlive connection in http client options. This is important fix and we recommend to update your existing configuration of any http client and enable `keepAlive` option.
 - [PR-379](https://github.com/Cognifide/knotx/pull/379) - Added access logging capabilities to the Knotx HTTP Server. Establish standard configuration of logback logger. Check [[Configure Access Log|Server#configure-access-log]] to see how to configure access logs, and [[Logging|Logging]] to see how loggers can be configured to log to console, files for knot.x, access & netty logs.
-- [PR-385](https://github.com/Cognifide/knotx/pull/385) - From now on you can define the custom 
-`snippetTagName` and use that tag name to define dynamic snippets in the templates (instead of 
-default `<script>`). Read more about that chang in [[Splitter|Splitter]] and [[Assembler|Assembler]] docs.
 
 ## Version 1.1.2
 - [PR-335](https://github.com/Cognifide/knotx/pull/335) - Added support for HttpServerOptions on the configuration level.
