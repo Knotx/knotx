@@ -6,7 +6,6 @@
     "knotx:io.knotx.FragmentSplitter",
     "knotx:io.knotx.FragmentAssembler",
     "knotx:io.knotx.ServiceKnot",
-    "knotx:io.knotx.ActionKnot",
     "knotx:io.knotx.HandlebarsKnot",
     "knotx:io.knotx.HttpServiceAdapter"
   ],
@@ -14,38 +13,48 @@
     "knotx:io.knotx.KnotxServer": {
       "options": {
         "config": {
-          "serverOptions": {
-            "port": 8093
-          },
-          "repositories": [
-            {
-              "path": "/content/.*",
-              "address": "knotx.core.repository.http"
-            },
-            {
-              "path": "/img/.*",
-              "address": "knotx.core.repository.http",
-              "doProcessing": false
-            }
-          ],
-          "splitter": {
-            "address": "knotx.core.splitter"
-          },
-          "routing": {
-            "GET": [
+          "defaultFlow": {
+            "repositories": [
               {
                 "path": "/content/.*",
-                "address": "knotx.knot.service",
-                "onTransition": {
-                  "next": {
-                    "address": "knotx.knot.handlebars"
+                "address": "knotx.core.repository.http"
+              }
+            ],
+            "splitter": {
+              "address": "knotx.core.splitter"
+            },
+            "routing": {
+              "GET": [
+                {
+                  "path": "/content/.*",
+                  "address": "knotx.knot.service",
+                  "onTransition": {
+                    "next": {
+                      "address": "knotx.knot.handlebars"
+                    }
                   }
                 }
-              }
-            ]
-          },
-          "assembler": {
-            "address": "knotx.core.assembler"
+              ],
+              "POST": [
+                {
+                  "path": "/content/.*",
+                  "address": "knotx.knot.action",
+                  "onTransition": {
+                    "next": {
+                      "address": "knotx.knot.service",
+                      "onTransition": {
+                        "next": {
+                          "address": "knotx.knot.handlebars"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "assembler": {
+              "address": "knotx.core.assembler"
+            }
           }
         }
       }
@@ -58,97 +67,86 @@
               "name": "first-service",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/first.json"
+                "path": "/services/mock/first.json"
               },
               "cacheKey": "first"
-            },
-            {
-              "name": "second-service",
-              "address": "knotx.adapter.service.http",
-              "params": {
-                "path": "/service/mock/second.json"
-              }
-            },
-            {
-              "name": "third-service",
-              "address": "knotx.adapter.service.http",
-              "params": {
-                "path": "/service/mock/third.json"
-              }
             },
             {
               "name": "mountains",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-mountains.json"
+                "path": "/services/mock/seven-mountains.json"
               }
             },
             {
               "name": "continents",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-continents.json"
+                "path": "/services/mock/seven-continents.json"
               }
             },
             {
               "name": "names",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-names.json"
+                "path": "/services/mock/seven-names.json"
               }
             },
             {
               "name": "dates",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-dates.json"
+                "path": "/services/mock/seven-dates.json"
               }
             },
             {
               "name": "countries",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-countries.json"
+                "path": "/services/mock/seven-countries.json"
               }
             },
             {
               "name": "passes",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-mountain-passes.json"
+                "path": "/services/mock/seven-mountain-passes.json"
               }
             },
             {
               "name": "winds",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-winds.json"
+                "path": "/services/mock/seven-winds.json"
               }
             },
             {
               "name": "stars",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-stars.json"
+                "path": "/services/mock/seven-stars.json"
               }
             },
             {
               "name": "deserts",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-deserts.json"
+                "path": "/services/mock/seven-deserts.json"
               }
             },
             {
               "name": "lakes",
               "address": "knotx.adapter.service.http",
               "params": {
-                "path": "/service/mock/seven-lakes.json"
+                "path": "/services/mock/seven-lakes.json"
               }
             },
             {
-              "name": "labelsRepository",
-              "address": "knotx.adapter.service.http"
+              "name": "people",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/services/mock/people-50.json"
+              }
             }
           ]
         }
@@ -158,7 +156,7 @@
       "options": {
         "config": {
           "clientDestination": {
-            "domain": "mocks.local",
+            "domain": "mocks.current",
             "port": 3001
           }
         }
@@ -169,8 +167,8 @@
         "config": {
           "services": [
             {
-              "path": "/service/mock/.*",
-              "domain": "mocks.local",
+              "path": "/services/mock/.*",
+              "domain": "mocks.current",
               "port": 3000,
               "allowedRequestHeaders": [
                 "*"
