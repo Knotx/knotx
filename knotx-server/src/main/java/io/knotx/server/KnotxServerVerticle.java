@@ -181,7 +181,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
     try {
       router.accept(req);
     } catch (IllegalArgumentException ex) {
-      LOGGER.warn("Problem decoding Query String", ex);
+      LOGGER.warn("Problem decoding Query String ", ex);
 
       req.response()
           .setStatusCode(BAD_REQUEST.code())
