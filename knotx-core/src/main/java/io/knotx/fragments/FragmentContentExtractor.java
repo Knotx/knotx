@@ -71,7 +71,7 @@ public final class FragmentContentExtractor {
   /**
    * Abbreviate fragment content.
    *
-   * @param Fragment content
+   * @param content to abbreviate
    * @return short fragment content used for logging purposes
    */
   public static String abbreviate(String content) {
