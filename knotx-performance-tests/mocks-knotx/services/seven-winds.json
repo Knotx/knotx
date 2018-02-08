@@ -1,11 +1,11 @@
 {
   "winds-list": {
-	"1": "Berg",
-	"2": "Bora",
-	"3": "Etesian",
-	"4": "Haboob",
-	"5": "Khamsin",
-	"6": "Mistral",
-	"7": "Scirocco"
-	}
+    "1": "Berg",
+    "2": "Bora",
+    "3": "Etesian",
+    "4": "Haboob",
+    "5": "Khamsin",
+    "6": "Mistral",
+    "7": "Scirocco"
+  }
 }

@@ -24,7 +24,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
-  <title>Knot.x</title>
+  <title>Simple - 1 snippet 5 services</title>
   <link href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
@@ -40,7 +40,7 @@
         </p>
         <p>
           This is example of page with <strong>1 snippet and 5 services.</strong>
-        </p>		
+        </p>
         <p>
           <a class="btn btn-primary btn-large"
              href="https://github.com/Cognifide/knotx">Learn more</a>
@@ -51,64 +51,65 @@
   <div class="row">
     <script data-knotx-knots="services,handlebars"
             data-knotx-service-mountains="mountains"
-			data-knotx-service-continents="continents"
-			data-knotx-service-names="names"
-			data-knotx-service-dates="dates"
-			data-knotx-service-countries="countries"
+            data-knotx-service-continents="continents"
+            data-knotx-service-names="names"
+            data-knotx-service-dates="dates"
+            data-knotx-service-countries="countries"
             type="text/knotx-snippet">
 
       <div class="col-md-6">
         <h2>{{mountains._result.messner-version}}</h2>
-		<ol>
-			<li>{{mountains._result.messner-mountains.1}}</li>
-			<li>{{mountains._result.messner-mountains.2}}</li>
-			<li>{{mountains._result.messner-mountains.3}}</li>
-			<li>{{mountains._result.messner-mountains.4}}</li>
-			<li>{{mountains._result.messner-mountains.5}}</li>
-			<li>{{mountains._result.messner-mountains.6}}</li>
-			<li>{{mountains._result.messner-mountains.7}}</li>
-		</ol>
-		<h2>Continents</h2>		
-		<ol>
-			<li>{{continents._result.continents-list.1}}</li>
-			<li>{{continents._result.continents-list.2}}</li>
-			<li>{{continents._result.continents-list.3}}</li>
-			<li>{{continents._result.continents-list.4}}</li>
-			<li>{{continents._result.continents-list.5}}</li>
-			<li>{{continents._result.continents-list.6}}</li>
-			<li>{{continents._result.continents-list.7}}</li>
-		</ol>
-		<h2>Countries</h2>
-		<ol>
-			<li>{{countries._result.countries-list.1}}</li>
-			<li>{{countries._result.countries-list.2}}</li>
-			<li>{{countries._result.countries-list.3}}</li>
-			<li>{{countries._result.countries-list.4}}</li>
-			<li>{{countries._result.countries-list.5}}</li>
-			<li>{{countries._result.countries-list.6}}</li>
-			<li>{{countries._result.countries-list.7}}</li>
-		</ol>
-		<h2>Names</h2>
-		<ol>
-			<li>{{names._result.names-list.1}}</li>
-			<li>{{names._result.names-list.2}}</li>
-			<li>{{names._result.names-list.3}}</li>
-			<li>{{names._result.names-list.4}}</li>
-			<li>{{names._result.names-list.5}}</li>
-			<li>{{names._result.names-list.6}}</li>
-			<li>{{names._result.names-list.7}}</li>
-		</ol>
-		<h2>Dates</h2>
-		<ol>
-			<li>{{dates._result.dates-list.1}}</li>
-			<li>{{dates._result.dates-list.2}}</li>
-			<li>{{dates._result.dates-list.3}}</li>
-			<li>{{dates._result.dates-list.4}}</li>
-			<li>{{dates._result.dates-list.5}}</li>
-			<li>{{dates._result.dates-list.6}}</li>
-			<li>{{dates._result.dates-list.7}}</li>
-		</ol>
+        <ol>
+          <li>{{mountains._result.messner-mountains.1}}</li>
+          <li>{{mountains._result.messner-mountains.2}}</li>
+          <li>{{mountains._result.messner-mountains.3}}</li>
+          <li>{{mountains._result.messner-mountains.4}}</li>
+          <li>{{mountains._result.messner-mountains.5}}</li>
+          <li>{{mountains._result.messner-mountains.6}}</li>
+          <li>{{mountains._result.messner-mountains.7}}</li>
+        </ol>
+        <h2>Continents</h2>
+        <ol>
+          <li>{{continents._result.continents-list.1}}</li>
+          <li>{{continents._result.continents-list.2}}</li>
+          <li>{{continents._result.continents-list.3}}</li>
+          <li>{{continents._result.continents-list.4}}</li>
+          <li>{{continents._result.continents-list.5}}</li>
+          <li>{{continents._result.continents-list.6}}</li>
+          <li>{{continents._result.continents-list.7}}</li>
+        </ol>
+        <h2>Countries</h2>
+        <ol>
+          <li>{{countries._result.countries-list.1}}</li>
+          <li>{{countries._result.countries-list.2}}</li>
+          <li>{{countries._result.countries-list.3}}</li>
+          <li>{{countries._result.countries-list.4}}</li>
+          <li>{{countries._result.countries-list.5}}</li>
+          <li>{{countries._result.countries-list.6}}</li>
+          <li>{{countries._result.countries-list.7}}</li>
+        </ol>
+        <h2>Names</h2>
+        <ol>
+          <li>{{names._result.names-list.1}}</li>
+          <li>{{names._result.names-list.2}}</li>
+          <li>{{names._result.names-list.3}}</li>
+          <li>{{names._result.names-list.4}}</li>
+          <li>{{names._result.names-list.5}}</li>
+          <li>{{names._result.names-list.6}}</li>
+          <li>{{names._result.names-list.7}}</li>
+        </ol>
+        <h2>Dates</h2>
+        <ol>
+          <li>{{dates._result.dates-list.1}}</li>
+          <li>{{dates._result.dates-list.2}}</li>
+          <li>{{dates._result.dates-list.3}}</li>
+          <li>{{dates._result.dates-list.4}}</li>
+          <li>{{dates._result.dates-list.5}}</li>
+          <li>{{dates._result.dates-list.6}}</li>
+          <li>{{dates._result.dates-list.7}}</li>
+        </ol>
       </div>
+
     </script>
   </div>
 </div>
