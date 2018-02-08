@@ -160,6 +160,12 @@ Main server options available.
 | `defaultFlow`               | `KnotxFlowConfiguration`            | &#10004;       | Configuration of [[default Knot.X routing|KnotRouting]] |
 | `customFlow`                | `KnotxFlowConfiguration`            |                | Configuration of [[Gateway Mode|GatewayMode]] |
 | `accessLog`                 | `AccessLogConfiguration`            |                | Configuration of the KnotxServer access log |
+| `dropRequests`              | `Boolean`                           |                | Drop requests when the server is overloaded. **True** if not set. |
+| `dropRequestsStatusCode`    | `Integer`                           |                | Status code for dropped requests. **503** if not set. |
+
+
+dropRequests
+
 
 ### KnotxServerCustomHeader options
  Name  | Type  | Mandatory | Description  |
