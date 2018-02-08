@@ -33,7 +33,4 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
   * [[Knot.x Tuning|KnotxTuning]]
 * [[Logging|Logging]]
 * [[Performance|PerformanceTests]]
-  * [[Performance Tests Methodology|PerformanceTestsMethodology]]
-  * [[Performance Tests Summary|PerformanceTestsSummary]]
-  * [[Performance Tests Tuning|PerformanceTestsTuning]]
 * [[Dependencies|Dependencies]]
