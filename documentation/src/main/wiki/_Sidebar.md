@@ -29,14 +29,12 @@
     * [[Knot.x Tuning|KnotxTuning]]
   * [[Logging|Logging]]
   * [[Performance|PerformanceTests]]
-    * [[Performance Tests Methodology|PerformanceTestsMethodology]]
-    * [[Performance Tests Summary|PerformanceTestsSummary]]
-    * [[Performance Tests Tuning|PerformanceTestsTuning]]
   * [[Dependencies|Dependencies]]
   * [[FAQ|FAQ]]
   * [[Upgrade Notes|UpgradeNotes]]
 
 ### Released
+* [[1.2.0|Documentation-1.2.0]]
 * [[1.1.2|Documentation-1.1.2]]
 * [[1.1.1|Documentation-1.1.1]]
 * [[1.1.0|Documentation-1.1.0]]

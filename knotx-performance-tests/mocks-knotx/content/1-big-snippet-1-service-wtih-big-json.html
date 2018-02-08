@@ -1,0 +1,828 @@
+<!--
+
+    Knot.x - Mocked services for sample app
+
+    Copyright (C) 2016 Cognifide Limited
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
+  <title>1 big snippet with 1 big service</title>
+  <link href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="jumbotron">
+        <h2>
+          Hello Knot.x!
+        </h2>
+        <p>
+          <a class="btn btn-primary btn-large"
+             href="https://github.com/Cognifide/knotx">Learn more</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <script data-knotx-knots="services,handlebars"
+            data-knotx-service="people"
+            type="text/knotx-snippet">
+      <div class="col-md-6">
+        <h2>Names:</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}} {{this.lastName}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Emails</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.email}} [{{this.gender}}]</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Slogans</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.slogan}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Languages</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.language}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Friends</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Friends:
+            <ul class="people_list">
+              {{#each this.friends}}
+              <li>{{this.firstName}} {{this.lastName}}</li>
+              {{/each}}
+            </ul>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Bios</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Bio:</li>
+          <p>{{this.bio}}</p>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Salary</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.salary}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Company</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.company}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Pictures</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>src="{{this.picture}}"</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Avatar</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.avatar}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Serial</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.serial}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Names:</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}} {{this.lastName}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Emails</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.email}} [{{this.gender}}]</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Slogans</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.slogan}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Languages</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.language}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Friends</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Friends:
+            <ul class="people_list">
+              {{#each this.friends}}
+              <li>{{this.firstName}} {{this.lastName}}</li>
+              {{/each}}
+            </ul>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Bios</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Bio:</li>
+          <p>{{this.bio}}</p>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Salary</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.salary}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Company</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.company}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Pictures</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>src="{{this.picture}}"</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Avatar</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.avatar}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Serial</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.serial}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Names:</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}} {{this.lastName}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Emails</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.email}} [{{this.gender}}]</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Slogans</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.slogan}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Languages</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.language}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Friends</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Friends:
+            <ul class="people_list">
+              {{#each this.friends}}
+              <li>{{this.firstName}} {{this.lastName}}</li>
+              {{/each}}
+            </ul>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Bios</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Bio:</li>
+          <p>{{this.bio}}</p>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Salary</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.salary}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Company</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.company}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Pictures</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>src="{{this.picture}}"</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Avatar</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.avatar}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Serial</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.serial}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Names:</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}} {{this.lastName}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Emails</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.email}} [{{this.gender}}]</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Slogans</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.slogan}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Languages</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.language}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Friends</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Friends:
+            <ul class="people_list">
+              {{#each this.friends}}
+              <li>{{this.firstName}} {{this.lastName}}</li>
+              {{/each}}
+            </ul>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Bios</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Bio:</li>
+          <p>{{this.bio}}</p>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Salary</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.salary}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Company</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.company}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Pictures</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>src="{{this.picture}}"</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Avatar</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.avatar}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Serial</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.serial}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Names:</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}} {{this.lastName}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Emails</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.email}} [{{this.gender}}]</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Slogans</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.slogan}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Languages</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.language}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Friends</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Friends:
+            <ul class="people_list">
+              {{#each this.friends}}
+              <li>{{this.firstName}} {{this.lastName}}</li>
+              {{/each}}
+            </ul>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Bios</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Bio:</li>
+          <p>{{this.bio}}</p>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Salary</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.salary}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Company</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.company}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Pictures</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>src="{{this.picture}}"</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Avatar</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.avatar}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Serial</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.serial}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Names:</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}} {{this.lastName}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <p>
+
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas auctor magna turpis,
+                    a condimentum leo sollicitudin et. Etiam venenatis turpis mauris, et sodales lorem
+                    consectetur non. Duis et augue a ipsum pulvinar sollicitudin. Sed aliquam elementum
+                    ligula, ut viverra mi mattis quis. Ut in commodo tortor. Nunc ac massa vel quam
+                    iaculis lacinia sed vitae enim. Sed ornare malesuada egestas. Curabitur quis turpis ac
+                    eros iaculis varius sit amet nec eros. Suspendisse eget nisl velit. Aliquam eu justo
+                    vulputate risus malesuada semper eu sit amet nunc. Morbi tellus leo, gravida quis
+                    velit sit amet, finibus tincidunt diam. Etiam lorem felis, mollis sit amet velit id,
+                    scelerisque ultricies tellus. Nunc semper porttitor posuere. Integer leo risus, porta
+                    sit amet felis et, aliquet lobortis libero. Donec orci turpis, accumsan dapibus turpis
+                    at, venenatis consectetur felis.
+
+                    Curabitur at risus vel quam auctor sagittis vel eu eros. Phasellus vel lacus et sem
+                    euismod auctor ac sit amet libero. Maecenas mattis sagittis odio ac mollis. Donec vel
+                    orci non erat lobortis tincidunt eleifend ut leo. Praesent iaculis risus eros, et
+                    maximus orci pharetra nec. Duis venenatis aliquet est, in bibendum nibh gravida ut.
+                    Maecenas suscipit iaculis condimentum. Vestibulum varius quam sed posuere semper.
+                    Aliquam erat volutpat. Sed mattis fermentum porttitor.
+
+                    Donec in mauris dolor. Fusce tincidunt non diam quis consequat. Pellentesque habitant
+                    morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed dignissim
+                    arcu a arcu condimentum, nec semper felis mattis. Curabitur lobortis, nisi ut cursus
+                    interdum, quam diam vestibulum sem, eget tempor sapien ante convallis est. Suspendisse
+                    potenti. Donec at enim ac metus dictum aliquet. Vivamus fermentum eget nisl a
+                    imperdiet. Mauris imperdiet sed diam nec auctor. Fusce et vehicula nulla. Vestibulum
+                    quis nulla ac diam condimentum luctus.
+
+                    Proin tempor libero est, vel cursus lorem semper quis. Mauris mollis pellentesque
+                    purus, eu pretium magna imperdiet id. Aliquam sagittis at ex at sagittis. Sed
+                    tristique turpis lacus. Etiam porta quis augue vitae viverra. Cras vel placerat magna.
+                    Donec sollicitudin porta tortor in dignissim. Ut semper sapien mauris, interdum
+                    efficitur nibh rhoncus at.
+
+                    Nunc tincidunt ultrices massa, vitae volutpat lorem finibus non. Fusce pellentesque
+                    accumsan lacus, et vestibulum sapien pharetra sed. Nulla dapibus, purus vitae
+                    ultricies suscipit, dui orci vehicula justo, sed iaculis urna eros sit amet orci.
+                    Morbi viverra a odio in rutrum. Phasellus euismod ipsum ut nulla egestas pulvinar ac
+                    vitae lorem. Mauris bibendum lectus ut neque dignissim, quis viverra nibh consectetur.
+                    Vivamus sed mollis tellus. Suspendisse potenti. Morbi ultricies vehicula pharetra.
+                    Mauris vulputate molestie neque, sed tempor libero tincidunt eu. Etiam pellentesque
+                    lacinia metus dapibus lobortis. Aliquam eget sapien vel ligula fringilla mollis non
+                    quis augue. Sed tellus nisl, euismod eget eleifend finibus, aliquam in quam. Praesent
+                    id ultrices ligula. Sed vel tempor ex. Pellentesque ut orci eu velit convallis
+                    sagittis elementum in sem.
+
+                    Ut sed sem ut arcu pharetra mattis aliquet vitae massa. Donec ultricies rutrum augue,
+                    quis dignissim purus euismod ac. Vestibulum et maximus felis. Maecenas viverra
+                    vehicula iaculis. Sed pellentesque malesuada ullamcorper. Suspendisse potenti. Nunc
+                    laoreet posuere mattis. Sed dictum, purus nec efficitur cursus, velit justo euismod
+                    arcu, at tristique neque ex ut tortor. In varius tortor ac leo posuere, eget molestie
+                    justo finibus. Aenean convallis, velit at vestibulum mattis, arcu tortor tincidunt
+                    lectus, non ullamcorper ex nulla nec libero. Cras ultricies nunc massa, sed ultricies
+                    ante viverra ac. Vivamus euismod blandit tortor ut imperdiet. Nullam nisi sapien,
+                    malesuada non arcu at, elementum facilisis lacus. Pellentesque sit amet justo dui.
+                    Cras blandit eros vitae auctor vehicula.
+
+                    Duis pharetra lobortis ante, in volutpat lectus pharetra ac. Etiam porta, tellus sit
+                    amet luctus efficitur, libero lectus dictum libero, in ullamcorper arcu turpis id
+                    massa. Suspendisse sit amet turpis sit amet lacus faucibus efficitur luctus a ligula.
+                    Suspendisse at risus ac ligula vestibulum lobortis et sed urna. Integer ullamcorper
+                    dolor quis nisl sollicitudin, at sagittis lectus semper. Nam eu justo a ante fringilla
+                    dictum eget quis sem. Pellentesque vitae finibus dolor, ac cursus ex. Maecenas lorem
+                    leo, posuere nec lectus et, luctus rutrum leo. Vestibulum gravida suscipit dui nec
+                    pharetra. Ut tincidunt nulla eget rutrum ultricies. Aenean laoreet enim eget ante
+                    molestie facilisis. Duis sed quam nunc. Proin non odio quis dui posuere blandit.
+                    Quisque sed lorem ligula. Pellentesque habitant morbi tristique senectus et netus et
+                    malesuada fames ac turpis egestas. Ut pulvinar nisi eu arcu pharetra dignissim.
+
+                    Duis interdum sagittis diam, eu condimentum nisl aliquam id. Donec nunc erat, feugiat
+                    a felis non, egestas bibendum nibh. Integer nec commodo dui. Sed placerat maximus
+                    feugiat. Mauris in justo mattis, ullamcorper mauris id, dapibus est. Pellentesque
+                    mattis enim eu molestie dictum. Mauris interdum hendrerit mauris, ac commodo ligula
+                    hendrerit a. Sed non ex felis. Quisque vulputate nisl at porttitor pharetra. Proin nec
+                    urna sagittis, vulputate enim a, elementum justo. Cras et dui gravida, vehicula turpis
+                    et, egestas tortor. Donec semper dignissim rhoncus.
+
+                    Sed malesuada erat id condimentum posuere. Nunc auctor mi velit, eu consequat dui
+                    rutrum vel. Donec leo justo, malesuada quis viverra eu, sollicitudin in augue.
+                    Phasellus rhoncus, mauris vitae ornare aliquam, ipsum justo viverra lectus, ut cursus
+                    lorem turpis eu mauris. Duis eget massa vitae sem imperdiet elementum ac eget urna.
+                    Nulla interdum ornare efficitur. Vestibulum ante ipsum primis in faucibus orci luctus
+                    et ultrices posuere cubilia Curae; Cras ut tempor urna. Quisque lobortis at mauris nec
+                    commodo. Duis nec euismod lectus, ut mollis mauris. Duis finibus leo a iaculis
+                    pellentesque.
+
+                    Proin molestie lorem non mauris efficitur, nec lobortis turpis finibus. Phasellus
+                    pharetra vestibulum nunc eu rhoncus. Vivamus imperdiet, nunc id laoreet faucibus, urna
+                    quam commodo mi, non vehicula lacus quam non dui. Fusce ac diam a purus hendrerit
+                    porta a ac odio. Suspendisse fringilla, metus ac tempus suscipit, neque lacus
+                    tincidunt erat, nec lacinia eros dui eget nulla. Maecenas consectetur tellus felis,
+                    sed luctus erat viverra at. Proin euismod rutrum bibendum. Aenean sagittis diam augue,
+                    sit amet faucibus ex aliquam quis. Fusce semper lobortis lectus, ac vehicula justo
+                    sagittis et. In hac habitasse platea dictumst. Proin odio quam, dictum in lacus sit
+                    amet, commodo pellentesque ipsum. Nullam finibus ante ac ipsum condimentum, sed
+                    pellentesque augue consectetur. Sed enim neque, egestas vitae pretium malesuada,
+                    varius ac diam.
+      </p>
+      <div class="col-md-6">
+        <h2>Emails</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.email}} [{{this.gender}}]</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Slogans</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.slogan}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Languages</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.language}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Friends</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Friends:
+            <ul class="people_list">
+              {{#each this.friends}}
+              <li>{{this.firstName}} {{this.lastName}}</li>
+              {{/each}}
+            </ul>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Bios</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.firstName}}&#39;s Bio:</li>
+          <p>{{this.bio}}</p>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Salary</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.salary}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Company</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.company}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Pictures</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>src="{{this.picture}}"</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Avatar</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.avatar}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h2>Serial</h2>
+        <ul class="people_list">
+          {{#each _result}}
+          <li>{{this.serial}}
+          <p>
+
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas auctor magna turpis,
+                        a condimentum leo sollicitudin et. Etiam venenatis turpis mauris, et sodales lorem
+                        consectetur non. Duis et augue a ipsum pulvinar sollicitudin. Sed aliquam elementum
+                        ligula, ut viverra mi mattis quis. Ut in commodo tortor. Nunc ac massa vel quam
+                        iaculis lacinia sed vitae enim. Sed ornare malesuada egestas. Curabitur quis turpis ac
+                        eros iaculis varius sit amet nec eros. Suspendisse eget nisl velit. Aliquam eu justo
+                        vulputate risus malesuada semper eu sit amet nunc. Morbi tellus leo, gravida quis
+                        velit sit amet, finibus tincidunt diam. Etiam lorem felis, mollis sit amet velit id,
+                        scelerisque ultricies tellus. Nunc semper porttitor posuere. Integer leo risus, porta
+                        sit amet felis et, aliquet lobortis libero. Donec orci turpis, accumsan dapibus turpis
+                        at, venenatis consectetur felis.
+
+                        Curabitur at risus vel quam auctor sagittis vel eu eros. Phasellus vel lacus et sem
+                        euismod auctor ac sit amet libero. Maecenas mattis sagittis odio ac mollis. Donec vel
+                        orci non erat lobortis tincidunt eleifend ut leo. Praesent iaculis risus eros, et
+                        maximus orci pharetra nec. Duis venenatis aliquet est, in bibendum nibh gravida ut.
+                        Maecenas suscipit iaculis condimentum. Vestibulum varius quam sed posuere semper.
+                        Aliquam erat volutpat. Sed mattis fermentum porttitor.
+
+                        Donec in mauris dolor. Fusce tincidunt non diam quis consequat. Pellentesque habitant
+                        morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed dignissim
+                        arcu a arcu condimentum, nec semper felis mattis. Curabitur lobortis, nisi ut cursus
+                        interdum, quam diam vestibulum sem, eget tempor sapien ante convallis est. Suspendisse
+                        potenti. Donec at enim ac metus dictum aliquet. Vivamus fermentum eget nisl a
+                        imperdiet. Mauris imperdiet sed diam nec auctor. Fusce et vehicula nulla. Vestibulum
+                        quis nulla ac diam condimentum luctus.
+
+                        Proin tempor libero est, vel cursus lorem semper quis. Mauris mollis pellentesque
+                        purus, eu pretium magna imperdiet id. Aliquam sagittis at ex at sagittis. Sed
+                        tristique turpis lacus. Etiam porta quis augue vitae viverra. Cras vel placerat magna.
+                        Donec sollicitudin porta tortor in dignissim. Ut semper sapien mauris, interdum
+                        efficitur nibh rhoncus at.
+
+                        Nunc tincidunt ultrices massa, vitae volutpat lorem finibus non. Fusce pellentesque
+                        accumsan lacus, et vestibulum sapien pharetra sed. Nulla dapibus, purus vitae
+                        ultricies suscipit, dui orci vehicula justo, sed iaculis urna eros sit amet orci.
+                        Morbi viverra a odio in rutrum. Phasellus euismod ipsum ut nulla egestas pulvinar ac
+                        vitae lorem. Mauris bibendum lectus ut neque dignissim, quis viverra nibh consectetur.
+                        Vivamus sed mollis tellus. Suspendisse potenti. Morbi ultricies vehicula pharetra.
+                        Mauris vulputate molestie neque, sed tempor libero tincidunt eu. Etiam pellentesque
+                        lacinia metus dapibus lobortis. Aliquam eget sapien vel ligula fringilla mollis non
+                        quis augue. Sed tellus nisl, euismod eget eleifend finibus, aliquam in quam. Praesent
+                        id ultrices ligula. Sed vel tempor ex. Pellentesque ut orci eu velit convallis
+                        sagittis elementum in sem.
+
+                        Ut sed sem ut arcu pharetra mattis aliquet vitae massa. Donec ultricies rutrum augue,
+                        quis dignissim purus euismod ac. Vestibulum et maximus felis. Maecenas viverra
+                        vehicula iaculis. Sed pellentesque malesuada ullamcorper. Suspendisse potenti. Nunc
+                        laoreet posuere mattis. Sed dictum, purus nec efficitur cursus, velit justo euismod
+                        arcu, at tristique neque ex ut tortor. In varius tortor ac leo posuere, eget molestie
+                        justo finibus. Aenean convallis, velit at vestibulum mattis, arcu tortor tincidunt
+                        lectus, non ullamcorper ex nulla nec libero. Cras ultricies nunc massa, sed ultricies
+                        ante viverra ac. Vivamus euismod blandit tortor ut imperdiet. Nullam nisi sapien,
+                        malesuada non arcu at, elementum facilisis lacus. Pellentesque sit amet justo dui.
+                        Cras blandit eros vitae auctor vehicula.
+
+                        Duis pharetra lobortis ante, in volutpat lectus pharetra ac. Etiam porta, tellus sit
+                        amet luctus efficitur, libero lectus dictum libero, in ullamcorper arcu turpis id
+                        massa. Suspendisse sit amet turpis sit amet lacus faucibus efficitur luctus a ligula.
+                        Suspendisse at risus ac ligula vestibulum lobortis et sed urna. Integer ullamcorper
+                        dolor quis nisl sollicitudin, at sagittis lectus semper. Nam eu justo a ante fringilla
+                        dictum eget quis sem. Pellentesque vitae finibus dolor, ac cursus ex. Maecenas lorem
+                        leo, posuere nec lectus et, luctus rutrum leo. Vestibulum gravida suscipit dui nec
+                        pharetra. Ut tincidunt nulla eget rutrum ultricies. Aenean laoreet enim eget ante
+                        molestie facilisis. Duis sed quam nunc. Proin non odio quis dui posuere blandit.
+                        Quisque sed lorem ligula. Pellentesque habitant morbi tristique senectus et netus et
+                        malesuada fames ac turpis egestas. Ut pulvinar nisi eu arcu pharetra dignissim.
+
+                        Duis interdum sagittis diam, eu condimentum nisl aliquam id. Donec nunc erat, feugiat
+                        a felis non, egestas bibendum nibh. Integer nec commodo dui. Sed placerat maximus
+                        feugiat. Mauris in justo mattis, ullamcorper mauris id, dapibus est. Pellentesque
+                        mattis enim eu molestie dictum. Mauris interdum hendrerit mauris, ac commodo ligula
+                        hendrerit a. Sed non ex felis. Quisque vulputate nisl at porttitor pharetra. Proin nec
+                        urna sagittis, vulputate enim a, elementum justo. Cras et dui gravida, vehicula turpis
+                        et, egestas tortor. Donec semper dignissim rhoncus.
+
+                        Sed malesuada erat id condimentum posuere. Nunc auctor mi velit, eu consequat dui
+                        rutrum vel. Donec leo justo, malesuada quis viverra eu, sollicitudin in augue.
+                        Phasellus rhoncus, mauris vitae ornare aliquam, ipsum justo viverra lectus, ut cursus
+                        lorem turpis eu mauris. Duis eget massa vitae sem imperdiet elementum ac eget urna.
+                        Nulla interdum ornare efficitur. Vestibulum ante ipsum primis in faucibus orci luctus
+                        et ultrices posuere cubilia Curae; Cras ut tempor urna. Quisque lobortis at mauris nec
+                        commodo. Duis nec euismod lectus, ut mollis mauris. Duis finibus leo a iaculis
+                        pellentesque.
+
+                        Proin molestie lorem non mauris efficitur, nec lobortis turpis finibus. Phasellus
+                        pharetra vestibulum nunc eu rhoncus. Vivamus imperdiet, nunc id laoreet faucibus, urna
+                        quam commodo mi, non vehicula lacus quam non dui. Fusce ac diam a purus hendrerit
+                        porta a ac odio. Suspendisse fringilla, metus ac tempus suscipit, neque lacus
+                        tincidunt erat, nec lacinia eros dui eget nulla. Maecenas consectetur tellus felis,
+                        sed luctus erat viverra at. Proin euismod rutrum bibendum. Aenean sagittis diam augue,
+                        sit amet faucibus ex aliquam quis. Fusce semper lobortis lectus, ac vehicula justo
+                        sagittis et. In hac habitasse platea dictumst. Proin odio quam, dictum in lacus sit
+                        amet, commodo pellentesque ipsum. Nullam finibus ante ac ipsum condimentum, sed
+                        pellentesque augue consectetur. Sed enim neque, egestas vitae pretium malesuada,
+                        varius ac diam.
+          </p>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
+    </script>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
