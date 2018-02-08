@@ -6,6 +6,8 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 List of changes that are finished but not yet released in any final version.
+
+## Version 1.2.0
 - [PR-345](https://github.com/Cognifide/knotx/pull/335) - Update to Vert.x 3.5 and RxJava 2. Most notable changes are upgrade of Vert.x and RxJava.
 The API is changed, so your custom implementations need to adopt to the latest APIs both of Vert.x and RxJava.
 - [PR-320](https://github.com/Cognifide/knotx/pull/320) - Now you can configure the file-uploads folder for POST requests. See [Server options](https://github.com/Cognifide/knotx/wiki/Server#server-options) for details.
