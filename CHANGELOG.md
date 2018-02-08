@@ -3,6 +3,8 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+
+## Version 1.2.0
  - [PR-345](https://github.com/Cognifide/knotx/pull/345) - Update to Vert.x 3.5 and RxJava 2
  - [PR-320](https://github.com/Cognifide/knotx/pull/320) - Added KnotxServer configuration parameter to configure fileUploads folder
  - [PR-347](https://github.com/Cognifide/knotx/pull/347) - Improved error logging on Server routing, repository connector & Http service adapters. Added custom headers configuration for requests/responses, etc.
