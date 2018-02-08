@@ -27,6 +27,7 @@
 #include "wiki/KnotxDeployment.md"
 #include "wiki/KnotxTuning.md"
 #include "wiki/Logging.md"
+#include "wiki/PerformanceTests.md"
 #include "wiki/Dependencies.md"
 #include "wiki/FAQ.md"
 #include "wiki/UpgradeNotes.md"
