@@ -7,6 +7,11 @@ Each release has a version number `MAJOR.MINOR.PATCH`. Those numbers are increme
 - **MINOR** version when Knot.x introduces new complex functionality in a backwards-compatible manner, and
 - **PATCH** version when Knot.x introduces backwards-compatible bug fixes, small improvements or required dependency update.
 
+### Changes tracking
+Knot.x provides two sources of tracking the changes:
+- [`CHANGELOG.md`](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md) where all notable changes to Knot.x core are documented with links to the tickets with detailed description.
+- [[Upgrade Notes|UpgradeNotes]] where all crucial changes that concerns users during the migration (e.g. additional parameters, bugfix and workarounds, API/configuration changes, dependency upgrades like Vert.x or RxJava).
+
 ## When to migrate
 - **MAJOR** - new project start or planned migration - migration may require a significant effort.
 - **MINOR** - if you need some improvements that are in this release, planned migration - migration 
