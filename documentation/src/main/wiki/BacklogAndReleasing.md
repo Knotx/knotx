@@ -4,8 +4,8 @@
 Knot.x releases follow [Semantic Versioning 2.0.0](https://semver.org/) guide.
 Each release has a version number `MAJOR.MINOR.PATCH`. Those numbers are incremented when:
 - **MAJOR** version when Knot.x introduce incompatible API changes or major architecture refactoring,
-- **MINOR** version when Knot.x introduces new complex functionality in a backwards-compatible manner, and
-- **PATCH** version when Knot.x introduces backwards-compatible bug fixes, small improvements or required dependency update.
+- **MINOR** version when Knot.x introduces new complex functionality in a backwards-compatible manner, MINOR dependencies updates (e.g. Vert.x or RxJava), and
+- **PATCH** version when Knot.x introduces backwards-compatible bug fixes, small improvements or PATCH dependencies updates (e.g. Vert.x or RxJava).
 
 ### Changes tracking
 Knot.x provides two sources of tracking the changes:
