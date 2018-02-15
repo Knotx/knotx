@@ -39,10 +39,8 @@ public final class FragmentContentExtractor {
     if (fragment == null) {
       return null;
     }
-
-    String content = fragment.content();
-    return fragment.isRaw() ? content
-        : extractSnippetContent(content);
+    
+    return fragment.isRaw() ? fragment.content() : extractSnippetContent(fragment.content());
   }
 
   /**

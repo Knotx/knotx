@@ -15,6 +15,7 @@
  */
 package io.knotx.fragments;
 
+import static io.knotx.util.IsEqualApplyingHtmlFormattingMatcher.equalsToWithHtmlFormatting;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -30,7 +31,6 @@ import io.knotx.dataobjects.Fragment;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import org.jsoup.nodes.Element;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -50,7 +50,7 @@ public class FragmentContentExtractorTest {
 
     final String expectedContent = readText(expectedContentFileName);
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
-    assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
+    assertThat(expectedContent, equalToIgnoringWhiteSpace(unwrappedContent));
   }
 
   @TestWith(value = {
@@ -59,13 +59,13 @@ public class FragmentContentExtractorTest {
       "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
       "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
   })
-  @Ignore("Problems with equalToIgnoringWhiteSpace")
   public void unwrappedContent_withString_expectDefinedContent(String snippetFileName,
       String expectedContentFileName) throws Exception {
 
     final String expectedContent = readText(expectedContentFileName);
-    final Element document = FragmentContentExtractor.unwrapContent(readText(snippetFileName));
-    assertThat(expectedContent, equalToIgnoringWhiteSpace(document.toString()));
+    final Element element = FragmentContentExtractor.unwrapContent(readText(snippetFileName));
+
+    assertThat(element.toString(), equalsToWithHtmlFormatting(expectedContent));
   }
 
   @TestWith(value = {
@@ -74,13 +74,13 @@ public class FragmentContentExtractorTest {
       "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
       "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
   })
-  @Ignore("Problems with equalToIgnoringWhiteSpace")
   public void unwrapFragmentContent_withFragment_expectDefinedContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
 
     final String expectedContent = readText(expectedContentFileName);
-    final Element document = FragmentContentExtractor.unwrapFragmentContent(fragment);
-    assertThat(expectedContent, equalToIgnoringWhiteSpace(document.toString()));
+    final Element element = FragmentContentExtractor.unwrapFragmentContent(fragment);
+
+    assertThat(element.toString(), equalsToWithHtmlFormatting(expectedContent));
   }
 
   @TestWith({
