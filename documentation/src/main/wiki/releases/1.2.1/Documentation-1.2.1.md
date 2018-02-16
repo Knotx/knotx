@@ -226,43 +226,6 @@ User documentation is available at [http://knotx.io](http://knotx.io/).
     - [3.3 Does Knot.x come with an Action Adapter implementation?](#33-does-knotx-come-with-an-action-adapter-implementation)
 - [Upgrade Notes](#upgrade-notes)
 
-# Wiki
-This documentation is dedicated for more advanced users and developers. Here you can find information how to extend Knot.x, how to tune particular
-modules according your needs. Additionally wiki contains base information how set up Knot.x and run examples.
-
-User documentation is available at [http://knotx.io](http://knotx.io/).
-
-* [[Getting started|GettingStarted]]
-  * [[Running The Demo|RunningTheDemo]]
-  * [[Debugging Knot.x|Debugging]]
-* [[Architecture|Architecture]]
-  * [[High Level Architecture|HighLevelArchitecture]]
-  * [[Core Architecture|CoreArchitecture]]
-  * [[Communication Flow|CommunicationFlow]]
-  * [[Knot Routing|KnotRouting]]
-  * [[Gateway Mode|GatewayMode]]
-* [[Knot.x Modules|KnotxModules]]
-* [[Server|Server]]
-* [[Repository Connectors|RepositoryConnectors]]
-  * [[Http Repository Connector|HttpRepositoryConnector]]
-  * [[Filesystem Repository Connector|FilesystemRepositoryConnector]]
-* [[Splitter|Splitter]]
-* [[Assembler|Assembler]]
-* [[Knot|Knot]]
-  * [[Action Knot|ActionKnot]]
-  * [[Service Knot|ServiceKnot]]
-  * [[Handlebars Knot|HandlebarsKnot]]
-* [[Adapter|Adapter]]
-  * [[Service Adapter|ServiceAdapter]]
-  * [[Action Adapter|ActionAdapter]]
-  * [[Http Service Adapter|HttpServiceAdapter]]
-* [[Mocks|Mocks]]
-* [[Knot.x Deployment|KnotxDeployment]]
-  * [[Knot.x Tuning|KnotxTuning]]
-* [[Logging|Logging]]
-* [[Performance|PerformanceTests]]
-* [[Dependencies|Dependencies]]
-
 # Getting started
 
 ## First steps
