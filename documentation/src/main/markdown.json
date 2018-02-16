@@ -1,5 +1,5 @@
 {
-    "build": "wiki/releases/1.2.0/Documentation-1.2.0.md",
+    "build": "wiki/releases/1.2.1/Documentation-1.2.1.md",
     "files": [
         "DocumentationTemplate.md"
     ]
