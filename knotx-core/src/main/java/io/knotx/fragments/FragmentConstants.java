@@ -15,20 +15,13 @@
  */
 package io.knotx.fragments;
 
-import java.util.regex.Pattern;
-
 public final class FragmentConstants {
 
   public static final String SNIPPET_IDENTIFIER_NAME = "data-knotx-knots";
 
-  public static final Pattern ANY_SNIPPET_PATTERN =
-      Pattern.compile("(?is).*<script\\s+" + SNIPPET_IDENTIFIER_NAME + ".*", Pattern.DOTALL);
-
-  public static final Pattern SNIPPET_PATTERN =
-      Pattern.compile("<script\\s+" + SNIPPET_IDENTIFIER_NAME
-          + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</script>", Pattern.DOTALL);
-
   public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
+
+  public static final String DEFAULT_SNIPPET_TAG_NAME = "script";
 
   static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
 

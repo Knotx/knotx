@@ -18,6 +18,7 @@ package io.knotx.server;
 import io.knotx.server.configuration.KnotxCSRFOptions;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -37,6 +38,8 @@ public class KnotxServerVerticle extends AbstractVerticle {
   public static final String KNOTX_PORT_PROP_NAME = "knotx.port";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
+
+  private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 
   private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 

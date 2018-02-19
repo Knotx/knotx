@@ -36,7 +36,7 @@ public class DefaultFormTransformer implements FormTransformer {
 
   @Override
   public String transform(String content, String formIdAttrName, String formIdAttrValue) {
-    Document scriptContentDocument = FragmentContentExtractor.unwrapDocument(content);
+    Element scriptContentDocument = FragmentContentExtractor.unwrapContent(content);
     Element actionFormElement = scriptContentDocument.getElementsByAttribute(FORM_ACTION_ATTR).first();
 
     LOGGER.debug("Changing form with identifier [{}]", formIdAttrValue);
@@ -61,7 +61,7 @@ public class DefaultFormTransformer implements FormTransformer {
   }
 
 
-  private String getFragmentContent(String content, Document scriptContentDocument) {
+  private String getFragmentContent(String content, Element scriptContentDocument) {
     Document resultDocument = Jsoup.parse(content, "UTF-8", Parser.xmlParser());
     Element scriptTag = resultDocument.child(0).empty();
     scriptContentDocument.childNodesCopy().forEach(scriptTag::appendChild);

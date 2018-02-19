@@ -40,8 +40,6 @@ public class HtmlFragmentSplitterVerticleTest {
 
   private final static String ADDRESS = "knotx.core.splitter";
 
-  private final static Integer NUMBER_OF_FRAGMENTS = 8;
-
   //Test Runner Rule of Verts
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -66,12 +64,12 @@ public class HtmlFragmentSplitterVerticleTest {
 
   @Test
   @KnotxConfiguration("knotx-fragment-splitter-test.json")
-  public void callSplitterWithManySnippets_expectMultipleFragments(TestContext context)
+  public void callSplitterWithManySnippets_expectNineFragments(TestContext context)
       throws Exception {
     callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
         knotContext -> {
           context.assertTrue(knotContext.getFragments() != null);
-          context.assertEquals(knotContext.getFragments().size(), NUMBER_OF_FRAGMENTS);
+          context.assertEquals(knotContext.getFragments().size(), 9);
         });
   }
 
