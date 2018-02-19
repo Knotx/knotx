@@ -41,7 +41,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
   public FragmentAssemblerKnotProxyImpl(FragmentAssemblerOptions options) {
     this.options = options;
-    this.patterns = new SnippetPatterns(configuration.getSnippetTagName());
+    this.patterns = new SnippetPatterns(options.getSnippetTagName());
   }
 
   @Override
@@ -49,7 +49,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
-            .map(fragment -> configuration.unprocessedFragmentStrategy().get(fragment, patterns))
+            .map(fragment -> options.getUnprocessedStrategy().get(fragment, patterns))
             .collect(Collectors.joining());
 
         return Single.just(createSuccessResponse(knotContext, joinedFragments));

@@ -41,8 +41,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 
-  private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
-
   private KnotxServerOptions configuration;
 
   @Override

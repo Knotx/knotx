@@ -72,14 +72,27 @@ Set the timeout of the CSRF token
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[assembler]]`assembler`|`String`|-
+|[[assembler]]`assembler`|`String`|
++++
+Sets the event bus address of the assembler verticle. Default is knotx.core.assembler
++++
 |[[repositories]]`repositories`|`Array of link:dataobjects.html#RepositoryEntry[RepositoryEntry]`|
 +++
-
+Sets the list of RepositoryEntry items
 +++
-|[[responseProvider]]`responseProvider`|`String`|-
-|[[routing]]`routing`|`link:dataobjects.html#MethodRoutingEntries[MethodRoutingEntries]`|-
-|[[splitter]]`splitter`|`String`|-
+|[[responseProvider]]`responseProvider`|`String`|
++++
+Sets the event bus address of the Custom Flow' response provider verticle. Default is 'knotx.gateway.responseprovider'
++++
+|[[routing]]`routing`|`link:dataobjects.html#MethodRoutingEntries[MethodRoutingEntries]`|
++++
+Set of HTTP method based routing entries, describing communication between Knots
+ <pre>routing": {"GET": {}, "POST": {}}</pre>
++++
+|[[splitter]]`splitter`|`String`|
++++
+Sets the event bus address of the splitter verticle. Default is knotx.core.splitter
++++
 |===
 
 [[KnotxServerOptions]]

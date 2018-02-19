@@ -17,7 +17,7 @@ package io.knotx.knot.splitter.impl;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.splitter.FragmentSplitterConfiguration;
+import io.knotx.knot.splitter.FragmentSplitterOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
@@ -31,8 +31,8 @@ public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
 
   private final FragmentSplitter splitter;
 
-  public FragmentSplitterKnotProxyImpl(FragmentSplitterConfiguration configuration) {
-    splitter = new HtmlFragmentSplitter(configuration.getSnippetTagName());
+  public FragmentSplitterKnotProxyImpl(FragmentSplitterOptions options) {
+    splitter = new HtmlFragmentSplitter(options.getSnippetTagName());
   }
 
   @Override

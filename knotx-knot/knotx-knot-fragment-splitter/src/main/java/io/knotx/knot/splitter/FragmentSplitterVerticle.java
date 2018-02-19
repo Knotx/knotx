@@ -50,7 +50,7 @@ public class FragmentSplitterVerticle extends AbstractVerticle {
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
         .setAddress(options.getAddress())
-        .register(KnotProxy.class, new FragmentSplitterKnotProxyImpl(configuration));
+        .register(KnotProxy.class, new FragmentSplitterKnotProxyImpl(options));
   }
 
   @Override
