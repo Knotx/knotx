@@ -1,5 +1,5 @@
 {
-  "name": "cheatsheet",
+  "name": "knotx-cheatsheet",
   "generators": [{
     "kind": "dataObject",
     "incremental": true,

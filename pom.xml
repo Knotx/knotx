@@ -367,7 +367,8 @@
                 </annotationProcessors>
                 <generatedSourcesDirectory>${generated.dir}</generatedSourcesDirectory>
                 <compilerArgs>
-                  <arg>-AoutputDirectory=${project.basedir}/src/main</arg>
+                  <arg>-Acodegen.output=${project.basedir}/src/main</arg>
+                  <arg>-Acodegen.generators=knotx-cheatsheet,data_object_converters,RxJava2,service_proxies</arg>
                 </compilerArgs>
               </configuration>
             </execution>
@@ -379,7 +380,8 @@
                 </annotationProcessors>
                 <generatedTestSourcesDirectory>${generated.dir}</generatedTestSourcesDirectory>
                 <compilerArgs>
-                  <arg>-AoutputDirectory=${project.basedir}/src/test</arg>
+                  <arg>-Acodegen.output=${project.basedir}/src/test</arg>
+                  <arg>-Acodegen.generators=data_object_converters,RxJava2,service_proxies</arg>
                 </compilerArgs>
               </configuration>
             </execution>
