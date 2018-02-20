@@ -57,7 +57,6 @@
   </developers>
 
   <modules>
-    <module>documentation</module>
     <module>knotx-core</module>
     <module>knotx-junit</module>
     <module>knotx-mocks</module>
@@ -68,6 +67,7 @@
     <module>knotx-standalone</module>
     <module>knotx-example</module>
     <module>knotx-gateway</module>
+    <module>documentation</module>
   </modules>
 
   <scm>

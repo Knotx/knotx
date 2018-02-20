@@ -61,6 +61,32 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>merge-dataobject-ascidoc</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <concat destfile="${project.basedir}/src/main/cheatsheet/cheatsheets.adoc" force="yes">
+                  <fileset dir="${project.basedir}/src/main">
+                    <include name="cheatsheets-intro.adoc"></include>
+                  </fileset>
+                  <fileset dir="${project.basedir}/.dataobjects">
+                    <include name="*-dataobjects.adoc"></include>
+                  </fileset>
+                </concat>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

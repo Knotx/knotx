@@ -1,0 +1,9 @@
+{
+  "name": "cheatsheet",
+  "generators": [{
+    "kind": "dataObject",
+    "incremental": true,
+    "filename": "'../../../documentation/.dataobjects/server-dataobjects.adoc'",
+    "templateFilename": "vertx-java/template/dataObjectCheatsheet.templ"
+  }]
+}
