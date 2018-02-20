@@ -9,7 +9,7 @@ The diagram below depicts Knot.x modules and request flow in more details.
 
 ## How to configure?
 
-See the [Filesystem Repository Options](https://github.com/Cognifide/knotx/blob/master/knotx-repository-connector/knotx-repository-connector-filesystem/src/main/asciidoc/dataobjects.adoc#filesystemrepositoryoptions) for all configuration options and its defaults.
+See the [Filesystem Repository Options](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#filesystemrepositoryoptions) for all configuration options and its defaults.
 In general, it:
 - Listens of event bus address `knotx.core.repository.filesystem` address on requests to the repository
 - It uses empty catalogue what means the classpath is the root folder of repository data.

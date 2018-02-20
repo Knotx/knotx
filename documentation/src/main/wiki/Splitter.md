@@ -90,7 +90,7 @@ used at the end of processing to assemble final HTML result (see [[Fragment Asse
 
 ## How to configure?
 
-See the [Fragment Splitter Options](https://github.com/Cognifide/knotx/blob/master/knotx-knot/knotx-knot-fragment-splitter/src/main/asciidoc/dataobjects.adoc#fragmentsplitteroptions) for all configuration options and its defaults.
+See the [Fragment Splitter Options](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#fragmentsplitteroptions) for all configuration options and its defaults.
 
 **Important - when specifying `snippetTagName` remember to not use standard HTML tags like `div`, `span`, etc.
 Knot.x splits an HTML into fragments by parsing it as a string to get the best possible performance. 

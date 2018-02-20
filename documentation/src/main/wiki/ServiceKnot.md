@@ -64,7 +64,7 @@ to avoid multiple calls for the same data.
 Caching is performed within page request scope, this means another request will not get cached data.
 
 ## How to configure?
-For all configuration fields and their defaults consult [ServiceKnotOptions](https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-knot/knotx-knot-service/src/main/asciidoc/dataobjects.adoc#serviceknotoptions)
+For all configuration fields and their defaults consult [ServiceKnotOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#serviceknotoptions)
 
 In general, it:
 - Listens on event bus address `knotx.knot.service` on messages to process

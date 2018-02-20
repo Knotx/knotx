@@ -24,7 +24,7 @@ Where:
 When Knot.x is starting with the above configuration, we're actually asking to deploy two verticles classes `io.knotx.server.KnotxServerVerticle` 
 and `my.custom.ServiceVerticle`.
 
-When each Verticle starts, it uses its own default configuration, e.g. [[KnotxServerOptions|https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-server/src/main/asciidoc/dataobjects.adoc#knotxserveroptions]] for KnotxServerVerticle, that can be overridden in the application configuration file.
+When each Verticle starts, it uses its own default configuration, e.g. [KnotxServerOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#knotxserveroptions) for KnotxServerVerticle, that can be overridden in the application configuration file.
 Just add `config` section, and reference the verticle by using an alias, e.g.:
 ```json
 {

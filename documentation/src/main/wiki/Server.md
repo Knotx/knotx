@@ -50,7 +50,7 @@ The HTTP Server configuration consists two parts:
 
 ### Knot.x application specific configurations
 
-For all configuration fields and their defaults consult [KnotxServerOptions](https://github.com/Cognifide/knotx/blob/master/knotx-server/src/main/asciidoc/dataobjects.adoc#knotxserveroptions)
+For all configuration fields and their defaults consult [KnotxServerOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#knotxserveroptions)
 
 In short, by default, server:
 - Listens on port 8092

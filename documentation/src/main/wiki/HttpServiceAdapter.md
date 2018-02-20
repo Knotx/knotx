@@ -49,7 +49,7 @@ Http Service Adapter replies with `ClientResponse` that contains:
 | `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
 ## How to configure?
-For all configuration fields and their defaults consult [ServiceAdapterOptions](https://github.com/Cognifide/knotx/blob/feature/cleanup-knotx-configurations/knotx-adapter/knotx-adapter-common/src/main/asciidoc/dataobjects.adoc#serviceadapteroptions)
+For all configuration fields and their defaults consult [ServiceAdapterOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#serviceadapteroptions)
 
 In general, the default configuration covers:
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
