@@ -49,7 +49,7 @@ Handlebars Knot uses data from Fragment Context and applies it to Fragment Conte
 Finally Fragment Content is replaced with merged result.
 
 ## How to configure?
-For all configuration fields and their defaults consult [ServiceKnotOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#handlebarsknotoptions)
+For all configuration fields and their defaults consult [HandlebarsKnotOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#handlebarsknotoptions)
 
 In general, it:
 - Listens on event bus address 'knotx.knot.handlebars'
