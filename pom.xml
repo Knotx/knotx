@@ -485,6 +485,7 @@
             <excludes>
               <exclude>**/*.json</exclude>
               <exclude>**/*.MD</exclude>
+              <exclude>**/*.templ</exclude>
             </excludes>
           </configuration>
         </plugin>

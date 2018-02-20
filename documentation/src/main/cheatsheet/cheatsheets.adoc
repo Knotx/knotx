@@ -16,16 +16,16 @@
 +++
 Event Bus <code>address</code> the service adapter listening on. Default value is 'knotx.adapter.service.http'
 +++
-|[[clientOptions]]`clientOptions`|`link:dataobjects.html#WebClientOptions[WebClientOptions]`|
+|[[clientOptions]]`clientOptions`|`link:cheatsheets.adoc#WebClientOptions[WebClientOptions]`|
 +++
 Sets the Vert.x Web Client options of the Web client.
 +++
-|[[customHttpHeader]]`customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|
+|[[customHttpHeader]]`customHttpHeader`|`link:cheatsheets.adoc#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Sets the header (name & value) to be sent in every request to the services.
  If not set, it sends <code>Server-User-Agent=Knot.x</code> header
 +++
-|[[services]]`services`|`Array of link:dataobjects.html#ServiceSettings[ServiceSettings]`|
+|[[services]]`services`|`Array of link:cheatsheets.adoc#ServiceSettings[ServiceSettings]`|
 +++
 Sets the configuration of each service endpoint used by the adapter.
 +++
@@ -81,7 +81,7 @@ Set the request params
 +++
 Set the request params
 +++
-|[[request]]`request`|`link:dataobjects.html#ClientRequest[ClientRequest]`|
+|[[request]]`request`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|
 +++
 Set the client request
 +++
@@ -94,7 +94,7 @@ Set the client request
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[response]]`response`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
+|[[response]]`response`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
 |[[signal]]`signal`|`String`|-
 |===
 [[ClientRequest]]
@@ -111,7 +111,7 @@ Set the client request
 Serialization variants of MultiMap fields
 +++
 |[[jsonParams]]`jsonParams`|`Json object`|-
-|[[method]]`method`|`link:enums.html#HttpMethod[HttpMethod]`|-
+|[[method]]`method`|`link:cheatsheets.adoc#HttpMethod[HttpMethod]`|-
 |[[path]]`path`|`String`|-
 |===
 [[ClientResponse]]
@@ -176,9 +176,9 @@ Set the value of the request header. If not set a @{code Knot.x} is used.
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[clientRequest]]`clientRequest`|`link:dataobjects.html#ClientRequest[ClientRequest]`|-
-|[[clientResponse]]`clientResponse`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
-|[[fragments]]`fragments`|`Array of link:dataobjects.html#Fragment[Fragment]`|-
+|[[clientRequest]]`clientRequest`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|-
+|[[clientResponse]]`clientResponse`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
+|[[fragments]]`fragments`|`Array of link:cheatsheets.adoc#Fragment[Fragment]`|-
 |[[transition]]`transition`|`String`|-
 |===
 [[FragmentAssemblerOptions]]
@@ -201,7 +201,7 @@ Set the EB address of the verticle
 +++
 Sets a Knot.x snippet HTML tag name. Default is 'script'
 +++
-|[[unprocessedStrategy]]`unprocessedStrategy`|`link:enums.html#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
+|[[unprocessedStrategy]]`unprocessedStrategy`|`link:cheatsheets.adoc#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
 +++
 Set the strategy how to assembly markup with snippets that were not processed by any Knot.
  Allowed values are:
@@ -362,16 +362,16 @@ Set the EB address of the HTTP repository verticle
 Set the collection of patterns of allowed request headers. Only headers matching any
  of the pattern from the set will be sent to the HTTP repository
 +++
-|[[clientDestination]]`clientDestination`|`link:dataobjects.html#ClientDestination[ClientDestination]`|
+|[[clientDestination]]`clientDestination`|`link:cheatsheets.adoc#ClientDestination[ClientDestination]`|
 +++
 Set the remote location of the repository
 +++
-|[[clientOptions]]`clientOptions`|`link:dataobjects.html#HttpClientOptions[HttpClientOptions]`|
+|[[clientOptions]]`clientOptions`|`link:cheatsheets.adoc#HttpClientOptions[HttpClientOptions]`|
 +++
 Set the link used by the HTTP client
  to communicate with remote http repository
 +++
-|[[customHttpHeader]]`customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|
+|[[customHttpHeader]]`customHttpHeader`|`link:cheatsheets.adoc#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Set the header (name & value) to be sent in every request to the remote repository
 +++
@@ -388,7 +388,7 @@ Set the header (name & value) to be sent in every request to the remote reposito
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[adapters]]`adapters`|`Array of link:dataobjects.html#ActionSettings[ActionSettings]`|
+|[[adapters]]`adapters`|`Array of link:cheatsheets.adoc#ActionSettings[ActionSettings]`|
 +++
 Sets the adapters that will be responsible for communicating with external services in order to
  process the request.
@@ -397,7 +397,7 @@ Sets the adapters that will be responsible for communicating with external servi
 +++
 Sets the EB address of the verticle
 +++
-|[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
+|[[deliveryOptions]]`deliveryOptions`|`link:cheatsheets.adoc#DeliveryOptions[DeliveryOptions]`|
 +++
 Sets the Vert.x Event Bus Delivery Options
 +++
@@ -452,7 +452,7 @@ Set the service parameters to be consumed by the adapter.
 +++
 Sets if logging access to the Knot.x HTTP server is enabled or not. Default is enabled ('true')
 +++
-|[[format]]`format`|`link:enums.html#LoggerFormat[LoggerFormat]`|
+|[[format]]`format`|`link:cheatsheets.adoc#LoggerFormat[LoggerFormat]`|
 +++
 Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
  Available values are:
@@ -514,7 +514,7 @@ Set the timeout of the CSRF token
 +++
 Sets the event bus address of the assembler verticle. Default is knotx.core.assembler
 +++
-|[[repositories]]`repositories`|`Array of link:dataobjects.html#RepositoryEntry[RepositoryEntry]`|
+|[[repositories]]`repositories`|`Array of link:cheatsheets.adoc#RepositoryEntry[RepositoryEntry]`|
 +++
 Sets the list of RepositoryEntry items
 +++
@@ -522,7 +522,7 @@ Sets the list of RepositoryEntry items
 +++
 Sets the event bus address of the Custom Flow' response provider verticle. Default is 'knotx.gateway.responseprovider'
 +++
-|[[routing]]`routing`|`link:dataobjects.html#MethodRoutingEntries[MethodRoutingEntries]`|
+|[[routing]]`routing`|`link:cheatsheets.adoc#MethodRoutingEntries[MethodRoutingEntries]`|
 +++
 Set of HTTP method based routing entries, describing communication between Knots
  <pre>routing": {"GET": {}, "POST": {}}</pre>
@@ -544,7 +544,7 @@ Sets the event bus address of the splitter verticle. Default is knotx.core.split
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[accessLog]]`accessLog`|`link:dataobjects.html#AccessLogOptions[AccessLogOptions]`|
+|[[accessLog]]`accessLog`|`link:cheatsheets.adoc#AccessLogOptions[AccessLogOptions]`|
 +++
 Set the access log options
 +++
@@ -552,23 +552,23 @@ Set the access log options
 +++
 Set the set of response headers that can be returned by the Knot.x server
 +++
-|[[csrfConfig]]`csrfConfig`|`link:dataobjects.html#KnotxCSRFOptions[KnotxCSRFOptions]`|
+|[[csrfConfig]]`csrfConfig`|`link:cheatsheets.adoc#KnotxCSRFOptions[KnotxCSRFOptions]`|
 +++
 Set the CSRF configuration of the Knot.x server
 +++
-|[[customFlow]]`customFlow`|`link:dataobjects.html#KnotxFlowSettings[KnotxFlowSettings]`|
+|[[customFlow]]`customFlow`|`link:cheatsheets.adoc#KnotxFlowSettings[KnotxFlowSettings]`|
 +++
 Set the Custom Flow configuration
 +++
-|[[customResponseHeader]]`customResponseHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|
+|[[customResponseHeader]]`customResponseHeader`|`link:cheatsheets.adoc#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Set the custom response header returned by the Knot.x
 +++
-|[[defaultFlow]]`defaultFlow`|`link:dataobjects.html#KnotxFlowSettings[KnotxFlowSettings]`|
+|[[defaultFlow]]`defaultFlow`|`link:cheatsheets.adoc#KnotxFlowSettings[KnotxFlowSettings]`|
 +++
 Set the Default flow configuration
 +++
-|[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
+|[[deliveryOptions]]`deliveryOptions`|`link:cheatsheets.adoc#DeliveryOptions[DeliveryOptions]`|
 +++
 Set the Event Bus Delivery options used to communicate with Knot's
 +++
@@ -584,7 +584,7 @@ Set the location on Knot.x environment when uploaded files will be stored. These
 +++
 Set the file upload limit in bytes
 +++
-|[[serverOptions]]`serverOptions`|`link:dataobjects.html#HttpServerOptions[HttpServerOptions]`|
+|[[serverOptions]]`serverOptions`|`link:cheatsheets.adoc#HttpServerOptions[HttpServerOptions]`|
 +++
 Set the HTTP Server options
 +++
@@ -601,7 +601,7 @@ Set the HTTP Server options
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[items]]`items`|`Array of link:dataobjects.html#RoutingEntry[RoutingEntry]`|
+|[[items]]`items`|`Array of link:cheatsheets.adoc#RoutingEntry[RoutingEntry]`|
 +++
 Sets the list of routing entries
 +++
@@ -647,7 +647,7 @@ Sets the event bus address of the Knot that should process the request for a giv
 +++
 Enables/Disabled CSRF support for a given routing entry
 +++
-|[[onTransition]]`onTransition`|`link:dataobjects.html#RoutingEntry[RoutingEntry]`|
+|[[onTransition]]`onTransition`|`link:cheatsheets.adoc#RoutingEntry[RoutingEntry]`|
 +++
 Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.
  <code>"onTransition": {
@@ -677,11 +677,11 @@ Sets the Regular expression of HTTP Request path
 +++
 Sets the EB address of the verticle. Default is 'knotx.knot.service'
 +++
-|[[deliveryOptions]]`deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|
+|[[deliveryOptions]]`deliveryOptions`|`link:cheatsheets.adoc#DeliveryOptions[DeliveryOptions]`|
 +++
 Sets the Vert.x EventBusDeliveryOptions for a given verticle
 +++
-|[[services]]`services`|`Array of link:dataobjects.html#ServiceMetadata[ServiceMetadata]`|
+|[[services]]`services`|`Array of link:cheatsheets.adoc#ServiceMetadata[ServiceMetadata]`|
 +++
 Sets the mapping between service aliases and service adapters that will serve the data.
 +++

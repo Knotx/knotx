@@ -4,6 +4,6 @@
     "kind": "dataObject",
     "incremental": true,
     "filename": "'../../../../documentation/.dataobjects/adapter-common-dataobjects.adoc'",
-    "templateFilename": "vertx-java/template/dataObjectCheatsheet.templ"
+    "templateFilename": "knotx-codegen/dataObjectCheatsheet.templ"
   }]
 }
