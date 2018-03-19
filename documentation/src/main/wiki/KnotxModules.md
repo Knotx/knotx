@@ -47,7 +47,7 @@ Just add `config` section, and reference the verticle by using an alias, e.g.:
 ```
 | ! Hint |
 |:------ |
-| When using an alias, to supply a configuration for the verticle, you can actually deploy same verticle multiple times. Then provide different configurations for each alias, e.g. two HTTP Repository Connectors, each pointing to a different HTTP lccations. | 
+| When using an alias, to supply a configuration for the verticle, you can actually deploy same verticle multiple times. Then provide different configurations for each alias, e.g. two HTTP Repository Connectors, each pointing to a different HTTP locations. | 
 
 See [[Knot.x Deployments|KnotxDeployment]] for details how to manage your configurations.
 
