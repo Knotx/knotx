@@ -17,6 +17,7 @@
 package io.knotx.launcher;
 
 import com.google.common.collect.Lists;
+import io.knotx.Version;
 import io.knotx.launcher.ModuleDescriptor.DeploymentState;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -84,7 +85,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   }
 
   private void deployVerticles(JsonObject config, Future<Void> completion) {
-    LOGGER.info("STARTING Knot.x");
+    LOGGER.info("STARTING Knot.x {} @ {}", Version.getVersion(), Version.getBuildTime());
     Observable.fromIterable(config.getJsonArray(MODULES_ARRAY))
         .cast(String.class)
         .map(ModuleDescriptor::parse)

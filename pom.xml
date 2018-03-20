@@ -129,6 +129,9 @@
     <jacoco.maven.plugin.version>0.7.7.201606060606</jacoco.maven.plugin.version>
 
     <generated.dir>${project.basedir}/src/main/generated</generated.dir>
+
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
   </properties>
 
   <dependencyManagement>
