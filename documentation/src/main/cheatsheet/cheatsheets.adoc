@@ -552,6 +552,22 @@ Set the access log options
 +++
 Set the set of response headers that can be returned by the Knot.x server
 +++
+|[[backpressureBufferCapacity]]`backpressureBufferCapacity`|`Number (long)`|
++++
+Sets the backpressure buffer capacity. Default value = 1000
++++
+|[[backpressureStrategy]]`backpressureStrategy`|`link:cheatsheets.adoc#BackpressureOverflowStrategy[BackpressureOverflowStrategy]`|
++++
+Sets the strategy how to deal with backpressure buffer overflow. Default is DROP_LATEST.
+ <p>
+ Available values:
+ <ul>
+ <li>ERROR - terminates the whole sequence</li>
+ <li>DROP_OLDEST - drops the oldest value from the buffer</li>
+ <li>DROP_LATEST - drops the latest value from the buffer</li>
+ </ul>
+ </p>
++++
 |[[csrfConfig]]`csrfConfig`|`link:cheatsheets.adoc#KnotxCSRFOptions[KnotxCSRFOptions]`|
 +++
 Set the CSRF configuration of the Knot.x server
@@ -575,6 +591,14 @@ Set the Event Bus Delivery options used to communicate with Knot's
 |[[displayExceptionDetails]]`displayExceptionDetails`|`Boolean`|
 +++
 Set whether to display or not the exception on error pages
++++
+|[[dropRequestResponseCode]]`dropRequestResponseCode`|`Number (int)`|
++++
+Sets the HTTP response code returned wheb request is dropped. Default is TOO_MANY_REQUESTS(429)
++++
+|[[dropRequests]]`dropRequests`|`Boolean`|
++++
+Enabled/disables request dropping (backpressure) on heavy load. Default is false - disabled.
 +++
 |[[fileUploadDirectory]]`fileUploadDirectory`|`String`|
 +++
