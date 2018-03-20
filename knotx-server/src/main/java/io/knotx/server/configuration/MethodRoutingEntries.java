@@ -20,6 +20,9 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes a collection of server routing entries
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class MethodRoutingEntries {
 
@@ -67,10 +70,19 @@ public class MethodRoutingEntries {
     items = new ArrayList<>();
   }
 
+  /**
+   *
+   * @return list of routing entries
+   */
   public List<RoutingEntry> getItems() {
     return items;
   }
 
+  /**
+   * Sets the list of routing entries
+   * @param items list of RoutingEntry objects
+   * @return a reference to this, so the API can be used fluently
+   */
   public MethodRoutingEntries setItems(List<RoutingEntry> items) {
     this.items = items;
     return this;

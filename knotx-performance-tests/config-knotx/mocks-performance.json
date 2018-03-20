@@ -1,0 +1,22 @@
+{
+  "modules": [
+    "knotx:io.knotx.RemoteRepositoryMock",
+    "knotx:io.knotx.ServiceMock"
+  ],
+  "config": {
+    "knotx:io.knotx.RemoteRepositoryMock": {
+      "options": {
+        "config": {
+          "mockDataRoot": "repository"
+        }
+      }
+    },
+    "knotx:io.knotx.ServiceMock": {
+      "options": {
+        "config": {
+          "mockDataRoot": "services"
+        }
+      }
+    }
+  }
+}

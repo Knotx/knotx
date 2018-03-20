@@ -23,7 +23,7 @@
 
   <groupId>io.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
@@ -57,7 +57,6 @@
   </developers>
 
   <modules>
-    <module>documentation</module>
     <module>knotx-core</module>
     <module>knotx-junit</module>
     <module>knotx-mocks</module>
@@ -68,6 +67,7 @@
     <module>knotx-standalone</module>
     <module>knotx-example</module>
     <module>knotx-gateway</module>
+    <module>documentation</module>
   </modules>
 
   <scm>
@@ -377,7 +377,8 @@
                 </annotationProcessors>
                 <generatedSourcesDirectory>${generated.dir}</generatedSourcesDirectory>
                 <compilerArgs>
-                  <arg>-AoutputDirectory=${project.basedir}/src/main</arg>
+                  <arg>-Acodegen.output=${project.basedir}/src/main</arg>
+                  <arg>-Acodegen.generators=knotx-cheatsheet,data_object_converters,RxJava2,service_proxies</arg>
                 </compilerArgs>
               </configuration>
             </execution>
@@ -389,7 +390,8 @@
                 </annotationProcessors>
                 <generatedTestSourcesDirectory>${generated.dir}</generatedTestSourcesDirectory>
                 <compilerArgs>
-                  <arg>-AoutputDirectory=${project.basedir}/src/test</arg>
+                  <arg>-Acodegen.output=${project.basedir}/src/test</arg>
+                  <arg>-Acodegen.generators=data_object_converters,RxJava2,service_proxies</arg>
                 </compilerArgs>
               </configuration>
             </execution>
@@ -485,6 +487,7 @@
             <excludes>
               <exclude>**/*.json</exclude>
               <exclude>**/*.MD</exclude>
+              <exclude>**/*.templ</exclude>
             </excludes>
           </configuration>
         </plugin>

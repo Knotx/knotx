@@ -1,0 +1,9 @@
+{
+  "name": "knotx-cheatsheet",
+  "generators": [{
+    "kind": "dataObject",
+    "incremental": true,
+    "filename": "'../../../../documentation/.dataobjects/knot-action-dataobjects.adoc'",
+    "templateFilename": "knotx-codegen/dataObjectCheatsheet.templ"
+  }]
+}

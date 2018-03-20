@@ -150,10 +150,21 @@ You need to add it to the list of Knot.x modules in the main config file:
 ```
 
 And add the `custom-module.jar` to the classpath. But what will happen, if you actually forgot to add `custom-module.jar` to the classpath?
-Knot.x will start the instance with following warning:
+Knot.x will start the instance with following error:
 
 ```
-2018-01-27 10:05:05.841 [vert.x-eventloop-thread-0] WARN  i.k.launcher.KnotxStarterVerticle - Can't deploy com.acme.MyCustomModuleVerticle
+2018-01-01 15:11:22.003 [vert.x-eventloop-thread-0] ERROR i.k.launcher.KnotxStarterVerticle - Can't deploy myFancyModule=java:com.acme.MyCustomModuleVerticle: {}
+...
 ```
 
-Instance will start as though `com.acme.MyCustomModuleVerticle` didn't exist.
+and the list of deployment status at the end shows:
+```
+2018-02-21 15:28:46.419 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
+
+		Failed deploying customKnot [java:com.acme.MyCustomModuleVerticle]
+		Deployed fsRepo [java:io.knotx.repository.FilesystemRepositoryConnectorVerticle] [ef35d8e8-887b-4f8b-bd2e-31943d8ff706]
+		Deployed assembler [java:io.knotx.knot.assembler.FragmentAssemblerVerticle] [0f5d74f4-2233-4937-b11c-d20d3e5451b1]
+		...
+```
+
+Your Verticle instance not started as the `com.acme.MyCustomModuleVerticle` class didn't exist.

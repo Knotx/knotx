@@ -115,48 +115,93 @@ public class KnotxFlowSettings {
         .findFirst();
   }
 
-  /****/
+  /**
+   * @return list of RepositoryEntry items
+   */
   public List<RepositoryEntry> getRepositories() {
     return repositories;
   }
 
+  /**
+   * Sets the list of RepositoryEntry items
+   *
+   * @param repositoryAddressMapping list of RepositoryEntry
+   * @return a reference to this, so the API can be used fluently
+   */
   public KnotxFlowSettings setRepositories(
       List<RepositoryEntry> repositoryAddressMapping) {
     this.repositories = repositoryAddressMapping;
     return this;
   }
 
+  /**
+   * @return Event bus address of the splitter verticle
+   */
   public String getSplitter() {
     return splitter;
   }
 
+  /**
+   * Sets the event bus address of the splitter verticle. Default is knotx.core.splitter
+   *
+   * @param splitter event bus address
+   * @return a reference to this, so the API can be used fluently
+   */
   public KnotxFlowSettings setSplitter(String splitter) {
     this.splitter = splitter;
     return this;
   }
 
+  /**
+   * @return Event bus address of the assembler verticle
+   */
   public String getAssembler() {
     return assembler;
   }
 
+  /**
+   * Sets the event bus address of the assembler verticle. Default is knotx.core.assembler
+   *
+   * @param assembler event bus address
+   * @return a reference to this, so the API can be used fluently
+   */
   public KnotxFlowSettings setAssembler(String assembler) {
     this.assembler = assembler;
     return this;
   }
 
+  /**
+   * @return Event bus address of the response provider verticle
+   */
   public String getResponseProvider() {
     return responseProvider;
   }
 
+  /**
+   * Sets the event bus address of the Custom Flow' response provider verticle. Default is 'knotx.gateway.responseprovider'
+   *
+   * @param responseProvider event bus address
+   * @return a reference to this, so the API can be used fluently
+   */
   public KnotxFlowSettings setResponseProvider(String responseProvider) {
     this.responseProvider = responseProvider;
     return this;
   }
 
+  /**
+   * @return routing configuration
+   */
   public Map<String, MethodRoutingEntries> getRouting() {
     return routing;
   }
 
+  /**
+   * Set of HTTP method based routing entries, describing communication between Knots
+   * <pre>routing": {"GET": {}, "POST": {}}</pre>
+   *
+   * @param engineRouting map of HTTP Method to MethodRoutingEntries items
+   * @return a reference to this, so the API can be used fluently
+   */
   public KnotxFlowSettings setRouting(Map<String, MethodRoutingEntries> engineRouting) {
     this.routing = engineRouting;
     return this;

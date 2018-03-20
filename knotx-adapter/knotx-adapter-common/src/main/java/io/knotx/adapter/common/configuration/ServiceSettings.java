@@ -122,7 +122,7 @@ public class ServiceSettings {
   }
 
   /**
-   * Sets the HTTP {@code port} the external service (under {@code domain}) is listening on,
+   * Sets the HTTP {@code port} the external service
    *
    * @param port - HTTP port
    * @return a reference to this, so the API can be used fluently
@@ -140,7 +140,8 @@ public class ServiceSettings {
   }
 
   /**
-   * Sets the allowed requests headers that should be passed-through to the service
+   * Sets the allowed requests headers that should be send to the service.
+   * The selected headers from the original client HTTP request are being send.
    *
    * @param allowedRequestHeaders set of Strings with header names
    * @return a reference to this, so the API can be used fluently
@@ -177,7 +178,7 @@ public class ServiceSettings {
   }
 
   /**
-   * Set the additional request headers (and values) to be send in each request to the service
+   * Set the additional request headers (and values) to be send in each request
    *
    * @return a reference to this, so the API can be used fluently
    */

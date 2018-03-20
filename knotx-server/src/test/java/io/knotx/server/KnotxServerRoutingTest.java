@@ -69,6 +69,19 @@ public class KnotxServerRoutingTest {
 
   @Test
   @KnotxConfiguration("test-server.json")
+  public void whenRequestingWithInvalidQuery_expectBadRequest(TestContext context) {
+    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    Async async = context.async();
+    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html?q=~!@\\||$%^&*()_=-%22;;%27%22:%3C%3E/?]}{",
+        resp -> {
+          context.assertEquals(HttpResponseStatus.BAD_REQUEST.code(), resp.statusCode());
+          client.close();
+          async.complete();
+        });
+  }
+
+  @Test
+  @KnotxConfiguration("test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     createPassThroughKnot("test-splitter");
     createPassThroughKnot("test-assembler");

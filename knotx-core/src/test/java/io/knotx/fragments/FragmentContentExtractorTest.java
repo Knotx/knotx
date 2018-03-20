@@ -15,6 +15,7 @@
  */
 package io.knotx.fragments;
 
+import static io.knotx.util.IsEqualApplyingHtmlFormattingMatcher.equalsToWithHtmlFormatting;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -29,6 +30,7 @@ import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.jsoup.nodes.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -38,36 +40,71 @@ import org.mockito.Mockito;
 public class FragmentContentExtractorTest {
 
   @TestWith(value = {
-      "simple_snippet.txt;simple_snippet-expected_content.txt",
-      "big_snippet.txt;big_snippet-expected_content.txt"
+      "simple_default_snippet.txt;simple_snippet-expected_content.txt",
+      "complex_default_snippet.txt;complex_snippet-expected_content.txt",
+      "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
+      "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
   })
-  public void getUnwrappedContent_withFragment_expectDefinedContent(Fragment fragment,
+  public void unwrappedContent_withFragment_expectDefinedContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
 
     final String expectedContent = readText(expectedContentFileName);
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
-    assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
+    assertThat(expectedContent, equalToIgnoringWhiteSpace(unwrappedContent));
+  }
+
+  @TestWith(value = {
+      "simple_default_snippet.txt;simple_snippet-expected_content.txt",
+      "complex_default_snippet.txt;complex_snippet-expected_content.txt",
+      "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
+      "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
+  })
+  public void unwrappedContent_withString_expectDefinedContent(String snippetFileName,
+      String expectedContentFileName) throws Exception {
+
+    final String expectedContent = readText(expectedContentFileName);
+    final Element element = FragmentContentExtractor.unwrapContent(readText(snippetFileName));
+
+    assertThat(element.toString(), equalsToWithHtmlFormatting(expectedContent));
+  }
+
+  @TestWith(value = {
+      "simple_default_snippet.txt;simple_snippet-expected_content.txt",
+      "complex_default_snippet.txt;complex_snippet-expected_content.txt",
+      "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
+      "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
+  })
+  public void unwrapFragmentContent_withFragment_expectDefinedContent(Fragment fragment,
+      String expectedContentFileName) throws Exception {
+
+    final String expectedContent = readText(expectedContentFileName);
+    final Element element = FragmentContentExtractor.unwrapFragmentContent(fragment);
+
+    assertThat(element.toString(), equalsToWithHtmlFormatting(expectedContent));
   }
 
   @TestWith({
       "empty_snippet.txt",
       "raw_snippet.txt"
   })
-  public void getUnwrappedContent_withRawFragment_expectNotChangedContent(Fragment fragment) throws Exception {
+  public void getUnwrappedContent_withRawFragment_expectNotChangedContent(Fragment fragment)
+      throws Exception {
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(fragment.content()));
   }
 
   @Test
   public void getUnwrappedContent_withNullFragment_expectNull() throws Exception {
-    assertNull(FragmentContentExtractor.unwrapContent(null));
+    assertNull(FragmentContentExtractor.unwrapContent((String) null));
+    assertNull(FragmentContentExtractor.unwrapContent((Fragment) null));
   }
 
   @Coercion
   public Fragment provideFragment(String fragmentContentFile) throws IOException {
     final String fragmentContent = readText(fragmentContentFile);
     Fragment fragmentMock = Mockito.mock(Fragment.class);
-    when(fragmentMock.isRaw()).thenReturn(!fragmentContent.contains(FragmentConstants.SNIPPET_IDENTIFIER_NAME));
+    when(fragmentMock.isRaw())
+        .thenReturn(!fragmentContent.contains(FragmentConstants.SNIPPET_IDENTIFIER_NAME));
     when(fragmentMock.content()).thenReturn(fragmentContent);
     return fragmentMock;
   }

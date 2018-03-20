@@ -8,7 +8,7 @@ The diagram below depicts Knot.x modules and request flow in more details.
 [[assets/knotx-http-repository.png|alt=Http Repository Connector]]
 
 ## How to configure?
-See the [Http Repository Options](https://github.com/Cognifide/knotx/blob/master/knotx-repository-connector/knotx-repository-connector-http/src/main/asciidoc/dataobjects.adoc#httprepositoryoptions) for all configuration options and its defaults.
+See the [HttpRepositoryOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#httprepositoryoptions) for all configuration options and its defaults.
 
 In general, it:
 - Listens on event bus address `knotx.core.repository.http` for requests to the repository

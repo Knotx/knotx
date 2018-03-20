@@ -22,6 +22,9 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes an Action Knot configuration options
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class ActionKnotOptions {
 
@@ -128,6 +131,9 @@ public class ActionKnotOptions {
   }
 
   /**
+   * Sets the adapters that will be responsible for communicating with external services in order to
+   * process the request.
+   *
    * @param adapters of {@link ActionSettings} objects representing service
    * @return a reference to this, so the API can be used fluently
    */
@@ -144,6 +150,8 @@ public class ActionKnotOptions {
   }
 
   /**
+   * Sets the Vert.x Event Bus Delivery Options
+   *
    * @param deliveryOptions EB {@link DeliveryOptions}
    * @return a reference to this, so the API can be used fluently
    */
@@ -157,6 +165,11 @@ public class ActionKnotOptions {
     return formIdentifierName;
   }
 
+  /**
+   * Sets the name of the hidden input tag which is added by Action Knot.
+   *
+   * @param formIdentifierName the form identifier name
+   */
   public ActionKnotOptions setFormIdentifierName(String formIdentifierName) {
     this.formIdentifierName = formIdentifierName;
     return this;

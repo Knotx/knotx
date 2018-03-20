@@ -3,20 +3,20 @@
   "messner-mountains": {
     "1": "Everest - Asia",
     "2": "Aconcagua - South America",
-	"3": "Denali - North America",
-	"4": "Kilimanjaro - Africa",
-	"5": "Elbrus - Europe",
-	"6": "Puncak Jaya - Australasia (continent)",
+    "3": "Denali - North America",
+    "4": "Kilimanjaro - Africa",
+    "5": "Elbrus - Europe",
+    "6": "Puncak Jaya - Australasia (continent)",
     "7": "Vinson - Antarctica"
   },
-  "bass-version": "This is the list of 7 highest mountains of each of the seven continents - Bass version" ,
+  "bass-version": "This is the list of 7 highest mountains of each of the seven continents - Bass version",
   "bass-mountains": {
     "1": "Everest - Asia",
     "2": "Aconcagua - South America",
-	"3": "Denali - North America",
-	"4": "Kilimanjaro - Africa",
-	"5": "Elbrus - Europe",
-	"6": "Kosciuszko - Australia",
-	"7": "Vinson - Antarctica"
-	}
+    "3": "Denali - North America",
+    "4": "Kilimanjaro - Africa",
+    "5": "Elbrus - Europe",
+    "6": "Kosciuszko - Australia",
+    "7": "Vinson - Antarctica"
+  }
 }

@@ -16,22 +16,23 @@
 package io.knotx.knot.assembler.impl;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.fragments.FragmentConstants;
 import io.knotx.fragments.FragmentContentExtractor;
+import io.knotx.fragments.SnippetPatterns;
 
 public enum UnprocessedFragmentStrategy {
 
   AS_IS {
     @Override
-    protected String get(Fragment fragment) {
+    protected String get(Fragment fragment, SnippetPatterns snippetPatterns) {
       return fragment.content();
     }
   },
 
   UNWRAP {
     @Override
-    protected String get(Fragment fragment) {
-      if (!fragment.isRaw() && FragmentConstants.ANY_SNIPPET_PATTERN.matcher(fragment.content()).matches()) {
+    protected String get(Fragment fragment, SnippetPatterns snippetPatterns) {
+      if (!fragment.isRaw() && snippetPatterns.getAnySnippetPattern().matcher(fragment.content())
+          .matches()) {
         return "<!-- SNIPPET UNWRAPED START -->" + FragmentContentExtractor.unwrapContent(fragment)
             + "<!-- SNIPPET UNWRAPED STOP -->";
       } else {
@@ -42,12 +43,12 @@ public enum UnprocessedFragmentStrategy {
 
   IGNORE {
     @Override
-    protected String get(Fragment fragment) {
-      return FragmentConstants.ANY_SNIPPET_PATTERN.matcher(fragment.content()).matches()
+    protected String get(Fragment fragment, SnippetPatterns snippetPatterns) {
+      return snippetPatterns.getAnySnippetPattern().matcher(fragment.content()).matches()
           ? "<!-- SNIPPET IGNORED -->" : fragment.content();
     }
   };
 
-  protected abstract String get(Fragment fragment);
+  protected abstract String get(Fragment fragment, SnippetPatterns snippetPatterns);
 
 }

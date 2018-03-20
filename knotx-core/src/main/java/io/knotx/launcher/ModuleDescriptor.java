@@ -24,6 +24,7 @@ public class ModuleDescriptor {
   private String alias;
   private String name;
   private String deploymentId;
+  private boolean deploymentFailed = false;
 
   private ModuleDescriptor() {
     //Default constructor
@@ -33,6 +34,7 @@ public class ModuleDescriptor {
     this.alias = other.alias;
     this.name = other.name;
     this.deploymentId = other.deploymentId;
+    this.deploymentFailed = other.deploymentFailed;
   }
 
   public static ModuleDescriptor parse(String line) {
@@ -68,8 +70,17 @@ public class ModuleDescriptor {
     return deploymentId;
   }
 
+  public boolean isDeploymentFailed() {
+    return deploymentFailed;
+  }
+
   public ModuleDescriptor setDeploymentId(String deploymentId) {
     this.deploymentId = deploymentId;
+    return this;
+  }
+
+  public ModuleDescriptor setDeploymentFailed() {
+    this.deploymentFailed = true;
     return this;
   }
 

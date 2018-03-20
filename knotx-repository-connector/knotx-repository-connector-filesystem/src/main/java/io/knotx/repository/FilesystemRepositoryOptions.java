@@ -19,6 +19,9 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Describes a file system repository configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class FilesystemRepositoryOptions {
 

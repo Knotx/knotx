@@ -22,6 +22,9 @@ import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Describes Service Knot configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class ServiceKnotOptions {
 
@@ -94,7 +97,7 @@ public class ServiceKnotOptions {
   }
 
   /**
-   * Sets the EB address of the verticle
+   * Sets the EB address of the verticle. Default is 'knotx.knot.service'
    *
    * @param address EB address of the verticle
    * @return a reference to this, so the API can be used fluently
@@ -112,6 +115,8 @@ public class ServiceKnotOptions {
   }
 
   /**
+   * Sets the mapping between service aliases and service adapters that will serve the data.
+   *
    * @param services list of {@link ServiceMetadata} objects representing service
    * @return a reference to this, so the API can be used fluently
    */
@@ -128,6 +133,8 @@ public class ServiceKnotOptions {
   }
 
   /**
+   * Sets the Vert.x EventBusDeliveryOptions for a given verticle
+   *
    * @param deliveryOptions EB {@link io.vertx.core.eventbus.DeliveryOptions}
    * @return a reference to this, so the API can be used fluently
    */

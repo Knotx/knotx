@@ -19,6 +19,9 @@ import io.knotx.knot.assembler.impl.UnprocessedFragmentStrategy;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Describes FragmentAssembler Knot configuration
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class FragmentAssemblerOptions {
 
@@ -32,8 +35,14 @@ public class FragmentAssemblerOptions {
    */
   private final static UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.UNWRAP;
 
+  /**
+   * Default snippet tag name = script
+   */
+  private final static String DEFAULT_SNIPPET_TAG_NAME = "script";
+
   private String address;
   private UnprocessedFragmentStrategy unprocessedStrategy;
+  private String snippetTagName;
 
   /**
    * Default constructor
@@ -76,6 +85,7 @@ public class FragmentAssemblerOptions {
   private void init() {
     address = DEFAULT_ADDRESS;
     unprocessedStrategy = DEFAULT_UNPROCESSED_STRATEGY;
+    snippetTagName = DEFAULT_SNIPPET_TAG_NAME;
   }
 
   /**
@@ -119,6 +129,24 @@ public class FragmentAssemblerOptions {
   public FragmentAssemblerOptions setUnprocessedStrategy(
       UnprocessedFragmentStrategy unprocessedStrategy) {
     this.unprocessedStrategy = unprocessedStrategy;
+    return this;
+  }
+
+  /**
+   * @return a snippet tag name.
+   */
+  public String getSnippetTagName() {
+    return snippetTagName;
+  }
+
+  /**
+   * Sets a Knot.x snippet HTML tag name. Default is 'script'
+   *
+   * @param snippetTagName tag name
+   * @return a reference to this, so the API can be used fluently
+   */
+  public FragmentAssemblerOptions setSnippetTagName(String snippetTagName) {
+    this.snippetTagName = snippetTagName;
     return this;
   }
 }

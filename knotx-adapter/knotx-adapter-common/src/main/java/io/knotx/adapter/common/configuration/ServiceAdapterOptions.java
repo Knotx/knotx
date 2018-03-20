@@ -125,8 +125,7 @@ public class ServiceAdapterOptions {
   }
 
   /**
-   * The {@code address} on event bus that the service adapter is listening for requests from {@link
-   * ServiceKnotVerticle}
+   * Event Bus {@code address} the service adapter listening on. Default value is 'knotx.adapter.service.http'
    *
    * @param address an event bus address
    * @return a reference to this, so the API can be used fluently
@@ -145,8 +144,7 @@ public class ServiceAdapterOptions {
   }
 
   /**
-   * Set the {@link io.vertx.ext.web.client.WebClientOptions} of the {@link io.vertx.rxjava.ext.web.client.WebClient} used
-   * by the ServiceAdapter to communicate with external services.
+   * Sets the Vert.x Web Client options of the Web client.
    */
   public ServiceAdapterOptions setClientOptions(WebClientOptions clientOptions) {
     this.clientOptions = clientOptions;
@@ -162,7 +160,7 @@ public class ServiceAdapterOptions {
   }
 
   /**
-   * Set the list of {@link ServiceSettings} that ServiceAdapter is able to communicate with
+   * Sets the configuration of each service endpoint used by the adapter.
    *
    * @param services the {@link ServiceSettings} objects representing each service endpoint
    * @return a reference to this, so the API can be used fluently
@@ -181,7 +179,8 @@ public class ServiceAdapterOptions {
   }
 
   /**
-   * Set the header (name & value) to be sent in every request to the services
+   * Sets the header (name & value) to be sent in every request to the services.
+   * If not set, it sends {@code Server-User-Agent=Knot.x} header
    *
    * @param customHttpHeader the header name & value
    * @return a reference to this, so the API can be used fluently
