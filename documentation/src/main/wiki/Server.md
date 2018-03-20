@@ -8,6 +8,7 @@ communication between [[Repository Connectors|RepositoryConnectors]], [[Splitter
 Once the HTTP request from the browser comes to the Knot.x, it goes to the **Server** verticle.
 Server performs following actions when receives HTTP request:
 
+- Decides if there are too many concurrent requests, if the system is overloaded, [[incoming request is dropped|Server#dropping-the-requests]]
 - Verifies if request **method** is configured in `routing` (see config below), and sends
 **Method Not Allowed** response if not matches
 - Search for the **repository** address in `repositories` configuration, by matching the
@@ -23,6 +24,13 @@ repository & split HTML fragments)
 The diagram below depicts flow of data coordinated by the **Server** based on the hypothetical
 configuration of routing (as described in next section).
 [[assets/knotx-server.png|alt=Knot.x Server How it Works flow diagram]]
+
+### Dropping the requests
+The mechanism behind dropping requests when the system is overloaded uses backpressure. Its logic is very simple: if there are more than `N` concurrent requests, system will drop any new requests until the processed ones count is again below the threshold. 
+
+> E.g. if the threshold is set to `100`, Server may resolve up to 100 requests in the single moment. 101st and 102nd and so on requests will be dropped (with the proper status code). When Server process any of those 100 requests, next message will be accepted.
+
+That solution prevent `OutOfMemoryError` errors when there are too many requests (e.g. during the peak hours). Additionally response times should be more stable when system is under high stress.
 
 ### Routing
 Routing specifies how the system should behave for different [Knots|Knot] responses. The request flow at

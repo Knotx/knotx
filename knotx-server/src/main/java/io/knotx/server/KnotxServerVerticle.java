@@ -18,14 +18,15 @@ package io.knotx.server;
 import io.knotx.server.configuration.KnotxCSRFOptions;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import io.vertx.reactivex.RxHelper;
 import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
@@ -141,30 +142,55 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
     router.route().failureHandler(ErrorHandler.create(configuration.isDisplayExceptionDetails()));
 
-    vertx.createHttpServer(configuration.getServerOptions())
-        .requestHandler(request -> {
-          try {
-            router.accept(request);
-          } catch (IllegalArgumentException ex) {
-            LOGGER.warn("Problem decoding Query String", ex);
+    if (configuration.getDropRequests()) {
+      vertx.createHttpServer(configuration.getServerOptions())
+          .requestStream()
+          .toFlowable()
+          .map(HttpServerRequest::pause)
+          .onBackpressureDrop(
+              req -> req.response().setStatusCode(configuration.getDropRequestsStatusCode()).end())
+          .observeOn(RxHelper.scheduler(vertx.getDelegate()))
+          .subscribe(req -> {
+            req.resume();
+            routeSafe(req, router);
+          }, error -> LOGGER.error("Exception while processing!", error));
+      vertx.createHttpServer(configuration.getServerOptions()).listen(server -> {
+        if (server.succeeded()) {
+          LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+              configuration.getServerOptions().getPort());
+          fut.complete();
+        } else {
+          LOGGER.error("Unable to start Knot.x HTTP Server.", server.cause());
+          fut.fail(server.cause());
+        }
+      });
+    } else {
+      vertx.createHttpServer(configuration.getServerOptions())
+          .requestHandler(req -> routeSafe(req, router))
+          .rxListen()
+          .subscribe(ok -> {
+                LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+                    configuration.getServerOptions().getPort());
+                fut.complete();
+              },
+              error -> {
+                LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
+                fut.fail(error);
+              }
+          );
+    }
+  }
 
-            request.response()
-                .setStatusCode(BAD_REQUEST.code())
-                .setStatusMessage(BAD_REQUEST.reasonPhrase())
-                .end("Invalid characters in Query Parameter");
-          }
-        })
-        .rxListen()
-        .subscribe(ok -> {
-              LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-                  configuration.getServerOptions().getPort());
-              fut.complete();
-            },
-            error -> {
-              LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
-              fut.fail(error);
-            }
-        );
+  private void routeSafe(HttpServerRequest req, Router router) {
+    try {
+      router.accept(req);
+    } catch (IllegalArgumentException ex) {
+      LOGGER.warn("Problem decoding Query String ", ex);
 
+      req.response()
+          .setStatusCode(BAD_REQUEST.code())
+          .setStatusMessage(BAD_REQUEST.reasonPhrase())
+          .end("Invalid characters in Query Parameter");
+    }
   }
 }
