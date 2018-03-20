@@ -26,8 +26,8 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.exceptions.ConfigurationException;
 import io.knotx.fragments.FragmentContentExtractor;
-import io.knotx.knot.action.ActionKnotConfiguration;
-import io.knotx.knot.action.ActionKnotConfiguration.AdapterMetadata;
+import io.knotx.knot.action.ActionSettings;
+import io.knotx.knot.action.ActionKnotOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -47,19 +47,19 @@ public class FormEntity {
 
   private String identifier;
 
-  private AdapterMetadata adapter;
+  private ActionSettings adapter;
 
   private JsonObject adapterParams;
 
   private Map<String, String> signalToUrl;
 
-  public static FormEntity from(Fragment fragment, ActionKnotConfiguration configuration) {
+  public static FormEntity from(Fragment fragment, ActionKnotOptions options) {
     Element scriptDocument = FragmentContentExtractor.unwrapFragmentContent(fragment);
     return new FormEntity()
         .fragment(fragment)
         .identifier(getFormIdentifier(fragment))
         .adapterParams(getAdapterParams(scriptDocument))
-        .adapter(getAdapterMetadata(configuration, getAdapterName(fragment, scriptDocument)))
+        .adapter(getAdapterMetadata(options, getAdapterName(fragment, scriptDocument)))
         .signalToUrlMapping(getSignalToUrlMapping(scriptDocument));
 
   }
@@ -72,7 +72,7 @@ public class FormEntity {
     return identifier;
   }
 
-  public AdapterMetadata adapter() {
+  public ActionSettings adapter() {
     return adapter;
   }
 
@@ -106,7 +106,7 @@ public class FormEntity {
     return this;
   }
 
-  private FormEntity adapter(AdapterMetadata adapterMetadata) {
+  private FormEntity adapter(ActionSettings adapterMetadata) {
     this.adapter = adapterMetadata;
     return this;
   }
@@ -152,14 +152,14 @@ public class FormEntity {
         .orElse(null);
   }
 
-  private static AdapterMetadata getAdapterMetadata(ActionKnotConfiguration configuration,
+  private static ActionSettings getAdapterMetadata(ActionKnotOptions options,
       String adapter) {
-    return configuration.adapterMetadatas().stream()
+    return options.getAdapters().stream()
         .filter(metadata -> metadata.getName().equals(adapter))
         .findFirst()
         .orElseThrow(() -> {
-          LOGGER.error("Could not find adapter name [{}] mapping in configuration [{}].",
-              adapter, configuration.adapterMetadatas());
+          LOGGER.error("Could not find adapter name [{}] mapping in ActionKnotOptions [{}].",
+              adapter, options.getAdapters());
           return new ConfigurationException("Could not find action adapter name!");
         });
   }

@@ -1,9 +1,0 @@
-{
-  "main": "io.knotx.mocks.MockServiceAdapterVerticle",
-  "options": {
-    "config": {
-      "address": "mock-service-adapter",
-      "mockDataRoot": "mock/service"
-    }
-  }
-}

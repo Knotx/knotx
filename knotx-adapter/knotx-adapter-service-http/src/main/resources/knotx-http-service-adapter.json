@@ -1,5 +1,0 @@
-{
-  "modules": [
-    "knotx:io.knotx.HttpServiceAdapter"
-  ]
-}

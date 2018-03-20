@@ -16,7 +16,7 @@
 package io.knotx.adapter.action.http.impl;
 
 import io.knotx.adapter.AbstractAdapterProxy;
-import io.knotx.adapter.common.http.HttpAdapterConfiguration;
+import io.knotx.adapter.common.configuration.ServiceAdapterOptions;
 import io.knotx.adapter.common.http.HttpClientFacade;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.AdapterResponse;
@@ -25,8 +25,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.client.WebClient;
 
@@ -34,20 +32,15 @@ public class HttpActionAdapterProxyImpl extends AbstractAdapterProxy {
 
   private HttpClientFacade httpClientFacade;
 
-  public HttpActionAdapterProxyImpl(Vertx vertx, HttpAdapterConfiguration configuration) {
-    this.httpClientFacade = new HttpClientFacade(getWebClient(vertx, configuration),
+  public HttpActionAdapterProxyImpl(Vertx vertx, ServiceAdapterOptions configuration) {
+    this.httpClientFacade = new HttpClientFacade(
+        WebClient.create(vertx, configuration.getClientOptions()),
         configuration);
   }
 
   @Override
   protected Single<AdapterResponse> processRequest(AdapterRequest request) {
     return httpClientFacade.process(request, HttpMethod.POST).map(this::prepareResponse);
-  }
-
-  private WebClient getWebClient(Vertx vertx, HttpAdapterConfiguration configuration) {
-    JsonObject clientOptions = configuration.getClientOptions();
-    return clientOptions.isEmpty() ? WebClient.create(vertx) :
-        WebClient.create(vertx, new WebClientOptions(clientOptions));
   }
 
   private AdapterResponse prepareResponse(ClientResponse response) {

@@ -22,6 +22,7 @@ import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Observable;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -32,12 +33,12 @@ import io.vertx.reactivex.core.http.HttpClient;
 import io.vertx.reactivex.core.http.HttpClientRequest;
 import io.vertx.reactivex.core.http.HttpClientResponse;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.jsoup.Jsoup;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
 
 
 @RunWith(VertxUnitRunner.class)
@@ -60,12 +61,12 @@ public class SampleApplicationTest {
 
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
       int port, String domain, String uri,
-      Action1<HttpClientRequest> requestBuilder) {
+      Consumer<HttpClientRequest> requestBuilder) {
     return Observable.unsafeCreate(subscriber -> {
       HttpClientRequest req = client.request(method, port, domain, uri);
       Observable<HttpClientResponse> resp = req.toObservable();
       resp.subscribe(subscriber);
-      requestBuilder.call(req);
+      requestBuilder.accept(req);
       req.end();
     });
   }
@@ -153,7 +154,8 @@ public class SampleApplicationTest {
   }
 
   private void testGetRequest(TestContext context, String url, String expectedResponseFile) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
+    HttpClient client = Vertx.newInstance(vertx.vertx())
+        .createHttpClient(new HttpClientOptions());
     Async async = context.async();
     client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
         resp -> resp.bodyHandler(body -> {

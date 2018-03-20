@@ -15,6 +15,7 @@
  */
 package io.knotx.knot.service.impl;
 
+import com.google.common.base.MoreObjects;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.knot.service.service.ServiceAttributeUtil;
 import io.knotx.knot.service.service.ServiceEntry;
@@ -101,4 +102,11 @@ class FragmentContext {
     return this;
   }
 
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("fragment", fragment)
+        .add("services", services)
+        .toString();
+  }
 }

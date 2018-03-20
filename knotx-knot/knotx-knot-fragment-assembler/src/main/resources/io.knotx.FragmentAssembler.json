@@ -1,9 +1,0 @@
-{
-  "main": "io.knotx.knot.assembler.FragmentAssemblerVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.core.assembler",
-      "unprocessedStrategy": "UNWRAP"
-    }
-  }
-}

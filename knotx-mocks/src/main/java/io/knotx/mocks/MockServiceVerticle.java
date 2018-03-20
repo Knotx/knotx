@@ -30,12 +30,12 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.ErrorHandler;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import rx.functions.Action2;
+import java.util.function.BiConsumer;
 
 public class MockServiceVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceVerticle.class);
-  private static final Action2<RoutingContext, String> BOUNCER = (context, mockData) -> {
+  private static final BiConsumer<RoutingContext, String> BOUNCER = (context, mockData) -> {
     JsonObject responseBody = new JsonObject(mockData);
     context.response().putHeader("Set-Cookie", "mockCookie=" + context.request().path());
     context.response().setStatusCode(200).end(responseBody.encodePrettily());
@@ -43,7 +43,7 @@ public class MockServiceVerticle extends AbstractVerticle {
   private HttpServer httpServer;
 
   @Override
-  public void start(Future<Void> fut) throws IOException, URISyntaxException {
+  public void start(Future<Void> fut) {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
     httpServer = vertx.createHttpServer();
 
@@ -68,7 +68,7 @@ public class MockServiceVerticle extends AbstractVerticle {
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     httpServer.close();
   }
 

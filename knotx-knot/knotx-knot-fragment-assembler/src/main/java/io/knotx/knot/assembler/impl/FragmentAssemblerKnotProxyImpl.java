@@ -19,12 +19,11 @@ import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.assembler.FragmentAssemblerConfiguration;
+import io.knotx.knot.assembler.FragmentAssemblerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -38,11 +37,11 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
       .getLogger(FragmentAssemblerKnotProxyImpl.class);
   private final SnippetPatterns patterns;
 
-  private FragmentAssemblerConfiguration configuration;
+  private FragmentAssemblerOptions options;
 
-  public FragmentAssemblerKnotProxyImpl(JsonObject config) {
-    this.configuration = new FragmentAssemblerConfiguration(config);
-    this.patterns = new SnippetPatterns(configuration.getSnippetTagName());
+  public FragmentAssemblerKnotProxyImpl(FragmentAssemblerOptions options) {
+    this.options = options;
+    this.patterns = new SnippetPatterns(options.getSnippetTagName());
   }
 
   @Override
@@ -50,7 +49,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
-            .map(fragment -> configuration.unprocessedFragmentStrategy().get(fragment, patterns))
+            .map(fragment -> options.getUnprocessedStrategy().get(fragment, patterns))
             .collect(Collectors.joining());
 
         return Single.just(createSuccessResponse(knotContext, joinedFragments));

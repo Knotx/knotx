@@ -1,34 +1,246 @@
 {
   "modules": [
-    "knotx:example.io.knotx.KnotxServer",
-    "knotx:io.knotx.HttpRepositoryConnector",
-    "knotx:io.knotx.FilesystemRepositoryConnector",
-    "knotx:io.knotx.FragmentSplitter",
-    "knotx:io.knotx.FragmentAssembler",
-    "knotx:io.knotx.HandlebarsKnot",
-    "knotx:io.knotx.ServiceKnot",
-    "knotx:example.io.knotx.ActionKnot",
-    "knotx:io.knotx.HttpServiceAdapter",
-    "knotx:example.io.knotx.HttpActionAdapter",
-    "knotx:io.knotx.RemoteRepositoryMock",
-    "knotx:io.knotx.ServiceMock",
-    "knotx:io.knotx.ServiceAdapterMock",
-    "knotx:io.knotx.ActionAdapterMock",
-    "knotx:io.knotx.GatewayKnot",
-    "knotx:example.io.knotx.RequestProcessorKnot",
-    "knotx:io.knotx.ResponseProviderKnot"
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "actionAdapter=io.knotx.adapter.action.http.HttpActionAdapterVerticle",
+    "mockRepo=io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "mockService=io.knotx.mocks.MockServiceVerticle",
+    "gatewatKnot=io.knotx.gateway.GatewayKnotVerticle",
+    "reqProcessorKnot=io.knotx.gateway.RequestProcessorKnotVerticle",
+    "respProviderKnot=io.knotx.gateway.ResponseProviderKnotVerticle"
   ],
   "config": {
-    "knotx:io.knotx.HttpServiceAdapter": {
+    "server": {
       "options": {
         "config": {
-          "clientOptions": {
+          "serverOptions": {
+            "port": 8092,
             "logActivity": true
+          },
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/local/.*",
+                "address": "knotx.core.repository.filesystem"
+              },
+              {
+                "path": "/content/.*",
+                "address": "knotx.core.repository.http"
+              },
+              {
+                "path": "/img/.*",
+                "address": "knotx.core.repository.http",
+                "doProcessing": false
+              }
+            ],
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": "/content/.*",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": "/content/.*",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "customFlow": {
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": "/customFlow/.*",
+                    "address": "knotx.gateway.gatewayknot",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.gateway.requestprocessor"
+                      }
+                    }
+                  }
+                ]
+              },
+              "PUT": {
+                "items": [
+                  {
+                    "path": "/customFlow/.*",
+                    "address": "knotx.gateway.gatewayknot",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.gateway.requestprocessor"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
           }
         }
       }
     },
-    "knotx:io.knotx.ServiceKnot": {
+    "mockRepo": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/repository",
+          "httpPort": 3001
+        }
+      }
+    },
+    "mockService": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/service",
+          "bouncing": true,
+          "httpPort": 3000
+        }
+      }
+    },
+    "reqProcessorKnot": {
+      "options": {
+        "config": {
+          "address": "knotx.gateway.requestprocessor"
+        }
+      }
+    },
+    "actionAdapter": {
+      "options": {
+        "config": {
+          "address": "knotx.adapter.action.http",
+          "clientOptions": {
+            "maxPoolSize": 1000,
+            "keepAlive": false,
+            "logActivity": true
+          },
+          "customRequestHeader": {
+            "name": "Server-User-Agent",
+            "value": "Knot.x"
+          },
+          "services": [
+            {
+              "path": "/service/mock/.*",
+              "domain": "localhost",
+              "port": 3000,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            },
+            {
+              "path": "/service/.*",
+              "domain": "localhost",
+              "port": 8080,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "actionKnot": {
+      "options": {
+        "config": {
+          "adapters": [
+            {
+              "name": "subscribe-competition",
+              "address": "knotx.adapter.action.http",
+              "params": {
+                "path": "/service/mock/post-competition.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            },
+            {
+              "name": "subscribe-newsletter",
+              "address": "knotx.adapter.action.http",
+              "params": {
+                "path": "/service/mock/post-newsletter.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            },
+            {
+              "name": "step1",
+              "address": "knotx.adapter.action.http",
+              "params": {
+                "path": "/service/mock/post-step-1.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie",
+                "Content-Type",
+                "Content-Length"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            },
+            {
+              "name": "step2",
+              "address": "knotx.adapter.action.http",
+              "params": {
+                "path": "/service/mock/post-step-2.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie",
+                "Content-Type",
+                "Content-Length"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "serviceKnot": {
       "options": {
         "config": {
           "services": [
@@ -62,17 +274,21 @@
         }
       }
     },
-    "knotx:example.io.knotx.HttpActionAdapter": {
+    "serviceAdapter": {
       "options": {
         "config": {
           "clientOptions": {
             "logActivity": true
-          },
-          "allowedRequestHeaders": [
-            "Cookie",
-            "Content-Type",
-            "Content-Length"
-          ]
+          }
+        }
+      }
+    },
+    "httpRepo": {
+      "options": {
+        "config": {
+          "clientOptions": {
+            "logActivity": true
+          }
         }
       }
     }

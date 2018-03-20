@@ -49,34 +49,11 @@ Handlebars Knot uses data from Fragment Context and applies it to Fragment Conte
 Finally Fragment Content is replaced with merged result.
 
 ## How to configure?
-Handlebars Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+For all configuration fields and their defaults consult [HandlebarsKnotOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#handlebarsknotoptions)
 
-Default configuration shipped with the verticle as `io.knotx.HandlebarsKnot.json` file available in classpath.
-```json
-{
-  "main": "io.knotx.knot.templating.HandlebarsKnotVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.knot.handlebars"
-    }
-  }
-}
-```
 In general, it:
 - Listens on event bus address 'knotx.knot.handlebars'
 - Renders HTML debug comments on the output HTML
-
-Detailed description of each configuration option is described in the next subsection.
-
-### Handlebars Knot options
-
-Main Handlebars Knot options available.
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | Event bus address of the Handlebars Knot verticle. |
-| `cacheSize`                 | `Long`                              |                | Max cache size for compiled Handlebars snippets. The default is 1000. |
-| `cacheKeyAlgorithm`         | `String: MD5,SHA-1,SHA-256`         |                | Fragment content hashing algorithm. The default is `MD5`. |
 
 ## How to extend?
 

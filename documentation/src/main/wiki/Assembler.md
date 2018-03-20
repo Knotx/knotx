@@ -110,34 +110,7 @@ It ignores all Fragments which contains dynamic tag definitions.
 ```
 
 ## How to configure?
-Fragment Assembler is deployed using Vert.x service factory as a separate
-[verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default 
-configuration.
-
-Default configuration shipped with the verticle as `io.knotx.FragmentAssembler.json` file available in classpath.
-```json
-{
-  "main": "io.knotx.knot.assembler.FragmentAssemblerVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.core.assembler",
-      "unprocessedStrategy": "UNWRAP"
-    }
-  }
-}
-```
-In short, the default configuration just defines event bus address on which the Assembler listens
-for jobs to process and strategy how to handle unprocessed snippets.
-
-Detailed description of each configuration option is described in the next subsection.
-
-### Fragment Assembler config
-
-| Name                        | Type      | Mandatory      | Description  |
-|-------:                     |:-------:  |:-------:       |-------|
-| `address`                   | `String`  | &#10004;       | Event bus address of the Fragment Assembler verticle. |
-| `unprocessedStrategy`       | `String`  | &#10004;       | Strategy for unprocessed Fragments (`AS_IS`, `UNWRAP`, `IGNORE`). `UNWRAP` is default strategy if no strategy defined. |
-| `snippetTagName`            | `String`  | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. The default value is `script`. Remember to update [[Splitter configuration\|Splitter#how-to-configure]] |
+See the [FragmentAssemblerOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#fragmentassembleroptions) for all configuration options and its defaults.
 
 **Important - when specifying `snippetTagName` remember to not use standard HTML tags like `div`, `span`, etc.
 Knot.x splits an HTML into fragments by parsing it as a string to get the best possible performance. 

@@ -18,13 +18,13 @@ package io.knotx.repository.impl;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.proxy.RepositoryConnectorProxy;
+import io.knotx.repository.FilesystemRepositoryOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.impl.MimeMapping;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -40,17 +40,19 @@ public class FilesystemRepositoryConnectorProxyImpl implements RepositoryConnect
 
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
-  private final String catalogue;
+  private final FilesystemRepositoryOptions config;
   private final FileSystem fileSystem;
 
-  public FilesystemRepositoryConnectorProxyImpl(Vertx vertx, JsonObject configuration) {
+  public FilesystemRepositoryConnectorProxyImpl(Vertx vertx,
+      FilesystemRepositoryOptions configuration) {
     this.fileSystem = FileSystem.newInstance(vertx.fileSystem());
-    this.catalogue = configuration.getString("catalogue");
+    this.config = configuration;
   }
 
   @Override
   public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    final String localFilePath = catalogue + StringUtils.stripStart(request.getPath(), "/");
+    final String localFilePath =
+        config.getCatalogue() + StringUtils.stripStart(request.getPath(), "/");
     final Optional<String> contentType = Optional
         .ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
 

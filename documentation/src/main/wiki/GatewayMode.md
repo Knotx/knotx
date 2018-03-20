@@ -18,32 +18,34 @@ This example endpoint is configured like below:
 ```
 "customFlow": {
   "routing": {
-    "GET": [
-      {
-        "path": "/customFlow/.*",
-        "address": "knotx.gateway.gatewayknot",
-        "onTransition": {
-          "next": {
-            "address": "knotx.gateway.requestprocessor"
+    "GET": {
+      "items": [
+        {
+          "path": "/customFlow/.*",
+          "address": "knotx.gateway.gatewayknot",
+          "onTransition": {
+            "next": {
+              "address": "knotx.gateway.requestprocessor"
+            }
           }
         }
-      }
-    ],
-    "PUT": [
-      {
-        "path": "/customFlow/.*",
-        "address": "knotx.gateway.gatewayknot",
-        "onTransition": {
-          "next": {
-            "address": "knotx.gateway.requestprocessor"
+      ]
+    },
+    "PUT": {
+      "items": [
+        {
+          "path": "/customFlow/.*",
+          "address": "knotx.gateway.gatewayknot",
+          "onTransition": {
+            "next": {
+              "address": "knotx.gateway.requestprocessor"
+            }
           }
         }
-      }
-    ]
+      ]
+     }
   },
-  "responseProvider": {
-    "address": "knotx.gateway.responseprovider"
-  }
+  "responseProvider": "knotx.gateway.responseprovider"
 }
 ```
 
@@ -63,9 +65,7 @@ Simple PUT call with body message:
 { "message": "Hello from Web API!" }
 ```
 
-Our endpoint behaviour is coded as simple [[Knot|Knot]] extension: 
-io.knotx.gateway.impl.RequestProcessorKnotProxyImpl and available at `knotx.gateway.requestprocessor`
-module address (see example.io.knotx.RequestProcessorKnot.json).
+Our endpoint behaviour is coded as simple [[Knot|Knot]] extension: `io.knotx.gateway.RequestProcessorKnotVerticle`.
 
 ## Processing
 

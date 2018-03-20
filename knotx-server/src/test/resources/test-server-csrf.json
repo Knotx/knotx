@@ -1,10 +1,18 @@
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
-    "knotx:test.io.knotx.FileSystemConnector"
+    "server=java:io.knotx.server.KnotxServerVerticle",
+    "fsRepo=java:io.knotx.repository.FilesystemRepositoryConnectorVerticle"
   ],
   "config": {
-    "knotx:io.knotx.KnotxServer": {
+    "fsRepo": {
+      "options": {
+        "config": {
+          "address": "knotx.repository.filesystem",
+          "catalogue": "src/test/resources/"
+        }
+      }
+    },
+    "server": {
       "options": {
         "config": {
           "serverOptions": {
@@ -17,32 +25,32 @@
                 "address": "knotx.repository.filesystem"
               }
             ],
-            "splitter": {
-              "address": "test-splitter"
-            },
+            "splitter": "test-splitter",
             "routing": {
-              "GET": [
-                {
-                  "path": ".*",
-                  "csrf": true,
-                  "address": "some-knot"
-                }
-              ],
-              "POST": [
-                {
-                  "path": "/content/local/simple.*",
-                  "csrf": true,
-                  "address": "some-knot"
-                },
-                {
-                  "path": "/content/local/public.*",
-                  "address": "some-knot"
-                }
-              ]
+              "GET": {
+                "items": [
+                  {
+                    "path": ".*",
+                    "csrf": true,
+                    "address": "some-knot"
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": "/content/local/simple.*",
+                    "csrf": true,
+                    "address": "some-knot"
+                  },
+                  {
+                    "path": "/content/local/public.*",
+                    "address": "some-knot"
+                  }
+                ]
+              }
             },
-            "assembler": {
-              "address": "test-assembler"
-            }
+            "assembler": "test-assembler"
           }
         }
       }

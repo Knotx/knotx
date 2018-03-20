@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -39,7 +40,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
 public class FragmentAssemblerTest {
@@ -135,13 +135,13 @@ public class FragmentAssemblerTest {
 
   private void callAssemblerWithAssertions(TestContext context,
       List<Pair<List<String>, String>> fragments,
-      Action1<KnotContext> testFunction) {
+      Consumer<KnotContext> testFunction) {
     Async async = context.async();
     KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
 
     service.rxProcess(KnotContextFactory.create(fragments))
         .map(ctx -> Pair.of(async, ctx))
-        .doOnSuccess(success -> testFunction.call(success.getRight()))
+        .doOnSuccess(success -> testFunction.accept(success.getRight()))
         .subscribe(
             success -> async.complete(),
             context::fail

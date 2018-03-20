@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
@@ -42,7 +42,7 @@ public class KnotxRepositoryHandlerTest {
   @Mock
   private Vertx vertx;
   @Mock
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
   @Mock
   private ClientResponse clientResponse;
   @Mock
@@ -65,7 +65,7 @@ public class KnotxRepositoryHandlerTest {
   @Test
   public void handleRepositoryResponse_whenResponseIsSuccessAndShouldBeProcessed_expectContextContinuation() {
     when(clientResponse.getStatusCode()).thenReturn(200);
-    when(repositoryEntry.doProcessing()).thenReturn(true);
+    when(repositoryEntry.isDoProcessing()).thenReturn(true);
 
     tested.handleRepositoryResponse(clientResponse, routingContext, repositoryEntry, knotContext);
 
@@ -77,7 +77,7 @@ public class KnotxRepositoryHandlerTest {
   @Test
   public void handleRepositoryResponse_whenResponseIsSuccessAndShouldNotBeProcessed_expectResponse() {
     when(clientResponse.getStatusCode()).thenReturn(200);
-    when(repositoryEntry.doProcessing()).thenReturn(false);
+    when(repositoryEntry.isDoProcessing()).thenReturn(false);
     when(clientResponse.getHeaders()).thenReturn(MultiMap.caseInsensitiveMultiMap());
     when(clientResponse.getBody()).thenReturn(Buffer.buffer().getDelegate());
     when(routingContext.response()).thenReturn(httpServerResponse);

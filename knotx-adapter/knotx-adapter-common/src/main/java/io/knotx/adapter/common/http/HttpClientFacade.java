@@ -15,9 +15,12 @@
  */
 package io.knotx.adapter.common.http;
 
+import io.knotx.adapter.common.configuration.ServiceAdapterOptions;
+import io.knotx.adapter.common.configuration.ServiceSettings;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
 import io.knotx.adapter.common.placeholders.UriTransformer;
+import io.knotx.configuration.CustomHttpHeader;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
@@ -46,16 +49,16 @@ public class HttpClientFacade {
   private static final String QUERY_PARAMS_PROPERTY_KEY = "queryParams";
   private static final String HEADERS_PROPERTY_KEY = "headers";
 
-  private final List<ServiceMetadata> services;
+  private final List<ServiceSettings> services;
 
   private final WebClient webClient;
 
-  private final JsonObject customRequestHeader;
+  private final CustomHttpHeader customHttpHeader;
 
-  public HttpClientFacade(WebClient webClient, HttpAdapterConfiguration configuration) {
+  public HttpClientFacade(WebClient webClient, ServiceAdapterOptions configuration) {
     this.webClient = webClient;
     this.services = configuration.getServices();
-    this.customRequestHeader = configuration.getCustomRequestHeader();
+    this.customHttpHeader = configuration.getCustomHttpHeader();
   }
 
   public Single<ClientResponse> process(AdapterRequest message, HttpMethod method) {
@@ -68,7 +71,7 @@ public class HttpClientFacade {
         .flatMap(this::wrapResponse);
   }
 
-  private void logResponse(Pair<ClientRequest, ServiceMetadata> request,
+  private void logResponse(Pair<ClientRequest, ServiceSettings> request,
       HttpResponse<Buffer> resp) {
     if (resp.statusCode() >= 400 && resp.statusCode() < 600) {
       LOGGER.error("{} {} -> Got response {}, headers[{}]",
@@ -79,7 +82,7 @@ public class HttpClientFacade {
     }
   }
 
-  private Object[] logResponseData(Pair<ClientRequest, ServiceMetadata> request,
+  private Object[] logResponseData(Pair<ClientRequest, ServiceSettings> request,
       HttpResponse<Buffer> resp) {
     Object[] data = {
         request.getLeft().getMethod(),
@@ -90,7 +93,7 @@ public class HttpClientFacade {
     return data;
   }
 
-  private String toUrl(Pair<ClientRequest, ServiceMetadata> request) {
+  private String toUrl(Pair<ClientRequest, ServiceSettings> request) {
     return new StringBuilder(request.getRight().getDomain()).append(request.getRight().getPort())
         .append(request.getLeft().getPath()).toString();
   }
@@ -132,15 +135,15 @@ public class HttpClientFacade {
             .resolveServicePath(params.getString(PATH_PROPERTY_KEY), originalRequest));
   }
 
-  private Pair<ClientRequest, ServiceMetadata> prepareRequestData(AdapterRequest adapterRequest) {
-    final Pair<ClientRequest, ServiceMetadata> serviceData;
+  private Pair<ClientRequest, ServiceSettings> prepareRequestData(AdapterRequest adapterRequest) {
+    final Pair<ClientRequest, ServiceSettings> serviceData;
 
     final JsonObject params = adapterRequest.getParams();
     final ClientRequest serviceRequest = buildServiceRequest(adapterRequest.getRequest(), params);
-    final Optional<ServiceMetadata> serviceMetadata = findServiceMetadata(serviceRequest.getPath());
+    final Optional<ServiceSettings> serviceMetadata = findServiceMetadata(serviceRequest.getPath());
 
     if (serviceMetadata.isPresent()) {
-      final ServiceMetadata metadata = serviceMetadata.get();
+      final ServiceSettings metadata = serviceMetadata.get();
       if (params.containsKey(HEADERS_PROPERTY_KEY)) {
         metadata.setAdditionalHeaders(params.getJsonObject(HEADERS_PROPERTY_KEY));
       }
@@ -157,16 +160,16 @@ public class HttpClientFacade {
     return serviceData;
   }
 
-  private Optional<ServiceMetadata> findServiceMetadata(String servicePath) {
+  private Optional<ServiceSettings> findServiceMetadata(String servicePath) {
     return services.stream().filter(metadata -> servicePath.matches(metadata.getPath())).findAny();
   }
 
   private Single<HttpResponse<Buffer>> callService(
-      Pair<ClientRequest, ServiceMetadata> serviceData, HttpMethod method) {
+      Pair<ClientRequest, ServiceSettings> serviceData, HttpMethod method) {
     final Single<HttpResponse<Buffer>> httpResponse;
 
     final ClientRequest serviceRequest = serviceData.getLeft();
-    final ServiceMetadata serviceMetadata = serviceData.getRight();
+    final ServiceSettings serviceMetadata = serviceData.getRight();
 
     final HttpRequest<Buffer> request = webClient
         .request(method, serviceMetadata.getPort(), serviceMetadata.getDomain(),
@@ -185,35 +188,35 @@ public class HttpClientFacade {
     return httpResponse;
   }
 
-  private void overrideRequestHeaders(HttpRequest<Buffer> request, ServiceMetadata metadata) {
-    if (metadata.getAdditionalHeaders().isPresent()) {
-      metadata.getAdditionalHeaders().get().forEach(entry -> {
+  private void overrideRequestHeaders(HttpRequest<Buffer> request, ServiceSettings metadata) {
+    if (metadata.getAdditionalHeaders() != null) {
+      metadata.getAdditionalHeaders().forEach(entry -> {
         request.putHeader(entry.getKey(), entry.getValue().toString());
       });
     }
   }
 
-  private void updateRequestQueryParams(HttpRequest<Buffer> request, ServiceMetadata metadata) {
-    if (metadata.getQueryParams().isPresent()) {
-      metadata.getQueryParams().get().forEach(entry ->
+  private void updateRequestQueryParams(HttpRequest<Buffer> request, ServiceSettings metadata) {
+    if (metadata.getQueryParams() != null) {
+      metadata.getQueryParams().forEach(entry ->
           request.addQueryParam(entry.getKey(), entry.getValue().toString())
       );
     }
   }
 
   private void updateRequestHeaders(HttpRequest<Buffer> request, ClientRequest serviceRequest,
-      ServiceMetadata serviceMetadata) {
+      ServiceSettings serviceMetadata) {
 
     MultiMap filteredHeaders = getFilteredHeaders(serviceRequest.getHeaders(),
-        serviceMetadata.getAllowedRequestHeaderPatterns());
+        serviceMetadata.getAllowedRequestHeadersPatterns());
     filteredHeaders.names().forEach(
         headerName -> filteredHeaders.getAll(headerName)
             .forEach(value -> request.headers().add(headerName, value)));
 
-    if (customRequestHeader.containsKey("name") && customRequestHeader.containsKey("value")) {
+    if (customHttpHeader != null) {
       request.headers().set(
-          customRequestHeader.getString("name"),
-          customRequestHeader.getString("value")
+          customHttpHeader.getName(),
+          customHttpHeader.getValue()
       );
     }
   }

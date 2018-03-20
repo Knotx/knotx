@@ -1,9 +1,9 @@
 {
   "modules": [
-    "knotx:io.knotx.FragmentAssembler"
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle"
   ],
   "config": {
-    "knotx:io.knotx.FragmentAssembler": {
+    "assembler": {
       "options": {
         "config": {
           "unprocessedStrategy": "AS_IS"

@@ -15,7 +15,6 @@
  */
 package io.knotx.gateway;
 
-import io.knotx.gateway.configuration.KnotxGatewayKnotConfiguration;
 import io.knotx.gateway.impl.ResponseProviderKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
@@ -31,7 +30,7 @@ public class ResponseProviderKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ResponseProviderKnotVerticle.class);
 
-  private KnotxGatewayKnotConfiguration configuration;
+  private ResponseProviderKnotOptions configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -40,7 +39,7 @@ public class ResponseProviderKnotVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new KnotxGatewayKnotConfiguration(config());
+    this.configuration = new ResponseProviderKnotOptions(config());
   }
 
   @Override

@@ -1,8 +1,0 @@
-{
-  "main": "io.knotx.splitter.FragmentSplitterVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.core.splitter"
-    }
-  }
-}

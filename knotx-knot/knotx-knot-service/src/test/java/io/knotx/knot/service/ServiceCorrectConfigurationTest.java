@@ -21,7 +21,7 @@ import static org.hamcrest.core.Is.is;
 
 import io.knotx.junit.util.FileReader;
 import io.vertx.core.json.JsonObject;
-import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,13 +32,13 @@ public class ServiceCorrectConfigurationTest {
   @Rule
   public final ExpectedException exception = ExpectedException.none();
 
-  private ServiceKnotConfiguration correctConfig;
-  private ServiceKnotConfiguration.ServiceMetadata expectedService;
+  private ServiceKnotOptions correctConfig;
+  private ServiceMetadata expectedService;
 
   @Before
   public void setUp() throws Exception {
     JsonObject config = new JsonObject(FileReader.readText("service-correct.json"));
-    correctConfig = new ServiceKnotConfiguration(config);
+    correctConfig = new ServiceKnotOptions(config);
     expectedService = createMockedService("first-service", "knotx.core-adapter",
         "{\"path\":\"/service/mock/first.json\"}", "first");
   }
@@ -47,12 +47,12 @@ public class ServiceCorrectConfigurationTest {
   public void whenCorrectConfigIsProvided_expectConfigIsProperlyParsed() {
     assertThat(correctConfig.getServices(), is(notNullValue()));
     assertThat(correctConfig.getServices().size(), is(1));
-    assertThat(correctConfig.getServices(), CoreMatchers.hasItem(expectedService));
+    assertThat(correctConfig.getServices(), Matchers.hasItem(expectedService));
   }
 
-  private ServiceKnotConfiguration.ServiceMetadata createMockedService(String name, String address,
+  private ServiceMetadata createMockedService(String name, String address,
       String params, String cacheKey) {
-    ServiceKnotConfiguration.ServiceMetadata newService = new ServiceKnotConfiguration.ServiceMetadata();
+    ServiceMetadata newService = new ServiceMetadata();
     newService.setName(name);
     newService.setAddress(address);
     newService.setParams(new JsonObject(params));

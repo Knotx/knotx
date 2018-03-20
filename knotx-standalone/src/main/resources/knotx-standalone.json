@@ -1,14 +1,14 @@
 {
   "modules": [
-    "knotx:io.knotx.KnotxServer",
-    "knotx:io.knotx.HttpRepositoryConnector",
-    "knotx:io.knotx.FilesystemRepositoryConnector",
-    "knotx:io.knotx.FragmentSplitter",
-    "knotx:io.knotx.FragmentAssembler",
-    "knotx:io.knotx.ServiceKnot",
-    "knotx:io.knotx.ActionKnot",
-    "knotx:io.knotx.HandlebarsKnot",
-    "knotx:io.knotx.HttpServiceAdapter"
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle"
   ]
 }
 

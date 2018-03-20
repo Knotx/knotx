@@ -16,7 +16,7 @@
 package io.knotx.knot.service.impl;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.knot.service.ServiceKnotConfiguration;
+import io.knotx.knot.service.ServiceKnotOptions;
 import io.knotx.knot.service.service.ServiceEngine;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.reactivex.Observable;
@@ -33,8 +33,8 @@ public class FragmentProcessor {
 
   private final ServiceEngine serviceEngine;
 
-  public FragmentProcessor(Vertx vertx, ServiceKnotConfiguration configuration) {
-    this.serviceEngine = new ServiceEngine(vertx, configuration);
+  public FragmentProcessor(Vertx vertx, ServiceKnotOptions options) {
+    this.serviceEngine = new ServiceEngine(vertx, options);
   }
 
   public Single<FragmentContext> processSnippet(final FragmentContext fragmentContext,
@@ -57,7 +57,11 @@ public class FragmentProcessor {
     LOGGER.debug("Fetching data from service {} {}", service.getAddress(), service.getParams());
     try {
       return request.getCache()
-          .get(service.getCacheKey(), () -> serviceEngine.doServiceCall(service, request).cache());
+          .get(service.getCacheKey(), () -> {
+            LOGGER.debug("Requesting data from adapter {} with params {}", service.getAddress(),
+                service.getParams());
+            return serviceEngine.doServiceCall(service, request).cache();
+          });
     } catch (ExecutionException e) {
       LOGGER.fatal("Unable to get service data {}", e);
       return Single.error(e);

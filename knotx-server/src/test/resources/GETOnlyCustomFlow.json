@@ -1,18 +1,18 @@
 {
   "routing": {
-    "GET": [
-      {
-        "path": "/services/.*",
-        "address": "knotx.gateway.gatewayknot",
-        "onTransition": {
-          "next": {
-            "address": "knotx.gateway.requestprocessor"
+    "GET": {
+      "items": [
+        {
+          "path": "/services/.*",
+          "address": "knotx.gateway.gatewayknot",
+          "onTransition": {
+            "next": {
+              "address": "knotx.gateway.requestprocessor"
+            }
           }
         }
-      }
-    ]
+      ]
+    }
   },
-  "responseProvider": {
-    "address": "knotx.gateway.responseprovider"
-  }
+  "responseProvider": "knotx.gateway.responseprovider"
 }

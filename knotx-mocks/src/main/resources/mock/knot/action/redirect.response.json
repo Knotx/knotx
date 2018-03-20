@@ -1,6 +1,0 @@
-{
-  "statusCode": 302,
-  "headers": {
-    "Location": "/redirect/anotherpage.html"
-  }
-}

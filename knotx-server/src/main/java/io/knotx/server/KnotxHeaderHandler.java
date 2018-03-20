@@ -15,28 +15,28 @@
  */
 package io.knotx.server;
 
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.configuration.CustomHttpHeader;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class KnotxHeaderHandler implements Handler<RoutingContext> {
 
-  private JsonObject customHeader;
+  private CustomHttpHeader customHeader;
 
-  public KnotxHeaderHandler(JsonObject customResponseHeader) {
+  public KnotxHeaderHandler(CustomHttpHeader customResponseHeader) {
     this.customHeader = customResponseHeader;
   }
 
-  public static KnotxHeaderHandler create(KnotxServerConfiguration config) {
+  public static KnotxHeaderHandler create(KnotxServerOptions config) {
     return new KnotxHeaderHandler(config.getCustomResponseHeader());
   }
 
   @Override
   public void handle(RoutingContext context) {
-    if (customHeader.containsKey("name") && customHeader.containsKey("value")) {
+    if (customHeader != null) {
       context.response().headers()
-          .add(customHeader.getString("name"), customHeader.getString("value"));
+          .add(customHeader.getName(), customHeader.getValue());
     }
     context.next();
   }

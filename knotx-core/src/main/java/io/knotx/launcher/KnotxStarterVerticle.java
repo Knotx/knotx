@@ -18,13 +18,13 @@ package io.knotx.launcher;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.AbstractVerticle;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class KnotxStarterVerticle extends AbstractVerticle {
 
@@ -33,14 +33,12 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
 
   @Override
-  public void start(Future<Void> startFuture) throws Exception {
+  public void start(Future<Void> startFuture) {
     printLogo();
     Observable.fromIterable(config().getJsonArray("modules"))
-        .flatMap(module -> deployVerticle(module)
-            .onErrorResumeNext(
-                throwable -> (Observable<Pair<String, String>>) verticleCouldNotBeDeployed(module,
-                    throwable))
-        )
+        .cast(String.class)
+        .map(ModuleDescriptor::parse)
+        .flatMap(this::deployVerticle)
         .compose(joinDeployments())
         .subscribe(
             message -> {
@@ -54,48 +52,64 @@ public class KnotxStarterVerticle extends AbstractVerticle {
         );
   }
 
-  private Observable<Pair<String, String>> verticleCouldNotBeDeployed(Object module,
-      Throwable throwable) {
-    LOGGER.warn("Can't deploy {}: {}", module, throwable.getMessage());
-    return Observable.empty();
-  }
-
-  private Observable<Pair<String, String>> deployVerticle(final Object module) {
-    return vertx.rxDeployVerticle((String) module, getModuleOptions((String) module))
-        .map(deploymentID -> Pair.of((String) module, deploymentID))
+  private Observable<ModuleDescriptor> deployVerticle(final ModuleDescriptor module) {
+    return vertx
+        .rxDeployVerticle(module.getName(), getModuleOptions(module.getAlias()))
+        .map(new ModuleDescriptor(module)::setDeploymentId)
+        .doOnError(error -> LOGGER.error("Can't deploy {}: {}", module.toDescriptorLine(), error))
+        .onErrorResumeNext((err) -> Single.just(new ModuleDescriptor(module).setDeploymentFailed()))
         .toObservable();
   }
 
   private DeploymentOptions getModuleOptions(final String module) {
     DeploymentOptions deploymentOptions = new DeploymentOptions();
-    if (config().containsKey(CONFIG_OVERRIDE) && config().getJsonObject(CONFIG_OVERRIDE)
-        .containsKey(module)) {
-      JsonObject moduleConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(module);
-      if (moduleConfig.containsKey(MODULE_OPTIONS)) {
-        deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
+    if (config().containsKey(CONFIG_OVERRIDE)) {
+      if (config().getJsonObject(CONFIG_OVERRIDE).containsKey(module)) {
+        JsonObject moduleConfig = config().getJsonObject(CONFIG_OVERRIDE).getJsonObject(module);
+        if (moduleConfig.containsKey(MODULE_OPTIONS)) {
+          deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
+        } else {
+          LOGGER.warn(
+              "Module '{}' has override config, but missing 'options' object. "
+                  + "Default configuration is to be used", module);
+        }
+      } else {
+        LOGGER.info("Module '{}' does not have override. Default configuration is to be used",
+            module);
       }
     }
     return deploymentOptions;
   }
 
-  private ObservableTransformer<Pair<String, String>, String> joinDeployments() {
+  private ObservableTransformer<ModuleDescriptor, String> joinDeployments() {
     return observable ->
-        observable.reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()),
-            this::collectDeployment)
+        observable
+            .reduce(new StringBuilder(System.lineSeparator()).append(System.lineSeparator()),
+                this::collectDeployment)
             .toObservable()
             .map(StringBuilder::toString);
   }
 
   private StringBuilder collectDeployment(StringBuilder accumulator,
-      Pair<String, String> deploymentId) {
+      ModuleDescriptor deployedDescriptor) {
     return accumulator
-        .append(
-            String.format("\t\tDeployed %s [%s]", deploymentId.getRight(), deploymentId.getLeft()))
+        .append(statusLine(deployedDescriptor))
         .append(System.lineSeparator());
   }
 
+  private String statusLine(ModuleDescriptor descriptor) {
+    String state;
+    if (!descriptor.isDeploymentFailed()) {
+      state = "Deployed";
+    } else {
+      state = "Failed deploying";
+    }
+    return String.format("\t\t%s %s", state, descriptor.toString());
+  }
+
   private void printLogo() {
-    System.out.println("@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    // @formatter:off
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     System.out.println("@@                                  ,,,,,,,,,                                 @@");
     System.out.println("@@                                *,,,,,,,,,,,*                               @@");
     System.out.println("@@                              @@&,,,,,,,,,,,,,*                             @@");
@@ -130,11 +144,12 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     System.out.println("@@                       @@@@@@@@@@@@@@@*,,,,,,,,,,,,,,*                      @@");
     System.out.println("@@                         @@@@@@@@@@@@,,,,,,,,,,,,,,*                        @@");
     System.out.println("@@                           @@@@@@@@%,,,,,,,,,,,,,*                          @@");
-    System.out.println("@@                            @@@@@/,,,,,,,,,,,,*                            @@");
+    System.out.println("@@                            @@@@@/,,,,,,,,,,,,*                             @@");
     System.out.println("@@                               @@,,,,,,,,,,,,*                              @@");
     System.out.println("@@                                 *,,,,,,,,,*                                @@");
     System.out.println("@@                                    ,,,*/                                   @@");
     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     System.out.println();
+    // @formatter:on
   }
 }

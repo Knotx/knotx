@@ -1,8 +1,0 @@
-{
-  "main": "io.knotx.gateway.ResponseProviderKnotVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.gateway.responseprovider"
-    }
-  }
-}

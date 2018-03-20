@@ -29,7 +29,7 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.templating.HandlebarsKnotConfiguration;
+import io.knotx.knot.templating.HandlebarsKnotOptions;
 import io.knotx.knot.templating.handlebars.CustomHandlebarsHelper;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
@@ -58,17 +58,17 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
   private MessageDigest digest;
 
-  public HandlebarsKnotProxyImpl(HandlebarsKnotConfiguration configuration) {
+  public HandlebarsKnotProxyImpl(HandlebarsKnotOptions options) {
     this.handlebars = createHandlebars();
     this.cache = CacheBuilder.newBuilder()
-        .maximumSize(configuration.getCacheSize())
+        .maximumSize(options.getCacheSize())
         .removalListener(listener -> LOGGER.warn(
-            "Cache limit exceeded. If this information occurs frequently, check 'cacheSize' configuration option because your cache is too small"))
+            "Cache limit exceeded. Revisit 'cacheSize' setting"))
         .build();
     try {
-      this.digest = MessageDigest.getInstance(configuration.getCacheKeyAlgorithm());
+      this.digest = MessageDigest.getInstance(options.getCacheKeyAlgorithm());
     } catch (NoSuchAlgorithmException e) {
-      LOGGER.error("Could not initialize fragment hashing algorithm!", e);
+      LOGGER.error("No such algorithm available {}.", options.getCacheKeyAlgorithm(), e);
       throw new IllegalArgumentException(e);
     }
   }

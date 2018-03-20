@@ -17,8 +17,8 @@ package io.knotx.server;
 
 
 import io.knotx.junit.util.FileReader;
-import io.knotx.server.configuration.KnotxFlowConfiguration;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxFlowSettings;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.http.HttpServerRequest;
@@ -29,16 +29,17 @@ import org.mockito.Mockito;
 
 public class SupportedMethodsAndPathsHandlerTest {
 
-  private KnotxFlowConfiguration defaultFlow;
-  private KnotxFlowConfiguration customFlow;
+  private KnotxFlowSettings defaultFlow;
+  private KnotxFlowSettings customFlow;
   private SupportedMethodsAndPathsHandler tested;
 
   @Before
   public void before() throws Exception {
-    defaultFlow = new KnotxFlowConfiguration(
+    defaultFlow = new KnotxFlowSettings(
         new JsonObject(FileReader.readText("GETOnlyDefaultFlow.json")));
-    customFlow = new KnotxFlowConfiguration(new JsonObject(FileReader.readText("GETOnlyCustomFlow.json")));
-    KnotxServerConfiguration configuration = Mockito.mock(KnotxServerConfiguration.class);
+    customFlow = new KnotxFlowSettings(
+        new JsonObject(FileReader.readText("GETOnlyCustomFlow.json")));
+    KnotxServerOptions configuration = Mockito.mock(KnotxServerOptions.class);
     Mockito.when(configuration.getDefaultFlow()).thenReturn(defaultFlow);
     Mockito.when(configuration.getCustomFlow()).thenReturn(customFlow);
 
@@ -46,7 +47,8 @@ public class SupportedMethodsAndPathsHandlerTest {
   }
 
   @Test
-  public void handle_whenRequestPathAndMethodAllowedInDefaultFlow_expectRequestAccepted() throws Exception {
+  public void handle_whenRequestPathAndMethodAllowedInDefaultFlow_expectRequestAccepted()
+      throws Exception {
     RoutingContext context = mockContext("/content/page.html", HttpMethod.GET);
     tested.handle(context);
 

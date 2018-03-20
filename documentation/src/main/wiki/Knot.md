@@ -202,14 +202,17 @@ browser to validate a Knot header message (`Knot example`).
 The easiest way to handle a blocking code inside your Knot is to deploy it as a [Vert.x worker](http://vertx.io/docs/vertx-core/java/#worker_verticles).
 No change in your code is required.
 
-To do so you need to tell Vert.x that your custom Knot should be processed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
+To do so, you need to override configuration of your verticle and set verticle options to be deployed in in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
 ```
 {
-  "main": "some.package.knot.example.ExampleKnot",
-  "options": {
-    "worker": true,
-    "config": {
-      ...
+  "config": {
+    "myExample": {
+       "options": {
+          "worker": true,
+          "config": {
+            ...
+          }
+       }
     }
   }
 }

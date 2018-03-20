@@ -17,7 +17,7 @@ package io.knotx.knot.service.service;
 
 
 import io.knotx.junit.util.FileReader;
-import io.knotx.knot.service.ServiceKnotConfiguration;
+import io.knotx.knot.service.ServiceKnotOptions;
 import io.vertx.core.json.JsonObject;
 import org.jsoup.nodes.Attribute;
 import org.junit.Assert;
@@ -26,16 +26,16 @@ import org.junit.Test;
 
 public class ServiceEntryTest {
 
-  private ServiceKnotConfiguration configWithDefaultParams;
+  private ServiceKnotOptions configWithDefaultParams;
 
-  private ServiceKnotConfiguration configNoDefaultParams;
+  private ServiceKnotOptions configNoDefaultParams;
 
   @Before
   public void setUp() throws Exception {
-    configWithDefaultParams = new ServiceKnotConfiguration(
+    configWithDefaultParams = new ServiceKnotOptions(
         new JsonObject(FileReader.readText("service-correct.json"))
     );
-    configNoDefaultParams = new ServiceKnotConfiguration(
+    configNoDefaultParams = new ServiceKnotOptions(
         new JsonObject(FileReader.readText("service-correct-no-params.json"))
     );
   }

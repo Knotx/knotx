@@ -16,35 +16,39 @@ to the next matching Knot.
 Routes entries example configuration:
 ```
 "routing": {
-  "GET": [
-    {
-      "path": "/secure/.*",
-      "address": "knotx.knot.authorization",
-      ...
-    },
-    {
-      "path": "/forms/.*",
-      "address": "knotx.knot.action",
-      ...
-    },
-    {
-      "path": "/view/.*",
-      "address": "knotx.knot.service",
-      ...
-    }
-  ],
-  "POST": [
-    {
-      "path": "/secure/.*",
-      "address": "knotx.knot.authorization",
-      ...
-    },
-    {
-      "path": "/forms/.*",
-      "address": "knotx.knot.action",
-      ...
-    }
-  ]
+  "GET": {
+    "items": [
+      {
+        "path": "/secure/.*",
+        "address": "knotx.knot.authorization",
+        ...
+      },
+      {
+        "path": "/forms/.*",
+        "address": "knotx.knot.action",
+        ...
+      },
+      {
+        "path": "/view/.*",
+        "address": "knotx.knot.service",
+        ...
+      }
+    ]
+  },
+  "POST": {
+    "items": [
+      {
+        "path": "/secure/.*",
+        "address": "knotx.knot.authorization",
+        ...
+      },
+      {
+        "path": "/forms/.*",
+        "address": "knotx.knot.action",
+        ...
+      }
+    ]
+  }
 }
 ```
 Knot.x understands Knot as a vertex in a graph which has one input and many outputs. Those outputs are

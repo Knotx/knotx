@@ -31,11 +31,11 @@ import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.List;
+import java.util.function.Consumer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import rx.functions.Action1;
 
 @RunWith(VertxUnitRunner.class)
 public class KnotxServerCsrfTest {
@@ -175,7 +175,7 @@ public class KnotxServerCsrfTest {
 
   private void createSimpleKnot(final String address, final String addToBody,
       final String transition) {
-    Action1<KnotContext> simpleKnot = knotContext -> {
+    Consumer<KnotContext> simpleKnot = knotContext -> {
       Buffer inBody = knotContext.getClientResponse().getBody();
       knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
       knotContext.setTransition(transition);
@@ -185,6 +185,6 @@ public class KnotxServerCsrfTest {
 
   private String getToken(List<String> result) {
     String val = result.get(0);
-    return val.split("X-XSRF-TOKEN=")[1].split(";")[0];
+    return val.split("XSRF-TOKEN=")[1].split(";")[0];
   }
 }

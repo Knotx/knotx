@@ -18,7 +18,7 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
@@ -35,15 +35,16 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
 
   private KnotProxy assembler;
 
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
 
-  private KnotxAssemblerHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+  private KnotxAssemblerHandler(Vertx vertx, KnotxServerOptions configuration) {
     this.configuration = configuration;
-    this.assembler = KnotProxy.createProxyWithOptions(vertx, configuration.getDefaultFlow().assemblerAddress(),
-        configuration.getDeliveryOptions());
+    this.assembler = KnotProxy
+        .createProxyWithOptions(vertx, configuration.getDefaultFlow().getAssembler(),
+            configuration.getDeliveryOptions());
   }
 
-  static KnotxAssemblerHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxAssemblerHandler create(Vertx vertx, KnotxServerOptions configuration) {
     return new KnotxAssemblerHandler(vertx, configuration);
   }
 
@@ -64,7 +65,7 @@ public class KnotxAssemblerHandler implements Handler<RoutingContext> {
               },
               error -> {
                 LOGGER.error("Error happened while communicating with {} engine", error,
-                    configuration.getDefaultFlow().splitterAddress());
+                    configuration.getDefaultFlow().getSplitter());
                 context.fail(error);
               }
           );

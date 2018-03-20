@@ -75,66 +75,15 @@ Signal is basically a decision about further request processing. Value of the si
 In other words, the page processing will be delegated to next [[Knot|Knot]] in the graph.
 
 ## How to configure?
-Action Knot is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+For all configuration fields and their defaults consult [ActionKnotOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#actionknotoptions)
 
-Default configuration shipped with the verticle as `io.knotx.ActionKnot.json` file available in classpath.
-
-```json
-{
-  "main": "io.knotx.knot.action.ActionKnotVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.knot.action",
-      "adapters": [
-        {
-          "name": "action-self",
-          "address": "test",
-          "params": {
-            "example": "example-value"
-          },
-          "allowedRequestHeaders": [
-            "Cookie"
-          ],
-          "allowedResponseHeaders": [
-            "Set-Cookie"
-          ]
-        }
-      ],
-      "formIdentifierName": "snippet-identifier"
-    }
-  }
-}
-
-```
-In general, it:
+In short, by default, server:
 - Listens on event bus address `knotx.knot.action` on messages to process
 - It communicates with the [Action Adapter|ActionAdapter] on event bus address `test` for processing POST requests to the services
   - It pass the example parameter to the adapter
   - It pass `Cookie` request header to the adapter
   - It returns `Set-Cookie` response header from adapter
 - It uses `snippet-identifier` value as hidden field name that's used by Action Knot to identify form that sent POST request
-
-Detailed description of each configuration option is described in the next subsection.
-
-### Action Knot options
-
-Main Action Knot options available.
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `address`                   | `String`                            | &#10004;       | Event bus address of the Action Knot verticle. |
-| `adapters`                  | `Array of AdapterMetadata`          | &#10004;       | Array if [AdapterMetadata](https://github.com/Cognifide/knotx/blob/master/knotx-core/knotx-knot-action/src/main/java/com/cognifide/knotx/knot/action/ActionKnotConfiguration.java) |
-| `formIdentifierName`        | `String`                            | &#10004;       | Name of the hidden input tag which is added by Action Knot. |
-
-Adapter metadata options available. Take into consideration that Adapters are used only for POST requests.
-
-| Name                        | Type                                | Mandatory      | Description  |
-|-------:                     |:-------:                            |:-------:       |-------|
-| `name`                      | `String`                            | &#10004;       | Name of [[Adapter|Adapter]] which is referenced in `data-knotx-action`. |
-| `address`                   | `Array of AdapterMetadata`          | &#10004;       | Event bus address of the **Adapter** verticle |
-| `params`                    | `JSON object`                       | &#10004;       | Default params which are sent to Adapter. |
-| `allowedRequestHeaders`     | `String`                            | &#10004;       | Array of HTTP client request headers that are allowed to be passed to Adapter. **No** request headers are allowed if not set. |
-| `allowedResponseHeaders`    | `String`                            | &#10004;       | Array of HTTP response headers that are allowed to be sent in a client response. **No** response headers are allowed if not set. |
 
 ### Vert.x Event Bus delivery options
 

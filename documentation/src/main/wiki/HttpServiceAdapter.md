@@ -49,50 +49,8 @@ Http Service Adapter replies with `ClientResponse` that contains:
 | `body`          | `Buffer`                  | external service response, **please notice that it is expected, tha form of a response body from an external service is JSON** |
 
 ## How to configure?
-Http Service Adapter is deployed using Vert.x service factory as a separate [verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default configuration.
+For all configuration fields and their defaults consult [ServiceAdapterOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#serviceadapteroptions)
 
-Default configuration shipped with the verticle as `io.knotx.HttpServiceAdapter.json` file available in classpath.
-```json
-{
-  "main": "io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.adapter.service.http",
-      "clientOptions": {
-        "maxPoolSize": 1000,
-        "setIdleTimeout": 600,
-        "tryUseCompression": true,
-        "logActivity": true
-      },
-      "customRequestHeader": {
-        "name": "Server-User-Agent",
-        "value": "Knot.x"
-      },
-      "services": [
-        {
-          "path": "/service/mock/.*",
-          "domain": "localhost",
-          "port": 3000,
-          "allowedRequestHeaders": [
-            "Content-Type",
-            "X-*"
-          ]
-        },
-        {
-          "path": "/service/.*",
-          "domain": "localhost",
-          "port": 8080,
-          "allowedRequestHeaders": [
-            "Content-Type",
-            "X-*"
-          ]
-        }
-      ]
-    }
-  }
-}
-
-```
 In general, the default configuration covers:
 - `address` is the where adapter listen for events at Event Bus. Every event that will be sent at `knotx.adapter.service.http`
 will be processed by Http Service Adapter.
@@ -101,12 +59,11 @@ Any HttpClientOption may be defined in this section, at this example two options
   - `maxPoolSize` -  maximum pool size for simultaneous connections,
   - `setIdleTimeout` - any connections not used within this timeout will be closed, set in seconds,
   - `keepAlive` - that shows keep alive, we recommend to leave it set to `true` as the default value in Vert.x. You can find more information [here](http://vertx.io/docs/vertx-core/java/#_http_1_x_pooling_and_keep_alive).
-- `customRequestHeader` - an JSON object that consists of name and value of the header to be sent in each request to any service configured. If the same header comes from the client request, it will be always overwritten with the value configured here.
+- `customHttpHeader` - an JSON object that consists of name and value of the header to be sent in each request to any service configured. If the same header comes from the client request, it will be always overwritten with the value configured here.
 - `services` - an JSON array of services that Http Service Adapter can connect to. Each service is distinguished by `path` parameter which is regex.
 In example above, two services are configured:
   - `/service/mock/.*` that will call `http://localhost:3000` domain with defined [path](#service-path),
   - `/service/.*` that will call `http://localhost:8080` domain with defined [path](#service-path).
-
 
 #### Service Knot configuration
 Example configuration of a [[Service Knot|ServiceKnot]]:

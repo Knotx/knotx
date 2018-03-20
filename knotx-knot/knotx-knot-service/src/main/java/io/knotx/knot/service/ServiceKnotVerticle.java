@@ -30,7 +30,7 @@ public class ServiceKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotVerticle.class);
 
-  private ServiceKnotConfiguration configuration;
+  private ServiceKnotOptions options;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -39,22 +39,22 @@ public class ServiceKnotVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new ServiceKnotConfiguration(config());
+    this.options = new ServiceKnotOptions(config());
   }
 
   @Override
-  public void start() throws Exception {
+  public void start() {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
 
     //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
-        .setAddress(configuration.getAddress())
-        .register(KnotProxy.class, new ServiceKnotProxyImpl(vertx, configuration));
+        .setAddress(options.getAddress())
+        .register(KnotProxy.class, new ServiceKnotProxyImpl(vertx, options));
   }
 
   @Override
-  public void stop() throws Exception {
+  public void stop() {
     serviceBinder.unregister(consumer);
   }
 }

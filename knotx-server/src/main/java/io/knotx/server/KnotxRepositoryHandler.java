@@ -18,7 +18,7 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -39,17 +39,17 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
 
   private Vertx vertx;
 
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
 
   private Map<String, RepositoryConnectorProxy> proxies;
 
-  private KnotxRepositoryHandler(Vertx vertx, KnotxServerConfiguration configuration) {
+  private KnotxRepositoryHandler(Vertx vertx, KnotxServerOptions configuration) {
     this.vertx = vertx;
     this.configuration = configuration;
     this.proxies = new HashMap<>();
   }
 
-  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerConfiguration configuration) {
+  static KnotxRepositoryHandler create(Vertx vertx, KnotxServerOptions configuration) {
     return new KnotxRepositoryHandler(vertx, configuration);
   }
 
@@ -60,8 +60,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
     final KnotContext knotContext = context.get(KnotContext.KEY);
 
     if (repositoryEntry.isPresent()) {
-      proxies.computeIfAbsent(repositoryEntry.get().address(), adr -> RepositoryConnectorProxy
-          .createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
+      proxies.computeIfAbsent( repositoryEntry.get().getAddress(),adr -> RepositoryConnectorProxy.createProxyWithOptions(vertx, adr, configuration.getDeliveryOptions()))
           .rxProcess(knotContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
@@ -78,7 +77,7 @@ public class KnotxRepositoryHandler implements Handler<RoutingContext> {
   void handleRepositoryResponse(ClientResponse repoResponse, RoutingContext context,
       RepositoryEntry repositoryEntry, KnotContext knotContext) {
     if (isSuccessResponse(repoResponse)) {
-      if (repositoryEntry.doProcessing()) {
+      if (repositoryEntry.isDoProcessing()) {
         knotContext.setClientResponse(repoResponse);
         context.put(KnotContext.KEY, knotContext);
         context.next();

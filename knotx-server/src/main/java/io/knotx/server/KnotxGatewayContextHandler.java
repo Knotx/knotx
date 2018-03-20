@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
-import io.knotx.server.configuration.KnotxServerConfiguration;
+import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -35,11 +35,11 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxGatewayContextHandler.class);
 
   private Vertx vertx;
-  private KnotxServerConfiguration configuration;
+  private KnotxServerOptions configuration;
   private String address;
   private Map<String, KnotProxy> proxies;
 
-  private KnotxGatewayContextHandler(Vertx vertx, KnotxServerConfiguration configuration,
+  private KnotxGatewayContextHandler(Vertx vertx, KnotxServerOptions configuration,
       String address) {
     this.vertx = vertx;
     this.configuration = configuration;
@@ -47,7 +47,7 @@ public class KnotxGatewayContextHandler implements Handler<RoutingContext> {
     this.proxies = new HashMap<>();
   }
 
-  static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerConfiguration configuration,
+  static KnotxGatewayContextHandler create(Vertx vertx, KnotxServerOptions configuration,
       String address) {
     return new KnotxGatewayContextHandler(vertx, configuration, address);
   }

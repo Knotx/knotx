@@ -25,9 +25,8 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.RoutingContext;
 import java.io.File;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import org.apache.commons.lang3.StringUtils;
-import rx.functions.Action0;
-import rx.functions.Action2;
 
 public class MockServiceHandler implements Handler<RoutingContext> {
 
@@ -37,7 +36,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
   private static final Logger LOGGER = LoggerFactory.getLogger(RoutingContext.class);
   private final Vertx vertx;
   private final JsonObject delayPerPath;
-  private Action2<RoutingContext, String> bodyProcessor;
+  private BiConsumer<RoutingContext, String> bodyProcessor;
   private String catalogue;
   private long delayAllMs;
 
@@ -49,7 +48,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
     this.delayPerPath = delayPerPath;
   }
 
-  public MockServiceHandler withBodyProcessor(Action2<RoutingContext, String> bodyProcessor) {
+  public MockServiceHandler withBodyProcessor(BiConsumer<RoutingContext, String> bodyProcessor) {
     this.bodyProcessor = bodyProcessor;
     return this;
   }
@@ -64,7 +63,7 @@ public class MockServiceHandler implements Handler<RoutingContext> {
       if (ar.succeeded()) {
         String mockData = ar.result().toString();
         if (bodyProcessor != null) {
-          bodyProcessor.call(context, mockData);
+          bodyProcessor.accept(context, mockData);
         } else {
           generateResponse(context.request().path(), () -> {
             context.response().putHeader("Content-Type", contentType);
@@ -91,13 +90,13 @@ public class MockServiceHandler implements Handler<RoutingContext> {
     }
   }
 
-  private void generateResponse(String path, Action0 action) {
+  private void generateResponse(String path, Runnable action) {
     long delay = getDelay(path);
     if (delay > 0) {
       LOGGER.info("Delaying response for path {} by {} ms", path, delay);
-      vertx.setTimer(delay, timerId -> action.call());
+      vertx.setTimer(delay, timerId -> action.run());
     } else {
-      action.call();
+      action.run();
     }
   }
 

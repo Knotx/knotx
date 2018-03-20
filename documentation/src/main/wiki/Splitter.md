@@ -89,36 +89,8 @@ Fragments not matching snippet tag are not supposed to be processed while Knots 
 used at the end of processing to assemble final HTML result (see [[Fragment Assembler|Assembler]]).
 
 ## How to configure?
-Splitter is deployed using Vert.x service factory as a separate 
-[verticle](http://vertx.io/docs/apidocs/io/vertx/core/Verticle.html) and it's shipped with default 
-configuration.
 
-Default configuration shipped with the verticle as `io.knotx.FragmentSplitter.json` file available 
-in the classpath.
-
-Example configuration may look like this:
-```json
-{
-  "main": "io.knotx.splitter.FragmentSplitterVerticle",
-  "options": {
-    "config": {
-      "address": "knotx.core.splitter",
-      "snippetTagName": "knotx:snippet"
-    }
-  }
-}
-```
-In short, the default configuration just defines event bus address on which the Splitter listens 
-for jobs to process.
-
-Detailed description of each configuration option is described in the next subsection.
-
-### Splitter config
-
-| Name                        | Type         | Mandatory      | Description  |
-|-------:                     |:-------:     |:-------:       |-------|
-| `address`                   | `String`     | &#10004;       | Event bus address of the Splitter verticle. |
-| `snippetTagName`            | `String`     | &#10004;       | The name of a tag that will be recognised as a Knot.x snippet. The default value is `script`. Remember to update [[Assembler configuration\|Assembler#how-to-configure]] |
+See the [FragmentSplitterOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#fragmentsplitteroptions) for all configuration options and its defaults.
 
 **Important - when specifying `snippetTagName` remember to not use standard HTML tags like `div`, `span`, etc.
 Knot.x splits an HTML into fragments by parsing it as a string to get the best possible performance. 
