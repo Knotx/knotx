@@ -26,6 +26,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.RxHelper;
 import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.http.HttpServer;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
@@ -42,18 +43,18 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private static final HttpResponseStatus BAD_REQUEST = HttpResponseStatus.BAD_REQUEST;
 
-  private KnotxServerOptions configuration;
+  private KnotxServerOptions options;
 
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    configuration = new KnotxServerOptions(config());
+    options = new KnotxServerOptions(config());
   }
 
   @Override
   public void start(Future<Void> fut) {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
-    KnotxCSRFOptions csrfConfig = configuration.getCsrfConfig();
+    KnotxCSRFOptions csrfConfig = options.getCsrfConfig();
     CSRFHandler csrfHandler = CSRFHandler.create(csrfConfig.getSecret())
         .setNagHttps(true) //Generates warning message in log if https is not used
         .setCookieName(csrfConfig.getCookieName())
@@ -62,19 +63,19 @@ public class KnotxServerVerticle extends AbstractVerticle {
         .setTimeout(csrfConfig.getTimeout());
 
     Router router = Router.router(vertx);
-    if (configuration.getAccessLog().isEnabled()) {
-      router.route().handler(LoggerHandler.create(configuration.getAccessLog().isImmediate(),
-          configuration.getAccessLog().getFormat()));
+    if (options.getAccessLog().isEnabled()) {
+      router.route().handler(LoggerHandler.create(options.getAccessLog().isImmediate(),
+          options.getAccessLog().getFormat()));
     }
-    router.route().handler(KnotxHeaderHandler.create(configuration));
-    router.route().handler(SupportedMethodsAndPathsHandler.create(configuration));
+    router.route().handler(KnotxHeaderHandler.create(options));
+    router.route().handler(SupportedMethodsAndPathsHandler.create(options));
     router.route().handler(CookieHandler.create());
-    router.route().handler(BodyHandler.create(configuration.getFileUploadDirectory())
-        .setBodyLimit(configuration.getFileUploadLimit()));
+    router.route().handler(BodyHandler.create(options.getFileUploadDirectory())
+        .setBodyLimit(options.getFileUploadLimit()));
 
     router.route().handler(KnotxContextHandler.create());
 
-    configuration.getDefaultFlow().getRouting().forEach((key, value) -> {
+    options.getDefaultFlow().getRouting().forEach((key, value) -> {
       value.getItems().forEach(
           criteria -> {
             HttpMethod method = HttpMethod.valueOf(key.toUpperCase());
@@ -86,30 +87,30 @@ public class KnotxServerVerticle extends AbstractVerticle {
             router.route()
                 .method(method)
                 .pathRegex(criteria.getPath())
-                .handler(KnotxRepositoryHandler.create(vertx, configuration));
+                .handler(KnotxRepositoryHandler.create(vertx, options));
 
             router.route()
                 .method(method)
                 .pathRegex(criteria.getPath())
-                .handler(KnotxSplitterHandler.create(vertx, configuration));
+                .handler(KnotxSplitterHandler.create(vertx, options));
 
             router.route()
                 .method(method)
                 .pathRegex(criteria.getPath())
                 .handler(KnotxEngineHandler
-                    .create(vertx, configuration, criteria.getAddress(),
+                    .create(vertx, options, criteria.getAddress(),
                         criteria.getOnTransition()));
 
             router.route()
                 .method(method)
                 .pathRegex(criteria.getPath())
-                .handler(KnotxAssemblerHandler.create(vertx, configuration));
+                .handler(KnotxAssemblerHandler.create(vertx, options));
           }
       );
     });
 
-    if (configuration.getCustomFlow() != null) {
-      configuration.getCustomFlow().getRouting().forEach((key, value) -> {
+    if (options.getCustomFlow() != null) {
+      options.getCustomFlow().getRouting().forEach((key, value) -> {
         value.getItems().forEach(
             criteria -> {
               HttpMethod method = HttpMethod.valueOf(key.toUpperCase());
@@ -122,63 +123,56 @@ public class KnotxServerVerticle extends AbstractVerticle {
                   .pathRegex(criteria.getPath())
                   .handler(
                       KnotxGatewayContextHandler
-                          .create(vertx, configuration, criteria.getAddress()));
+                          .create(vertx, options, criteria.getAddress()));
 
               router.route()
                   .method(method)
                   .pathRegex(criteria.getPath())
                   .handler(KnotxEngineHandler
-                      .create(vertx, configuration, criteria.getAddress(),
+                      .create(vertx, options, criteria.getAddress(),
                           criteria.getOnTransition()));
 
               router.route()
                   .method(method)
                   .pathRegex(criteria.getPath())
-                  .handler(KnotxGatewayResponseProviderHandler.create(vertx, configuration));
+                  .handler(KnotxGatewayResponseProviderHandler.create(vertx, options));
             }
         );
       });
     }
 
-    router.route().failureHandler(ErrorHandler.create(configuration.isDisplayExceptionDetails()));
+    router.route().failureHandler(ErrorHandler.create(options.isDisplayExceptionDetails()));
 
-    if (configuration.getDropRequests()) {
-      vertx.createHttpServer(configuration.getServerOptions())
-          .requestStream()
-          .toFlowable()
+    HttpServer httpServer = vertx.createHttpServer(options.getServerOptions());
+
+    if (options.isDropRequests()) {
+      httpServer.requestStream().toFlowable()
           .map(HttpServerRequest::pause)
+          .onBackpressureBuffer(options.getBackpressureBufferCapacity(),
+              () -> LOGGER.warn("Backpressure buffer is overflown. Dropping request"),
+              options.getBackpressureStrategy())
           .onBackpressureDrop(
-              req -> req.response().setStatusCode(configuration.getDropRequestsStatusCode()).end())
+              req -> req.response().setStatusCode(options.getDropRequestResponseCode()).end())
           .observeOn(RxHelper.scheduler(vertx.getDelegate()))
           .subscribe(req -> {
             req.resume();
             routeSafe(req, router);
           }, error -> LOGGER.error("Exception while processing!", error));
-      vertx.createHttpServer(configuration.getServerOptions()).listen(server -> {
-        if (server.succeeded()) {
-          LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-              configuration.getServerOptions().getPort());
-          fut.complete();
-        } else {
-          LOGGER.error("Unable to start Knot.x HTTP Server.", server.cause());
-          fut.fail(server.cause());
-        }
-      });
     } else {
-      vertx.createHttpServer(configuration.getServerOptions())
-          .requestHandler(req -> routeSafe(req, router))
-          .rxListen()
-          .subscribe(ok -> {
-                LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-                    configuration.getServerOptions().getPort());
-                fut.complete();
-              },
-              error -> {
-                LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
-                fut.fail(error);
-              }
-          );
+      httpServer
+          .requestHandler(req -> routeSafe(req, router));
     }
+
+    httpServer.rxListen().subscribe(ok -> {
+          LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+              options.getServerOptions().getPort());
+          fut.complete();
+        },
+        error -> {
+          LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
+          fut.fail(error);
+        }
+    );
   }
 
   private void routeSafe(HttpServerRequest req, Router router) {
