@@ -26,9 +26,14 @@ configuration of routing (as described in next section).
 [[assets/knotx-server.png|alt=Knot.x Server How it Works flow diagram]]
 
 ### Dropping the requests
-The mechanism behind dropping requests when the system is overloaded uses backpressure. Its logic is very simple: if there are more than `N` concurrent requests, system will drop any new requests until the processed ones count is again below the threshold. 
+Knot.x implements a backpressure mechanism. It allows to drop requests after exceeding a certain amount of requests at a time.
+If the Knot.x can't process the coming requests fast enough, he's able to tell to client that it's unable to process new requests by serving proper response code.
+The logic is fairly simple. The incoming stream of requests are getting buffered if the Knot.x is unable to process them on the fly. 
+When the buffer become full, server starts dropping any new requests with a configured response code. After the buffer slots will be released the new requests will start to be accepted and finally processed.
 
-> E.g. if the threshold is set to `100`, Server may resolve up to 100 requests in the single moment. 101st and 102nd and so on requests will be dropped (with the proper status code). When Server process any of those 100 requests, next message will be accepted.
+You have certain options available to control the mechanism, these are:
+- **buffer capacity** - the amount of requests in the buffer. This number does not tell you how many requests per second system is able to handle. It depends on your custom implementation and external services, and how long the Knot.x processes your request.
+- **buffer overflow strategy** - how the buffer overflow to be handled. Default is drop latest requests.
 
 That solution prevent `OutOfMemoryError` errors when there are too many requests (e.g. during the peak hours). Additionally response times should be more stable when system is under high stress.
 
