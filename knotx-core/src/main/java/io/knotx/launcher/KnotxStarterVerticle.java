@@ -17,6 +17,7 @@
 package io.knotx.launcher;
 
 import com.google.common.collect.Lists;
+import io.knotx.launcher.ModuleDescriptor.DeploymentState;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -111,7 +112,8 @@ public class KnotxStarterVerticle extends AbstractVerticle {
         .rxDeployVerticle(module.getName(), getModuleOptions(config, module.getAlias()))
         .map(new ModuleDescriptor(module)::setDeploymentId)
         .doOnError(error -> LOGGER.error("Can't deploy {}: {}", module.toDescriptorLine(), error))
-        .onErrorResumeNext((err) -> Single.just(new ModuleDescriptor(module).setDeploymentFailed()))
+        .onErrorResumeNext((err) -> Single.just(new ModuleDescriptor(module).setState(
+            DeploymentState.FAILED)))
         .toObservable();
   }
 
@@ -139,21 +141,12 @@ public class KnotxStarterVerticle extends AbstractVerticle {
     return new StringBuilder(System.lineSeparator())
         .append(
             deployedModules.stream()
-                .map(item -> String.format("\t\t%s %s [%s] [%s]", statusLine(deployedDescriptor), item.getAlias(),
-                    item.getName(), item.getDeploymentId()))
+                .map(item -> String
+                    .format("\t\t%s %s [%s]", item.getState(), item.toDescriptorLine(),
+                        item.getDeploymentId()))
                 .collect(Collectors.joining(System.lineSeparator())))
         .append(System.lineSeparator())
         .toString();
-  }
-
-  private String statusLine(ModuleDescriptor descriptor) {
-    String state;
-    if (!descriptor.isDeploymentFailed()) {
-      state = "Deployed";
-    } else {
-      state = "Failed deploying";
-    }
-    return String.format("\t\t%s %s", state, descriptor.toString());
   }
 
   private void printLogo() {
