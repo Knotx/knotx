@@ -110,10 +110,14 @@ public class KnotxStarterVerticle extends AbstractVerticle {
       final ModuleDescriptor module) {
     return vertx
         .rxDeployVerticle(module.getName(), getModuleOptions(config, module.getAlias()))
-        .map(new ModuleDescriptor(module)::setDeploymentId)
-        .doOnError(error -> LOGGER.error("Can't deploy {}: {}", module.toDescriptorLine(), error))
-        .onErrorResumeNext((err) -> Single.just(new ModuleDescriptor(module).setState(
-            DeploymentState.FAILED)))
+        .map(deployId ->
+            new ModuleDescriptor(module)
+                .setDeploymentId(deployId)
+                .setState(DeploymentState.SUCCESS))
+        .doOnError(error ->
+            LOGGER.error("Can't deploy {}: {}", module.toDescriptorLine(), error))
+        .onErrorResumeNext((err) ->
+            Single.just(new ModuleDescriptor(module).setState(DeploymentState.FAILED)))
         .toObservable();
   }
 
