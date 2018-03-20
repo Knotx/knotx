@@ -37,7 +37,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 public class FormEntity {
 
@@ -54,7 +54,7 @@ public class FormEntity {
   private Map<String, String> signalToUrl;
 
   public static FormEntity from(Fragment fragment, ActionKnotConfiguration configuration) {
-    Document scriptDocument = FragmentContentExtractor.unwrapDocument(fragment);
+    Element scriptDocument = FragmentContentExtractor.unwrapFragmentContent(fragment);
     return new FormEntity()
         .fragment(fragment)
         .identifier(getFormIdentifier(fragment))
@@ -90,7 +90,8 @@ public class FormEntity {
         .orElse(Boolean.FALSE);
   }
 
-  private static Optional<String> getFormIdentifierFromRequest(KnotContext knotContext, String formIdAttrName) {
+  private static Optional<String> getFormIdentifierFromRequest(KnotContext knotContext,
+      String formIdAttrName) {
     return Optional.ofNullable(
         knotContext.getClientRequest().getFormAttributes().get(formIdAttrName));
   }
@@ -132,7 +133,7 @@ public class FormEntity {
         });
   }
 
-  private static String getAdapterName(Fragment fragment, Document scriptDocument) {
+  private static String getAdapterName(Fragment fragment, Element scriptDocument) {
     return Optional.ofNullable(scriptDocument
         .getElementsByAttribute(FORM_ACTION_ATTR).first())
         .map(element -> element.attr(FORM_ACTION_ATTR))
@@ -143,7 +144,7 @@ public class FormEntity {
         });
   }
 
-  private static JsonObject getAdapterParams(Document scriptDocument) {
+  private static JsonObject getAdapterParams(Element scriptDocument) {
     return Optional.ofNullable(scriptDocument
         .getElementsByAttribute(FORM_ADAPTER_PARAMS).first())
         .map(element -> element.attr(FORM_ADAPTER_PARAMS))
@@ -151,7 +152,8 @@ public class FormEntity {
         .orElse(null);
   }
 
-  private static AdapterMetadata getAdapterMetadata(ActionKnotConfiguration configuration, String adapter) {
+  private static AdapterMetadata getAdapterMetadata(ActionKnotConfiguration configuration,
+      String adapter) {
     return configuration.adapterMetadatas().stream()
         .filter(metadata -> metadata.getName().equals(adapter))
         .findFirst()
@@ -162,11 +164,12 @@ public class FormEntity {
         });
   }
 
-  private static Map<String, String> getSignalToUrlMapping(Document scriptDocument) {
+  private static Map<String, String> getSignalToUrlMapping(Element scriptDocument) {
     return scriptDocument.getElementsByAttributeStarting(FORM_SIGNAL_ATTR_PREFIX).stream()
         .flatMap(element -> element.attributes().asList().stream())
         .filter(allAttr -> allAttr.getKey().startsWith(FORM_SIGNAL_ATTR_PREFIX))
-        .collect(Collectors.toMap(e -> e.getKey().replace(FORM_SIGNAL_ATTR_PREFIX, StringUtils.EMPTY),
-            Entry::getValue));
+        .collect(
+            Collectors.toMap(e -> e.getKey().replace(FORM_SIGNAL_ATTR_PREFIX, StringUtils.EMPTY),
+                Entry::getValue));
   }
 }

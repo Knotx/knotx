@@ -6,6 +6,8 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 List of changes that are finished but not yet released in any final version.
+
+## Version 1.2.1
 - [PR-385](https://github.com/Cognifide/knotx/pull/385) - From now on you can define the custom 
 `snippetTagName` and use that tag name to define dynamic snippets in the templates (instead of 
 default `<script>`). Read more about that chang in [[Splitter|Splitter]] and [[Assembler|Assembler]] docs.
