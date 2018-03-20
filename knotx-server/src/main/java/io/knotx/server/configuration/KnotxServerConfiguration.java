@@ -26,6 +26,10 @@ public class KnotxServerConfiguration {
   //Default limit=-1 - Unlimited size
   private final static long DEFAULT_UPLOAD_LIMIT = -1;
 
+  private static final Boolean DEFAULT_DROP_REQUESTS = true;
+
+  private static final int DEFAULT_DROP_REQUESTS_STATUS_CODE = 503;
+
   private final Long fileUploadLimit;
 
   private boolean displayExceptionDetails;
@@ -47,6 +51,10 @@ public class KnotxServerConfiguration {
   private KnotxCSRFConfig csrfConfig;
 
   private AccessLogConfig accessLogConfig;
+
+  private Boolean dropRequests;
+
+  private Integer dropRequestsStatusCode;
 
   public KnotxServerConfiguration(JsonObject config) {
     displayExceptionDetails = config.getBoolean("displayExceptionDetails", false);
@@ -71,6 +79,9 @@ public class KnotxServerConfiguration {
     csrfConfig = new KnotxCSRFConfig(config.getJsonObject("csrf", new JsonObject()));
 
     accessLogConfig = new AccessLogConfig(config.getJsonObject("accessLog", new JsonObject()));
+    dropRequests = config.getBoolean("dropRequests", DEFAULT_DROP_REQUESTS);
+    dropRequestsStatusCode = config
+        .getInteger("dropRequestsStatusCode", DEFAULT_DROP_REQUESTS_STATUS_CODE);
   }
 
   public boolean displayExceptionDetails() {
@@ -115,5 +126,13 @@ public class KnotxServerConfiguration {
 
   public AccessLogConfig getAccessLogConfig() {
     return accessLogConfig;
+  }
+
+  public Boolean getDropRequests() {
+    return dropRequests;
+  }
+
+  public Integer getDropRequestsStatusCode() {
+    return dropRequestsStatusCode;
   }
 }
