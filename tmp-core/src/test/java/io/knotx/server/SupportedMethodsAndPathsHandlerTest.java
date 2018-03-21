@@ -17,6 +17,7 @@ package io.knotx.server;
 
 
 import io.knotx.junit.util.FileReader;
+import io.knotx.server.SupportedMethodsAndPathsHandler;
 import io.knotx.server.configuration.KnotxFlowSettings;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.http.HttpMethod;

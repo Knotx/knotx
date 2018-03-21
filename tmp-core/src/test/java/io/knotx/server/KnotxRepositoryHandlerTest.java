@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.server.KnotxRepositoryHandler;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.RepositoryEntry;
 import io.vertx.reactivex.core.MultiMap;

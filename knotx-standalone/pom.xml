@@ -84,7 +84,7 @@
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-server</artifactId>
+      <artifactId>tmp-core</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

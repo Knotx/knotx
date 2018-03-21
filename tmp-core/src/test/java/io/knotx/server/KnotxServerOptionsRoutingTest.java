@@ -25,7 +25,6 @@ import io.knotx.server.configuration.MethodRoutingEntries;
 import io.knotx.server.configuration.RoutingEntry;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
