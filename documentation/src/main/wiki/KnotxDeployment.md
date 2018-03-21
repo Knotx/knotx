@@ -72,7 +72,7 @@ As mentioned above, the `knotx-starter.json` is the main configuration file desc
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
     "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
-    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
@@ -101,7 +101,7 @@ For instance, if you want to modify configuration of KnotxServer module, you can
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
     "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
-    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
@@ -162,7 +162,7 @@ and the list of deployment status at the end shows:
 2018-02-21 15:28:46.419 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
 		Failed deploying customKnot [java:com.acme.MyCustomModuleVerticle]
-		Deployed fsRepo [java:io.knotx.repository.FilesystemRepositoryConnectorVerticle] [ef35d8e8-887b-4f8b-bd2e-31943d8ff706]
+		Deployed fsRepo [java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle] [ef35d8e8-887b-4f8b-bd2e-31943d8ff706]
 		Deployed assembler [java:io.knotx.knot.assembler.FragmentAssemblerVerticle] [0f5d74f4-2233-4937-b11c-d20d3e5451b1]
 		...
 ```

@@ -98,6 +98,28 @@ Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
 Configure when to collect access log. True if after request arrives, false after sending response.
 +++
 |===
+[[FilesystemRepositoryOptions]]
+== FilesystemRepositoryOptions
+
+++++
+ Describes a file system repository configuration
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+Set the EB address of the file system repository verticle
++++
+|[[catalogue]]`catalogue`|`String`|
++++
+Set the root folder of the repository on file system.
+ If catalogue equals empty string a verticle will look for the files in classpath
++++
+|===
 [[KnotxCSRFOptions]]
 == KnotxCSRFOptions
 

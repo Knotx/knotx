@@ -1,9 +1,0 @@
-{
-  "name": "knotx-cheatsheet",
-  "generators": [{
-    "kind": "dataObject",
-    "incremental": true,
-    "filename": "'../../../../documentation/.dataobjects/fs-repo-connector-dataobjects.adoc'",
-    "templateFilename": "knotx-codegen/dataObjectCheatsheet.templ"
-  }]
-}

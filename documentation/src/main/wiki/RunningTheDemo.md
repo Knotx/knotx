@@ -48,7 +48,7 @@ You will see output similar to the following:
 
 		Deployed splitter [java:io.knotx.knot.splitter.FragmentSplitterVerticle] [66517b40-e562-4f30-a579-58a7ec9ce727]
 		Deployed assembler [java:io.knotx.knot.assembler.FragmentAssemblerVerticle] [18050737-c066-493a-bc68-e67e170ae8ab]
-		Deployed fsRepo [java:io.knotx.repository.FilesystemRepositoryConnectorVerticle] [31c6974e-6b76-4953-8073-14a37b9d24c5]
+		Deployed fsRepo [java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle] [31c6974e-6b76-4953-8073-14a37b9d24c5]
 		Deployed gatewatKnot [java:io.knotx.gateway.GatewayKnotVerticle] [50ce760b-cb7c-4598-95f6-d41976b7730b]
 		Deployed serviceKnot [java:io.knotx.knot.service.ServiceKnotVerticle] [8b62c8d0-4168-4deb-aa8d-e486f208cc7c]
 		Deployed respProviderKnot [java:io.knotx.gateway.ResponseProviderKnotVerticle] [3a02f6c4-4c6e-4c04-b8a4-9f21c74f620c]
@@ -107,7 +107,7 @@ You can play with the demo in order to get familiar with the ways how to configu
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
     "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
-    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",

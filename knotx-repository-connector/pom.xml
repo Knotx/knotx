@@ -32,7 +32,6 @@
   <name>Knot.x - Reactive microservice assembler - Repositories Connector</name>
 
   <modules>
-    <module>knotx-repository-connector-filesystem</module>
     <module>knotx-repository-connector-http</module>
   </modules>
 </project>

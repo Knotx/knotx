@@ -1,7 +1,7 @@
 {
   "modules": [
     "server=java:io.knotx.server.KnotxServerVerticle",
-    "fsRepo=java:io.knotx.repository.FilesystemRepositoryConnectorVerticle"
+    "fsRepo=java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle"
   ],
   "config": {
     "fsRepo": {

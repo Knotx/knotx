@@ -28,7 +28,8 @@
 
   <artifactId>tmp-core</artifactId>
 
-  <name>Temp Knot.x Core</name>
+  <name>Knot.x Core</name>
+  <description>Core Knot.x module containing Server, Repositories, Splitter, Assembler and Gateway.</description>
 
   <dependencies>
     <dependency>
@@ -115,11 +116,6 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-gateway</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-repository-connector-filesystem</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
