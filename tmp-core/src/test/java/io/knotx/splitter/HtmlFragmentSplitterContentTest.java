@@ -43,15 +43,15 @@ public class HtmlFragmentSplitterContentTest {
   }
 
   @TestWith({
-      "0;fragment1.txt",
-      "1;fragment2-snippet.txt",
-      "2;fragment3.txt",
-      "3;fragment4-snippet.txt",
-      "4;fragment5-snippet.txt",
-      "5;fragment6.txt",
-      "6;fragment7-snippet.txt",
-      "7;fragment8.txt",
-      "8;fragment9-snippet.txt"
+      "0;fragments/1.txt",
+      "1;fragments/2-snippet.txt",
+      "2;fragments/3.txt",
+      "3;fragments/4-snippet.txt",
+      "4;fragments/5-snippet.txt",
+      "5;fragments/6.txt",
+      "6;fragments/7-snippet.txt",
+      "7;fragments/8.txt",
+      "8;fragments/9-snippet.txt"
   })
   public void split_whenDefaultSnippetTag_expectNineFragments(int fragmentId, String fragmentFile)
       throws Exception {
@@ -60,15 +60,15 @@ public class HtmlFragmentSplitterContentTest {
   }
 
   @TestWith({
-      "0;fragment1.txt",
-      "1;fragment2-custom-snippet.txt",
-      "2;fragment3.txt",
-      "3;fragment4-custom-snippet.txt",
-      "4;fragment5-custom-snippet.txt",
-      "5;fragment6.txt",
-      "6;fragment7-custom-snippet.txt",
-      "7;fragment8.txt",
-      "8;fragment9-custom-snippet.txt"
+      "0;fragments/1.txt",
+      "1;fragments/2-custom-snippet.txt",
+      "2;fragments/3.txt",
+      "3;fragments/4-custom-snippet.txt",
+      "4;fragments/5-custom-snippet.txt",
+      "5;fragments/6.txt",
+      "6;fragments/7-custom-snippet.txt",
+      "7;fragments/8.txt",
+      "8;fragments/9-custom-snippet.txt"
   })
   public void split_whenCustomSnippetTag_expect8Fragments(int fragmentId, String fragmentFile)
       throws Exception {
