@@ -97,15 +97,9 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-    <!-- Knot.x to remove -->
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-gateway</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 
