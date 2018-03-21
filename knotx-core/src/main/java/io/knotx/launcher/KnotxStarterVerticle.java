@@ -98,11 +98,15 @@ public class KnotxStarterVerticle extends AbstractVerticle {
             deployments -> {
               deployedModules = Lists.newArrayList(deployments);
               LOGGER.info("Knot.x STARTED {}", buildMessage());
-              completion.complete();
+              if (completion != null) {
+                completion.complete();
+              }
             },
             error -> {
               LOGGER.error("Verticle could not be deployed", error);
-              completion.fail(error);
+              if (completion != null) {
+                completion.fail(error);
+              }
             }
         );
   }
