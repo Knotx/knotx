@@ -65,6 +65,122 @@ Sets the HTTP <code>port</code> the external service
 Set the additional request query parameters to be send in each request
 +++
 |===
+[[AdapterRequest]]
+== AdapterRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[adapterParams]]`adapterParams`|`Json object`|
++++
+Set the request params
++++
+|[[params]]`params`|`Json object`|
++++
+Set the request params
++++
+|[[request]]`request`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|
++++
+Set the client request
++++
+|===
+[[AdapterResponse]]
+== AdapterResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[response]]`response`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
+|[[signal]]`signal`|`String`|-
+|===
+[[ClientRequest]]
+== ClientRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[jsonFormAttributes]]`jsonFormAttributes`|`Json object`|-
+|[[jsonHeaders]]`jsonHeaders`|`Json object`|
++++
+Serialization variants of MultiMap fields
++++
+|[[jsonParams]]`jsonParams`|`Json object`|-
+|[[method]]`method`|`link:cheatsheets.adoc#HttpMethod[HttpMethod]`|-
+|[[path]]`path`|`String`|-
+|===
+[[ClientResponse]]
+== ClientResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[body]]`body`|`Buffer`|-
+|[[jsonHeaders]]`jsonHeaders`|`Json object`|
++++
+Serialization variants of MultiMap fields
++++
+|[[statusCode]]`statusCode`|`Number (int)`|-
+|===
+[[CustomHttpHeader]]
+== CustomHttpHeader
+
+++++
+ Describes a custom header
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[name]]`name`|`String`|
++++
+Set the name of the request header. If not set a <code>Server-User-Agent</code> is used.
++++
+|[[value]]`value`|`String`|
++++
+Set the value of the request header. If not set a @{code Knot.x} is used.
++++
+|===
+[[Fragment]]
+== Fragment
+
+++++
+ An entity representing a markup slice produced during Template fragmentation. It represents both
+ markup with static and dynamic content.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[raw]]`raw`|`Boolean`|
++++
+
++++
+|===
+[[KnotContext]]
+== KnotContext
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[clientRequest]]`clientRequest`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|-
+|[[clientResponse]]`clientResponse`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
+|[[fragments]]`fragments`|`Array of link:cheatsheets.adoc#Fragment[Fragment]`|-
+|[[transition]]`transition`|`String`|-
+|===
 [[AccessLogOptions]]
 == AccessLogOptions
 
