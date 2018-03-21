@@ -24,7 +24,7 @@ public class ModuleDescriptor {
   private String alias;
   private String name;
   private String deploymentId;
-  private boolean deploymentFailed = false;
+  private DeploymentState state = DeploymentState.UNKNOWN;
 
   private ModuleDescriptor() {
     //Default constructor
@@ -34,7 +34,7 @@ public class ModuleDescriptor {
     this.alias = other.alias;
     this.name = other.name;
     this.deploymentId = other.deploymentId;
-    this.deploymentFailed = other.deploymentFailed;
+    this.state = other.state;
   }
 
   public static ModuleDescriptor parse(String line) {
@@ -70,18 +70,19 @@ public class ModuleDescriptor {
     return deploymentId;
   }
 
-  public boolean isDeploymentFailed() {
-    return deploymentFailed;
-  }
 
   public ModuleDescriptor setDeploymentId(String deploymentId) {
     this.deploymentId = deploymentId;
     return this;
   }
 
-  public ModuleDescriptor setDeploymentFailed() {
-    this.deploymentFailed = true;
+  public ModuleDescriptor setState(DeploymentState state) {
+    this.state = state;
     return this;
+  }
+
+  public DeploymentState getState() {
+    return state;
   }
 
   public String toDescriptorLine() {
@@ -95,5 +96,22 @@ public class ModuleDescriptor {
       result.append(" [").append(deploymentId).append("]");
     }
     return result.toString();
+  }
+
+  public enum DeploymentState {
+    UNKNOWN("Unknown state"),
+    SUCCESS("Deployed"),
+    FAILED("Failed to deploy");
+
+    private final String message;
+
+    DeploymentState(String message) {
+      this.message = message;
+    }
+
+    @Override
+    public String toString() {
+      return message;
+    }
   }
 }

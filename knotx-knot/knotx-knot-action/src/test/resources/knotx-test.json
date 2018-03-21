@@ -33,6 +33,7 @@
                 "X-*"
               ],
               "allowedResponseHeaders": [
+                "Location",
                 "X-*"
               ]
             }

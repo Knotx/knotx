@@ -15,7 +15,7 @@ Standalone Knot.x application directly in your IDE.
 
 [[assets/knotx-debugging-new-config.png|alt=Knot.x Debugging new config]]
 3. Set name of the configuration
-4. Pick main class to be io.knotx.launcher.LogbackLauncher
+4. Pick main class to be io.knotx.launcher.KnotxLauncher
 5. In Program Arguments specify that KnotxStarterVerticle should be run with the `-conf` parameter pointing to the configuration you want to run (e.g. Example app)
 ```
 run io.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-app.json

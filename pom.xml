@@ -129,6 +129,9 @@
     <jacoco.maven.plugin.version>0.7.7.201606060606</jacoco.maven.plugin.version>
 
     <generated.dir>${project.basedir}/src/main/generated</generated.dir>
+
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
   </properties>
 
   <dependencyManagement>
@@ -185,6 +188,16 @@
         <artifactId>vertx-codegen</artifactId>
         <version>${vertx.version}</version>
         <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-config</artifactId>
+        <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-config-hocon</artifactId>
+        <version>${vertx.version}</version>
       </dependency>
       <dependency>
         <groupId>io.reactivex.rxjava2</groupId>
@@ -449,14 +462,6 @@
                     <file>target/${project.artifactId}-${project.version}-fat.jar</file>
                     <type>fat.jar</type>
                   </artifact>
-                  <artifact>
-                    <file>src/main/resources/${project.artifactId}.json</file>
-                    <type>json</type>
-                  </artifact>
-                  <artifact>
-                    <file>src/main/resources/logback.xml</file>
-                    <type>logback.xml</type>
-                  </artifact>
                 </artifacts>
               </configuration>
             </execution>
@@ -504,7 +509,7 @@
                   <transformer
                       implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                     <manifestEntries>
-                      <Main-Class>io.knotx.launcher.LogbackLauncher</Main-Class>
+                      <Main-Class>io.knotx.launcher.KnotxLauncher</Main-Class>
                       <Main-Verticle>io.knotx.launcher.KnotxStarterVerticle
                       </Main-Verticle>
                     </manifestEntries>
@@ -512,6 +517,7 @@
                   <transformer
                       implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                     <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
+                    <resource>META-INF/services/io.vertx.config.spi.ConfigProcessor</resource>
                   </transformer>
                 </transformers>
                 <artifactSet/>
