@@ -44,11 +44,6 @@
     <!-- Knots -->
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-repository-connector-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-fragment-splitter</artifactId>
       <version>${project.version}</version>
     </dependency>

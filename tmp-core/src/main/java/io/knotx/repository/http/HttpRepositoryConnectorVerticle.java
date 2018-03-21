@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.repository;
+package io.knotx.repository.http;
 
 import io.knotx.proxy.RepositoryConnectorProxy;
-import io.knotx.repository.impl.HttpRepositoryConnectorProxyImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;

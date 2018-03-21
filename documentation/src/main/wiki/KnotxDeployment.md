@@ -71,7 +71,7 @@ As mentioned above, the `knotx-starter.json` is the main configuration file desc
 {
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
-    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
     "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
@@ -100,7 +100,7 @@ For instance, if you want to modify configuration of KnotxServer module, you can
 {
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
-    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
     "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.repository;
+package io.knotx.repository.http;
 
 import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
@@ -21,7 +21,6 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.net.TCPSSLOptions;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

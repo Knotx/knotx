@@ -54,7 +54,7 @@ You will see output similar to the following:
 		Deployed respProviderKnot [java:io.knotx.gateway.ResponseProviderKnotVerticle] [3a02f6c4-4c6e-4c04-b8a4-9f21c74f620c]
 		Deployed hbsKnot [java:io.knotx.knot.templating.HandlebarsKnotVerticle] [ea703d28-7025-49a8-8953-45283271413c]
 		Deployed reqProcessorKnot [java:io.knotx.gateway.RequestProcessorKnotVerticle] [c4e50af8-5a3c-4a11-abde-f2bf1b8edc08]
-		Deployed httpRepo [java:io.knotx.repository.HttpRepositoryConnectorVerticle] [b9027423-38f0-4448-ae3d-12e7cea61116]
+		Deployed httpRepo [java:io.knotx.repository.http.HttpRepositoryConnectorVerticle] [b9027423-38f0-4448-ae3d-12e7cea61116]
 		Deployed actionAdapter [java:io.knotx.adapter.action.http.HttpActionAdapterVerticle] [51db1515-4349-43d7-ab2b-78d50d56cf06]
 		Deployed serviceAdapter [java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle] [b0bcf7a4-fbdd-45d1-ac90-71879479d198]
 		Deployed actionKnot [java:io.knotx.knot.action.ActionKnotVerticle] [222a95b0-30d5-480c-a183-ced823e48b3c]
@@ -106,7 +106,7 @@ You can play with the demo in order to get familiar with the ways how to configu
 {
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
-    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
+    "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
     "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",

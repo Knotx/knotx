@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.repository.impl;
+package io.knotx.repository.http;
 
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.proxy.RepositoryConnectorProxy;
-import io.knotx.repository.HttpRepositoryOptions;
 import io.knotx.util.DataObjectsUtil;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
