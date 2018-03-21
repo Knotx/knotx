@@ -59,15 +59,14 @@
   <modules>
     <module>knotx-common</module>
     <module>knotx-junit</module>
-    <module>knotx-mocks</module>
+    <module>knotx-core</module>
 
+    <module>knotx-mocks</module>
     <module>knotx-adapter</module>
     <module>knotx-knot</module>
     <module>knotx-standalone</module>
     <module>knotx-example</module>
     <module>knotx-gateway</module>
-
-    <module>tmp-core</module>
 
     <module>documentation</module>
   </modules>

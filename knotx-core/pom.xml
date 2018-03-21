@@ -26,10 +26,10 @@
     <version>1.2.2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>tmp-core</artifactId>
+  <artifactId>knotx-core</artifactId>
 
   <name>Knot.x Core</name>
-  <description>Core Knot.x module containing Server, Repositories, Splitter, Assembler and Gateway.</description>
+  <description>Core Knot.x module containing Server, Repositories, Splitter and Assembler.</description>
 
   <dependencies>
     <dependency>
@@ -100,7 +100,7 @@
     <!-- Knot.x to remove -->
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-common</artifactId>
+      <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
