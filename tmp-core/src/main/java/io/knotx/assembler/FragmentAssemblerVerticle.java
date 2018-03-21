@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.assembler;
+package io.knotx.assembler;
 
-import io.knotx.knot.assembler.impl.FragmentAssemblerKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;

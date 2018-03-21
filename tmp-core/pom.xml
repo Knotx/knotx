@@ -105,11 +105,6 @@
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-knot-fragment-assembler</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
       <artifactId>knotx-gateway</artifactId>
       <version>${project.version}</version>
     </dependency>

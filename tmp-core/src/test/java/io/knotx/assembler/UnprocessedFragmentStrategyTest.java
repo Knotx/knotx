@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.assembler.impl;
+package io.knotx.assembler;
 
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertThat;
@@ -62,7 +62,8 @@ public class UnprocessedFragmentStrategyTest {
   @TestWith({
       "simple_snippet.txt;simple_snippet-expected_ignored_content.txt;script",
       "customTag_snippet.txt;simple_snippet-expected_ignored_content.txt;knotx:snippet",
-      "raw_fragment.txt;raw_fragment.txt;script" //when fragment is a raw fragment, it is not ignored
+      "raw_fragment.txt;raw_fragment.txt;script"
+      //when fragment is a raw fragment, it is not ignored
   })
   public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
       String expectedContentFileName, String snippetTagName) throws Exception {

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.assembler.impl;
+package io.knotx.assembler;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.assembler.FragmentAssemblerOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.buffer.Buffer;

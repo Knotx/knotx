@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.assembler.impl;
+package io.knotx.assembler;
 
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentContentExtractor;

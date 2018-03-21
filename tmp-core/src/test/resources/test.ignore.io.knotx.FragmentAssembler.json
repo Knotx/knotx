@@ -1,12 +1,12 @@
 {
   "modules": [
-    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle"
+    "assembler=io.knotx.assembler.FragmentAssemblerVerticle"
   ],
   "config": {
     "assembler": {
       "options": {
         "config": {
-          "unprocessedStrategy": "AS_IS"
+          "unprocessedStrategy": "IGNORE"
         }
       }
     }

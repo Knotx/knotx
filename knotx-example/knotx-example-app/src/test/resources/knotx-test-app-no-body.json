@@ -4,7 +4,7 @@
     "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
     "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
     "splitter=io.knotx.splitter.FragmentSplitterVerticle",
-    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "assembler=io.knotx.assembler.FragmentAssemblerVerticle",
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
     "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
     "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
