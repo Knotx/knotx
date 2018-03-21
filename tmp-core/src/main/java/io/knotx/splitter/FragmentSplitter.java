@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.splitter.impl;
+package io.knotx.splitter;
 
 import io.knotx.dataobjects.Fragment;
 import java.util.List;

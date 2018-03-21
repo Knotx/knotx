@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.splitter;
+package io.knotx.splitter;
 
 import io.knotx.proxy.KnotProxy;
-import io.knotx.knot.splitter.impl.FragmentSplitterKnotProxyImpl;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Vertx;

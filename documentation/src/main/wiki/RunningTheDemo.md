@@ -46,7 +46,7 @@ You will see output similar to the following:
 2018-01-15 23:45:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
 2018-01-15 23:45:40 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
-		Deployed splitter [java:io.knotx.knot.splitter.FragmentSplitterVerticle] [66517b40-e562-4f30-a579-58a7ec9ce727]
+		Deployed splitter [java:io.knotx.splitter.FragmentSplitterVerticle] [66517b40-e562-4f30-a579-58a7ec9ce727]
 		Deployed assembler [java:io.knotx.knot.assembler.FragmentAssemblerVerticle] [18050737-c066-493a-bc68-e67e170ae8ab]
 		Deployed fsRepo [java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle] [31c6974e-6b76-4953-8073-14a37b9d24c5]
 		Deployed gatewatKnot [java:io.knotx.gateway.GatewayKnotVerticle] [50ce760b-cb7c-4598-95f6-d41976b7730b]
@@ -108,7 +108,7 @@ You can play with the demo in order to get familiar with the ways how to configu
     "server=io.knotx.server.KnotxServerVerticle",
     "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
     "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
-    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
+    "splitter=io.knotx.splitter.FragmentSplitterVerticle",
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
     "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",

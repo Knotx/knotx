@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.splitter.impl;
+package io.knotx.splitter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,10 +23,6 @@ import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
-import io.knotx.knot.splitter.impl.FragmentSplitter;
-import io.knotx.knot.splitter.impl.HtmlFragmentSplitter;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.junit.Before;
 import org.junit.runner.RunWith;

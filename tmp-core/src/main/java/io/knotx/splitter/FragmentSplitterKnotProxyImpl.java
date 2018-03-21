@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.splitter.impl;
+package io.knotx.splitter;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
-import io.knotx.knot.splitter.FragmentSplitterOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.logging.Logger;

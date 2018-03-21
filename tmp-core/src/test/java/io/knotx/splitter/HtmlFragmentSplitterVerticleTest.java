@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.rxjava.splitter;
+package io.knotx.splitter;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;

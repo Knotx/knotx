@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.knot.splitter.impl;
+package io.knotx.splitter;
 
 import com.google.common.collect.Lists;
 import io.knotx.dataobjects.Fragment;

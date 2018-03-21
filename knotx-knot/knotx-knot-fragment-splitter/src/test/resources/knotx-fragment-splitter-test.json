@@ -1,5 +1,0 @@
-{
-  "modules": [
-    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle"
-  ]
-}
