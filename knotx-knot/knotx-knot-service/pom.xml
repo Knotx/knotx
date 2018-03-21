@@ -33,7 +33,7 @@
   <dependencies>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-core</artifactId>
+      <artifactId>knotx-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 

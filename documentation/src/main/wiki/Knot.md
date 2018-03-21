@@ -151,7 +151,7 @@ Note that the Knot archetype generates both the code and all configuration
 files required to run a Knot.x instance containing the custom Knot. More details about the Knot.x deployment can be found in the
 [[deployment section|KnotxDeployment]].
 
-The `ExampleKnotProxy` class contains the Knot processing logic. It extends [`io.knotx.knot.AbstractKnotProxy`](https://github.com/Cognifide/knotx/blob/master/knotx-core/src/main/java/io/knotx/knot/AbstractKnotProxy.java) 
+The `ExampleKnotProxy` class contains the Knot processing logic. It extends [`io.knotx.knot.AbstractKnotProxy`](https://github.com/Cognifide/knotx/blob/master/knotx-common/src/main/java/io/knotx/knot/AbstractKnotProxy.java) 
 class, and implements the example processing logic in the `processRequest()` method with the return type of `Single<KnotContext>` 
 (a promise of the modified `KnotContext`).
 

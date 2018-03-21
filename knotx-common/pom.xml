@@ -26,9 +26,9 @@
     <version>1.2.2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>knotx-core</artifactId>
+  <artifactId>knotx-common</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Core</name>
+  <name>Knot.x Common</name>
 
   <dependencies>
     <dependency>
