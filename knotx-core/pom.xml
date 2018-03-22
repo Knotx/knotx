@@ -29,7 +29,7 @@
   <artifactId>knotx-core</artifactId>
 
   <name>Knot.x Core</name>
-  <description>Core Knot.x module containing Server, Repositories, Splitter and Assembler.</description>
+  <description>Core Knot.x module consisting of Server, Repositories, Splitter, Assembler and Gateway.</description>
 
   <dependencies>
     <dependency>
