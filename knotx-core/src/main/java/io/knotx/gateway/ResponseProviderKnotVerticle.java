@@ -15,7 +15,6 @@
  */
 package io.knotx.gateway;
 
-import io.knotx.gateway.impl.GatewayKnotProxyImpl;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
@@ -26,11 +25,11 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ServiceBinder;
 
-public class GatewayKnotVerticle extends AbstractVerticle {
+public class ResponseProviderKnotVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GatewayKnotVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ResponseProviderKnotVerticle.class);
 
-  private GatewayKnotOptions configuration;
+  private ResponseProviderKnotOptions configuration;
 
   private MessageConsumer<JsonObject> consumer;
 
@@ -39,18 +38,16 @@ public class GatewayKnotVerticle extends AbstractVerticle {
   @Override
   public void init(Vertx vertx, Context context) {
     super.init(vertx, context);
-    this.configuration = new GatewayKnotOptions(config());
+    this.configuration = new ResponseProviderKnotOptions(config());
   }
 
   @Override
   public void start() throws Exception {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
-
-    //register the service proxy on event bus
     serviceBinder = new ServiceBinder(getVertx());
     consumer = serviceBinder
         .setAddress(configuration.getAddress())
-        .register(KnotProxy.class, new GatewayKnotProxyImpl());
+        .register(KnotProxy.class, new ResponseProviderKnotProxyImpl());
   }
 
   @Override

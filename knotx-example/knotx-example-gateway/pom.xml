@@ -32,7 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-gateway</artifactId>
+      <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

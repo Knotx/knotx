@@ -57,11 +57,6 @@
       <artifactId>knotx-adapter-service-http</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-gateway</artifactId>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
 
   <build>

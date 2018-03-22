@@ -418,6 +418,24 @@ Set the EB address of the verticle
 Sets a Knot.x snippet HTML tag name. Default is 'script'
 +++
 |===
+[[GatewayKnotOptions]]
+== GatewayKnotOptions
+
+++++
+ Describes a configuration of Knot.x Gateway knot
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+The event bus <code>address</code> the knot is listening on.
+ Default is <code>knotx.gateway.gatewayknot</code>
++++
+|===
 [[HttpRepositoryOptions]]
 == HttpRepositoryOptions
 
@@ -642,6 +660,19 @@ Defines if the given repository path should be processed by the Knots or not. If
 |[[path]]`path`|`String`|
 +++
 Sets the Regular expression of the HTTP Request path
++++
+|===
+[[ResponseProviderKnotOptions]]
+== ResponseProviderKnotOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`address`|`String`|
++++
+The <code>address</code> on event bus that the service adapter is listening for requests from
 +++
 |===
 [[RoutingEntry]]

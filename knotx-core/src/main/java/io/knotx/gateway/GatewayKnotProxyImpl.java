@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.gateway.impl;
+package io.knotx.gateway;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.knot.AbstractKnotProxy;
@@ -22,10 +22,11 @@ import io.reactivex.Single;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class ResponseProviderKnotProxyImpl extends AbstractKnotProxy {
+public class GatewayKnotProxyImpl extends AbstractKnotProxy {
 
   @Override
   protected Single<KnotContext> processRequest(KnotContext knotContext) {
+    knotContext.setTransition(DEFAULT_TRANSITION);
     return Single.just(knotContext);
   }
 

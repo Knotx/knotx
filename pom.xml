@@ -64,7 +64,6 @@
     <module>knotx-knot</module>
     <module>knotx-standalone</module>
     <module>knotx-example</module>
-    <module>knotx-gateway</module>
 
     <module>documentation</module>
   </modules>
