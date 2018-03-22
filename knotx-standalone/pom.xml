@@ -34,7 +34,7 @@
     <!-- Knot.x -->
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-common</artifactId>
+      <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -60,11 +60,6 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-gateway</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-core</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

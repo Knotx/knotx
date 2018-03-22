@@ -214,6 +214,38 @@ Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
 Configure when to collect access log. True if after request arrives, false after sending response.
 +++
 |===
+[[AdapterRequest]]
+== AdapterRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[adapterParams]]`adapterParams`|`Json object`|
++++
+Set the request params
++++
+|[[params]]`params`|`Json object`|
++++
+Set the request params
++++
+|[[request]]`request`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|
++++
+Set the client request
++++
+|===
+[[AdapterResponse]]
+== AdapterResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[response]]`response`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
+|[[signal]]`signal`|`String`|-
+|===
 [[ClientDestination]]
 == ClientDestination
 
@@ -240,6 +272,59 @@ Set the HTTP port of the http repository
 Set the URL scheme used to communicate with the repository
 +++
 |===
+[[ClientRequest]]
+== ClientRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[jsonFormAttributes]]`jsonFormAttributes`|`Json object`|-
+|[[jsonHeaders]]`jsonHeaders`|`Json object`|
++++
+Serialization variants of MultiMap fields
++++
+|[[jsonParams]]`jsonParams`|`Json object`|-
+|[[method]]`method`|`link:cheatsheets.adoc#HttpMethod[HttpMethod]`|-
+|[[path]]`path`|`String`|-
+|===
+[[ClientResponse]]
+== ClientResponse
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[body]]`body`|`Buffer`|-
+|[[jsonHeaders]]`jsonHeaders`|`Json object`|
++++
+Serialization variants of MultiMap fields
++++
+|[[statusCode]]`statusCode`|`Number (int)`|-
+|===
+[[CustomHttpHeader]]
+== CustomHttpHeader
+
+++++
+ Describes a custom header
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[name]]`name`|`String`|
++++
+Set the name of the request header. If not set a <code>Server-User-Agent</code> is used.
++++
+|[[value]]`value`|`String`|
++++
+Set the value of the request header. If not set a @{code Knot.x} is used.
++++
+|===
 [[FilesystemRepositoryOptions]]
 == FilesystemRepositoryOptions
 
@@ -260,6 +345,24 @@ Set the EB address of the file system repository verticle
 +++
 Set the root folder of the repository on file system.
  If catalogue equals empty string a verticle will look for the files in classpath
++++
+|===
+[[Fragment]]
+== Fragment
+
+++++
+ An entity representing a markup slice produced during Template fragmentation. It represents both
+ markup with static and dynamic content.
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[raw]]`raw`|`Boolean`|
++++
+
 +++
 |===
 [[FragmentAssemblerOptions]]
@@ -349,6 +452,19 @@ Set the link used by the HTTP client
 +++
 Set the header (name & value) to be sent in every request to the remote repository
 +++
+|===
+[[KnotContext]]
+== KnotContext
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[clientRequest]]`clientRequest`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|-
+|[[clientResponse]]`clientResponse`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
+|[[fragments]]`fragments`|`Array of link:cheatsheets.adoc#Fragment[Fragment]`|-
+|[[transition]]`transition`|`String`|-
 |===
 [[KnotxCSRFOptions]]
 == KnotxCSRFOptions

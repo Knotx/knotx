@@ -48,7 +48,7 @@ All those configurations uses useful System properties which the Logback takes c
 - `${KNOTX_LOG_FILE_MAX_SIZE}`, `${ACCESS_LOG_FILE_MAX_SIZE}`, `${NETTY_LOG_FILE_MAX_SIZE}` - Allows to define a maximum size of knotx, access & netty log files. If not specified, a max size is `10MB`
 - `${KNOTX_LOG_FILE_MAX_HISTORY}`, `${ACCESS_LOG_FILE_MAX_HISTORY}`, `${NETTY_LOG_FILE_MAX_HISTORY}` - Allows to define a maximum amount of archived log files kept in the log folder (for knotx, access & netty logs). If not specified, it keeps files forever.
 
-See the [Knot.x core logback settings](https://github.com/Cognifide/knotx/blob/master/knotx-common/src/main/resources/io/knotx/logging/logback/) configuration files for details.
+See the [Knot.x core logback settings](https://github.com/Cognifide/knotx/blob/master/knotx-core/src/main/resources/io/knotx/logging/logback/) configuration files for details.
 
 ## Configure logback for file only output
 In a production system, you want to disable console logging and write output only to a file both for knotx & access logs. 

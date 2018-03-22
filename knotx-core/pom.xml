@@ -98,12 +98,6 @@
     </dependency>
 
     <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
     </dependency>
