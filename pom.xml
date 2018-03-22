@@ -58,7 +58,6 @@
 
   <modules>
     <module>knotx-common</module>
-    <module>knotx-junit</module>
     <module>knotx-core</module>
 
     <module>knotx-mocks</module>

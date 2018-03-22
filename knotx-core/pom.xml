@@ -142,12 +142,6 @@
       <artifactId>commons-collections</artifactId>
       <version>3.2.2</version>
     </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-junit</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -161,6 +155,17 @@
             <id>generate-verion-class</id>
             <goals>
               <goal>filter-sources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>
