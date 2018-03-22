@@ -28,7 +28,8 @@
 
   <artifactId>knotx-core</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Core</name>
+  <name>Knot.x Core</name>
+  <description>Core Knot.x module consisting of Server, Repositories, Splitter, Assembler and Gateway.</description>
 
   <dependencies>
     <dependency>
@@ -40,6 +41,10 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -144,6 +149,17 @@
             <id>generate-verion-class</id>
             <goals>
               <goal>filter-sources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>

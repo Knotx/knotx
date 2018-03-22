@@ -46,15 +46,15 @@ You will see output similar to the following:
 2018-01-15 23:45:40 [vert.x-eventloop-thread-1] INFO  io.knotx.server.KnotxServerVerticle - Knot.x HTTP Server started. Listening on port 8092
 2018-01-15 23:45:40 [vert.x-eventloop-thread-0] INFO  i.k.launcher.KnotxStarterVerticle - Knot.x STARTED
 
-		Deployed splitter [java:io.knotx.knot.splitter.FragmentSplitterVerticle] [66517b40-e562-4f30-a579-58a7ec9ce727]
-		Deployed assembler [java:io.knotx.knot.assembler.FragmentAssemblerVerticle] [18050737-c066-493a-bc68-e67e170ae8ab]
-		Deployed fsRepo [java:io.knotx.repository.FilesystemRepositoryConnectorVerticle] [31c6974e-6b76-4953-8073-14a37b9d24c5]
+		Deployed splitter [java:io.knotx.splitter.FragmentSplitterVerticle] [66517b40-e562-4f30-a579-58a7ec9ce727]
+		Deployed assembler [java:io.knotx.assembler.FragmentAssemblerVerticle] [18050737-c066-493a-bc68-e67e170ae8ab]
+		Deployed fsRepo [java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle] [31c6974e-6b76-4953-8073-14a37b9d24c5]
 		Deployed gatewatKnot [java:io.knotx.gateway.GatewayKnotVerticle] [50ce760b-cb7c-4598-95f6-d41976b7730b]
 		Deployed serviceKnot [java:io.knotx.knot.service.ServiceKnotVerticle] [8b62c8d0-4168-4deb-aa8d-e486f208cc7c]
 		Deployed respProviderKnot [java:io.knotx.gateway.ResponseProviderKnotVerticle] [3a02f6c4-4c6e-4c04-b8a4-9f21c74f620c]
 		Deployed hbsKnot [java:io.knotx.knot.templating.HandlebarsKnotVerticle] [ea703d28-7025-49a8-8953-45283271413c]
 		Deployed reqProcessorKnot [java:io.knotx.gateway.RequestProcessorKnotVerticle] [c4e50af8-5a3c-4a11-abde-f2bf1b8edc08]
-		Deployed httpRepo [java:io.knotx.repository.HttpRepositoryConnectorVerticle] [b9027423-38f0-4448-ae3d-12e7cea61116]
+		Deployed httpRepo [java:io.knotx.repository.http.HttpRepositoryConnectorVerticle] [b9027423-38f0-4448-ae3d-12e7cea61116]
 		Deployed actionAdapter [java:io.knotx.adapter.action.http.HttpActionAdapterVerticle] [51db1515-4349-43d7-ab2b-78d50d56cf06]
 		Deployed serviceAdapter [java:io.knotx.adapter.service.http.HttpServiceAdapterVerticle] [b0bcf7a4-fbdd-45d1-ac90-71879479d198]
 		Deployed actionKnot [java:io.knotx.knot.action.ActionKnotVerticle] [222a95b0-30d5-480c-a183-ced823e48b3c]
@@ -106,10 +106,10 @@ You can play with the demo in order to get familiar with the ways how to configu
 {
   "modules": [
     "server=io.knotx.server.KnotxServerVerticle",
-    "httpRepo=io.knotx.repository.HttpRepositoryConnectorVerticle",
-    "fsRepo=io.knotx.repository.FilesystemRepositoryConnectorVerticle",
-    "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle",
-    "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle",
+    "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.assembler.FragmentAssemblerVerticle",
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
     "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
     "actionKnot=io.knotx.knot.action.ActionKnotVerticle",

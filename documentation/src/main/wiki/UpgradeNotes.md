@@ -6,6 +6,10 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 List of changes that are finished but not yet released in any final version.
+ - [PR-399](https://github.com/Cognifide/knotx/pull/399) - `knotx-core` now contains all base Knot.x 
+ concepts, Server, Repositories, Splitter, Assembler and Gateway are now one `knotx-core` module. This
+ is just the beginning of the bigger changes to make Knot.x more concise and easier to understand.
+
 
 ## Version 1.2.1
 - [PR-385](https://github.com/Cognifide/knotx/pull/385) - From now on you can define the custom 

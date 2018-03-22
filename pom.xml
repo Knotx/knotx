@@ -58,15 +58,13 @@
 
   <modules>
     <module>knotx-core</module>
-    <module>knotx-junit</module>
+
     <module>knotx-mocks</module>
-    <module>knotx-repository-connector</module>
     <module>knotx-adapter</module>
     <module>knotx-knot</module>
-    <module>knotx-server</module>
     <module>knotx-standalone</module>
     <module>knotx-example</module>
-    <module>knotx-gateway</module>
+
     <module>documentation</module>
   </modules>
 
