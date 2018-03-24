@@ -18,6 +18,8 @@ package io.knotx.server.configuration;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.CSRFHandler;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @DataObject(generateConverter = true, publicConverter = false)
 public class KnotxCSRFOptions {
@@ -26,11 +28,6 @@ public class KnotxCSRFOptions {
    * Default timeout of the CSRF Token = 30 minues
    */
   private static final long DEFAULT_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-
-  /**
-   * Default secret of the CSRF token
-   */
-  private static final String DEFAULT_SECRET = "a31DDUam$D{h{x5*ah2j0,EQhkA`Su";
 
   private String cookieName;
   private String cookiePath;
@@ -80,7 +77,7 @@ public class KnotxCSRFOptions {
   }
 
   private void init() {
-    secret = DEFAULT_SECRET;
+    secret = RandomStringUtils.random(20);
     cookieName = CSRFHandler.DEFAULT_COOKIE_NAME;
     cookiePath = CSRFHandler.DEFAULT_COOKIE_PATH;
     headerName = CSRFHandler.DEFAULT_HEADER_NAME;

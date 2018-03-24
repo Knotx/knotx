@@ -104,9 +104,14 @@
             "maxPoolSize": 1000,
             "keepAlive": false
           },
+          "customRequestHeader": {
+            "name": "Server-User-Agent",
+            "value": "Knot.x"
+          },
           "services": [
             {
               "path": "/service/mock/.*",
+              "scheme": "http",
               "domain": "localhost",
               "port": 4000,
               "allowedRequestHeaders": [
@@ -115,9 +120,14 @@
               ]
             },
             {
+              "scheme": "http",
               "path": "/service/.*",
               "domain": "localhost",
-              "port": 8080
+              "port": 8080,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
             }
           ]
         }
@@ -126,6 +136,7 @@
     "actionKnot": {
       "options": {
         "config": {
+          "formIdentifierName": "_frmId",
           "adapters": [
             {
               "name": "subscribe-competition",
@@ -195,6 +206,7 @@
       "options": {
         "config": {
           "clientDestination": {
+            "scheme": "http",
             "domain": "localhost",
             "port": 4001
           }
@@ -241,6 +253,7 @@
           "services": [
             {
               "path": "/service/mock/.*",
+              "scheme": "http",
               "domain": "localhost",
               "port": 4000,
               "allowedRequestHeaders": [
@@ -250,6 +263,7 @@
             },
             {
               "path": "/service/.*",
+              "scheme": "http",
               "domain": "localhost",
               "port": 8080,
               "allowedRequestHeaders": [
@@ -258,6 +272,27 @@
               ]
             }
           ]
+        }
+      }
+    },
+    "hbsKnot": {
+      "options": {
+        "config": {
+          "cacheSize": 1000
+        }
+      }
+    },
+    "splitter": {
+      "options": {
+        "config": {
+          "snippetTagName": "script"
+        }
+      }
+    },
+    "assembler": {
+      "options": {
+        "config": {
+          "snippetTagName": "script"
         }
       }
     }

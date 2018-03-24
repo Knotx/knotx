@@ -1,5 +1,14 @@
 {
   "modules": [
     "splitter=io.knotx.knot.splitter.FragmentSplitterVerticle"
-  ]
+  ],
+  "config": {
+    "splitter": {
+      "options": {
+        "config": {
+          "snippetTagName": "script"
+        }
+      }
+    }
+  }
 }

@@ -17,7 +17,6 @@ package io.knotx.server.configuration;
 
 import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
 
-import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.BackpressureOverflowStrategy;
@@ -38,15 +37,6 @@ import java.util.stream.Collectors;
 public class KnotxServerOptions {
 
   /**
-   * The default value for Knot.x HTTP Server port = 8092
-   */
-  public final static int DEFAULT_HTTP_PORT = 8092;
-  /**
-   * Default name of the custom response header
-   */
-  public final static String DEFAULT_CUSTOM_RESPONSE_HEADER_NAME = "X-Server";
-
-  /**
    * Default File Upload Limit = -1 (unlimited)
    */
   public final static long DEFAULT_UPLOAD_LIMIT = -1;
@@ -57,47 +47,9 @@ public class KnotxServerOptions {
   private static final String DEFAULT_UPLOAD_DIRECTORY = BodyHandler.DEFAULT_UPLOADS_DIRECTORY;
 
   /**
-   * Default flag if to show the exceptions on error pages = true
+   * Default flag if to show the exceptions on error pages = false
    */
-  private static final boolean DEFAULT_DISPLAY_EXCEPTIONS = true;
-
-  /**
-   * Default response headers returned by KnotxServer to the client
-   */
-  private static final Set<String> DEFAULT_RESPONSE_HEADERS = Sets.newHashSet(
-      "Access-Control-Allow-Origin",
-      "Allow",
-      "Cache-Control",
-      "Content-Disposition",
-      "Content-Encoding",
-      "Content-Language",
-      "Content-Location",
-      "Content-MD5",
-      "Content-Range",
-      "Content-Type",
-      "Content-Length",
-      "Content-Security-Policy",
-      "Date",
-      "Edge-Control",
-      "ETag",
-      "Expires",
-      "Last-Modified",
-      "Location",
-      "Pragma",
-      "Proxy-Authenticate",
-      "Server",
-      "Set-Cookie",
-      "Status",
-      "Surrogate-Control",
-      "Vary",
-      "Via",
-      "X-Frame-Options",
-      "X-XSS-Protection",
-      "X-Content-Type-Options",
-      "X-UA-Compatible",
-      "X-Request-ID",
-      "X-Server"
-  );
+  private static final boolean DEFAULT_DISPLAY_EXCEPTIONS = false;
 
   /**
    * Default flag whether a request dropping on heavy load (backpressure) is enabled or not = false
@@ -179,23 +131,8 @@ public class KnotxServerOptions {
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
         .collect(Collectors.toSet());
 
-    //If port wasn't customized by the configuration file (it will get the vertx default = 80)
-    if (serverOptions.getPort() == HttpServerOptions.DEFAULT_PORT) {
-      setPort(DEFAULT_HTTP_PORT);
-    } else { //port was specified in config, try to overwrite with system props
-      setPort(serverOptions.getPort());
-    }
-  }
-
-  /**
-   * Sets the port to the value from system property `knotx.port` if specified.
-   * Otherwise, set to the provided value
-   *
-   * @param port a desired HTTP port to be used if not specified in 'knotx.port' system property
-   */
-  @GenIgnore
-  private void setPort(int port) {
-    serverOptions.setPort(Integer.getInteger(KNOTX_PORT_PROP_NAME, port));
+    //port was specified in config, try to overwrite with system props if defined
+    serverOptions.setPort(Integer.getInteger(KNOTX_PORT_PROP_NAME, serverOptions.getPort()));
   }
 
   /**
@@ -213,12 +150,12 @@ public class KnotxServerOptions {
     fileUploadLimit = DEFAULT_UPLOAD_LIMIT;
     fileUploadDirectory = DEFAULT_UPLOAD_DIRECTORY;
     displayExceptionDetails = DEFAULT_DISPLAY_EXCEPTIONS;
-    allowedResponseHeaders = DEFAULT_RESPONSE_HEADERS;
+    allowedResponseHeaders = new HashSet<>();
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
         .collect(Collectors.toSet());
     deliveryOptions = new DeliveryOptions();
     serverOptions = new HttpServerOptions();
-    customResponseHeader = new CustomHttpHeader().setName(DEFAULT_CUSTOM_RESPONSE_HEADER_NAME);
+    customResponseHeader = null;
     csrfConfig = new KnotxCSRFOptions();
     defaultFlow = new KnotxFlowSettings();
     customFlow = null;

@@ -6,6 +6,7 @@
     "assembler": {
       "options": {
         "config": {
+          "snippetTagName": "script",
           "unprocessedStrategy": "AS_IS"
         }
       }

@@ -143,11 +143,11 @@ Serialization variants of MultiMap fields
 ^|Name | Type ^| Description
 |[[name]]`name`|`String`|
 +++
-Set the name of the request header. If not set a <code>Server-User-Agent</code> is used.
+Set the name of the request header.
 +++
 |[[value]]`value`|`String`|
 +++
-Set the value of the request header. If not set a @{code Knot.x} is used.
+Set the value of the request header.
 +++
 |===
 [[Fragment]]

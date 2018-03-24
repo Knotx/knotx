@@ -15,12 +15,12 @@
  */
 package io.knotx.knot.action;
 
-import com.google.common.collect.Lists;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Describes an Action Knot configuration options
@@ -32,26 +32,6 @@ public class ActionKnotOptions {
    * Default EB address of the verticle
    */
   public final static String DEFAULT_ADDRESS = "knotx.knot.action";
-
-  public final static List<ActionSettings> DEFAULT_ADAPTER_MOCK = Lists.newArrayList(
-      new ActionSettings()
-          .setAddress("test")
-          .setName("action-self")
-          .setParams(new JsonObject().put("example", "example-value"))
-          .setAllowedRequestHeaders(Lists.newArrayList(
-              "Cookie",
-              "Content-Type",
-              "Content-Length"
-          ))
-          .setAllowedResponseHeaders(Lists.newArrayList(
-              "Set-Cookie"
-          ))
-  );
-
-  /**
-   * Default form identifier
-   */
-  public final static String DEFAULT_FORM_IDENTIFIER = "_frmId";
 
   private String address;
   private List<ActionSettings> adapters;
@@ -100,8 +80,8 @@ public class ActionKnotOptions {
 
   private void init() {
     address = DEFAULT_ADDRESS;
-    adapters = DEFAULT_ADAPTER_MOCK;
-    formIdentifierName = DEFAULT_FORM_IDENTIFIER;
+    adapters = new ArrayList<>();
+    formIdentifierName = StringUtils.EMPTY;
     deliveryOptions = new DeliveryOptions();
   }
 

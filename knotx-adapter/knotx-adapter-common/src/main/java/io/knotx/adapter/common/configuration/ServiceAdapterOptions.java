@@ -15,8 +15,6 @@
  */
 package io.knotx.adapter.common.configuration;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
@@ -34,33 +32,6 @@ public class ServiceAdapterOptions {
    * Default EB address of the adapter = knotx.adapter.service.http
    */
   public final static String DEFAULT_ADDRESS = "knotx.adapter.service.http";
-
-  /**
-   * Default webclient HTTP connection pool size = 1000
-   */
-  public final static int DEFAULT_WEBCLIENT_MAX_POOL_SIZE = 1000;
-
-  /**
-   * Default idle timeout for the connections in the pool = 120 seconds
-   */
-  public final static int DEFAULT_WEBCLIENT_IDLE_TIMEOUT = 120;
-
-  /**
-   * Default services configured for a adapter
-   * FIXME: Consider removing this - as it's example-app specific
-   */
-  public final static List<ServiceSettings> DEFAULT_SERVICES =
-      Lists.newArrayList(
-          new ServiceSettings().setPath("/service/mock/.*")
-              .setDomain("localhost")
-              .setPort(3000)
-              .setAllowedRequestHeaders(Sets.newHashSet("Accept*", "Content-*", "X-*")),
-          new ServiceSettings()
-              .setPath("/service/.*")
-              .setDomain("localhost")
-              .setPort(8080)
-              .setAllowedRequestHeaders(Sets.newHashSet("Accept*", "Content-*", "X-*"))
-      );
 
   private String address;
   private WebClientOptions clientOptions;
@@ -110,11 +81,9 @@ public class ServiceAdapterOptions {
 
   private void init() {
     address = DEFAULT_ADDRESS;
-    clientOptions = new WebClientOptions()
-        .setMaxPoolSize(DEFAULT_WEBCLIENT_MAX_POOL_SIZE)
-        .setIdleTimeout(DEFAULT_WEBCLIENT_IDLE_TIMEOUT);
-    services = DEFAULT_SERVICES;
-    customHttpHeader = new CustomHttpHeader();
+    clientOptions = new WebClientOptions();
+    services = new ArrayList<>();
+    customHttpHeader = null;
   }
 
   /**

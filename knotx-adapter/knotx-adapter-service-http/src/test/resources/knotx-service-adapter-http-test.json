@@ -4,6 +4,38 @@
     "serviceMock=io.knotx.mocks.MockServiceVerticle"
   ],
   "config": {
+    "adapter": {
+      "options": {
+        "config": {
+          "clientOptions": {
+            "maxPoolSize": 1000,
+            "idleTimeout": 120
+          },
+          "services": [
+            {
+              "path": "/service/mock/.*",
+              "domain": "localhost",
+              "port": 3000,
+              "allowedRequestHeaders": [
+                "Accept*",
+                "Content*",
+                "X*"
+              ]
+            },
+            {
+              "path": "/service/.*",
+              "domain": "localhost",
+              "port": 8080,
+              "allowedRequestHeaders": [
+                "Accept*",
+                "Content*",
+                "X*"
+              ]
+            }
+          ]
+        }
+      }
+    },
     "serviceMock": {
       "options": {
         "config": {

@@ -22,7 +22,6 @@ import io.vertx.ext.web.handler.LoggerFormat;
 @DataObject(generateConverter = true, publicConverter = false)
 public class AccessLogOptions {
 
-  private static final boolean DEFAULT_ENABLED = true;
   private static final boolean DEFAULT_LOGGER_IMMEDIATE = false;
   private static final LoggerFormat DEFAULT_LOGGER_FORMAT = LoggerFormat.DEFAULT;
 
@@ -70,7 +69,7 @@ public class AccessLogOptions {
   }
 
   private void init() {
-    enabled = DEFAULT_ENABLED;
+    enabled = false;
     immediate = DEFAULT_LOGGER_IMMEDIATE;
     format = DEFAULT_LOGGER_FORMAT;
   }

@@ -1,5 +1,15 @@
 {
   "modules": [
     "assembler=io.knotx.knot.assembler.FragmentAssemblerVerticle"
-  ]
+  ],
+  "config": {
+    "assembler": {
+      "options": {
+        "config": {
+          "snippetTagName": "script",
+          "unprocessedStrategy": "UNWRAP"
+        }
+      }
+    }
+  }
 }
