@@ -105,7 +105,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   private RequestOptions buildRequestData(ClientRequest request) {
     return new RequestOptions()
-        .setSsl(clientDestination.getString("scheme", "http").equals("https") ? true : false)
+        .setSsl(clientDestination.getString("scheme", "http").equals("https"))
         .setURI(buildRepoUri(request))
         .setPort(clientDestination.getInteger("port"))
         .setHost(clientDestination.getString("domain"));
