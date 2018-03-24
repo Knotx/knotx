@@ -1,0 +1,97 @@
+{
+  "modules": [
+    "server=java:io.knotx.server.KnotxServerVerticle",
+    "fsRepo=java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle"
+  ],
+  "config": {
+    "fsRepo": {
+      "options": {
+        "config": {
+          "address": "knotx.repository.filesystem",
+          "catalogue": "src/test/resources/"
+        }
+      }
+    },
+    "server": {
+      "options": {
+        "config": {
+          "serverOptions": {
+            "port": 9092
+          },
+          "allowedResponseHeaders": [
+            "Access-Control-Allow-Origin",
+            "Allow",
+            "Cache-Control",
+            "Content-Disposition",
+            "Content-Encoding",
+            "Content-Language",
+            "Content-Location",
+            "Content-MD5",
+            "Content-Range",
+            "Content-Type",
+            "Content-Length",
+            "Content-Security-Policy",
+            "Date",
+            "Edge-Control",
+            "ETag",
+            "Expires",
+            "Last-Modified",
+            "Location",
+            "Pragma",
+            "Proxy-Authenticate",
+            "Server",
+            "Set-Cookie",
+            "Status",
+            "Surrogate-Control",
+            "Vary",
+            "Via",
+            "X-Frame-Options",
+            "X-XSS-Protection",
+            "X-Content-Type-Options",
+            "X-UA-Compatible",
+            "X-Request-ID",
+            "X-Server"
+          ],
+          "customResponseHeader": {
+            "name": "X-Server",
+            "value": "Knot.x"
+          },
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/.*",
+                "address": "knotx.repository.filesystem"
+              }
+            ],
+            "splitter": "test-splitter",
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": ".*",
+                    "csrf": true,
+                    "address": "some-knot"
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": "/content/local/simple.*",
+                    "csrf": true,
+                    "address": "some-knot"
+                  },
+                  {
+                    "path": "/content/local/public.*",
+                    "address": "some-knot"
+                  }
+                ]
+              }
+            },
+            "assembler": "test-assembler"
+          }
+        }
+      }
+    }
+  }
+}

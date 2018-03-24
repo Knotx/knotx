@@ -72,7 +72,8 @@
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-junit</artifactId>
+      <artifactId>knotx-core</artifactId>
+      <type>test-jar</type>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

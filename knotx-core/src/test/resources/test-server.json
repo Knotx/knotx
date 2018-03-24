@@ -1,0 +1,147 @@
+{
+  "modules": [
+    "server=java:io.knotx.server.KnotxServerVerticle",
+    "fsRepo=java:io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle"
+  ],
+  "config": {
+    "fsRepo": {
+      "options": {
+        "config": {
+          "address": "knotx.repository.filesystem",
+          "catalogue": "src/test/resources/"
+        }
+      }
+    },
+    "server": {
+      "options": {
+        "config": {
+          "serverOptions": {
+            "port": 9092
+          },
+          "customResponseHeader": {
+            "name": "X-Server",
+            "value": "Knot.x"
+          },
+          "allowedResponseHeaders": [
+            "referer",
+            "user-agent",
+            "from",
+            "content-type",
+            "content-length",
+            "accept-charset",
+            "accept-encoding",
+            "accept-language",
+            "accept",
+            "host",
+            "if-match",
+            "if-none-match",
+            "if-range",
+            "if-unmodified-since",
+            "if-modified-since",
+            "max-forwards",
+            "proxy-authorization",
+            "proxy-connection",
+            "range",
+            "cookie",
+            "cq-action",
+            "cq-handle",
+            "handle",
+            "action",
+            "cqstats",
+            "depth",
+            "translate",
+            "expires",
+            "date",
+            "dav",
+            "ms-author-via",
+            "if",
+            "destination",
+            "access-control-allow-origin",
+            "x-original-requested-uri",
+            "x-solr-core-key",
+            "x-language-code",
+            "x-requested-with",
+            "location"
+          ],
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/.*",
+                "address": "knotx.repository.filesystem"
+              }
+            ],
+            "splitter": "test-splitter",
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": ".*/local/.*\\.html",
+                    "address": "A-engine",
+                    "onTransition": {
+                      "go-c": {
+                        "address": "C-engine"
+                      }
+                    }
+                  },
+                  {
+                    "path": ".*\\.html",
+                    "address": "C-engine"
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": ".*/local/.*\\.html",
+                    "address": "A-post-engine",
+                    "onTransition": {
+                      "go-b": {
+                        "address": "B-engine",
+                        "onTransition": {
+                          "go-c": {
+                            "address": "C-engine"
+                          }
+                        }
+                      },
+                      "go-c": {
+                        "address": "C-engine"
+                      }
+                    }
+                  },
+                  {
+                    "path": ".*\\.html",
+                    "address": "B-engine",
+                    "onTransition": {
+                      "go-c": {
+                        "address": "C-engine"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "assembler": "test-assembler"
+          },
+          "customFlow": {
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": "/customFlow/.*",
+                    "address": "gateway",
+                    "onTransition": {
+                      "next": {
+                        "address": "requestprocessor"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "responseProvider": "responseprovider"
+          }
+        }
+      }
+    }
+  }
+}

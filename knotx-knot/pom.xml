@@ -32,8 +32,6 @@
   <name>Knot.x - Reactive microservice assembler - Knot</name>
 
   <modules>
-    <module>knotx-knot-fragment-splitter</module>
-    <module>knotx-knot-fragment-assembler</module>
     <module>knotx-knot-action</module>
     <module>knotx-knot-service</module>
     <module>knotx-knot-handlebars</module>
