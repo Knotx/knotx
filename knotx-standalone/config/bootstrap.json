@@ -4,7 +4,7 @@
     "stores": [
       {
         "type": "file",
-        "format": "hocon",
+        "format": "conf",
         "config": {
           "path": "config/application.conf"
         }
