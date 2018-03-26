@@ -16,18 +16,20 @@
     limitations under the License.
 
 -->
-<configuration>
+<configuration debug="true">
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
   <property name="CONSOLE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
   <include resource="io/knotx/logging/logback/console-appender.xml" />
 
-  <root level="INFO">
-    <appender-ref ref="CONSOLE" />
+  <root level="INFO" additivity="false">
+    <appender-ref ref="CONSOLE"/>
   </root>
 
-  <logger name="io.netty" level="ERROR"/>
-  <logger name="io.vertx" level="ERROR"/>
+  <logger name="io.netty" level="ERROR" additivity="false"/>
+  <logger name="io.vertx" level="ERROR" additivity="false"/>
 
-  <logger name="io.knotx" level="TRACE">
+  <logger name="io.knotx" level="TRACE" additivity="false">
     <appender-ref ref="CONSOLE"/>
   </logger>
 </configuration>
