@@ -105,7 +105,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   private RequestOptions buildRequestData(ClientRequest request) {
     return new RequestOptions()
-        .setSsl(clientDestination.getString("scheme", "http").equals("https") ? true : false)
+        .setSsl(clientDestination.getString("scheme", "http").equals("https"))
         .setURI(buildRepoUri(request))
         .setPort(clientDestination.getInteger("port"))
         .setHost(clientDestination.getString("domain"));
@@ -138,8 +138,8 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     if (params != null && params.names() != null && !params.names().isEmpty()) {
       uri.append("?")
           .append(params.names().stream()
-              .map(name -> new StringBuilder(name).append("=")
-                  .append(encodeParamValue(params.get(name))))
+              .map(name -> new StringBuilder(encode(name)).append("=")
+                  .append(encode(params.get(name))))
               .collect(Collectors.joining("&"))
           );
     }
@@ -147,7 +147,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     return uri.toString();
   }
 
-  private String encodeParamValue(String value) {
+  private String encode(String value) {
     try {
       return URLEncoder.encode(value, "UTF-8").replace("+", "%20").replace("%2F", "/");
     } catch (UnsupportedEncodingException ex) {
