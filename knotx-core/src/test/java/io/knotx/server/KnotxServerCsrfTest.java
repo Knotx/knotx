@@ -54,7 +54,7 @@ public class KnotxServerCsrfTest {
 
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     Async async = context.async();
     createPassThroughKnot("test-splitter");
@@ -83,7 +83,7 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostSecureWithoutCSRF_expectForbidden(
       TestContext context) {
     Async async = context.async();
@@ -108,7 +108,7 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostPublicWithoutCSRF_expectOk(
       TestContext context) {
     Async async = context.async();
@@ -133,7 +133,7 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostSecureWithCSRF_expectOK(
       TestContext context) {
     Async async = context.async();

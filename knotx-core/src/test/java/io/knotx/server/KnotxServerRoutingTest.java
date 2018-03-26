@@ -68,7 +68,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingWithInvalidQuery_expectBadRequest(TestContext context) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
@@ -81,7 +81,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     createPassThroughKnot("test-splitter");
     createPassThroughKnot("test-assembler");
@@ -91,7 +91,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
     createPassThroughKnot("test-splitter");
     createPassThroughKnot("test-assembler");
@@ -100,7 +100,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(
       TestContext context) {
     Async async = context.async();
@@ -129,7 +129,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(
       TestContext context) {
     Async async = context.async();
@@ -157,7 +157,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingPostGlobalPath_expectGlobalBC(TestContext context) {
     Async async = context.async();
 
@@ -184,7 +184,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingPostGlobalPathAndActionDoRedirect_expectRedirectResponse(
       TestContext context) {
     Async async = context.async();
@@ -205,7 +205,7 @@ public class KnotxServerRoutingTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server.json")
+  @KnotxConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingGetWithCustomFlowProcessing(TestContext context) {
     createPassThroughKnot("responseprovider");
     createSimpleGatewayKnot("gateway", "next");

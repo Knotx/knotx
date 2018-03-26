@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 public class UnprocessedFragmentStrategyTest {
 
   @TestWith({
-      "simple_snippet.txt;simple_snippet.txt;script",
-      "customTag_snippet.txt;customTag_snippet.txt;knotx:snippet",
-      "raw_fragment.txt;raw_fragment.txt;script"
+      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet.txt;script",
+      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/customTag_snippet.txt;knotx:snippet",
+      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script"
   })
   public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
       String expectedContentFileName, String snippetTagName) throws Exception {
@@ -46,9 +46,9 @@ public class UnprocessedFragmentStrategyTest {
   }
 
   @TestWith({
-      "simple_snippet.txt;simple_snippet-expected_unwrapped_content.txt;script",
-      "customTag_snippet.txt|knotx:snippet;simple_snippet-expected_unwrapped_content.txt;knotx:snippet",
-      "big_snippet.txt;big_snippet-expected_unwrapped_content.txt;script"
+      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;script",
+      "io/knotx/assembler/customTag_snippet.txt|knotx:snippet;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet",
+      "io/knotx/assembler/big_snippet.txt;io/knotx/assembler/big_snippet-expected_unwrapped_content.txt;script"
   })
   public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(Fragment fragment,
       String expectedContentFileName, String snippetTagName) throws Exception {
@@ -60,9 +60,9 @@ public class UnprocessedFragmentStrategyTest {
   }
 
   @TestWith({
-      "simple_snippet.txt;simple_snippet-expected_ignored_content.txt;script",
-      "customTag_snippet.txt;simple_snippet-expected_ignored_content.txt;knotx:snippet",
-      "raw_fragment.txt;raw_fragment.txt;script"
+      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;script",
+      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;knotx:snippet",
+      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script"
       //when fragment is a raw fragment, it is not ignored
   })
   public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,

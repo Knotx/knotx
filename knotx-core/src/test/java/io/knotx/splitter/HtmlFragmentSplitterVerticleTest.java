@@ -51,7 +51,7 @@ public class HtmlFragmentSplitterVerticleTest {
   public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  @KnotxConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
   public void callSplitterWithEmptyBody_expectNotFoundResponse(TestContext context)
       throws Exception {
     callFragmentSplitterWithAssertions(context, "",
@@ -63,10 +63,11 @@ public class HtmlFragmentSplitterVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  @KnotxConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
   public void callSplitterWithManySnippets_expectNineFragments(TestContext context)
       throws Exception {
-    callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
+    callFragmentSplitterWithAssertions(context, FileReader.readText(
+        "io/knotx/splitter/test-many-fragments.html"),
         knotContext -> {
           context.assertTrue(knotContext.getFragments() != null);
           context.assertEquals(knotContext.getFragments().size(), 9);

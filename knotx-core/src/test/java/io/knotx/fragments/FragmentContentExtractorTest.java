@@ -40,10 +40,10 @@ import org.mockito.Mockito;
 public class FragmentContentExtractorTest {
 
   @TestWith(value = {
-      "simple_default_snippet.txt;simple_snippet-expected_content.txt",
-      "complex_default_snippet.txt;complex_snippet-expected_content.txt",
-      "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
-      "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
+      "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
+      "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
   public void unwrappedContent_withFragment_expectDefinedContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
@@ -54,10 +54,10 @@ public class FragmentContentExtractorTest {
   }
 
   @TestWith(value = {
-      "simple_default_snippet.txt;simple_snippet-expected_content.txt",
-      "complex_default_snippet.txt;complex_snippet-expected_content.txt",
-      "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
-      "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
+      "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
+      "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
   public void unwrappedContent_withString_expectDefinedContent(String snippetFileName,
       String expectedContentFileName) throws Exception {
@@ -69,10 +69,10 @@ public class FragmentContentExtractorTest {
   }
 
   @TestWith(value = {
-      "simple_default_snippet.txt;simple_snippet-expected_content.txt",
-      "complex_default_snippet.txt;complex_snippet-expected_content.txt",
-      "simple_custom_snippet.txt;simple_snippet-expected_content.txt",
-      "complex_custom_snippet.txt;complex_snippet-expected_content.txt"
+      "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
+      "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
   public void unwrapFragmentContent_withFragment_expectDefinedContent(Fragment fragment,
       String expectedContentFileName) throws Exception {
@@ -84,8 +84,8 @@ public class FragmentContentExtractorTest {
   }
 
   @TestWith({
-      "empty_snippet.txt",
-      "raw_snippet.txt"
+      "io/knotx/fragments/empty_snippet.txt",
+      "io/knotx/fragments/raw_snippet.txt"
   })
   public void getUnwrappedContent_withRawFragment_expectNotChangedContent(Fragment fragment)
       throws Exception {

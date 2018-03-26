@@ -31,7 +31,8 @@ public class KnotxServerOptionsRepositoriesTest {
 
   @Before
   public void before() throws Exception {
-    JsonObject config = new JsonObject(FileReader.readText("test-config-server.json"));
+    JsonObject config = new JsonObject(FileReader.readText(
+        "io/knotx/server/test-config-server.json"));
     flowConfiguration = new KnotxServerOptions(config).getDefaultFlow();
   }
 
