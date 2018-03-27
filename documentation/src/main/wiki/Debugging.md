@@ -7,23 +7,24 @@ To build it you also need Maven (version 3.3.1 or higher).
 Intellij IDE
 
 ## How to set up Knot.x debugging in Intellij IDE
-Assuming you have Knot.x project opened in Intellij, you can set up Run/Debug Application configuration to be able to run or debug Demo or 
+Assuming you have Knot.x project opened in Intellij, you can set up Run/Debug Application configuration to be able to run or debug Demo/Example or 
 Standalone Knot.x application directly in your IDE.
 
 1. Go to Run/Debug Configurations in IntelliJ
 2. Add new Application Configuration
 
 [[assets/knotx-debugging-new-config.png|alt=Knot.x Debugging new config]]
+
 3. Set name of the configuration
-4. Pick main class to be io.knotx.launcher.KnotxLauncher
-5. In Program Arguments specify that KnotxStarterVerticle should be run with the `-conf` parameter pointing to the configuration you want to run (e.g. Example app)
+4. Pick main class to be `io.knotx.launcher.KnotxLauncher`
+5. Set VM options to `-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory`
+6. In Program Arguments specify that `KnotxStarterVerticle` should be run with the `-conf` parameter pointing to the JSON configuration you want to run (e.g. Example app)
 ```
-run io.knotx.launcher.KnotxStarterVerticle -conf src/main/resources/knotx-example-app.json
+run io.knotx.launcher.KnotxStarterVerticle -conf config/bootstrap.json
 ```
-6. Set **Working directory** to the module where your json config exists (e.g. knotx-example-app)
-7. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-app)
-8. Optionally, in VM options you can specify system properties if you want to override configuration or set memory properly of this configuration.
-9. Finally, you can now Run or Debug this configuration and play with Knot.x as usuall.
+7. Set **Working directory** to the module where your json config exists (e.g. knotx-example-app)
+8. Set **Use classpath of module** by selecting the module in which you have your configuration (e.g. knotx-example-app)
+9. Finally, you can now Run or Debug this configuration and play with Knot.x as usual.
 
 [[assets/knotx-debugging-config.png|alt=Knot.x Debugging config]]
 
