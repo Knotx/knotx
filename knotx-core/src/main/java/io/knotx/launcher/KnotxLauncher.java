@@ -18,17 +18,8 @@ package io.knotx.launcher;
 import io.vertx.core.Launcher;
 import io.vertx.core.impl.launcher.commands.ExecUtils;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.SLF4JLogDelegateFactory;
 
 public class KnotxLauncher extends Launcher {
-
-  static {
-    if (System.getProperty("vertx.logger-delegate-factory-class-name") == null) {
-      System.setProperty("vertx.logger-delegate-factory-class-name",
-          SLF4JLogDelegateFactory.class.getCanonicalName());
-    }
-  }
-
   /**
    * Error code used when the knotx configuration is missing or it's empty
    */

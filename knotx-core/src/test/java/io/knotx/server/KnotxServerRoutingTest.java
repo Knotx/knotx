@@ -19,7 +19,6 @@ package io.knotx.server;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Observable;
@@ -53,7 +52,7 @@ public class KnotxServerRoutingTest {
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
       int port, String domain, String uri,

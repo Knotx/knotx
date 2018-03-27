@@ -24,7 +24,6 @@ import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -71,7 +70,7 @@ public class HttpClientFacadeTest {
   private RunTestOnContext vertx = new RunTestOnContext();
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
   @KnotxConfiguration("knotx-action-adapter-http-test.json")

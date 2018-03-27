@@ -17,7 +17,6 @@ package io.knotx.example.monolith;
 
 import com.google.common.collect.Maps;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -57,7 +56,7 @@ public class SampleApplicationTest {
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
       int port, String domain, String uri,

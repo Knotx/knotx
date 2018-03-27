@@ -16,7 +16,6 @@
 package io.knotx.example.monolith;
 
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
@@ -45,7 +44,7 @@ public class SampleApplicationHeadersTest {
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Before
   public void before() {

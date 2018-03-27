@@ -18,7 +18,6 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
@@ -50,7 +49,7 @@ public class KnotxServerCsrfTest {
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
 
   @Test

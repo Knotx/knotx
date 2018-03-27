@@ -380,7 +380,9 @@
                 <generatedSourcesDirectory>${generated.dir}</generatedSourcesDirectory>
                 <compilerArgs>
                   <arg>-Acodegen.output=${project.basedir}/src/main</arg>
-                  <arg>-Acodegen.generators=knotx-cheatsheet,data_object_converters,RxJava2,service_proxies</arg>
+                  <arg>
+                    -Acodegen.generators=knotx-cheatsheet,data_object_converters,RxJava2,service_proxies
+                  </arg>
                 </compilerArgs>
               </configuration>
             </execution>
@@ -531,6 +533,13 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven.surefire.plugin.version}</version>
+          <configuration>
+            <systemPropertyVariables>
+              <vertx.logger-delegate-factory-class-name>
+                io.vertx.core.logging.SLF4JLogDelegateFactory
+              </vertx.logger-delegate-factory-class-name>
+            </systemPropertyVariables>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.sonatype.plugins</groupId>

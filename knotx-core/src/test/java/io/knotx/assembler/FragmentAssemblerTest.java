@@ -17,7 +17,6 @@ package io.knotx.assembler;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
@@ -57,7 +56,7 @@ public class FragmentAssemblerTest {
 
   //Junit Rule, sets up logger, prepares verts, starts verticles according to the config (supplied in annotation of test method)
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
   @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
