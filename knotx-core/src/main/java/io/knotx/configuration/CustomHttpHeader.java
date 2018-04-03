@@ -24,16 +24,6 @@ import io.vertx.core.json.JsonObject;
 @DataObject(generateConverter = true)
 public class CustomHttpHeader {
 
-  /**
-   * The default request header = Service-User-Agent
-   */
-  public final static String DEFAULT_HEADER_NAME = "Server-User-Agent";
-
-  /**
-   * The default request header value = Knot.x
-   */
-  public final static String DEFAULT_HEADER_VALUE = "Knot.x";
-
   private String name;
   private String value;
 
@@ -41,7 +31,7 @@ public class CustomHttpHeader {
    * Default Constructor
    */
   public CustomHttpHeader() {
-    init();
+    //Nothing to do
   }
 
   /**
@@ -60,7 +50,6 @@ public class CustomHttpHeader {
    * @param json the JSON
    */
   public CustomHttpHeader(JsonObject json) {
-    init();
     CustomHttpHeaderConverter.fromJson(json, this);
   }
 
@@ -75,14 +64,9 @@ public class CustomHttpHeader {
     return json;
   }
 
-  private void init() {
-    name = DEFAULT_HEADER_NAME;
-    value = DEFAULT_HEADER_VALUE;
-  }
-
 
   /**
-   * Set the name of the request header. If not set a {@code Server-User-Agent} is used.
+   * Set the name of the request header.
    */
   public CustomHttpHeader setName(String name) {
     this.name = name;
@@ -90,7 +74,7 @@ public class CustomHttpHeader {
   }
 
   /**
-   * Set the value of the request header. If not set a @{code Knot.x} is used.
+   * Set the value of the request header.
    */
   public CustomHttpHeader setValue(String value) {
     this.value = value;

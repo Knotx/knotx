@@ -15,7 +15,6 @@
  */
 package io.knotx.repository.http;
 
-import com.google.common.collect.Sets;
 import io.knotx.configuration.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
@@ -38,42 +37,6 @@ public class HttpRepositoryOptions {
    * Default EB address of the HTTP repository
    */
   public static final String DEFAULT_ADDRESS = "knotx.core.repository.http";
-
-  /**
-   * Default set of allowed request headers patterns
-   */
-  public static final Set<String> DEFAULT_ALLOWED_REQUEST_HEADERS = Sets.newHashSet(
-      "Accept*",
-      "Authorization",
-      "Connection",
-      "Cookie",
-      "Date",
-      "Edge*",
-      "Host",
-      "If*",
-      "Origin",
-      "Pragma",
-      "Proxy-Authorization",
-      "Surrogate*",
-      "User-Agent",
-      "Via",
-      "X-*"
-  );
-
-  /**
-   * Default Vert.x HTTP Client max connections pool size = 1000
-   */
-  private static final int DEFAULT_CLIENT_OPTIONS_MAX_POOL_SIZE = 1000;
-
-  /**
-   * Default idle time for a pooled connection = 120 seconds
-   */
-  private static final int DEFAULT_CLIENT_OPTIONS_IDLE_TIMEOUT = 120;
-
-  /**
-   * Default Vert.x HTTP Client try use compression = false
-   */
-  private static final boolean DEFAULT_CLIENT_OPTIONS_TRY_USE_COMPRESSION = true;
 
   private String address;
   private HttpClientOptions clientOptions;
@@ -131,14 +94,10 @@ public class HttpRepositoryOptions {
 
   private void init() {
     address = DEFAULT_ADDRESS;
-    clientOptions = new HttpClientOptions()
-        .setMaxPoolSize(DEFAULT_CLIENT_OPTIONS_MAX_POOL_SIZE)
-        .setIdleTimeout(DEFAULT_CLIENT_OPTIONS_IDLE_TIMEOUT)
-        .setTryUseCompression(DEFAULT_CLIENT_OPTIONS_TRY_USE_COMPRESSION);
-
+    clientOptions = new HttpClientOptions();
     clientDestination = new ClientDestination();
-    allowedRequestHeaders = DEFAULT_ALLOWED_REQUEST_HEADERS;
-    customHttpHeader = new CustomHttpHeader();
+    allowedRequestHeaders = new HashSet<>();
+    customHttpHeader = null;
   }
 
   /**

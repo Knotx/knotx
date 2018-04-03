@@ -30,11 +30,6 @@ public class HandlebarsKnotOptions {
   public final static String DEFAULT_CACHE_KEY_ALGORITHM = "MD5";
 
   /**
-   * Default size of the compiled handlebars snippets cache = 1000 items
-   */
-  public final static Long DEFAULT_CACHE_SIZE = 1000L;
-
-  /**
    * Default EB address of the verticle
    */
   public final static String DEFAULT_ADDRESS = "knotx.knot.handlebars";
@@ -85,7 +80,6 @@ public class HandlebarsKnotOptions {
   private void init() {
     address = DEFAULT_ADDRESS;
     cacheKeyAlgorithm = DEFAULT_CACHE_KEY_ALGORITHM;
-    cacheSize = DEFAULT_CACHE_SIZE;
   }
 
   /**

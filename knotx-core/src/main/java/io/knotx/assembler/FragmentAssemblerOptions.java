@@ -34,11 +34,6 @@ public class FragmentAssemblerOptions {
    */
   private final static UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.UNWRAP;
 
-  /**
-   * Default snippet tag name = script
-   */
-  private final static String DEFAULT_SNIPPET_TAG_NAME = "script";
-
   private String address;
   private UnprocessedFragmentStrategy unprocessedStrategy;
   private String snippetTagName;
@@ -57,6 +52,7 @@ public class FragmentAssemblerOptions {
    */
   public FragmentAssemblerOptions(FragmentAssemblerOptions other) {
     this.address = other.address;
+    this.snippetTagName = other.snippetTagName;
     this.unprocessedStrategy = other.unprocessedStrategy;
   }
 
@@ -84,7 +80,6 @@ public class FragmentAssemblerOptions {
   private void init() {
     address = DEFAULT_ADDRESS;
     unprocessedStrategy = DEFAULT_UNPROCESSED_STRATEGY;
-    snippetTagName = DEFAULT_SNIPPET_TAG_NAME;
   }
 
   /**

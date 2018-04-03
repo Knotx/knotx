@@ -18,7 +18,6 @@ package io.knotx.server;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
@@ -50,11 +49,11 @@ public class KnotxServerCsrfTest {
   private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
 
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
     Async async = context.async();
     createPassThroughKnot("test-splitter");
@@ -83,7 +82,7 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostSecureWithoutCSRF_expectForbidden(
       TestContext context) {
     Async async = context.async();
@@ -108,7 +107,7 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostPublicWithoutCSRF_expectOk(
       TestContext context) {
     Async async = context.async();
@@ -133,7 +132,7 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxConfiguration("test-server-csrf.json")
+  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostSecureWithCSRF_expectOK(
       TestContext context) {
     Async async = context.async();

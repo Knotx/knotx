@@ -17,7 +17,6 @@ package io.knotx.server;
 
 
 import io.knotx.junit.util.FileReader;
-import io.knotx.server.SupportedMethodsAndPathsHandler;
 import io.knotx.server.configuration.KnotxFlowSettings;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.http.HttpMethod;
@@ -37,9 +36,9 @@ public class SupportedMethodsAndPathsHandlerTest {
   @Before
   public void before() throws Exception {
     defaultFlow = new KnotxFlowSettings(
-        new JsonObject(FileReader.readText("GETOnlyDefaultFlow.json")));
+        new JsonObject(FileReader.readText("io/knotx/server/GETOnlyDefaultFlow.json")));
     customFlow = new KnotxFlowSettings(
-        new JsonObject(FileReader.readText("GETOnlyCustomFlow.json")));
+        new JsonObject(FileReader.readText("io/knotx/server/GETOnlyCustomFlow.json")));
     KnotxServerOptions configuration = Mockito.mock(KnotxServerOptions.class);
     Mockito.when(configuration.getDefaultFlow()).thenReturn(defaultFlow);
     Mockito.when(configuration.getCustomFlow()).thenReturn(customFlow);

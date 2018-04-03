@@ -29,11 +29,6 @@ public class FragmentSplitterOptions {
    */
   private final static String DEFAULT_ADDRESS = "knotx.core.splitter";
 
-  /**
-   * Default snippet tag name = script
-   */
-  private final static String DEFAULT_SNIPPET_TAG_NAME = "script";
-
   private String address;
   private String snippetTagName;
 
@@ -51,6 +46,7 @@ public class FragmentSplitterOptions {
    */
   public FragmentSplitterOptions(FragmentSplitterOptions other) {
     this.address = other.address;
+    this.snippetTagName = other.snippetTagName;
   }
 
   /**
@@ -76,7 +72,6 @@ public class FragmentSplitterOptions {
 
   private void init() {
     address = DEFAULT_ADDRESS;
-    snippetTagName = DEFAULT_SNIPPET_TAG_NAME;
   }
 
   /**

@@ -135,11 +135,11 @@ public class KnotxStarterVerticle extends AbstractVerticle {
           deploymentOptions.fromJson(moduleConfig.getJsonObject(MODULE_OPTIONS));
         } else {
           LOGGER.warn(
-              "Module '{}' has override config, but missing 'options' object. "
+              "Module '{}' has config, but missing 'options' object. "
                   + "Default configuration is to be used", module);
         }
       } else {
-        LOGGER.info("Module '{}' does not have override. Default configuration is to be used",
+        LOGGER.warn("Module '{}' if not configured in the config file. Used default configuration",
             module);
       }
     }

@@ -22,7 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import io.knotx.junit.util.FileReader;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.MethodRoutingEntries;
-import io.knotx.server.configuration.RoutingEntry;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import java.util.Map;
@@ -38,7 +37,7 @@ public class KnotxServerOptionsRoutingTest {
   @Before
   public void before() throws Exception {
     engineRouting = new KnotxServerOptions(
-        new JsonObject(FileReader.readText("test-config-server.json"))).getDefaultFlow()
+        new JsonObject(FileReader.readText("io/knotx/server/test-config-server.json"))).getDefaultFlow()
         .getRouting();
   }
 

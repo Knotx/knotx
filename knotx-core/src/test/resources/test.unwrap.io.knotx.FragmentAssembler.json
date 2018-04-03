@@ -1,5 +1,0 @@
-{
-  "modules": [
-    "assembler=io.knotx.assembler.FragmentAssemblerVerticle"
-  ]
-}

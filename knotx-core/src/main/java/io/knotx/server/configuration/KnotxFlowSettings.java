@@ -15,10 +15,7 @@
  */
 package io.knotx.server.configuration;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import io.vertx.codegen.annotations.DataObject;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,26 +29,6 @@ public class KnotxFlowSettings {
   private final static String DEFAULT_SPLITTER_ADDRESS = "knotx.core.splitter";
   private final static String DEFAULT_ASSEMBLER_ADDRESS = "knotx.core.assembler";
   private final static String DEFAULT_RESPONSE_PROVIDER_ADDRESS = "knotx.gateway.responseprovider";
-
-  private final static List<RepositoryEntry> DEFAULT_REPOSITORIES = Lists.newArrayList(
-      new RepositoryEntry().setPath("/content/local/.*")
-          .setAddress("knotx.core.repository.filesystem"),
-      new RepositoryEntry().setPath("/content/.*").setAddress("knotx.core.repository.http")
-  );
-
-  private final static Map<String, MethodRoutingEntries> DEFAULT_ROUTING = Maps.newHashMap();
-
-  private final static Map<String, RoutingEntry> DEFAULT_ROUTING_TRANSITION = Maps.newHashMap();
-
-  static {
-    DEFAULT_ROUTING_TRANSITION.put("next", new RoutingEntry().setAddress("knotx.knot.handlebars"));
-
-    DEFAULT_ROUTING
-        .put(HttpMethod.GET.toString(), new MethodRoutingEntries().setItems(Lists.newArrayList(
-            new RoutingEntry().setPath(".*").setAddress("knotx.knot.service").setCsrf(false)
-                .setOnTransition(DEFAULT_ROUTING_TRANSITION)
-        )));
-  }
 
   private List<RepositoryEntry> repositories;
   private String splitter;
@@ -102,11 +79,11 @@ public class KnotxFlowSettings {
   }
 
   private void init() {
-    repositories = DEFAULT_REPOSITORIES;
+    repositories = new ArrayList<>();
     splitter = DEFAULT_SPLITTER_ADDRESS;
     assembler = DEFAULT_ASSEMBLER_ADDRESS;
     responseProvider = DEFAULT_RESPONSE_PROVIDER_ADDRESS;
-    routing = DEFAULT_ROUTING;
+    routing = new HashMap<>();
   }
 
   public Optional<RepositoryEntry> repositoryForPath(final String path) {

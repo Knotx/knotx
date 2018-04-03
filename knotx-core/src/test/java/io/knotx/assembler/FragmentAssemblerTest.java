@@ -17,7 +17,6 @@ package io.knotx.assembler;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
@@ -57,10 +56,10 @@ public class FragmentAssemblerTest {
 
   //Junit Rule, sets up logger, prepares verts, starts verticles according to the config (supplied in annotation of test method)
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithNoSnippets_expectInternalServerError(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, null,
@@ -70,7 +69,7 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, Collections
@@ -80,14 +79,14 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.asIs.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectAsIsResult(TestContext context)
       throws Exception {
     List<Pair<List<String>, String>> fragments = Arrays.asList(
-        toPair("fragment1.txt", RAW),
-        toPair("fragment2.txt", SERVICES, HANDLEBARS),
-        toPair("fragment3.txt", RAW));
-    String expectedResult = FileReader.readText("expectedAsIsResult.html");
+        toPair("io/knotx/assembler/fragment1.txt", RAW),
+        toPair("io/knotx/assembler/fragment2.txt", SERVICES, HANDLEBARS),
+        toPair("io/knotx/assembler/fragment3.txt", RAW));
+    String expectedResult = FileReader.readText("io/knotx/server/expectedAsIsResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
           context.assertEquals(HttpResponseStatus.OK.code(),
@@ -98,14 +97,14 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.unwrap.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectUnwrapResult(TestContext context)
       throws Exception {
     List<Pair<List<String>, String>> fragments = Arrays.asList(
-        toPair("fragment1.txt", RAW),
-        toPair("fragment2.txt", SERVICES, HANDLEBARS),
-        toPair("fragment3.txt", RAW));
-    String expectedResult = FileReader.readText("expectedUnwrapResult.html");
+        toPair("io/knotx/assembler/fragment1.txt", RAW),
+        toPair("io/knotx/assembler/fragment2.txt", SERVICES, HANDLEBARS),
+        toPair("io/knotx/assembler/fragment3.txt", RAW));
+    String expectedResult = FileReader.readText("io/knotx/server/expectedUnwrapResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
           context.assertEquals(HttpResponseStatus.OK.code(),
@@ -116,14 +115,14 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("test.ignore.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration("io/knotx/assembler/test.ignore.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectIgnoreResult(TestContext context)
       throws Exception {
     List<Pair<List<String>, String>> fragments = Arrays.asList(
-        toPair("fragment1.txt", RAW),
-        toPair("fragment2.txt", SERVICES, HANDLEBARS),
-        toPair("fragment3.txt", RAW));
-    String expectedResult = FileReader.readText("expectedIgnoreResult.html");
+        toPair("io/knotx/assembler/fragment1.txt", RAW),
+        toPair("io/knotx/assembler/fragment2.txt", SERVICES, HANDLEBARS),
+        toPair("io/knotx/assembler/fragment3.txt", RAW));
+    String expectedResult = FileReader.readText("io/knotx/server/expectedIgnoreResult.html");
     callAssemblerWithAssertions(context, fragments,
         knotContext -> {
           context.assertEquals(HttpResponseStatus.OK.code(),

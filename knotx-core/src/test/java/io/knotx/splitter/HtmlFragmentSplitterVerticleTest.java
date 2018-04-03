@@ -17,7 +17,6 @@ package io.knotx.splitter;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.Logback;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
@@ -48,10 +47,10 @@ public class HtmlFragmentSplitterVerticleTest {
 
   //Junit Rule, sets up logger, prepares verts, starts verticles according to the config (supplied in annotation of test method)
   @Rule
-  public RuleChain chain = RuleChain.outerRule(new Logback()).around(vertx).around(knotx);
+  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  @KnotxConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
   public void callSplitterWithEmptyBody_expectNotFoundResponse(TestContext context)
       throws Exception {
     callFragmentSplitterWithAssertions(context, "",
@@ -63,10 +62,11 @@ public class HtmlFragmentSplitterVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-fragment-splitter-test.json")
+  @KnotxConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
   public void callSplitterWithManySnippets_expectNineFragments(TestContext context)
       throws Exception {
-    callFragmentSplitterWithAssertions(context, FileReader.readText("test-many-fragments.html"),
+    callFragmentSplitterWithAssertions(context, FileReader.readText(
+        "io/knotx/splitter/test-many-fragments.html"),
         knotContext -> {
           context.assertTrue(knotContext.getFragments() != null);
           context.assertEquals(knotContext.getFragments().size(), 9);

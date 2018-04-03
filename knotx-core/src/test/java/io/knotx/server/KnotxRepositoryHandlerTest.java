@@ -58,7 +58,7 @@ public class KnotxRepositoryHandlerTest {
   private KnotxRepositoryHandler tested;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     tested = KnotxRepositoryHandler.create(vertx, configuration);
     when(httpServerResponse.setStatusCode(anyInt())).thenReturn(httpServerResponse);
   }

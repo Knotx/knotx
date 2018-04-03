@@ -21,21 +21,6 @@ import io.vertx.core.json.JsonObject;
 @DataObject(generateConverter = true, publicConverter = false)
 public class ClientDestination {
 
-  /**
-   * Default scheme of the Http repository connection = http
-   */
-  public final static String DEFAULT_SCHEME = "http";
-
-  /**
-   * Default domain of the Http repository = localhost
-   */
-  public static final String DEFAULT_DOMAIN = "localhost";
-
-  /**
-   * Default port of the http repository = 3001
-   */
-  public static final int DEFAULT_PORT = 3001;
-
   private String scheme;
   private String domain;
   private int port;
@@ -45,7 +30,7 @@ public class ClientDestination {
    * Default constructor
    */
   public ClientDestination() {
-    init();
+    //Nothing to do
   }
 
 
@@ -67,7 +52,6 @@ public class ClientDestination {
    * @param json the JSON
    */
   public ClientDestination(JsonObject json) {
-    init();
     ClientDestinationConverter.fromJson(json, this);
   }
 
@@ -80,12 +64,6 @@ public class ClientDestination {
     JsonObject json = new JsonObject();
     ClientDestinationConverter.toJson(this, json);
     return json;
-  }
-
-  private void init() {
-    domain = DEFAULT_DOMAIN;
-    port = DEFAULT_PORT;
-    scheme = DEFAULT_SCHEME;
   }
 
   /**
