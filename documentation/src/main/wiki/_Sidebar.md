@@ -9,6 +9,7 @@
     * [[Communication Flow|CommunicationFlow]]
     * [[Knot Routing|KnotRouting]]
     * [[Gateway Mode|GatewayMode]]
+  * [[Configuration|Configuration]]
   * [[Knot.x Modules|KnotxModules]]
   * [[Server|Server]]
   * [[Repository Connectors|RepositoryConnectors]]
