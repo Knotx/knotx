@@ -6,7 +6,7 @@ Handlebars Knot uses [Handlebars.js](http://handlebarsjs.com/) templating engine
 Handlebars Java port - [Handlebars.java](https://github.com/jknack/handlebars.java) to compile and evaluate
 templates.
 
-Handlebars Knot filters Fragments containing `handlebars` in `data-knots-types` attribute (see 
+Handlebars Knot filters Fragments containing `handlebars` in `data-knotx-knots` attribute (see 
 [[Knot Election Rule|Knot]]). Then for each Fragment it merges Fragment Content (Handlebars snippet) 
 with data from Fragment Context (for example data from external services or form submission response).
 
