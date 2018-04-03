@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 public class SampleApplicationTest {
 
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
+  private static final String REMOTE_REQUEST_URI_WITH_PARAMETER_CONTAINING_SPACE = "/content/remote/simple.html?parameter%20with%20space=value";
   private static final String LOCAL_REQUEST_URI = "/content/local/simple.html";
   private static final String MISSING_SERVICE_CONFIG_REQUEST_URI = "/content/local/missingServiceConfig.html";
   private static final String LOCAL_NO_BODY_REQUEST_URI = "/content/local/noBody.html";
@@ -95,6 +96,12 @@ public class SampleApplicationTest {
   @KnotxConfiguration("knotx-test-app.json")
   public void whenRequestingRemoteSimplePageWithGet_expectRemoteSimpleHtml(TestContext context) {
     testGetRequest(context, REMOTE_REQUEST_URI, "remoteSimpleResult.html");
+  }
+
+  @Test
+  @KnotxConfiguration("knotx-test-app.json")
+  public void whenRequestingRemoteSimplePageWithGetAndRequestParameterNameContainsSpace_expectRemoteSimpleHtml(TestContext context) {
+    testGetRequest(context, REMOTE_REQUEST_URI_WITH_PARAMETER_CONTAINING_SPACE, "remoteSimpleResult.html");
   }
 
   @Test
