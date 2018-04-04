@@ -26,7 +26,7 @@ First download Knot.x sample app & config for latest version, or build it yourse
 
 Now you can run Knot.x:
 ```
-java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dlogback.configurationFile=config/logback.xml -jar knotx-example-app-X.Y.Z-fat.jar -conf config/bootstrap.json
+java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory config:target/knotx-example-app-X.Y.Z-fat.jar io.vertx.core.Launcher
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 

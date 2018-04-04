@@ -15,18 +15,17 @@
  */
 package io.knotx.launcher;
 
-import io.vertx.core.Verticle;
-import io.vertx.core.spi.VerticleFactory;
+import io.vertx.core.spi.launcher.DefaultCommandFactory;
 
-public class KnotxStarterFactory implements VerticleFactory {
+/**
+ * Factory to create the {@code run-knotx} command.
+ */
+public class KnotxCommandFactory extends DefaultCommandFactory<KnotxCommand> {
 
-  @Override
-  public String prefix() {
-    return "knotx";
-  }
-
-  @Override
-  public Verticle createVerticle(String starterCmd, ClassLoader classLoader) {
-    return new KnotxStarterVerticle();
+  /**
+   * Creates a new instance of {@link KnotxCommandFactory}.
+   */
+  public KnotxCommandFactory() {
+    super(KnotxCommand.class);
   }
 }
