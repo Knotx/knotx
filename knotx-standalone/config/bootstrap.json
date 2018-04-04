@@ -1,18 +1,14 @@
 {
-  "options": {
-    "configRetrieverOptions": {
-      "scanPeriod": 10000,
-      "stores": [
-        {
-          "type": "file",
-          "format": "conf",
-          "config": {
-            "path": "config/application.conf"
-          }
+  "configRetrieverOptions": {
+    "scanPeriod": 5000,
+    "stores": [
+      {
+        "type": "file",
+        "format": "conf",
+        "config": {
+          "path": "config/application.conf"
         }
-      ]
-    },
-    "haEnabled": true,
-    "clustered": true
+      }
+    ]
   }
 }
