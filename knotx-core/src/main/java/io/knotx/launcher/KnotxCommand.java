@@ -23,7 +23,6 @@ import io.vertx.core.cli.annotations.Name;
 import io.vertx.core.cli.annotations.Option;
 import io.vertx.core.cli.annotations.Summary;
 import io.vertx.core.impl.VertxInternal;
-import io.vertx.core.impl.launcher.VertxLifecycleHooks;
 import io.vertx.core.impl.launcher.commands.BareCommand;
 import io.vertx.core.impl.launcher.commands.ExecUtils;
 import io.vertx.core.json.DecodeException;
@@ -134,14 +133,11 @@ public class KnotxCommand extends BareCommand {
   public void run() {
     JsonObject conf = getConfiguration();
     if (conf == null) {
-      //Configuration not missing, empty
       ExecUtils.exit(KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE);
     }
-    // after config parsed
 
     super.run();
     if (vertx == null) {
-      // Already logged.
       ExecUtils.exitBecauseOfVertxInitializationIssue();
     }
 
@@ -165,18 +161,9 @@ public class KnotxCommand extends BareCommand {
     deploy(KNOTX_STARTER_VERTICLE, vertx, deploymentOptions, res -> {
       if (res.failed()) {
         res.cause().printStackTrace();
-        handleDeployFailed(res.cause());
+        ExecUtils.exitBecauseOfVertxDeploymentIssue();
       }
     });
-  }
-
-  private void handleDeployFailed(Throwable cause) {
-    if (executionContext.main() instanceof VertxLifecycleHooks) {
-      ((VertxLifecycleHooks) executionContext.main())
-          .handleDeployFailed(vertx, KNOTX_STARTER_VERTICLE, deploymentOptions, cause);
-    } else {
-      ExecUtils.exitBecauseOfVertxDeploymentIssue();
-    }
   }
 
   protected JsonObject getConfiguration() {
