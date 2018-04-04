@@ -10,7 +10,7 @@
   </properties>
 
   <group>
-    <name>dev-dupa</name>
+    <name>dev</name>
     <password>dev-pass</password>
   </group>
   <management-center enabled="false">http://localhost:8080/mancenter</management-center>
