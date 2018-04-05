@@ -31,4 +31,5 @@ Default logback configuration provided for import
   <logger name="io.netty" level="ERROR"/>
   <logger name="io.vertx" level="ERROR"/>
   <logger name="io.knotx" level="INFO"/>
+  <logger name="com.hazelcast" level="INFO"/>
 </included>
