@@ -5,38 +5,31 @@ jar files specific for your target implementation (such as custom [[Adapters|Ada
 or Handlebars helpers). These jar files should be all available in the classpath.
 
 ## Recommended Knot.x deployment
-For the purpose of this example let's assume you have `KNOTX_HOME` folder created on the host machine where Knot.x
-is going to be run. Following simple steps is a recommended way
-to deploy Knot.x with custom modules:
-
-- Create a subfolder `KNOTX_HOME/app` and put **knotx-standalone-X.Y.Z-fat.jar** in that folder.
-
-- If you have custom Handlebars helpers, you can put them in that folder as well (as JAR files).
-
-- If you have project specific [[Adapters|Adapter]] or [[Knots|Knot]], you can put their jar files in the same folder.
-You don't need to embed Knot.x dependencies (e.g. `knotx-common` and `knotx-adapter-api`) in your custom jar files.
-They will be taken from **knotx-standalone-X.Y.Z-fat.jar**.
-
-- Create your own configuration JSON (any location on the host). Use `knotx-standalone.json`
-from the [latest release](https://github.com/Cognifide/knotx/releases) as a reference. In this example,
-created file is named `knotx-starter.json` and is placed in `KNOTX_HOME`.
-
-- Create your own logger configuration. See [[Knot.x Logging|Logging]] on how to do it.
-
-At this step `KNOTX_HOME` should contain:
+For the purpose of this example let's assume you have `$KNOTX_HOME` folder created on the host machine where Knot.x
+is going to be run. 
+Build a folder structure as below:
 ```
-- app
-  - custom-modules.jar
+- lib
+  - knotx-standalone-X.Y.Z-fat.jar
+  - my-handlebars-extensions.jar
+  - my-custom-extensions.jar
 - config
-  - knotx-starter.json
   - logback.xml
-- knotx-standalone-X.Y.Z-fat.jar
+  - bootstrap.json
+  - application.conf
+  - my-custom.conf
 ```
 
-To start Knot.x with custom modules, use following command
+You can use `logback.xml` from the github repo of standalone module and start tuning it for your needs.  See [[Knot.x Logging|Logging]] on how to do it.
+
+Take `boostrap.json` & `application.conf` from the knotx-standalone on github and tune for your needs.
+
+To start Knot.x with custom modules, use following command in the `$KNOTX_HOME` folder.
 
 ```
-java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dlogback.configurationFile=config/logback.xml -jar knotx-standalone-X.Y.Z-fat.jar -conf config/knotx-starter.json -cp "app/*" 
+java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory \
+     -cp config:lib/* \
+     io.vertx.core.Launcher run-knotx
 ```
 
 The execution of Knot.x using a launcher as above it uses a following exit codes as specified in [Vert.x documentation|http://vertx.io/docs/vertx-core/java/#_launcher_and_exit_code].

@@ -1,6 +1,6 @@
 {
   "configRetrieverOptions": {
-    "scanPeriod": 10000,
+    "scanPeriod": 5000,
     "stores": [
       {
         "type": "file",
