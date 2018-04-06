@@ -62,7 +62,6 @@
     <module>knotx-mocks</module>
     <module>knotx-adapter</module>
     <module>knotx-knot</module>
-    <module>knotx-standalone</module>
     <module>knotx-example</module>
 
     <module>documentation</module>
