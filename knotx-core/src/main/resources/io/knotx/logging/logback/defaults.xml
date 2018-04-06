@@ -21,8 +21,6 @@ Default logback configuration provided for import
 -->
 
 <included>
-  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
-
   <property name="LOG_PATH" value="${LOG_PATH:-./logs}"/>
 
   <property name="CONSOLE_KNOTX_LOG_PATTERN" value="%d{${KNOTX_LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [%thread] %-5level %logger{36} - %msg%n"/>
@@ -33,4 +31,5 @@ Default logback configuration provided for import
   <logger name="io.netty" level="ERROR"/>
   <logger name="io.vertx" level="ERROR"/>
   <logger name="io.knotx" level="INFO"/>
+  <logger name="com.hazelcast" level="INFO"/>
 </included>
