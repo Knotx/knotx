@@ -33,7 +33,6 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Tests -->
@@ -65,7 +64,6 @@
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
       <type>test-jar</type>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
