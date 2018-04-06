@@ -35,27 +35,22 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-service</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-action</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-handlebars</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-adapter-service-http</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

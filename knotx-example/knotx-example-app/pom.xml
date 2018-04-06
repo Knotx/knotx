@@ -32,34 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>io.knotx</groupId>
-      <artifactId>knotx-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
       <artifactId>knotx-example-handlebars-ext</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <!-- Knots -->
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-knot-service</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-knot-action</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-knot-handlebars</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.knotx</groupId>
-      <artifactId>knotx-adapter-service-http</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -76,6 +49,28 @@
       <groupId>io.knotx</groupId>
       <artifactId>knotx-mocks</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <!-- Knot.x core -->
+    <dependency>
+      <groupId>io.knotx</groupId>
+      <artifactId>knotx-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.knotx</groupId>
+      <artifactId>knotx-knot-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.knotx</groupId>
+      <artifactId>knotx-knot-action</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.knotx</groupId>
+      <artifactId>knotx-knot-handlebars</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.knotx</groupId>
+      <artifactId>knotx-adapter-service-http</artifactId>
     </dependency>
 
      <!-- Tests -->
@@ -107,7 +102,6 @@
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
       <type>test-jar</type>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
