@@ -62,7 +62,6 @@
     <module>knotx-mocks</module>
     <module>knotx-adapter</module>
     <module>knotx-knot</module>
-    <module>knotx-standalone</module>
     <module>knotx-example</module>
 
     <module>documentation</module>
@@ -74,6 +73,20 @@
     <url>http://github.com/Cognifide/knotx/tree/master</url>
     <tag>HEAD</tag>
   </scm>
+
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <snapshotRepository>
