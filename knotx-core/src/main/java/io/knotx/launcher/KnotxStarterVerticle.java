@@ -46,58 +46,61 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   public void start(Future<Void> startFuture) {
     printLogo();
 
-    JsonObject configOptions = getConfigRetrieverOptions(config(), startFuture);
+    try {
+      JsonObject configOptions = getConfigRetrieverOptions(config());
 
-    configRetriever = ConfigRetriever.create(vertx, new ConfigRetrieverOptions(configOptions));
+      configRetriever = ConfigRetriever.create(vertx, new ConfigRetrieverOptions(configOptions));
+      configRetriever.listen(conf -> {
+        if (!deployedModules.isEmpty()) {
+          LOGGER.warn("Configuration changed - Re-deploying Knot.x");
+          Observable.fromIterable(deployedModules)
+              .flatMap(item -> vertx.rxUndeploy(item.getDeploymentId()).toObservable())
+              .collect(() -> Lists.newArrayList(),
+                  (collector, result) -> collector.add(result))
+              .subscribe(
+                  success -> {
+                    LOGGER.warn("Knot.x STOPPED.");
+                    deployVerticles(conf.getNewConfiguration(), null);
+                  },
+                  error -> {
+                    LOGGER.error("Unable to undeploy verticles", error);
+                    startFuture.fail(error);
+                  }
+              );
+        }
+      });
 
-    configRetriever.listen(conf -> {
-      if (!deployedModules.isEmpty()) {
-        LOGGER.warn("Configuration changed - Re-deploying Knot.x");
-        Observable.fromIterable(deployedModules)
-            .flatMap(item -> vertx.rxUndeploy(item.getDeploymentId()).toObservable())
-            .collect(() -> Lists.newArrayList(),
-                (collector, result) -> collector.add(result))
-            .subscribe(
-                success -> {
-                  LOGGER.warn("Knot.x STOPPED.");
-                  deployVerticles(conf.getNewConfiguration(), null);
-                },
-                error -> {
-                  LOGGER.error("Unable to undeploy verticles", error);
-                  startFuture.fail(error);
-                }
-            );
-      }
-    });
-
-    configRetriever.getConfig(ar -> {
-      if (ar.succeeded()) {
-        JsonObject configuration = ar.result();
-        deployVerticles(configuration, startFuture);
-      } else {
-        LOGGER.fatal("Unable to start Knot.x", ar.cause());
-        startFuture.fail(ar.cause());
-      }
-    });
+      configRetriever.getConfig(ar -> {
+        if (ar.succeeded()) {
+          JsonObject configuration = ar.result();
+          deployVerticles(configuration, startFuture);
+        } else {
+          LOGGER.fatal("Unable to start Knot.x", ar.cause());
+          startFuture.fail(ar.cause());
+        }
+      });
+    } catch (BadKnotxConfigurationException ex) {
+      startFuture.fail(ex);
+    }
   }
 
-  private JsonObject getConfigRetrieverOptions(JsonObject config, Future<Void> startFuture) {
+  private JsonObject getConfigRetrieverOptions(JsonObject config) {
     JsonObject configOptions = null;
     if (config().getJsonObject("configRetrieverOptions") != null) {
       configOptions = config.getJsonObject("configRetrieverOptions");
       configOptions.getJsonArray("stores").stream()
           .map(item -> (JsonObject) item)
           .forEach(store -> store.getJsonObject("config")
-              .put("path", resolveConfigPath(store.getJsonObject("config").getString("path"),
-                  startFuture)));
+              .put("path", resolveConfigPath(store.getJsonObject("config").getString("path"))));
 
     } else {
-      startFuture.fail("Missing 'configRetrieverOptions' in the main config file");
+      throw new BadKnotxConfigurationException(
+          "Missing 'configRetrieverOptions' in the main config file");
     }
     return configOptions;
   }
 
-  private String resolveConfigPath(String path, Future<Void> startFuture) {
+  private String resolveConfigPath(String path) {
     String resolvedPath = path;
 
     if (path.startsWith("${KNOTX_HOME}")) {
@@ -105,12 +108,13 @@ public class KnotxStarterVerticle extends AbstractVerticle {
       if (home == null) {
         home = System.getenv("KNOTX_HOME");
         if (home == null) {
-          startFuture.fail(
-              "Unable to resolve ${KNOTX_HOME} for " + path
-                  + ". System property 'knotx.home', or environment variable 'KNOTX_HOME' are not set");
+          throw new BadKnotxConfigurationException("Unable to resolve ${KNOTX_HOME} for " + path
+              + ". System property 'knotx.home', or environment variable 'KNOTX_HOME' are not set");
         }
       }
-      resolvedPath = path.replace("${KNOTX_HOME}", home);
+      if (home != null) {
+        resolvedPath = path.replace("${KNOTX_HOME}", home);
+      }
     }
 
     return resolvedPath;
