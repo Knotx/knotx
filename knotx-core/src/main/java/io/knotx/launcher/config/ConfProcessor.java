@@ -96,7 +96,7 @@ public class ConfProcessor implements ConfigProcessor {
     public KnotxConfIncluder(JsonObject configuration) {
       configSearchFolder = Optional.ofNullable(configuration.getString("path"))
           .map(path -> path.substring(0, path.lastIndexOf("/")))
-          .orElse(System.getProperty("user.dir") + "/conf");
+          .orElse(System.getProperty("knotx.home") + "/conf");
     }
 
     @Override

@@ -46,12 +46,9 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   public void start(Future<Void> startFuture) {
     printLogo();
 
-    if (config().getJsonObject("configRetrieverOptions") == null) {
-      startFuture.fail("Missing 'configRetrieverOptions' in the main config file");
-    }
+    JsonObject configOptions = getConfigRetrieverOptions(config(), startFuture);
 
-    configRetriever = ConfigRetriever.create(vertx,
-        new ConfigRetrieverOptions(config().getJsonObject("configRetrieverOptions")));
+    configRetriever = ConfigRetriever.create(vertx, new ConfigRetrieverOptions(configOptions));
 
     configRetriever.listen(conf -> {
       if (!deployedModules.isEmpty()) {
@@ -82,6 +79,41 @@ public class KnotxStarterVerticle extends AbstractVerticle {
         startFuture.fail(ar.cause());
       }
     });
+  }
+
+  private JsonObject getConfigRetrieverOptions(JsonObject config, Future<Void> startFuture) {
+    JsonObject configOptions = null;
+    if (config().getJsonObject("configRetrieverOptions") != null) {
+      configOptions = config.getJsonObject("configRetrieverOptions");
+      configOptions.getJsonArray("stores").stream()
+          .map(item -> (JsonObject) item)
+          .forEach(store -> store.getJsonObject("config")
+              .put("path", resolveConfigPath(store.getJsonObject("config").getString("path"),
+                  startFuture)));
+
+    } else {
+      startFuture.fail("Missing 'configRetrieverOptions' in the main config file");
+    }
+    return configOptions;
+  }
+
+  private String resolveConfigPath(String path, Future<Void> startFuture) {
+    String resolvedPath = path;
+
+    if (path.startsWith("${KNOTX_HOME}")) {
+      String home = System.getProperty("knotx.home");
+      if (home == null) {
+        home = System.getenv("KNOTX_HOME");
+        if (home == null) {
+          startFuture.fail(
+              "Unable to resolve ${KNOTX_HOME} for " + path
+                  + ". System property 'knotx.home', or environment variable 'KNOTX_HOME' are not set");
+        }
+      }
+      resolvedPath = path.replace("${KNOTX_HOME}", home);
+    }
+
+    return resolvedPath;
   }
 
   private void deployVerticles(JsonObject config, Future<Void> completion) {
