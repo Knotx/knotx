@@ -15,24 +15,17 @@
  */
 package io.knotx.launcher;
 
-import io.vertx.core.Launcher;
-import io.vertx.core.impl.launcher.commands.ExecUtils;
-import io.vertx.core.json.JsonObject;
+import io.vertx.core.spi.launcher.DefaultCommandFactory;
 
-public class KnotxLauncher extends Launcher {
+/**
+ * Factory to create the {@code run-knotx} command.
+ */
+public class KnotxCommandFactory extends DefaultCommandFactory<KnotxCommand> {
+
   /**
-   * Error code used when the knotx configuration is missing or it's empty
+   * Creates a new instance of {@link KnotxCommandFactory}.
    */
-  public static final int KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE = 30;
-
-  public static void main(String[] args){
-    new KnotxLauncher().dispatch(args);
-  }
-
-  @Override
-  public void afterConfigParsed(JsonObject config) {
-    if (config.isEmpty()) {
-      ExecUtils.exit(KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE);
-    }
+  public KnotxCommandFactory() {
+    super(KnotxCommand.class);
   }
 }

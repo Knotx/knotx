@@ -62,7 +62,6 @@
     <module>knotx-mocks</module>
     <module>knotx-adapter</module>
     <module>knotx-knot</module>
-    <module>knotx-standalone</module>
     <module>knotx-example</module>
 
     <module>documentation</module>
@@ -74,6 +73,20 @@
     <url>http://github.com/Cognifide/knotx/tree/master</url>
     <tag>HEAD</tag>
   </scm>
+
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <snapshotRepository>
@@ -90,27 +103,6 @@
     <file.encoding>UTF-8</file.encoding>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
-
-    <!-- Dependency versions -->
-    <vertx.version>3.5.0</vertx.version>
-    <rxjava.version>2.1.6</rxjava.version>
-    <!-- https://github.com/vert-x3/vertx-codegen/issues/143 -->
-    <!-- FIXME remove jackson dependency after moving to 3.5.1 -->
-    <jackson.version>2.9.0</jackson.version>
-    <jsoup.version>1.11.2</jsoup.version>
-    <commons-io.version>2.5</commons-io.version>
-    <commons-lang3.version>3.5</commons-lang3.version>
-    <guava.version>20.0</guava.version>
-    <logback-classic.version>1.1.8</logback-classic.version>
-    <typesafe.version>1.3.3</typesafe.version>
-
-    <!-- Test dependencies versions -->
-    <junit.version>4.12</junit.version>
-    <assertj.version>3.6.1</assertj.version>
-    <powermock.version>1.6.6</powermock.version>
-    <mockito.version>2.0.2-beta</mockito.version>
-    <hamcrest.version>1.3</hamcrest.version>
-    <system-rules.version>1.16.1</system-rules.version>
 
     <!-- plugin version -->
     <maven.clean.plugin.version>3.0.0</maven.clean.plugin.version>
@@ -135,200 +127,12 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Logger -->
       <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback-classic.version}</version>
-      </dependency>
-      <!-- CORE -->
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-core</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-rx-java2</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web-client</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-hazelcast</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-service-factory</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-dropwizard-metrics</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-service-proxy</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-codegen</artifactId>
-        <version>${vertx.version}</version>
-        <optional>true</optional>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-config</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.reactivex.rxjava2</groupId>
-        <artifactId>rxjava</artifactId>
-        <version>${rxjava.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-
-      <!-- Vert.x Microservice toolbox -->
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-service-discovery</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-circuit-breaker</artifactId>
-        <version>${vertx.version}</version>
-      </dependency>
-
-      <!-- REPOSITORY -->
-      <dependency>
-        <groupId>org.jsoup</groupId>
-        <artifactId>jsoup</artifactId>
-        <version>${jsoup.version}</version>
-      </dependency>
-
-      <!-- COMMON -->
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${guava.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${commons-lang3.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.typesafe</groupId>
-        <artifactId>config</artifactId>
-        <version>${typesafe.version}</version>
-      </dependency>
-
-      <!-- Tests -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-all</artifactId>
-        <version>${hamcrest.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-core</artifactId>
-        <version>${vertx.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-unit</artifactId>
-        <version>${vertx.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-api-mockito</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-module-junit4</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>${mockito.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.googlecode.zohhak</groupId>
-        <artifactId>zohhak</artifactId>
-        <version>1.1.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>uk.co.datumedge</groupId>
-        <artifactId>hamcrest-json</artifactId>
-        <version>0.2</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.github.stefanbirkner</groupId>
-        <artifactId>system-rules</artifactId>
-        <version>${system-rules.version}</version>
-        <scope>test</scope>
-        <!-- junit:junit-dep is deprecated, and junit:junit replaces it. -->
-        <exclusions>
-          <exclusion>
-            <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>io.knotx</groupId>
+        <artifactId>knotx-dependencies</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -510,9 +314,9 @@
                   <transformer
                       implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                     <manifestEntries>
-                      <Main-Class>io.knotx.launcher.KnotxLauncher</Main-Class>
-                      <Main-Verticle>io.knotx.launcher.KnotxStarterVerticle
-                      </Main-Verticle>
+                      <Main-Class>io.vertx.core.Launcher</Main-Class>
+                      <Main-Verticle>io.knotx.launcher.KnotxStarterVerticle</Main-Verticle>
+                      <Main-Command>run-knotx</Main-Command>
                     </manifestEntries>
                   </transformer>
                   <transformer

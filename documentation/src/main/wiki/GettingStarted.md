@@ -20,13 +20,15 @@ To run Knot.x you need Java 8.
 
 ## Hello world!
 
+**TODO: The instructions below will change in 1.3 thanks to the knotx starter distribution**
+
 First download Knot.x sample app & config for latest version, or build it yourself (see [[Building|GettingStarted#building]] section):
 - [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
 - [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
 
 Now you can run Knot.x:
 ```
-java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dlogback.configurationFile=config/logback.xml -jar knotx-example-app-X.Y.Z-fat.jar -conf config/bootstrap.json
+java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -cp config:lib/knotx-example-app-X.Y.Z-fat.jar io.vertx.core.Launcher run-knotx
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 

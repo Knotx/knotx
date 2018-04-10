@@ -33,7 +33,6 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-knot-handlebars</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>
