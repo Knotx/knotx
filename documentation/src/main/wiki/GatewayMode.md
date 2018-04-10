@@ -15,37 +15,24 @@ production defines only default Knot.x request flow (with Repository and Splitte
 Example Web API endpoint is configured and delivered in [[Knot.x demo|RunningTheDemo]].
 This example endpoint is configured like below:
 
-```
-"customFlow": {
-  "routing": {
-    "GET": {
-      "items": [
-        {
-          "path": "/customFlow/.*",
-          "address": "knotx.gateway.gatewayknot",
-          "onTransition": {
-            "next": {
-              "address": "knotx.gateway.requestprocessor"
-            }
-          }
-        }
-      ]
-    },
-    "PUT": {
-      "items": [
-        {
-          "path": "/customFlow/.*",
-          "address": "knotx.gateway.gatewayknot",
-          "onTransition": {
-            "next": {
-              "address": "knotx.gateway.requestprocessor"
-            }
-          }
-        }
-      ]
-     }
-  },
-  "responseProvider": "knotx.gateway.responseprovider"
+```hocon
+# Configuration of the custom flow - aka Gateway mode
+customFlow {
+  #   responseProvider = knotx.gateway.responseprovider
+  routing.GET.item = [
+    {
+      path = "/customFlow/.*"
+      address = ${global.address.knot.gateway}
+      onTransition.next.address = ${global.address.knot.exampleReqProcessor}
+    }
+  ]
+  routing.PUT.items = [
+    {
+      path = "/customFlow/.*"
+      address = ${global.address.knot.gateway}
+      onTransition.next.address = ${global.address.knot.exampleReqProcessor}
+    }
+  ]
 }
 ```
 

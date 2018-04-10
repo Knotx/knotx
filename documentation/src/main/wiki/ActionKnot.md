@@ -93,15 +93,8 @@ While HTTP request processing, Action Knot calls Adapter using
 bus. It can be used to control the low level aspects of the event bus communication like timeouts, headers, message 
 codec names.
 
-The `deliveryOptions` need to be added in the following place, of the Action Knot configuration to define the 
+The `deliveryOptions` need to be added in the following place, of the Action Knot configuration (`includes/actionKnot.conf`) to define the 
 timeout for the Adapter response.
-```
-{
-  "options": {
-    "config": {
-      "deliveryOptions": {
-        "timeout": 15000,
-         ...
-      },
-      ...
+```hocon
+deliveryOptions.timeout: 15000
 ```
