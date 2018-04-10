@@ -12,7 +12,8 @@ You can download it from [Knot.x Downloads](http://knotx.io/downloads)
 
 ## Hello world!
 
-**TODO: The instructions below will change in 1.3 thanks to the knotx starter distribution**
+**TODO: The instructions below will change in 1.3 thanks to the knotx starter distribution - or Knotx-example distribution/repo ??? **
+
 - Download Example App distribution for latest version from [Knot.x Downloads](http://knotx.io/downloads) to new folder.
 - Unpack it
 ```
