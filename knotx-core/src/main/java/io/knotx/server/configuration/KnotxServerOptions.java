@@ -18,10 +18,11 @@ package io.knotx.server.configuration;
 import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
 
 import io.knotx.configuration.CustomHttpHeader;
+import io.knotx.server.KnotxServerVerticle;
+import io.knotx.util.StringUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.BackpressureOverflowStrategy;
 import io.vertx.codegen.annotations.DataObject;
-import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
@@ -42,9 +43,11 @@ public class KnotxServerOptions {
   public final static long DEFAULT_UPLOAD_LIMIT = -1;
 
   /**
-   * Default file upload folder =
+   * Default file upload folder = file-uploads
    */
-  private static final String DEFAULT_UPLOAD_DIRECTORY = BodyHandler.DEFAULT_UPLOADS_DIRECTORY;
+  private static final String DEFAULT_UPLOAD_DIRECTORY = StringUtil
+      .getString(KnotxServerVerticle.KNOTX_FILE_UPLOAD_DIR_PROPERTY,
+          BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
 
   /**
    * Default flag if to show the exceptions on error pages = false
