@@ -92,7 +92,7 @@ public class MyVerticleOptions {
 - JSON converters for this class will be automatically generated (during compilation) if field names follows the [[Vert.x Data Objects|https://github.com/vert-x3/vertx-codegen#data-objects]] 
 - Data object must have **Default & Copy Constructors**, **Constructor from JsonObject** and **toJson()** method
 - Any defaults in the configuration need to be implemented in this class.
-- If some of the configuration variables might need to be overridden through JVM system properties (e.g. -Dmy.setting=123) use a convenient Java methods, such as `Integer.getInteger("my.setting)` for integers (same methods available for Strings, Booleans, etc.) (See KnotxServerOptions.DEFAULT_HTTP_PORT as an example)
+- If some of the configuration variables might need to be overridden through JVM system properties (e.g. -Dmy.sampleParam=123) use a convenient Java methods, such as `Integer.getInteger("my.sampleParam)` for integers (same methods available for Strings, Booleans, etc.) (See KnotxServerOptions.DEFAULT_HTTP_PORT as an example)
 - *Use fluent setters*
 
 2. Implement your verticle that way it will use your configuration data object (initialized by the config at start)
