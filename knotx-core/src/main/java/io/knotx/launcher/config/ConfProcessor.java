@@ -30,6 +30,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
@@ -55,7 +57,7 @@ public class ConfProcessor implements ConfigProcessor {
 
   @Override
   public void process(Vertx vertx, JsonObject configuration, Buffer input,
-      Handler<AsyncResult<JsonObject>> handler) {
+                      Handler<AsyncResult<JsonObject>> handler) {
     // Use executeBlocking even if the bytes are in memory
     // Indeed, HOCON resolution can read others files (includes).
     vertx.executeBlocking(
@@ -95,8 +97,9 @@ public class ConfProcessor implements ConfigProcessor {
 
     public KnotxConfIncluder(JsonObject configuration) {
       configSearchFolder = Optional.ofNullable(configuration.getString("path"))
-          .map(path -> path.substring(0, path.lastIndexOf("/")))
-          .orElse(System.getProperty("user.dir") + "/conf");
+          .map(path ->
+            path.contains("/") ? path.substring(0, path.lastIndexOf("/")) : StringUtils.EMPTY
+          ).orElse(System.getProperty("user.dir") + "/conf");
     }
 
     @Override
@@ -106,7 +109,12 @@ public class ConfProcessor implements ConfigProcessor {
 
     @Override
     public ConfigObject include(ConfigIncludeContext context, String what) {
-      File file = new File(configSearchFolder, what);
+     final  File file;
+      if (StringUtils.isBlank(configSearchFolder)) {
+        file = new File(what);
+      } else {
+        file = new File(configSearchFolder, what);
+      }
       return ConfigFactory.parseFile(file, context.parseOptions()).root();
     }
   }
