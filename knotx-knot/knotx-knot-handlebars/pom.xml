@@ -38,6 +38,22 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-rx-java2</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-service-proxy</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Handlebars -->
@@ -77,6 +93,7 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.googlecode.zohhak</groupId>
