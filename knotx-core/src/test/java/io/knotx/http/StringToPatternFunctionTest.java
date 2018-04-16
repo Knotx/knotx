@@ -29,7 +29,7 @@ public class StringToPatternFunctionTest {
 
   @BeforeClass
   public static void setUp() {
-    stringToPattern = new StringToPatternFunction();
+    stringToPattern = StringToPatternFunction.getInstance();
   }
 
   @Test

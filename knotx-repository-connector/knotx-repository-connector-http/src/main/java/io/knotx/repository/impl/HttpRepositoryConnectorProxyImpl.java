@@ -69,7 +69,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     allowedRequestHeaders = configuration.getJsonArray("allowedRequestHeaders", new JsonArray())
         .stream()
         .map(object -> (String) object)
-        .map(new StringToPatternFunction())
+        .map(StringToPatternFunction.getInstance())
         .collect(Collectors.toList());
     httpClient = createHttpClient(vertx);
   }

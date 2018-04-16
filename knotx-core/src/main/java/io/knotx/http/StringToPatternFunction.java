@@ -27,12 +27,19 @@ public class StringToPatternFunction implements Function<String, Pattern> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StringToPatternFunction.class);
 
-  private static final String WILDCARD = "*";
+  private static final StringToPatternFunction INSTANCE = new StringToPatternFunction();
 
+  private static final String WILDCARD = "*";
   private static final String REGEX_START_ESCAPING = "\\Q";
   private static final String REGEX_STOP_ESCAPING = "\\E";
-
   private static final String WILDCARD_REPLACEMENT = REGEX_STOP_ESCAPING + "(.+)" + REGEX_START_ESCAPING;
+
+  private StringToPatternFunction() {
+  }
+
+  public static StringToPatternFunction getInstance() {
+    return INSTANCE;
+  }
 
   @Override
   public Pattern apply(String stringPattern) {
