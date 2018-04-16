@@ -6,7 +6,7 @@
         "type": "file",
         "format": "conf",
         "config": {
-          "path": "config/application.conf"
+          "path": "${KNOTX_HOME}/config/application.conf"
         }
       }
     ]

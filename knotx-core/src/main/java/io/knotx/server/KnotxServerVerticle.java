@@ -38,6 +38,7 @@ import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 public class KnotxServerVerticle extends AbstractVerticle {
 
   public static final String KNOTX_PORT_PROP_NAME = "knotx.port";
+  public static final String KNOTX_FILE_UPLOAD_DIR_PROPERTY = "knotx.fileUploadDir";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxServerVerticle.class);
 

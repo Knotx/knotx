@@ -17,12 +17,14 @@ package io.knotx.launcher;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.cli.CLIException;
 import io.vertx.core.cli.annotations.Description;
 import io.vertx.core.cli.annotations.Name;
 import io.vertx.core.cli.annotations.Option;
 import io.vertx.core.cli.annotations.Summary;
 import io.vertx.core.impl.VertxInternal;
+import io.vertx.core.impl.launcher.VertxLifecycleHooks;
 import io.vertx.core.impl.launcher.commands.BareCommand;
 import io.vertx.core.impl.launcher.commands.ExecUtils;
 import io.vertx.core.json.DecodeException;
@@ -136,14 +138,18 @@ public class KnotxCommand extends BareCommand {
       ExecUtils.exit(KNOTX_MISSING_OR_EMPTY_CONFIGURATION_EXIT_CODE);
     }
 
-    super.run();
+    afterConfigParsed(conf);
+
+    super.run(this::afterStoppingVertx);
     if (vertx == null) {
+      // Already logged.
       ExecUtils.exitBecauseOfVertxInitializationIssue();
     }
 
     if (vertx instanceof VertxInternal) {
       ((VertxInternal) vertx).addCloseHook(completionHandler -> {
         try {
+          beforeStoppingVertx(vertx);
           completionHandler.handle(Future.succeededFuture());
         } catch (Exception e) {
           completionHandler.handle(Future.failedFuture(e));
@@ -154,6 +160,7 @@ public class KnotxCommand extends BareCommand {
     deploymentOptions = new DeploymentOptions();
     configureFromSystemProperties(deploymentOptions, DEPLOYMENT_OPTIONS_PROP_PREFIX);
     deploymentOptions.setConfig(conf).setHa(ha);
+    beforeDeployingVerticle(deploymentOptions);
     deploy();
   }
 
@@ -161,9 +168,18 @@ public class KnotxCommand extends BareCommand {
     deploy(KNOTX_STARTER_VERTICLE, vertx, deploymentOptions, res -> {
       if (res.failed()) {
         res.cause().printStackTrace();
-        ExecUtils.exitBecauseOfVertxDeploymentIssue();
+        handleDeployFailed(res.cause());
       }
     });
+  }
+
+  private void handleDeployFailed(Throwable cause) {
+    if (executionContext.main() instanceof VertxLifecycleHooks) {
+      ((VertxLifecycleHooks) executionContext.main())
+          .handleDeployFailed(vertx, KNOTX_STARTER_VERTICLE, deploymentOptions, cause);
+    } else {
+      ExecUtils.exitBecauseOfVertxDeploymentIssue();
+    }
   }
 
   protected JsonObject getConfiguration() {
@@ -211,5 +227,33 @@ public class KnotxCommand extends BareCommand {
       }
     }
     return conf;
+  }
+
+  protected void beforeDeployingVerticle(DeploymentOptions deploymentOptions) {
+    final Object main = executionContext.main();
+    if (main instanceof VertxLifecycleHooks) {
+      ((VertxLifecycleHooks) main).beforeDeployingVerticle(deploymentOptions);
+    }
+  }
+
+  protected void afterConfigParsed(JsonObject config) {
+    final Object main = executionContext.main();
+    if (main instanceof VertxLifecycleHooks) {
+      ((VertxLifecycleHooks) main).afterConfigParsed(config);
+    }
+  }
+
+  protected void beforeStoppingVertx(Vertx vertx) {
+    final Object main = executionContext.main();
+    if (main instanceof VertxLifecycleHooks) {
+      ((VertxLifecycleHooks) main).beforeStoppingVertx(vertx);
+    }
+  }
+
+  protected void afterStoppingVertx() {
+    final Object main = executionContext.main();
+    if (main instanceof VertxLifecycleHooks) {
+      ((VertxLifecycleHooks) main).afterStoppingVertx();
+    }
   }
 }

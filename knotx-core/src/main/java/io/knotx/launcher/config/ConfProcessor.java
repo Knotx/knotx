@@ -99,7 +99,7 @@ public class ConfProcessor implements ConfigProcessor {
       configSearchFolder = Optional.ofNullable(configuration.getString("path"))
           .map(path ->
             path.contains("/") ? path.substring(0, path.lastIndexOf("/")) : StringUtils.EMPTY
-          ).orElse(System.getProperty("user.dir") + "/conf");
+          ).orElse(System.getProperty("knotx.home") + "/conf");
     }
 
     @Override
