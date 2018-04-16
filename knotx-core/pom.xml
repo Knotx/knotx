@@ -62,6 +62,7 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-proxy</artifactId>
       <classifier>processor</classifier>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
