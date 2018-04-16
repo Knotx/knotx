@@ -28,8 +28,6 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.ErrorHandler;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.function.BiConsumer;
 
 public class MockServiceVerticle extends AbstractVerticle {
