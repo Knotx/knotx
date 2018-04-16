@@ -34,11 +34,27 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
+      <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-adapter-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-rx-java2</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-service-proxy</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Tests -->
@@ -65,6 +81,12 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-config</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.knotx</groupId>
