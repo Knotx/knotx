@@ -62,7 +62,7 @@
     <module>knotx-mocks</module>
     <module>knotx-adapter</module>
     <module>knotx-knot</module>
-    <module>knotx-example</module>
+    <module>knotx-it-tests</module>
 
     <module>documentation</module>
   </modules>
@@ -117,6 +117,7 @@
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
     <maven.gpg.plugin.version>1.5</maven.gpg.plugin.version>
+    <maven.failsafe.plugin.version>2.21.0</maven.failsafe.plugin.version>
     <jacoco.maven.plugin.version>0.7.7.201606060606</jacoco.maven.plugin.version>
 
     <generated.dir>${project.basedir}/src/main/generated</generated.dir>
@@ -246,28 +247,35 @@
             </execution>
           </executions>
         </plugin>
-        <!-- Attache fat jar to the distribution -->
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.12</version>
-          <configuration>
-            <skipAttach>true</skipAttach>
-          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven.failsafe.plugin.version}</version>
           <executions>
             <execution>
-              <id>attach-distribution</id>
-              <phase>package</phase>
+              <id>integration-test</id>
               <goals>
-                <goal>attach-artifact</goal>
+                <goal>integration-test</goal>
               </goals>
               <configuration>
-                <artifacts>
-                  <artifact>
-                    <file>target/${project.artifactId}-${project.version}-fat.jar</file>
-                    <type>fat.jar</type>
-                  </artifact>
-                </artifacts>
+                <systemPropertyVariables>
+                  <vertx.logger-delegate-factory-class-name>
+                    io.vertx.core.logging.SLF4JLogDelegateFactory
+                  </vertx.logger-delegate-factory-class-name>
+                </systemPropertyVariables>
+              </configuration>
+            </execution>
+            <execution>
+              <id>verify</id>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <systemPropertyVariables>
+                  <vertx.logger-delegate-factory-class-name>
+                    io.vertx.core.logging.SLF4JLogDelegateFactory
+                  </vertx.logger-delegate-factory-class-name>
+                </systemPropertyVariables>
               </configuration>
             </execution>
           </executions>
@@ -298,40 +306,6 @@
               <exclude>**/*.templ</exclude>
             </excludes>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>${maven.shade.plugin.version}</version>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>shade</goal>
-              </goals>
-              <configuration>
-                <transformers>
-                  <transformer
-                      implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                    <manifestEntries>
-                      <Main-Class>io.vertx.core.Launcher</Main-Class>
-                      <Main-Verticle>io.knotx.launcher.KnotxStarterVerticle</Main-Verticle>
-                      <Main-Command>run-knotx</Main-Command>
-                    </manifestEntries>
-                  </transformer>
-                  <transformer
-                      implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                    <resource>META-INF/services/io.vertx.core.spi.VerticleFactory</resource>
-                    <resource>META-INF/services/io.vertx.config.spi.ConfigProcessor</resource>
-                  </transformer>
-                </transformers>
-                <artifactSet/>
-                <outputFile>
-                  ${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
-                </outputFile>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -447,8 +421,6 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <excludes>
-                <exclude>**/*SampleApplicationTest.java</exclude>
-                <exclude>**/*SampleApplicationHeadersTest.java</exclude>
                 <exclude>**/*HttpClientFacadeTest.java</exclude>
                 <exclude>**/*HttpServiceAdapterTest.java</exclude>
                 <exclude>**/*KnotxServerRoutingTest.java</exclude>

@@ -1,0 +1,300 @@
+{
+  "modules": [
+    "server=io.knotx.server.KnotxServerVerticle",
+    "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle",
+    "fsRepo=io.knotx.repository.fs.FilesystemRepositoryConnectorVerticle",
+    "splitter=io.knotx.splitter.FragmentSplitterVerticle",
+    "assembler=io.knotx.assembler.FragmentAssemblerVerticle",
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle",
+    "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle",
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle",
+    "serviceAdapter=io.knotx.adapter.service.http.HttpServiceAdapterVerticle",
+    "mockRepo=io.knotx.mocks.MockRemoteRepositoryVerticle",
+    "mockService=io.knotx.mocks.MockServiceVerticle"
+  ],
+  "config": {
+    "server": {
+      "options": {
+        "config": {
+          "serverOptions": {
+            "port": 9092
+          },
+          "displayExceptionDetails": true,
+          "allowedResponseHeaders": [
+            "Access-Control-Allow-Origin",
+            "Content-Type",
+            "Content-Length"
+          ],
+          "defaultFlow": {
+            "repositories": [
+              {
+                "path": "/content/local/.*",
+                "address": "knotx.core.repository.filesystem"
+              },
+              {
+                "path": "/content/.*",
+                "address": "knotx.core.repository.http"
+              }
+            ],
+            "routing": {
+              "GET": {
+                "items": [
+                  {
+                    "path": ".*\\.html",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "POST": {
+                "items": [
+                  {
+                    "path": ".*\\.html",
+                    "address": "knotx.knot.action",
+                    "onTransition": {
+                      "next": {
+                        "address": "knotx.knot.service",
+                        "onTransition": {
+                          "next": {
+                            "address": "knotx.knot.handlebars"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "mockRepo": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/repository",
+          "httpPort": 4001
+        }
+      }
+    },
+    "mockService": {
+      "options": {
+        "config": {
+          "mockDataRoot": "mock/service",
+          "bouncing": true,
+          "httpPort": 4000
+        }
+      }
+    },
+    "actionAdapter": {
+      "options": {
+        "config": {
+          "address": "mock.action.adapter",
+          "clientOptions": {
+            "maxPoolSize": 1000,
+            "keepAlive": false
+          },
+          "customRequestHeader": {
+            "name": "Server-User-Agent",
+            "value": "Knot.x"
+          },
+          "services": [
+            {
+              "path": "/service/mock/.*",
+              "scheme": "http",
+              "domain": "localhost",
+              "port": 4000,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            },
+            {
+              "scheme": "http",
+              "path": "/service/.*",
+              "domain": "localhost",
+              "port": 8080,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "actionKnot": {
+      "options": {
+        "config": {
+          "formIdentifierName": "_frmId",
+          "adapters": [
+            {
+              "name": "subscribe-competition",
+              "address": "mock.action.adapter",
+              "params": {
+                "path": "/service/mock/post-competition.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            },
+            {
+              "name": "subscribe-newsletter",
+              "address": "mock.action.adapter",
+              "params": {
+                "path": "/service/mock/post-newsletter.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            },
+            {
+              "name": "step1",
+              "address": "mock.action.adapter",
+              "params": {
+                "path": "/service/mock/post-step-1.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie",
+                "Content-Type",
+                "Content-Length"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            },
+            {
+              "name": "step2",
+              "address": "mock.action.adapter",
+              "params": {
+                "path": "/service/mock/post-step-2.json"
+              },
+              "allowedRequestHeaders": [
+                "Cookie",
+                "Content-Type",
+                "Content-Length"
+              ],
+              "allowedResponseHeaders": [
+                "Set-Cookie",
+                "Location"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "httpRepo": {
+      "options": {
+        "config": {
+          "clientDestination": {
+            "scheme": "http",
+            "domain": "localhost",
+            "port": 4001
+          }
+        }
+      }
+    },
+    "serviceKnot": {
+      "options": {
+        "config": {
+          "services": [
+            {
+              "name": "first-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/first.json"
+              },
+              "cacheKey": "first"
+            },
+            {
+              "name": "second-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/second.json"
+              }
+            },
+            {
+              "name": "third-service",
+              "address": "knotx.adapter.service.http",
+              "params": {
+                "path": "/service/mock/third.json"
+              }
+            },
+            {
+              "name": "labelsRepository",
+              "address": "knotx.adapter.service.http"
+            }
+          ]
+        }
+      }
+    },
+    "serviceAdapter": {
+      "options": {
+        "config": {
+          "services": [
+            {
+              "path": "/service/mock/.*",
+              "scheme": "http",
+              "domain": "localhost",
+              "port": 4000,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            },
+            {
+              "path": "/service/.*",
+              "scheme": "http",
+              "domain": "localhost",
+              "port": 8080,
+              "allowedRequestHeaders": [
+                "Content-Type",
+                "X-*"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "hbsKnot": {
+      "options": {
+        "config": {
+          "cacheSize": 1000
+        }
+      }
+    },
+    "splitter": {
+      "options": {
+        "config": {
+          "snippetTagName": "script"
+        }
+      }
+    },
+    "assembler": {
+      "options": {
+        "config": {
+          "snippetTagName": "script"
+        }
+      }
+    }
+  }
+}
+
