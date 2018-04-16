@@ -45,6 +45,12 @@
       <groupId>com.github.jknack</groupId>
       <artifactId>handlebars</artifactId>
       <version>${handlebars.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Tests -->
