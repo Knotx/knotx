@@ -41,22 +41,27 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-rx-java2</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-proxy</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -67,18 +72,22 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-discovery</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-circuit-breaker</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-config</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-hazelcast</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -105,12 +114,13 @@
 
     <!-- Tests -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
     <dependency>
       <groupId>com.github.stefanbirkner</groupId>
