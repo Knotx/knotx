@@ -77,8 +77,12 @@ public class TestVertxDeployer implements TestRule {
     return new DeploymentOptions()
         .setConfig(new JsonObject().put("configRetrieverOptions", new ConfigRetrieverOptions()
             .setStores(Lists.newArrayList(
-                new ConfigStoreOptions().setType("file").setFormat("json")
+                new ConfigStoreOptions().setType("file").setFormat(getConfigFormat(path))
                     .setConfig(new JsonObject().put("path", path))
             )).toJson()));
+  }
+
+  private String getConfigFormat(String path) {
+    return path.substring(path.lastIndexOf('.') + 1);
   }
 }

@@ -96,6 +96,12 @@ A HTTP server port can be also specified through system property `knotx.port` th
 java -Dknotx.port=9999 ...
 ```
 
+Additionally, you can use JVM system property `knotx.fileUploadDir` to control where file uploads are to be stored in filesystem. 
+The system property takes precedence over the value configured in configuration file. 
+```
+java -Dknotx.fileUploadDir=/tmp/knotx-uploads ...
+```
+
 ### How to configure Knot.x to listen with SSL/TLS
 
 Generate certificates for your machine (e.g. localhost)

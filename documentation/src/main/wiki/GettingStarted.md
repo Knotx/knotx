@@ -2,26 +2,22 @@
 
 ## First steps
 
-TODO: New blog post for 1.3 ???
 See our first blog post [Hello Rest Service](http://knotx.io/blog/hello-rest-service/) which is a great entry point to the Knot.x world.
 See other [Knot.x tutorial blogs](http://knotx.io/blog/) to learn more.
 
 ## Getting Binaries
-Knot.x is available as distribution package shipped with all the required dependencies and configurations.
-You can download it from [Knot.x Downloads](http://knotx.io/downloads)
+Download Knot.x vanilla distribution from [Knot.x Downloads](https://bintray.com/knotx/downloads/distro) if you want to add your custom implementation.
+Alternatively, you can download example project distribution from [Knot.x Examples](https://bintray.com/knotx/downloads/examples).
 
-## Hello world!
+To run Knot.x you need Java 8.
 
-**TODO: The instructions below will change in 1.3 thanks to the knotx starter distribution - or Knotx-example distribution/repo ??? **
+## Run Example Knot.x project
 
-- Download Example App distribution for latest version from [Knot.x Downloads](http://knotx.io/downloads) to new folder.
-- Unpack it
+Download example distribution from [Knot.x Examples](https://bintray.com/knotx/downloads/examples). Unpack it to any folder
+and run Knot.x as follows:
 ```
-$> unzip knotx-X.Y.Z.zip
-```
-- Run it
-```
-$> knotx/bin/knotx run-knotx
+$> cd acme-stack
+$> bin/knotx run-knotx
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 
