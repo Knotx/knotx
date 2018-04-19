@@ -7,6 +7,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-384](https://github.com/Cognifide/knotx/pull/384) - Introduce Knot.x server backpressure mechanism
  - [PR-399](https://github.com/Cognifide/knotx/pull/399) - Make knotx-core more concise and merge base Knot.x concepts into a single module
  - [PR-395](https://github.com/Cognifide/knotx/pull/395) - Fix for [#394](https://github.com/Cognifide/knotx/issues/394) - implemented encoding request parameter names in `HttpRepositoryConnectorProxyImpl`
+- [PR-415](https://github.com/Cognifide/knotx/pull/415) - bugfix: headers configurations (e.g. `allowedHeaders`) are now case insensitive
 
 ## Version 1.2.1
  - [PR-385](https://github.com/Cognifide/knotx/pull/385) - Fix for [#107](https://github.com/Cognifide/knotx/pull/107) - Support for snippet tags other than `script`
