@@ -73,7 +73,7 @@ public class ServiceSettings {
     ServiceSettingsConverter.fromJson(json, this);
     if (allowedRequestHeaders != null) {
       allowedRequestHeadersPatterns = allowedRequestHeaders.stream()
-          .map(expr -> Pattern.compile(expr)).collect(Collectors.toList());
+          .map(expr -> Pattern.compile(expr, Pattern.CASE_INSENSITIVE)).collect(Collectors.toList());
     }
   }
 
@@ -149,7 +149,7 @@ public class ServiceSettings {
   public ServiceSettings setAllowedRequestHeaders(Set<String> allowedRequestHeaders) {
     this.allowedRequestHeaders = allowedRequestHeaders;
     allowedRequestHeadersPatterns = allowedRequestHeaders.stream()
-        .map(expr -> Pattern.compile(expr)).collect(Collectors.toList());
+        .map(expr -> Pattern.compile(expr, Pattern.CASE_INSENSITIVE)).collect(Collectors.toList());
     return this;
   }
 
