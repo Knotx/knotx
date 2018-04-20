@@ -184,7 +184,7 @@ public class HttpRepositoryOptions {
   /**
    * Set the header (name and value) to be sent in every request to the remote repository
    *
-   * @param customHttpHeader the header name & value
+   * @param customHttpHeader the header name and value
    * @return a reference to this, so the API can be used fluently
    */
   public HttpRepositoryOptions setCustomHttpHeader(CustomHttpHeader customHttpHeader) {
