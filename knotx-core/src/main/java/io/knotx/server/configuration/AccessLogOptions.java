@@ -121,13 +121,13 @@ public class AccessLogOptions {
    * Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
    * Available values are:
    * <ul>
-   *   <li>DEFAULT <br/>
+   *   <li>DEFAULT
    *      <i>remote-client</i> - - [<i>timestamp</i>] "<i>method</i> <i>uri</i> <i>version</i>" <i>status</i> <i>content-length</i> "<i>referrer</i>" "<i>user-agent</i>
    *   </li>
-   *   <li>SHORT <br/>
+   *   <li>SHORT
    *      <i>remote-client</i> - <i>method</i> <i>uri</i> <i>version</i> <i>status</i> <i>content-length</i> <i>duration</i> ms
    *   </li>
-   *   <li>TINY <br/>
+   *   <li>TINY
    *      <i>method</i> <i>uri</i> <i>status</i> - <i>content-length</i> <i>duration</i>
    *   </li>
    * </ul>

@@ -88,10 +88,19 @@ public class ServiceSettings {
     return json;
   }
 
+  /**
+   *
+   * @return a service path
+   */
   public String getPath() {
     return path;
   }
 
+  /**
+   * Sets the service path
+   * @param path a path
+   * @return a reference to this, so the API can be used fluently
+   */
   public ServiceSettings setPath(String path) {
     this.path = path;
     return this;
@@ -107,6 +116,7 @@ public class ServiceSettings {
   /**
    * Set the {@code domain} of the external service
    *
+   * @param domain service domain
    * @return a reference to this, so the API can be used fluently
    */
   public ServiceSettings setDomain(String domain) {
@@ -163,6 +173,7 @@ public class ServiceSettings {
   /**
    * Set the additional request query parameters to be send in each request
    *
+   * @param queryParams query params
    * @return a reference to this, so the API can be used fluently
    */
   public ServiceSettings setQueryParams(JsonObject queryParams) {
@@ -180,6 +191,7 @@ public class ServiceSettings {
   /**
    * Set the additional request headers (and values) to be send in each request
    *
+   * @param additionalHeaders jsonobject of additionalheaders
    * @return a reference to this, so the API can be used fluently
    */
   public ServiceSettings setAdditionalHeaders(JsonObject additionalHeaders) {
