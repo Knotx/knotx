@@ -77,7 +77,7 @@ public class HttpRepositoryOptions {
     HttpRepositoryOptionsConverter.fromJson(json, this);
     if (allowedRequestHeaders != null) {
       allowedRequestHeaderPatterns = allowedRequestHeaders.stream()
-          .map(expr -> Pattern.compile(expr)).collect(Collectors.toList());
+          .map(expr -> Pattern.compile(expr, Pattern.CASE_INSENSITIVE)).collect(Collectors.toList());
     }
   }
 
