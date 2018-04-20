@@ -433,14 +433,13 @@ public class KnotxServerOptions {
 
   /**
    * Sets the strategy how to deal with backpressure buffer overflow. Default is DROP_LATEST.
-   * <p>
+   *
    * Available values:
    * <ul>
    * <li>ERROR - terminates the whole sequence</li>
    * <li>DROP_OLDEST - drops the oldest value from the buffer</li>
    * <li>DROP_LATEST - drops the latest value from the buffer</li>
    * </ul>
-   * </p>
    *
    * @param backpressureStrategy a BackpressureOverflowStrategy value
    * @return reference to this, so the API can be used fluently

@@ -67,6 +67,9 @@ public class CustomHttpHeader {
 
   /**
    * Set the name of the request header.
+   *
+   * @param name name of the custom header
+   * @return a reference to this, so the API can be used fluently
    */
   public CustomHttpHeader setName(String name) {
     this.name = name;
@@ -75,6 +78,9 @@ public class CustomHttpHeader {
 
   /**
    * Set the value of the request header.
+   *
+   * @param value value of the custom header
+   * @return a reference to this, so the API can be used fluently
    */
   public CustomHttpHeader setValue(String value) {
     this.value = value;
