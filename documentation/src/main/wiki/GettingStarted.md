@@ -6,29 +6,18 @@ See our first blog post [Hello Rest Service](http://knotx.io/blog/hello-rest-ser
 See other [Knot.x tutorial blogs](http://knotx.io/blog/) to learn more.
 
 ## Getting Binaries
-Knot.x binaries and dependency information for Maven, Ivy, Gradle and others can be found at 
-[http://search.maven.org](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.vertx%22).
-
-Besides jar files with the modules implementations, there are available additional resources 
-such as far.jar (bundled with all dependencies allowing to run itself) and configuration json file, 
-for three modules:
-- knotx-mocks
-- knotx-standalone
-- knotx-example-app
+Download Knot.x vanilla distribution from [Knot.x Downloads](https://bintray.com/knotx/downloads/distro) if you want to add your custom implementation.
+Alternatively, you can download example project distribution from [Knot.x Examples](https://bintray.com/knotx/downloads/examples).
 
 To run Knot.x you need Java 8.
 
-## Hello world!
+## Run Example Knot.x project
 
-**TODO: The instructions below will change in 1.3 thanks to the knotx starter distribution**
-
-First download Knot.x sample app & config for latest version, or build it yourself (see [[Building|GettingStarted#building]] section):
-- [knotx-example-app-X.Y.Z.fat.jar](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
-- [knotx-example-app-X.Y.Z.json](https://oss.sonatype.org/content/groups/public/io/knotx/knotx-example-app)
-
-Now you can run Knot.x:
+Download example distribution from [Knot.x Examples](https://bintray.com/knotx/downloads/examples). Unpack it to any folder
+and run Knot.x as follows:
 ```
-java -Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory -Dknotx.home=. -cp config:lib/knotx-example-app-X.Y.Z-fat.jar io.vertx.core.Launcher run-knotx
+$> cd acme-stack
+$> bin/knotx run-knotx
 ```
 
 That's all. Finally you can open a browser and type an url `http://localhost:8092/content/local/simple.html`. 

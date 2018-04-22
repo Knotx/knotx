@@ -13,20 +13,14 @@ For the prototyping or development purposes Knot.x is shipped with the Mocks Ver
 
 ### How to configure ?
 A service mock has following configuration parameters that you need to set in your application configuration json
-```json
-{
-  "io.knotx.mocks.MockServiceVerticle" : {
-    "options": {
-      "config": {
-        "mockDataRoot": "mock/service",
-        "bouncing": true,
-        "httpPort": 3000
-      }
-    }
-  }
+```hocon
+config.serviceMock.options.config {
+  mockDataRoot = mock/service
+  bouncing = true
+  httpPort = ${global.httpService.port}
 }
-
 ```
+
 The configuration options are:
 - `httpPort` - HTTP port on which the service mock listens for requests
 - `mockDataRoot` - Root folder of mocked responses. If path starts from `/` it will search for files in local filesystem, or on classpath if not leading slash.
@@ -47,16 +41,10 @@ See [[how to configure delay ?|#how-to-configure-delay-]] section for details.
 
 ### How to configure ?
 A service mock has following configuration parameters that you need to set in your application configuration json
-```json
-{
-  "io.knotx.mocks.MockRemoteRepositoryVerticle": {
-    "options": {
-      "config": {
-        "mockDataRoot": "mock/repository",
-        "httpPort": 3001
-      }
-    }
-  }
+```hocon
+config.repoMock.options.config {
+  mockDataRoot = mock/repository
+  httpPort = ${global.httpRepo.port}
 }
 ```
 The configuration options are:
@@ -77,28 +65,18 @@ See below for two options how to delay responses in your starter JSON.
 
 ### Delay all responses
 Delay all responses of Service Mock by `100ms` and Remote Repository Mock responses by `20ms`
-```json
-{
-  "modules": [
-    "repo=io.knotx.mocks.MockRemoteRepositoryVerticle",
-    "service=io.knotx.mocks.MockServiceVerticle"
-  ],
-  "config": {
-    "service": {
-      "options" : {
-        "config": {
-          "delayAllMs": 100
-        }
-      }
-    },
-    "repo": {
-      "options" : {
-        "config": {
-          "delayAllMs": 20
-        }
-      }
-    }    
-  }
+```hocon
+modules = [
+  "repo=io.knotx.mocks.MockRemoteRepositoryVerticle"
+  "service=io.knotx.mocks.MockServiceVerticle"
+]
+
+config.repo {
+  options.config.delayAllMs: 20
+}
+
+config.service {
+  options.config.delayAllMs: 100
 }
 ```
 
@@ -110,38 +88,22 @@ Config below does:
   - path `/content/remote/multiple-forms.html` by `100ms`
   - other paths without delay
 
-```json
-{
-  "modules": [
-    "repo=io.knotx.mocks.MockRemoteRepositoryVerticle",
-    "service=io.knotx.mocks.MockServiceVerticle"
-  ],
-  "config": {
-    "service": {
-      "options": {
-        "config": {
-          "delay": {
-            "/service/first.json" : {
-              "delayMs": 10
-            }
-          }
-        }
-      }
-    },
-    "repo": {
-      "options": {
-        "config": {
-          "delay": {
-            "/content/remote/simple.html": {
-              "delayMs": 50
-            },
-            "/content/remote/multiple-forms.html": {
-              "delayMs": 100
-            }
-          }
-        }
-      }
-    }    
+```hocon
+modules = [
+  "repo=io.knotx.mocks.MockRemoteRepositoryVerticle"
+  "service=io.knotx.mocks.MockServiceVerticle"
+]
+
+config.repo {
+  options.config.delay: {
+    "/content/remote/simple.html".delayMs: 50
+    "/content/remote/multiple-forms.html".delayMs: 100
+  }
+}
+
+config.service {
+  options.config.delay: {
+    "/service/first.json".delayMs: 10
   }
 }
 ```

@@ -14,67 +14,45 @@ to the next matching Knot.
 
 
 Routes entries example configuration:
-```
-"routing": {
-  "GET": {
-    "items": [
-      {
-        "path": "/secure/.*",
-        "address": "knotx.knot.authorization",
-        ...
-      },
-      {
-        "path": "/forms/.*",
-        "address": "knotx.knot.action",
-        ...
-      },
-      {
-        "path": "/view/.*",
-        "address": "knotx.knot.service",
-        ...
-      }
-    ]
-  },
-  "POST": {
-    "items": [
-      {
-        "path": "/secure/.*",
-        "address": "knotx.knot.authorization",
-        ...
-      },
-      {
-        "path": "/forms/.*",
-        "address": "knotx.knot.action",
-        ...
-      }
-    ]
+```hocon
+routing.GET.items = [
+  {
+    path: "/secure/.*"
+    address: knotx.knot.authorization
   }
-}
+  {
+    path: "/forms/.*"
+    address: knotx.knot.action
+  }
+  {
+    path: "/view/.*"
+    address: knotx.knot.service
+  }
+]
+
+routing.POST.items = [
+  {
+    path: "/secure/.*"
+    address: knotx.knot.authorization
+  }
+  {
+    path: "/forms/.*"
+    address: knotx.knot.action
+  }
+]
 ```
 Knot.x understands Knot as a vertex in a graph which has one input and many outputs. Those outputs are
 called transitions. Example graph configuration can look like:
-```
+```hocon
 {
-  "path": "/secure/.*",
-  "address": "knotx.knot.authorization",
-  "onTransition": {
-    "view": {
-      "address": "knotx.knot.service",
-      "onTransition": {
-        "next": {
-          "address": "knotx.knot.handlebars"
-        }
-      }
-    },
-    "next": {
-      "address": "knotx.knot.action"
-      "onTransition": {
-        "next": {
-          "address": "knotx.knot.handlebars"
-        }
-      }
-    }
-  }
+  path: "/secure/.*"
+  address: knotx.knot.authorization
+  
+  onTransition.view.address: knotx.knot.service
+  onTransition.view.onTransition.next.address: knotx.knot.handlebars
+  
+  onTransition.next.address: knotx.knot.action
+  onTransition.next.onTransition.next.address: knotx.knot.handlebars
 }
 ```
 Knot.x uses Router mechanism to define many routes and adds transitions to make routes easily

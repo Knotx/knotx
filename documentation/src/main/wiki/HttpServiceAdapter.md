@@ -67,39 +67,29 @@ In example above, two services are configured:
 
 #### Service Knot configuration
 Example configuration of a [[Service Knot|ServiceKnot]]:
-```json
-  "config": {
-    "address": "knotx.knot.service",
-    "services": [
-      {
-        "name" : "search",
-        "address" : "knotx.adapter.service.http",
-        "params": {
-          "path": "/service/solr/search?q={param.q}"
-        }
-      },
-      {
-        "name" : "twitter",
-        "address" : "knotx.adapter.service.http",
-        "params": {
-          "path": "/service/twitter/user/{header.userId}"
-        }
-      },
-      {
-        "name" : "javabooks",
-        "address" : "knotx.adapter.service.http",
-        "params": {
-          "path": "/books/v1/volumes",
-          "queryParams": {
-              "q": "java"
-          },
-          "headers": {
-            "token": "knotx-request"
-          }
-        }
-      }
-    ]
-  }
+```hocon
+config {
+  address: knotx.knot.service
+  services = [
+    {
+      name: search
+      address: knotx.adapter.service.http
+      params.path: "/service/solr/search?q={param.q}"
+    },
+    {
+      name: twitter
+      address: knotx.adapter.service.http
+      params.path: "/service/twitter/user/{header.userId}"
+    },
+    {
+      name: javabooks
+      address: knotx.adapter.service.http
+      params.path: books/v1/volumes
+      params.queryParams.q: java
+      params.headers.token: knotx-request
+    }
+  ]
+}
 ```
 
 #### snippet
@@ -198,19 +188,17 @@ which is finally wrapped into [Adapter Response](#adapter-response).
 ##### Setting service query parameters
 We can use the `queryParams` JSON object to define the service query parameters and their values directly from template. Consider the following service configuration:
 
-```json
-  "config": {
-    "address": "knotx.knot.service",
-    "services": [
-      {
-        "name" : "products",
-        "address" : "knotx.adapter.service.http",
-        "params": {
-          "path": "/service/products/"
-        }
-      }
-    ]
-  }
+```hocon
+config: {
+  address: knotx.knot.service
+  services = [
+    {
+      name: products
+      address: knotx.adapter.service.http
+      params.path: /service/products/
+    }
+  ]
+}
 ```
 
 We can set query parameters sent to the service using the following snippet:
@@ -233,22 +221,18 @@ Please note that Knot.X caches templates fetched by the [[Filesystem Repository 
 As a result, the "hot-swap" mechanism described above might not work with templates stored in local repositories.
 
 You can also set the `queryParams` from the configuration file by amending the snippet presented above:
-```json
-  "config": {
-    "address": "knotx.knot.service",
-    "services": [
-      {
-        "name" : "products",
-        "address" : "knotx.adapter.service.http",
-        "params": {
-          "path": "/service/products/",
-          "queryParams": {
-            "amount": "4"
-          }
-        }
-      }
-    ]
-  }
+```hocon
+config: {
+  address: knotx.knot.service
+  services = [
+    {
+      name: products
+      address: knotx.adapter.service.http
+      params.path: /service/products/
+      params.queryParams.amount: 4
+    }
+  ]
+}
 ```
 Bear in mind that a Knot.X restart is needed in order to apply the service configuration, as the configuration is loaded on startup.
 

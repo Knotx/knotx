@@ -25,16 +25,16 @@ In general, it:
   - `trustStoreOptions` - if you want to put the server certificates here in order to trust only specific ones - see [Vert.x Http Client Options](http://vertx.io/docs/vertx-core/dataobjects.html#HttpClientOptions) for details
   
 E.g.
-```json
-"clientOptions": {
-  "forceSni": true,
-  "trustAll": true,
-  "verifyHost": false
-},
-"clientDestination": {
-  "scheme": "https",
-  "domain": "my.internal.repo.domain",
-  "port": 443,
-  "hostHeader": "specific.repo.resolution.domain"
+```hocon
+clientOptions {
+  forceSni: true
+  trustAll: true
+  verifyHost: false
+}
+clientDestination {
+  scheme: https
+  domain: my.internal.repo.domain
+  port: 443
+  hostHeader: specific.repo.resolution.domain
 }
 ```

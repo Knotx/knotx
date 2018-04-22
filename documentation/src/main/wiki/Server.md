@@ -79,15 +79,10 @@ In short, by default, server:
 
 Besides Knot.x specific configurations as mentioned above, you can tune the HTTP server itself and its low level details. 
 The `serverOptions` is the place to do so, e.g. set server port as follows:
-```
-{
-  "options": {
-    "config": {
-      "serverOptions": {
-        "port": 8888,
-         ...
-      },
-      ...
+```hocon
+options.config {
+  serverOptions.port: 8888
+}
 ```
 The details of remaining server options are described on the [Vert.x DataObjects page](http://vertx.io/docs/vertx-core/dataobjects.html#HttpServerOptions).
 
@@ -112,23 +107,19 @@ Where:
 - `keyPass` - is the keystore password
 
 Below is the sample configuration that enabled SSL:
-```
-{
-  "options": {
-    "config": {
-      "serverOptions": {
-        "port": 8043,
-        "ssl": true,
-        "keyStoreOptions": {
-          "path": "keystore.jks",
-          "password": "keyPass"
-        }
-      },
-      ...
+```hocon
+options.config {
+  serverOptions {
+    port: 8043
+    ssl: true
+    keyStoreOptions.path: keystore.jks
+    keyStoreOptions.password: changeme
+  }
+}
 ```
 Where:
-- `path` - is the path where keystore is located, optional if `value` is used
-- `password` - keystore password
+- `keyStoreOptions.path` - is the path where keystore is located, optional if `value` is used
+- `keyStoreOptions.password` - keystore password
 
 ### How to enable CSRF Token generation and validation
 
@@ -139,48 +130,38 @@ In order to do so, you need to configure two things:
 
 Below you can find an example configuration on a default flow, where CSRF is enabled on GET and POST routes. The same can be done on the custom flow.
 In other scenarios, you might want to enable CSRF on the `GET` route of `DefaultFlow` in order to have token generated. But on the `POST` route of `CustomFlow` you will enable csrf, so the Knot.x will validate the request before passing it to the Knots.
-```json
-{
-  "options": {
-    "config": {
-     "defaultFlow": {
-        ....
-        "routing": {
-          "GET": [
-            {
-              "path": ".*",
-              "address": "knotx.knot.service",
-              "csrf": true,
-              ...
-            }
-          ],
-          "POST": [
-            {
-              "path": ".*",
-              "address": "knotx.knot.action",
-              "csrf": true,
-              ...
-            }
-          ]
-        },
-        ....
+```hocon
+options.config {
+  defaultFlow {
+    routing.GET.items = [
+      {
+        path: ".*"
+        address: knotx.knot.service
+        csrf: true
       }
-      ...
+    ]
+    routing.POST.items = [
+      {
+        path: ".*"
+        address: knotx.knot.action
+        csrf: true
+      }
+    ]
+  }
+}
 ```
 
 Besides routes configuration you can customize name of the cookies, headers, timeout for the token, secret key used to sign the token, etc. You can do this by overriding configuration of the Knotx Server as follows:
-```json
-{
-  "options": {
-    "config": {
-      "csrf": {
-        "secret": "eXW}z2uMWfGb",
-        "cookieName": "XSRF-TOKEN",
-        "cookiePath": "/",
-        "headerName": "X-XSRF-TOKEN",
-        "timeout": 10000
-      },
-      ...
+```hocon
+options.config {
+  csrf {
+    secret: "eXW}z2uMWfGb"
+    cookieName: XSRF-TOKEN
+    cookiePath: /
+    headerName: X-XSRF-TOKEN
+    timeout: 10000
+  }
+}
 ```
 
 
@@ -195,16 +176,9 @@ headers, message codec names.
 For example, add `deliveryOptions` section in the KnotxServer configuration to define the 
 timeout for all eventbus responses (Repositories, Splitter, Knots configured in routing, Assembler, etc) 
 for eventubs requests that come from `KnotxServer`.
-```
-{
-  "options": {
-    "config": {
-      "deliveryOptions": {
-        "timeout": 15000
-      },
-      ...
-    }
-  }
+```hocon
+options.config {
+  deliveryOptions.timeout: 15000
 }
 ```
 
@@ -219,18 +193,10 @@ It supports three log line formats that are:
 `GET /content/local/simple.html 200 2963 - 24 ms`
 
 By default access log is enabled with a `DEFAULT` format. If you want to change it, just add access logging section on the KnotxServer configuration in your application.json config file :
-```json
-{
-  "config": {
-    "server": {
-      "options": {
-        "config": {
-          "accessLog": {
-            "format": "TINY"
-          }
-        }
-      }
-    }
+```hocon
+config.server {
+  options.config {
+    accessLog.format: TINY
   }
 }
 ```
