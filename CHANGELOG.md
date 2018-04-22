@@ -5,9 +5,17 @@ All notable changes to Knot.x will be documented in this file.
 List of changes that are finished but not yet released in any final version.
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) - Knot.x configurations refactor - Changed the way how configurations and it's defaults are build.
  - [PR-384](https://github.com/Cognifide/knotx/pull/384) - Introduce Knot.x server backpressure mechanism
- - [PR-399](https://github.com/Cognifide/knotx/pull/399) - Make knotx-core more concise and merge base Knot.x concepts into a single module
  - [PR-395](https://github.com/Cognifide/knotx/pull/395) - Fix for [#394](https://github.com/Cognifide/knotx/issues/394) - implemented encoding request parameter names in `HttpRepositoryConnectorProxyImpl`
-- [PR-415](https://github.com/Cognifide/knotx/pull/415) - bugfix: headers configurations (e.g. `allowedHeaders`) are now case insensitive
+ - [PR-397](https://github.com/Cognifide/knotx/pull/397) - Introduce vertx-config module to enable configuration modularization and auto-reload. Thanks to this change, Knot.x instance Auto-redeploy itself 
+ after the configuration is changed, multiple configuration files format is supported (with favouring the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) and supporting nested configurations (includes).
+ - [PR-399](https://github.com/Cognifide/knotx/pull/399) - Make knotx-core more concise and merge base Knot.x concepts into a single module
+ - [PR-404](https://github.com/Cognifide/knotx/pull/404) - Refactoring of Knot.x Launcher, get rid of some messy hacks. That enables cleaner way to start Knot.x and extend launcher with custom commands.
+ - [PR-405](https://github.com/Cognifide/knotx/pull/405) - Switched to BOM style dependencies: [`knotx-dependencies`](https://github.com/Knotx/knotx-dependencies) that define all common dependencies and their versions.
+ - [PR-406](https://github.com/Cognifide/knotx/pull/406) - `standalone` module is not conceptually a part of Knot.x `core`. It was extracted to separate concept and will be available from now in [`knotx-stack`](https://github.com/Knotx/knotx-stack) repository.
+ - [PR-407](https://github.com/Cognifide/knotx/pull/407) - Added vertx hooks to properly terminate instance on fatal failure, like missing configurations etc.
+ - [PR-411](https://github.com/Cognifide/knotx/pull/411) - `example` module is not conceptually a part of Knot.x `core` and having it in the core repository was misleading. `integration-tests` module introduced here.
+ - [PR-412](https://github.com/Cognifide/knotx/pull/412) - Knot.x `core` modules will use dependencies in `provided` scope, all dependencies will be provided by [`knotx-stack`](https://github.com/Knotx/knotx-stack) setup.
+ - [PR-415](https://github.com/Cognifide/knotx/pull/415) - bugfix: headers configurations (e.g. `allowedHeaders`) are now case insensitive
 
 ## Version 1.2.1
  - [PR-385](https://github.com/Cognifide/knotx/pull/385) - Fix for [#107](https://github.com/Cognifide/knotx/pull/107) - Support for snippet tags other than `script`

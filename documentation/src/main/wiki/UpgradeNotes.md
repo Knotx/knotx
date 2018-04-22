@@ -6,10 +6,33 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 List of changes that are finished but not yet released in any final version.
+ - [PR-376](https://github.com/Cognifide/knotx/pull/376) and [PR-397](https://github.com/Cognifide/knotx/pull/397) - Configuration changes:
+   - Multiple configuration files format is supported (with favouring the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) and supporting nested configurations (includes). **Don't worry, your old `JSON` configurations are still supported!**
+   - Removed module descriptors - all module configuration is now defined in the `conf` (written in [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md)) files with proper comments and explanations.
+   - Alias for each module can be now created and then used in order to supply module configuration and deploy a single module multiple times under different aliases, now modules are defined like this:
+   ```hocon
+    modules = [
+      "server=io.knotx.server.KnotxServerVerticle"
+      "httpRepo=io.knotx.repository.http.HttpRepositoryConnectorVerticle"
+      "splitter=io.knotx.splitter.FragmentSplitterVerticle"
+      "assembler=io.knotx.assembler.FragmentAssemblerVerticle"
+      "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle"
+      "serviceKnot=io.knotx.knot.service.ServiceKnotVerticle"
+    ]
+    ```
+   - `java`: prefix is now a default one - don't need to specify it
+   - Configurations structure changes:
+      - structure of `customFlow` and `defaultFlow` `routing` changed a bit (see the config [cheetsheet](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc) for details)
+      - `customRequestHeader` property in the Service Adapter renamed to `customHttpHeader`
+   - Knot.x instance auto-redeploy itself after the configuration is changed.
+   - Get rid of configuration override through system properties - only specific verticles can implement it by themselves if required (currently server only)
  - [PR-399](https://github.com/Cognifide/knotx/pull/399) - `knotx-core` now contains all base Knot.x 
  concepts, Server, Repositories, Splitter, Assembler and Gateway are now one `knotx-core` module. This
  is just the beginning of the bigger changes to make Knot.x more concise and easier to understand.
-
+ - [PR-405](https://github.com/Cognifide/knotx/pull/405) and [PR-412](https://github.com/Cognifide/knotx/pull/412) - Update of dependencies management in the core project. Switched to BOM style dependencies: [`knotx-dependencies`](https://github.com/Knotx/knotx-dependencies).
+ Your custom modules may now just elegantly depend on this module that defines all necessary Knot.x dependencies versions.
+ - [PR-406](https://github.com/Cognifide/knotx/pull/406) and [PR-411](https://github.com/Cognifide/knotx/pull/411) - `example` and `standalone` modules were not conceptually a part of Knot.x `core`. 
+ They were introduces as a quickstart option but having it in the core repository was misleading. We removed those modules and enabled [`knotx-stack`](https://github.com/Knotx/knotx-stack) to enable even easier and faster setup of Knot.x instance.
 
 ## Version 1.2.1
 - [PR-385](https://github.com/Cognifide/knotx/pull/385) - From now on you can define the custom 
