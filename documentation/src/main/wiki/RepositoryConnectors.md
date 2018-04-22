@@ -11,17 +11,21 @@ The diagram below depicts how Knot.x uses repositories.
 Mapping between incoming request and repository is defined in a Server configuration section. It specifies
 which requests should go to which repository address.
 
-```json
-[
-  {
-    "path": "/content/local/.*",
-    "address": "knotx.core.repository.filesystem"
-  },
-  {
-    "path": "/content/.*",
-    "address": "knotx.core.repository.http"
-  }
-]
+```hocon
+defaultFlow {
+  repositories = [
+    {
+      path = "/content/local/.*"
+      address = ${global.address.fsRepo}
+    }
+    {
+      path = "/content/.*"
+      address = ${global.address.httpRepo}
+    }
+  ]
+  
+ # ,,,
+}
 ```
 
 Knot.x supports by default two repository types: HTTP Repository and Filesystem Repository. Both 

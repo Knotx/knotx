@@ -25,7 +25,7 @@ Example Knot Context contains:
 </script>
 ```
 *Fragment Context*
-```
+```json
 {
   "_result": {
     "message":"this is webservice no. 1",

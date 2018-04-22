@@ -28,22 +28,18 @@ Service Knot will call two Adapters with names: `first-service` and `second-serv
 
 Now we need to combine the service name with Adapter service address. This link is configured within
 Service Knot configuration in `services` part. See example below:
-```
-"services": [
+```hocon
+services = [
   {
-    "name" : "first-service",
-    "address" : "knotx.adapter.service.http",
-    "params": {
-      "path": "/service/mock/first.json"
-    },
-    "cacheKey": "first"
-  },
+    name = first-service
+    address = ${global.address.adapter.service}
+    params.path = /service/mock/first.json
+    cacheKey = first
+  }
   {
-    "name" : "second-service",
-    "address" : "knotx.adapter.service.http",
-    "params": {
-      "path": "/service/mock/second.json"
-    }
+    name = second-service
+    address = ${global.address.adapter.service}
+    params.path = /service/mock/second.json
   }
 ]
 ```
@@ -83,13 +79,8 @@ codec names.
 
 The `deliveryOptions` need to be added in the following place, of the Service Knot configuration to define the 
 timeout for the Adapter response.
-```
-{
-  "options": {
-    "config": {
-      "deliveryOptions": {
-        "timeout": 15000,
-         ...
-      },
-      ...
+```hocon
+config.serviceKnot {
+  options.config.deliveryOptions.timeout: 15000
+}
 ```

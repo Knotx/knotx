@@ -151,18 +151,10 @@ The easiest way to handle a blocking code inside your Adapter is to deploy it as
 No change in your code is required.
 
 To do so, you need to override configuration of your verticle and set verticle options to be deployed in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
-```
-{
-  "config": {
-    "myAdapter": {
-       "options": {
-          "worker": true,
-          "config": {
-            ...
-          }
-       }
-    }
-  }
+```hocon
+config.myAdapter {
+  config {}
+  options.worker: true
 }
 ```
 Now in your Knot.x instance log file you should see

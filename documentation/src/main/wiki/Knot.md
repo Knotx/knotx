@@ -203,18 +203,10 @@ The easiest way to handle a blocking code inside your Knot is to deploy it as a 
 No change in your code is required.
 
 To do so, you need to override configuration of your verticle and set verticle options to be deployed in in workers pool via [DeploymentOptions](http://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html).
-```
-{
-  "config": {
-    "myExample": {
-       "options": {
-          "worker": true,
-          "config": {
-            ...
-          }
-       }
-    }
-  }
+```hocon
+config.myExample {
+  options.worker: true
+  config {}
 }
 ```
 Now in your Knot.x instance log file you should see
