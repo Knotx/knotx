@@ -75,8 +75,8 @@ public class ResponseProviderKnotOptions {
   }
 
   /**
-   * The {@code address} on event bus that the service adapter is listening for requests from {@link
-   * ServiceKnotVerticle}
+   * The {@code address} on event bus that the service adapter is listening for requests from
+   * ServiceKnotVerticle
    *
    * @param address an event bus address
    * @return a reference to this, so the API can be used fluently
