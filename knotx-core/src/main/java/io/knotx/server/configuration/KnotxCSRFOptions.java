@@ -95,7 +95,7 @@ public class KnotxCSRFOptions {
    * Set the name of the CSRF cookie
    *
    * @param cookieName name of the cookie
-   * @returnm reference to this, so the API can be used fluently
+   * @return reference to this, so the API can be used fluently
    */
   public KnotxCSRFOptions setCookieName(String cookieName) {
     this.cookieName = cookieName;
@@ -113,7 +113,7 @@ public class KnotxCSRFOptions {
    * Set of the path of the CSRF cookie
    *
    * @param cookiePath path of the cookie, e.g. '/'
-   * @returnm reference to this, so the API can be used fluently
+   * @return reference to this, so the API can be used fluently
    */
   public KnotxCSRFOptions setCookiePath(String cookiePath) {
     this.cookiePath = cookiePath;
