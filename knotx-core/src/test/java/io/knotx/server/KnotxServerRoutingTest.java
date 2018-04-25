@@ -71,7 +71,8 @@ public class KnotxServerRoutingTest {
   public void whenRequestingWithInvalidQuery_expectBadRequest(TestContext context) {
     HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
     Async async = context.async();
-    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html?q=~!@\\||$%^&*()_=-%22;;%27%22:%3C%3E/?]}{",
+    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS,
+        "/content/local/simple.html?q=~!@\\||$%^&*()_=-%22;;%27%22:%3C%3E/?]}{",
         resp -> {
           context.assertEquals(HttpResponseStatus.BAD_REQUEST.code(), resp.statusCode());
           client.close();
@@ -111,13 +112,13 @@ public class KnotxServerRoutingTest {
     createSimpleKnot("C-engine", "+C", null);
     testPostRequest("/content/local/simple.html",
         resp -> {
-          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
           context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
           context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
               resp.getHeader(EXPECTED_RESPONSE_HEADER));
           resp.bodyHandler(body -> {
             try {
-              context.assertEquals(body.toString(), "local+Apost+B+C",
+              context.assertEquals("local+Apost+B+C", body.toString(),
                   "Wrong engines processed request, expected " + "local+Apost+B+C");
             } catch (Exception e) {
               context.fail(e);
@@ -139,13 +140,13 @@ public class KnotxServerRoutingTest {
     createSimpleKnot("C-engine", "+C", null);
     testPostRequest("/content/local/simple.html",
         resp -> {
-          context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+          context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
           context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
           context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
               resp.getHeader(EXPECTED_RESPONSE_HEADER));
           resp.bodyHandler(body -> {
             try {
-              context.assertEquals(body.toString(), "local+Apost+C",
+              context.assertEquals("local+Apost+C", body.toString(),
                   "Wrong engines processed request, expected " + "local+Apost+C");
             } catch (Exception e) {
               context.fail(e);
@@ -166,13 +167,13 @@ public class KnotxServerRoutingTest {
     createSimpleKnot("C-engine", "+C", null);
 
     testPostRequest("/content/simple.html", resp -> {
-      context.assertEquals(resp.statusCode(), HttpResponseStatus.OK.code());
+      context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
       context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
       context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
           resp.getHeader(EXPECTED_RESPONSE_HEADER));
       resp.bodyHandler(body -> {
         try {
-          context.assertEquals(body.toString(), "global+B+C",
+          context.assertEquals("global+B+C", body.toString(),
               "Wrong engines processed request, expected " + "global+B+C");
         } catch (Exception e) {
           context.fail(e);
@@ -194,8 +195,8 @@ public class KnotxServerRoutingTest {
         MultiMap.caseInsensitiveMultiMap().add("location", "/content/failed.html"));
 
     testPostRequest("/content/local/simple.html", resp -> {
-      context.assertEquals(resp.statusCode(), HttpResponseStatus.MOVED_PERMANENTLY.code());
-      context.assertEquals(resp.getHeader("location"), "/content/failed.html");
+      context.assertEquals(HttpResponseStatus.MOVED_PERMANENTLY.code(), resp.statusCode());
+      context.assertEquals("/content/failed.html", resp.getHeader("location"));
       context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
       context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
           resp.getHeader(EXPECTED_RESPONSE_HEADER));
@@ -235,8 +236,8 @@ public class KnotxServerRoutingTest {
           context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
               resp.getHeader(EXPECTED_RESPONSE_HEADER));
           try {
-            context.assertEquals(body.toString(),
-                expectedResult, "Wrong engines processed request, expected " + expectedResult);
+            context.assertEquals(expectedResult, body.toString(),
+                "Wrong engines processed request, expected " + expectedResult);
           } catch (Exception e) {
             context.fail(e);
           }

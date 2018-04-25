@@ -83,7 +83,7 @@ public class ActionKnotProxyImpl extends AbstractKnotProxy {
 
   @Override
   protected KnotContext processError(KnotContext context, Throwable error) {
-    LOGGER.error("Could not process template [{}]", error, context.getClientRequest().getPath());
+    LOGGER.error("Could not process template [{}]", context.getClientRequest().getPath(), error);
     KnotContext errorResponse = new KnotContext().setClientResponse(context.getClientResponse());
     errorResponse.getClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());

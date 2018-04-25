@@ -126,27 +126,27 @@ public class ClientRequest {
    * Serialization variants of MultiMap fields
    **/
 
-  JsonObject getJsonHeaders() {
+  public JsonObject getJsonHeaders() {
     return MultiMapConverter.toJsonObject(headers);
   }
 
-  void setJsonHeaders(JsonObject headers) {
+  public void setJsonHeaders(JsonObject headers) {
     this.headers = MultiMapConverter.fromJsonObject(headers);
   }
 
-  JsonObject getJsonParams() {
+  public JsonObject getJsonParams() {
     return MultiMapConverter.toJsonObject(params);
   }
 
-  void setJsonParams(JsonObject params) {
+  public void setJsonParams(JsonObject params) {
     this.params = MultiMapConverter.fromJsonObject(params);
   }
 
-  JsonObject getJsonFormAttributes() {
+  public JsonObject getJsonFormAttributes() {
     return MultiMapConverter.toJsonObject(formAttributes);
   }
 
-  void setJsonFormAttributes(JsonObject formAttributes) {
+  public void setJsonFormAttributes(JsonObject formAttributes) {
     this.formAttributes = MultiMapConverter.fromJsonObject(formAttributes);
   }
 
