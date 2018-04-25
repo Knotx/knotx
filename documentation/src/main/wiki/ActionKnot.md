@@ -79,7 +79,7 @@ For all configuration fields and their defaults consult [ActionKnotOptions](http
 
 In short, by default, server:
 - Listens on event bus address `knotx.knot.action` on messages to process
-- It communicates with the [Action Adapter|ActionAdapter] on event bus address `test` for processing POST requests to the services
+- It communicates with the [[Action Adapter|ActionAdapter]] on event bus address `test` for processing POST requests to the services
   - It pass the example parameter to the adapter
   - It pass `Cookie` request header to the adapter
   - It returns `Set-Cookie` response header from adapter
