@@ -37,6 +37,7 @@ public class FragmentAssemblerOptions {
   private String address;
   private UnprocessedFragmentStrategy unprocessedStrategy;
   private String snippetTagName;
+  private String snippetParamsPrefix;
 
   /**
    * Default constructor
@@ -53,6 +54,7 @@ public class FragmentAssemblerOptions {
   public FragmentAssemblerOptions(FragmentAssemblerOptions other) {
     this.address = other.address;
     this.snippetTagName = other.snippetTagName;
+    this.snippetParamsPrefix = other.snippetParamsPrefix;
     this.unprocessedStrategy = other.unprocessedStrategy;
   }
 
@@ -141,6 +143,23 @@ public class FragmentAssemblerOptions {
    */
   public FragmentAssemblerOptions setSnippetTagName(String snippetTagName) {
     this.snippetTagName = snippetTagName;
+    return this;
+  }
+
+  /**
+   * @return a snippet params prefix
+   */
+  public String getSnippetParamsPrefix() {
+    return snippetParamsPrefix;
+  }
+
+  /**
+   * Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
+   * @param snippetParamsPrefix prefix
+   * @return a reference to this, so the API can be used fluently
+   */
+  public FragmentAssemblerOptions setSnippetParamsPrefix(String snippetParamsPrefix) {
+    this.snippetParamsPrefix = snippetParamsPrefix;
     return this;
   }
 }

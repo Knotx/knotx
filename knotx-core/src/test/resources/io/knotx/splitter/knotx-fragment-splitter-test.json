@@ -6,7 +6,8 @@
     "splitter": {
       "options": {
         "config": {
-          "snippetTagName": "script"
+          "snippetTagName": "script",
+          "snippetParamsPrefix": "data-knotx-"
         }
       }
     }

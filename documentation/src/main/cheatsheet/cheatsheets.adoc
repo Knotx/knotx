@@ -268,6 +268,10 @@ Set the root folder of the repository on file system.
 +++
 Set the EB address of the verticle
 +++
+|[[snippetParamsPrefix]]`snippetParamsPrefix`|`String`|
++++
+Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
++++
 |[[snippetTagName]]`snippetTagName`|`String`|
 +++
 Sets a Knot.x snippet HTML tag name. Default is 'script'
@@ -299,6 +303,10 @@ Set the strategy how to assembly markup with snippets that were not processed by
 |[[address]]`address`|`String`|
 +++
 Set the EB address of the verticle
++++
+|[[snippetParamsPrefix]]`snippetParamsPrefix`|`String`|
++++
+Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
 +++
 |[[snippetTagName]]`snippetTagName`|`String`|
 +++

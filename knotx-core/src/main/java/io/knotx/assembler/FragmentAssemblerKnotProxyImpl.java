@@ -40,7 +40,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
   public FragmentAssemblerKnotProxyImpl(FragmentAssemblerOptions options) {
     this.options = options;
-    this.patterns = new SnippetPatterns(options.getSnippetTagName());
+    this.patterns = new SnippetPatterns(options.getSnippetTagName(), options.getSnippetParamsPrefix());
   }
 
   @Override

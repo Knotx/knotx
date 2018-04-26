@@ -31,6 +31,7 @@ public class FragmentSplitterOptions {
 
   private String address;
   private String snippetTagName;
+  private String snippetParamsPrefix;
 
   /**
    * Default constructor
@@ -47,6 +48,7 @@ public class FragmentSplitterOptions {
   public FragmentSplitterOptions(FragmentSplitterOptions other) {
     this.address = other.address;
     this.snippetTagName = other.snippetTagName;
+    this.snippetParamsPrefix = other.snippetParamsPrefix;
   }
 
   /**
@@ -107,6 +109,23 @@ public class FragmentSplitterOptions {
    */
   public FragmentSplitterOptions setSnippetTagName(String snippetTagName) {
     this.snippetTagName = snippetTagName;
+    return this;
+  }
+
+  /**
+   * @return a snippet params prefix
+   */
+  public String getSnippetParamsPrefix() {
+    return snippetParamsPrefix;
+  }
+
+  /**
+   * Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
+   * @param snippetParamsPrefix prefix
+   * @return a reference to this, so the API can be used fluently
+   */
+  public FragmentSplitterOptions setSnippetParamsPrefix(String snippetParamsPrefix) {
+    this.snippetParamsPrefix = snippetParamsPrefix;
     return this;
   }
 }

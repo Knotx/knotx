@@ -21,19 +21,19 @@ import java.util.regex.Pattern;
 public class SnippetPatterns {
 
   private static final String ANY_SNIPPET_PATTERN =
-      "(?is).*<%s\\s+" + FragmentConstants.SNIPPET_IDENTIFIER_NAME + ".*";
+      "(?is).*<%s\\s+%s" + FragmentConstants.SNIPPET_IDENTIFIER_NAME + ".*";
   private static final String SNIPPET_PATTERN =
-      "<%s\\s+" + FragmentConstants.SNIPPET_IDENTIFIER_NAME
+      "<%s\\s+%s" + FragmentConstants.SNIPPET_IDENTIFIER_NAME
           + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</%s>";
 
   private final Pattern anySnippetPattern;
   private final Pattern snippetPattern;
 
-  public SnippetPatterns(String tagName) {
+  public SnippetPatterns(String tagName, String paramsPrefix) {
     anySnippetPattern = Pattern
-        .compile(String.format(ANY_SNIPPET_PATTERN, tagName), Pattern.DOTALL);
+        .compile(String.format(ANY_SNIPPET_PATTERN, tagName, paramsPrefix), Pattern.DOTALL);
     snippetPattern = Pattern
-        .compile(String.format(SNIPPET_PATTERN, tagName, tagName), Pattern.DOTALL);
+        .compile(String.format(SNIPPET_PATTERN, tagName, paramsPrefix, tagName), Pattern.DOTALL);
   }
 
   public Pattern getAnySnippetPattern() {

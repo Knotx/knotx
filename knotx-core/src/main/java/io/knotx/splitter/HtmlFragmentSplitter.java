@@ -28,8 +28,8 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private final SnippetPatterns snippetPatterns;
 
-  HtmlFragmentSplitter(String snippetTag) {
-    snippetPatterns = new SnippetPatterns(snippetTag);
+  HtmlFragmentSplitter(String snippetTag, String snippetParamsPrefix) {
+    snippetPatterns = new SnippetPatterns(snippetTag, snippetParamsPrefix);
   }
 
   @Override

@@ -265,14 +265,16 @@
     "splitter": {
       "options": {
         "config": {
-          "snippetTagName": "script"
+          "snippetTagName": "script",
+          "snippetParamsPrefix": "data-knotx-"
         }
       }
     },
     "assembler": {
       "options": {
         "config": {
-          "snippetTagName": "script"
+          "snippetTagName": "script",
+          "snippetParamsPrefix": "data-knotx-"
         }
       }
     }

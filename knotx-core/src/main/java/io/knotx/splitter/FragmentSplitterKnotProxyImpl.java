@@ -31,7 +31,7 @@ public class FragmentSplitterKnotProxyImpl extends AbstractKnotProxy {
   private final FragmentSplitter splitter;
 
   public FragmentSplitterKnotProxyImpl(FragmentSplitterOptions options) {
-    splitter = new HtmlFragmentSplitter(options.getSnippetTagName());
+    splitter = new HtmlFragmentSplitter(options.getSnippetTagName(), options.getSnippetParamsPrefix());
   }
 
   @Override
