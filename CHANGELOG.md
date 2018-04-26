@@ -17,6 +17,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-412](https://github.com/Cognifide/knotx/pull/412) - Knot.x `core` modules will use dependencies in `provided` scope, all dependencies will be provided by [`knotx-stack`](https://github.com/Knotx/knotx-stack) setup.
  - [PR-415](https://github.com/Cognifide/knotx/pull/415) - bugfix: headers configurations (e.g. `allowedHeaders`) are now case insensitive
  - [PR-418](https://github.com/Cognifide/knotx/pull/418) - Update to Vert.x 3.5.1
+ - [PR-419](https://github.com/Cognifide/knotx/pull/419) - Knotx snippets parameters prefix is now customizable.
 
 ## Version 1.2.1
  - [PR-385](https://github.com/Cognifide/knotx/pull/385) - Fix for [#107](https://github.com/Cognifide/knotx/pull/107) - Support for snippet tags other than `script`
