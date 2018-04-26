@@ -1,0 +1,14 @@
+<script
+  knots="services"
+  service-a="a-service"
+  params-a='{"a":"a"}'
+  service-b="b-service"
+  params-b='{"b":"b"}'
+  service-c="c-service"
+  params-c='{"c":"c"}'
+  service-d="d-service"
+  params-d='{"d":"d"}'
+  params-unbound='{"e":"e"}'
+  type="text/knotx-snippet">
+  <h2>{{_result.message}}</h2>
+</script>
