@@ -33,32 +33,47 @@ public class StringToPatternFunctionTest {
   }
 
   @Test
-  public void whenTextMatchesStringPattern_thenTextMatchesRegexPattern() {
+  public void whenPatternHasNoConstructs_thenTextIsMatchedExactly() {
     assertTrue(matches("foo", "foo"));
+
+    assertFalse(matches("foo", "bar"));
+  }
+
+  @Test
+  public void whenPatternIsMixedCased_thenTextIsMatchedCaseInsensitive() {
     assertTrue(matches("foo", "FOO"));
     assertTrue(matches("foo", "Foo"));
     assertTrue(matches("foo", "fOO"));
+    assertTrue(matches("FOO", "foo"));
+    assertTrue(matches("Foo", "foo"));
+    assertTrue(matches("fOO", "foo"));
+  }
 
+  @Test
+  public void whenPatternIsEmptyString_thenOnlyEmptyTextMatches() {
     assertTrue(matches("", ""));
-    assertTrue(matches("*", "foo"));
 
+    assertFalse(matches("", "bar"));
+  }
+
+  @Test
+  public void whenPatternContainsOnlyNWildcardSymbols_thenTextMustBeAtLeastNCharactersLong() {
+    assertTrue(matches("*", "foo"));
+    assertTrue(matches("***", "foo"));
+
+    assertFalse(matches("*", ""));
+    assertFalse(matches("**", "f"));
+  }
+
+  @Test
+  public void whenPatternContainsWildcardSymbols_thenTextIsMatchedAccordingToWildcardDefinition() {
     assertTrue(matches("foo*", "foobar"));
     assertTrue(matches("*foo", "barfoo"));
     assertTrue(matches("foo*bar", "foobazbar"));
 
     assertTrue(matches("f**", "foo"));
-    assertTrue(matches("***", "foo"));
     assertTrue(matches("foo*foo*", "foobarfoobar"));
     assertTrue(matches("*foo*foo", "barfoobarfoo"));
-  }
-
-  @Test
-  public void whenTextDoesNotMatchStringPattern_thenTextDoesNotMatchRegexPattern() {
-    assertFalse(matches("foo", "bar"));
-
-    assertFalse(matches("", "bar"));
-    assertFalse(matches("*", ""));
-    assertFalse(matches("**", "f"));
 
     assertFalse(matches("foo*", "foo"));
     assertFalse(matches("*foo", "foo"));
@@ -70,31 +85,33 @@ public class StringToPatternFunctionTest {
   }
 
   @Test
-  public void whenStringPatternContainsRegexConstructs_thenTheyShouldBeEscaped() {
-    assertFalse(matches(".","a"));
-    assertFalse(matches("[a-z]","a"));
-    assertFalse(matches("\\d","1"));
-    assertFalse(matches("$", ""));
-    assertFalse(matches("^", ""));
-    assertFalse(matches("a+", "aaa"));
-    assertFalse(matches("a?", "a"));
-    assertFalse(matches("a?", ""));
-    assertFalse(matches("a{3}", "aaa"));
-    assertFalse(matches("a|b", "a"));
-    assertFalse(matches("a|b", "b"));
-    assertFalse(matches("b(ar|az)", "bar"));
-    assertFalse(matches("b(ar|az)", "baz"));
+  public void whenPatternContainsRegexConstructs_thenTheyShouldBeMatched() {
+    assertTrue(matches(".", "a"));
+    assertTrue(matches("[a-z]", "a"));
+    assertTrue(matches("\\d", "1"));
+    assertTrue(matches("$", ""));
+    assertTrue(matches("^", ""));
+    assertTrue(matches("a+", "aaa"));
+    assertTrue(matches("a?", "a"));
+    assertTrue(matches("a?", ""));
+    assertTrue(matches("a{3}", "aaa"));
+    assertTrue(matches("a|b", "a"));
+    assertTrue(matches("a|b", "b"));
+    assertTrue(matches("b(ar|az)", "bar"));
+    assertTrue(matches("b(ar|az)", "baz"));
+  }
 
-    assertTrue(matches(".","."));
-    assertTrue(matches("[a-z]","[a-z]"));
-    assertTrue(matches("\\d","\\d"));
-    assertTrue(matches("$", "$"));
-    assertTrue(matches("^", "^"));
-    assertTrue(matches("a+", "a+"));
-    assertTrue(matches("a?", "a?"));
-    assertTrue(matches("a{3}", "a{3}"));
-    assertTrue(matches("a|b", "a|b"));
-    assertTrue(matches("b(ar|az)", "b(ar|az)"));
+  @Test
+  public void whenPatternContainsRegexConstructs_thenTheyShouldNotBeEscaped() {
+    assertFalse(matches("[a-z]", "[a-z]"));
+    assertFalse(matches("\\d", "\\d"));
+    assertFalse(matches("$", "$"));
+    assertFalse(matches("^", "^"));
+    assertFalse(matches("a+", "a+"));
+    assertFalse(matches("a?", "a?"));
+    assertFalse(matches("a{3}", "a{3}"));
+    assertFalse(matches("a|b", "a|b"));
+    assertFalse(matches("b(ar|az)", "b(ar|az)"));
   }
 
   private boolean matches(String pattern, String text) {

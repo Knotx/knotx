@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2016 Cognifide Limited
- * Modifications copyright (C) 2018 Piotr Andruszkiewicz
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +18,7 @@ package io.knotx.http;
 import io.knotx.exceptions.ConfigurationException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -30,9 +30,7 @@ public class StringToPatternFunction implements Function<String, Pattern> {
   private static final StringToPatternFunction INSTANCE = new StringToPatternFunction();
 
   private static final String WILDCARD = "*";
-  private static final String REGEX_START_ESCAPING = "\\Q";
-  private static final String REGEX_STOP_ESCAPING = "\\E";
-  private static final String WILDCARD_REPLACEMENT = REGEX_STOP_ESCAPING + "(.+)" + REGEX_START_ESCAPING;
+  private static final String WILDCARD_REPLACEMENT = "(.+)";
 
   private StringToPatternFunction() {
   }
@@ -57,8 +55,6 @@ public class StringToPatternFunction implements Function<String, Pattern> {
   }
 
   private String toRegex(String stringPattern) {
-    return "^" + REGEX_START_ESCAPING
-        + stringPattern.replace(WILDCARD, WILDCARD_REPLACEMENT)
-        + REGEX_STOP_ESCAPING + "$";
+    return "^" + stringPattern.replace(WILDCARD, WILDCARD_REPLACEMENT) + "$";
   }
 }
