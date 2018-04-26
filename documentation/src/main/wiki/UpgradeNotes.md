@@ -33,6 +33,10 @@ List of changes that are finished but not yet released in any final version.
  Your custom modules may now just elegantly depend on this module that defines all necessary Knot.x dependencies versions.
  - [PR-406](https://github.com/Cognifide/knotx/pull/406) and [PR-411](https://github.com/Cognifide/knotx/pull/411) - `example` and `standalone` modules were not conceptually a part of Knot.x `core`. 
  They were introduces as a quickstart option but having it in the core repository was misleading. We removed those modules and enabled [`knotx-stack`](https://github.com/Knotx/knotx-stack) to enable even easier and faster setup of Knot.x instance.
+ - [PR-419](https://github.com/Cognifide/knotx/pull/419) - Knotx snippets parameters prefix is now customizable, default value is
+ still `data-knotx` (to keep compatibility), however expect that in the future it will be empty by default 
+ (related to [PR-385](https://github.com/Cognifide/knotx/pull/385)). See more in [[Splitter|Splitter]] docs.
+
 
 ## Version 1.2.1
 - [PR-385](https://github.com/Cognifide/knotx/pull/385) - From now on you can define the custom 
