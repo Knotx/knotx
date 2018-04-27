@@ -115,7 +115,7 @@ public class HtmlFragmentSplitterTest {
     assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
     assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
     assertThat(testOneSnippetMiddle.get(1).content(), equalTo(
-        "<knotx:snippet data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></knotx:snippet>"));
+        "<knotx:snippet data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\"><h2>{{message}}</h2></knotx:snippet>"));
     assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
   }
 

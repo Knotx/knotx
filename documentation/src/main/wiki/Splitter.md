@@ -23,18 +23,24 @@ keep HTML5 data naming compliance. By default it's value is set to `data-knotx-`
 snippet params like:
 ```html
 <script data-knotx-knotx="someKnot, handlebars"
-        data-knotx-someKnot-param-name="XYZ" >
+        data-knotx-someKnot-param-name="XYZ" 
+        type="text/knotx-snippet" >
 ```
 Leave it empty to have shorter parameters, snippet params will look like:
 ```html
 <script knotx="someKnot, handlebars"
-        someKnot-param-name="XYZ" >
+        someKnot-param-name="XYZ" 
+        type="text/knotx-snippet" >
 ```
 
 During the HTML splitting, all matched snippet tags are converted into Fragments containing list of 
 supported [[Knots|Knot]] declared in `${SNIPPET_PARAMS_PREFIX}knots` attribute. HTML parts below, above and 
 between matched snippets are converted into Fragments without Knot support (static Fragments). 
 It means that they are not supposed to be processed by Knots. See example for more details.
+
+Notice `type="text/knotx-snippet"` entry, this is provided only to keep HTML compliance when 
+`<script>` tag is set as the `${SNIPPET_TAG_NAME}`. There is no logic in Knot.x that requires it,
+so simply skip it if you don't need HTML compliance.
 
 **Splitter requires `${SNIPPET_PARAMS_PREFIX}knots` attribute to be the first attribute in the snippet tag.**
 
