@@ -35,7 +35,9 @@ List of changes that are finished but not yet released in any final version.
  They were introduces as a quickstart option but having it in the core repository was misleading. We removed those modules and enabled [`knotx-stack`](https://github.com/Knotx/knotx-stack) to enable even easier and faster setup of Knot.x instance.
  - [PR-419](https://github.com/Cognifide/knotx/pull/419) - Knotx snippets parameters prefix is now customizable, default value is
  still `data-knotx` (to keep compatibility), however expect that in the future it will be empty by default 
- (related to [PR-385](https://github.com/Cognifide/knotx/pull/385)). See more in [[Splitter|Splitter]] docs.
+ (related to [PR-385](https://github.com/Cognifide/knotx/pull/385)). See more in [[Splitter|Splitter]] docs. 
+ Important change - earlier `snippetTagName` was defined directly in Splitter and Assembler configs. 
+ Since this PR it will be defined in the `snippetOptions` section, under `tagName` property.
 
 
 ## Version 1.2.1
