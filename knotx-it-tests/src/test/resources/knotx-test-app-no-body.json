@@ -265,8 +265,10 @@
     "splitter": {
       "options": {
         "config": {
-          "snippetTagName": "script",
-          "snippetParamsPrefix": "data-knotx-"
+          "snippetOptions": {
+            "tagName": "script",
+            "paramsPrefix": "data-knotx-"
+          }
         }
       }
     },
