@@ -94,7 +94,7 @@
     <java.version>1.8</java.version>
 
     <!-- Dependency versions -->
-    <vertx.version>3.5.0</vertx.version>
+    <vertx.version>3.5.1</vertx.version>
     <rxjava.version>2.1.6</rxjava.version>
     <!-- https://github.com/vert-x3/vertx-codegen/issues/143 -->
     <!-- FIXME remove jackson dependency after moving to 3.5.1 -->

@@ -4,6 +4,7 @@ All notable changes to Knot.x will be documented in this file.
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
  - [PR-395](https://github.com/Cognifide/knotx/pull/395) - Fix for [#394](https://github.com/Cognifide/knotx/issues/394) - implemented encoding request parameter names in `HttpRepositoryConnectorProxyImpl`
+ - [PR-420](https://github.com/Cognifide/knotx/pull/420) - Upgrade vert.x to 3.5.1
 
 ## Version 1.2.1
  - [PR-385](https://github.com/Cognifide/knotx/pull/385) - Fix for [#107](https://github.com/Cognifide/knotx/pull/107) - Support for snippet tags other than `script`
