@@ -29,7 +29,7 @@ public class AllowedHeadersFilterTest {
   private static final List<String> TEST_HEADERS =
       Lists.newArrayList("Content-Type", "content-length", "Accept", "Location");
 
-  private StringToPatternFunction patternGenerator = new StringToPatternFunction();
+  private StringToPatternFunction patternGenerator = StringToPatternFunction.getInstance();
 
   @Test
   public void whenNoAllowedHeadersAvailable_expectNoHeadersPassed() {

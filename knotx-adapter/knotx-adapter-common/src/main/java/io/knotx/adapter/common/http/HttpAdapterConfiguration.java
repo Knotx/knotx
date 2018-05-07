@@ -51,7 +51,7 @@ public class HttpAdapterConfiguration {
           metadata.setAllowedRequestHeaderPatterns(item
               .getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
-              .map(new StringToPatternFunction())
+              .map(StringToPatternFunction.getInstance())
               .collect(Collectors.toList())
           );
 

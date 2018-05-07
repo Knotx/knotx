@@ -50,12 +50,12 @@ public class ActionKnotConfiguration {
           metadata.allowedRequestHeaders = item
               .getJsonArray("allowedRequestHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
-              .map(new StringToPatternFunction())
+              .map(StringToPatternFunction.getInstance())
               .collect(Collectors.toList());
           metadata.allowedResponseHeaders = item
               .getJsonArray("allowedResponseHeaders", new JsonArray()).stream()
               .map(object -> (String) object)
-              .map(new StringToPatternFunction())
+              .map(StringToPatternFunction.getInstance())
               .collect(Collectors.toList());
           return metadata;
         }).collect(Collectors.toList());
