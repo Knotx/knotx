@@ -15,6 +15,7 @@
  */
 package io.knotx.assembler;
 
+import io.knotx.options.SnippetOptions;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
@@ -27,17 +28,16 @@ public class FragmentAssemblerOptions {
   /**
    * Default address of the verticle on the event bus = knotx.core.assembler
    */
-  private final static String DEFAULT_ADDRESS = "knotx.core.assembler";
+  private static final String DEFAULT_ADDRESS = "knotx.core.assembler";
 
   /**
    * Default strategy of handling unprocessed knotx snippets = UNWRAP
    */
-  private final static UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.UNWRAP;
+  private static final UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.UNWRAP;
 
   private String address;
   private UnprocessedFragmentStrategy unprocessedStrategy;
-  private String snippetTagName;
-  private String snippetParamsPrefix;
+  private SnippetOptions snippetOptions;
 
   /**
    * Default constructor
@@ -53,8 +53,7 @@ public class FragmentAssemblerOptions {
    */
   public FragmentAssemblerOptions(FragmentAssemblerOptions other) {
     this.address = other.address;
-    this.snippetTagName = other.snippetTagName;
-    this.snippetParamsPrefix = other.snippetParamsPrefix;
+    this.snippetOptions = other.snippetOptions;
     this.unprocessedStrategy = other.unprocessedStrategy;
   }
 
@@ -82,6 +81,7 @@ public class FragmentAssemblerOptions {
   private void init() {
     address = DEFAULT_ADDRESS;
     unprocessedStrategy = DEFAULT_UNPROCESSED_STRATEGY;
+    snippetOptions = new SnippetOptions();
   }
 
   /**
@@ -129,37 +129,20 @@ public class FragmentAssemblerOptions {
   }
 
   /**
-   * @return a snippet tag name.
+   * @return a snippet configuration
    */
-  public String getSnippetTagName() {
-    return snippetTagName;
+  public SnippetOptions getSnippetOptions() {
+    return snippetOptions;
   }
 
   /**
-   * Sets a Knot.x snippet HTML tag name. Default is 'script'
-   *
-   * @param snippetTagName tag name
+   * Sets snippet options (e.g. with tag and data prefix names).
+   * @param snippetOptions options
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentAssemblerOptions setSnippetTagName(String snippetTagName) {
-    this.snippetTagName = snippetTagName;
+  public FragmentAssemblerOptions setSnippetOptions(SnippetOptions snippetOptions) {
+    this.snippetOptions = snippetOptions;
     return this;
   }
 
-  /**
-   * @return a snippet params prefix
-   */
-  public String getSnippetParamsPrefix() {
-    return snippetParamsPrefix;
-  }
-
-  /**
-   * Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
-   * @param snippetParamsPrefix prefix
-   * @return a reference to this, so the API can be used fluently
-   */
-  public FragmentAssemblerOptions setSnippetParamsPrefix(String snippetParamsPrefix) {
-    this.snippetParamsPrefix = snippetParamsPrefix;
-    return this;
-  }
 }

@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.junit.util.FileReader;
+import io.knotx.options.SnippetOptions;
 import io.vertx.core.json.JsonObject;
 import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
@@ -55,13 +56,19 @@ public class KnotxCoercers {
     final String snippetTagName= extractSnippetTagName(params);
     final String fragmentContent = FileReader.readText(fragmentContentFile);
     final String snippetParamPrefix = extractSnippetParamPrefix(params, fragmentParameters);
-    final SnippetPatterns patterns = new SnippetPatterns(snippetTagName, snippetParamPrefix);
+    final SnippetPatterns patterns = new SnippetPatterns(buildOptions(snippetTagName, snippetParamPrefix));
 
     Fragment fragmentMock = Mockito.mock(Fragment.class);
     when(fragmentMock.content()).thenReturn(fragmentContent);
     when(fragmentMock.isRaw())
         .thenReturn(!patterns.getAnySnippetPattern().matcher(fragmentContent).matches());
     return fragmentMock;
+  }
+
+  private SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {
+    return new SnippetOptions()
+        .setTagName(snippetTagName)
+        .setParamsPrefix(snippetParamPrefix);
   }
 
   private String extractSnippetTagName(String[] params) {

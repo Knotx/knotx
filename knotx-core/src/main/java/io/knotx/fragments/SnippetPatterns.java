@@ -16,6 +16,7 @@
 package io.knotx.fragments;
 
 
+import io.knotx.options.SnippetOptions;
 import java.util.regex.Pattern;
 
 public class SnippetPatterns {
@@ -29,11 +30,14 @@ public class SnippetPatterns {
   private final Pattern anySnippetPattern;
   private final Pattern snippetPattern;
 
-  public SnippetPatterns(String tagName, String paramsPrefix) {
+  public SnippetPatterns(SnippetOptions snippetOptions) {
     anySnippetPattern = Pattern
-        .compile(String.format(ANY_SNIPPET_PATTERN, tagName, paramsPrefix), Pattern.DOTALL);
+        .compile(String.format(ANY_SNIPPET_PATTERN, snippetOptions.getTagName(),
+            snippetOptions.getParamsPrefix()), Pattern.DOTALL);
     snippetPattern = Pattern
-        .compile(String.format(SNIPPET_PATTERN, tagName, paramsPrefix, tagName), Pattern.DOTALL);
+        .compile(String
+            .format(SNIPPET_PATTERN, snippetOptions.getTagName(), snippetOptions.getParamsPrefix(),
+                snippetOptions.getTagName()), Pattern.DOTALL);
   }
 
   public Pattern getAnySnippetPattern() {

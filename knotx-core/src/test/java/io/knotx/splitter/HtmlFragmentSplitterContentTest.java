@@ -23,6 +23,7 @@ import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
+import io.knotx.options.SnippetOptions;
 import java.util.List;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -37,12 +38,22 @@ public class HtmlFragmentSplitterContentTest {
 
   @Before
   public void setUp() throws Exception {
-    defaultSnippetTagFragments = new HtmlFragmentSplitter("script", "data-knotx-")
+    defaultSnippetTagFragments = new HtmlFragmentSplitter(
+        new SnippetOptions()
+            .setTagName("script")
+            .setParamsPrefix("data-knotx-"))
         .split(FileReader.readText("io/knotx/splitter/test-many-fragments.html"));
-    customSnippetTagFragments = new HtmlFragmentSplitter("knotx:snippet", "data-knotx-")
+    customSnippetTagFragments = new HtmlFragmentSplitter(
+        new SnippetOptions()
+            .setTagName("knotx:snippet")
+            .setParamsPrefix("data-knotx-"))
         .split(FileReader.readText("io/knotx/splitter/test-many-fragments-custom-snippet.html"));
-    customSnippetCustomParamsPrefixFragments = new HtmlFragmentSplitter("knotx:snippet", "")
-        .split(FileReader.readText("io/knotx/splitter/test-many-fragments-custom-snippet-and-prefix.html"));
+    customSnippetCustomParamsPrefixFragments = new HtmlFragmentSplitter(
+        new SnippetOptions()
+            .setTagName("knotx:snippet")
+            .setParamsPrefix(""))
+        .split(FileReader
+            .readText("io/knotx/splitter/test-many-fragments-custom-snippet-and-prefix.html"));
   }
 
   @TestWith({
@@ -90,7 +101,8 @@ public class HtmlFragmentSplitterContentTest {
       "7;io/knotx/splitter/fragments/8.txt",
       "8;io/knotx/splitter/fragments/9-custom-snippet-no-prefix.txt"
   })
-  public void split_whenCustomSnippetTagAndNoPrefix_expect9Fragments(int fragmentId, String fragmentFile)
+  public void split_whenCustomSnippetTagAndNoPrefix_expect9Fragments(int fragmentId,
+      String fragmentFile)
       throws Exception {
     assertThat(customSnippetCustomParamsPrefixFragments.get(fragmentId).content().trim(),
         equalTo(FileReader.readText(fragmentFile).trim()));

@@ -25,6 +25,7 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.junit.coercers.KnotxCoercers;
 import io.knotx.junit.util.FileReader;
+import io.knotx.options.SnippetOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(ZohhakRunner.class)
@@ -40,7 +41,7 @@ public class UnprocessedFragmentStrategyTest {
   public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
-        .get(fragment, new SnippetPatterns(snippetTagName, paramsPrefix));
+        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
@@ -55,7 +56,7 @@ public class UnprocessedFragmentStrategyTest {
   public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
-        .get(fragment, new SnippetPatterns(snippetTagName, paramsPrefix));
+        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
@@ -70,11 +71,16 @@ public class UnprocessedFragmentStrategyTest {
   public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
-        .get(fragment, new SnippetPatterns(snippetTagName, paramsPrefix));
+        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
+  private SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {
+    return new SnippetOptions()
+        .setTagName(snippetTagName)
+        .setParamsPrefix(snippetParamPrefix);
+  }
 
 }
