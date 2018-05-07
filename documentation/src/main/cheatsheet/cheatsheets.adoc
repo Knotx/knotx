@@ -268,13 +268,9 @@ Set the root folder of the repository on file system.
 +++
 Set the EB address of the verticle
 +++
-|[[snippetParamsPrefix]]`snippetParamsPrefix`|`String`|
+|[[snippetOptions]]`snippetOptions`|`link:cheatsheets.adoc#SnippetOptions[SnippetOptions]`|
 +++
-Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
-+++
-|[[snippetTagName]]`snippetTagName`|`String`|
-+++
-Sets a Knot.x snippet HTML tag name. Default is 'script'
+Sets snippet options (e.g. with tag and data prefix names).
 +++
 |[[unprocessedStrategy]]`unprocessedStrategy`|`link:cheatsheets.adoc#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
 +++
@@ -304,13 +300,9 @@ Set the strategy how to assembly markup with snippets that were not processed by
 +++
 Set the EB address of the verticle
 +++
-|[[snippetParamsPrefix]]`snippetParamsPrefix`|`String`|
+|[[snippetOptions]]`snippetOptions`|`link:cheatsheets.adoc#SnippetOptions[SnippetOptions]`|
 +++
-Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
-+++
-|[[snippetTagName]]`snippetTagName`|`String`|
-+++
-Sets a Knot.x snippet HTML tag name. Default is 'script'
+Sets snippet options (e.g. with tag and data prefix names).
 +++
 |===
 [[GatewayKnotOptions]]
