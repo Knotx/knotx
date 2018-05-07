@@ -24,6 +24,9 @@ import io.vertx.core.json.JsonObject;
 @DataObject(generateConverter = true, publicConverter = false)
 public class SnippetOptions {
 
+  private static final String DEFAULT_TAG_NAME = "script";
+  private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
+
   private String tagName;
   private String paramsPrefix;
 
@@ -31,6 +34,7 @@ public class SnippetOptions {
    * Default constructor
    */
   public SnippetOptions() {
+    init();
   }
 
   /**
@@ -49,6 +53,7 @@ public class SnippetOptions {
    * @param json the JSON
    */
   public SnippetOptions(JsonObject json) {
+    init();
     SnippetOptionsConverter.fromJson(json, this);
   }
 
@@ -61,6 +66,12 @@ public class SnippetOptions {
     JsonObject json = new JsonObject();
     SnippetOptionsConverter.toJson(this, json);
     return json;
+  }
+
+
+  private void init() {
+    tagName = DEFAULT_TAG_NAME;
+    paramsPrefix = DEFAULT_PARAMS_PREFIX;
   }
 
   /**
@@ -90,6 +101,7 @@ public class SnippetOptions {
 
   /**
    * Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
+   *
    * @param paramsPrefix prefix
    * @return a reference to this, so the API can be used fluently
    */
