@@ -23,7 +23,7 @@
   <parent>
     <artifactId>knotx-example</artifactId>
     <groupId>io.knotx</groupId>
-    <version>1.2.2</version>
+    <version>1.2.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>knotx-example-gateway</artifactId>
