@@ -78,6 +78,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-config</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-core</artifactId>
       <type>test-jar</type>

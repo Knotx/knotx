@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.adapter.service.http;
+package io.knotx.adapter.common.http;
 
 import com.google.common.collect.Lists;
 import io.knotx.adapter.common.configuration.ServiceAdapterOptions;
 import io.knotx.adapter.common.configuration.ServiceSettings;
 import io.knotx.adapter.common.exception.AdapterServiceContractException;
 import io.knotx.adapter.common.exception.UnsupportedServiceException;
-import io.knotx.adapter.common.http.HttpClientFacade;
 import io.knotx.dataobjects.AdapterRequest;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
