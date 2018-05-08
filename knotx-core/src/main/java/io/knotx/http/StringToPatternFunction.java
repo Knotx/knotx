@@ -18,6 +18,7 @@ package io.knotx.http;
 import io.knotx.exceptions.ConfigurationException;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -26,21 +27,34 @@ public class StringToPatternFunction implements Function<String, Pattern> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StringToPatternFunction.class);
 
+  private static final StringToPatternFunction INSTANCE = new StringToPatternFunction();
+
   private static final String WILDCARD = "*";
+  private static final String WILDCARD_REPLACEMENT = "(.+)";
+
+  private StringToPatternFunction() {
+  }
+
+  public static StringToPatternFunction getInstance() {
+    return INSTANCE;
+  }
 
   @Override
   public Pattern apply(String stringPattern) {
-    Pattern compiledPattern;
     try {
-      compiledPattern = Pattern.compile(toRegex(stringPattern), Pattern.CASE_INSENSITIVE);
+      return makePattern(stringPattern);
     } catch (PatternSyntaxException e) {
       LOGGER.error("Invalid configuration syntax: {}", stringPattern, e);
       throw new ConfigurationException("Application error - invalid configuration");
     }
-    return compiledPattern;
+  }
+
+  private Pattern makePattern(String stringPattern) {
+    String regex = toRegex(stringPattern);
+    return Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
   }
 
   private String toRegex(String stringPattern) {
-    return "^" + stringPattern.replace(WILDCARD, "(.+)") + "$";
+    return "^" + stringPattern.replace(WILDCARD, WILDCARD_REPLACEMENT) + "$";
   }
 }

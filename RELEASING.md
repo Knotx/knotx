@@ -24,7 +24,13 @@ guide to get one).
    </servers>    
    ```
 
-## Steps
+## Deploy snapshots
+Snapshot deployment are performed when your version ends in -SNAPSHOT. You can simply run:
+```
+$> mvn clean deploy
+```
+
+## Deploy releases
 
 1. Create a release branch from the `master` branch
 
