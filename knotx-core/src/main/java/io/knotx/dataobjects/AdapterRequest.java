@@ -73,7 +73,7 @@ public class AdapterRequest {
    * Set the request params
    *
    * @param adapterParams - JsonObject consists of additional adapter parameters
-   * that can be set in the form as data-knotx-adapter-params
+   * that can be set in the form as adapter-params
    * @return a reference to this, so the API can be used fluently
    */
   public AdapterRequest setAdapterParams(JsonObject adapterParams) {

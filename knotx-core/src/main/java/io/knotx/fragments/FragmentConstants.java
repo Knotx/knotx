@@ -17,11 +17,9 @@ package io.knotx.fragments;
 
 public final class FragmentConstants {
 
-  public static final String SNIPPET_IDENTIFIER_NAME = "data-knotx-knots";
+  public static final String SNIPPET_IDENTIFIER_NAME = "knots";
 
   public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
-
-  public static final String DEFAULT_SNIPPET_TAG_NAME = "script";
 
   static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
 

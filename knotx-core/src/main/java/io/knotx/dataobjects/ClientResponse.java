@@ -94,11 +94,11 @@ public class ClientResponse {
    * Serialization variants of MultiMap fields
    **/
 
-  JsonObject getJsonHeaders() {
+  public JsonObject getJsonHeaders() {
     return MultiMapConverter.toJsonObject(headers);
   }
 
-  void setJsonHeaders(JsonObject headers) {
+  public void setJsonHeaders(JsonObject headers) {
     this.headers = MultiMapConverter.fromJsonObject(headers);
   }
 

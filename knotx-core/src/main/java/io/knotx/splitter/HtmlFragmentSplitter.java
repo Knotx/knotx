@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
 import io.knotx.fragments.SnippetPatterns;
+import io.knotx.options.SnippetOptions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -28,8 +29,8 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private final SnippetPatterns snippetPatterns;
 
-  HtmlFragmentSplitter(String snippetTag) {
-    snippetPatterns = new SnippetPatterns(snippetTag);
+  HtmlFragmentSplitter(SnippetOptions snippetOptions) {
+    snippetPatterns = new SnippetPatterns(snippetOptions);
   }
 
   @Override

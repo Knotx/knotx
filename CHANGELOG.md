@@ -5,7 +5,6 @@ All notable changes to Knot.x will be documented in this file.
 List of changes that are finished but not yet released in any final version.
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) - Knot.x configurations refactor - Changed the way how configurations and it's defaults are build.
  - [PR-384](https://github.com/Cognifide/knotx/pull/384) - Introduce Knot.x server backpressure mechanism
- - [PR-395](https://github.com/Cognifide/knotx/pull/395) - Fix for [#394](https://github.com/Cognifide/knotx/issues/394) - implemented encoding request parameter names in `HttpRepositoryConnectorProxyImpl`
  - [PR-397](https://github.com/Cognifide/knotx/pull/397) - Introduce vertx-config module to enable configuration modularization and auto-reload. Thanks to this change, Knot.x instance Auto-redeploy itself 
  after the configuration is changed, multiple configuration files format is supported (with favouring the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) and supporting nested configurations (includes).
  - [PR-399](https://github.com/Cognifide/knotx/pull/399) - Make knotx-core more concise and merge base Knot.x concepts into a single module
@@ -16,6 +15,13 @@ List of changes that are finished but not yet released in any final version.
  - [PR-411](https://github.com/Cognifide/knotx/pull/411) - `example` module is not conceptually a part of Knot.x `core` and having it in the core repository was misleading. `integration-tests` module introduced here.
  - [PR-412](https://github.com/Cognifide/knotx/pull/412) - Knot.x `core` modules will use dependencies in `provided` scope, all dependencies will be provided by [`knotx-stack`](https://github.com/Knotx/knotx-stack) setup.
  - [PR-415](https://github.com/Cognifide/knotx/pull/415) - bugfix: headers configurations (e.g. `allowedHeaders`) are now case insensitive
+ - [PR-418](https://github.com/Cognifide/knotx/pull/418) - Update to Vert.x 3.5.1
+ - [PR-419](https://github.com/Cognifide/knotx/pull/419) - Knotx snippets parameters prefix is now customizable.
+
+## Version 1.2.2
+List of changes that are finished but not yet released in any final version.
+ - [PR-395](https://github.com/Cognifide/knotx/pull/395) - Fix for [#394](https://github.com/Cognifide/knotx/issues/394) - implemented encoding request parameter names in `HttpRepositoryConnectorProxyImpl`
+ - [PR-420](https://github.com/Cognifide/knotx/pull/420) - Upgrade vert.x to 3.5.1
 
 ## Version 1.2.1
  - [PR-385](https://github.com/Cognifide/knotx/pull/385) - Fix for [#107](https://github.com/Cognifide/knotx/pull/107) - Support for snippet tags other than `script`

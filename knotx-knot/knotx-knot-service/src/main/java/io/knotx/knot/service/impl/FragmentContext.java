@@ -20,7 +20,6 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.knot.service.service.ServiceAttributeUtil;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.reactivex.Observable;
-import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,8 +31,8 @@ import org.jsoup.nodes.Element;
 
 class FragmentContext {
 
-  private static final String DATA_SERVICE = "data-knotx-service.*";
-  private static final String DATA_PARAMS = "data-knotx-params.*";
+  private static final String DATA_SERVICE = ".*service.*";
+  private static final String DATA_PARAMS = ".*params.*";
 
   private Fragment fragment;
   List<ServiceEntry> services;

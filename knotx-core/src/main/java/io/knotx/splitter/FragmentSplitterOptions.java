@@ -15,6 +15,7 @@
  */
 package io.knotx.splitter;
 
+import io.knotx.options.SnippetOptions;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
@@ -27,10 +28,10 @@ public class FragmentSplitterOptions {
   /**
    * Default address of the verticle on the event bus
    */
-  private final static String DEFAULT_ADDRESS = "knotx.core.splitter";
+  private static final String DEFAULT_ADDRESS = "knotx.core.splitter";
 
   private String address;
-  private String snippetTagName;
+  private SnippetOptions snippetOptions;
 
   /**
    * Default constructor
@@ -46,7 +47,7 @@ public class FragmentSplitterOptions {
    */
   public FragmentSplitterOptions(FragmentSplitterOptions other) {
     this.address = other.address;
-    this.snippetTagName = other.snippetTagName;
+    this.snippetOptions = other.snippetOptions;
   }
 
   /**
@@ -72,6 +73,7 @@ public class FragmentSplitterOptions {
 
   private void init() {
     address = DEFAULT_ADDRESS;
+    snippetOptions = new SnippetOptions();
   }
 
   /**
@@ -93,20 +95,19 @@ public class FragmentSplitterOptions {
   }
 
   /**
-   * @return a snippet tag name.
+   * @return a snippet configuration
    */
-  public String getSnippetTagName() {
-    return snippetTagName;
+  public SnippetOptions getSnippetOptions() {
+    return snippetOptions;
   }
 
   /**
-   * Sets a Knot.x snippet HTML tag name. Default is 'script'
-   *
-   * @param snippetTagName tag name
+   * Sets snippet options (e.g. with tag and data prefix names).
+   * @param snippetOptions options
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentSplitterOptions setSnippetTagName(String snippetTagName) {
-    this.snippetTagName = snippetTagName;
+  public FragmentSplitterOptions setSnippetOptions(SnippetOptions snippetOptions) {
+    this.snippetOptions = snippetOptions;
     return this;
   }
 }
