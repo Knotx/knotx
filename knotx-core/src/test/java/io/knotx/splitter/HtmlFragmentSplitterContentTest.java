@@ -23,6 +23,7 @@ import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
+import io.knotx.options.SnippetOptions;
 import java.util.List;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -33,13 +34,26 @@ public class HtmlFragmentSplitterContentTest {
 
   private List<Fragment> defaultSnippetTagFragments;
   private List<Fragment> customSnippetTagFragments;
+  private List<Fragment> customSnippetCustomParamsPrefixFragments;
 
   @Before
   public void setUp() throws Exception {
-    defaultSnippetTagFragments = new HtmlFragmentSplitter("script")
+    defaultSnippetTagFragments = new HtmlFragmentSplitter(
+        new SnippetOptions()
+            .setTagName("script")
+            .setParamsPrefix("data-knotx-"))
         .split(FileReader.readText("io/knotx/splitter/test-many-fragments.html"));
-    customSnippetTagFragments = new HtmlFragmentSplitter("knotx:snippet")
+    customSnippetTagFragments = new HtmlFragmentSplitter(
+        new SnippetOptions()
+            .setTagName("knotx:snippet")
+            .setParamsPrefix("data-knotx-"))
         .split(FileReader.readText("io/knotx/splitter/test-many-fragments-custom-snippet.html"));
+    customSnippetCustomParamsPrefixFragments = new HtmlFragmentSplitter(
+        new SnippetOptions()
+            .setTagName("knotx:snippet")
+            .setParamsPrefix(""))
+        .split(FileReader
+            .readText("io/knotx/splitter/test-many-fragments-custom-snippet-and-prefix.html"));
   }
 
   @TestWith({
@@ -70,9 +84,27 @@ public class HtmlFragmentSplitterContentTest {
       "7;io/knotx/splitter/fragments/8.txt",
       "8;io/knotx/splitter/fragments/9-custom-snippet.txt"
   })
-  public void split_whenCustomSnippetTag_expect8Fragments(int fragmentId, String fragmentFile)
+  public void split_whenCustomSnippetTag_expect9Fragments(int fragmentId, String fragmentFile)
       throws Exception {
     assertThat(customSnippetTagFragments.get(fragmentId).content().trim(),
+        equalTo(FileReader.readText(fragmentFile).trim()));
+  }
+
+  @TestWith({
+      "0;io/knotx/splitter/fragments/1.txt",
+      "1;io/knotx/splitter/fragments/2-custom-snippet-no-prefix.txt",
+      "2;io/knotx/splitter/fragments/3.txt",
+      "3;io/knotx/splitter/fragments/4-custom-snippet-no-prefix.txt",
+      "4;io/knotx/splitter/fragments/5-custom-snippet-no-prefix.txt",
+      "5;io/knotx/splitter/fragments/6.txt",
+      "6;io/knotx/splitter/fragments/7-custom-snippet-no-prefix.txt",
+      "7;io/knotx/splitter/fragments/8.txt",
+      "8;io/knotx/splitter/fragments/9-custom-snippet-no-prefix.txt"
+  })
+  public void split_whenCustomSnippetTagAndNoPrefix_expect9Fragments(int fragmentId,
+      String fragmentFile)
+      throws Exception {
+    assertThat(customSnippetCustomParamsPrefixFragments.get(fragmentId).content().trim(),
         equalTo(FileReader.readText(fragmentFile).trim()));
   }
 }

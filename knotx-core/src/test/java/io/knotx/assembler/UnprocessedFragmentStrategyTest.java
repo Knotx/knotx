@@ -25,6 +25,7 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.junit.coercers.KnotxCoercers;
 import io.knotx.junit.util.FileReader;
+import io.knotx.options.SnippetOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(ZohhakRunner.class)
@@ -32,47 +33,54 @@ import org.junit.runner.RunWith;
 public class UnprocessedFragmentStrategyTest {
 
   @TestWith({
-      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet.txt;script",
-      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/customTag_snippet.txt;knotx:snippet",
-      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script"
+      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet.txt;script;data-knotx-",
+      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/customTag_snippet.txt;knotx:snippet;data-knotx-",
+      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script;data-knotx-",
+      "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;knotx:snippet;"
   })
   public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
-      String expectedContentFileName, String snippetTagName) throws Exception {
+      String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
-        .get(fragment, new SnippetPatterns(snippetTagName));
+        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
   @TestWith({
-      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;script",
-      "io/knotx/assembler/customTag_snippet.txt|knotx:snippet;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet",
-      "io/knotx/assembler/big_snippet.txt;io/knotx/assembler/big_snippet-expected_unwrapped_content.txt;script"
+      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;script;data-knotx-",
+      "io/knotx/assembler/customTag_snippet.txt|knotx:snippet;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;data-knotx-",
+      "io/knotx/assembler/big_snippet.txt;io/knotx/assembler/big_snippet-expected_unwrapped_content.txt;script;data-knotx-",
+      "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt|knotx:snippet|;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;"
   })
   public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(Fragment fragment,
-      String expectedContentFileName, String snippetTagName) throws Exception {
+      String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
-        .get(fragment, new SnippetPatterns(snippetTagName));
+        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
   @TestWith({
-      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;script",
-      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;knotx:snippet",
-      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script"
+      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;script;data-knotx-",
+      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;knotx:snippet;data-knotx-",
+      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script;data-knotx-"
       //when fragment is a raw fragment, it is not ignored
   })
   public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
-      String expectedContentFileName, String snippetTagName) throws Exception {
+      String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
-        .get(fragment, new SnippetPatterns(snippetTagName));
+        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
+  private SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {
+    return new SnippetOptions()
+        .setTagName(snippetTagName)
+        .setParamsPrefix(snippetParamPrefix);
+  }
 
 }

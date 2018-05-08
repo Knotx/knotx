@@ -36,7 +36,8 @@ public class FragmentContextTest {
       "snippet_one_service_no_params.txt;{}",
       "snippet_one_service_invalid_params_bound.txt;{}",
       "snippet_one_service_one_param.txt;{\"path\":\"/overridden/path\"}",
-      "snippet_one_service_many_params.txt;{\"path\":\"/overridden/path\",\"anotherParam\":\"someValue\"}"
+      "snippet_one_service_many_params.txt;{\"path\":\"/overridden/path\",\"anotherParam\":\"someValue\"}",
+      "snippet_one_service_many_params-no-prefix.txt;{\"path\":\"/overridden/path\",\"anotherParam\":\"someValue\"}",
   })
   public void from_whenFragmentContainsOneService_expectFragmentContextWithExtractedParamsParams(
       Fragment fragment, String expectedParameters) throws Exception {
@@ -51,7 +52,9 @@ public class FragmentContextTest {
       "snippet_one_service_one_param.txt;1",
       "snippet_one_service_many_params.txt;1",
       "snippet_two_services.txt;2",
-      "snippet_five_services.txt;5"
+      "snippet_five_services.txt;5",
+      "snippet_two_services-no-prefix.txt;2",
+      "snippet_one_service_many_params-no-prefix.txt;1"
   })
   public void from_whenFragmentContainsServices_expectFragmentContextWithProperNumberOfServicesExtracted(
       Fragment fragment, int numberOfExpectedServices) throws Exception {
@@ -62,7 +65,8 @@ public class FragmentContextTest {
 
   @TestWith({
       "snippet_two_services_with_params.txt;{\"first\":{\"first-service-key\":\"first-service-value\"},\"second\":{\"second-service-key\":\"second-service-value\"}}",
-      "snippet_four_services_with_params_and_extra_param.txt;{\"a\":{\"a\":\"a\"},\"b\":{\"b\":\"b\"},\"c\":{\"c\":\"c\"},\"d\":{\"d\":\"d\"}}"
+      "snippet_four_services_with_params_and_extra_param.txt;{\"a\":{\"a\":\"a\"},\"b\":{\"b\":\"b\"},\"c\":{\"c\":\"c\"},\"d\":{\"d\":\"d\"}}",
+      "snippet_four_services_with_params_and_extra_param-no-prefix.txt;{\"a\":{\"a\":\"a\"},\"b\":{\"b\":\"b\"},\"c\":{\"c\":\"c\"},\"d\":{\"d\":\"d\"}}"
   })
   public void from_whenFragmentContainsServices_expectProperlyAssignedParams(
       Fragment fragment, JsonObject parameters) throws Exception {

@@ -1,0 +1,4 @@
+<knotx:snippet knots="services,handlebars" service="first-service">
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:snippet>

@@ -5,7 +5,11 @@ to the caller. We also call those dynamic Fragments "Snippets".
 
 ## How does it work?
 Splitter splits HTML Template using regexp 
-`<${SNIPPET_TAG_NAME}\s+data-knotx-knots\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</${SNIPPET_TAG_NAME}>`.
+
+```
+<${SNIPPET_TAG_NAME}\s+${SNIPPET_PARAMS_PREFIX}knots\s*=\s*"([A-Za-z0-9-]+)"[^>]*>.+?</${SNIPPET_TAG_NAME}>
+```
+
 This is efficient method, however it has a limitation that one should remember about. Knot.x just 
 scans the markup for the opening of snippet tag (`<${SNIPPET_TAG_NAME}>`) and the first occurrence of 
 the end of that tag (`</${SNIPPET_TAG_NAME}>`). Because of that `${SNIPPET_TAG_NAME}` should be
@@ -13,12 +17,34 @@ configured wisely. Good example is `knotx:snippet`. Do not use standard html tag
 `span` etc. The default value of snippet tag name (`${SNIPPET_TAG_NAME}`) is `script` and you may 
 configure it to any value you want (see [configuration section](#how-to-configure)).
 
+The second parameter here is `${SNIPPET_PARAMS_PREFIX}`. This prefix will start every snippet 
+parameter in the snippet tag. You may set it to `data-xxxx-` when snippet tag name is an HTML tag to 
+keep HTML5 data naming compliance. By default it's value is set to `data-knotx-` and you define
+snippet params like:
+```html
+<script data-knotx-knotx="someKnot, handlebars"
+        data-knotx-someKnot-param-name="XYZ" 
+        type="text/knotx-snippet" >
+```
+Leave it empty to have shorter parameters, snippet params will look like:
+```html
+<script knotx="someKnot, handlebars"
+        someKnot-param-name="XYZ" >
+```
+
+Notice `type="text/knotx-snippet"` entry, this is provided only to keep HTML compliance when 
+`<script>` tag is set as the `${SNIPPET_TAG_NAME}`. There is no logic in Knot.x that requires it,
+so simply skip it if you don't need HTML compliance.
+
 During the HTML splitting, all matched snippet tags are converted into Fragments containing list of 
-supported [[Knots|Knot]] declared in `data-knotx-knots` attribute. HTML parts below, above and 
+supported [[Knots|Knot]] declared in `${SNIPPET_PARAMS_PREFIX}knots` attribute. HTML parts below, above and 
 between matched snippets are converted into Fragments without Knot support (static Fragments). 
 It means that they are not supposed to be processed by Knots. See example for more details.
 
-**Splitter requires `data-knotx-knots` attribute to be the first attribute in the snippet tag.**
+**Splitter requires `${SNIPPET_PARAMS_PREFIX}knots` attribute to be the first attribute in the snippet tag.**
+
+**Later in this wiki we will assume the default values of `${SNIPPET_TAG_NAME}` is `script` 
+and `${SNIPPET_PARAMS_PREFIX}` is `data-knotx-`.**
 
 ### Example
 Fragment Splitter reads Knot Context with HTML Template:
