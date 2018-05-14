@@ -132,3 +132,20 @@ clientOptions {
 ```
 In rare situation you can always consult the [Knot.x verticles cheatsheet](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc)
 to find all available configuration options.
+
+### System properties
+As mentioned above, you can reference any configuration object or property using `${var}` syntax. Thanks to the HOCON capabilities
+you can also use the same notation to get the value from JVM system properties, e.g.:
+```
+java -Dmy.property=1234
+```
+You can inject to your configuration in a such a way:
+```
+someField = ${my.property}
+```
+Additionally, if the value from system property is optional you can use `${?var}` syntax to say that inject that value only if it's available.
+E.g. you can configure default value directly in the application.conf and customize it through system property if necessary.
+```
+someField = 1234
+someField = ${?my.field.value}
+```
