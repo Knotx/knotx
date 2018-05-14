@@ -6,7 +6,10 @@
     "assembler": {
       "options": {
         "config": {
-          "snippetTagName": "script",
+          "snippetOptions": {
+            "tagName": "script",
+            "paramsPrefix": "data-knotx-"
+          },
           "unprocessedStrategy": "IGNORE"
         }
       }

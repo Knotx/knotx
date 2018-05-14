@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+package io.knotx.options;
 
-import io.knotx.options.SnippetOptions;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Describes FragmentSplitter Knot configuration
+ * Describes SnippetOptions Knot configuration
  */
 @DataObject(generateConverter = true, publicConverter = false)
-public class FragmentSplitterOptions {
+public class SnippetOptions {
 
-  /**
-   * Default address of the verticle on the event bus
-   */
-  private static final String DEFAULT_ADDRESS = "knotx.core.splitter";
+  private static final String DEFAULT_TAG_NAME = "script";
+  private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
 
-  private String address;
-  private SnippetOptions snippetOptions;
+  private String tagName;
+  private String paramsPrefix;
 
   /**
    * Default constructor
    */
-  public FragmentSplitterOptions() {
+  public SnippetOptions() {
     init();
   }
 
@@ -45,9 +42,9 @@ public class FragmentSplitterOptions {
    *
    * @param other the instance to copy
    */
-  public FragmentSplitterOptions(FragmentSplitterOptions other) {
-    this.address = other.address;
-    this.snippetOptions = other.snippetOptions;
+  public SnippetOptions(SnippetOptions other) {
+    this.tagName = other.tagName;
+    this.paramsPrefix = other.paramsPrefix;
   }
 
   /**
@@ -55,9 +52,9 @@ public class FragmentSplitterOptions {
    *
    * @param json the JSON
    */
-  public FragmentSplitterOptions(JsonObject json) {
+  public SnippetOptions(JsonObject json) {
     init();
-    FragmentSplitterOptionsConverter.fromJson(json, this);
+    SnippetOptionsConverter.fromJson(json, this);
   }
 
   /**
@@ -67,47 +64,49 @@ public class FragmentSplitterOptions {
    */
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    FragmentSplitterOptionsConverter.toJson(this, json);
+    SnippetOptionsConverter.toJson(this, json);
     return json;
   }
 
+
   private void init() {
-    address = DEFAULT_ADDRESS;
-    snippetOptions = new SnippetOptions();
+    tagName = DEFAULT_TAG_NAME;
+    paramsPrefix = DEFAULT_PARAMS_PREFIX;
   }
 
   /**
-   * @return EB address of the verticle
+   * @return a snippet tag name.
    */
-  public String getAddress() {
-    return address;
+  public String getTagName() {
+    return tagName;
   }
 
   /**
-   * Set the EB address of the verticle
+   * Sets a Knot.x snippet HTML tag name. Default is 'script'
    *
-   * @param address EB address
+   * @param tagName tag name
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentSplitterOptions setAddress(String address) {
-    this.address = address;
+  public SnippetOptions setTagName(String tagName) {
+    this.tagName = tagName;
     return this;
   }
 
   /**
-   * @return a snippet configuration
+   * @return a snippet params prefix
    */
-  public SnippetOptions getSnippetOptions() {
-    return snippetOptions;
+  public String getParamsPrefix() {
+    return paramsPrefix;
   }
 
   /**
-   * Sets snippet options (e.g. with tag and data prefix names).
-   * @param snippetOptions options
+   * Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
+   *
+   * @param paramsPrefix prefix
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentSplitterOptions setSnippetOptions(SnippetOptions snippetOptions) {
-    this.snippetOptions = snippetOptions;
+  public SnippetOptions setParamsPrefix(String paramsPrefix) {
+    this.paramsPrefix = paramsPrefix;
     return this;
   }
 }

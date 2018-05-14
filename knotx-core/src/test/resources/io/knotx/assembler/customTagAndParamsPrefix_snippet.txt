@@ -1,0 +1,6 @@
+<knotx:snippet
+  knots="services"
+  service="first-service"
+  params='{"path":"/overridden/path"}'>
+  <h2>{{_result.message}}</h2>
+</knotx:snippet>
