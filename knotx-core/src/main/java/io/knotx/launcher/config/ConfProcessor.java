@@ -101,7 +101,7 @@ public class ConfProcessor implements ConfigProcessor {
         if (NumberUtils.isCreatable(value)) {
           return ConfigValueFactory.fromAnyRef(NumberUtils.toInt(value));
         }
-        if (Boolean.TRUE.toString().equalsIgnoreCase(value) || Boolean.FALSE.toString().equalsIgnoreCase("false")) {
+        if (Boolean.TRUE.toString().equalsIgnoreCase(value) || Boolean.FALSE.toString().equalsIgnoreCase(value)) {
           return ConfigValueFactory.fromAnyRef(BooleanUtils.toBoolean(value));
         } else {
           return ConfigValueFactory.fromAnyRef(value);
