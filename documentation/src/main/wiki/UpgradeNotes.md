@@ -38,6 +38,7 @@ List of changes that are finished but not yet released in any final version.
  (related to [PR-385](https://github.com/Cognifide/knotx/pull/385)). See more in [[Splitter|Splitter]] docs. 
  Important change - earlier `snippetTagName` was defined directly in Splitter and Assembler configs. 
  Since this PR it will be defined in the `snippetOptions` section, under `tagName` property.
+ - [PR-421](https://github.com/Cognifide/knotx/pull/421) - support for system properties injection in HOCON config files. You can now customize your config file to use values from system properties. See [System properties in Config](https://github.com/Cognifide/knotx/wiki/Configuration#system-properties) documentation.
 
 
 ## Version 1.2.1

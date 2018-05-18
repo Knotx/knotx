@@ -24,18 +24,24 @@ import com.typesafe.config.ConfigIncluder;
 import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.ConfigRenderOptions;
+import com.typesafe.config.ConfigResolveOptions;
+import com.typesafe.config.ConfigResolver;
+import com.typesafe.config.ConfigValue;
+import com.typesafe.config.ConfigValueFactory;
 import io.vertx.config.spi.ConfigProcessor;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Optional;
+import java.util.Properties;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * A processor using Typesafe Conf to read Hocon files. It also support JSON and Properties.
@@ -57,7 +63,7 @@ public class ConfProcessor implements ConfigProcessor {
 
   @Override
   public void process(Vertx vertx, JsonObject configuration, Buffer input,
-                      Handler<AsyncResult<JsonObject>> handler) {
+      Handler<AsyncResult<JsonObject>> handler) {
     // Use executeBlocking even if the bytes are in memory
     // Indeed, HOCON resolution can read others files (includes).
     vertx.executeBlocking(
@@ -66,7 +72,10 @@ public class ConfProcessor implements ConfigProcessor {
           try {
             Config conf = ConfigFactory.parseReader(reader,
                 ConfigParseOptions.defaults().appendIncluder(new KnotxConfIncluder(configuration)));
-            conf = conf.resolve();
+
+            conf = conf
+                .resolve(ConfigResolveOptions.defaults().appendResolver(new SysPropResolver()));
+
             String output = conf.root().render(ConfigRenderOptions.concise()
                 .setJson(true).setComments(false).setFormatted(false));
             JsonObject json = new JsonObject(output);
@@ -79,6 +88,33 @@ public class ConfProcessor implements ConfigProcessor {
         },
         handler
     );
+  }
+
+  private class SysPropResolver implements ConfigResolver {
+
+    private final Properties sysProps = System.getProperties();
+
+    @Override
+    public ConfigValue lookup(String path) {
+      String value = sysProps.getProperty(path);
+      if (StringUtils.isNotBlank(value)) {
+        if (NumberUtils.isCreatable(value)) {
+          return ConfigValueFactory.fromAnyRef(NumberUtils.toInt(value));
+        }
+        if (Boolean.TRUE.toString().equalsIgnoreCase(value) || Boolean.FALSE.toString().equalsIgnoreCase(value)) {
+          return ConfigValueFactory.fromAnyRef(BooleanUtils.toBoolean(value));
+        } else {
+          return ConfigValueFactory.fromAnyRef(value);
+        }
+      }
+
+      return null;
+    }
+
+    @Override
+    public ConfigResolver withFallback(ConfigResolver fallback) {
+      return fallback;
+    }
   }
 
   /**
@@ -98,7 +134,7 @@ public class ConfProcessor implements ConfigProcessor {
     public KnotxConfIncluder(JsonObject configuration) {
       configSearchFolder = Optional.ofNullable(configuration.getString("path"))
           .map(path ->
-            path.contains("/") ? path.substring(0, path.lastIndexOf("/")) : StringUtils.EMPTY
+              path.contains("/") ? path.substring(0, path.lastIndexOf("/")) : StringUtils.EMPTY
           ).orElse(System.getProperty("knotx.home") + "/conf");
     }
 
@@ -109,7 +145,7 @@ public class ConfProcessor implements ConfigProcessor {
 
     @Override
     public ConfigObject include(ConfigIncludeContext context, String what) {
-     final  File file;
+      final File file;
       if (StringUtils.isBlank(configSearchFolder)) {
         file = new File(what);
       } else {
