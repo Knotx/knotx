@@ -596,6 +596,27 @@ Describes routing to addresses of other Knots based on the transition trigger re
 Sets the Regular expression of HTTP Request path
 +++
 |===
+[[SnippetOptions]]
+== SnippetOptions
+
+++++
+ Describes SnippetOptions Knot configuration
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[paramsPrefix]]`paramsPrefix`|`String`|
++++
+Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
++++
+|[[tagName]]`tagName`|`String`|
++++
+Sets a Knot.x snippet HTML tag name. Default is 'script'
++++
+|===
 [[HandlebarsKnotOptions]]
 == HandlebarsKnotOptions
 
