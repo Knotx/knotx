@@ -5,6 +5,8 @@ from older than one version (e.g. 1.0.1 -> 1.1.2) be sure, to do all the steps f
 versions. You may see all changes in the [Changelog](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md).
 
 ## Master
+
+## Version 1.3.0
 List of changes that are finished but not yet released in any final version.
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) and [PR-397](https://github.com/Cognifide/knotx/pull/397) - Configuration changes:
    - Multiple configuration files format is supported (with favouring the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) and supporting nested configurations (includes). **Don't worry, your old `JSON` configurations are still supported!**

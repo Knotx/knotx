@@ -3,6 +3,8 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+
+## 1.3.0
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) - Knot.x configurations refactor - Changed the way how configurations and it's defaults are build.
  - [PR-384](https://github.com/Cognifide/knotx/pull/384) - Introduce Knot.x server backpressure mechanism
  - [PR-397](https://github.com/Cognifide/knotx/pull/397) - Introduce vertx-config module to enable configuration modularization and auto-reload. Thanks to this change, Knot.x instance Auto-redeploy itself 
@@ -20,7 +22,6 @@ List of changes that are finished but not yet released in any final version.
  - [PR-421](https://github.com/Cognifide/knotx/pull/421) - Support for system properties injection in HOCON config file
 
 ## Version 1.2.2
-List of changes that are finished but not yet released in any final version.
  - [PR-395](https://github.com/Cognifide/knotx/pull/395) - Fix for [#394](https://github.com/Cognifide/knotx/issues/394) - implemented encoding request parameter names in `HttpRepositoryConnectorProxyImpl`
  - [PR-420](https://github.com/Cognifide/knotx/pull/420) - Upgrade vert.x to 3.5.1
 
