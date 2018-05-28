@@ -84,6 +84,12 @@ public class SampleApplicationIT {
   }
 
   @Test
+  @KnotxConfiguration("knotx-test-app-custom-symbol.json")
+  public void whenRequestingLocalSimplePageWithGetCustomSymbol_expectLocalSimpleHtml(TestContext context) {
+    testGetRequest(context, "/content/local/customSymbol.html", "localSimpleResult.html");
+  }
+
+  @Test
   @KnotxConfiguration("knotx-test-app-no-body.json")
   public void whenRequestingLocalPageWhereInServiceIsMissingResponseBody_expectNoBodyHtml(
       TestContext context) {
