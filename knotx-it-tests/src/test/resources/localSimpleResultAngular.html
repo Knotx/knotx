@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="http://cognifide.com/favicon.ico?v=2"/>
   <title>Knot.x</title>
-  <link href="https://bootswatch.com/4/simplex/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://bootswatch.com/simplex/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="container-fluid">
@@ -44,55 +44,40 @@
     </div>
   </div>
   <div class="row">
-    <script data-knotx-knots="services,handlebars"
-            data-knotx-service="first-service"
-            data-knotx-service-second="second-service"
-            data-knotx-service-third="third-service"
-            type="text/knotx-snippet">
 
-      <div class="col-md-4">
-        <h2>Snippet1 - {[_result.message]}</h2>
-        <div>Snippet1 - {[_result.body.a]}</div>
-        <div>{[#bold]}Custom Handlebars helper{[/bold]}</div>
-      </div>
-      <div class="col-md-4">
-        <h2>Snippet1 - {[second._result.message]}</h2>
-        <div>Snippet1 - {[second._result.body.a]}</div>
-        {[#string_equals second._response.statusCode "200"]}
-        <div>Success! Status code : {[second._response.statusCode]}</div>
-        {[/string_equals]}
-      </div>
-      <div class="col-md-4" ng-controller="HelloController">
-		    <h2>{{message}}</h2>
-      </div>
-      <div class="col-md-4">
-        <h2>Snippet1 - {[third._result.message]}</h2>
-        <div>Snippet1 - {[third._result.body.a]}</div>
-      </div>
-    </script>
+    <div class="col-md-4">
+      <h2>Snippet1 - this is webservice no. 1</h2>
+      <div>Snippet1 - message - a</div>
+      <div></div>
+    </div>
+    <div class="col-md-4">
+      <h2>Snippet1 - this is webservice no. 2</h2>
+      <div>Snippet1 - message - a</div>
+
+      <div>Success! Status code : 200</div>
+
+    </div>
+    <div class="col-md-4" ng-controller="HelloController">
+      <h2>{{message}}</h2>
+    </div>
+    <div class="col-md-4">
+      <h2>Snippet1 - this is webservice no. 3</h2>
+      <div>Snippet1 - message - a</div>
+    </div>
   </div>
   <div class="row">
     <div class="col-md-4">
-      <script data-knotx-knots="services,handlebars" data-knotx-service="second-service"
-              type="text/knotx-snippet">
-        <h2>Snippet2 - {[_result.message]}</h2>
-        <p>Snippet2 - {[_result.body.a]}</p>
-        {[#string_equals _result.status "success"]}<p>Success!</p>{[/string_equals]}
-      </script>
+      <h2>Snippet2 - this is webservice no. 2</h2>
+      <p>Snippet2 - message - a</p>
+      <p>Success!</p>
     </div>
     <div class="col-md-4">
-      <script data-knotx-knots="services,handlebars" data-knotx-service="third-service"
-              type="text/knotx-snippet">
-        <h2>Snippet3 - {[_result.message]}</h2>
-        <p>Snippet3 - {[_result.body.a]}</p>
-      </script>
+      <h2>Snippet3 - this is webservice no. 3</h2>
+      <p>Snippet3 - message - a</p>
     </div>
     <div class="col-md-4">
-      <script data-knotx-knots="services,handlebars" data-knotx-service="third-service"
-              type="text/knotx-snippet">
-        <h2>Snippet4 - {[_result.message]}</h2>
-        <p>Snippet4 - {[encode_uri _result.url]}</p>
-      </script>
+      <h2>Snippet4 - this is webservice no. 3</h2>
+      <p>Snippet4 - http%3A%2F%2Fexample.com</p>
     </div>
   </div>
 </div>

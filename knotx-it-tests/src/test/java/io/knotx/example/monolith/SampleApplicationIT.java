@@ -87,7 +87,7 @@ public class SampleApplicationIT {
   @KnotxConfiguration("knotx-test-app-custom-symbol.json")
   public void whenRequestingLocalSimplePageWithGetCustomSymbol_expectLocalSimpleHtml(
       TestContext context) {
-    testGetRequest(context, "/content/local/customSymbol.html", "localSimpleResult.html");
+    testGetRequest(context, "/content/local/customSymbol.html", "localSimpleResultAngular.html");
   }
 
   @Test
