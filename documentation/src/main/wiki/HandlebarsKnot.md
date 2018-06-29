@@ -48,6 +48,26 @@ Handlebars Knot uses data from Fragment Context and applies it to Fragment Conte
 ```
 Finally Fragment Content is replaced with merged result.
 
+## Interpolation symbol
+By default , the Handlebars engine uses `{{` and `}}` symbols as tag delimiters.
+However, while Knot.x can be used to generate markup on the server side, the very same page might also contain templates intended for client-side processing. 
+This is often the case when frameworks like Angular.js or Vue.js are used.
+To avoid conflicts between Mustache templates to be executed server-side and ones evaluated on the client side, a Handlebars knot introduces two configuration parameters that enable you to configure custom symbols to be used in Knot.x snippets.
+E.g.:
+In order to use different symbols as below
+```html
+<div class="col-md-4">
+  <h2>Snippet1 - {<_result.message>}</h2>
+</div>
+```
+You can reconfigure an engine as follows in the Handlebars Knot section:
+```hocon
+config {
+  startDelimiter = "{<"
+  endDelimiter = ">}"
+}
+```
+
 ## How to configure?
 For all configuration fields and their defaults consult [HandlebarsKnotOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#handlebarsknotoptions)
 
