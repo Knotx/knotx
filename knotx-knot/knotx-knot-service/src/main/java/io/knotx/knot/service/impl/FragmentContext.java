@@ -20,10 +20,14 @@ import io.knotx.dataobjects.Fragment;
 import io.knotx.knot.service.service.ServiceAttributeUtil;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.reactivex.Observable;
+import io.vertx.core.json.JsonObject;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
@@ -33,6 +37,7 @@ class FragmentContext {
 
   private static final String DATA_SERVICE = ".*service.*";
   private static final String DATA_PARAMS = ".*params.*";
+  private static final String DATA_CONSTANTS = "data-const-.*";
 
   private Fragment fragment;
   List<ServiceEntry> services;
@@ -43,7 +48,7 @@ class FragmentContext {
 
   /**
    * Factory method that creates context from the {@link Fragment}. All services and params are
-   * extracted to separate entries.
+   * extracted to separate entries. Constant variables are merged into {@link Fragment} context.
    *
    * @param fragment - fragment from which the context will be created.
    * @return a FragmentContext that wraps given fragment.
@@ -66,14 +71,24 @@ class FragmentContext {
             .toMap(attribute -> ServiceAttributeUtil.extractNamespace(attribute.getKey()),
                 Function.identity()));
 
+    Map<String, String> constants = attributes.stream()
+            .filter(attribute -> attribute.getKey().matches(DATA_CONSTANTS))
+            .collect(Collectors
+                .toMap(FragmentContext::getConstId, Attribute::getValue));
+
     return new FragmentContext()
         .fragment(fragment)
+        .applyConstants(constants)
         .services(
             serviceAttributes.entrySet().stream()
                 .map(entry -> new ServiceEntry(entry.getValue(),
                     paramsAttributes.get(entry.getKey())))
                 .collect(Collectors.toList())
         );
+  }
+
+  private static String getConstId(Attribute in) {
+	  return StringUtils.removeStart(in.getKey(), "data-const-");
   }
 
   /**
@@ -83,7 +98,7 @@ class FragmentContext {
   public Observable<ServiceEntry> services() {
     return Observable.fromIterable(services);
   }
-
+  
   /**
    * @return a fragment wrapped in this context.
    */
@@ -99,6 +114,12 @@ class FragmentContext {
   private FragmentContext services(List<ServiceEntry> services) {
     this.services = services;
     return this;
+  }
+  
+  private FragmentContext applyConstants(Map<String, String> constants) {
+	  JsonObject data = new JsonObject().put("_const", JsonObject.mapFrom(constants));
+	  fragment.context().mergeIn(data);
+	  return this;
   }
 
   @Override
