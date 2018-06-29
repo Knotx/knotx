@@ -6,8 +6,19 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 
-## Version 1.3.0
 List of changes that are finished but not yet released in any final version.
+ - [PR-426](https://github.com/Cognifide/knotx/pull/426) Support constant data in handlebars fragments. 
+   - You can add constant data attributes to snippet definition.  Items prefixed with `data-const-` are now passed into `FragmentContext`. 
+   - Handlebars can access constant data using prefix `_const`. Eg: data attribute `data-const-foo` can be referenced from handlebars as `{{_const.foo}}`
+   ```<script
+    data-const-foo="foo value"
+    type="text/knotx-snippet">
+      <h2>{{_const.foo}}</h2>
+    </script>
+   ```
+
+
+## Version 1.3.0
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) and [PR-397](https://github.com/Cognifide/knotx/pull/397) - Configuration changes:
    - Multiple configuration files format is supported (with favouring the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) and supporting nested configurations (includes). **Don't worry, your old `JSON` configurations are still supported!**
    - Removed module descriptors - all module configuration is now defined in the `conf` (written in [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md)) files with proper comments and explanations.
