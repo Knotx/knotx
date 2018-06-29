@@ -57,8 +57,10 @@ public class KnotxCoercers {
     final String fragmentContent = FileReader.readText(fragmentContentFile);
     final String snippetParamPrefix = extractSnippetParamPrefix(params, fragmentParameters);
     final SnippetPatterns patterns = new SnippetPatterns(buildOptions(snippetTagName, snippetParamPrefix));
+    final JsonObject context = new JsonObject();
 
     Fragment fragmentMock = Mockito.mock(Fragment.class);
+    when(fragmentMock.context()).thenReturn(context);
     when(fragmentMock.content()).thenReturn(fragmentContent);
     when(fragmentMock.isRaw())
         .thenReturn(!patterns.getAnySnippetPattern().matcher(fragmentContent).matches());
