@@ -6,6 +6,14 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
 
 ## Master
 
+ - [PR-427] https://github.com/Cognifide/knotx/pull/427 - HttpRepositoryConnectorProxyImpl logging improvements. Following log levels are now assigned depending on repository response status code:
+   ```2xx - success - log at debug
+   3xx - redirect - log at info
+   4xx - client error - log at warn
+   5xx - server error - log at error
+   other - log at warn
+   ```
+
 ## Version 1.3.0
 List of changes that are finished but not yet released in any final version.
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) and [PR-397](https://github.com/Cognifide/knotx/pull/397) - Configuration changes:
