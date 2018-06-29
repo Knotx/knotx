@@ -29,6 +29,10 @@ public class HandlebarsKnotOptions {
    */
   public final static String DEFAULT_CACHE_KEY_ALGORITHM = "MD5";
 
+  public final static String DEFAULT_START_DELIMITER = "{{";
+
+  public final static String DEFAULT_END_DELIMITER = "}}";
+
   /**
    * Default EB address of the verticle
    */
@@ -37,6 +41,8 @@ public class HandlebarsKnotOptions {
   private String address;
   private String cacheKeyAlgorithm;
   private Long cacheSize;
+  private String startDelimiter;
+  private String endDelimiter;
 
   /**
    * Default constructor
@@ -54,6 +60,8 @@ public class HandlebarsKnotOptions {
     this.address = other.address;
     this.cacheKeyAlgorithm = other.cacheKeyAlgorithm;
     this.cacheSize = other.cacheSize;
+    this.startDelimiter = other.startDelimiter;
+    this.endDelimiter = other.endDelimiter;
   }
 
   /**
@@ -80,6 +88,8 @@ public class HandlebarsKnotOptions {
   private void init() {
     address = DEFAULT_ADDRESS;
     cacheKeyAlgorithm = DEFAULT_CACHE_KEY_ALGORITHM;
+    startDelimiter = DEFAULT_START_DELIMITER;
+    endDelimiter = DEFAULT_END_DELIMITER;
   }
 
   /**
@@ -136,6 +146,24 @@ public class HandlebarsKnotOptions {
    */
   public HandlebarsKnotOptions setAddress(String address) {
     this.address = address;
+    return this;
+  }
+
+  public String getStartDelimiter() {
+    return startDelimiter;
+  }
+
+  public HandlebarsKnotOptions setStartDelimiter(String startDelimiter) {
+    this.startDelimiter = startDelimiter;
+    return this;
+  }
+
+  public String getEndDelimiter() {
+    return endDelimiter;
+  }
+
+  public HandlebarsKnotOptions setEndDelimiter(String endDelimiter) {
+    this.endDelimiter = endDelimiter;
     return this;
   }
 }
