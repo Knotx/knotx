@@ -5,75 +5,57 @@
 [![][central-repo img]][central-repo]
 [![][gitter img]][gitter]
 
-# Knot.x is a highly efficient and scalable integration platform for modern websites.
+# Knot.x Core
+This is the repository for Knot.x core.
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
 </p>
-
-## What problems does Knot.x solve?
-
-**Knot.x** uses data from any source (like REST / SOAP service, search engine, CRM etc.) and transforms it into an unified customer experience using a
-template from a repository. The template can contain dynamic snippets which determine the way how data is used. The repository can be CMS system, Apache or
-simple catalogue with static HTML pages.
-
+<p align="center">http://knotx.io</p>
 <p align="center">
-  <img align="right"
-    src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-high-level-architecture.png?raw=true"
-    alt="High Level Architecture"/>
+  reactive <i>Vert.x-based</i>  integration platform
 </p>
 
-## What's the philosophy behind Knot.x?
-We care a lot about speed and that is why we built **Knot.x** on [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant, event-driven applications.
+Knot.x core is a reactive integration framework allowing to connect with all kinds of systems from CMS,
+through web services, to low-level storages like databases or caches and it's not limited to HTTP.
 
-### Stability and responsiveness
-**Knot.x** uses asynchronous programming principles which allows it to process a large number of requests using a single thread.
-Asynchronous programming is a style promoting the ability to write non-blocking code (no thread pools).
-The platform stays responsive under heavy and varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
+We build Knot.x on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant,
+event-driven applications. It uses asynchronous programming principles which allows it to process a
+large number of requests using a single thread. Asynchronous programming is a style promoting the
+ability to write non-blocking code (no thread pools). The platform stays responsive under heavy and
+varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
-### Loose coupling
-Relies on asynchronous message-passing to establish a boundary between system components that ensures
-loose coupling, isolation and location transparency. Base **Knot.x** component is called [Knot](https://github.com/Cognifide/knotx/wiki/Knot).
+It exposes [Netty-based](https://netty.io/) HTTP [server](https://github.com/Cognifide/knotx/wiki/Server)
+which collects data from any source (like REST / SOAP service, search engine, CRM etc.) and transforms
+it into an unified customer experience using a template from a
+[repository](https://github.com/Cognifide/knotx/wiki/RepositoryConnectors). The template can contain
+dynamic [fragments](https://github.com/Cognifide/knotx/wiki/Splitter) which determine the way how
+the data is used. The repository can be CMS system, Apache or simple catalogue from the filesystem with static HTML pages.
 
-<p align="center">
-  <img align="right"
-    src="https://github.com/Cognifide/knotx/blob/master/documentation/src/main/wiki/assets/knotx-modules-basic-request-flow.png?raw=true"
-    alt="Basic request flow"/>
-</p>
+For more information on Knot.x and where Knot.x core fits into the big picture please see the [KNOTX.IO](http://knotx.io).
 
-### Scalability
-Various scaling options are available to suit client needs and help in cost optimization. Using a
-simple concurrency model and message bus **Knot.x** can be scaled within a single host or cluster of
-servers.
+## Getting started
+We recommend to use [Knot.x Stack](https://github.com/Knotx/knotx-stack) to setup Knot.x with all
+required dependencies. All required steps are described in this [tutorial](http://knotx.io/blog/getting-started-wiht-knotx-stack/).
+More details about Knot.x deployment can be found [here](https://github.com/Cognifide/knotx/wiki/KnotxDeployment).
+
+You can also play with Docker to setup [an example project](https://github.com/Knotx/knotx-stack/tree/master/knotx-docker).
 
 ## Documentation
 
-See [KNOTX.io](http://knotx.io) for tutorials, examples and user documentation.
+See [KNOTX.io](http://knotx.io/tutorials) for tutorials, examples and user documentation.
 
-See [Wiki](https://github.com/Cognifide/knotx/wiki) for developer documentation, examples and other information.
+See [Wiki](https://github.com/Cognifide/knotx/wiki) for developer
+documentation, examples and other information.
 
+See [Knot.x Extensions Github](https://github.com/Knotx) for Stack, the
+example project, cookbook, Data Bridge and other Knot.x extensions.
 
-## Community
+## Community / Issues
 
-#### Online Chat
-
-[Gitter Chat](https://gitter.im/Knotx/Lobby) is a way for users to chat with the Knot.x team. Feel free to leave a message, even if we’re not around, we will definitely respond to you when available.
-
-#### Google Groups
-
-Google Groups are memorable ways to ask questions and communicate with the Knot.x team and other users. There are two groups available:
-
-* [User Group](https://groups.google.com/forum/#!forum/knotx) – for all Knot.x users
-* [Developers Group](https://groups.google.com/forum/#!forum/knotx-contributors) – for Knot.x Core team and project contributors
-
-## Bugs
-
-All feature requests and bugs can be filed as issues on [Gitub](https://github.com/Cognifide/knotx/issues). Do not use Github issues to ask questions, post them on the [User Group](https://groups.google.com/forum/#!forum/knotx) or [Gitter Chat](https://gitter.im/Knotx/Lobby).
-
-
-## Demo
-
-You can run a **Knot.x** demo within less than 5 minutes, all you need is Java 8. See [how you can run the Knot.x demo](https://github.com/Cognifide/knotx/wiki/RunningTheDemo).
+All feature requests and bugs can be filed as issues on [Gitub](https://github.com/Cognifide/knotx/issues).
+Do not use Github issues to ask questions, post them on the
+[User Group](https://groups.google.com/forum/#!forum/knotx) or [Gitter Chat](https://gitter.im/Knotx/Lobby).
 
 
 ## Licence
