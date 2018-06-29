@@ -1,0 +1,6 @@
+<script
+  data-const-const1="const1 value"
+  data-const-const2="const2 value"
+  type="text/knotx-snippet">
+  <h2>{{_const.const1}}</h2>
+</script>
