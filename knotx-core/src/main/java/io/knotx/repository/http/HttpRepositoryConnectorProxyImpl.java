@@ -23,6 +23,7 @@ import io.knotx.proxy.RepositoryConnectorProxy;
 import io.knotx.util.DataObjectsUtil;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpStatusClass;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -144,12 +145,21 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
   }
 
   private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse) {
-    if (httpResponse.statusCode() >= 300 && httpResponse.statusCode() < 400) { //redirect responses
+    if (HttpStatusClass.SUCCESS.contains(httpResponse.statusCode())) {
+      LOGGER.debug("Repository 2xx response: {}, Headers[{}]", httpResponse.statusCode(),
+          DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (HttpStatusClass.REDIRECTION.contains(httpResponse.statusCode())) { // redirect                                                                                  
       LOGGER.info("Repository 3xx response: {}, Headers[{}]", httpResponse.statusCode(),
           DataObjectsUtil.toString(httpResponse.headers()));
-    } else if (httpResponse.statusCode() != 200) {
-      LOGGER.error("Repository error response: {}, Headers[{}]", httpResponse.statusCode(),
-          DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (HttpStatusClass.CLIENT_ERROR.contains(httpResponse.statusCode())) { // errors
+      LOGGER.warn("Repository client error 4xx response: {}, Headers[{}]",
+          httpResponse.statusCode(), DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (HttpStatusClass.SERVER_ERROR.contains(httpResponse.statusCode())) {
+      LOGGER.error("Repository server error 5xx response: {}, Headers[{}]",
+          httpResponse.statusCode(), DataObjectsUtil.toString(httpResponse.headers()));
+    } else {
+      LOGGER.warn("Other response: {}, Headers[{}]",
+          httpResponse.statusCode(), DataObjectsUtil.toString(httpResponse.headers()));
     }
 
     return new ClientResponse()
