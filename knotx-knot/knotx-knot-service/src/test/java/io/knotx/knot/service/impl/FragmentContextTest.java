@@ -82,6 +82,7 @@ public class FragmentContextTest {
   @TestWith({
       "snippet_one_const.txt;{\"const1\":\"const1 value\"}",
       "snippet_two_consts.txt;{\"const1\":\"const1 value\",\"const2\":\"const2 value\"}",
+      "snippet_two_consts_no_prefix.txt;{\"const1\":\"const1 value\",\"const2\":\"const2 value\"}",
   })
   public void from_whenFragmentContainsConstants_expectConstantsInContext(
       Fragment fragment, JsonObject parameters) throws Exception {
