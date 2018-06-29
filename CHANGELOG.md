@@ -3,6 +3,7 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+ - [PR-426](https://github.com/Cognifide/knotx/pull/426) - Support constant data in handlebars fragments (https://github.com/Cognifide/knotx/issues/391)
 
 ## 1.3.0
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) - Knot.x configurations refactor - Changed the way how configurations and it's defaults are build.
