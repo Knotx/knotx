@@ -49,9 +49,10 @@ Handlebars Knot uses data from Fragment Context and applies it to Fragment Conte
 Finally Fragment Content is replaced with merged result.
 
 ## Interpolation symbol
-By default Handlebars engine uses `{{` and `}}` symbols as delimiters of variables, expressions, etc.
-However, since the Knot.x can be used to generate markup on server side, it might also consists of markup to be interpreted by the front end engine, such as Angular.
-To avoid conflicts between mustache script to be executed server side from the client side, a Handlebars knot introduces two configuration parameters that enables you to configure custom symbols to be used in Knot.x snippets.
+By default , the Handlebars engine uses `{{` and `}}` symbols as tag delimiters.
+However, while Knot.x can be used to generate markup on the server side, the very same page might also contain templates intended for client-side processing. 
+This is often the case when frameworks like Angular.js or Vue.js are used.
+To avoid conflicts between Mustache templates to be executed server-side and ones evaluated on the client side, a Handlebars knot introduces two configuration parameters that enable you to configure custom symbols to be used in Knot.x snippets.
 E.g.:
 In order to use different symbols as below
 ```html
