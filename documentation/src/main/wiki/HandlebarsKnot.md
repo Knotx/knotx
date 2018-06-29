@@ -70,10 +70,10 @@ config {
 
 ## Constant data
 You can add constant data attributes to snippet definition. Constant attributes are identified by `const-` prefix.
-Handlebars engine can access these values with prefix `_const`. Eg: data attribute `data-const-foo` can be referenced from handlebars as `{{_const.foo}}`
+Handlebars engine can access these values with prefix `_const`. Eg: data attribute `const-foo` can be referenced from handlebars as `{{_const.foo}}`.
 ```snippet
 <script
-  data-const-foo="foo value"
+  const-foo="foo value"
   type="text/knotx-snippet">
     <h2>{{_const.foo}}</h2>
  </script>
@@ -82,6 +82,7 @@ Rendered as:
 ```html
     <h2>foo value</h2>
 ```
+Note: you may prefix the data attribute key with `${SNIPPET_PARAMS_PREFIX}`
 
 
 ## How to configure?
