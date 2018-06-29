@@ -37,7 +37,7 @@ class FragmentContext {
 
   private static final String DATA_SERVICE = ".*service.*";
   private static final String DATA_PARAMS = ".*params.*";
-  private static final String DATA_CONSTANTS = "data-const-.*";
+  private static final String DATA_CONSTANTS = ".*const.*";
 
   private Fragment fragment;
   List<ServiceEntry> services;
@@ -88,7 +88,7 @@ class FragmentContext {
   }
 
   private static String getConstId(Attribute in) {
-	  return StringUtils.removeStart(in.getKey(), "data-const-");
+	  return StringUtils.substringAfter(in.getKey(), "const-");
   }
 
   /**
