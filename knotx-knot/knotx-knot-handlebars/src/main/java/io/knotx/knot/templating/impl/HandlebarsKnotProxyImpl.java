@@ -59,7 +59,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
   private MessageDigest digest;
 
   public HandlebarsKnotProxyImpl(HandlebarsKnotOptions options) {
-    this.handlebars = createHandlebars();
+    this.handlebars = createHandlebars(options);
     this.cache = CacheBuilder.newBuilder()
         .maximumSize(options.getCacheSize())
         .removalListener(listener -> LOGGER.warn(
@@ -146,8 +146,10 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     return new String(cacheKeyBytes);
   }
 
-  private Handlebars createHandlebars() {
+  private Handlebars createHandlebars(HandlebarsKnotOptions options) {
     Handlebars newHandlebars = new Handlebars();
+    newHandlebars.setStartDelimiter(options.getStartDelimiter());
+    newHandlebars.setEndDelimiter(options.getEndDelimiter());
     DefaultHandlebarsHelpers.registerFor(newHandlebars);
 
     ServiceLoader.load(CustomHandlebarsHelper.class)

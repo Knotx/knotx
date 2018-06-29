@@ -644,6 +644,8 @@ Set the algorithm used to build a hash from the handlebars snippet.
 +++
 Set the size of the cache. After reaching the max size, new elements will replace the oldest one.
 +++
+|[[endDelimiter]]`endDelimiter`|`String`|-
+|[[startDelimiter]]`startDelimiter`|`String`|-
 |===
 [[ActionKnotOptions]]
 == ActionKnotOptions
