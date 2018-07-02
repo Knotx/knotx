@@ -145,25 +145,27 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
   }
 
   private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse) {
-    if (HttpStatusClass.SUCCESS.contains(httpResponse.statusCode())) {
-      LOGGER.debug("Repository 2xx response: {}, Headers[{}]", httpResponse.statusCode(),
+    final int statusCode = httpResponse.statusCode();
+    
+    if (HttpStatusClass.SUCCESS.contains(statusCode)) {
+      LOGGER.debug("Repository 2xx response: {}, Headers[{}]", statusCode,
           DataObjectsUtil.toString(httpResponse.headers()));
-    } else if (HttpStatusClass.REDIRECTION.contains(httpResponse.statusCode())) { // redirect                                                                                  
-      LOGGER.info("Repository 3xx response: {}, Headers[{}]", httpResponse.statusCode(),
+    } else if (HttpStatusClass.REDIRECTION.contains(statusCode)) { // redirect                                                                                  
+      LOGGER.info("Repository 3xx response: {}, Headers[{}]", statusCode,
           DataObjectsUtil.toString(httpResponse.headers()));
-    } else if (HttpStatusClass.CLIENT_ERROR.contains(httpResponse.statusCode())) { // errors
+    } else if (HttpStatusClass.CLIENT_ERROR.contains(statusCode)) { // errors
       LOGGER.warn("Repository client error 4xx response: {}, Headers[{}]",
-          httpResponse.statusCode(), DataObjectsUtil.toString(httpResponse.headers()));
-    } else if (HttpStatusClass.SERVER_ERROR.contains(httpResponse.statusCode())) {
+          statusCode, DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (HttpStatusClass.SERVER_ERROR.contains(httpResponse.statusCode)) {
       LOGGER.error("Repository server error 5xx response: {}, Headers[{}]",
-          httpResponse.statusCode(), DataObjectsUtil.toString(httpResponse.headers()));
+          statusCode, DataObjectsUtil.toString(httpResponse.headers()));
     } else {
       LOGGER.warn("Other response: {}, Headers[{}]",
-          httpResponse.statusCode(), DataObjectsUtil.toString(httpResponse.headers()));
+          statusCode, DataObjectsUtil.toString(httpResponse.headers()));
     }
 
     return new ClientResponse()
-        .setStatusCode(httpResponse.statusCode())
+        .setStatusCode(statusCode)
         .setHeaders(httpResponse.headers())
         .setBody(buffer.getDelegate());
 
