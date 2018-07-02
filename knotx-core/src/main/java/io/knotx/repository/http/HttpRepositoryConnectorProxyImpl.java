@@ -156,7 +156,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     } else if (HttpStatusClass.CLIENT_ERROR.contains(statusCode)) { // errors
       LOGGER.warn("Repository client error 4xx response: {}, Headers[{}]",
           statusCode, DataObjectsUtil.toString(httpResponse.headers()));
-    } else if (HttpStatusClass.SERVER_ERROR.contains(httpResponse.statusCode)) {
+    } else if (HttpStatusClass.SERVER_ERROR.contains(statusCode)) {
       LOGGER.error("Repository server error 5xx response: {}, Headers[{}]",
           statusCode, DataObjectsUtil.toString(httpResponse.headers()));
     } else {
