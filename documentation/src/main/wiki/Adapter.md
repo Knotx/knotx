@@ -1,4 +1,11 @@
 # Adapters
+| ! Note |
+|:------ |
+| Service Knot introduced Service Adapter as an extension point. Service Knot is replaced with a stand-alone module, Knot.x Data Bridge, that defines DataSourceAdapter outside Knot.x Core. |
+| Action Knot introduced Action Adapter as an extension point. It is still a part of Knot Core but we plan to extract it also to dedicated module. |
+| The abstract adapter is removed from Knot.x Core, only Knots are Knot.x Core extension points.
+| @Deprecated: As of release 1.3.1, replaced by [Knot.x Data Bridge](https://github.com/Knotx/knotx-data-bridge). |
+
 Adapters are modules which are responsible for communication between Knot.x (exactly [[Knots|Knot]]) 
 and external services.
 

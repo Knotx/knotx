@@ -1,6 +1,7 @@
 # Service Knot
-Service Knot is a [[Knot|Knot]] implementation responsible for asynchronous Adapter calls to fetch the
-data that will be later used to compose page final markup with [[Handlebars Knot|HandlebarsKnot]].
+| ! Note |
+|:------ |
+| @Deprecated: As of release 1.3.1, replaced by [Knot.x Data Bridge](https://github.com/Knotx/knotx-data-bridge). |
 
 ## How does it work?
 Service Knot filters Fragments containing `services` in `data-knots-types` attribute (see

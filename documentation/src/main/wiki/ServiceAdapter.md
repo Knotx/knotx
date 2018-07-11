@@ -1,4 +1,8 @@
 # Service Adapter
+| ! Note |
+|:------ |
+| @Deprecated: As of release 1.3.1, replaced by [Knot.x Data Bridge](https://github.com/Knotx/knotx-data-bridge). |
+
 Service Adapter is Component of a system, that mediate communication between Knot.x [[Service Knot|ServiceKnot]]
 and external services that deliver data injected into template. In short, Service Adapter acts as a
 element translating messages between external services and Knots.
