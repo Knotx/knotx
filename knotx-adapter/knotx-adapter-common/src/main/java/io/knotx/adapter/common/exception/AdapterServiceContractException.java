@@ -17,7 +17,11 @@ package io.knotx.adapter.common.exception;
 
 /**
  * Thrown to indicate that adapter service contract was violated.
+ *
+ * @deprecated  As of release 1.3.2, replaced by {@link io.knotx.databridge.http.common.exception.UnsupportedDataSourceException}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
+@Deprecated
 public class AdapterServiceContractException extends RuntimeException {
 
   public AdapterServiceContractException(String message) {

@@ -23,6 +23,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jsoup.nodes.Attribute;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.core.datasource.DataSourceEntry}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public class ServiceEntry {
 
   private String namespace;

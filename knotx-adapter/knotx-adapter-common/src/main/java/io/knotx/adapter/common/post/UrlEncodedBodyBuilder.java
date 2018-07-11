@@ -25,6 +25,11 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.post.UrlEncodedBodyBuilder}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public final class UrlEncodedBodyBuilder {
 
   private UrlEncodedBodyBuilder() {

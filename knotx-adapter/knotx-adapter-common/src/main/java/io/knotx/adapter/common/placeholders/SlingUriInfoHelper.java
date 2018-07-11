@@ -21,6 +21,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.placeholders.SlingUriInfoHelper}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public final class SlingUriInfoHelper {
 
   /**

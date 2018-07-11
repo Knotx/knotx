@@ -19,6 +19,11 @@ import io.knotx.dataobjects.ClientRequest;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.placeholders.RequestPlaceholderSubstitutor}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public class RequestPlaceholderSubstitutor implements PlaceholderSubstitutor {
 
   @Override

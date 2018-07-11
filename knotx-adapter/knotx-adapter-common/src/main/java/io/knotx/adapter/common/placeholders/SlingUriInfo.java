@@ -15,6 +15,11 @@
  */
 package io.knotx.adapter.common.placeholders;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.placeholders.SlingUriInfo}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public class SlingUriInfo {
 
   private String path;

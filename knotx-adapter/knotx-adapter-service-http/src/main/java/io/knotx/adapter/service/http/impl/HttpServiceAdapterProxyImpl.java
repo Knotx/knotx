@@ -25,6 +25,11 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.client.WebClient;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.HttpDataSourceAdapterProxy}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public class HttpServiceAdapterProxyImpl extends AbstractAdapterProxy {
 
   private HttpClientFacade httpClientFacade;

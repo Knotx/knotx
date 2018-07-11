@@ -32,6 +32,11 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.core.datasource.DataSourcesEngine}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public class ServiceEngine {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEngine.class);

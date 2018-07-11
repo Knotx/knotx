@@ -30,6 +30,11 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.core.DataBridgeKnotProxy}
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyImpl.class);
