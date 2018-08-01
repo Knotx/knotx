@@ -23,6 +23,7 @@ import io.knotx.proxy.RepositoryConnectorProxy;
 import io.knotx.util.DataObjectsUtil;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpStatusClass;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -67,19 +68,16 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
     RequestOptions httpRequestData = buildRequestData(request);
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("GET HTTP Repository: {}://{}:{}/{} with headers [{}]",
-          httpRequestData.isSsl() ? "https" : "http",
-          httpRequestData.getHost(),
-          httpRequestData.getPort(),
-          httpRequestData.getURI(),
+    if (LOGGER.isDebugEnabled()) {    	
+      LOGGER.debug("GET HTTP Repository: {}  with headers [{}]",
+    	  getUrl(httpRequestData),
           DataObjectsUtil.toString(requestHeaders)
       );
     }
 
     get(httpClient, httpRequestData, requestHeaders)
         .doOnNext(this::traceHttpResponse)
-        .flatMap(this::processResponse)
+        .flatMap(response -> processResponse(response, httpRequestData))
         .subscribe(
             response -> result.handle(Future.succeededFuture(response)),
             error -> {
@@ -87,6 +85,15 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
               result.handle(Future.succeededFuture(toInternalError()));
             }
         );
+  }
+  
+  private String getUrl(RequestOptions httpRequestData) {
+    return String.format("%s://%s:%d/%s ",
+        httpRequestData.isSsl() ? "https" : "http",
+        httpRequestData.getHost(),
+        httpRequestData.getPort(),
+        httpRequestData.getURI()
+    );
   }
 
   private RequestOptions buildRequestData(ClientRequest request) {
@@ -135,28 +142,38 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
     }
   }
 
-  private Observable<ClientResponse> processResponse(final HttpClientResponse response) {
+  private Observable<ClientResponse> processResponse(final HttpClientResponse response, final RequestOptions httpRequestData) {
     return Observable.just(Buffer.buffer())
         .mergeWith(response.toObservable())
         .reduce(Buffer::appendBuffer)
         .toObservable()
-        .map(buffer -> toResponse(buffer, response));
+        .map(buffer -> toResponse(buffer, response, httpRequestData));
   }
 
-  private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse) {
-    if (httpResponse.statusCode() >= 300 && httpResponse.statusCode() < 400) { //redirect responses
-      LOGGER.info("Repository 3xx response: {}, Headers[{}]", httpResponse.statusCode(),
+  private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse, final RequestOptions httpRequestData) {
+    final int statusCode = httpResponse.statusCode();
+    
+    if (HttpStatusClass.SUCCESS.contains(statusCode)) {
+      LOGGER.debug("Repository 2xx response: {}, Headers[{}]", statusCode,
           DataObjectsUtil.toString(httpResponse.headers()));
-    } else if (httpResponse.statusCode() != 200) {
-      LOGGER.error("Repository error response: {}, Headers[{}]", httpResponse.statusCode(),
+    } else if (HttpStatusClass.REDIRECTION.contains(statusCode)) { // redirect
+      LOGGER.info("Repository 3xx response: {}, Headers[{}]", statusCode,
+          DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (HttpStatusClass.CLIENT_ERROR.contains(statusCode)) { // errors
+      LOGGER.warn("Repository client error 4xx. Request URL: {}, response: {}, Headers[{}]",
+          getUrl(httpRequestData), statusCode, DataObjectsUtil.toString(httpResponse.headers()));
+    } else if (HttpStatusClass.SERVER_ERROR.contains(statusCode)) {
+      LOGGER.error("Repository server error 5xx. Request URL: {},  response: {}, Headers[{}]",
+          getUrl(httpRequestData), statusCode, DataObjectsUtil.toString(httpResponse.headers()));
+    } else {
+      LOGGER.warn("Other response: {}, Headers[{}]", statusCode,
           DataObjectsUtil.toString(httpResponse.headers()));
     }
 
     return new ClientResponse()
-        .setStatusCode(httpResponse.statusCode())
+        .setStatusCode(statusCode)
         .setHeaders(httpResponse.headers())
         .setBody(buffer.getDelegate());
-
   }
 
   private ClientResponse toInternalError() {
