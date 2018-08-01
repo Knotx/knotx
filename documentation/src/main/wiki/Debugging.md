@@ -1,7 +1,7 @@
 # Debugging Knot.x Demo
 
 ## How to set up Knot.x debugging in Intellij IDE
-When you run Knot.x using [Knot.x stack](https://github.com/Knotx/knotx-stack) you may debug it as a remote application.
+When you run Knot.x using [Knot.x stack](https://github.com/Knotx/knotx-stack) you would like to debug it as a remote application.
 To enable debugging edit `bin/knotx` (or `bin/knotx.bat` for Windows users) and uncomment the `JVM_DEBUG` line.
 
 > JVM_DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=18092"
