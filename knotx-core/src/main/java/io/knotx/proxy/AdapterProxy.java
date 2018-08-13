@@ -24,10 +24,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 
-/**
- * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/api/src/main/java/io/knotx/databridge/api/DataSourceAdapterProxy.java">DataSourceAdapterProxy</a>
- * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
- */
 @Deprecated
 @ProxyGen
 @VertxGen
