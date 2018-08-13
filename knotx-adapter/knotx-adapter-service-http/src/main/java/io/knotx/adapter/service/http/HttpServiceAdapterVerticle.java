@@ -29,7 +29,9 @@ import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.serviceproxy.ServiceBinder;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.HttpDataSourceAdapter}
+ * o.knotx.databridge.http.HttpDataSourceAdapter
+ * <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/api/src/main/java/io/knotx/databridge/http/HttpDataSourceAdapter.java">DataSourceAdapterProxy</a>
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/api/src/main/java/io/knotx/databridge/api/DataSourceAdapterProxy.java">DataSourceAdapterProxy</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

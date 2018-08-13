@@ -22,7 +22,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.api.DataSourceAdapterRequest}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/api/src/main/java/io/knotx/databridge/api/DataSourceAdapterRequest.java">DataSourceAdapterRequest</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

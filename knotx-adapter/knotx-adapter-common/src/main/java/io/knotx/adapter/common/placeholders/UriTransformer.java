@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.placeholders.UriTransformer}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/adapter-http/src/main/java/io/knotx/databridge/http/common/placeholders/UriTransformer.java">UriTransformer</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

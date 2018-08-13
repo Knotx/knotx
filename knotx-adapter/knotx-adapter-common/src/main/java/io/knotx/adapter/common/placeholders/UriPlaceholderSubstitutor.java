@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.placeholders.UriPlaceholderSubstitutor}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/adapter-http/src/main/java/io/knotx/databridge/http/common/placeholders/UriPlaceholderSubstitutor.java">UriPlaceholderSubstitutor</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

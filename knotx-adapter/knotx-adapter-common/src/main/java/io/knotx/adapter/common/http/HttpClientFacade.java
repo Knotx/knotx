@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.common.http.HttpClientFacade}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/adapter-http/src/main/java/io/knotx/databridge/http/common/http/HttpClientFacade.java">HttpClientFacade</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

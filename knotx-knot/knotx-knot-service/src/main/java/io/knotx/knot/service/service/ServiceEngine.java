@@ -33,7 +33,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.core.datasource.DataSourcesEngine}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/core/src/main/java/io/knotx/databridge/core/datasource/DataSourcesEngine.java">DataSourcesEngine</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

@@ -21,7 +21,7 @@ import io.vertx.core.json.JsonObject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.api.DataSourceAdapterResponse}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/api/src/main/java/io/knotx/databridge/api/DataSourceAdapterResponse.java">DataSourceAdapterResponse</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

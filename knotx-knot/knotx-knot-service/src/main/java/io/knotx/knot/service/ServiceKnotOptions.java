@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Describes Service Knot configuration
  *
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.core.DataBridgeKnotOptions}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/core/src/main/java/io/knotx/databridge/core/DataBridgeKnotOptions.java">DataBridgeKnotOptions</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated

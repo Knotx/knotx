@@ -26,7 +26,7 @@ import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.client.WebClient;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by {@link io.knotx.databridge.http.HttpDataSourceAdapterProxy}
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/adapter-http/src/main/java/io/knotx/databridge/http/HttpDataSourceAdapterProxy.java">HttpDataSourceAdapterProxy</a>
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
 @Deprecated
