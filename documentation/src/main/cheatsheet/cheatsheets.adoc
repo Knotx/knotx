@@ -4,6 +4,7 @@
 == ServiceAdapterOptions
 
 ++++
+ Options describing how an ServiceAdapter will make connections with external HTTP services.
 ++++
 '''
 
@@ -103,9 +104,6 @@ Configure when to collect access log. True if after request arrives, false after
 [[AdapterRequest]]
 == AdapterRequest
 
-++++
-++++
-'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
@@ -127,9 +125,6 @@ Set the client request
 [[AdapterResponse]]
 == AdapterResponse
 
-++++
-++++
-'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
