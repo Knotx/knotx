@@ -17,6 +17,11 @@ package io.knotx.adapter.common.placeholders;
 
 import io.knotx.dataobjects.ClientRequest;
 
+/**
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/adapter-http/src/main/java/io/knotx/databridge/http/common/placeholders/PlaceholderSubstitutor.java">PlaceholderSubstitutor</a>
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ */
+@Deprecated
 @FunctionalInterface
 public interface PlaceholderSubstitutor {
 

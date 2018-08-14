@@ -21,7 +21,11 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * Describes a physical details of HTTP service endpoint the ServiceAdapter will use.
+ *
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/core/src/main/java/io/knotx/databridge/core/DataSourceDefinition.java">DataSourceDefinition</a>
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
+@Deprecated
 @DataObject(generateConverter = true, publicConverter = false)
 public class ServiceMetadata {
 

@@ -24,6 +24,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 
+@Deprecated
 @ProxyGen
 @VertxGen
 public interface AdapterProxy {

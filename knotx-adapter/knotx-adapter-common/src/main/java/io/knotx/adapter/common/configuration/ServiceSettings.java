@@ -27,7 +27,11 @@ import java.util.stream.Collectors;
 
 /**
  * Describes a physical details of HTTP service endpoint the ServiceAdapter will use.
+ *
+ * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-data-bridge/blob/master/adapter-http/src/main/java/io/knotx/databridge/http/common/configuration/HttpDataSourceSettings.java">HttpDataSourceSettings</a>
+ * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
  */
+@Deprecated
 @DataObject(generateConverter = true, publicConverter = false)
 public class ServiceSettings {
 
