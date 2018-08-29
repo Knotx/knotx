@@ -15,13 +15,14 @@
  */
 package io.knotx.server;
 
-import io.knotx.server.configuration.KnotxCSRFOptions;
 import io.knotx.server.configuration.KnotxServerOptions;
+import io.knotx.server.configuration.RoutingOperationOptions;
+import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.SingleSource;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.RxHelper;
@@ -29,11 +30,12 @@ import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.core.http.HttpServer;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
-import io.vertx.reactivex.ext.web.handler.BodyHandler;
-import io.vertx.reactivex.ext.web.handler.CSRFHandler;
-import io.vertx.reactivex.ext.web.handler.CookieHandler;
+import io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import io.vertx.reactivex.ext.web.handler.ErrorHandler;
-import io.vertx.reactivex.ext.web.handler.LoggerHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 public class KnotxServerVerticle extends AbstractVerticle {
 
@@ -55,95 +57,74 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> fut) {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
-    KnotxCSRFOptions csrfConfig = options.getCsrfConfig();
-    CSRFHandler csrfHandler = CSRFHandler.create(csrfConfig.getSecret())
-        .setNagHttps(true) //Generates warning message in log if https is not used
-        .setCookieName(csrfConfig.getCookieName())
-        .setCookiePath(csrfConfig.getCookiePath())
-        .setHeaderName(csrfConfig.getHeaderName())
-        .setTimeout(csrfConfig.getTimeout());
 
-    Router router = Router.router(vertx);
-    if (options.getAccessLog().isEnabled()) {
-      router.route().handler(LoggerHandler.create(options.getAccessLog().isImmediate(),
-          options.getAccessLog().getFormat()));
-    }
-    router.route().handler(KnotxHeaderHandler.create(options));
-    router.route().handler(SupportedMethodsAndPathsHandler.create(options));
-    router.route().handler(CookieHandler.create());
-    router.route().handler(BodyHandler.create(options.getFileUploadDirectory())
-        .setBodyLimit(options.getFileUploadLimit()));
+    OpenAPI3RouterFactory.rxCreate(vertx, options.getRoutingSpecificationLocation())
+        .doOnSuccess(factory -> LOGGER
+            .info("Created router factory based on Open API spec [{}]",
+                factory, options.getRoutingSpecificationLocation()))
+        .doOnSuccess(this::registerHandlers)
+        .flatMap(openAPI3RouterFactory -> {
+              Router router = openAPI3RouterFactory.getRouter();
+              logRoutes(router);
 
-    router.route().handler(KnotxContextHandler.create());
-
-    options.getDefaultFlow().getRouting().forEach((key, value) -> {
-      value.getItems().forEach(
-          criteria -> {
-            HttpMethod method = HttpMethod.valueOf(key.toUpperCase());
-            if (criteria.isCsrf()) {
-              router.route().method(method)
-                  .pathRegex(criteria.getPath())
-                  .handler(csrfHandler);
+              // TODO move to the configuration!
+              router.route().failureHandler(ErrorHandler.create(options.isDisplayExceptionDetails()));
+              return configureHttpServer(router);
             }
-            router.route()
-                .method(method)
-                .pathRegex(criteria.getPath())
-                .handler(KnotxRepositoryHandler.create(vertx, options));
+        ).subscribe(
+        ok -> {
+          LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+              options.getServerOptions().getPort());
+          fut.complete();
+        },
+        error -> {
+          LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
+          fut.fail(error);
+        }
+    );
+  }
 
-            router.route()
-                .method(method)
-                .pathRegex(criteria.getPath())
-                .handler(KnotxSplitterHandler.create(vertx, options));
+  private void logRoutes(Router router) {
+    System.out.println(
+        "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    System.out.println(
+        "@@                              ROUTER CONFIG                                 @@");
+    System.out.println(
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    router.getRoutes().forEach(route -> System.out.println("@@     " + route.getDelegate()));
+    System.out.println(
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 
-            router.route()
-                .method(method)
-                .pathRegex(criteria.getPath())
-                .handler(KnotxEngineHandler
-                    .create(vertx, options, criteria.getAddress(),
-                        criteria.getOnTransition()));
+    LOGGER.info("Routes [{}]", router.getRoutes());
+  }
 
-            router.route()
-                .method(method)
-                .pathRegex(criteria.getPath())
-                .handler(KnotxAssemblerHandler.create(vertx, options));
-          }
-      );
-    });
+  private void registerHandlers(OpenAPI3RouterFactory openAPI3RouterFactory) {
+    List<RoutingHandlerFactory> handlerFactories = loadRoutingHandlerFactories();
+    options.getRoutingOperations().forEach(routingOperationOptions ->
+        registerHandlersPerOperation(openAPI3RouterFactory, handlerFactories,
+            routingOperationOptions));
+  }
 
-    if (options.getCustomFlow() != null) {
-      options.getCustomFlow().getRouting().forEach((key, value) -> {
-        value.getItems().forEach(
-            criteria -> {
-              HttpMethod method = HttpMethod.valueOf(key.toUpperCase());
-              if (criteria.isCsrf()) {
-                router.route().method(method)
-                    .pathRegex(criteria.getPath())
-                    .handler(csrfHandler);
-              }
-              router.route().method(method)
-                  .pathRegex(criteria.getPath())
-                  .handler(
-                      KnotxGatewayContextHandler
-                          .create(vertx, options, criteria.getAddress()));
+  private void registerHandlersPerOperation(OpenAPI3RouterFactory openAPI3RouterFactory,
+      List<RoutingHandlerFactory> handlerFactories,
+      RoutingOperationOptions routingOperationOptions) {
+    LOGGER.info("Registered handlers [{}]", routingOperationOptions);
+    routingOperationOptions.getHandlers().forEach(routingHandlerOptions ->
+        handlerFactories.stream()
+            .filter(
+                handlerFactory -> handlerFactory.getName()
+                    .equals(routingHandlerOptions.getName()))
+            .findAny()
+            .map(handlerFactory ->
+                openAPI3RouterFactory
+                    .addHandlerByOperationId(routingOperationOptions.getOperationId(),
+                        handlerFactory.create(vertx, routingHandlerOptions.getConfig()))
+            )
+            .orElseThrow(IllegalStateException::new)
+    );
+  }
 
-              router.route()
-                  .method(method)
-                  .pathRegex(criteria.getPath())
-                  .handler(KnotxEngineHandler
-                      .create(vertx, options, criteria.getAddress(),
-                          criteria.getOnTransition()));
-
-              router.route()
-                  .method(method)
-                  .pathRegex(criteria.getPath())
-                  .handler(KnotxGatewayResponseProviderHandler.create(vertx, options));
-            }
-        );
-      });
-    }
-
-    router.route().failureHandler(ErrorHandler.create(options.isDisplayExceptionDetails()));
-
+  private SingleSource<? extends HttpServer> configureHttpServer(Router router) {
     HttpServer httpServer = vertx.createHttpServer(options.getServerOptions());
 
     if (options.isDropRequests()) {
@@ -164,16 +145,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
           .requestHandler(req -> routeSafe(req, router));
     }
 
-    httpServer.rxListen().subscribe(ok -> {
-          LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-              options.getServerOptions().getPort());
-          fut.complete();
-        },
-        error -> {
-          LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
-          fut.fail(error);
-        }
-    );
+    return httpServer.rxListen();
   }
 
   private void routeSafe(HttpServerRequest req, Router router) {
@@ -188,4 +160,18 @@ public class KnotxServerVerticle extends AbstractVerticle {
           .end("Invalid characters in Query Parameter");
     }
   }
+
+  private List<RoutingHandlerFactory> loadRoutingHandlerFactories() {
+    List<RoutingHandlerFactory> routingFactories = new ArrayList<>();
+    ServiceLoader.load(RoutingHandlerFactory.class).iterator().forEachRemaining(factory -> {
+          routingFactories.add(factory);
+        }
+    );
+    LOGGER.info("Routing handler factory names [{}] registered.",
+        routingFactories.stream().map(RoutingHandlerFactory::getName).collect(Collectors
+            .joining(",")));
+
+    return routingFactories;
+  }
+
 }

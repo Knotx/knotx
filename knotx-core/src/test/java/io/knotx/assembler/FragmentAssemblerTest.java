@@ -59,7 +59,7 @@ public class FragmentAssemblerTest {
   public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration(path = "io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithNoSnippets_expectInternalServerError(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, null,
@@ -69,7 +69,7 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration(path = "io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithEmptySnippet_expectNoContentStatus(TestContext context)
       throws Exception {
     callAssemblerWithAssertions(context, Collections
@@ -79,7 +79,7 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration(path = "io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectAsIsResult(TestContext context)
       throws Exception {
     List<Pair<List<String>, String>> fragments = Arrays.asList(
@@ -97,7 +97,7 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration(path = "io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectUnwrapResult(TestContext context)
       throws Exception {
     List<Pair<List<String>, String>> fragments = Arrays.asList(
@@ -115,7 +115,7 @@ public class FragmentAssemblerTest {
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/assembler/test.ignore.io.knotx.FragmentAssembler.json")
+  @KnotxConfiguration(path = "io/knotx/assembler/test.ignore.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectIgnoreResult(TestContext context)
       throws Exception {
     List<Pair<List<String>, String>> fragments = Arrays.asList(

@@ -18,16 +18,17 @@ package io.knotx.server.configuration;
 import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
 
 import io.knotx.configuration.CustomHttpHeader;
-import io.knotx.server.KnotxServerVerticle;
-import io.knotx.util.StringUtil;
+import io.knotx.server.handler.csrf.CSRFOptions;
+import io.knotx.server.handler.logger.AccessLogOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.BackpressureOverflowStrategy;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.handler.BodyHandler;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,18 +37,6 @@ import java.util.stream.Collectors;
  */
 @DataObject(generateConverter = true, publicConverter = false)
 public class KnotxServerOptions {
-
-  /**
-   * Default File Upload Limit = -1 (unlimited)
-   */
-  public final static long DEFAULT_UPLOAD_LIMIT = -1;
-
-  /**
-   * Default file upload folder = file-uploads
-   */
-  private static final String DEFAULT_UPLOAD_DIRECTORY = StringUtil
-      .getString(KnotxServerVerticle.KNOTX_FILE_UPLOAD_DIR_PROPERTY,
-          BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
 
   /**
    * Default flag if to show the exceptions on error pages = false
@@ -75,14 +64,12 @@ public class KnotxServerOptions {
    */
   private static final BackpressureOverflowStrategy DEFAULT_BACKPRESSURE_STRATEGY = BackpressureOverflowStrategy.DROP_LATEST;
 
-  private Long fileUploadLimit;
-  private String fileUploadDirectory;
   private boolean displayExceptionDetails;
   private HttpServerOptions serverOptions;
   private DeliveryOptions deliveryOptions;
-  private KnotxCSRFOptions csrfConfig;
-  private KnotxFlowSettings defaultFlow;
-  private KnotxFlowSettings customFlow;
+  private String routingSpecificationLocation;
+  private List<RoutingOperationOptions> routingOperations;
+  private CSRFOptions csrfConfig;
   private Set<String> allowedResponseHeaders;
   private CustomHttpHeader customResponseHeader;
   private AccessLogOptions accessLog;
@@ -105,16 +92,14 @@ public class KnotxServerOptions {
    * @param other the instance to copy
    */
   public KnotxServerOptions(KnotxServerOptions other) {
-    this.fileUploadLimit = other.fileUploadLimit;
-    this.fileUploadDirectory = other.fileUploadDirectory;
     this.displayExceptionDetails = other.displayExceptionDetails;
     this.allowedResponseHeaders = new HashSet<>(other.allowedResponseHeaders);
     this.serverOptions = new HttpServerOptions(other.serverOptions);
     this.deliveryOptions = new DeliveryOptions(other.deliveryOptions);
+    this.routingSpecificationLocation = other.routingSpecificationLocation;
+    this.routingOperations = new ArrayList<>(other.routingOperations);
     this.customResponseHeader = new CustomHttpHeader(other.customResponseHeader);
-    this.csrfConfig = new KnotxCSRFOptions(other.csrfConfig);
-    this.defaultFlow = new KnotxFlowSettings(other.defaultFlow);
-    this.customFlow = new KnotxFlowSettings(other.customFlow);
+    this.csrfConfig = new CSRFOptions(other.csrfConfig);
     this.accessLog = new AccessLogOptions(other.accessLog);
     this.dropRequests = other.dropRequests;
     this.dropRequestResponseCode = other.dropRequestResponseCode;
@@ -150,8 +135,6 @@ public class KnotxServerOptions {
   }
 
   private void init() {
-    fileUploadLimit = DEFAULT_UPLOAD_LIMIT;
-    fileUploadDirectory = DEFAULT_UPLOAD_DIRECTORY;
     displayExceptionDetails = DEFAULT_DISPLAY_EXCEPTIONS;
     allowedResponseHeaders = new HashSet<>();
     allowedResponseHeaders = allowedResponseHeaders.stream().map(String::toLowerCase)
@@ -159,50 +142,12 @@ public class KnotxServerOptions {
     deliveryOptions = new DeliveryOptions();
     serverOptions = new HttpServerOptions();
     customResponseHeader = null;
-    csrfConfig = new KnotxCSRFOptions();
-    defaultFlow = new KnotxFlowSettings();
-    customFlow = null;
+    csrfConfig = new CSRFOptions();
     accessLog = new AccessLogOptions();
     dropRequests = DEFAULT_DROP_REQUESTS;
     dropRequestResponseCode = DEFAULT_DROP_REQUESTS_RESPONSE_CODE;
     backpressureBufferCapacity = DEFAULT_BACKPRESSURE_BUFFER_SIZE;
     backpressureStrategy = DEFAULT_BACKPRESSURE_STRATEGY;
-  }
-
-  /**
-   * @return limit of the file size when uploading
-   */
-  public Long getFileUploadLimit() {
-    return fileUploadLimit;
-  }
-
-  /**
-   * Set the file upload limit in bytes
-   *
-   * @param fileUploadLimit size limit in bytes
-   * @return reference to this, so the API can be used fluently
-   */
-  public KnotxServerOptions setFileUploadLimit(Long fileUploadLimit) {
-    this.fileUploadLimit = fileUploadLimit;
-    return this;
-  }
-
-  /**
-   * @return file upload directory
-   */
-  public String getFileUploadDirectory() {
-    return fileUploadDirectory;
-  }
-
-  /**
-   * Set the location on Knot.x environment when uploaded files will be stored. These must be an absolute path.
-   *
-   * @param fileUploadDirectory file upload directory
-   * @return reference to this, so the API can be used fluently
-   */
-  public KnotxServerOptions setFileUploadDirectory(String fileUploadDirectory) {
-    this.fileUploadDirectory = fileUploadDirectory;
-    return this;
   }
 
   /**
@@ -259,57 +204,40 @@ public class KnotxServerOptions {
     return this;
   }
 
+  public String getRoutingSpecificationLocation() {
+    return routingSpecificationLocation;
+  }
+
+  public KnotxServerOptions setRoutingSpecificationLocation(
+      String routingSpecificationLocation) {
+    this.routingSpecificationLocation = routingSpecificationLocation;
+    return this;
+  }
+
+  public List<RoutingOperationOptions> getRoutingOperations() {
+    return routingOperations;
+  }
+
+  public void setRoutingOperations(
+      List<RoutingOperationOptions> routingOperations) {
+    this.routingOperations = routingOperations;
+  }
+
   /**
-   * @return {@link KnotxCSRFOptions}
+   * @return {@link CSRFOptions}
    */
-  public KnotxCSRFOptions getCsrfConfig() {
+  public CSRFOptions getCsrfConfig() {
     return csrfConfig;
   }
 
   /**
    * Set the CSRF configuration of the Knot.x server
    *
-   * @param csrfConfig {@link KnotxCSRFOptions} object
+   * @param csrfConfig {@link CSRFOptions} object
    * @return reference to this, so the API can be used fluently
    */
-  public KnotxServerOptions setCsrfConfig(KnotxCSRFOptions csrfConfig) {
+  public KnotxServerOptions setCsrfConfig(CSRFOptions csrfConfig) {
     this.csrfConfig = csrfConfig;
-    return this;
-  }
-
-  /**
-   * @return a {@link KnotxFlowSettings} for a default flow
-   */
-  public KnotxFlowSettings getDefaultFlow() {
-    return defaultFlow;
-  }
-
-  /**
-   * Set the Default flow configuration
-   *
-   * @param defaultFlow a configuration of default flow
-   * @return reference to this, so the API can be used fluently
-   */
-  public KnotxServerOptions setDefaultFlow(KnotxFlowSettings defaultFlow) {
-    this.defaultFlow = defaultFlow;
-    return this;
-  }
-
-  /**
-   * @return {@link KnotxFlowSettings} of the custom flow
-   */
-  public KnotxFlowSettings getCustomFlow() {
-    return customFlow;
-  }
-
-  /**
-   * Set the Custom Flow configuration
-   *
-   * @param customFlow a configuration og the custom flow
-   * @return reference to this, so the API can be used fluently
-   */
-  public KnotxServerOptions setCustomFlow(KnotxFlowSettings customFlow) {
-    this.customFlow = customFlow;
     return this;
   }
 
@@ -396,7 +324,8 @@ public class KnotxServerOptions {
   }
 
   /**
-   * Sets the HTTP response code returned wheb request is dropped. Default is TOO_MANY_REQUESTS(429)
+   * Sets the HTTP response code returned wheb request is dropped. Default is
+   * TOO_MANY_REQUESTS(429)
    *
    * @param dropRequestResponseCode status code integer
    * @return reference to this, so the API can be used fluently

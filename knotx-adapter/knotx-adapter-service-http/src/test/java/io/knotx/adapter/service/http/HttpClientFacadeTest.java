@@ -75,7 +75,7 @@ public class HttpClientFacadeTest {
   public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void whenSupportedStaticPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(
       TestContext context) throws Exception {
     Async async = context.async();
@@ -104,7 +104,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void whenSupportedDynamicPathServiceRequested_expectRequestExecutedAndResponseOKWithBody(
       TestContext context) throws Exception {
     Async async = context.async();
@@ -136,7 +136,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void whenServiceRequestedWithoutPathParam_expectNoServiceRequestAndBadRequest(
       TestContext context) throws Exception {
     Async async = context.async();
@@ -163,7 +163,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void whenUnsupportedPathServiceRequested_expectNoServiceRequestAndBadRequest(
       TestContext context) throws Exception {
     Async async = context.async();
@@ -192,7 +192,7 @@ public class HttpClientFacadeTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void whenServiceEmptyResponse_expectNoFailure(
       TestContext context) throws Exception {
     Async async = context.async();

@@ -51,7 +51,7 @@ public class HttpServiceAdapterProxyTest {
   public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void callNonExistingService_expectBadRequestResponse(TestContext context) {
     callAdapterServiceWithAssertions(context, "not/existing/service/address",
         adapterResponse -> context.assertTrue(adapterResponse.getResponse().getStatusCode()
@@ -61,7 +61,7 @@ public class HttpServiceAdapterProxyTest {
 
 
   @Test
-  @KnotxConfiguration("knotx-service-adapter-http-test.json")
+  @KnotxConfiguration(path = "knotx-service-adapter-http-test.json")
   public void callExistingService_expectOKResponseWithServiceDataProvidedByService1(
       TestContext context) throws Exception {
     final String expected = FileReader.readText("first-response.json");

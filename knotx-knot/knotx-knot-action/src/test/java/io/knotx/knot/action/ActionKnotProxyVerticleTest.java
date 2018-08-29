@@ -82,7 +82,7 @@ public class ActionKnotProxyVerticleTest {
   public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callGetWithNoActionFragments_expectResponseOkNoFragmentChanges(TestContext context)
       throws Exception {
     String expectedTemplatingFragment = FileReader.readText("fragment_templating_out.txt");
@@ -107,7 +107,7 @@ public class ActionKnotProxyVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callGetWithTwoActionFragments_expectResponseOkTwoFragmentChanges(TestContext context)
       throws Exception {
     String expectedRedirectFormFragment = FileReader.readText("fragment_form_redirect_out.txt");
@@ -135,7 +135,7 @@ public class ActionKnotProxyVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callGetWithActionFragmentWithoutIdentifier_expectResponseOkWithOneFragmentChanges(
       TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_no_identifier_in.txt");
@@ -158,7 +158,7 @@ public class ActionKnotProxyVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callGetWithActionFragmentActionHandlerNotExists_expectStatusCode500(
       TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_actionhandler_not_exists_in.txt");
@@ -175,7 +175,7 @@ public class ActionKnotProxyVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callPostWithTwoActionFragments_expectResponseOkWithTransitionStep2(
       TestContext context) throws Exception {
     createMockAdapter("address-redirect", "", "step2");
@@ -199,7 +199,7 @@ public class ActionKnotProxyVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callPostWithActionFragmentWithoutRequestedFragmentIdentifier_expectStatusCode500(
       TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_incorrect_identifier_in.txt");
@@ -216,7 +216,7 @@ public class ActionKnotProxyVerticleTest {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test.json")
+  @KnotxConfiguration(path = "knotx-test.json")
   public void callPostWithActionFragmentWithIncorrectSnippetId_expectStatusCode500(
       TestContext context) throws Exception {
     KnotContext knotContext = createKnotContext("fragment_form_redirect_in.txt");
