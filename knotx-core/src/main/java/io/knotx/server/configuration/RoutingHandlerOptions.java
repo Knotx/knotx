@@ -17,6 +17,8 @@ package io.knotx.server.configuration;
 
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import java.util.Collections;
+import org.apache.commons.lang3.StringUtils;
 
 @DataObject(generateConverter = true, publicConverter = false)
 public class RoutingHandlerOptions {
@@ -30,7 +32,15 @@ public class RoutingHandlerOptions {
    * @param json the JSON
    */
   public RoutingHandlerOptions(JsonObject json) {
+    init();
     RoutingHandlerOptionsConverter.fromJson(json, this);
+    if (StringUtils.isBlank(name)) {
+      throw new IllegalStateException("Handler name in routing configuration can not be null!");
+    }
+  }
+
+  private void init() {
+    this.config = new JsonObject();
   }
 
   public String getName() {

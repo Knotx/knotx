@@ -31,7 +31,6 @@ import io.vertx.reactivex.core.http.HttpServer;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
-import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -57,59 +56,58 @@ public class KnotxServerVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> fut) {
     LOGGER.info("Starting <{}>", this.getClass().getSimpleName());
+    LOGGER.info("Open API specification location [{}]",
+        options.getRoutingSpecificationLocation());
 
     OpenAPI3RouterFactory.rxCreate(vertx, options.getRoutingSpecificationLocation())
-        .doOnSuccess(factory -> LOGGER
-            .info("Created router factory based on Open API spec [{}]",
-                factory, options.getRoutingSpecificationLocation()))
         .doOnSuccess(this::registerHandlers)
-        .flatMap(openAPI3RouterFactory -> {
-              Router router = openAPI3RouterFactory.getRouter();
-              logRoutes(router);
-
-              // TODO move to the configuration!
-              router.route().failureHandler(ErrorHandler.create(options.isDisplayExceptionDetails()));
-              return configureHttpServer(router);
+        .map(OpenAPI3RouterFactory::getRouter)
+        .doOnSuccess(this::logRouterRoutes)
+        .flatMap(this::configureHttpServer)
+        .subscribe(
+            ok -> {
+              LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
+                  options.getServerOptions().getPort());
+              fut.complete();
+            },
+            error -> {
+              LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
+              fut.fail(error);
             }
-        ).subscribe(
-        ok -> {
-          LOGGER.info("Knot.x HTTP Server started. Listening on port {}",
-              options.getServerOptions().getPort());
-          fut.complete();
-        },
-        error -> {
-          LOGGER.error("Unable to start Knot.x HTTP Server.", error.getCause());
-          fut.fail(error);
-        }
+        );
+  }
+
+  private void registerHandlers(OpenAPI3RouterFactory routerFactory) {
+    List<RoutingHandlerFactory> handlerFactories = loadRoutingHandlerFactories();
+    options.getRoutingOperations().forEach(options -> {
+      registerHandlersPerOperation(routerFactory, handlerFactories, options);
+      registerFailureHandlersPerOperation(routerFactory, handlerFactories, options);
+      LOGGER.info("Registered handlers [{}]", options);
+    });
+  }
+
+  private void registerHandlersPerOperation(OpenAPI3RouterFactory routerFactory,
+      List<RoutingHandlerFactory> handlerFactories,
+      RoutingOperationOptions options) {
+    options.getHandlers().forEach(routingHandlerOptions ->
+        handlerFactories.stream()
+            .filter(
+                handlerFactory -> handlerFactory.getName()
+                    .equals(routingHandlerOptions.getName()))
+            .findAny()
+            .map(handlerFactory ->
+                routerFactory
+                    .addHandlerByOperationId(options.getOperationId(),
+                        handlerFactory.create(vertx, routingHandlerOptions.getConfig()))
+            )
+            .orElseThrow(IllegalStateException::new)
     );
   }
 
-  private void logRoutes(Router router) {
-    System.out.println(
-        "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    System.out.println(
-        "@@                              ROUTER CONFIG                                 @@");
-    System.out.println(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    router.getRoutes().forEach(route -> System.out.println("@@     " + route.getDelegate()));
-    System.out.println(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-
-    LOGGER.info("Routes [{}]", router.getRoutes());
-  }
-
-  private void registerHandlers(OpenAPI3RouterFactory openAPI3RouterFactory) {
-    List<RoutingHandlerFactory> handlerFactories = loadRoutingHandlerFactories();
-    options.getRoutingOperations().forEach(routingOperationOptions ->
-        registerHandlersPerOperation(openAPI3RouterFactory, handlerFactories,
-            routingOperationOptions));
-  }
-
-  private void registerHandlersPerOperation(OpenAPI3RouterFactory openAPI3RouterFactory,
+  private void registerFailureHandlersPerOperation(OpenAPI3RouterFactory openAPI3RouterFactory,
       List<RoutingHandlerFactory> handlerFactories,
       RoutingOperationOptions routingOperationOptions) {
-    LOGGER.info("Registered handlers [{}]", routingOperationOptions);
-    routingOperationOptions.getHandlers().forEach(routingHandlerOptions ->
+    routingOperationOptions.getFailureHandlers().forEach(routingHandlerOptions ->
         handlerFactories.stream()
             .filter(
                 handlerFactory -> handlerFactory.getName()
@@ -117,7 +115,7 @@ public class KnotxServerVerticle extends AbstractVerticle {
             .findAny()
             .map(handlerFactory ->
                 openAPI3RouterFactory
-                    .addHandlerByOperationId(routingOperationOptions.getOperationId(),
+                    .addFailureHandlerByOperationId(routingOperationOptions.getOperationId(),
                         handlerFactory.create(vertx, routingHandlerOptions.getConfig()))
             )
             .orElseThrow(IllegalStateException::new)
@@ -163,15 +161,30 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private List<RoutingHandlerFactory> loadRoutingHandlerFactories() {
     List<RoutingHandlerFactory> routingFactories = new ArrayList<>();
-    ServiceLoader.load(RoutingHandlerFactory.class).iterator().forEachRemaining(factory -> {
-          routingFactories.add(factory);
-        }
-    );
+    ServiceLoader.load(RoutingHandlerFactory.class)
+        .iterator()
+        .forEachRemaining(routingFactories::add);
+
     LOGGER.info("Routing handler factory names [{}] registered.",
         routingFactories.stream().map(RoutingHandlerFactory::getName).collect(Collectors
             .joining(",")));
 
     return routingFactories;
+  }
+
+  private void logRouterRoutes(Router router) {
+    LOGGER.info("Routes [{}]", router.getRoutes());
+    printRoutes(router);
+  }
+
+  private void printRoutes(Router router) {
+    // @formatter:off
+    System.out.println("\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    System.out.println("@@                              ROUTER CONFIG                                 @@");
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    router.getRoutes().forEach(route -> System.out.println("@@     " + route.getDelegate()));
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
+    // @formatter:on
   }
 
 }

@@ -19,8 +19,6 @@ package io.knotx.server;
 import io.knotx.junit.rule.KnotxConfiguration;
 import io.knotx.junit.rule.TestVertxDeployer;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.RunTestOnContext;
@@ -43,8 +41,6 @@ public class KnotxServerCsrfTest {
   private static final String EXPECTED_XSERVER_HEADER_VALUE = "Knot.x";
   private static final String EXPECTED_RESPONSE_HEADER = "X-Server";
   private static final String CONTENT_CSRF_HTML = "/content/csrf.html";
-
-  private static final Logger LOG = LoggerFactory.getLogger(KnotxServerCsrfTest.class);
 
   private RunTestOnContext vertx = new RunTestOnContext();
 
@@ -87,7 +83,7 @@ public class KnotxServerCsrfTest {
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
     WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
-    client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/csrf.html")
+    client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
         .sendForm(body, ar -> {
           if (ar.succeeded()) {
             context.assertEquals(HttpResponseStatus.FORBIDDEN.code(), ar.result().statusCode());
@@ -108,23 +104,18 @@ public class KnotxServerCsrfTest {
 
     WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
 
-    client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/csrf.html").send(
+    client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML).send(
         ar -> {
           if (ar.succeeded()) {
 
-            context.assertTrue(ar.result().cookies().stream().map(cookie -> {
-              LOG.info("Coookie [{}]", cookie);
-              return cookie;
-            })
+            context.assertTrue(ar.result().cookies().stream()
                 .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
 
             String token = getToken(ar.result().cookies());
 
-            LOG.info("POST REQUEST PROCESSING: [{}]", token);
-            client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/csrf.html")
+            client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
                 .putHeader(CSRFHandler.DEFAULT_HEADER_NAME, token)
                 .sendForm(body, res -> {
-                  LOG.info("POST RESPONSE PROCESSING: [{}]", res);
                   if (res.succeeded()) {
                     context.assertEquals(HttpResponseStatus.OK.code(), res.result().statusCode());
                     async.complete();
@@ -142,6 +133,6 @@ public class KnotxServerCsrfTest {
 
   private String getToken(List<String> result) {
     String val = result.get(0);
-    return val.split("XSRF-TOKEN=")[1].split(";")[0];
+    return val.split(CSRFHandler.DEFAULT_COOKIE_NAME + "=")[1].split(";")[0];
   }
 }

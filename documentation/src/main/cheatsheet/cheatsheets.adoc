@@ -590,6 +590,7 @@ Sets the Regular expression of HTTP Request path
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[failureHandlers]]`failureHandlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|-
 |[[handlers]]`handlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|-
 |[[operationId]]`operationId`|`String`|-
 |===

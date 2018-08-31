@@ -18,21 +18,35 @@ package io.knotx.server.configuration;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 @DataObject(generateConverter = true, publicConverter = false)
 public class RoutingOperationOptions {
 
   private String operationId;
   private List<RoutingHandlerOptions> handlers;
+  private List<RoutingHandlerOptions> failureHandlers;
 
   public RoutingOperationOptions(JsonObject json) {
+    init();
     RoutingOperationOptionsConverter.fromJson(json, this);
+    if (StringUtils.isBlank(operationId)) {
+      throw new IllegalStateException(
+          "Operation ID in routing configuration can not be null [" + json + "]");
+    }
   }
 
   public RoutingOperationOptions(RoutingOperationOptions other) {
     this.operationId = other.getOperationId();
     this.handlers = new ArrayList<>(other.getHandlers());
+    this.failureHandlers = new ArrayList<>(other.getFailureHandlers());
+  }
+
+  private void init() {
+    this.handlers = Collections.emptyList();
+    this.failureHandlers = Collections.emptyList();
   }
 
   public String getOperationId() {
@@ -48,8 +62,20 @@ public class RoutingOperationOptions {
     return handlers;
   }
 
-  public void setHandlers(List<RoutingHandlerOptions> handlers) {
+  public RoutingOperationOptions setHandlers(
+      List<RoutingHandlerOptions> handlers) {
     this.handlers = handlers;
+    return this;
+  }
+
+  public List<RoutingHandlerOptions> getFailureHandlers() {
+    return failureHandlers;
+  }
+
+  public RoutingOperationOptions setFailureHandlers(
+      List<RoutingHandlerOptions> failureHandlers) {
+    this.failureHandlers = failureHandlers;
+    return this;
   }
 
   @Override
@@ -57,6 +83,7 @@ public class RoutingOperationOptions {
     return "RoutingOperationOptions{" +
         "operationId='" + operationId + '\'' +
         ", handlers=" + handlers +
+        ", failureHandlers=" + failureHandlers +
         '}';
   }
 }
