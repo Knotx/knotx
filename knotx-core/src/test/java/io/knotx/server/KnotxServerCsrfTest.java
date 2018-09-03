@@ -16,27 +16,25 @@
 package io.knotx.server;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.TestVertxDeployer;
+import io.knotx.junit5.KnotxApplyConfiguration;
+import io.knotx.junit5.KnotxExtension;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.RunTestOnContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
 import io.vertx.ext.web.handler.CSRFHandler;
+import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.List;
 import java.util.function.Consumer;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(VertxUnitRunner.class)
+@ExtendWith(KnotxExtension.class)
 public class KnotxServerCsrfTest {
 
   private static final int KNOTX_SERVER_PORT = 9092;
@@ -44,106 +42,93 @@ public class KnotxServerCsrfTest {
   public static final String EXPECTED_XSERVER_HEADER_VALUE = "Knot.x";
   public static final String EXPECTED_RESPONSE_HEADER = "X-Server";
 
-  private RunTestOnContext vertx = new RunTestOnContext();
-
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
-  @Rule
-  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
-
 
   @Test
-  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
-  public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
-    Async async = context.async();
-    createPassThroughKnot("test-splitter");
-    createPassThroughKnot("test-assembler");
-    createSimpleKnot("some-knot", "test", null);
+  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
+  public void whenRequestingGetLocalPath_expectLocalAC(
+      VertxTestContext context, Vertx vertx) {
+    createPassThroughKnot(vertx, "test-splitter");
+    createPassThroughKnot(vertx, "test-assembler");
+    createSimpleKnot(vertx, "some-knot", "test", null);
 
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+    WebClient client = WebClient.create(vertx);
 
     client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html").send(
         ar -> {
           if (ar.succeeded()) {
-            context.assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
-            context.assertTrue(ar.result().getHeader(EXPECTED_RESPONSE_HEADER) != null);
-            context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+            assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
+            assertTrue(ar.result().getHeader(EXPECTED_RESPONSE_HEADER) != null);
+            assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
                 ar.result().getHeader(EXPECTED_RESPONSE_HEADER));
-            context.assertTrue(ar.result().cookies().stream()
+            assertTrue(ar.result().cookies().stream()
                 .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
             client.close();
-            async.complete();
+            context.completeNow();
           } else {
-            context.fail(ar.cause());
-            async.complete();
+            context.failNow(ar.cause());
+            context.completeNow();
           }
         }
     );
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
+  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostSecureWithoutCSRF_expectForbidden(
-      TestContext context) {
-    Async async = context.async();
-
-    createPassThroughKnot("test-splitter");
-    createPassThroughKnot("test-assembler");
-    createSimpleKnot("some-knot", "test", null);
+      VertxTestContext context, Vertx vertx) {
+    createPassThroughKnot(vertx, "test-splitter");
+    createPassThroughKnot(vertx, "test-assembler");
+    createSimpleKnot(vertx, "some-knot", "test", null);
 
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+    WebClient client = WebClient.create(vertx);
     client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
         .sendForm(body, ar -> {
           if (ar.succeeded()) {
-            context.assertEquals(HttpResponseStatus.FORBIDDEN.code(), ar.result().statusCode());
-            async.complete();
+            assertEquals(HttpResponseStatus.FORBIDDEN.code(), ar.result().statusCode());
+            context.completeNow();
           } else {
-            context.fail(ar.cause());
-            async.complete();
+            context.failNow(ar.cause());
+            context.completeNow();
           }
         });
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
+  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostPublicWithoutCSRF_expectOk(
-      TestContext context) {
-    Async async = context.async();
-
-    createPassThroughKnot("test-splitter");
-    createPassThroughKnot("test-assembler");
-    createSimpleKnot("some-knot", "test", null);
+      VertxTestContext context, Vertx vertx) {
+    createPassThroughKnot(vertx, "test-splitter");
+    createPassThroughKnot(vertx, "test-assembler");
+    createSimpleKnot(vertx, "some-knot", "test", null);
 
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+    WebClient client = WebClient.create(vertx);
     client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/public.html")
         .sendForm(body, ar -> {
           if (ar.succeeded()) {
-            context.assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
-            async.complete();
+            assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
+            context.completeNow();
           } else {
-            context.fail(ar.cause());
-            async.complete();
+            context.failNow(ar.cause());
+            context.completeNow();
           }
         });
   }
 
   @Test
-  @KnotxConfiguration("io/knotx/server/test-server-csrf.json")
+  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
   public void whenDoPostSecureWithCSRF_expectOK(
-      TestContext context) {
-    Async async = context.async();
-
-    createPassThroughKnot("test-splitter");
-    createPassThroughKnot("test-assembler");
-    createSimpleKnot("some-knot", "test", null);
+      VertxTestContext context, Vertx vertx) {
+    createPassThroughKnot(vertx, "test-splitter");
+    createPassThroughKnot(vertx, "test-assembler");
+    createSimpleKnot(vertx, "some-knot", "test", null);
 
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+    WebClient client = WebClient.create(vertx);
 
     client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html").send(
         ar -> {
@@ -154,32 +139,32 @@ public class KnotxServerCsrfTest {
                 .putHeader(CSRFHandler.DEFAULT_HEADER_NAME, token)
                 .sendForm(body, res -> {
                   if (res.succeeded()) {
-                    context.assertEquals(HttpResponseStatus.OK.code(), res.result().statusCode());
-                    async.complete();
+                    assertEquals(HttpResponseStatus.OK.code(), res.result().statusCode());
+                    context.completeNow();
                   } else {
-                    context.fail(ar.cause());
-                    async.complete();
+                    context.failNow(ar.cause());
+                    context.completeNow();
                   }
                 });
           } else {
-            context.fail(ar.cause());
-            async.complete();
+            context.failNow(ar.cause());
+            context.completeNow();
           }
         });
   }
 
-  private void createPassThroughKnot(String address) {
-    MockKnotProxy.register(vertx.vertx(), address);
+  private void createPassThroughKnot(Vertx vertx, String address) {
+    MockKnotProxy.register(vertx.getDelegate(), address);
   }
 
-  private void createSimpleKnot(final String address, final String addToBody,
+  private void createSimpleKnot(Vertx vertx, final String address, final String addToBody,
       final String transition) {
     Consumer<KnotContext> simpleKnot = knotContext -> {
       Buffer inBody = knotContext.getClientResponse().getBody();
       knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
       knotContext.setTransition(transition);
     };
-    MockKnotProxy.register(vertx.vertx(), address, simpleKnot);
+    MockKnotProxy.register(vertx.getDelegate(), address, simpleKnot);
   }
 
   private String getToken(List<String> result) {

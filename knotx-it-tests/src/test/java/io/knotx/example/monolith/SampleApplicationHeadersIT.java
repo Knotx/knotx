@@ -15,22 +15,20 @@
  */
 package io.knotx.example.monolith;
 
-import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.TestVertxDeployer;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.RunTestOnContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.knotx.junit5.KnotxApplyConfiguration;
+import io.knotx.junit5.KnotxExtension;
+import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.http.HttpClient;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(VertxUnitRunner.class)
+@ExtendWith(KnotxExtension.class)
 public class SampleApplicationHeadersIT {
 
   private static final String REMOTE_REQUEST_URI = "/content/remote/simple.html";
@@ -39,14 +37,7 @@ public class SampleApplicationHeadersIT {
 
   private MultiMap expectedHeaders = MultiMap.caseInsensitiveMultiMap();
 
-  private RunTestOnContext vertx = new RunTestOnContext();
-
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
-  @Rule
-  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
-
-  @Before
+  @BeforeEach
   public void before() {
     expectedHeaders.add("Access-Control-Allow-Origin", "*");
     expectedHeaders.add("Content-Type", "text/html; charset=UTF-8");
@@ -55,25 +46,24 @@ public class SampleApplicationHeadersIT {
   }
 
   @Test
-  @KnotxConfiguration("knotx-test-app.json")
-  public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(TestContext context) {
-    testGetRequest(context, REMOTE_REQUEST_URI);
+  @KnotxApplyConfiguration("knotx-test-app.json")
+  public void whenRequestingRemoteRepository_expectOnlyAllowedResponseHeaders(
+      VertxTestContext context, Vertx vertx) {
+    testGetRequest(context, vertx, REMOTE_REQUEST_URI);
   }
 
-  private void testGetRequest(TestContext context, String url) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
-    Async async = context.async();
+  private void testGetRequest(VertxTestContext context, Vertx vertx, String url) {
+    HttpClient client = vertx.createHttpClient();
     client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
         resp -> {
           MultiMap headers = resp.headers();
           headers.names().forEach(name -> {
-            context.assertEquals(resp.statusCode(), 200, "Wrong status code received.");
-            context
-                .assertTrue(expectedHeaders.contains(name), "Header " + name + " is not expected.");
-            context.assertEquals(expectedHeaders.get(name), headers.get(name),
+            assertEquals(resp.statusCode(), 200, "Wrong status code received.");
+            assertTrue(expectedHeaders.contains(name), "Header " + name + " is not expected.");
+            assertEquals(expectedHeaders.get(name), headers.get(name),
                 "Wrong value of " + name + " header.");
           });
-          async.complete();
+          context.completeNow();
         });
   }
 }

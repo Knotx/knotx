@@ -112,7 +112,7 @@
     <maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
     <apache.rat.plugin.version>0.12</apache.rat.plugin.version>
     <maven.shade.plugin.version>2.4.3</maven.shade.plugin.version>
-    <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
+    <maven.surefire.plugin.version>2.21.0</maven.surefire.plugin.version>
     <maven.nexus.staging.plugin.version>1.6.7</maven.nexus.staging.plugin.version>
     <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
     <maven.javadoc.plugin.version>2.9.1</maven.javadoc.plugin.version>
@@ -143,6 +143,20 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- Required deps for surefire plugin -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-surefire-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
     </dependency>
   </dependencies>
 
@@ -317,6 +331,23 @@
               </vertx.logger-delegate-factory-class-name>
             </systemPropertyVariables>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.junit.platform</groupId>
+              <artifactId>junit-platform-surefire-provider</artifactId>
+              <version>1.2.0</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.jupiter</groupId>
+              <artifactId>junit-jupiter-engine</artifactId>
+              <version>5.2.0</version>
+            </dependency>
+            <dependency>
+              <groupId>org.junit.vintage</groupId>
+              <artifactId>junit-vintage-engine</artifactId>
+              <version>5.2.0</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.sonatype.plugins</groupId>

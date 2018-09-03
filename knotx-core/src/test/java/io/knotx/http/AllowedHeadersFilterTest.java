@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class AllowedHeadersFilterTest {

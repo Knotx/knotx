@@ -15,40 +15,41 @@
  */
 package io.knotx.knot.service.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ServiceAttributeUtilTest {
 
   @Test
-  public void testAttributeWithoutNamespace() throws Exception {
+  public void testAttributeWithoutNamespace() {
     String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-service");
     String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-params");
-    Assert.assertThat(serviceNamespace, is(StringUtils.EMPTY));
-    Assert.assertThat(paramsNamespace, is(StringUtils.EMPTY));
+    assertThat(serviceNamespace, is(StringUtils.EMPTY));
+    assertThat(paramsNamespace, is(StringUtils.EMPTY));
   }
 
   @Test
-  public void testAttributeWithNamespace() throws Exception {
+  public void testAttributeWithNamespace() {
     String serviceNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-service-label");
     String paramsNamespace = ServiceAttributeUtil.extractNamespace("data-knotx-params-label");
-    Assert.assertThat(serviceNamespace, is("label"));
-    Assert.assertThat(paramsNamespace, is("label"));
+    assertThat(serviceNamespace, is("label"));
+    assertThat(paramsNamespace, is("label"));
   }
 
-  @Test(expected = RuntimeException.class)
-  public void testAttributeWithTwoNamespaces() throws Exception {
+  @Test
+  public void testAttributeWithTwoNamespaces() {
     String attributeInput = "data-knotx-service-message-label";
-    ServiceAttributeUtil.extractNamespace(attributeInput);
+    assertThrows(RuntimeException.class, () -> ServiceAttributeUtil.extractNamespace(attributeInput));
   }
 
-  @Test(expected = RuntimeException.class)
-  public void testAttributeWithBrokenNamespace() throws Exception {
+  @Test
+  public void testAttributeWithBrokenNamespace() {
     String attributeInput = "data-knotx-service--label";
-    ServiceAttributeUtil.extractNamespace(attributeInput);
+    assertThrows(RuntimeException.class, () -> ServiceAttributeUtil.extractNamespace(attributeInput));
   }
 
 }

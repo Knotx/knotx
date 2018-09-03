@@ -23,8 +23,8 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.RoutingContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class SupportedMethodsAndPathsHandlerTest {
@@ -33,7 +33,7 @@ public class SupportedMethodsAndPathsHandlerTest {
   private KnotxFlowSettings customFlow;
   private SupportedMethodsAndPathsHandler tested;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     defaultFlow = new KnotxFlowSettings(
         new JsonObject(FileReader.readText("io/knotx/server/GETOnlyDefaultFlow.json")));
@@ -47,8 +47,7 @@ public class SupportedMethodsAndPathsHandlerTest {
   }
 
   @Test
-  public void handle_whenRequestPathAndMethodAllowedInDefaultFlow_expectRequestAccepted()
-      throws Exception {
+  public void handle_whenRequestPathAndMethodAllowedInDefaultFlow_expectRequestAccepted() {
     RoutingContext context = mockContext("/content/page.html", HttpMethod.GET);
     tested.handle(context);
 
@@ -56,8 +55,7 @@ public class SupportedMethodsAndPathsHandlerTest {
   }
 
   @Test
-  public void handle_whenRequestPathNotAllowedInDefaultFlowAndAllowedInCustomFlow_expectRequestAccepted()
-      throws Exception {
+  public void handle_whenRequestPathNotAllowedInDefaultFlowAndAllowedInCustomFlow_expectRequestAccepted() {
     RoutingContext context = mockContext("/services/feature.json", HttpMethod.GET);
     tested.handle(context);
 
@@ -65,8 +63,7 @@ public class SupportedMethodsAndPathsHandlerTest {
   }
 
   @Test
-  public void handle_whenRequestPathAllowedButMethodNotAllowedInDefaultFlow_expectRequestFailedMethodNotAllowed()
-      throws Exception {
+  public void handle_whenRequestPathAllowedButMethodNotAllowedInDefaultFlow_expectRequestFailedMethodNotAllowed() {
     RoutingContext context = mockContext("/content/page.html", HttpMethod.POST);
     tested.handle(context);
 
@@ -74,8 +71,7 @@ public class SupportedMethodsAndPathsHandlerTest {
   }
 
   @Test
-  public void handle_whenRequestPathAllowedButMethodNotAllowedInCustomFlow_expectRequestFailedMethodNotAllowed()
-      throws Exception {
+  public void handle_whenRequestPathAllowedButMethodNotAllowedInCustomFlow_expectRequestFailedMethodNotAllowed() {
     RoutingContext context = mockContext("/content/page.html", HttpMethod.POST);
     tested.handle(context);
 
@@ -83,7 +79,7 @@ public class SupportedMethodsAndPathsHandlerTest {
   }
 
   @Test
-  public void handle_whenRequestPathNotAllowed_expectRequestFailedNotFound() throws Exception {
+  public void handle_whenRequestPathNotAllowed_expectRequestFailedNotFound() {
     RoutingContext context = mockContext("/notallowed/page.html", HttpMethod.GET);
     tested.handle(context);
 
