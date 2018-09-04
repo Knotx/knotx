@@ -25,8 +25,8 @@ import io.knotx.server.configuration.MethodRoutingEntries;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class KnotxServerOptionsRoutingTest {
 
@@ -34,7 +34,7 @@ public class KnotxServerOptionsRoutingTest {
   private static final int SECOND_IDX = 1;
   private Map<String, MethodRoutingEntries> engineRouting;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     engineRouting = new KnotxServerOptions(
         new JsonObject(FileReader.readText("io/knotx/server/test-config-server.json"))).getDefaultFlow()
@@ -42,14 +42,14 @@ public class KnotxServerOptionsRoutingTest {
   }
 
   @Test
-  public void whenConfigWithTwoRoutingMethods_expectTwoMethodsInRouting() throws Exception {
+  public void whenConfigWithTwoRoutingMethods_expectTwoMethodsInRouting() {
     assertThat(engineRouting.keySet().size(), equalTo(2));
     assertThat(engineRouting.keySet(), hasItem(HttpMethod.GET.toString()));
     assertThat(engineRouting.keySet(), hasItem(HttpMethod.POST.toString()));
   }
 
   @Test
-  public void whenConfigWithGetRouting_expectTwoRoutings() throws Exception {
+  public void whenConfigWithGetRouting_expectTwoRoutings() {
     assertThat(engineRouting.get(HttpMethod.GET.toString()).getItems().size(), equalTo(2));
     assertThat(engineRouting.get(HttpMethod.GET.toString()).getItems().get(FIRST_IDX).getPath(),
         equalTo(".*/local/.*\\.html"));
@@ -60,7 +60,7 @@ public class KnotxServerOptionsRoutingTest {
   }
 
   @Test
-  public void whenConfigWithPostRouting_expectTwoRoutings() throws Exception {
+  public void whenConfigWithPostRouting_expectTwoRoutings() {
     assertThat(engineRouting.get(HttpMethod.POST.toString()).getItems().size(), equalTo(2));
     assertThat(engineRouting.get(HttpMethod.POST.toString()).getItems().get(FIRST_IDX).getPath(),
         equalTo(".*/local/.*\\.html"));
@@ -73,8 +73,7 @@ public class KnotxServerOptionsRoutingTest {
   }
 
   @Test
-  public void whenConfigWithGetRoutingAndTransitions_expectTransitionsExistsWhenDefined()
-      throws Exception {
+  public void whenConfigWithGetRoutingAndTransitions_expectTransitionsExistsWhenDefined() {
     assertThat(engineRouting.get(HttpMethod.GET.toString()).getItems().get(FIRST_IDX).getOnTransition().isEmpty(),
         equalTo(false));
     assertThat(engineRouting.get(HttpMethod.GET.toString()).getItems().get(FIRST_IDX).getOnTransition().keySet().size(),
@@ -94,8 +93,7 @@ public class KnotxServerOptionsRoutingTest {
   }
 
   @Test
-  public void whenConfigWithPostRoutingAndTransitions_expectTransitionsExistsWhenDefined()
-      throws Exception {
+  public void whenConfigWithPostRoutingAndTransitions_expectTransitionsExistsWhenDefined() {
     assertThat(engineRouting.get(HttpMethod.POST.toString()).getItems().get(FIRST_IDX).getOnTransition().isEmpty(),
         equalTo(false));
     assertThat(engineRouting.get(HttpMethod.POST.toString()).getItems().get(FIRST_IDX).getOnTransition().keySet().size(),

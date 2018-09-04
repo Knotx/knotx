@@ -17,6 +17,7 @@ package io.knotx.options;
 
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Describes SnippetOptions Knot configuration
@@ -106,7 +107,7 @@ public class SnippetOptions {
    * @return a reference to this, so the API can be used fluently
    */
   public SnippetOptions setParamsPrefix(String paramsPrefix) {
-    this.paramsPrefix = paramsPrefix;
+    this.paramsPrefix = paramsPrefix == null ? StringUtils.EMPTY : paramsPrefix;
     return this;
   }
 }

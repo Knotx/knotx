@@ -18,25 +18,21 @@ package io.knotx.splitter;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.googlecode.zohhak.api.Configure;
-import com.googlecode.zohhak.api.TestWith;
-import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.junit.util.FileReader;
 import io.knotx.options.SnippetOptions;
 import java.util.List;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-@RunWith(ZohhakRunner.class)
-@Configure(separator = ";")
 public class HtmlFragmentSplitterContentTest {
 
   private List<Fragment> defaultSnippetTagFragments;
   private List<Fragment> customSnippetTagFragments;
   private List<Fragment> customSnippetCustomParamsPrefixFragments;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     defaultSnippetTagFragments = new HtmlFragmentSplitter(
         new SnippetOptions()
@@ -56,7 +52,8 @@ public class HtmlFragmentSplitterContentTest {
             .readText("io/knotx/splitter/test-many-fragments-custom-snippet-and-prefix.html"));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "0;io/knotx/splitter/fragments/1.txt",
       "1;io/knotx/splitter/fragments/2-snippet.txt",
       "2;io/knotx/splitter/fragments/3.txt",
@@ -73,7 +70,8 @@ public class HtmlFragmentSplitterContentTest {
         equalTo(FileReader.readText(fragmentFile).trim()));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "0;io/knotx/splitter/fragments/1.txt",
       "1;io/knotx/splitter/fragments/2-custom-snippet.txt",
       "2;io/knotx/splitter/fragments/3.txt",
@@ -90,7 +88,8 @@ public class HtmlFragmentSplitterContentTest {
         equalTo(FileReader.readText(fragmentFile).trim()));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "0;io/knotx/splitter/fragments/1.txt",
       "1;io/knotx/splitter/fragments/2-custom-snippet-no-prefix.txt",
       "2;io/knotx/splitter/fragments/3.txt",

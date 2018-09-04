@@ -47,7 +47,6 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 
 @RunWith(VertxUnitRunner.class)
 public class HttpClientFacadeTest {
@@ -80,7 +79,7 @@ public class HttpClientFacadeTest {
       TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final WebClient mockedWebClient = PowerMockito.spy(webClient());
+    final WebClient mockedWebClient = Mockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
         getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
@@ -109,7 +108,7 @@ public class HttpClientFacadeTest {
       TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final WebClient mockedWebClient = PowerMockito.spy(webClient());
+    final WebClient mockedWebClient = Mockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
         getConfiguration());
     final JsonObject expectedResponse = new JsonObject(FileReader.readText("first-response.json"));
@@ -141,7 +140,7 @@ public class HttpClientFacadeTest {
       TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final WebClient mockedWebClient = PowerMockito.spy(webClient());
+    final WebClient mockedWebClient = Mockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
         getConfiguration());
 
@@ -168,7 +167,7 @@ public class HttpClientFacadeTest {
       TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final WebClient mockedWebClient = PowerMockito.spy(webClient());
+    final WebClient mockedWebClient = Mockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
         getConfiguration());
 
@@ -197,7 +196,7 @@ public class HttpClientFacadeTest {
       TestContext context) throws Exception {
     Async async = context.async();
     // given
-    final WebClient mockedWebClient = PowerMockito.spy(webClient());
+    final WebClient mockedWebClient = Mockito.spy(webClient());
     HttpClientFacade clientFacade = new HttpClientFacade(mockedWebClient,
         getConfiguration());
 

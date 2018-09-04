@@ -19,20 +19,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
-import com.googlecode.zohhak.api.Configure;
-import com.googlecode.zohhak.api.TestWith;
-import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit.coercers.KnotxCoercers;
+import io.knotx.junit5.KnotxArgumentConverter;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.vertx.core.json.JsonObject;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.CsvSource;
 
-@RunWith(ZohhakRunner.class)
-@Configure(separator = ";", coercers = KnotxCoercers.class)
 public class FragmentContextTest {
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "snippet_one_service_no_params.txt;{}",
       "snippet_one_service_invalid_params_bound.txt;{}",
       "snippet_one_service_one_param.txt;{\"path\":\"/overridden/path\"}",
@@ -40,14 +38,15 @@ public class FragmentContextTest {
       "snippet_one_service_many_params-no-prefix.txt;{\"path\":\"/overridden/path\",\"anotherParam\":\"someValue\"}",
   })
   public void from_whenFragmentContainsOneService_expectFragmentContextWithExtractedParamsParams(
-      Fragment fragment, String expectedParameters) throws Exception {
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment, String expectedParameters) {
 
     final FragmentContext fragmentContext = FragmentContext.from(fragment);
     final ServiceEntry serviceEntry = fragmentContext.services.get(0);
     assertThat(serviceEntry.getParams().toString(), sameJSONAs(expectedParameters));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "snippet_one_service_no_params.txt;1",
       "snippet_one_service_one_param.txt;1",
       "snippet_one_service_many_params.txt;1",
@@ -57,19 +56,20 @@ public class FragmentContextTest {
       "snippet_one_service_many_params-no-prefix.txt;1"
   })
   public void from_whenFragmentContainsServices_expectFragmentContextWithProperNumberOfServicesExtracted(
-      Fragment fragment, int numberOfExpectedServices) throws Exception {
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment, int numberOfExpectedServices) {
 
     final FragmentContext fragmentContext = FragmentContext.from(fragment);
     assertThat(fragmentContext.services.size(), is(numberOfExpectedServices));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "snippet_two_services_with_params.txt;{\"first\":{\"first-service-key\":\"first-service-value\"},\"second\":{\"second-service-key\":\"second-service-value\"}}",
       "snippet_four_services_with_params_and_extra_param.txt;{\"a\":{\"a\":\"a\"},\"b\":{\"b\":\"b\"},\"c\":{\"c\":\"c\"},\"d\":{\"d\":\"d\"}}",
       "snippet_four_services_with_params_and_extra_param-no-prefix.txt;{\"a\":{\"a\":\"a\"},\"b\":{\"b\":\"b\"},\"c\":{\"c\":\"c\"},\"d\":{\"d\":\"d\"}}"
   })
   public void from_whenFragmentContainsServices_expectProperlyAssignedParams(
-      Fragment fragment, JsonObject parameters) throws Exception {
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment, JsonObject parameters) {
 
     final FragmentContext fragmentContext = FragmentContext.from(fragment);
     fragmentContext.services.forEach(serviceEntry ->

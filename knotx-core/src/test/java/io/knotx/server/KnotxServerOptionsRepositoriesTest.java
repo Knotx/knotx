@@ -22,14 +22,14 @@ import io.knotx.junit.util.FileReader;
 import io.knotx.server.configuration.KnotxFlowSettings;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.json.JsonObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class KnotxServerOptionsRepositoriesTest {
 
   private KnotxFlowSettings flowConfiguration;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     JsonObject config = new JsonObject(FileReader.readText(
         "io/knotx/server/test-config-server.json"));
@@ -37,8 +37,7 @@ public class KnotxServerOptionsRepositoriesTest {
   }
 
   @Test
-  public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths()
-      throws Exception {
+  public void whenConfigWithRepositoryMappings_expectRepositoryAddressOnMatchingPaths() {
     assertThat(flowConfiguration.repositoryForPath("/content/local/simple.html").get().getAddress(),
         equalTo("knotx.repository.filesystem"));
     assertThat(flowConfiguration.repositoryForPath("/content/simple.html").get().getAddress(),
@@ -46,8 +45,7 @@ public class KnotxServerOptionsRepositoriesTest {
   }
 
   @Test
-  public void whenConfigWithRepositoryMappings_expectNoRepositoryAddressOnNotMatchingPaths()
-      throws Exception {
+  public void whenConfigWithRepositoryMappings_expectNoRepositoryAddressOnNotMatchingPaths() {
     assertThat(flowConfiguration.repositoryForPath("/content2/local/simple.html").isPresent(),
         equalTo(false));
     assertThat(flowConfiguration.repositoryForPath("/service/simple.html").isPresent(), equalTo(false));

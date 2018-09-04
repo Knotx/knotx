@@ -15,66 +15,66 @@
  */
 package io.knotx.fragments;
 
+import static io.knotx.junit5.KnotxTestUtils.readText;
 import static io.knotx.util.IsEqualApplyingHtmlFormattingMatcher.equalsToWithHtmlFormatting;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-import com.googlecode.zohhak.api.Coercion;
-import com.googlecode.zohhak.api.Configure;
-import com.googlecode.zohhak.api.TestWith;
-import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
+import io.knotx.junit5.KnotxArgumentConverter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import org.jsoup.nodes.Element;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 
-@RunWith(ZohhakRunner.class)
-@Configure(separator = ";")
 public class FragmentContentExtractorTest {
 
-  @TestWith(value = {
-      "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
-      "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
+      "io/knotx/fragments/simple_default_snippet.txt|script;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_default_snippet.txt|script;io/knotx/fragments/complex_snippet-expected_content.txt",
+      "io/knotx/fragments/simple_custom_snippet.txt|knotx:snippet;io/knotx/fragments/simple_snippet-expected_content.txt",
+      "io/knotx/fragments/complex_custom_snippet.txt|knotx:snippet;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
-  public void unwrappedContent_withFragment_expectDefinedContent(Fragment fragment,
+  public void unwrappedContent_withFragment_expectDefinedContent(
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
       String expectedContentFileName) throws Exception {
-
     final String expectedContent = readText(expectedContentFileName);
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
+
     assertThat(expectedContent, equalToIgnoringWhiteSpace(unwrappedContent));
   }
 
-  @TestWith(value = {
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
       "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
       "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
       "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
-  public void unwrappedContent_withString_expectDefinedContent(String snippetFileName,
+  public void unwrappedContent_withString_expectDefinedContent(
+      String snippetFileName,
       String expectedContentFileName) throws Exception {
-
     final String expectedContent = readText(expectedContentFileName);
     final Element element = FragmentContentExtractor.unwrapContent(readText(snippetFileName));
 
     assertThat(element.toString(), equalsToWithHtmlFormatting(expectedContent));
   }
 
-  @TestWith(value = {
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
       "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
       "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
       "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
-  public void unwrapFragmentContent_withFragment_expectDefinedContent(Fragment fragment,
+  public void unwrapFragmentContent_withFragment_expectDefinedContent(
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
       String expectedContentFileName) throws Exception {
 
     final String expectedContent = readText(expectedContentFileName);
@@ -83,13 +83,15 @@ public class FragmentContentExtractorTest {
     assertThat(element.toString(), equalsToWithHtmlFormatting(expectedContent));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "io/knotx/fragments/empty_snippet.txt",
       "io/knotx/fragments/raw_snippet.txt"
   })
-  public void getUnwrappedContent_withRawFragment_expectNotChangedContent(Fragment fragment)
-      throws Exception {
+  public void getUnwrappedContent_withRawFragment_expectNotChangedContent(
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment) throws Exception {
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
+
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(fragment.content()));
   }
 
@@ -99,19 +101,14 @@ public class FragmentContentExtractorTest {
     assertNull(FragmentContentExtractor.unwrapContent((Fragment) null));
   }
 
-  @Coercion
+  //@Coercion
   public Fragment provideFragment(String fragmentContentFile) throws IOException {
     final String fragmentContent = readText(fragmentContentFile);
     Fragment fragmentMock = Mockito.mock(Fragment.class);
+    when(fragmentMock.content()).thenReturn(fragmentContent);
     when(fragmentMock.isRaw())
         .thenReturn(!fragmentContent.contains(FragmentConstants.SNIPPET_IDENTIFIER_NAME));
-    when(fragmentMock.content()).thenReturn(fragmentContent);
     return fragmentMock;
-  }
-
-  private String readText(String path) throws IOException {
-    return CharStreams
-        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
   }
 
 }
