@@ -39,7 +39,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   private static final String CONFIG_OVERRIDE = "config";
   private static final String MODULE_OPTIONS = "options";
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
-  public static final String FILE_STORE = "file";
+  private static final String FILE_STORE = "file";
   private List<ModuleDescriptor> deployedModules;
   private ConfigRetriever configRetriever;
 
@@ -56,8 +56,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
           LOGGER.warn("Configuration changed - Re-deploying Knot.x");
           Observable.fromIterable(deployedModules)
               .flatMap(item -> vertx.rxUndeploy(item.getDeploymentId()).toObservable())
-              .collect(() -> Lists.newArrayList(),
-                  (collector, result) -> collector.add(result))
+              .collect(Lists::newArrayList, ArrayList::add)
               .subscribe(
                   success -> {
                     LOGGER.warn("Knot.x STOPPED.");
@@ -116,8 +115,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
           throw new BadKnotxConfigurationException("Unable to resolve ${KNOTX_HOME} for " + path
               + ". System property 'knotx.home', or environment variable 'KNOTX_HOME' are not set");
         }
-      }
-      if (home != null) {
+      } else {
         resolvedPath = path.replace("${KNOTX_HOME}", home);
       }
     }
