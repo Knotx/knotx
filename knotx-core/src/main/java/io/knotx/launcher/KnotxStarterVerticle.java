@@ -39,6 +39,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   private static final String CONFIG_OVERRIDE = "config";
   private static final String MODULE_OPTIONS = "options";
   private static final Logger LOGGER = LoggerFactory.getLogger(KnotxStarterVerticle.class);
+  public static final String FILE_STORE = "file";
   private List<ModuleDescriptor> deployedModules;
   private ConfigRetriever configRetriever;
 
@@ -90,8 +91,12 @@ public class KnotxStarterVerticle extends AbstractVerticle {
       configOptions = config.getJsonObject("configRetrieverOptions");
       configOptions.getJsonArray("stores").stream()
           .map(item -> (JsonObject) item)
-          .forEach(store -> store.getJsonObject("config")
-              .put("path", resolveConfigPath(store.getJsonObject("config").getString("path"))));
+          .forEach(store -> {
+            if (FILE_STORE.equals(store.getString("type"))) {
+              store.getJsonObject("config")
+                  .put("path", resolveConfigPath(store.getJsonObject("config").getString("path")));
+            }
+          });
 
     } else {
       throw new BadKnotxConfigurationException(
