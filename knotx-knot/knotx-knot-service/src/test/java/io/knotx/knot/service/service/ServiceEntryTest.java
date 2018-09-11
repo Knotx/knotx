@@ -18,7 +18,7 @@ package io.knotx.knot.service.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.knot.service.ServiceKnotOptions;
 import io.vertx.core.json.JsonObject;
 import org.jsoup.nodes.Attribute;

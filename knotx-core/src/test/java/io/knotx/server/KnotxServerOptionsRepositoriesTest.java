@@ -18,7 +18,7 @@ package io.knotx.server;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.server.configuration.KnotxFlowSettings;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.vertx.core.json.JsonObject;

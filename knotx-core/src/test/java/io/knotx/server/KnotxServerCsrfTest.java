@@ -16,21 +16,23 @@
 package io.knotx.server;
 
 
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit5.KnotxApplyConfiguration;
 import io.knotx.junit5.KnotxExtension;
+import io.knotx.junit5.util.RequestUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.buffer.Buffer;
+import io.reactivex.Single;
 import io.vertx.ext.web.handler.CSRFHandler;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
 import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.List;
-import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -53,23 +55,18 @@ public class KnotxServerCsrfTest {
 
     WebClient client = WebClient.create(vertx);
 
-    client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html").send(
-        ar -> {
-          if (ar.succeeded()) {
-            assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
-            assertTrue(ar.result().getHeader(EXPECTED_RESPONSE_HEADER) != null);
-            assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
-                ar.result().getHeader(EXPECTED_RESPONSE_HEADER));
-            assertTrue(ar.result().cookies().stream()
-                .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
-            client.close();
-            context.completeNow();
-          } else {
-            context.failNow(ar.cause());
-            context.completeNow();
-          }
-        }
-    );
+    Single<HttpResponse<io.vertx.reactivex.core.buffer.Buffer>> httpResponseSingle = client
+        .get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
+        .rxSend();
+
+    subscribeToResult_shouldSucceed(context, httpResponseSingle, response -> {
+      assertEquals(HttpResponseStatus.OK.code(), response.statusCode());
+      assertTrue(response.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+      assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+          response.getHeader(EXPECTED_RESPONSE_HEADER));
+      assertTrue(response.cookies().stream()
+          .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
+    });
   }
 
   @Test
@@ -83,16 +80,13 @@ public class KnotxServerCsrfTest {
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
     WebClient client = WebClient.create(vertx);
-    client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
-        .sendForm(body, ar -> {
-          if (ar.succeeded()) {
-            assertEquals(HttpResponseStatus.FORBIDDEN.code(), ar.result().statusCode());
-            context.completeNow();
-          } else {
-            context.failNow(ar.cause());
-            context.completeNow();
-          }
-        });
+    Single<HttpResponse<Buffer>> httpResponseSingle = client
+        .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
+        .rxSendForm(body);
+
+    RequestUtil.subscribeToResult_shouldSucceed(context, httpResponseSingle, result -> {
+      assertEquals(HttpResponseStatus.FORBIDDEN.code(), result.statusCode());
+    });
   }
 
   @Test
@@ -106,16 +100,13 @@ public class KnotxServerCsrfTest {
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
     WebClient client = WebClient.create(vertx);
-    client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/public.html")
-        .sendForm(body, ar -> {
-          if (ar.succeeded()) {
-            assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
-            context.completeNow();
-          } else {
-            context.failNow(ar.cause());
-            context.completeNow();
-          }
-        });
+    Single<HttpResponse<io.vertx.reactivex.core.buffer.Buffer>> httpResponseSingle = client
+        .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/public.html")
+        .rxSendForm(body);
+
+    RequestUtil.subscribeToResult_shouldSucceed(context, httpResponseSingle, resp -> {
+      assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
+    });
   }
 
   @Test
@@ -143,12 +134,10 @@ public class KnotxServerCsrfTest {
                     context.completeNow();
                   } else {
                     context.failNow(ar.cause());
-                    context.completeNow();
                   }
                 });
           } else {
             context.failNow(ar.cause());
-            context.completeNow();
           }
         });
   }
@@ -159,12 +148,12 @@ public class KnotxServerCsrfTest {
 
   private void createSimpleKnot(Vertx vertx, final String address, final String addToBody,
       final String transition) {
-    Consumer<KnotContext> simpleKnot = knotContext -> {
-      Buffer inBody = knotContext.getClientResponse().getBody();
-      knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
+    MockKnotProxy.register(vertx.getDelegate(), address, knotContext -> {
+      knotContext.getClientResponse().setBody(
+          knotContext.getClientResponse().getBody().appendString(addToBody)
+      );
       knotContext.setTransition(transition);
-    };
-    MockKnotProxy.register(vertx.getDelegate(), address, simpleKnot);
+    });
   }
 
   private String getToken(List<String> result) {

@@ -15,6 +15,8 @@
  */
 package io.knotx.assembler;
 
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
+
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
@@ -22,13 +24,14 @@ import io.knotx.junit5.KnotxApplyConfiguration;
 import io.knotx.junit5.KnotxExtension;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.Vertx;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -129,12 +132,9 @@ public class FragmentAssemblerTest {
       Consumer<KnotContext> verifyResultFunction) {
     KnotProxy service = KnotProxy.createProxy(vertx, ADDRESS);
 
-    service.rxProcess(KnotContextFactory.create(fragments))
-        .doOnSuccess(verifyResultFunction::accept)
-        .subscribe(
-            success -> context.completeNow(),
-            context::failNow
-        );
+    Single<KnotContext> knotContextSingle = service.rxProcess(KnotContextFactory.create(fragments));
+
+    subscribeToResult_shouldSucceed(context, knotContextSingle, verifyResultFunction);
   }
 
   private Pair<List<String>, String> toPair(String filePath, String... knots) throws IOException {

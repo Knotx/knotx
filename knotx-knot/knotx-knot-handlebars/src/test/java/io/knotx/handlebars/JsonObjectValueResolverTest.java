@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import io.knotx.junit5.KnotxTestUtils;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -35,8 +35,8 @@ public class JsonObjectValueResolverTest {
 
   @BeforeEach
   public void before() throws Exception {
-    template = new Handlebars().compileInline(KnotxTestUtils.readText("sample.hbs"));
-    expected = KnotxTestUtils.readText("expected").trim();
+    template = new Handlebars().compileInline(FileReader.readText("sample.hbs"));
+    expected = FileReader.readText("expected").trim();
   }
 
   @Test
@@ -70,6 +70,6 @@ public class JsonObjectValueResolverTest {
   }
 
   private JsonObject filebasedModel() throws Exception {
-    return new JsonObject(KnotxTestUtils.readText("testObject.json"));
+    return new JsonObject(FileReader.readText("testObject.json"));
   }
 }

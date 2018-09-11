@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.options.SnippetOptions;
 import java.util.List;
 import java.util.stream.IntStream;

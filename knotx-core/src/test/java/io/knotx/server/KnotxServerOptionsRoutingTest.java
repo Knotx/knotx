@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.MethodRoutingEntries;
 import io.vertx.core.http.HttpMethod;

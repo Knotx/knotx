@@ -15,6 +15,7 @@
  */
 package io.knotx.knot.action;
 
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,9 +31,11 @@ import io.knotx.junit.util.KnotContextFactory;
 import io.knotx.junit5.KnotxApplyConfiguration;
 import io.knotx.junit5.KnotxExtension;
 import io.knotx.junit5.KnotxTestUtils;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.proxy.AdapterProxy;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -222,12 +225,9 @@ public class ActionKnotProxyVerticleTest {
       Consumer<KnotContext> onSuccess) {
     KnotProxy actionKnot = KnotProxy.createProxy(vertx, ADDRESS);
 
-    actionKnot.rxProcess(knotContext)
-        .doOnSuccess(onSuccess)
-        .subscribe(
-            success -> context.completeNow(),
-            context::failNow
-        );
+    Single<KnotContext> knotContextSingle = actionKnot.rxProcess(knotContext);
+
+    subscribeToResult_shouldSucceed(context, knotContextSingle, onSuccess);
   }
 
   private KnotContext createKnotContext(String... snippetFilenames) throws Exception {
@@ -239,7 +239,7 @@ public class ActionKnotProxyVerticleTest {
     List<Fragment> fragments = Lists.newArrayList();
     Optional.ofNullable(firstFragment).ifPresent(fragments::add);
     for (String file : snippetFilenames) {
-      String fileContent = KnotxTestUtils.readText(file);
+      String fileContent = FileReader.readText(file);
       String fragmentIdentifiers = Jsoup.parse(fileContent).getElementsByAttribute(FRAGMENT_KNOTS)
           .attr(
               FRAGMENT_KNOTS);
