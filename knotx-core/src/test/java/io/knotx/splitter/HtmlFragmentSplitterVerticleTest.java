@@ -15,6 +15,7 @@
  */
 package io.knotx.splitter;
 
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,9 +27,10 @@ import io.knotx.junit5.KnotxApplyConfiguration;
 import io.knotx.junit5.KnotxExtension;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.Vertx;
-import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -53,8 +55,8 @@ public class HtmlFragmentSplitterVerticleTest {
   @KnotxApplyConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
   public void callSplitterWithManySnippets_expectNineFragments(
       VertxTestContext context, Vertx vertx) throws Exception {
-    callFragmentSplitterWithAssertions(context, vertx, FileReader.readText(
-        "io/knotx/splitter/test-many-fragments.html"),
+    callFragmentSplitterWithAssertions(context, vertx,
+        FileReader.readText("io/knotx/splitter/test-many-fragments.html"),
         knotContext -> {
           assertNotNull(knotContext.getFragments());
           assertEquals(knotContext.getFragments().size(), 9);
@@ -67,12 +69,8 @@ public class HtmlFragmentSplitterVerticleTest {
       Consumer<KnotContext> testFunction) {
     KnotProxy service = KnotProxy.createProxy(vertx, ADDRESS);
 
-    service.rxProcess(KnotContextFactory.empty(template))
-        .doOnSuccess(testFunction::accept)
-        .subscribe(
-            success -> context.completeNow(),
-            context::failNow
-        );
-  }
+    Single<KnotContext> response = service.rxProcess(KnotContextFactory.empty(template));
 
+    subscribeToResult_shouldSucceed(context, response, testFunction);
+  }
 }

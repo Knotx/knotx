@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.util.FileReader;
 import io.vertx.core.json.JsonObject;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;

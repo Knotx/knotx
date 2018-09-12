@@ -20,8 +20,8 @@ import static org.junit.Assert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.SnippetPatterns;
-import io.knotx.junit5.KnotxTestUtils;
 import io.knotx.junit5.KnotxArgumentConverter;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.options.SnippetOptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
@@ -41,7 +41,7 @@ public class UnprocessedFragmentStrategyTest {
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
-    final String expectedContent = KnotxTestUtils.readText(expectedContentFileName);
+    final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
@@ -58,7 +58,7 @@ public class UnprocessedFragmentStrategyTest {
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
-    final String expectedContent = KnotxTestUtils.readText(expectedContentFileName);
+    final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
@@ -75,7 +75,7 @@ public class UnprocessedFragmentStrategyTest {
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
-    final String expectedContent = KnotxTestUtils.readText(expectedContentFileName);
+    final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
