@@ -160,7 +160,7 @@ public class KnotxServerRoutingTest {
     });
   }
 
-  @Disabled("FIXME: Fails for no obvious reason")
+  @Disabled("FIXME: Fails for no obvious reason, see https://github.com/Cognifide/knotx/issues/442")
   @Test
   @KnotxApplyConfiguration("io/knotx/server/test-server.json")
   public void whenRequestingGetWithCustomFlowProcessing(

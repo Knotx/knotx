@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.knotx.junit5.KnotxApplyConfiguration;
 import io.knotx.junit5.KnotxExtension;
-import io.knotx.junit5.util.RequestUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.ext.web.handler.CSRFHandler;
@@ -84,7 +83,7 @@ public class KnotxServerCsrfTest {
         .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
         .rxSendForm(body);
 
-    RequestUtil.subscribeToResult_shouldSucceed(context, httpResponseSingle, result -> {
+    subscribeToResult_shouldSucceed(context, httpResponseSingle, result -> {
       assertEquals(HttpResponseStatus.FORBIDDEN.code(), result.statusCode());
     });
   }
@@ -104,7 +103,7 @@ public class KnotxServerCsrfTest {
         .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/public.html")
         .rxSendForm(body);
 
-    RequestUtil.subscribeToResult_shouldSucceed(context, httpResponseSingle, resp -> {
+    subscribeToResult_shouldSucceed(context, httpResponseSingle, resp -> {
       assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
     });
   }
