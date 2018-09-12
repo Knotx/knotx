@@ -138,7 +138,7 @@ public class KnotxServerRoutingTest {
           resp.getHeader(EXPECTED_RESPONSE_HEADER));
 
       assertEquals("global+B+C", resp.bodyAsString(),
-          "Wrong engines processed request, expected " + "global+B+C");
+          "Wrong engines processed request, expected 'global+B+C'");
     });
   }
 
