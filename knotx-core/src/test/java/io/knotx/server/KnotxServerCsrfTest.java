@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.knotx.junit5.KnotxApplyConfiguration;
 import io.knotx.junit5.KnotxExtension;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.ext.web.handler.CSRFHandler;
@@ -97,6 +98,8 @@ public class KnotxServerCsrfTest {
             String token = getToken(ar.result().cookies());
             client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
                 .putHeader(CSRFHandler.DEFAULT_HEADER_NAME, token)
+                .putHeader(HttpHeaderNames.COOKIE.toString(),
+                    CSRFHandler.DEFAULT_COOKIE_NAME + "=" + token)
                 .sendForm(body, res -> {
                   if (res.succeeded()) {
                     assertEquals(HttpResponseStatus.OK.code(), res.result().statusCode());
