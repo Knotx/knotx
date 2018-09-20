@@ -20,18 +20,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.options.SnippetOptions;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 public class HtmlFragmentSplitterTest {
-
-  @Rule
-  public final ExpectedException expectedException = ExpectedException.none();
 
   private static final String DEFAULT_SCRIPT_TAG = "script";
   private static final String CUSTOM_SCRIPT_TAG = "knotx:snippet";

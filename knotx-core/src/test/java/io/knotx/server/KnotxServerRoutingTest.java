@@ -16,200 +16,166 @@
 package io.knotx.server;
 
 
-import io.knotx.dataobjects.KnotContext;
-import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.TestVertxDeployer;
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import io.knotx.junit5.KnotxApplyConfiguration;
+import io.knotx.junit5.KnotxExtension;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.reactivex.Observable;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.RunTestOnContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
+import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.http.HttpClient;
-import io.vertx.reactivex.core.http.HttpClientRequest;
-import io.vertx.reactivex.core.http.HttpClientResponse;
-import java.util.function.Consumer;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
+import io.vertx.reactivex.ext.web.client.WebClient;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(VertxUnitRunner.class)
+@ExtendWith(KnotxExtension.class)
 public class KnotxServerRoutingTest {
 
-  private static final int KNOTX_SERVER_PORT = 9092;
-  private static final String KNOTX_SERVER_ADDRESS = "localhost";
   public static final String EXPECTED_XSERVER_HEADER_VALUE = "Knot.x";
   public static final String EXPECTED_RESPONSE_HEADER = "X-Server";
+  private static final int KNOTX_SERVER_PORT = 9092;
+  private static final String KNOTX_SERVER_ADDRESS = "localhost";
 
-  private RunTestOnContext vertx = new RunTestOnContext();
-
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
-  @Rule
-  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
-
-  private static Observable<HttpClientResponse> request(HttpClient client, HttpMethod method,
-      int port, String domain, String uri,
-      Consumer<HttpClientRequest> requestBuilder) {
-    return Observable.unsafeCreate(subscriber -> {
-      HttpClientRequest req = client.request(method, port, domain, uri);
-      Observable<HttpClientResponse> resp = req.toObservable();
-      resp.subscribe(subscriber);
-      requestBuilder.accept(req);
-      req.end();
-    });
-  }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
-  public void whenRequestingWithInvalidQuery_expectBadRequest(TestContext context) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
-    Async async = context.async();
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
+  public void whenRequestingWithInvalidQuery_expectBadRequest(
+      VertxTestContext context, Vertx vertx) {
+    HttpClient client = vertx.createHttpClient();
     client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS,
         "/content/local/simple.html?q=~!@\\||$%^&*()_=-%22;;%27%22:%3C%3E/?]}{",
         resp -> {
-          context.assertEquals(HttpResponseStatus.BAD_REQUEST.code(), resp.statusCode());
+          assertEquals(HttpResponseStatus.BAD_REQUEST.code(), resp.statusCode());
           client.close();
-          async.complete();
+          context.completeNow();
         });
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
-  public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
-    createSimpleKnot("A-engine", "+A", "go-c");
-    createSimpleKnot("C-engine", "+C", null);
-    testGetRequest(context, "/content/routing.html", "+A+C");
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
+  public void whenRequestingGetLocalPath_expectLocalAC(
+      VertxTestContext context, Vertx vertx) {
+    createSimpleKnot(vertx, "A-engine", "+A", "go-c");
+    createSimpleKnot(vertx, "C-engine", "+C", null);
+    testGetRequest(context, vertx, "/content/routing.html", "+A+C");
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
-  public void whenRequestingGetGlobalPath_expectGlobalC(TestContext context) {
-    createSimpleKnot("A-engine", "+A", null);
-    testGetRequest(context, "/content/routing.html", "+A");
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
+  public void whenRequestingGetGlobalPath_expectGlobalC(
+      VertxTestContext context, Vertx vertx) {
+    createSimpleKnot(vertx, "A-engine", "+A", null);
+    testGetRequest(context, vertx, "/content/routing.html", "+A");
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenRequestingPostLocalPathWithFirstTransition_expectLocalApostBC(
-      TestContext context) {
-    Async async = context.async();
-    createSimpleKnot("A-post-engine", "+Apost", "go-b");
-    createSimpleKnot("B-engine", "+B", "go-c");
-    createSimpleKnot("C-engine", "+C", null);
-    testPostRequest("/content/routing.html",
+      VertxTestContext context, Vertx vertx) {
+    createSimpleKnot(vertx, "A-post-engine", "+Apost", "go-b");
+    createSimpleKnot(vertx, "B-engine", "+B", "go-c");
+    createSimpleKnot(vertx, "C-engine", "+C", null);
+    testPostRequest(context, vertx, "/content/routing.html",
         resp -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
-          context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
-          context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+          assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
+          assertNotNull(resp.getHeader(EXPECTED_RESPONSE_HEADER));
+          assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
               resp.getHeader(EXPECTED_RESPONSE_HEADER));
-          resp.bodyHandler(body -> {
-            try {
-              context.assertEquals("+Apost+B+C", body.toString());
-            } catch (Exception e) {
-              context.fail(e);
-            }
-            async.complete();
-          });
+
+          assertEquals("+Apost+B+C", resp.bodyAsString(),
+              "Wrong engines processed request, expected " + "+Apost+B+C");
         });
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenRequestingPostLocalPathWithAlternateTransition_expectLocalApostC(
-      TestContext context) {
-    Async async = context.async();
-    createSimpleKnot("A-post-engine", "+Apost", "go-c");
-    createSimpleKnot("C-engine", "+C", null);
-    testPostRequest("/content/routing.html",
+      VertxTestContext context, Vertx vertx) {
+    createSimpleKnot(vertx, "A-post-engine", "+Apost", "go-c");
+    createSimpleKnot(vertx, "C-engine", "+C", null);
+    testPostRequest(context, vertx, "/content/routing.html",
         resp -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
-          context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
-          context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+          assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
+          assertNotNull(resp.getHeader(EXPECTED_RESPONSE_HEADER));
+          assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
               resp.getHeader(EXPECTED_RESPONSE_HEADER));
-          resp.bodyHandler(body -> {
-            try {
-              context.assertEquals("+Apost+C", body.toString());
-            } catch (Exception e) {
-              context.fail(e);
-            }
-            async.complete();
-          });
+
+          assertEquals("+Apost+C", resp.bodyAsString(),
+              "Wrong engines processed request, expected " + "+Apost+C");
         });
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenRequestingPostGlobalPathAndActionDoRedirect_expectRedirectResponse(
-      TestContext context) {
-    Async async = context.async();
-    createSimpleFailingKnot("A-post-engine", HttpResponseStatus.MOVED_PERMANENTLY.code(),
+      VertxTestContext context, Vertx vertx) {
+    createSimpleFailingKnot(vertx, "A-post-engine", HttpResponseStatus.MOVED_PERMANENTLY.code(),
         MultiMap.caseInsensitiveMultiMap().add("location", "/content/failed.html"));
 
-    testPostRequest("/content/routing.html", resp -> {
-      context.assertEquals(HttpResponseStatus.MOVED_PERMANENTLY.code(), resp.statusCode());
-      context.assertEquals("/content/failed.html", resp.getHeader("location"));
-      context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
-      context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+    testPostRequest(context, vertx, "/content/routing.html", resp -> {
+      assertEquals(HttpResponseStatus.MOVED_PERMANENTLY.code(), resp.statusCode());
+      assertEquals("/content/failed.html", resp.getHeader("location"));
+      assertNotNull(resp.getHeader(EXPECTED_RESPONSE_HEADER));
+      assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
           resp.getHeader(EXPECTED_RESPONSE_HEADER));
-      async.complete();
     });
   }
 
-  private void testPostRequest(String url, Consumer<HttpClientResponse> expectedResponse) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
-    String testBody = "a=b";
-    Observable<HttpClientResponse> request = request(client, HttpMethod.POST, KNOTX_SERVER_PORT,
-        KNOTX_SERVER_ADDRESS, url, req -> {
-          req.headers().set("content-length", String.valueOf(testBody.length()));
-          req.headers().set("content-type", "application/x-www-form-urlencoded");
-          req.write(testBody);
-        });
+  private void testPostRequest(VertxTestContext context, Vertx vertx, String url,
+      Consumer<HttpResponse<Buffer>> expectedResponse) {
+    WebClient client = WebClient.create(vertx);
 
-    request.subscribe(expectedResponse::accept);
+    MultiMap formData = MultiMap.caseInsensitiveMultiMap();
+    formData.add("a", "b");
+
+    Single<HttpResponse<Buffer>> httpResponseSingle = client
+        .post(KnotxServerRoutingTest.KNOTX_SERVER_PORT,
+            KnotxServerRoutingTest.KNOTX_SERVER_ADDRESS,
+            url)
+        .rxSendForm(formData);
+    subscribeToResult_shouldSucceed(context, httpResponseSingle, expectedResponse);
   }
 
-  private void testGetRequest(TestContext context, String url, String expectedResult) {
-    HttpClient client = Vertx.newInstance(vertx.vertx()).createHttpClient();
-    Async async = context.async();
-    client.getNow(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url,
-        resp -> resp.bodyHandler(body -> {
-          context.assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
-          context.assertTrue(resp.getHeader(EXPECTED_RESPONSE_HEADER) != null);
-          context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+  private void testGetRequest(VertxTestContext context, Vertx vertx, String url,
+      String expectedResult) {
+    WebClient client = WebClient.create(vertx);
+
+    Single<HttpResponse<Buffer>> httpResponseSingle = client
+        .get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, url).rxSend();
+
+    subscribeToResult_shouldSucceed(context, httpResponseSingle,
+        resp -> {
+          assertEquals(expectedResult, resp.body().toString(),
+              "Wrong engines processed request, expected " + expectedResult);
+          assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
+          assertNotNull(resp.getHeader(EXPECTED_RESPONSE_HEADER));
+          assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
               resp.getHeader(EXPECTED_RESPONSE_HEADER));
-          try {
-            context.assertEquals(expectedResult, body.toString(),
-                "Wrong engines processed request, expected " + expectedResult);
-          } catch (Exception e) {
-            context.fail(e);
-          }
-          client.close();
-          async.complete();
-        }));
+        });
   }
 
-  private void createSimpleKnot(final String address, final String addToBody,
+  private void createSimpleKnot(Vertx vertx, final String address, final String addToBody,
       final String transition) {
-    Consumer<KnotContext> simpleKnot = knotContext -> {
-      Buffer inBody = knotContext.getClientResponse().getBody();
-      knotContext.getClientResponse().setBody(inBody.appendString(addToBody));
+    MockKnotProxy.register(vertx.getDelegate(), address, knotContext -> {
+      knotContext.getClientResponse().setBody(
+          knotContext.getClientResponse().getBody().appendString(addToBody)
+      );
       knotContext.setTransition(transition);
-    };
-    MockKnotProxy.register(vertx.vertx(), address, simpleKnot);
+    });
   }
 
-  private void createSimpleFailingKnot(final String address, final int statusCode,
+  private void createSimpleFailingKnot(Vertx vertx, final String address, final int statusCode,
       final MultiMap headers) {
-    Consumer<KnotContext> simpleKnot = knotContext -> {
+    MockKnotProxy.register(vertx.getDelegate(), address, knotContext -> {
       knotContext.getClientResponse().setStatusCode(statusCode).setHeaders(headers);
       knotContext.setTransition(null);
-    };
-    MockKnotProxy.register(vertx.vertx(), address, simpleKnot);
+    });
   }
 }

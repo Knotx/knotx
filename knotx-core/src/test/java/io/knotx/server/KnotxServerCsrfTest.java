@@ -16,24 +16,26 @@
 package io.knotx.server;
 
 
-import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.TestVertxDeployer;
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import io.knotx.junit5.KnotxApplyConfiguration;
+import io.knotx.junit5.KnotxExtension;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.RunTestOnContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.reactivex.Single;
 import io.vertx.ext.web.handler.CSRFHandler;
+import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
 import io.vertx.reactivex.ext.web.client.WebClient;
 import java.util.List;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(VertxUnitRunner.class)
+@ExtendWith(KnotxExtension.class)
 public class KnotxServerCsrfTest {
 
   private static final int KNOTX_SERVER_PORT = 9092;
@@ -42,91 +44,69 @@ public class KnotxServerCsrfTest {
   private static final String EXPECTED_RESPONSE_HEADER = "X-Server";
   private static final String CONTENT_CSRF_HTML = "/content/csrf.html";
 
-  private RunTestOnContext vertx = new RunTestOnContext();
-
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
-  @Rule
-  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
-  public void whenRequestingGetLocalPath_expectLocalAC(TestContext context) {
-    Async async = context.async();
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
+  public void whenRequestingGetLocalPath_expectLocalAC(
+      VertxTestContext context, Vertx vertx) {
+    WebClient client = WebClient.create(vertx);
 
-    client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML).send(
-        ar -> {
-          if (ar.succeeded()) {
-            context.assertEquals(HttpResponseStatus.OK.code(), ar.result().statusCode());
-            context.assertTrue(ar.result().getHeader(EXPECTED_RESPONSE_HEADER) != null);
-            context.assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
-                ar.result().getHeader(EXPECTED_RESPONSE_HEADER));
+    Single<HttpResponse<io.vertx.reactivex.core.buffer.Buffer>> httpResponseSingle = client
+        .get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
+        .rxSend();
 
-            context.assertTrue(ar.result().cookies().stream()
-                .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
-            client.close();
-            async.complete();
-          } else {
-            context.fail(ar.cause());
-            async.complete();
-          }
-        }
-    );
+    subscribeToResult_shouldSucceed(context, httpResponseSingle, response -> {
+      assertEquals(HttpResponseStatus.OK.code(), response.statusCode());
+      assertTrue(response.getHeader(EXPECTED_RESPONSE_HEADER) != null);
+      assertEquals(EXPECTED_XSERVER_HEADER_VALUE,
+          response.getHeader(EXPECTED_RESPONSE_HEADER));
+      assertTrue(response.cookies().stream()
+          .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
+    });
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenDoPostSecureWithoutCSRF_expectForbidden(
-      TestContext context) {
-    Async async = context.async();
+      VertxTestContext context, Vertx vertx) {
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
-    client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
-        .sendForm(body, ar -> {
-          if (ar.succeeded()) {
-            context.assertEquals(HttpResponseStatus.FORBIDDEN.code(), ar.result().statusCode());
-            async.complete();
-          } else {
-            context.fail(ar.cause());
-            async.complete();
-          }
-        });
+    WebClient client = WebClient.create(vertx);
+    Single<HttpResponse<Buffer>> httpResponseSingle = client
+        .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
+        .rxSendForm(body);
+
+    subscribeToResult_shouldSucceed(context, httpResponseSingle, result -> {
+      assertEquals(HttpResponseStatus.FORBIDDEN.code(), result.statusCode());
+    });
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/server/test-server.conf", format = "hocon")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenDoPostSecureWithCSRF_expectOK(
-      TestContext context) {
-    Async async = context.async();
+      VertxTestContext context, Vertx vertx) {
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
-    WebClient client = WebClient.create(Vertx.newInstance(vertx.vertx()));
+    WebClient client = WebClient.create(vertx);
 
     client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML).send(
         ar -> {
           if (ar.succeeded()) {
-
-            context.assertTrue(ar.result().cookies().stream()
+            assertTrue(ar.result().cookies().stream()
                 .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
-
             String token = getToken(ar.result().cookies());
-
             client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
                 .putHeader(CSRFHandler.DEFAULT_HEADER_NAME, token)
                 .sendForm(body, res -> {
                   if (res.succeeded()) {
-                    context.assertEquals(HttpResponseStatus.OK.code(), res.result().statusCode());
-                    async.complete();
+                    assertEquals(HttpResponseStatus.OK.code(), res.result().statusCode());
+                    context.completeNow();
                   } else {
-                    context.fail(ar.cause());
-                    async.complete();
+                    context.failNow(ar.cause());
                   }
                 });
           } else {
-            context.fail(ar.cause());
-            async.complete();
+            context.failNow(ar.cause());
           }
         });
   }

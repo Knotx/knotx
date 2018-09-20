@@ -18,27 +18,26 @@ package io.knotx.assembler;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertThat;
 
-import com.googlecode.zohhak.api.Configure;
-import com.googlecode.zohhak.api.TestWith;
-import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.SnippetPatterns;
-import io.knotx.junit.coercers.KnotxCoercers;
-import io.knotx.junit.util.FileReader;
+import io.knotx.junit5.KnotxArgumentConverter;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.options.SnippetOptions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.CsvSource;
 
-@RunWith(ZohhakRunner.class)
-@Configure(separator = ";", coercers = KnotxCoercers.class)
 public class UnprocessedFragmentStrategyTest {
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet.txt;script;data-knotx-",
       "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/customTag_snippet.txt;knotx:snippet;data-knotx-",
       "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script;data-knotx-",
       "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;knotx:snippet;"
   })
-  public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
+  public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
@@ -47,13 +46,15 @@ public class UnprocessedFragmentStrategyTest {
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;script;data-knotx-",
       "io/knotx/assembler/customTag_snippet.txt|knotx:snippet;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;data-knotx-",
       "io/knotx/assembler/big_snippet.txt;io/knotx/assembler/big_snippet-expected_unwrapped_content.txt;script;data-knotx-",
       "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt|knotx:snippet|;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;"
   })
-  public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(Fragment fragment,
+  public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
@@ -62,13 +63,15 @@ public class UnprocessedFragmentStrategyTest {
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
   }
 
-  @TestWith({
+  @ParameterizedTest
+  @CsvSource(delimiter = ';', value = {
       "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;script;data-knotx-",
       "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;knotx:snippet;data-knotx-",
       "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script;data-knotx-"
       //when fragment is a raw fragment, it is not ignored
   })
-  public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(Fragment fragment,
+  public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(
+      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));

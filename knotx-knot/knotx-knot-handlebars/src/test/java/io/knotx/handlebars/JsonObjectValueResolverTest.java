@@ -21,24 +21,22 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
+import io.knotx.junit5.util.FileReader;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import java.io.InputStreamReader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JsonObjectValueResolverTest {
 
   private String expected;
   private Template template;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
-    template = new Handlebars().compileInline(readFile("sample.hbs"));
-    expected = readFile("expected").trim();
+    template = new Handlebars().compileInline(FileReader.readText("sample.hbs"));
+    expected = FileReader.readText("expected").trim();
   }
 
   @Test
@@ -61,11 +59,6 @@ public class JsonObjectValueResolverTest {
     assertThat(compiled, equalTo(expected));
   }
 
-  private String readFile(String path) throws Exception {
-    return CharStreams
-        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "UTF-8"));
-  }
-
   private JsonObject programmaticModel() {
     return new JsonObject().put("sample",
         new JsonObject().put("result",
@@ -77,6 +70,6 @@ public class JsonObjectValueResolverTest {
   }
 
   private JsonObject filebasedModel() throws Exception {
-    return new JsonObject(readFile("testObject.json"));
+    return new JsonObject(FileReader.readText("testObject.json"));
   }
 }

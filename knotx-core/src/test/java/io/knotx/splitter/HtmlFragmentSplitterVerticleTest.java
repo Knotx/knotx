@@ -15,78 +15,62 @@
  */
 package io.knotx.splitter;
 
+import static io.knotx.junit5.util.RequestUtil.subscribeToResult_shouldSucceed;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.junit.rule.KnotxConfiguration;
-import io.knotx.junit.rule.TestVertxDeployer;
 import io.knotx.junit.util.FileReader;
 import io.knotx.junit.util.KnotContextFactory;
+import io.knotx.junit5.KnotxApplyConfiguration;
+import io.knotx.junit5.KnotxExtension;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.RunTestOnContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
+import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.Vertx;
-import java.util.function.Consumer;
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@Ignore
-@RunWith(VertxUnitRunner.class)
+@ExtendWith(KnotxExtension.class)
 public class HtmlFragmentSplitterVerticleTest {
 
   private final static String ADDRESS = "knotx.core.splitter";
 
-  //Test Runner Rule of Verts
-  private RunTestOnContext vertx = new RunTestOnContext();
-
-  //Test Runner Rule of Knotx
-  private TestVertxDeployer knotx = new TestVertxDeployer(vertx);
-
-  //Junit Rule, sets up logger, prepares verts, starts verticles according to the config (supplied in annotation of test method)
-  @Rule
-  public RuleChain chain = RuleChain.outerRule(vertx).around(knotx);
-
   @Test
-  @KnotxConfiguration(path = "io/knotx/splitter/knotx-fragment-splitter-test.json")
-  public void callSplitterWithEmptyBody_expectNotFoundResponse(TestContext context)
-      throws Exception {
-    callFragmentSplitterWithAssertions(context, "",
+  @KnotxApplyConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
+  public void callSplitterWithEmptyBody_expectNotFoundResponse(
+      VertxTestContext context, Vertx vertx) {
+    callFragmentSplitterWithAssertions(context, vertx, "",
         knotContext -> {
-          context.assertEquals(knotContext.getClientResponse().getStatusCode(),
+          assertEquals(knotContext.getClientResponse().getStatusCode(),
               HttpResponseStatus.NOT_FOUND.code());
-          context.assertFalse(knotContext.getFragments() != null);
+          assertNull(knotContext.getFragments());
         });
   }
 
   @Test
-  @KnotxConfiguration(path = "io/knotx/splitter/knotx-fragment-splitter-test.json")
-  public void callSplitterWithManySnippets_expectNineFragments(TestContext context)
-      throws Exception {
-    callFragmentSplitterWithAssertions(context, FileReader.readText(
-        "io/knotx/splitter/test-many-fragments.html"),
+  @KnotxApplyConfiguration("io/knotx/splitter/knotx-fragment-splitter-test.json")
+  public void callSplitterWithManySnippets_expectNineFragments(
+      VertxTestContext context, Vertx vertx) throws Exception {
+    callFragmentSplitterWithAssertions(context, vertx,
+        FileReader.readText("io/knotx/splitter/test-many-fragments.html"),
         knotContext -> {
-          context.assertTrue(knotContext.getFragments() != null);
-          context.assertEquals(knotContext.getFragments().size(), 9);
+          assertNotNull(knotContext.getFragments());
+          assertEquals(knotContext.getFragments().size(), 9);
         });
   }
 
-  private void callFragmentSplitterWithAssertions(TestContext context, String template,
+  private void callFragmentSplitterWithAssertions(
+      VertxTestContext context, Vertx vertx,
+      String template,
       Consumer<KnotContext> testFunction) {
-    Async async = context.async();
-    KnotProxy service = KnotProxy.createProxy(new Vertx(vertx.vertx()), ADDRESS);
+    KnotProxy service = KnotProxy.createProxy(vertx, ADDRESS);
 
-    service.rxProcess(KnotContextFactory.empty(template))
-        .map(ctx -> Pair.of(async, ctx))
-        .doOnSuccess(success -> testFunction.accept(success.getRight()))
-        .subscribe(
-            success -> async.complete(),
-            context::fail
-        );
+    Single<KnotContext> response = service.rxProcess(KnotContextFactory.empty(template));
+
+    subscribeToResult_shouldSucceed(context, response, testFunction);
   }
-
 }
