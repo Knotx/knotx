@@ -5,6 +5,11 @@ All notable changes to Knot.x will be documented in this file.
 List of changes that are finished but not yet released in any final version.
  - [PR-427[(https://github.com/Cognifide/knotx/pull/427) - HttpRepositoryConnectorProxyImpl logging improvements
  - [PR-422](https://github.com/Cognifide/knotx/pull/422) - Configurable Handlebars delimiters
+ - [PR-428](https://github.com/Cognifide/knotx/pull/428) - Mark all Service Knot related classes deprecated.
+ - [PR-432](https://github.com/Cognifide/knotx/pull/432) - Port unit and integration tests to JUnit 5
+ - [PR-440](https://github.com/Cognifide/knotx/pull/440) - Enable different Vert.x Config stores types fix.
+ - [PR-443](https://github.com/Cognifide/knotx/pull/443) - Update maven plugins versions.
+ - [PR-445](https://github.com/Cognifide/knotx/pull/445) - Vert.x version upgrade to 3.5.3
 
 ## 1.3.0
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) - Knot.x configurations refactor - Changed the way how configurations and it's defaults are build.
