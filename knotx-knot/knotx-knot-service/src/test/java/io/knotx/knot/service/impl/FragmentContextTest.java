@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit5.KnotxArgumentConverter;
+import io.knotx.junit.converter.FragmentArgumentConverter;
 import io.knotx.knot.service.service.ServiceEntry;
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +38,7 @@ public class FragmentContextTest {
       "snippet_one_service_many_params-no-prefix.txt;{\"path\":\"/overridden/path\",\"anotherParam\":\"someValue\"}",
   })
   public void from_whenFragmentContainsOneService_expectFragmentContextWithExtractedParamsParams(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment, String expectedParameters) {
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment, String expectedParameters) {
 
     final FragmentContext fragmentContext = FragmentContext.from(fragment);
     final ServiceEntry serviceEntry = fragmentContext.services.get(0);
@@ -56,7 +56,7 @@ public class FragmentContextTest {
       "snippet_one_service_many_params-no-prefix.txt;1"
   })
   public void from_whenFragmentContainsServices_expectFragmentContextWithProperNumberOfServicesExtracted(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment, int numberOfExpectedServices) {
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment, int numberOfExpectedServices) {
 
     final FragmentContext fragmentContext = FragmentContext.from(fragment);
     assertThat(fragmentContext.services.size(), is(numberOfExpectedServices));
@@ -69,7 +69,7 @@ public class FragmentContextTest {
       "snippet_four_services_with_params_and_extra_param-no-prefix.txt;{\"a\":{\"a\":\"a\"},\"b\":{\"b\":\"b\"},\"c\":{\"c\":\"c\"},\"d\":{\"d\":\"d\"}}"
   })
   public void from_whenFragmentContainsServices_expectProperlyAssignedParams(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment, JsonObject parameters) {
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment, JsonObject parameters) {
 
     final FragmentContext fragmentContext = FragmentContext.from(fragment);
     fragmentContext.services.forEach(serviceEntry ->
