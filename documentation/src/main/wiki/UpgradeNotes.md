@@ -12,7 +12,7 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
    5xx - server error - log at error
    other - log at warn
    ```
- - [PR-XXX](https://github.com/Cognifide/knotx/pull/XXX) - HttpRepositoryOptions now supports plain regex, e.g. `*` is no longer specially treated, replace it to regex `.*`
+ - [PR-458](https://github.com/Cognifide/knotx/pull/458) - HttpRepositoryOptions now supports plain regex, e.g. `*` is no longer specially treated, replace it to regex `.*`
 
 ## Version 1.3.0
 List of changes that are finished but not yet released in any final version.
