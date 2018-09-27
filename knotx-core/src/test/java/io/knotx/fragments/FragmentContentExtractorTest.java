@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.junit5.KnotxArgumentConverter;
+import io.knotx.junit.converter.FragmentArgumentConverter;
 import java.io.IOException;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ public class FragmentContentExtractorTest {
       "io/knotx/fragments/complex_custom_snippet.txt|knotx:snippet;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
   public void unwrappedContent_withFragment_expectDefinedContent(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
       String expectedContentFileName) throws Exception {
     final String expectedContent = readText(expectedContentFileName);
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
@@ -74,7 +74,7 @@ public class FragmentContentExtractorTest {
       "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
   })
   public void unwrapFragmentContent_withFragment_expectDefinedContent(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
       String expectedContentFileName) throws Exception {
 
     final String expectedContent = readText(expectedContentFileName);
@@ -89,7 +89,7 @@ public class FragmentContentExtractorTest {
       "io/knotx/fragments/raw_snippet.txt"
   })
   public void getUnwrappedContent_withRawFragment_expectNotChangedContent(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment) throws Exception {
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment) throws Exception {
     final String unwrappedContent = FragmentContentExtractor.unwrapContent(fragment);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(fragment.content()));
