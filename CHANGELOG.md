@@ -3,6 +3,8 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+
+## 1.4.0
  - [PR-427](https://github.com/Cognifide/knotx/pull/427) - HttpRepositoryConnectorProxyImpl logging improvements
  - [PR-422](https://github.com/Cognifide/knotx/pull/422) - Configurable Handlebars delimiters
  - [PR-428](https://github.com/Cognifide/knotx/pull/428) - Mark all Service Knot related classes deprecated.
