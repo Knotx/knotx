@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.SnippetPatterns;
-import io.knotx.junit5.KnotxArgumentConverter;
+import io.knotx.junit.converter.FragmentArgumentConverter;
 import io.knotx.junit5.util.FileReader;
 import io.knotx.options.SnippetOptions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +37,7 @@ public class UnprocessedFragmentStrategyTest {
       "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;knotx:snippet;"
   })
   public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
@@ -54,7 +54,7 @@ public class UnprocessedFragmentStrategyTest {
       "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt|knotx:snippet|;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;"
   })
   public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
@@ -71,7 +71,7 @@ public class UnprocessedFragmentStrategyTest {
       //when fragment is a raw fragment, it is not ignored
   })
   public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(
-      @ConvertWith(KnotxArgumentConverter.class) Fragment fragment,
+      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
       String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
         .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
