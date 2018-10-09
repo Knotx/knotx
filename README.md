@@ -32,7 +32,7 @@ large number of requests using a single thread. Asynchronous programming is a st
 ability to write non-blocking code (no thread pools). The platform stays responsive under heavy and
 varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
-### Microservice layer
+### Microservices
 With [OpenAPI Specification (OAS)](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) 
 support, you can define your RESTful APIs using standardized and language-agnostic approach. Your API 
 definition and its capabilities can be easily discovered and understood without access to source code or
