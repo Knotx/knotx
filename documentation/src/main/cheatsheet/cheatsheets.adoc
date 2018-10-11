@@ -77,12 +77,13 @@ Set the additional request query parameters to be send in each request
 ^|Name | Type ^| Description
 |[[enabled]]`enabled`|`Boolean`|
 +++
-Sets if logging access to the Knot.x HTTP server is enabled or not. Default is enabled ('true')
+Sets if logging access to the Knot.x HTTP server is enabled or not. Default is enabled
+ ('true')
 +++
 |[[format]]`format`|`link:cheatsheets.adoc#LoggerFormat[LoggerFormat]`|
 +++
-Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
- Available values are:
+Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>. Available values
+ are:
  <ul>
    <li>DEFAULT
       <i>remote-client</i> - - [<i>timestamp</i>] "<i>method</i> <i>uri</i> <i>version</i>" <i>status</i> <i>content-length</i> "<i>referrer</i>" "<i>user-agent</i>
@@ -97,7 +98,8 @@ Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
 +++
 |[[immediate]]`immediate`|`Boolean`|
 +++
-Configure when to collect access log. True if after request arrives, false after sending response.
+Configure when to collect access log. True if after request arrives, false after sending
+ response.
 +++
 |===
 [[AdapterRequest]]
@@ -137,6 +139,53 @@ Set the client request
 ^|Name | Type ^| Description
 |[[response]]`response`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
 |[[signal]]`signal`|`String`|-
+|===
+[[BodyHandlerOptions]]
+== BodyHandlerOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[fileUploadDirectory]]`fileUploadDirectory`|`String`|
++++
+Set the location on Knot.x environment when uploaded files will be stored. These must be an
+ absolute path.
++++
+|[[fileUploadLimit]]`fileUploadLimit`|`Number (Long)`|
++++
+Set the file upload limit in bytes
++++
+|===
+[[CSRFOptions]]
+== CSRFOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[cookieName]]`cookieName`|`String`|
++++
+Set the name of the CSRF cookie
++++
+|[[cookiePath]]`cookiePath`|`String`|
++++
+Set of the path of the CSRF cookie
++++
+|[[headerName]]`headerName`|`String`|
++++
+Set the CSRF token header name
++++
+|[[secret]]`secret`|`String`|
++++
+Set the secret used to generate CSRF token
++++
+|[[timeout]]`timeout`|`Number (long)`|
++++
+Set the timeout of the CSRF token
++++
 |===
 [[ClientDestination]]
 == ClientDestination
@@ -376,65 +425,6 @@ Set the header (name and value) to be sent in every request to the remote reposi
 |[[fragments]]`fragments`|`Array of link:cheatsheets.adoc#Fragment[Fragment]`|-
 |[[transition]]`transition`|`String`|-
 |===
-[[KnotxCSRFOptions]]
-== KnotxCSRFOptions
-
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[cookieName]]`cookieName`|`String`|
-+++
-Set the name of the CSRF cookie
-+++
-|[[cookiePath]]`cookiePath`|`String`|
-+++
-Set of the path of the CSRF cookie
-+++
-|[[headerName]]`headerName`|`String`|
-+++
-Set the CSRF token header name
-+++
-|[[secret]]`secret`|`String`|
-+++
-Set the secret used to generate CSRF token
-+++
-|[[timeout]]`timeout`|`Number (long)`|
-+++
-Set the timeout of the CSRF token
-+++
-|===
-[[KnotxFlowSettings]]
-== KnotxFlowSettings
-
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[assembler]]`assembler`|`String`|
-+++
-Sets the event bus address of the assembler verticle. Default is knotx.core.assembler
-+++
-|[[repositories]]`repositories`|`Array of link:cheatsheets.adoc#RepositoryEntry[RepositoryEntry]`|
-+++
-Sets the list of RepositoryEntry items
-+++
-|[[responseProvider]]`responseProvider`|`String`|
-+++
-Sets the event bus address of the Custom Flow' response provider verticle. Default is 'knotx.gateway.responseprovider'
-+++
-|[[routing]]`routing`|`link:cheatsheets.adoc#MethodRoutingEntries[MethodRoutingEntries]`|
-+++
-Set of HTTP method based routing entries, describing communication between Knots
- <pre>routing": {"GET": {}, "POST": {}}</pre>
-+++
-|[[splitter]]`splitter`|`String`|
-+++
-Sets the event bus address of the splitter verticle. Default is knotx.core.splitter
-+++
-|===
 [[KnotxServerOptions]]
 == KnotxServerOptions
 
@@ -470,21 +460,13 @@ Sets the strategy how to deal with backpressure buffer overflow. Default is DROP
  <li>DROP_LATEST - drops the latest value from the buffer</li>
  </ul>
 +++
-|[[csrfConfig]]`csrfConfig`|`link:cheatsheets.adoc#KnotxCSRFOptions[KnotxCSRFOptions]`|
+|[[csrfConfig]]`csrfConfig`|`link:cheatsheets.adoc#CSRFOptions[CSRFOptions]`|
 +++
 Set the CSRF configuration of the Knot.x server
-+++
-|[[customFlow]]`customFlow`|`link:cheatsheets.adoc#KnotxFlowSettings[KnotxFlowSettings]`|
-+++
-Set the Custom Flow configuration
 +++
 |[[customResponseHeader]]`customResponseHeader`|`link:cheatsheets.adoc#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Set the custom response header returned by the Knot.x
-+++
-|[[defaultFlow]]`defaultFlow`|`link:cheatsheets.adoc#KnotxFlowSettings[KnotxFlowSettings]`|
-+++
-Set the Default flow configuration
 +++
 |[[deliveryOptions]]`deliveryOptions`|`link:cheatsheets.adoc#DeliveryOptions[DeliveryOptions]`|
 +++
@@ -496,20 +478,15 @@ Set whether to display or not the exception on error pages
 +++
 |[[dropRequestResponseCode]]`dropRequestResponseCode`|`Number (int)`|
 +++
-Sets the HTTP response code returned wheb request is dropped. Default is TOO_MANY_REQUESTS(429)
+Sets the HTTP response code returned wheb request is dropped. Default is
+ TOO_MANY_REQUESTS(429)
 +++
 |[[dropRequests]]`dropRequests`|`Boolean`|
 +++
 Enabled/disables request dropping (backpressure) on heavy load. Default is false - disabled.
 +++
-|[[fileUploadDirectory]]`fileUploadDirectory`|`String`|
-+++
-Set the location on Knot.x environment when uploaded files will be stored. These must be an absolute path.
-+++
-|[[fileUploadLimit]]`fileUploadLimit`|`Number (Long)`|
-+++
-Set the file upload limit in bytes
-+++
+|[[routingOperations]]`routingOperations`|`Array of link:cheatsheets.adoc#RoutingOperationOptions[RoutingOperationOptions]`|-
+|[[routingSpecificationLocation]]`routingSpecificationLocation`|`String`|-
 |[[serverOptions]]`serverOptions`|`link:cheatsheets.adoc#HttpServerOptions[HttpServerOptions]`|
 +++
 Set the HTTP Server options
@@ -542,15 +519,8 @@ Sets the list of routing entries
 ^|Name | Type ^| Description
 |[[address]]`address`|`String`|
 +++
-Event bus address of the Repository Connector modules, that should deliver content for the requested path matching the regexp in path
-+++
-|[[doProcessing]]`doProcessing`|`Boolean`|
-+++
-Defines if the given repository path should be processed by the Knots or not. If not set, a processing is enabled by default.
-+++
-|[[path]]`path`|`String`|
-+++
-Sets the Regular expression of the HTTP Request path
+Event bus address of the Repository Connector modules, that should deliver content for the
+ requested path matching the regexp in path
 +++
 |===
 [[ResponseProviderKnotOptions]]
@@ -600,6 +570,29 @@ Describes routing to addresses of other Knots based on the transition trigger re
 +++
 Sets the Regular expression of HTTP Request path
 +++
+|===
+[[RoutingHandlerOptions]]
+== RoutingHandlerOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[config]]`config`|`Json object`|-
+|[[name]]`name`|`String`|-
+|===
+[[RoutingOperationOptions]]
+== RoutingOperationOptions
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[failureHandlers]]`failureHandlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|-
+|[[handlers]]`handlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|-
+|[[operationId]]`operationId`|`String`|-
 |===
 [[SnippetOptions]]
 == SnippetOptions

@@ -6,7 +6,7 @@
 [![][gitter img]][gitter]
 
 # Knot.x Core
-This is the repository for Knot.x core.
+This is the repository for Knot.x Core.
 
 <p align="center">
   <img src="https://github.com/Cognifide/knotx/blob/master/icons/180x180.png?raw=true" alt="Knot.x Logo"/>
@@ -16,8 +16,15 @@ This is the repository for Knot.x core.
   reactive <i>Vert.x-based</i>  integration platform
 </p>
 
-Knot.x core is a reactive integration framework allowing to connect with all kinds of systems from CMS,
-through web services, to low-level storages like databases or caches and it's not limited to HTTP.
+## Overview
+
+Knot.x Core is a contract-driven, microservice-oriented, reactive web platform that is build on the 
+top of [Vert.x](http://vertx.io). It transforms **unopinionated** Vert.x toolkit into customizable 
+and scalable tool with integration web patterns (like 
+[Knot.x Data Bridge](https://github.com/Knotx/knotx-data-bridge),
+[Knot.x Forms](https://github.com/Knotx/knotx-forms)) build-in. It starts a [Netty-based](https://netty.io/) 
+HTTP [server](https://github.com/Cognifide/knotx/wiki/Server) that processes all incoming requests 
+in configurable way. 
 
 We build Knot.x on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant,
 event-driven applications. It uses asynchronous programming principles which allows it to process a
@@ -25,14 +32,26 @@ large number of requests using a single thread. Asynchronous programming is a st
 ability to write non-blocking code (no thread pools). The platform stays responsive under heavy and
 varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
-It exposes [Netty-based](https://netty.io/) HTTP [server](https://github.com/Cognifide/knotx/wiki/Server)
-which collects data from any source (like REST / SOAP service, search engine, CRM etc.) and transforms
-it into an unified customer experience using a template from a
+### Microservices
+With [OpenAPI Specification (OAS)](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) 
+support, you can define your RESTful APIs using standardized and language-agnostic approach. Your API 
+definition and its capabilities can be easily discovered and understood without access to source code or
+documentation. With the design first approach, your API consumer can interact with the remote service 
+with a minimal amount of implementation logic (all you need is to implement a simple 
+[`callback`](https://vertx.io/docs/apidocs/io/vertx/core/Handler.html) function, no Vert.x knowledge 
+is required). Knot.x combines [Vert.x-Web](https://vertx.io/docs/vertx-web/java/), 
+[Vert.x-Web API Contract](https://vertx.io/docs/vertx-web-api-contract/java/) and the 
+[Java ServiceLoader](https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) to make a
+reactive micro-service implementation even simpler.  
+
+### Integration layer
+Knot.x allows to connect various systems like CMS, CRM and other in controlled and isolated way, 
+preventing any undesired interferences. It introduces an integration layer concept where Knot.x is an
+entry point that accepts all incoming requests, collects data from any datasource (like REST / SOAP 
+service, search engine, CRM etc.) and transforms it into an unified customer experience using a template from a
 [repository](https://github.com/Cognifide/knotx/wiki/RepositoryConnectors). The template can contain
 dynamic [fragments](https://github.com/Cognifide/knotx/wiki/Splitter) which determine the way how
-the data is used. The repository can be CMS system, Apache or simple catalogue from the filesystem with static HTML pages.
-
-For more information on Knot.x and where Knot.x core fits into the big picture please see the [KNOTX.IO](http://knotx.io).
+the data is used. All those steps require a minimal amount of implementation logic. 
 
 ## Getting started
 We recommend to use [Knot.x Stack](https://github.com/Knotx/knotx-stack) to setup Knot.x with all

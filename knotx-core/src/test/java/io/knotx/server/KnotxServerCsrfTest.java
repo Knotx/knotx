@@ -41,22 +41,19 @@ public class KnotxServerCsrfTest {
 
   private static final int KNOTX_SERVER_PORT = 9092;
   private static final String KNOTX_SERVER_ADDRESS = "localhost";
-  public static final String EXPECTED_XSERVER_HEADER_VALUE = "Knot.x";
-  public static final String EXPECTED_RESPONSE_HEADER = "X-Server";
+  private static final String EXPECTED_XSERVER_HEADER_VALUE = "Knot.x";
+  private static final String EXPECTED_RESPONSE_HEADER = "X-Server";
+  private static final String CONTENT_CSRF_HTML = "/content/csrf.html";
 
 
   @Test
-  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenRequestingGetLocalPath_expectLocalAC(
       VertxTestContext context, Vertx vertx) {
-    createPassThroughKnot(vertx, "test-splitter");
-    createPassThroughKnot(vertx, "test-assembler");
-    createSimpleKnot(vertx, "some-knot", "test", null);
-
     WebClient client = WebClient.create(vertx);
 
     Single<HttpResponse<io.vertx.reactivex.core.buffer.Buffer>> httpResponseSingle = client
-        .get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
+        .get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
         .rxSend();
 
     subscribeToResult_shouldSucceed(context, httpResponseSingle, response -> {
@@ -70,18 +67,14 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenDoPostSecureWithoutCSRF_expectForbidden(
       VertxTestContext context, Vertx vertx) {
-    createPassThroughKnot(vertx, "test-splitter");
-    createPassThroughKnot(vertx, "test-assembler");
-    createSimpleKnot(vertx, "some-knot", "test", null);
-
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
     WebClient client = WebClient.create(vertx);
     Single<HttpResponse<Buffer>> httpResponseSingle = client
-        .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
+        .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
         .rxSendForm(body);
 
     subscribeToResult_shouldSucceed(context, httpResponseSingle, result -> {
@@ -90,43 +83,20 @@ public class KnotxServerCsrfTest {
   }
 
   @Test
-  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
-  public void whenDoPostPublicWithoutCSRF_expectOk(
-      VertxTestContext context, Vertx vertx) {
-    createPassThroughKnot(vertx, "test-splitter");
-    createPassThroughKnot(vertx, "test-assembler");
-    createSimpleKnot(vertx, "some-knot", "test", null);
-
-    MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
-
-    WebClient client = WebClient.create(vertx);
-    Single<HttpResponse<io.vertx.reactivex.core.buffer.Buffer>> httpResponseSingle = client
-        .post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/public.html")
-        .rxSendForm(body);
-
-    subscribeToResult_shouldSucceed(context, httpResponseSingle, resp -> {
-      assertEquals(HttpResponseStatus.OK.code(), resp.statusCode());
-    });
-  }
-
-  @Test
-  @KnotxApplyConfiguration("io/knotx/server/test-server-csrf.json")
+  @KnotxApplyConfiguration("io/knotx/server/test-server.conf")
   public void whenDoPostSecureWithCSRF_expectOK(
       VertxTestContext context, Vertx vertx) {
-    createPassThroughKnot(vertx, "test-splitter");
-    createPassThroughKnot(vertx, "test-assembler");
-    createSimpleKnot(vertx, "some-knot", "test", null);
-
     MultiMap body = MultiMap.caseInsensitiveMultiMap().add("field", "value");
 
     WebClient client = WebClient.create(vertx);
 
-    client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html").send(
+    client.get(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML).send(
         ar -> {
           if (ar.succeeded()) {
+            assertTrue(ar.result().cookies().stream()
+                .anyMatch(cookie -> cookie.contains(CSRFHandler.DEFAULT_COOKIE_NAME)));
             String token = getToken(ar.result().cookies());
-
-            client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, "/content/local/simple.html")
+            client.post(KNOTX_SERVER_PORT, KNOTX_SERVER_ADDRESS, CONTENT_CSRF_HTML)
                 .putHeader(CSRFHandler.DEFAULT_HEADER_NAME, token)
                 .putHeader(HttpHeaderNames.COOKIE.toString(),
                     CSRFHandler.DEFAULT_COOKIE_NAME + "=" + token)
@@ -144,22 +114,8 @@ public class KnotxServerCsrfTest {
         });
   }
 
-  private void createPassThroughKnot(Vertx vertx, String address) {
-    MockKnotProxy.register(vertx.getDelegate(), address);
-  }
-
-  private void createSimpleKnot(Vertx vertx, final String address, final String addToBody,
-      final String transition) {
-    MockKnotProxy.register(vertx.getDelegate(), address, knotContext -> {
-      knotContext.getClientResponse().setBody(
-          knotContext.getClientResponse().getBody().appendString(addToBody)
-      );
-      knotContext.setTransition(transition);
-    });
-  }
-
   private String getToken(List<String> result) {
     String val = result.get(0);
-    return val.split("XSRF-TOKEN=")[1].split(";")[0];
+    return val.split(CSRFHandler.DEFAULT_COOKIE_NAME + "=")[1].split(";")[0];
   }
 }

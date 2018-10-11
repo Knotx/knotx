@@ -27,7 +27,9 @@
   </root>
 
   <logger name="io.netty" level="ERROR" additivity="false"/>
-  <logger name="io.vertx" level="ERROR" additivity="false"/>
+  <logger name="io.vertx" level="TRACE" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 
   <logger name="io.knotx" level="TRACE" additivity="false">
     <appender-ref ref="CONSOLE"/>

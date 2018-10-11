@@ -24,7 +24,7 @@ Base logback configuration for knot.x
   <include resource="io/knotx/logging/logback/console-appender.xml"/>
   <include resource="io/knotx/logging/logback/file-appender.xml"/>
 
-  <root level="INFO">
+  <root level="TRACE">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="FILE"/>
   </root>

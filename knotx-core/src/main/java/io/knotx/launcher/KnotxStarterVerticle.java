@@ -85,7 +85,7 @@ public class KnotxStarterVerticle extends AbstractVerticle {
   }
 
   private JsonObject getConfigRetrieverOptions(JsonObject config) {
-    JsonObject configOptions = null;
+    JsonObject configOptions;
     if (config().getJsonObject("configRetrieverOptions") != null) {
       configOptions = config.getJsonObject("configRetrieverOptions");
       configOptions.getJsonArray("stores").stream()
