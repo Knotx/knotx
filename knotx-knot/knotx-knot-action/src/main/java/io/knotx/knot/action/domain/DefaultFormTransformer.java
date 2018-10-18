@@ -31,7 +31,7 @@ import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/domain/DefaultFormTransformer.java">DefaultFormTransformer</a>
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/domain/DefaultFormTransformer.java">DefaultFormTransformer</a>
  * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
  */
 @Deprecated

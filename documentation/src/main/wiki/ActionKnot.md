@@ -1,7 +1,7 @@
 # Action Knot
 | ! Note |
 |:------ |
-| @Deprecated: As of release 1.3.1, replaced by [Knot.x Forms](https://github.com/Knotx/knotx-forms). |
+| @Deprecated: As of release 1.5.0, replaced by [Knot.x Forms](https://github.com/Knotx/knotx-forms). |
 
 Action Knot is an [[Knot|Knot]] implementation responsible for forms submissions handling. It supports
 simple (without file upload) forms including redirection to successful pages and multi-step forms flows.

@@ -1,7 +1,7 @@
 # Action Adapter
 | ! Note |
 |:------ |
-| @Deprecated: As of release 1.3.1, replaced by [Knot.x Forms](https://github.com/Knotx/knotx-forms). |
+| @Deprecated: As of release 1.5.0, replaced by [Knot.x Forms](https://github.com/Knotx/knotx-forms). |
 
 
 Action Adapter is Component of a system, that mediates communication between Knot.x [[Action Knot|ActionKnot]] 

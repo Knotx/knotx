@@ -16,7 +16,7 @@
 package io.knotx.knot.action.domain;
 
 /**
- * @deprecated  As of release 1.3.1, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/domain/FormConstants.java">FormConstants</a>
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/domain/FormConstants.java">FormConstants</a>
  * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
  */
 @Deprecated
