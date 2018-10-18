@@ -28,7 +28,10 @@ import java.util.stream.Collectors;
 /**
  * Describes a physical details of HTTP service endpoint that consumes form submitions
  * from AdapterServiceKnot.
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/FormsDefinition.java">FormsDefinition</a>
+ * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
  */
+@Deprecated
 @DataObject(generateConverter = true, publicConverter = false)
 public class ActionSettings {
 
