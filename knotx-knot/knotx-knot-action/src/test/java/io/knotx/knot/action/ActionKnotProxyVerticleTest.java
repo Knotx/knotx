@@ -59,6 +59,7 @@ import org.jsoup.parser.Parser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+@Deprecated
 @ExtendWith(KnotxExtension.class)
 public class ActionKnotProxyVerticleTest {
 

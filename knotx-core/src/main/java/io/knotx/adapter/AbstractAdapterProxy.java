@@ -31,9 +31,9 @@ import io.vertx.core.logging.LoggerFactory;
 
 
 /**
- * @deprecated  As of release 1.3.1, the adapter is the Knot.x Data Bridge extension point. It is still
- * used by Action Knot but we plan to introduce the dedicated model for that in the future.
+ * @deprecated  As of release 1.3.1, the adapter is the Knot.x Data Bridge extension point.
  * @see <a href="https://github.com/Knotx/knotx-data-bridge">Knot.x Data Bridge</a>
+ * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
  * @see <a href="https://github.com/Knotx/knotx-example-project/tree/master/acme-action-adapter-http">Knot.x Example Project</a>
  */
 @Deprecated
