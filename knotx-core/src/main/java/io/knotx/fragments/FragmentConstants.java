@@ -19,6 +19,8 @@ public final class FragmentConstants {
 
   public static final String SNIPPET_IDENTIFIER_NAME = "knots";
 
+  public static final String SNIPPET_FALLBACK_NAME = "fallback";
+
   public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
 
   static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;

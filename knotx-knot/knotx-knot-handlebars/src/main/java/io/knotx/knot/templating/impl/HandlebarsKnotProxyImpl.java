@@ -80,7 +80,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         knotContext.setTransition(DEFAULT_TRANSITION);
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
-                .filter(fragment -> shouldProcess(Sets.newHashSet(fragment.knots())))
+                .filter(this::shouldProcess)
                 .forEach(fragment -> fragment.content(evaluate(fragment)))
         );
         observer.onSuccess(knotContext);

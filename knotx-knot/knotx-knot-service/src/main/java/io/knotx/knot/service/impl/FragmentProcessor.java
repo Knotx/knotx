@@ -55,7 +55,22 @@ public class FragmentProcessor {
             fetchServiceData(serviceEntry, request).toObservable()
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new JsonObject(), JsonObject::mergeIn)
-        .map(results -> applyData(fragmentContext, results));
+        .map(results -> applyData(fragmentContext, results))
+        .onErrorReturn(e -> {
+          if (fragmentContext.fragment().hasFallback()) {
+            String failureDetails = String.format("exception: %s, message: %s", e.getClass().getCanonicalName(), e.getMessage());
+            LOGGER.error("Fragment processing failed. Cause:%s\nRequest:\n%s\nFragmentContext:\n%s\n %s", failureDetails, request.getClientRequest(), fragmentContext);
+            fragmentContext.fragment().failed(true);
+            fragmentContext.fragment().failureDetails(failureDetails);
+            return fragmentContext;
+          } else {
+            if (e instanceof RuntimeException) {
+              throw (RuntimeException) e;
+            } else {
+              throw new ExecutionException(e);
+            }
+          }
+        });
   }
 
   private Single<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
