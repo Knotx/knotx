@@ -155,11 +155,6 @@ public class Fragment {
     return this;
   }
 
-  public Fragment fallback(String fallback) {
-    this.fallback = fallback;
-    return this;
-  }
-
   public boolean hasFallback() {
     return fallback != null;
   }
