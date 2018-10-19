@@ -17,7 +17,6 @@ package io.knotx.fragments;
 
 
 import io.knotx.options.SnippetOptions;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SnippetPatterns {
@@ -63,22 +62,6 @@ public class SnippetPatterns {
   }
 
   public Pattern getSnippetWithFallbackPattern() { return snippetWithFallbackPattern; }
-
-  public static void main(String[] args) {
-    Pattern pattern = Pattern.compile(SNIPPET_PATTERN_2);
-    String d1 = "<kx-snippet data-knots=\"foo\" data-fallback=\"bar\">baz</kx-snippet>";
-    String d2 = "<kx-snippet data-knots=\"foo2\" data-no-fallback=\"bar2\">baz2</kx-snippet>";
-    Matcher m1 = pattern.matcher(d1);
-    System.out.println(m1.matches());
-    System.out.println(m1.group(1));
-    System.out.println(m1.group(2));
-
-    Matcher m2 = pattern.matcher(d2);
-    System.out.println(m2.matches());
-    System.out.println(m2.group(1));
-    System.out.println(m2.group(2));
-
-  }
 
 }
 
