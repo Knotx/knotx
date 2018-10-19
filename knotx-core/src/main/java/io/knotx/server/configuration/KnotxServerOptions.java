@@ -26,6 +26,8 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -204,20 +206,43 @@ public class KnotxServerOptions {
     return this;
   }
 
+  /**
+   * @return location of your spec. It can be an absolute path, a local path or remote url (with
+   * HTTP protocol)
+   */
   public String getRoutingSpecificationLocation() {
     return routingSpecificationLocation;
   }
 
+  /**
+   * Location of your spec. It can be an absolute path, a local path or remote url (with HTTP
+   * protocol).
+   *
+   * @return reference to this, so the API can be used fluently
+   * @see OpenAPI3RouterFactory#rxCreate(Vertx, String)
+   */
   public KnotxServerOptions setRoutingSpecificationLocation(
       String routingSpecificationLocation) {
     this.routingSpecificationLocation = routingSpecificationLocation;
     return this;
   }
 
+  /**
+   * List of {@link RoutingOperationOptions} containing handlers configurations which are initiated
+   * (loaded from classpath via {@link java.util.ServiceLoader}) during server setup and joined with
+   * Open API operations based on operationId.
+   *
+   * @return list of routing operations options
+   */
   public List<RoutingOperationOptions> getRoutingOperations() {
     return routingOperations;
   }
 
+  /**
+   * Set list of {@link RoutingOperationOptions}.
+   *
+   * @return reference to this, so the API can be used fluently
+   */
   public void setRoutingOperations(
       List<RoutingOperationOptions> routingOperations) {
     this.routingOperations = routingOperations;
