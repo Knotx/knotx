@@ -5,6 +5,13 @@ from older than one version (e.g. 1.0.1 -> 1.1.2) be sure, to do all the steps f
 versions. You may see all changes in the [Changelog](https://github.com/Cognifide/knotx/blob/master/CHANGELOG.md).
 
 ## Master
+ - PR-XXX
+
+### 1.4.0 Breaking changes
+
+http://knotx.io/blog/release-1_4_0/
+
+## Version 1.4.0
  - [PR-427](https://github.com/Cognifide/knotx/pull/427) - HttpRepositoryConnectorProxyImpl logging improvements. Following log levels are now assigned depending on repository response status code:
    ```2xx - success - log at debug
    3xx - redirect - log at info
@@ -12,6 +19,12 @@ versions. You may see all changes in the [Changelog](https://github.com/Cognifid
    5xx - server error - log at error
    other - log at warn
    ```
+ - [PR-422](https://github.com/Cognifide/knotx/pull/422) - Configurable Handlebars delimiters
+ - [PR-428](https://github.com/Cognifide/knotx/pull/428) - Mark all Service Knot related classes deprecated.
+ - [PR-432](https://github.com/Cognifide/knotx/pull/432) - Port unit and integration tests to JUnit 5
+ - [PR-440](https://github.com/Cognifide/knotx/pull/440) - Enable different Vert.x Config stores types fix.
+ - [PR-443](https://github.com/Cognifide/knotx/pull/443) - Update maven plugins versions.
+ - [PR-445](https://github.com/Cognifide/knotx/pull/445) - Vert.x version upgrade to 3.5.3
  - [PR-458](https://github.com/Cognifide/knotx/pull/458) - HttpRepositoryOptions now supports plain regex, e.g. `*` is no longer specially treated, replace it to regex `.*`
 
 ## Version 1.3.0

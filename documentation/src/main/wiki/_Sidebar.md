@@ -35,6 +35,7 @@
   * [[Upgrade Notes|UpgradeNotes]]
 
 ### Released
+* [[1.4.0|Documentation-1.4.0]]
 * [[1.3.0|Documentation-1.3.0]]
 * [[1.2.2|Documentation-1.2.2]]
 * [[1.2.1|Documentation-1.2.1]]
