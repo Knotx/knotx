@@ -16,6 +16,7 @@
 package io.knotx.assembler;
 
 import io.knotx.dataobjects.ClientResponse;
+import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.knot.AbstractKnotProxy;
@@ -48,7 +49,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
-            .map(fragment -> options.getUnprocessedStrategy().get(fragment, patterns))
+            .map(this::processFragment)
             .collect(Collectors.joining());
 
         return Single.just(createSuccessResponse(knotContext, joinedFragments));
@@ -60,6 +61,11 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
       LOGGER.error("Fragments are empty or not exists in KnotContext.");
       return Single.just(processError(knotContext, null));
     }
+  }
+
+  private String processFragment(Fragment fragment) {
+    return fragment.failed() && fragment.hasFallback() ? fragment.fallback()
+        : options.getUnprocessedStrategy().get(fragment, patterns);
   }
 
   private boolean hasFragments(KnotContext knotContext) {

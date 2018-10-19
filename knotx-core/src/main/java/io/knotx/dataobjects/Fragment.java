@@ -36,38 +36,56 @@ public class Fragment {
   private static final String KNOTS_KEY = "_KNOTS";
   private static final String CONTENT_KEY = "_CONTENT";
   private static final String CONTEXT_KEY = "_CONTEXT";
+  private static final String FAILED_KEY = "_FAILED";
+  private static final String FAILURE_DETAILS_KEY = "_FAILEURE_DETAILS";
+  private static final String FALLBACK_KEY = "_FALLBACK";
+
 
   private final List<String> knots;
   private final JsonObject context;
   private String content;
+  private boolean failed;
+  private String failureDetails;
+  private String fallback;
 
   public Fragment(JsonObject fragment) {
     this.knots = fragment.getJsonArray(KNOTS_KEY).stream().map(String::valueOf)
         .collect(Collectors.toList());
     this.content = fragment.getString(CONTENT_KEY);
     this.context = fragment.getJsonObject(CONTEXT_KEY, new JsonObject());
+    this.failed = fragment.getBoolean(FAILED_KEY);
+    this.failureDetails = fragment.getString(FAILURE_DETAILS_KEY);
+    this.fallback = fragment.getString(FALLBACK_KEY);
   }
 
-  private Fragment(List<String> knots, String data) {
+  private Fragment(List<String> knots, String data, String fallback) {
     if (knots == null || knots.isEmpty() || StringUtils.isEmpty(data)) {
       throw new NoSuchElementException("Fragment is not valid [" + knots + "], [" + data + "].");
     }
     this.knots = knots;
     this.content = data;
     this.context = new JsonObject();
+    this.fallback = fallback;
   }
 
   public static Fragment raw(String data) {
-    return new Fragment(Collections.singletonList(RAW_FRAGMENT_ID), data);
+    return new Fragment(Collections.singletonList(RAW_FRAGMENT_ID), data, null);
+  }
+
+  public static Fragment snippet(List<String> knots, String data, String fallback) {
+    return new Fragment(knots, data, fallback);
   }
 
   public static Fragment snippet(List<String> knots, String data) {
-    return new Fragment(knots, data);
+    return snippet(knots, data,null);
   }
 
   public JsonObject toJson() {
     return new JsonObject().put(KNOTS_KEY, new JsonArray(knots)).put(CONTENT_KEY, content)
-        .put(CONTEXT_KEY, context);
+        .put(CONTEXT_KEY, context)
+        .put(FAILED_KEY, failed)
+        .put(FAILURE_DETAILS_KEY, failureDetails)
+        .put(FALLBACK_KEY, fallback);
   }
 
   /**
@@ -105,6 +123,47 @@ public class Fragment {
     return knots.contains(RAW_FRAGMENT_ID);
   }
 
+  /**
+   * @return true if processing of this Fragment has failed
+   */
+  public boolean failed() {
+    return failed;
+  }
+
+  /**
+   * @return replacement markup that should be rendered if this Fragment has failed. Can be empty
+   * string. Null value indicates that no replacement markup is provided.
+   */
+  public String fallback() {
+    return fallback;
+  }
+
+  /**
+   * @return failure details for this Fragment
+   */
+  public String failureDetails() {
+    return failureDetails;
+  }
+
+  public Fragment failed(boolean failed) {
+    this.failed = failed;
+    return this;
+  }
+
+  public Fragment failureDetails(String failureDetails) {
+    this.failureDetails = failureDetails;
+    return this;
+  }
+
+  public Fragment fallback(String fallback) {
+    this.fallback = fallback;
+    return this;
+  }
+
+  public boolean hasFallback() {
+    return fallback != null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -116,7 +175,10 @@ public class Fragment {
     Fragment that = (Fragment) o;
     return Objects.equal(knots, that.knots) &&
         Objects.equal(content, that.content) &&
-        Objects.equal(context, that.context);
+        Objects.equal(context, that.context) &&
+        Objects.equal(failed, that.failed) &&
+        Objects.equal(failureDetails, that.failureDetails) &&
+        Objects.equal(fallback, that.fallback);
   }
 
   @Override

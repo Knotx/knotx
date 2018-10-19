@@ -34,7 +34,7 @@ public final class FormsFactory {
 
   public static List<FormEntity> create(KnotContext context, ActionKnotOptions options) {
     List<FormEntity> forms = context.getFragments().stream()
-        .filter(f -> f.knots().stream().anyMatch(id -> id.startsWith(FRAGMENT_KNOT_PREFIX)))
+        .filter(f -> !f.failed() && f.knots().stream().anyMatch(id -> id.startsWith(FRAGMENT_KNOT_PREFIX)))
         .map(f -> FormEntity.from(f, options))
         .collect(Collectors.toList());
     if (areUnique(forms)) {

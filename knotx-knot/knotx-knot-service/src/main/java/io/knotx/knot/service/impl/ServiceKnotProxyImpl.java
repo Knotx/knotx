@@ -52,7 +52,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
     return Optional.ofNullable(knotContext.getFragments())
         .map(fragments ->
             Observable.fromIterable(fragments)
-            .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
+            .filter(this::shouldProcess)
             .doOnNext(this::traceFragment)
             .map(FragmentContext::from)
             .flatMapSingle(

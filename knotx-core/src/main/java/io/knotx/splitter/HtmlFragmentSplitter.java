@@ -15,6 +15,8 @@
  */
 package io.knotx.splitter;
 
+import static org.jsoup.parser.Parser.unescapeEntities;
+
 import com.google.common.collect.Lists;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
@@ -64,6 +66,9 @@ class HtmlFragmentSplitter implements FragmentSplitter {
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
-    return Fragment.snippet(Arrays.asList(ids), html.substring(startIdx, endIdx));
+    Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(html);
+    String fallback = matcher.matches() ?  unescapeEntities(matcher.group(2), true) : null;
+    return Fragment.snippet(Arrays.asList(ids), html.substring(startIdx, endIdx), fallback);
   }
+
 }
