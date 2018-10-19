@@ -31,10 +31,6 @@ public class SnippetPatterns {
           + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*"
           +"%s"+ FragmentConstants.SNIPPET_FALLBACK_NAME + "\\s*=\\s*\"([^\"]*)\"[^>]*>.+?</%s>";
 
-  private static final String SNIPPET_PATTERN_2 =
-      "<kx-snippet\\s+data-knots\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*data-fallback\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*>.+?</kx-snippet>";
-
-
   private final Pattern anySnippetPattern;
   private final Pattern snippetPattern;
   private final Pattern snippetWithFallbackPattern;
