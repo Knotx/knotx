@@ -485,8 +485,15 @@ Sets the HTTP response code returned wheb request is dropped. Default is
 +++
 Enabled/disables request dropping (backpressure) on heavy load. Default is false - disabled.
 +++
-|[[routingOperations]]`routingOperations`|`Array of link:cheatsheets.adoc#RoutingOperationOptions[RoutingOperationOptions]`|-
-|[[routingSpecificationLocation]]`routingSpecificationLocation`|`String`|-
+|[[routingOperations]]`routingOperations`|`Array of link:cheatsheets.adoc#RoutingOperationOptions[RoutingOperationOptions]`|
++++
+Set list of link.
++++
+|[[routingSpecificationLocation]]`routingSpecificationLocation`|`String`|
++++
+Location of your spec. It can be an absolute path, a local path or remote url (with HTTP
+ protocol).
++++
 |[[serverOptions]]`serverOptions`|`link:cheatsheets.adoc#HttpServerOptions[HttpServerOptions]`|
 +++
 Set the HTTP Server options
@@ -574,25 +581,52 @@ Sets the Regular expression of HTTP Request path
 [[RoutingHandlerOptions]]
 == RoutingHandlerOptions
 
+++++
+ Handler definition that contains  name and JSON configuration.
+ During link deployment all implementations of  are loaded from the classpath and based on  are initiated.
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[config]]`config`|`Json object`|-
-|[[name]]`name`|`String`|-
+|[[config]]`config`|`Json object`|
++++
+Sets link configuration.
++++
+|[[name]]`name`|`String`|
++++
+Sets link name
++++
 |===
 [[RoutingOperationOptions]]
 == RoutingOperationOptions
 
+++++
+ Routing operation settings that define handlers / error handlers taking part in HTTP request
+ processing. link loads link containing Open API specification which
+ describes all endpoints with request / response schemas. Each endpoint defines operationId used
+ in link.
+++++
+'''
 
 [cols=">25%,^25%,50%"]
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[failureHandlers]]`failureHandlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|-
-|[[handlers]]`handlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|-
-|[[operationId]]`operationId`|`String`|-
+|[[failureHandlers]]`failureHandlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|
++++
+Sets list of error handlers definitions for particular operationId.
++++
+|[[handlers]]`handlers`|`Array of link:cheatsheets.adoc#RoutingHandlerOptions[RoutingHandlerOptions]`|
++++
+Sets list of handlers definitions for particular operationId.
++++
+|[[operationId]]`operationId`|`String`|
++++
+Sets operationId name.
++++
 |===
 [[SnippetOptions]]
 == SnippetOptions
