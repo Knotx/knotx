@@ -26,6 +26,11 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.serviceproxy.ServiceBinder;
 
+/**
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/FormsKnot.java">FormsKnot</a>
+ * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
+ */
+@Deprecated
 public class ActionKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ActionKnotVerticle.class);

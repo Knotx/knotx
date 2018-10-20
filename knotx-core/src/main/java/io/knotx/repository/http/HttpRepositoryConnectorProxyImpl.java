@@ -68,7 +68,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
     RequestOptions httpRequestData = buildRequestData(request);
 
-    if (LOGGER.isDebugEnabled()) {    	
+    if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("GET HTTP Repository: {}  with headers [{}]",
     	  getUrl(httpRequestData),
           DataObjectsUtil.toString(requestHeaders)
@@ -86,9 +86,9 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
             }
         );
   }
-  
+
   private String getUrl(RequestOptions httpRequestData) {
-    return String.format("%s://%s:%d/%s ",
+    return String.format("%s://%s:%d%s ",
         httpRequestData.isSsl() ? "https" : "http",
         httpRequestData.getHost(),
         httpRequestData.getPort(),
@@ -152,7 +152,7 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
 
   private ClientResponse toResponse(Buffer buffer, final HttpClientResponse httpResponse, final RequestOptions httpRequestData) {
     final int statusCode = httpResponse.statusCode();
-    
+
     if (HttpStatusClass.SUCCESS.contains(statusCode)) {
       LOGGER.debug("Repository 2xx response: {}, Headers[{}]", statusCode,
           DataObjectsUtil.toString(httpResponse.headers()));
