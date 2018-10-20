@@ -15,11 +15,18 @@
  */
 package io.knotx.server.configuration;
 
+import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import java.util.Collections;
+import io.vertx.reactivex.core.Vertx;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Handler definition that contains {@link RoutingHandlerFactory} name and JSON configuration.
+ * During {@link io.knotx.server.KnotxServerVerticle} deployment all implementations of {@link
+ * RoutingHandlerFactory} are loaded from the classpath and based on {@link
+ * RoutingHandlerFactory#getName()} are initiated.
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class RoutingHandlerOptions {
 
@@ -27,7 +34,7 @@ public class RoutingHandlerOptions {
   private JsonObject config;
 
   /**
-   * Create an settings from JSON
+   * Create settings from JSON
    *
    * @param json the JSON
    */
@@ -43,20 +50,39 @@ public class RoutingHandlerOptions {
     this.config = new JsonObject();
   }
 
+  /**
+   * @return {@link io.knotx.server.handler.api.RoutingHandlerFactory} name
+   */
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  /**
+   * Sets {@link io.knotx.server.handler.api.RoutingHandlerFactory} name
+   *
+   * @return reference to this, so the API can be used fluently
+   */
+  public RoutingHandlerOptions setName(String name) {
     this.name = name;
+    return this;
   }
 
+  /**
+   * @return JSON configuration used during {@link io.knotx.server.handler.api.RoutingHandlerFactory#create(Vertx,
+   * JsonObject)} initialization
+   */
   public JsonObject getConfig() {
     return config == null ? new JsonObject() : config;
   }
 
-  public void setConfig(JsonObject config) {
+  /**
+   * Sets {@link io.vertx.core.Handler<io.vertx.rxjava.ext.web.RoutingContext>} configuration.
+   *
+   * @return reference to this, so the API can be used fluently
+   */
+  public RoutingHandlerOptions setConfig(JsonObject config) {
     this.config = config;
+    return this;
   }
 
   @Override

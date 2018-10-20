@@ -16,12 +16,20 @@
 package io.knotx.server.configuration;
 
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Routing operation settings that define handlers / error handlers taking part in HTTP request
+ * processing. {@link io.knotx.server.KnotxServerVerticle} loads {@link
+ * KnotxServerOptions#getRoutingSpecificationLocation()} containing Open API specification which
+ * describes all endpoints with request / response schemas. Each endpoint defines operationId used
+ * in {@link RoutingOperationOptions#getOperationId()}.
+ */
 @DataObject(generateConverter = true, publicConverter = false)
 public class RoutingOperationOptions {
 
@@ -29,6 +37,11 @@ public class RoutingOperationOptions {
   private List<RoutingHandlerOptions> handlers;
   private List<RoutingHandlerOptions> failureHandlers;
 
+  /**
+   * Create settings from JSON
+   *
+   * @param json the JSON
+   */
   public RoutingOperationOptions(JsonObject json) {
     init();
     RoutingOperationOptionsConverter.fromJson(json, this);
@@ -38,6 +51,11 @@ public class RoutingOperationOptions {
     }
   }
 
+  /**
+   * Copy constructor
+   *
+   * @param other the instance to copy
+   */
   public RoutingOperationOptions(RoutingOperationOptions other) {
     this.operationId = other.getOperationId();
     this.handlers = new ArrayList<>(other.getHandlers());
@@ -49,29 +67,61 @@ public class RoutingOperationOptions {
     this.failureHandlers = Collections.emptyList();
   }
 
+  /**
+   * @return operationId name
+   */
   public String getOperationId() {
     return operationId;
   }
 
+  /**
+   * Sets operationId name.
+   *
+   * @return reference to this, so the API can be used fluently
+   */
   public RoutingOperationOptions setOperationId(String operationId) {
     this.operationId = operationId;
     return this;
   }
 
+  /**
+   * @return list of handlers definitions used during HTTP request processing
+   * @see io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory#addHandlerByOperationId(String,
+   * Handler)
+   */
   public List<RoutingHandlerOptions> getHandlers() {
     return handlers;
   }
 
+  /**
+   * Sets list of handlers definitions for particular operationId.
+   *
+   * @return reference to this, so the API can be used fluently
+   * @see io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory#addHandlerByOperationId(String,
+   * Handler)
+   */
   public RoutingOperationOptions setHandlers(
       List<RoutingHandlerOptions> handlers) {
     this.handlers = handlers;
     return this;
   }
 
+  /**
+   * @return list of handlers definitions used during HTTP request processing
+   * @see io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory#addFailureHandlerByOperationId(String,
+   * Handler)
+   */
   public List<RoutingHandlerOptions> getFailureHandlers() {
     return failureHandlers;
   }
 
+  /**
+   * Sets list of error handlers definitions for particular operationId.
+   *
+   * @return reference to this, so the API can be used fluently
+   * @see io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory#addFailureHandlerByOperationId(String,
+   * Handler)
+   */
   public RoutingOperationOptions setFailureHandlers(
       List<RoutingHandlerOptions> failureHandlers) {
     this.failureHandlers = failureHandlers;
