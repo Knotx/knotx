@@ -30,6 +30,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.parser.Tag;
 
+/**
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/domain/DefaultFormTransformer.java">DefaultFormTransformer</a>
+ * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
+ */
+@Deprecated
 public class DefaultFormTransformer implements FormTransformer {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultFormTransformer.class);

@@ -15,6 +15,11 @@
  */
 package io.knotx.knot.action.domain;
 
+/**
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-forms/blob/master/core/src/main/java/io/knotx/forms/core/domain/FormsFactory.java">FormsFactory</a>
+ * @see <a href="https://github.com/Knotx/knotx-forms">Knot.x Forms</a>
+ */
+@Deprecated
 @FunctionalInterface
 public interface FormTransformer {
 
