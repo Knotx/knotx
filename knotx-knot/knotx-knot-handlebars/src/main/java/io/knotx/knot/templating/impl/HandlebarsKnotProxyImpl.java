@@ -17,6 +17,7 @@ package io.knotx.knot.templating.impl;
 
 import static io.knotx.fragments.FragmentContentExtractor.abbreviate;
 import static io.knotx.fragments.FragmentContentExtractor.unwrapContent;
+import static io.knotx.fragments.FragmentContentExtractor.unwrapFragmentContent;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
@@ -27,12 +28,14 @@ import com.google.common.collect.Sets;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.dataobjects.KnotStatus;
 import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.AbstractKnotProxy;
 import io.knotx.knot.templating.HandlebarsKnotOptions;
 import io.knotx.knot.templating.handlebars.CustomHandlebarsHelper;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
+import io.knotx.util.FragmentUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
@@ -45,6 +48,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.lang3.StringUtils;
 
 public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
 
@@ -81,7 +85,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
                 .filter(this::shouldProcess)
-                .forEach(fragment -> fragment.content(evaluate(fragment)))
+                .forEach(fragment -> fragment.content(evaluateWithFallback(fragment)))
         );
         observer.onSuccess(knotContext);
       } catch (Exception e) {
@@ -106,6 +110,20 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         .setClientResponse(errorResponse);
   }
 
+  private String evaluateWithFallback(Fragment fragment) {
+    try {
+      String value = evaluate(fragment);
+      FragmentUtil.success(fragment, SUPPORTED_FRAGMENT_KNOT);
+      return value;
+    } catch (RuntimeException re) {
+      FragmentUtil.failure(fragment, SUPPORTED_FRAGMENT_KNOT, re);
+      if (fragment.hasFallback()) {
+        return StringUtils.EMPTY;
+      }
+      throw re;
+    }
+  }
+
   private String evaluate(Fragment fragment) {
     Template template = template(fragment);
     if (LOGGER.isTraceEnabled()) {
@@ -120,6 +138,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     } catch (IOException e) {
       LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(),
           abbreviate(template.text()), e);
+      FragmentUtil.failure(fragment, SUPPORTED_FRAGMENT_KNOT, e);
       throw new IllegalStateException(e);
     }
   }

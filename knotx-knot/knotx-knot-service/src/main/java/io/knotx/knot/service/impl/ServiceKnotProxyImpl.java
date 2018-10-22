@@ -39,7 +39,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyImpl.class);
 
-  private static final String SUPPORTED_FRAGMENT_ID = "services";
+  public static final String SUPPORTED_FRAGMENT_ID = "services";
 
   private FragmentProcessor snippetProcessor;
 
