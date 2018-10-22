@@ -66,9 +66,10 @@ class HtmlFragmentSplitter implements FragmentSplitter {
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
-    Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(html);
+    String snippet = html.substring(startIdx, endIdx);
+    Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(snippet);
     String fallback = matcher.matches() ?  unescapeEntities(matcher.group(2), true) : null;
-    return Fragment.snippet(Arrays.asList(ids), html.substring(startIdx, endIdx), fallback);
+    return Fragment.snippet(Arrays.asList(ids), snippet, fallback);
   }
 
 }
