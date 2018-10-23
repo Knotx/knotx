@@ -18,7 +18,6 @@ package io.knotx.server.configuration;
 import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
 
 import io.knotx.configuration.CustomHttpHeader;
-import io.knotx.server.handler.csrf.CSRFOptions;
 import io.knotx.server.handler.logger.AccessLogOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.BackpressureOverflowStrategy;
@@ -71,7 +70,6 @@ public class KnotxServerOptions {
   private DeliveryOptions deliveryOptions;
   private String routingSpecificationLocation;
   private List<RoutingOperationOptions> routingOperations;
-  private CSRFOptions csrfConfig;
   private Set<String> allowedResponseHeaders;
   private CustomHttpHeader customResponseHeader;
   private AccessLogOptions accessLog;
@@ -101,7 +99,6 @@ public class KnotxServerOptions {
     this.routingSpecificationLocation = other.routingSpecificationLocation;
     this.routingOperations = new ArrayList<>(other.routingOperations);
     this.customResponseHeader = new CustomHttpHeader(other.customResponseHeader);
-    this.csrfConfig = new CSRFOptions(other.csrfConfig);
     this.accessLog = new AccessLogOptions(other.accessLog);
     this.dropRequests = other.dropRequests;
     this.dropRequestResponseCode = other.dropRequestResponseCode;
@@ -144,7 +141,6 @@ public class KnotxServerOptions {
     deliveryOptions = new DeliveryOptions();
     serverOptions = new HttpServerOptions();
     customResponseHeader = null;
-    csrfConfig = new CSRFOptions();
     accessLog = new AccessLogOptions();
     dropRequests = DEFAULT_DROP_REQUESTS;
     dropRequestResponseCode = DEFAULT_DROP_REQUESTS_RESPONSE_CODE;
@@ -246,24 +242,6 @@ public class KnotxServerOptions {
   public void setRoutingOperations(
       List<RoutingOperationOptions> routingOperations) {
     this.routingOperations = routingOperations;
-  }
-
-  /**
-   * @return {@link CSRFOptions}
-   */
-  public CSRFOptions getCsrfConfig() {
-    return csrfConfig;
-  }
-
-  /**
-   * Set the CSRF configuration of the Knot.x server
-   *
-   * @param csrfConfig {@link CSRFOptions} object
-   * @return reference to this, so the API can be used fluently
-   */
-  public KnotxServerOptions setCsrfConfig(CSRFOptions csrfConfig) {
-    this.csrfConfig = csrfConfig;
-    return this;
   }
 
   /**

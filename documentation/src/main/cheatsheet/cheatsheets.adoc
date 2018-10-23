@@ -460,10 +460,6 @@ Sets the strategy how to deal with backpressure buffer overflow. Default is DROP
  <li>DROP_LATEST - drops the latest value from the buffer</li>
  </ul>
 +++
-|[[csrfConfig]]`csrfConfig`|`link:cheatsheets.adoc#CSRFOptions[CSRFOptions]`|
-+++
-Set the CSRF configuration of the Knot.x server
-+++
 |[[customResponseHeader]]`customResponseHeader`|`link:cheatsheets.adoc#CustomHttpHeader[CustomHttpHeader]`|
 +++
 Set the custom response header returned by the Knot.x
@@ -499,37 +495,6 @@ Location of your spec. It can be an absolute path, a local path or remote url (w
 Set the HTTP Server options
 +++
 |===
-[[MethodRoutingEntries]]
-== MethodRoutingEntries
-
-++++
- Describes a collection of server routing entries
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[items]]`items`|`Array of link:cheatsheets.adoc#RoutingEntry[RoutingEntry]`|
-+++
-Sets the list of routing entries
-+++
-|===
-[[RepositoryEntry]]
-== RepositoryEntry
-
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[address]]`address`|`String`|
-+++
-Event bus address of the Repository Connector modules, that should deliver content for the
- requested path matching the regexp in path
-+++
-|===
 [[ResponseProviderKnotOptions]]
 == ResponseProviderKnotOptions
 
@@ -559,10 +524,6 @@ The <code>address</code> on event bus that the service adapter is listening for 
 |[[address]]`address`|`String`|
 +++
 Sets the event bus address of the Knot that should process the request for a given path
-+++
-|[[csrf]]`csrf`|`Boolean`|
-+++
-Enables/Disabled CSRF support for a given routing entry
 +++
 |[[onTransition]]`onTransition`|`link:cheatsheets.adoc#RoutingEntry[RoutingEntry]`|
 +++
