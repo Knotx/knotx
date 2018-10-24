@@ -238,6 +238,7 @@ public class KnotxServerOptions {
   /**
    * Set list of {@link RoutingOperationOptions}.
    *
+   * @param routingOperations routing operations options
    * @return reference to this, so the API can be used fluently
    */
   public KnotxServerOptions setRoutingOperations(
