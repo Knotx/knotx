@@ -100,7 +100,13 @@ public class RoutingEntry {
 
   /**
    * Describes routing to addresses of other Knots based on the transition trigger returned from
-   * current Knot. {@code "onTransition": { "go-a": {}, "go-b": {} } }
+   * current Knot.
+   * {@code
+   *  "onTransition": {
+   *    "go-a": {},
+   *    "go-b": {}
+   *   }
+   * }
    *
    * @param onTransition a map of String-RoutingEntry
    * @return a reference to this, so the API can be used fluently

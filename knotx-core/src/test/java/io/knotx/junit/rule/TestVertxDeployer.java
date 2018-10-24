@@ -43,7 +43,7 @@ public class TestVertxDeployer implements TestRule {
       @Override
       public void evaluate() throws Throwable {
         KnotxConfiguration knotxConfig = description.getAnnotation(KnotxConfiguration.class);
-        if (knotxConfig == null || knotxConfig.path().isEmpty() || knotxConfig.format().isEmpty()) {
+        if (knotxConfig == null || knotxConfig.value().isEmpty()) {
           throw new IllegalArgumentException(
               "Missing @KnotxConfiguration annotation with the path to configuration JSON");
         }
@@ -52,7 +52,7 @@ public class TestVertxDeployer implements TestRule {
         CompletableFuture<Void> toComplete = new CompletableFuture<>();
 
         vertx.deployVerticle(KnotxStarterVerticle.class.getName(),
-            createConfig(knotxConfig.path(), knotxConfig.format()), ar -> {
+            createConfig(knotxConfig.value()), ar -> {
               if (ar.succeeded()) {
                 toComplete.complete(null);
               } else {
@@ -73,13 +73,16 @@ public class TestVertxDeployer implements TestRule {
     };
   }
 
-  private DeploymentOptions createConfig(String path, String format) {
+  private DeploymentOptions createConfig(String path) {
     return new DeploymentOptions()
         .setConfig(new JsonObject().put("configRetrieverOptions", new ConfigRetrieverOptions()
             .setStores(Lists.newArrayList(
-                new ConfigStoreOptions().setType("file").setFormat(format)
+                new ConfigStoreOptions().setType("file").setFormat(getConfigFormat(path))
                     .setConfig(new JsonObject().put("path", path))
             )).toJson()));
   }
 
+  private String getConfigFormat(String path) {
+    return path.substring(path.lastIndexOf('.') + 1);
+  }
 }

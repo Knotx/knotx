@@ -24,8 +24,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface KnotxConfiguration {
 
-
-  String path();
-
-  String format() default "json";
+  String value();
 }

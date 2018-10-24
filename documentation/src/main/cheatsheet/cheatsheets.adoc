@@ -527,16 +527,13 @@ Sets the event bus address of the Knot that should process the request for a giv
 +++
 |[[onTransition]]`onTransition`|`link:cheatsheets.adoc#RoutingEntry[RoutingEntry]`|
 +++
-Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.
+Describes routing to addresses of other Knots based on the transition trigger returned from
+ current Knot.
  <code>"onTransition": {
     "go-a": {</code>,
     "go-b": {}
    }
  }
-+++
-|[[path]]`path`|`String`|
-+++
-Sets the Regular expression of HTTP Request path
 +++
 |===
 [[RoutingHandlerOptions]]
