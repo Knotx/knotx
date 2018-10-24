@@ -79,9 +79,9 @@ public class KnotxServerVerticle extends AbstractVerticle {
 
   private void registerHandlers(OpenAPI3RouterFactory routerFactory) {
     List<RoutingHandlerFactory> handlerFactories = loadRoutingHandlerFactories();
-    options.getRoutingOperations().forEach(options -> {
-      registerHandlersPerOperation(routerFactory, handlerFactories, options);
-      registerFailureHandlersPerOperation(routerFactory, handlerFactories, options);
+    options.getRoutingOperations().forEach(operations -> {
+      registerHandlersPerOperation(routerFactory, handlerFactories, operations);
+      registerFailureHandlersPerOperation(routerFactory, handlerFactories, operations);
       LOGGER.info("Registered handlers [{}]", options);
     });
   }

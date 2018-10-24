@@ -19,6 +19,7 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
@@ -36,7 +37,8 @@ public class KnotContextRoutingHandlerFactory implements RoutingHandlerFactory {
     return routingContext -> {
       routingContext.put(KnotContext.KEY,
           new KnotContext().setClientRequest(new ClientRequest(routingContext.request()))
-              .setClientResponse(new ClientResponse().setStatusCode(200).clearBody()));
+              .setClientResponse(
+                  new ClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody()));
       routingContext.next();
     };
   }

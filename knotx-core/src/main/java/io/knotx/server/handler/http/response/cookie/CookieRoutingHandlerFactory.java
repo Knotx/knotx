@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Cognifide Limited
+ * Copyright (C) 2016 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

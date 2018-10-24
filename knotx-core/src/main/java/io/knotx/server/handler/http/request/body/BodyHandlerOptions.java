@@ -25,11 +25,6 @@ import io.vertx.ext.web.handler.BodyHandler;
 public class BodyHandlerOptions {
 
   /**
-   * Default File Upload Limit = -1 (unlimited)
-   */
-  public final static long DEFAULT_UPLOAD_LIMIT = -1;
-
-  /**
    * Default file upload folder = file-uploads
    */
   private static final String DEFAULT_UPLOAD_DIRECTORY = StringUtil
@@ -47,7 +42,7 @@ public class BodyHandlerOptions {
   }
 
   public void init() {
-    fileUploadLimit = DEFAULT_UPLOAD_LIMIT;
+    fileUploadLimit = BodyHandler.DEFAULT_BODY_LIMIT;
     fileUploadDirectory = DEFAULT_UPLOAD_DIRECTORY;
   }
 
