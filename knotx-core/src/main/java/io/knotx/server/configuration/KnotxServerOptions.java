@@ -214,6 +214,7 @@ public class KnotxServerOptions {
    * Location of your spec. It can be an absolute path, a local path or remote url (with HTTP
    * protocol).
    *
+   * @param routingSpecificationLocation routing specification location
    * @return reference to this, so the API can be used fluently
    * @see OpenAPI3RouterFactory#rxCreate(Vertx, String)
    */
@@ -239,9 +240,10 @@ public class KnotxServerOptions {
    *
    * @return reference to this, so the API can be used fluently
    */
-  public void setRoutingOperations(
+  public KnotxServerOptions setRoutingOperations(
       List<RoutingOperationOptions> routingOperations) {
     this.routingOperations = routingOperations;
+    return this;
   }
 
   /**

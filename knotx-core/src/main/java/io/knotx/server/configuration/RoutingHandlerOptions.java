@@ -60,6 +60,7 @@ public class RoutingHandlerOptions {
   /**
    * Sets {@link io.knotx.server.handler.api.RoutingHandlerFactory} name
    *
+   * @param name handler factory name
    * @return reference to this, so the API can be used fluently
    */
   public RoutingHandlerOptions setName(String name) {
@@ -76,8 +77,9 @@ public class RoutingHandlerOptions {
   }
 
   /**
-   * Sets {@link io.vertx.core.Handler<io.vertx.rxjava.ext.web.RoutingContext>} configuration.
+   * Sets {@link io.vertx.core.Handler} configuration.
    *
+   * @param config handler JSON configuration
    * @return reference to this, so the API can be used fluently
    */
   public RoutingHandlerOptions setConfig(JsonObject config) {

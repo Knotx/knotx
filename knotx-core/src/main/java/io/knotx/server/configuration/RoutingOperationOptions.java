@@ -77,6 +77,7 @@ public class RoutingOperationOptions {
   /**
    * Sets operationId name.
    *
+   * @param operationId operation identifier
    * @return reference to this, so the API can be used fluently
    */
   public RoutingOperationOptions setOperationId(String operationId) {
@@ -96,6 +97,7 @@ public class RoutingOperationOptions {
   /**
    * Sets list of handlers definitions for particular operationId.
    *
+   * @param  handlers request handlers
    * @return reference to this, so the API can be used fluently
    * @see io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory#addHandlerByOperationId(String,
    * Handler)
@@ -118,6 +120,7 @@ public class RoutingOperationOptions {
   /**
    * Sets list of error handlers definitions for particular operationId.
    *
+   * @param failureHandlers request failure handlers
    * @return reference to this, so the API can be used fluently
    * @see io.vertx.reactivex.ext.web.api.contract.openapi3.OpenAPI3RouterFactory#addFailureHandlerByOperationId(String,
    * Handler)
