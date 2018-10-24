@@ -51,7 +51,7 @@ entry point that accepts all incoming requests, collects data from any datasourc
 service, search engine, CRM etc.) and transforms it into an unified customer experience using a template from a
 [repository](https://github.com/Cognifide/knotx/wiki/RepositoryConnectors). The template can contain
 dynamic [fragments](https://github.com/Cognifide/knotx/wiki/Splitter) which determine the way how
-the data is used. All those steps require a minimal amount of implementation logic. 
+the data is used. All those steps require a minimal amount of implementation logic while custom implementations are easy to plug in.
 
 ## Getting started
 We recommend to use [Knot.x Stack](https://github.com/Knotx/knotx-stack) to setup Knot.x with all
