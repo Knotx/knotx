@@ -17,25 +17,21 @@ package io.knotx.knot.templating.impl;
 
 import static io.knotx.fragments.FragmentContentExtractor.abbreviate;
 import static io.knotx.fragments.FragmentContentExtractor.unwrapContent;
-import static io.knotx.fragments.FragmentContentExtractor.unwrapFragmentContent;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Sets;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.dataobjects.KnotStatus;
 import io.knotx.fragments.FragmentContentExtractor;
 import io.knotx.knot.AbstractKnotProxy;
 import io.knotx.knot.templating.HandlebarsKnotOptions;
 import io.knotx.knot.templating.handlebars.CustomHandlebarsHelper;
 import io.knotx.knot.templating.handlebars.JsonObjectValueResolver;
 import io.knotx.knot.templating.helpers.DefaultHandlebarsHelpers;
-import io.knotx.util.FragmentUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.logging.Logger;
@@ -113,11 +109,11 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
   private String evaluateWithFallback(Fragment fragment) {
     try {
       String value = evaluate(fragment);
-      FragmentUtil.success(fragment, SUPPORTED_FRAGMENT_KNOT);
+      fragment.success(SUPPORTED_FRAGMENT_KNOT);
       return value;
     } catch (RuntimeException re) {
-      FragmentUtil.failure(fragment, SUPPORTED_FRAGMENT_KNOT, re);
-      if (fragment.hasFallback()) {
+      fragment.failure(SUPPORTED_FRAGMENT_KNOT, re);
+      if (fragment.fallback().isPresent()) {
         return StringUtils.EMPTY;
       }
       throw re;
@@ -138,7 +134,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     } catch (IOException e) {
       LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(),
           abbreviate(template.text()), e);
-      FragmentUtil.failure(fragment, SUPPORTED_FRAGMENT_KNOT, e);
+      fragment.failure(SUPPORTED_FRAGMENT_KNOT, e);
       throw new IllegalStateException(e);
     }
   }

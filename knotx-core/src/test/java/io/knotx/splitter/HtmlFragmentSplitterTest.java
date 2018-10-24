@@ -115,7 +115,7 @@ public class HtmlFragmentSplitterTest {
     assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
     assertThat(testOneSnippetMiddle.get(1).content(), equalTo(
         "<knotx:snippet data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\"><h2>{{message}}</h2></knotx:snippet>"));
-    assertThat(testOneSnippetMiddle.get(1).fallback(), nullValue());
+    assertThat(testOneSnippetMiddle.get(1).fallback().isPresent(), equalTo(false));
     assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
   }
 
@@ -144,7 +144,7 @@ public class HtmlFragmentSplitterTest {
         .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
     assertThat(testOneSnippetBegin.size(), equalTo(1));
     assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(0).fallback(), equalTo(EXPECTED_FALLBACK));
+    assertThat(testOneSnippetBegin.get(0).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
   }
 
   @Test
@@ -154,7 +154,7 @@ public class HtmlFragmentSplitterTest {
         .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
     assertThat(testOneSnippetBegin.size(), equalTo(1));
     assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(0).fallback(), equalTo(StringUtils.EMPTY));
+    assertThat(testOneSnippetBegin.get(0).fallback().orElse(null), equalTo(StringUtils.EMPTY));
   }
 
   private SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {

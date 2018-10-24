@@ -15,13 +15,10 @@
  */
 package io.knotx.knot.service.impl;
 
-import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.dataobjects.KnotStatus;
 import io.knotx.knot.service.ServiceKnotOptions;
 import io.knotx.knot.service.service.ServiceEngine;
 import io.knotx.knot.service.service.ServiceEntry;
-import io.knotx.util.FragmentUtil;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
@@ -61,8 +58,8 @@ public class FragmentProcessor {
         .map(results -> applyData(fragmentContext, results))
         .onErrorReturn(e -> {
           LOGGER.error("Fragment processing failed. Cause:%s\nRequest:\n%s\nFragmentContext:\n%s\n %s", e.getMessage(), request.getClientRequest(), fragmentContext);
-          FragmentUtil.failure(fragmentContext.fragment(), ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID, e);
-          if (fragmentContext.fragment().hasFallback()) {
+          fragmentContext.fragment().failure(ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID, e);
+          if (fragmentContext.fragment().fallback().isPresent()) {
             return fragmentContext;
           } else {
             if (e instanceof RuntimeException) {
@@ -93,7 +90,7 @@ public class FragmentProcessor {
       JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", fragmentContext);
     fragmentContext.fragment().context().mergeIn(serviceResult);
-    FragmentUtil.success(fragmentContext.fragment(), ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID);
+    fragmentContext.fragment().success(ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID);
     return fragmentContext;
   }
 

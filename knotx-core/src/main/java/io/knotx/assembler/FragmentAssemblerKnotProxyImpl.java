@@ -64,7 +64,7 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
   }
 
   private String processFragment(Fragment fragment) {
-    return fragment.failed() && fragment.hasFallback() ? fragment.fallback()
+    return fragment.failed() && fragment.fallback().isPresent() ? fragment.fallback().get()
         : options.getUnprocessedStrategy().get(fragment, patterns);
   }
 
