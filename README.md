@@ -41,7 +41,7 @@ with a minimal amount of implementation logic (all you need is to implement a si
 [`callback`](https://vertx.io/docs/apidocs/io/vertx/core/Handler.html) function, no Vert.x knowledge 
 is required). Knot.x combines [Vert.x-Web](https://vertx.io/docs/vertx-web/java/), 
 [Vert.x-Web API Contract](https://vertx.io/docs/vertx-web-api-contract/java/) and the 
-[Java ServiceLoader](https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html) to make a
+[Java ServiceLoader](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html) to make a
 reactive micro-service implementation even simpler.  
 
 ### Integration layer
