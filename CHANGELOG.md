@@ -3,6 +3,7 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+ - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Deprecated Action Knot moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms)
 
 ## 1.4.0
  - [PR-427](https://github.com/Cognifide/knotx/pull/427) - HttpRepositoryConnectorProxyImpl logging improvements
