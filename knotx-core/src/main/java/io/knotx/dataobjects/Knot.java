@@ -16,16 +16,17 @@
 package io.knotx.dataobjects;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import java.util.Map;
+import java.util.List;
 
 @DataObject(inheritConverter = true)
 public class Knot {
   private String name;
   private KnotStatus status = KnotStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
-  private Map<String, Object> errors = Maps.newHashMap(); // key: errorCode, value: errorMessage
+  private List<KnotError> errors = Lists.newArrayList();
 
   private static final String NAME_KEY = "_NAME";
   private static final String STATUS_KEY ="_STATUS";
@@ -38,16 +39,19 @@ public class Knot {
   public Knot(JsonObject knot) {
     name = knot.getString(NAME_KEY);
     status = KnotStatus.valueOf(knot.getString(STATUS_KEY));
-    JsonObject jsonErrors = knot.getJsonObject(ERRORS_KEY);
-    for (String key : jsonErrors.fieldNames()) {
-      errors.put(key, jsonErrors.getString(key));
+    JsonArray jsonErrors = knot.getJsonArray(ERRORS_KEY);
+    errors = Lists.newArrayList();
+    for (Object error : jsonErrors) {
+      errors.add(new KnotError((JsonObject)error));
     }
   }
 
   public JsonObject toJson() {
+    JsonArray errorsArray = new JsonArray();
+    errors.stream().map(e -> errorsArray.add(e.toJson()));
     return new JsonObject().put(NAME_KEY, name)
         .put(STATUS_KEY, status.name())
-        .put(ERRORS_KEY, new JsonObject(errors));
+        .put(ERRORS_KEY, errorsArray);
   }
 
   public String getName() {
@@ -58,12 +62,12 @@ public class Knot {
     return status;
   }
 
-  public Map<String, Object> getErrors() {
+  public List<KnotError> getErrors() {
     return errors;
   }
 
-  public Knot addError(String code, Object message) {
-    errors.put(code, message);
+  public Knot error(String code, Object message) {
+    errors.add(new KnotError(code, message));
     return this;
   }
 

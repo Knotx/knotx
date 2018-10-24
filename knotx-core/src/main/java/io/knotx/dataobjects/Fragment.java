@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,14 +38,12 @@ public class Fragment {
   private static final String KNOTS_KEY = "_KNOTS";
   private static final String CONTENT_KEY = "_CONTENT";
   private static final String CONTEXT_KEY = "_CONTEXT";
-  private static final String FAILED_KEY = "_FAILED";
   private static final String FALLBACK_KEY = "_FALLBACK";
 
 
   private final List<Knot> knots;
   private final JsonObject context;
   private String content;
-  private boolean failed;
   private String fallback;
 
   public Fragment(JsonObject fragment) {
@@ -55,7 +54,6 @@ public class Fragment {
     }
     this.content = fragment.getString(CONTENT_KEY);
     this.context = fragment.getJsonObject(CONTEXT_KEY, new JsonObject());
-    this.failed = fragment.getBoolean(FAILED_KEY);
     this.fallback = fragment.getString(FALLBACK_KEY);
   }
 
@@ -85,7 +83,6 @@ public class Fragment {
     return new JsonObject().put(KNOTS_KEY, new JsonArray(knots.stream().map(Knot::toJson).collect(Collectors.toList())))
         .put(CONTENT_KEY, content)
         .put(CONTEXT_KEY, context)
-        .put(FAILED_KEY, failed)
         .put(FALLBACK_KEY, fallback);
   }
 
@@ -132,24 +129,34 @@ public class Fragment {
    * @return true if processing of this Fragment has failed
    */
   public boolean failed() {
-    return failed;
+    return this.knots.stream().anyMatch(k -> k.getStatus() == KnotStatus.FAILURE);
   }
 
   /**
    * @return replacement markup that should be rendered if this Fragment has failed. Can be empty
    * string. Null value indicates that no replacement markup is provided.
    */
-  public String fallback() {
-    return fallback;
+  public Optional<String> fallback() {
+    return Optional.ofNullable(fallback);
   }
 
-  public Fragment failed(boolean failed) {
-    this.failed = failed;
+  public Fragment failure(String knot, Throwable t) {
+    this.knots.stream()
+        .filter(k -> knot.equals(k.getName()))
+        .findFirst()
+        .get()
+        .setStatus(KnotStatus.FAILURE)
+        .error(t.getClass().getSimpleName(), t.getMessage());
     return this;
   }
 
-  public boolean hasFallback() {
-    return fallback != null;
+  public Fragment success(String knot) {
+        this.knots.stream()
+        .filter(k -> knot.equals(k.getName()))
+        .findFirst()
+        .get()
+        .setStatus(KnotStatus.SUCCESS);
+    return this;
   }
 
   @Override
@@ -164,7 +171,6 @@ public class Fragment {
     return Objects.equal(knots, that.knots) &&
         Objects.equal(content, that.content) &&
         Objects.equal(context, that.context) &&
-        Objects.equal(failed, that.failed) &&
         Objects.equal(fallback, that.fallback);
   }
 

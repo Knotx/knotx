@@ -57,7 +57,13 @@ public final class KnotContextFactory {
     return new KnotContext()
         .setFragments(
             fragments != null
-                ? fragments.stream().map(data -> Fragment.snippet(data.getLeft(), data.getRight(), data.getMiddle()).failed(data.getMiddle() != null)).collect(Collectors.toList())
+                ? fragments.stream().map(data -> {
+                  Fragment fragment = Fragment.snippet(data.getLeft(), data.getRight(), data.getMiddle());
+                  if (data.getMiddle() != null) {
+                    fragment.failure(data.getLeft().get(0), new RuntimeException("knot failure"));
+                  }
+                  return fragment;
+            }).collect(Collectors.toList())
                 : null)
         .setClientRequest(new ClientRequest())
         .setClientResponse(
