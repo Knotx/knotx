@@ -85,7 +85,7 @@ Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to
 ```
 
 ##### Custom adapter
-Refactor [`io.knotx.proxy.AdapterProxy`](https://github.com/Cognifide/knotx/blob/1.3.0/knotx-core/src/main/java/io/knotx/proxy/AdapterProxy.java)
+Refactor your custom adapter to inherit [`io.knotx.proxy.AdapterProxy`](https://github.com/Cognifide/knotx/blob/1.3.0/knotx-core/src/main/java/io/knotx/proxy/AdapterProxy.java)
 to [`io.knotx.forms.api.FormsAdapterProxy`](https://github.com/Knotx/knotx-forms/blob/master/api/src/main/java/io/knotx/forms/api/FormsAdapterProxy.java)
 
 
