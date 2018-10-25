@@ -3,7 +3,92 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
- - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Deprecated Action Knot moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms)
+ - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Action Knot functionality moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms).
+
+### Breaking changes
+#### Migration form Action Knot to Knot.x Forms
+Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to migrate your project from `ActionKnot` to `Knotx Forms` module.
+
+
+##### Configuration file:
+1. In your main config `application.conf`, update `modules` section from:
+  ```
+    "actionKnot=io.knotx.knot.action.ActionKnotVerticle"
+    "actionAdapter=com.acme.adapter.action.http.HttpActionAdapterVerticle"
+  ```
+  to 
+  ```
+    "forms=io.knotx.forms.core.FormsKnot"
+    "formsAdapter=com.acme.forms.adapter.http.FormsAdapterVerticle"
+  ``` 
+  
+  and define forms in the `global` section
+  ```
+  global {
+    address {
+      forms {
+        knot = knotx.knot.forms
+        example.adapter = knotx.forms.example.adapter.http
+      }
+    }
+  }
+  ```
+
+  Change included configuration name `actionKnot.conf` to `forms.conf`
+
+##### Page templates:
+
+  - Rename data attributes accordingly
+    
+  | Old                        | New                              | 
+  | -------------------------- |:--------------------------------:|
+  | data-knotx-on-             |data-knotx-forms-on-              |
+  | data-knotx-action          |data-knotx-forms-adapter-name     |
+  | data-knotx-adapter-params  |data-knotx-forms-adapter-params   |   
+ 
+  - In form snippet change `action` to `form`. 
+
+  For example:
+
+  Old
+  ```html
+  <script data-knotx-knots="form-1" type="text/knotx-snippet">
+    {{#if action._result.validationErrors}}
+    <p class="bg-danger">Email address does not exists</p>
+    {{/if}}
+    <p>Please provide your email address</p>
+    <form data-knotx-action="step1"
+    data-knotx-on-success="/content/local/login/step2.html"
+     data-knotx-on-error="_self"
+      data-knotx-adapter-params='{"myKey":"myValue"}' method="post">
+      <input type="email" name="email" value="{{#if action._result.validationError}} {{action._result.form.email}} {{/if}}" />
+      <input type="submit" value="Submit"/>
+    </form>
+  </script>
+  ```
+  
+  New
+  ```html
+  <script data-knotx-knots="form-1" type="text/knotx-snippet">
+    {{#if form._result.validationErrors}}
+    <p class="bg-danger">Email address does not exists</p>
+    {{/if}}
+    <p>Please provide your email address</p>
+    <form data-knotx-forms-adapter-name ="step1"
+      data-knotx-forms-on-success="/content/local/login/step2.html" 
+      data-knotx-forms-on-error="_self" 
+      data-knotx-forms-adapter-params='{"myKey":"myValue"}' method="post">
+      <input type="email" name="email" value="{{#if form._result.validationError}} {{form._result.form.email}} {{/if}}" />
+      <input type="submit" value="Submit"/>
+    </form>
+  </script>
+```
+
+##### Custom adapter
+Refactor [`io.knotx.proxy.AdapterProxy`](https://github.com/Cognifide/knotx/blob/1.3.0/knotx-core/src/main/java/io/knotx/proxy/AdapterProxy.java)
+to [`io.knotx.forms.api.FormsAdapterProxy`](https://github.com/Knotx/knotx-forms/blob/master/api/src/main/java/io/knotx/forms/api/FormsAdapterProxy.java)
+
+
 
 ## 1.4.0
  - [PR-427](https://github.com/Cognifide/knotx/pull/427) - HttpRepositoryConnectorProxyImpl logging improvements
