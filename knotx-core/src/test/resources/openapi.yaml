@@ -1,0 +1,78 @@
+#  Copyright (C) 2018 Cognifide Limited
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Knot.x Example OAS
+  description: This is a sample server used during routing integration tests.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+- url: https://{domain}:{port}
+  description: The production API server
+  variables:
+    domain:
+      default: localhost
+      description: api domain
+    port:
+      enum:
+        - '9092'
+        - '443'
+      default: '9092'
+
+tags:
+- name: csrf
+  description: CSRF token validation for POST requests.
+- name: knot
+  description: Knot routing validation for GET / POST requests.
+  externalDocs:
+    description: Knot Routing
+    url: https://github.com/Cognifide/knotx/wiki/KnotRouting
+
+paths:
+  /content/csrf.html:
+    get:
+      tags: [ csrf ]
+      summary: Adds cookie with CSRF token.
+      operationId: csrf-get
+      responses:
+        default:
+          description: empty
+    post:
+      tags: [ csrf ]
+      summary: Validates CSRF token from HTTP header X-XSRF-TOKEN.
+      operationId: csrf-post
+      responses:
+        403:
+          description: "Request forbidden"
+        501:
+          description: "Endpoint not configured correctly."
+  /content/routing.html:
+    get:
+      tags: [ knot ]
+      summary: Validates knots routing configuration based on mocked responses.
+      operationId: knotEngine-get
+      responses:
+        default:
+          description: empty
+    post:
+      tags: [ knot ]
+      summary: Validates knots routing configuration based on mocked responses.
+      operationId: knotEngine-post
+      responses:
+        default:
+          description: empty
