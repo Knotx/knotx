@@ -22,8 +22,10 @@ import io.knotx.fragments.SnippetPatterns;
 import io.knotx.options.SnippetOptions;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
+import org.apache.commons.lang3.StringUtils;
 
 class HtmlFragmentSplitter implements FragmentSplitter {
 
@@ -35,6 +37,9 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   @Override
   public List<Fragment> split(String html) {
+    if (StringUtils.isEmpty(html)) {
+      throw new NoSuchElementException("html cannot be empty");
+    }
     List<Fragment> fragments = Lists.newLinkedList();
     if (snippetPatterns.getAnySnippetPattern().matcher(html).matches()) {
       Matcher matcher = snippetPatterns.getSnippetPattern().matcher(html);
