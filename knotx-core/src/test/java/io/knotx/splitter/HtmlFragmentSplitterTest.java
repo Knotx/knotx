@@ -35,7 +35,7 @@ public class HtmlFragmentSplitterTest {
   private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
   private static final String EXPECTED_ONE_FRAGMENT =
       "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></script>";
-  private static final String EXPECTED_FALLBACK = "<p class='error'>fallback</p>";
+  private static final String EXPECTED_FALLBACK = "FALLBACK_SNIPPET_ID";
 
   @Test
   public void split_whenManyFragments_expectNoChangesInMarkupAfterSplitting() throws Exception {
@@ -142,9 +142,30 @@ public class HtmlFragmentSplitterTest {
     String TEST_ONE_SNIPPET_BEGIN_HTML = "io/knotx/splitter/test-one-fragment-with-fallback.html";
     List<Fragment> testOneSnippetBegin = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
         .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    assertThat(testOneSnippetBegin.size(), equalTo(1));
+    assertThat(testOneSnippetBegin.size(), equalTo(2));
     assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
     assertThat(testOneSnippetBegin.get(0).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
+    assertThat(testOneSnippetBegin.get(1).isFallback(), equalTo(true));
+  }
+
+  @Test
+  public void split_whenThereAreMultipleSnippets_expectSnippetToHaveFallback() throws Exception {
+    String TEST_ONE_SNIPPET_BEGIN_HTML = "io/knotx/splitter/test-many-fragments-with-fallback.html";
+    List<Fragment> testOneSnippetBegin = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
+        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
+    assertThat(testOneSnippetBegin.size(), equalTo(7));
+    assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(true));
+
+    assertThat(testOneSnippetBegin.get(1).isRaw(), equalTo(false));
+    assertThat(testOneSnippetBegin.get(1).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
+
+    assertThat(testOneSnippetBegin.get(2).isRaw(), equalTo(true));
+
+    assertThat(testOneSnippetBegin.get(3).isRaw(), equalTo(false));
+    assertThat(testOneSnippetBegin.get(3).fallback().isPresent(), equalTo(false));
+    assertThat(testOneSnippetBegin.get(4).isRaw(), equalTo(true));
+    assertThat(testOneSnippetBegin.get(5).isFallback(), equalTo(true));
+    assertThat(testOneSnippetBegin.get(6).isRaw(), equalTo(true));
   }
 
   @Test

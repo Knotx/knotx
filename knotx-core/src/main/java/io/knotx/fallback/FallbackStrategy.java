@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.fragments;
+package io.knotx.fallback;
 
-public final class FragmentConstants {
+import io.knotx.dataobjects.Fragment;
+import io.knotx.dataobjects.KnotContext;
 
-  public static final String SNIPPET_IDENTIFIER_NAME = "knots";
-
-  public static final String SNIPPET_FALLBACK_NAME = "fallback";
-
-  public static final String FALLBACK_ID = "fallback-id";
-
-  public static final String FALLBACK_STRATEGY = "fallback-strategy";
-
-  public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
-
-  static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
-
-  private FragmentConstants() {
-    //constants util class constructor
-  }
-
+public interface FallbackStrategy {
+  String getId();
+  String applyFallback(Fragment failed, Fragment fallback, KnotContext knotContext);
 }

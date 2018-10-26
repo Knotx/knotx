@@ -46,6 +46,7 @@ public class FragmentAssemblerTest {
 
   private final static String ADDRESS = "knotx.core.assembler";
   private final static String RAW = "_raw";
+  private final static String FALLBACK = "_fallback";
   private static final String SERVICES = "services";
   private static final String HANDLEBARS = "handlebars";
 
@@ -134,8 +135,9 @@ public class FragmentAssemblerTest {
       VertxTestContext context, Vertx vertx) throws IOException {
     List<Triple<List<String>,String, String>> fragments = Arrays.asList(
         toTriple("io/knotx/assembler/fragment1.txt", null, RAW),
-        toTriple("io/knotx/assembler/fragment2.txt", "<p class='error'>fallback</p>\n", SERVICES, HANDLEBARS),
-        toTriple("io/knotx/assembler/fragment3.txt", null, RAW));
+        toTriple("io/knotx/assembler/fragment2.txt", "FALLBACK_1", SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW),
+        toTriple("io/knotx/assembler/fallback.txt", null, FALLBACK ));
     String expectedResult = FileReader.readText("io/knotx/server/expectedFallbackResult.html");
     callAssemblerWithAssertions(context, vertx,
         fragments,

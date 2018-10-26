@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Fragment {
 
   private static final String RAW_FRAGMENT_ID = "_raw";
+  private static final String FALLBACK_FRAGMENT_ID = "_fallback";
   private static final String KNOTS_KEY = "_KNOTS";
   private static final String CONTENT_KEY = "_CONTENT";
   private static final String CONTEXT_KEY = "_CONTEXT";
@@ -69,6 +70,10 @@ public class Fragment {
 
   public static Fragment raw(String data) {
     return new Fragment(Collections.singletonList(RAW_FRAGMENT_ID), data, null);
+  }
+
+  public static Fragment fallback(String data) {
+    return new Fragment(Collections.singletonList(FALLBACK_FRAGMENT_ID), data, null);
   }
 
   public static Fragment snippet(List<String> knots, String data, String fallback) {
@@ -123,6 +128,10 @@ public class Fragment {
    */
   public boolean isRaw() {
     return knots().contains(RAW_FRAGMENT_ID);
+  }
+
+  public boolean isFallback() {
+    return knots().contains(FALLBACK_FRAGMENT_ID);
   }
 
   /**
