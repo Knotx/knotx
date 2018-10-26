@@ -77,7 +77,7 @@ public abstract class AbstractKnotProxy implements KnotProxy {
    * @return <tt>true</tt> if this Knot should process current {@link Fragment}.
    */
   protected boolean shouldProcess(Fragment fragment) {
-    return fragment != null && !fragment.failed() && shouldProcess(Sets.newHashSet(fragment.knots()));
+    return !fragment.failed() && shouldProcess(Sets.newHashSet(fragment.knots()));
   }
 
   /**
