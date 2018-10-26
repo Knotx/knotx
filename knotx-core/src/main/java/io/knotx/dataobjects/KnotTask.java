@@ -23,26 +23,26 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 
 @DataObject(inheritConverter = true)
-public class Knot {
+public class KnotTask {
   private String name;
   private KnotStatus status = KnotStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
   private List<KnotError> errors = Lists.newArrayList();
 
   private static final String NAME_KEY = "_NAME";
-  private static final String STATUS_KEY ="_STATUS";
-  private static final String ERRORS_KEY ="_ERRORS";
+  private static final String STATUS_KEY = "_STATUS";
+  private static final String ERRORS_KEY = "_ERRORS";
 
-  public Knot(String name) {
+  public KnotTask(String name) {
     this.name = name;
   }
 
-  public Knot(JsonObject knot) {
+  public KnotTask(JsonObject knot) {
     name = knot.getString(NAME_KEY);
     status = KnotStatus.valueOf(knot.getString(STATUS_KEY));
     JsonArray jsonErrors = knot.getJsonArray(ERRORS_KEY);
     errors = Lists.newArrayList();
     for (Object error : jsonErrors) {
-      errors.add(new KnotError((JsonObject)error));
+      errors.add(new KnotError((JsonObject) error));
     }
   }
 
@@ -66,12 +66,12 @@ public class Knot {
     return errors;
   }
 
-  public Knot error(String code, Object message) {
+  public KnotTask error(String code, Object message) {
     errors.add(new KnotError(code, message));
     return this;
   }
 
-  public Knot setStatus(KnotStatus status) {
+  public KnotTask setStatus(KnotStatus status) {
     this.status = status;
     return this;
   }
@@ -81,10 +81,10 @@ public class Knot {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Knot)) {
+    if (!(o instanceof KnotTask)) {
       return false;
     }
-    Knot that = (Knot) o;
+    KnotTask that = (KnotTask) o;
     return Objects.equal(name, that.name) &&
         Objects.equal(status, that.status) &&
         Objects.equal(errors, that.errors);
