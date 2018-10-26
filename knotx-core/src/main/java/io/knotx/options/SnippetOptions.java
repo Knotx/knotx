@@ -26,10 +26,12 @@ import org.apache.commons.lang3.StringUtils;
 public class SnippetOptions {
 
   private static final String DEFAULT_TAG_NAME = "script";
+  private static final String DEFAULT_FALLBACK_TAG_NAME = "knotx:fallback";
   private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
 
   private String tagName;
   private String paramsPrefix;
+  private String fallbackTagName;
 
   /**
    * Default constructor
@@ -46,6 +48,7 @@ public class SnippetOptions {
   public SnippetOptions(SnippetOptions other) {
     this.tagName = other.tagName;
     this.paramsPrefix = other.paramsPrefix;
+    this.fallbackTagName = other.fallbackTagName;
   }
 
   /**
@@ -73,6 +76,7 @@ public class SnippetOptions {
   private void init() {
     tagName = DEFAULT_TAG_NAME;
     paramsPrefix = DEFAULT_PARAMS_PREFIX;
+    fallbackTagName = DEFAULT_FALLBACK_TAG_NAME;
   }
 
   /**
@@ -80,6 +84,10 @@ public class SnippetOptions {
    */
   public String getTagName() {
     return tagName;
+  }
+
+  public String getFallbackTagName() {
+    return fallbackTagName;
   }
 
   /**
@@ -90,6 +98,11 @@ public class SnippetOptions {
    */
   public SnippetOptions setTagName(String tagName) {
     this.tagName = tagName;
+    return this;
+  }
+
+  public SnippetOptions setFallbackTagName(String fallbackTagName) {
+    this.fallbackTagName = fallbackTagName;
     return this;
   }
 

@@ -15,8 +15,6 @@
  */
 package io.knotx.splitter;
 
-import static org.jsoup.parser.Parser.unescapeEntities;
-
 import com.google.common.collect.Lists;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
@@ -44,7 +42,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
       while (matcher.find()) {
         MatchResult matchResult = matcher.toMatchResult();
         if (idx < matchResult.start()) {
-          fragments.add(toRaw(html, idx, matchResult.start()));
+          processMarkup(fragments,html, idx, matchResult.start());
         }
         fragments.add(
             toSnippet(matchResult.group(1).intern()
@@ -53,22 +51,40 @@ class HtmlFragmentSplitter implements FragmentSplitter {
         idx = matchResult.end();
       }
       if (idx < html.length()) {
-        fragments.add(toRaw(html, idx, html.length()));
+        processMarkup(fragments, html, idx, html.length());
       }
     } else {
-      fragments.add(toRaw(html, 0, html.length()));
+      processMarkup(fragments, html, 0, html.length());
     }
     return fragments;
   }
 
-  private Fragment toRaw(String html, int startIdx, int endIdx) {
-    return Fragment.raw(html.substring(startIdx, endIdx));
+  private void processMarkup(List<Fragment> fragments, String data, int startIdx, int endIdx) {
+    String html = data.substring(startIdx, endIdx);
+    Matcher matcher = snippetPatterns.getFallbackPattern().matcher(html);
+    int idx = 0;
+    while (matcher.find()) {
+      MatchResult matchResult = matcher.toMatchResult();
+      if (idx < matchResult.start()) {
+        fragments.add(Fragment.raw(html.substring(idx, matchResult.start())));
+      }
+      fragments.add(toFallback(html, matchResult.start(), matchResult.end()));
+      idx = matchResult.end();
+    }
+    if (idx < html.length()) {
+      fragments.add(Fragment.raw(html.substring(idx, html.length())));
+    }
+  }
+
+  private Fragment toFallback(String html, int startIdx, int endIdx) {
+    String snippet = html.substring(startIdx, endIdx);
+    return Fragment.fallback(snippet);
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
     String snippet = html.substring(startIdx, endIdx);
     Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(snippet);
-    String fallback = matcher.matches() ?  unescapeEntities(matcher.group(2), true) : null;
+    String fallback = matcher.matches() ?  matcher.group(2) : null;
     return Fragment.snippet(Arrays.asList(ids), snippet, fallback);
   }
 

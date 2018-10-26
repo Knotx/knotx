@@ -33,15 +33,18 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(FragmentAssemblerKnotProxyImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentAssemblerKnotProxyImpl.class);
+
   private final SnippetPatterns patterns;
 
   private FragmentAssemblerOptions options;
 
+  private FragmentAssemblerFallbackHandler fallbackHandler;
+
   public FragmentAssemblerKnotProxyImpl(FragmentAssemblerOptions options) {
     this.options = options;
     this.patterns = new SnippetPatterns(options.getSnippetOptions());
+    this.fallbackHandler = new FragmentAssemblerFallbackHandler(options);
   }
 
   @Override
@@ -49,7 +52,8 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     if (hasFragments(knotContext)) {
       try {
         String joinedFragments = knotContext.getFragments().stream()
-            .map(this::processFragment)
+            .filter(f -> !f.isFallback())
+            .map(f -> processFragment(f, knotContext))
             .collect(Collectors.joining());
 
         return Single.just(createSuccessResponse(knotContext, joinedFragments));
@@ -63,8 +67,8 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     }
   }
 
-  private String processFragment(Fragment fragment) {
-    return fragment.failed() && fragment.fallback().isPresent() ? fragment.fallback().get()
+  private String processFragment(Fragment fragment, KnotContext knotContext) {
+    return fragment.failed() && fragment.fallback().isPresent() ? fallbackHandler.applyFallback(fragment, knotContext)
         : options.getUnprocessedStrategy().get(fragment, patterns);
   }
 
