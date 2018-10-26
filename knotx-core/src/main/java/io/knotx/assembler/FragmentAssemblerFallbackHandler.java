@@ -57,7 +57,7 @@ public class FragmentAssemblerFallbackHandler {
   }
 
   private FallbackStrategy getFallbackStrategy(Fragment fallbackFragment) {
-    String strategyId = Optional.ofNullable(getAttribute(fallbackFragment, this.options.getSnippetOptions().getParamsPrefix() +  FragmentConstants.FALLBACK_STRATEGY))
+    String strategyId = Optional.ofNullable(getAttribute(fallbackFragment, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_STRATEGY))
         .orElse(DefaultFallbackStrategy.ID);
     return Optional.ofNullable(fallbackStrategies.get(strategyId)).orElseThrow(() -> {
       LOGGER.error("Fragment {} specifies fallback strategy but no fallback strategy with given id was found", fallbackFragment);
@@ -68,7 +68,7 @@ public class FragmentAssemblerFallbackHandler {
   private Fragment getFallback(Fragment failed, KnotContext knotContext) {
     return knotContext.getFragments().stream()
         .filter(f -> f.isFallback())
-        .filter(f-> StringUtils.equals(failed.fallback().get(), getAttribute(f, this.options.getSnippetOptions().getParamsPrefix() +  FragmentConstants.FALLBACK_ID)))
+        .filter(f -> StringUtils.equals(failed.fallback().get(), getAttribute(f, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_ID)))
         .findFirst()
         .orElseThrow(() -> {
           LOGGER.error("Fragment {} specifies fallback but no fallback snippet with id '{}' was found", failed, failed.fallback().orElse(null));
@@ -81,7 +81,7 @@ public class FragmentAssemblerFallbackHandler {
     Element scriptTag = document.body().child(0);
     List<Attribute> attributes = scriptTag.attributes().asList();
     return attributes.stream()
-        .filter(a ->  StringUtils.equals(attributeId, a.getKey()))
+        .filter(a -> StringUtils.equals(attributeId, a.getKey()))
         .findFirst()
         .map(Attribute::getValue)
         .orElse(null);

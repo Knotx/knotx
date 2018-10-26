@@ -41,7 +41,7 @@ public class Fragment {
   private static final String FALLBACK_KEY = "_FALLBACK";
 
 
-  private final List<Knot> knots;
+  private final List<KnotTask> knots;
   private final JsonObject context;
   private String content;
   private String fallback;
@@ -49,7 +49,7 @@ public class Fragment {
   public Fragment(JsonObject fragment) {
     JsonArray knotsArray = fragment.getJsonArray(KNOTS_KEY);
     this.knots = knotsArray.stream()
-        .map(entry -> new Knot((JsonObject) entry))
+        .map(entry -> new KnotTask((JsonObject) entry))
         .collect(Collectors.toList());
     this.content = fragment.getString(CONTENT_KEY);
     this.context = fragment.getJsonObject(CONTEXT_KEY, new JsonObject());
@@ -60,7 +60,7 @@ public class Fragment {
     if (knots == null || knots.isEmpty() || StringUtils.isEmpty(data)) {
       throw new NoSuchElementException("Fragment is not valid [" + knots + "], [" + data + "].");
     }
-    this.knots = knots.stream().map(Knot::new).collect(Collectors.toList());
+    this.knots = knots.stream().map(KnotTask::new).collect(Collectors.toList());
     this.content = data;
     this.context = new JsonObject();
     this.fallback = fallback;
@@ -79,11 +79,11 @@ public class Fragment {
   }
 
   public static Fragment snippet(List<String> knots, String data) {
-    return snippet(knots, data,null);
+    return snippet(knots, data, null);
   }
 
   public JsonObject toJson() {
-    return new JsonObject().put(KNOTS_KEY, new JsonArray(knots.stream().map(Knot::toJson).collect(Collectors.toList())))
+    return new JsonObject().put(KNOTS_KEY, new JsonArray(knots.stream().map(KnotTask::toJson).collect(Collectors.toList())))
         .put(CONTENT_KEY, content)
         .put(CONTEXT_KEY, context)
         .put(FALLBACK_KEY, fallback);
@@ -93,10 +93,10 @@ public class Fragment {
    * @return list of Knots identifiers that are used during Knot usage decision.
    */
   public List<String> knots() {
-    return knots.stream().map(Knot::getName).collect(Collectors.toList());
+    return knots.stream().map(KnotTask::getName).collect(Collectors.toList());
   }
 
-  public List<Knot> knotRouting() {
+  public List<KnotTask> knotRouting() {
     return knots;
   }
 
@@ -158,7 +158,7 @@ public class Fragment {
   }
 
   public Fragment success(String knot) {
-        this.knots.stream()
+    this.knots.stream()
         .filter(k -> knot.equals(k.getName()))
         .findFirst()
         .get()
