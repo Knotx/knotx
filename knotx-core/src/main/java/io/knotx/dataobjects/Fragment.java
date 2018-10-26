@@ -49,10 +49,9 @@ public class Fragment {
 
   public Fragment(JsonObject fragment) {
     JsonArray knotsArray = fragment.getJsonArray(KNOTS_KEY);
-    this.knots = new ArrayList<>();
-    for (int i=0; i<knotsArray.size(); i++) {
-      this.knots.add(new Knot(knotsArray.getJsonObject(i)));
-    }
+    this.knots = knotsArray.stream()
+        .map(entry -> new Knot((JsonObject) entry))
+        .collect(Collectors.toList());
     this.content = fragment.getString(CONTENT_KEY);
     this.context = fragment.getJsonObject(CONTEXT_KEY, new JsonObject());
     this.fallback = fragment.getString(FALLBACK_KEY);
