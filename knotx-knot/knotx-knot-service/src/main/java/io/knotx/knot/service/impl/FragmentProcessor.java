@@ -57,7 +57,7 @@ public class FragmentProcessor {
         .reduce(new JsonObject(), JsonObject::mergeIn)
         .map(results -> applyData(fragmentContext, results))
         .onErrorReturn(e -> {
-          LOGGER.error("Fragment processing failed. Cause:%s\nRequest:\n%s\nFragmentContext:\n%s\n %s", e.getMessage(), request.getClientRequest(), fragmentContext);
+          LOGGER.error("Fragment processing failed. Cause:{}\nRequest:\n{}\nFragmentContext:\n{}\n", e.getMessage(), request.getClientRequest(), fragmentContext);
           fragmentContext.fragment().failure(ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID, e);
           if (fragmentContext.fragment().fallback().isPresent()) {
             return fragmentContext;
