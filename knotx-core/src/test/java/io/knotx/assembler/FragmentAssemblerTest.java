@@ -149,6 +149,25 @@ public class FragmentAssemblerTest {
         });
   }
 
+  @Test
+  @KnotxApplyConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithFailedSnippet_expectFallbackForBlank(
+      VertxTestContext context, Vertx vertx) throws IOException {
+    List<Triple<List<String>,String, String>> fragments = Arrays.asList(
+        toTriple("io/knotx/assembler/fragment1.txt", null, RAW),
+        toTriple("io/knotx/assembler/fragment2.txt", "BLANK", SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW));
+    String expectedResult = FileReader.readText("io/knotx/server/expectedFallbackForBlankResult.html");
+    callAssemblerWithAssertions(context, vertx,
+        fragments,
+        knotContext -> {
+          Assertions.assertEquals(HttpResponseStatus.OK.code(),
+              knotContext.getClientResponse().getStatusCode());
+          Assertions
+              .assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
+        });
+  }
+
   private void callAssemblerWithAssertions(
       VertxTestContext context, Vertx vertx,
       List<Triple<List<String>, String, String>> fragments,
