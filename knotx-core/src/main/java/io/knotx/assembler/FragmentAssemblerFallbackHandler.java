@@ -38,6 +38,10 @@ public class FragmentAssemblerFallbackHandler {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FragmentAssemblerFallbackHandler.class);
 
+  private static final String BLANK = "BLANK";
+
+  private static final String BLANK_SNIPPET = "<knotx:fallback data-knotx-fallback-id=\"" + BLANK + "\"></knotx:fallback>";
+
   private final Map<String, FallbackStrategy> fallbackStrategies = Maps.newHashMap();
 
   private final FragmentAssemblerOptions options;
@@ -66,6 +70,9 @@ public class FragmentAssemblerFallbackHandler {
   }
 
   private Fragment getFallback(Fragment failed, KnotContext knotContext) {
+    if (BLANK.equals(failed.fallback().get())) {
+      return Fragment.fallback(BLANK_SNIPPET);
+    }
     return knotContext.getFragments().stream()
         .filter(f -> f.isFallback())
         .filter(f -> StringUtils.equals(failed.fallback().get(), getAttribute(f, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_ID)))
