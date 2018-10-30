@@ -15,8 +15,11 @@
  */
 package io.knotx.options;
 
+import com.google.common.collect.Lists;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,10 +31,13 @@ public class SnippetOptions {
   private static final String DEFAULT_TAG_NAME = "script";
   private static final String DEFAULT_FALLBACK_TAG_NAME = "knotx:fallback";
   private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
+  private List<FallbackMetadata> DEFAULT_FALLBACKS = Lists.newArrayList(new FallbackMetadata("BLANK", "<knotx:fallback data-knotx-fallback-id=\"BLANK\"></knotx:fallback>"));
 
   private String tagName;
   private String paramsPrefix;
   private String fallbackTagName;
+  private String defaultFallback;
+  private List<FallbackMetadata> fallbacks;
 
   /**
    * Default constructor
@@ -49,6 +55,8 @@ public class SnippetOptions {
     this.tagName = other.tagName;
     this.paramsPrefix = other.paramsPrefix;
     this.fallbackTagName = other.fallbackTagName;
+    this.defaultFallback = other.defaultFallback;
+    this.fallbacks = new ArrayList<>(other.fallbacks);
   }
 
   /**
@@ -77,6 +85,7 @@ public class SnippetOptions {
     tagName = DEFAULT_TAG_NAME;
     paramsPrefix = DEFAULT_PARAMS_PREFIX;
     fallbackTagName = DEFAULT_FALLBACK_TAG_NAME;
+    fallbacks = DEFAULT_FALLBACKS;
   }
 
   /**
@@ -88,6 +97,15 @@ public class SnippetOptions {
 
   public String getFallbackTagName() {
     return fallbackTagName;
+  }
+
+  public String getDefaultFallback() {
+    return defaultFallback;
+  }
+
+  public SnippetOptions setDefaultFallback(String defaultFallback) {
+    this.defaultFallback = defaultFallback;
+    return this;
   }
 
   /**
@@ -121,6 +139,15 @@ public class SnippetOptions {
    */
   public SnippetOptions setParamsPrefix(String paramsPrefix) {
     this.paramsPrefix = paramsPrefix == null ? StringUtils.EMPTY : paramsPrefix;
+    return this;
+  }
+
+  public List<FallbackMetadata> getFallbacks() {
+    return fallbacks;
+  }
+
+  public SnippetOptions setFallbacks(List<FallbackMetadata> fallbacks) {
+    this.fallbacks = fallbacks;
     return this;
   }
 }

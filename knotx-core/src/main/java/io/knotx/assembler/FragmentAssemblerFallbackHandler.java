@@ -21,6 +21,7 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.fallback.DefaultFallbackStrategy;
 import io.knotx.fallback.FallbackStrategy;
 import io.knotx.fragments.FragmentConstants;
+import io.knotx.options.FallbackMetadata;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.List;
@@ -37,10 +38,6 @@ public class FragmentAssemblerFallbackHandler {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FragmentAssemblerFallbackHandler.class);
-
-  private static final String BLANK = "BLANK";
-
-  private static final String BLANK_SNIPPET = "<knotx:fallback data-knotx-fallback-id=\"" + BLANK + "\"></knotx:fallback>";
 
   private final Map<String, FallbackStrategy> fallbackStrategies = Maps.newHashMap();
 
@@ -61,7 +58,7 @@ public class FragmentAssemblerFallbackHandler {
   }
 
   private FallbackStrategy getFallbackStrategy(Fragment fallbackFragment) {
-    String strategyId = Optional.ofNullable(getAttribute(fallbackFragment, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_STRATEGY))
+    String strategyId = Optional.ofNullable(getFallbackStrategyId(fallbackFragment))
         .orElse(DefaultFallbackStrategy.ID);
     return Optional.ofNullable(fallbackStrategies.get(strategyId)).orElseThrow(() -> {
       LOGGER.error("Fragment {} specifies fallback strategy but no fallback strategy with given id was found", fallbackFragment);
@@ -69,18 +66,37 @@ public class FragmentAssemblerFallbackHandler {
     });
   }
 
+  private String getFallbackStrategyId(Fragment fallbackFragment) {
+    return getAttribute(fallbackFragment, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_STRATEGY);
+  }
+
   private Fragment getFallback(Fragment failed, KnotContext knotContext) {
-    if (BLANK.equals(failed.fallback().get())) {
-      return Fragment.fallback(BLANK_SNIPPET);
-    }
-    return knotContext.getFragments().stream()
+    Fragment result = knotContext.getFragments().stream()
         .filter(f -> f.isFallback())
-        .filter(f -> StringUtils.equals(failed.fallback().get(), getAttribute(f, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_ID)))
+        .filter(f -> StringUtils.equals(failed.fallback().get(), getFallbackId(f)))
         .findFirst()
-        .orElseThrow(() -> {
-          LOGGER.error("Fragment {} specifies fallback but no fallback snippet with id '{}' was found", failed, failed.fallback().orElse(null));
-          return new IllegalStateException(String.format("No fallback snippet with id '%s' was found", failed.fallback().orElse(null)));
-        });
+        .orElse(null);
+
+    if (result == null) {
+      result = getGlobalFallback(failed)
+          .orElseThrow(() -> {
+            LOGGER.error("Fragment {} specifies fallback but no fallback snippet with id '{}' was found", failed, failed.fallback().orElse(null));
+            return new IllegalStateException(String.format("No fallback snippet with id '%s' was found", failed.fallback().orElse(null)));
+          });
+    }
+    return result;
+  }
+
+  private Optional<Fragment> getGlobalFallback(Fragment failed) {
+    return this.options.getSnippetOptions().getFallbacks().stream()
+        .filter(f -> StringUtils.equals(failed.fallback().get(), f.getId()))
+        .findFirst()
+        .map(FallbackMetadata::getMarkup)
+        .map(Fragment::fallback);
+  }
+
+  private String getFallbackId(Fragment fragment) {
+    return getAttribute(fragment, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_ID);
   }
 
   private String getAttribute(Fragment fragment, String attributeId) {
