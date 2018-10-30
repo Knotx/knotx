@@ -31,8 +31,11 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private final SnippetPatterns snippetPatterns;
 
+  private final String defaultFallback;
+
   HtmlFragmentSplitter(SnippetOptions snippetOptions) {
     snippetPatterns = new SnippetPatterns(snippetOptions);
+    defaultFallback = snippetOptions.getDefaultFallback();
   }
 
   @Override
@@ -91,7 +94,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
     String snippet = html.substring(startIdx, endIdx);
     Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(snippet);
-    String fallback = matcher.matches() ? matcher.group(2) : null;
+    String fallback = matcher.matches() ? matcher.group(2) : defaultFallback;
     return Fragment.snippet(Arrays.asList(ids), snippet, fallback);
   }
 
