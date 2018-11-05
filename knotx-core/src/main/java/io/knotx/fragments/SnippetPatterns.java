@@ -30,7 +30,8 @@ public class SnippetPatterns {
       "<%s\\s+%s" + FragmentConstants.SNIPPET_IDENTIFIER_NAME
           + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*"
           + "%s" + FragmentConstants.SNIPPET_FALLBACK_NAME + "\\s*=\\s*\"([^\"]*)\"[^>]*>.+?</%s>";
-  private static final String FALLBACK_PATTERN = "<%s[^>]*>.+?</%s>";
+  private static final String FALLBACK_PATTERN = "<%s\\s+%s" + FragmentConstants.FALLBACK_ID
+      + "\\s*=\\s*\"([A-Za-z0-9-_,]+)\"[^>]*>.+?</%s>";
 
   private final Pattern anySnippetPattern;
   private final Pattern snippetPattern;
@@ -51,7 +52,8 @@ public class SnippetPatterns {
                 snippetOptions.getParamsPrefix(), snippetOptions.getTagName()), Pattern.DOTALL);
     fallbackPattern = Pattern
         .compile(String
-            .format(FALLBACK_PATTERN, snippetOptions.getFallbackTagName(), snippetOptions.getFallbackTagName()), Pattern.DOTALL);
+            .format(FALLBACK_PATTERN, snippetOptions.getFallbackTagName(), snippetOptions.getParamsPrefix(),
+                snippetOptions.getFallbackTagName()), Pattern.DOTALL);
   }
 
   public Pattern getAnySnippetPattern() {

@@ -19,6 +19,7 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.fragments.FragmentConstants;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.reactivex.core.MultiMap;
@@ -27,6 +28,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 @Deprecated
 public final class KnotContextFactory {
@@ -62,6 +67,9 @@ public final class KnotContextFactory {
                   if (data.getMiddle() != null) {
                     fragment.failure(data.getLeft().get(0), new RuntimeException("knot failure"));
                   }
+                  if ("_fallback".equals(data.getLeft().get(0))) {
+                    fragment.setAttribute(FragmentConstants.FALLBACK_ID, getAttribute(fragment, "data-knotx-fallback-id"));
+                  }
                   return fragment;
             }).collect(Collectors.toList())
                 : null)
@@ -69,6 +77,17 @@ public final class KnotContextFactory {
         .setClientResponse(
             new ClientResponse()
                 .setHeaders(MultiMap.caseInsensitiveMultiMap()));
+  }
+
+  private static String getAttribute(Fragment fragment, String attributeId) {
+    Document document = Jsoup.parseBodyFragment(fragment.content());
+    Element scriptTag = document.body().child(0);
+    List<Attribute> attributes = scriptTag.attributes().asList();
+    return attributes.stream()
+        .filter(a -> StringUtils.equals(attributeId, a.getKey()))
+        .findFirst()
+        .map(Attribute::getValue)
+        .orElse(null);
   }
 
 }

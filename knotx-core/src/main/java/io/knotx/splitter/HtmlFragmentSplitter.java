@@ -78,7 +78,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
       } else if (idx < fe.start) {
         fragments.add(Fragment.raw(html.substring(idx, fe.start)));
       }
-      fragments.add(toFallback(html, fe.start, fe.end));
+      fragments.add(toFallback(html, fe.start, fe.end, fe.id));
       idx = fe.end;
     }
     if (idx < endIdx) {
@@ -86,9 +86,9 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     }
   }
 
-  private Fragment toFallback(String html, int startIdx, int endIdx) {
+  private Fragment toFallback(String html, int startIdx, int endIdx, String id) {
     String snippet = html.substring(startIdx, endIdx);
-    return Fragment.fallback(snippet);
+    return Fragment.fallback(snippet, id);
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
@@ -103,7 +103,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     List<FallbackMarker> result = new ArrayList<>();
     while (matcher.find()) {
       MatchResult matchResult = matcher.toMatchResult();
-      result.add(new FallbackMarker(matchResult.start(), matchResult.end()));
+      result.add(new FallbackMarker(matchResult.start(), matchResult.end(), matcher.group(1)));
     }
     return result;
   }
@@ -111,10 +111,12 @@ class HtmlFragmentSplitter implements FragmentSplitter {
   private class FallbackMarker {
     int start;
     int end;
+    String id;
 
-    FallbackMarker(int startIndex, int endIndex) {
+    FallbackMarker(int startIndex, int endIndex, String id) {
       this.start = startIndex;
       this.end = endIndex;
+      this.id = id;
     }
   }
 

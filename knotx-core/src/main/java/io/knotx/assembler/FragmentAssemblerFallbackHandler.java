@@ -79,7 +79,7 @@ public class FragmentAssemblerFallbackHandler {
     if (result == null) {
       result = knotContext.getFragments().stream()
           .filter(f -> f.isFallback())
-          .filter(f -> StringUtils.equals(fallbackId, getFallbackId(f)))
+          .filter(f -> StringUtils.equals(fallbackId, f.getAttribute(FragmentConstants.FALLBACK_ID)))
           .findFirst()
           .orElse(null);
 
@@ -99,12 +99,7 @@ public class FragmentAssemblerFallbackHandler {
     return this.options.getSnippetOptions().getFallbacks().stream()
         .filter(f -> StringUtils.equals(failed.fallback().get(), f.getId()))
         .findFirst()
-        .map(FallbackMetadata::getMarkup)
-        .map(Fragment::fallback);
-  }
-
-  private String getFallbackId(Fragment fragment) {
-    return getAttribute(fragment, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_ID);
+        .map(fm -> Fragment.fallback(fm.getMarkup(), fm.getId()));
   }
 
   private String getAttribute(Fragment fragment, String attributeId) {
