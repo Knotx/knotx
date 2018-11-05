@@ -16,6 +16,7 @@
 package io.knotx.dataobjects;
 
 import com.google.common.base.Objects;
+import io.knotx.fragments.FragmentConstants;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -39,10 +40,12 @@ public class Fragment {
   private static final String CONTENT_KEY = "_CONTENT";
   private static final String CONTEXT_KEY = "_CONTEXT";
   private static final String FALLBACK_KEY = "_FALLBACK";
+  private static final String ATTRUBUTES_KEY = "_ATTRIBUTES";
 
 
   private final List<KnotTask> knots;
   private final JsonObject context;
+  private final JsonObject attributes;
   private String content;
   private String fallback;
 
@@ -54,6 +57,7 @@ public class Fragment {
     this.content = fragment.getString(CONTENT_KEY);
     this.context = fragment.getJsonObject(CONTEXT_KEY, new JsonObject());
     this.fallback = fragment.getString(FALLBACK_KEY);
+    this.attributes = fragment.getJsonObject(ATTRUBUTES_KEY, new JsonObject());
   }
 
   private Fragment(List<String> knots, String data, String fallback) {
@@ -63,6 +67,7 @@ public class Fragment {
     this.knots = knots.stream().map(KnotTask::new).collect(Collectors.toList());
     this.content = data;
     this.context = new JsonObject();
+    this.attributes = new JsonObject();
     this.fallback = fallback;
   }
 
@@ -70,8 +75,9 @@ public class Fragment {
     return new Fragment(Collections.singletonList(RAW_FRAGMENT_ID), data, null);
   }
 
-  public static Fragment fallback(String data) {
-    return new Fragment(Collections.singletonList(FALLBACK_FRAGMENT_ID), data, null);
+  public static Fragment fallback(String data, String fallbackId) {
+    return new Fragment(Collections.singletonList(FALLBACK_FRAGMENT_ID), data, null)
+        .setAttribute(FragmentConstants.FALLBACK_ID, fallbackId);
   }
 
   public static Fragment snippet(List<String> knots, String data, String fallback) {
@@ -86,7 +92,8 @@ public class Fragment {
     return new JsonObject().put(KNOTS_KEY, new JsonArray(knots.stream().map(KnotTask::toJson).collect(Collectors.toList())))
         .put(CONTENT_KEY, content)
         .put(CONTEXT_KEY, context)
-        .put(FALLBACK_KEY, fallback);
+        .put(FALLBACK_KEY, fallback)
+        .put(ATTRUBUTES_KEY, attributes);
   }
 
   /**
@@ -110,6 +117,15 @@ public class Fragment {
   public Fragment content(String content) {
     this.content = content;
     return this;
+  }
+
+  public Fragment setAttribute(String key, String value) {
+    attributes.put(key, value);
+    return this;
+  }
+
+  public String getAttribute(String key) {
+    return attributes.getString(key);
   }
 
   /**
@@ -178,12 +194,13 @@ public class Fragment {
     return Objects.equal(knots, that.knots) &&
         Objects.equal(content, that.content) &&
         Objects.equal(context, that.context) &&
+        Objects.equal(attributes, that.attributes) &&
         Objects.equal(fallback, that.fallback);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(knots, content, context);
+    return Objects.hashCode(knots, content, context, attributes, fallback);
   }
 
   @Override
