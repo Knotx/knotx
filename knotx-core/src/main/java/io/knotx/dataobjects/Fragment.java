@@ -136,7 +136,7 @@ public class Fragment {
    * @return true if processing of this Fragment has failed
    */
   public boolean failed() {
-    return this.knots.stream().anyMatch(k -> k.getStatus() == KnotStatus.FAILURE);
+    return this.knots.stream().anyMatch(k -> k.getStatus() == KnotTaskStatus.FAILURE);
   }
 
   /**
@@ -152,7 +152,7 @@ public class Fragment {
         .filter(k -> knot.equals(k.getName()))
         .findFirst()
         .get()
-        .setStatus(KnotStatus.FAILURE)
+        .setStatus(KnotTaskStatus.FAILURE)
         .error(t.getClass().getSimpleName(), t.getMessage());
     return this;
   }
@@ -162,7 +162,7 @@ public class Fragment {
         .filter(k -> knot.equals(k.getName()))
         .findFirst()
         .get()
-        .setStatus(KnotStatus.SUCCESS);
+        .setStatus(KnotTaskStatus.SUCCESS);
     return this;
   }
 
