@@ -80,6 +80,10 @@ public class Fragment {
         .setAttribute(FragmentConstants.FALLBACK_ID, fallbackId);
   }
 
+  public static Fragment fallback(String data, String fallbackId, String strategy) {
+    return Fragment.fallback(data, fallbackId).setAttribute(FragmentConstants.FALLBACK_STRATEGY, strategy);
+  }
+
   public static Fragment snippet(List<String> knots, String data, String fallback) {
     return new Fragment(knots, data, fallback);
   }

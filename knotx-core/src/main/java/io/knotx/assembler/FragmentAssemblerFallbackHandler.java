@@ -21,18 +21,12 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.fallback.DefaultFallbackStrategy;
 import io.knotx.fallback.FallbackStrategy;
 import io.knotx.fragments.FragmentConstants;
-import io.knotx.options.FallbackMetadata;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 public class FragmentAssemblerFallbackHandler {
 
@@ -60,16 +54,12 @@ public class FragmentAssemblerFallbackHandler {
   }
 
   private FallbackStrategy getFallbackStrategy(Fragment fallbackFragment) {
-    String strategyId = Optional.ofNullable(getFallbackStrategyId(fallbackFragment))
+    String strategyId = Optional.ofNullable(fallbackFragment.getAttribute(FragmentConstants.FALLBACK_STRATEGY))
         .orElse(DefaultFallbackStrategy.ID);
     return Optional.ofNullable(fallbackStrategies.get(strategyId)).orElseThrow(() -> {
       LOGGER.error("Fragment {} specifies fallback strategy but no fallback strategy with given id was found", fallbackFragment);
       return new IllegalStateException(String.format("no strategy with id %s found", strategyId));
     });
-  }
-
-  private String getFallbackStrategyId(Fragment fallbackFragment) {
-    return getAttribute(fallbackFragment, this.options.getSnippetOptions().getParamsPrefix() + FragmentConstants.FALLBACK_STRATEGY);
   }
 
   private Fragment getFallback(Fragment failed, KnotContext knotContext) {
@@ -102,14 +92,4 @@ public class FragmentAssemblerFallbackHandler {
         .map(fm -> Fragment.fallback(fm.getMarkup(), fm.getId()));
   }
 
-  private String getAttribute(Fragment fragment, String attributeId) {
-    Document document = Jsoup.parseBodyFragment(fragment.content());
-    Element scriptTag = document.body().child(0);
-    List<Attribute> attributes = scriptTag.attributes().asList();
-    return attributes.stream()
-        .filter(a -> StringUtils.equals(attributeId, a.getKey()))
-        .findFirst()
-        .map(Attribute::getValue)
-        .orElse(null);
-  }
 }
