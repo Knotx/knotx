@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
+import io.knotx.fragments.FragmentConstants;
 import io.knotx.junit5.util.FileReader;
 import io.knotx.options.SnippetOptions;
 import java.util.List;
@@ -36,6 +37,7 @@ public class HtmlFragmentSplitterTest {
   private static final String EXPECTED_ONE_FRAGMENT =
       "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></script>";
   private static final String EXPECTED_FALLBACK = "FALLBACK_SNIPPET_ID";
+  private static final String EXPECTED_STRATEGY = "FALLBACK_STRATEGY_NAME";
 
   @Test
   public void split_whenManyFragments_expectNoChangesInMarkupAfterSplitting() throws Exception {
@@ -146,6 +148,7 @@ public class HtmlFragmentSplitterTest {
     assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
     assertThat(testOneSnippetBegin.get(0).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
     assertThat(testOneSnippetBegin.get(1).isFallback(), equalTo(true));
+    assertThat(testOneSnippetBegin.get(1).getAttribute(FragmentConstants.FALLBACK_STRATEGY), equalTo(EXPECTED_STRATEGY));
   }
 
   @Test

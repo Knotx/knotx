@@ -15,6 +15,7 @@
  */
 package io.knotx.splitter;
 
+import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
 import io.knotx.fragments.SnippetPatterns;
@@ -78,7 +79,7 @@ class HtmlFragmentSplitter implements FragmentSplitter {
       } else if (idx < fe.start) {
         fragments.add(Fragment.raw(html.substring(idx, fe.start)));
       }
-      fragments.add(toFallback(html, fe.start, fe.end, fe.id));
+      fragments.add(toFallback(html, fe));
       idx = fe.end;
     }
     if (idx < endIdx) {
@@ -86,9 +87,9 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     }
   }
 
-  private Fragment toFallback(String html, int startIdx, int endIdx, String id) {
-    String snippet = html.substring(startIdx, endIdx);
-    return Fragment.fallback(snippet, id);
+  private Fragment toFallback(String html, FallbackMarker fm) {
+    String snippet = html.substring(fm.start, fm.end);
+    return Fragment.fallback(snippet, fm.id).setAttribute(FragmentConstants.FALLBACK_STRATEGY, fm.strategy);
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
@@ -103,7 +104,10 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     List<FallbackMarker> result = new ArrayList<>();
     while (matcher.find()) {
       MatchResult matchResult = matcher.toMatchResult();
-      result.add(new FallbackMarker(matchResult.start(), matchResult.end(), matcher.group(1)));
+      String snippet = html.substring(matchResult.start(), matchResult.end());
+      Matcher strategyMatcher = snippetPatterns.getFallbackWithStrategyPattern().matcher(snippet);
+      String strategy = strategyMatcher.matches() ? strategyMatcher.group(2) : null;
+      result.add(new FallbackMarker(matchResult.start(), matchResult.end(), matcher.group(1), strategy));
     }
     return result;
   }
@@ -112,11 +116,13 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     int start;
     int end;
     String id;
+    String strategy;
 
-    FallbackMarker(int startIndex, int endIndex, String id) {
+    FallbackMarker(int startIndex, int endIndex, String id, String strategy) {
       this.start = startIndex;
       this.end = endIndex;
       this.id = id;
+      this.strategy = strategy;
     }
   }
 
