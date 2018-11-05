@@ -41,6 +41,8 @@ public class FragmentAssemblerFallbackHandler {
 
   private final Map<String, FallbackStrategy> fallbackStrategies = Maps.newHashMap();
 
+  private final Map<String, Fragment> fallbackFragmentCache = Maps.newHashMap();
+
   private final FragmentAssemblerOptions options;
 
   public FragmentAssemblerFallbackHandler(FragmentAssemblerOptions options) {
@@ -71,18 +73,24 @@ public class FragmentAssemblerFallbackHandler {
   }
 
   private Fragment getFallback(Fragment failed, KnotContext knotContext) {
-    Fragment result = knotContext.getFragments().stream()
-        .filter(f -> f.isFallback())
-        .filter(f -> StringUtils.equals(failed.fallback().get(), getFallbackId(f)))
-        .findFirst()
-        .orElse(null);
+    String fallbackId = failed.fallback().get();
+    Fragment result = fallbackFragmentCache.get(fallbackId);
 
     if (result == null) {
-      result = getGlobalFallback(failed)
-          .orElseThrow(() -> {
-            LOGGER.error("Fragment {} specifies fallback but no fallback snippet with id '{}' was found", failed, failed.fallback().orElse(null));
-            return new IllegalStateException(String.format("No fallback snippet with id '%s' was found", failed.fallback().orElse(null)));
-          });
+      result = knotContext.getFragments().stream()
+          .filter(f -> f.isFallback())
+          .filter(f -> StringUtils.equals(fallbackId, getFallbackId(f)))
+          .findFirst()
+          .orElse(null);
+
+      if (result == null) {
+        result = getGlobalFallback(failed)
+            .orElseThrow(() -> {
+              LOGGER.error("Fragment {} specifies fallback but no fallback snippet with id '{}' was found", failed, fallbackId);
+              return new IllegalStateException(String.format("No fallback snippet with id '%s' was found", fallbackId));
+            });
+      }
+      fallbackFragmentCache.put(fallbackId, result);
     }
     return result;
   }
