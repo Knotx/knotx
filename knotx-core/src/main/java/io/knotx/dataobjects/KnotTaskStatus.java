@@ -15,6 +15,6 @@
  */
 package io.knotx.dataobjects;
 
-public enum KnotStatus {
+public enum KnotTaskStatus {
   SUCCESS, FAILURE, UNPROCESSED
 }

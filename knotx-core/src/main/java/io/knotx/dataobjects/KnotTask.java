@@ -25,7 +25,7 @@ import java.util.List;
 @DataObject(inheritConverter = true)
 public class KnotTask {
   private String name;
-  private KnotStatus status = KnotStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
+  private KnotTaskStatus status = KnotTaskStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
   private List<KnotError> errors = Lists.newArrayList();
 
   private static final String NAME_KEY = "_NAME";
@@ -38,7 +38,7 @@ public class KnotTask {
 
   public KnotTask(JsonObject knot) {
     name = knot.getString(NAME_KEY);
-    status = KnotStatus.valueOf(knot.getString(STATUS_KEY));
+    status = KnotTaskStatus.valueOf(knot.getString(STATUS_KEY));
     JsonArray jsonErrors = knot.getJsonArray(ERRORS_KEY);
     errors = Lists.newArrayList();
     for (Object error : jsonErrors) {
@@ -58,7 +58,7 @@ public class KnotTask {
     return name;
   }
 
-  public KnotStatus getStatus() {
+  public KnotTaskStatus getStatus() {
     return status;
   }
 
@@ -71,7 +71,7 @@ public class KnotTask {
     return this;
   }
 
-  public KnotTask setStatus(KnotStatus status) {
+  public KnotTask setStatus(KnotTaskStatus status) {
     this.status = status;
     return this;
   }
