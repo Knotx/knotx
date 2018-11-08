@@ -20,6 +20,7 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,7 +32,7 @@ public class SnippetOptions {
   private static final String DEFAULT_TAG_NAME = "script";
   private static final String DEFAULT_FALLBACK_TAG_NAME = "knotx:fallback";
   private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
-  private List<FallbackMetadata> DEFAULT_FALLBACKS = Lists.newArrayList(new FallbackMetadata("BLANK", "<knotx:fallback data-knotx-fallback-id=\"BLANK\"></knotx:fallback>"));
+  private static final String BLANK_TEMPLATE = "<%s %sfallback-id=\"BLANK\"></%s>";
 
   private String tagName;
   private String paramsPrefix;
@@ -44,6 +45,7 @@ public class SnippetOptions {
    */
   public SnippetOptions() {
     init();
+    configureDefaultFallback();
   }
 
   /**
@@ -67,6 +69,7 @@ public class SnippetOptions {
   public SnippetOptions(JsonObject json) {
     init();
     SnippetOptionsConverter.fromJson(json, this);
+    configureDefaultFallback();
   }
 
   /**
@@ -80,12 +83,16 @@ public class SnippetOptions {
     return json;
   }
 
-
   private void init() {
     tagName = DEFAULT_TAG_NAME;
     paramsPrefix = DEFAULT_PARAMS_PREFIX;
     fallbackTagName = DEFAULT_FALLBACK_TAG_NAME;
-    fallbacks = DEFAULT_FALLBACKS;
+  }
+
+  private void configureDefaultFallback() {
+    if (CollectionUtils.isEmpty(fallbacks)) {
+      fallbacks = Lists.newArrayList(new FallbackMetadata("BLANK", String.format(BLANK_TEMPLATE, fallbackTagName, paramsPrefix, fallbackTagName)));
+    }
   }
 
   /**
