@@ -4,7 +4,7 @@ Sometimes during Fragment processing things can go wrong. There can be multiple 
 error, lack of service availability. KnotX gives you the ability to define a fallback strategy that is applied when 
 dynamic fragment processing fails.
 
-### How does it work? 
+## How does it work? 
 
 When no fallback is defined an error that occurs during processing of a single fragment will trigger a 500 error 
 response from the server. This will basically stop the page rendering process. 
