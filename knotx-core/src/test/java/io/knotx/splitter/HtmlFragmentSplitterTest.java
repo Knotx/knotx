@@ -141,44 +141,44 @@ public class HtmlFragmentSplitterTest {
 
   @Test
   public void split_whenSnippetHasFallbackAttribute_expectSnippetToHaveFallback() throws Exception {
-    String TEST_ONE_SNIPPET_BEGIN_HTML = "io/knotx/splitter/test-one-fragment-with-fallback.html";
-    List<Fragment> testOneSnippetBegin = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
-        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    assertThat(testOneSnippetBegin.size(), equalTo(2));
-    assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(0).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
-    assertThat(testOneSnippetBegin.get(1).isFallback(), equalTo(true));
-    assertThat(testOneSnippetBegin.get(1).getAttribute(FragmentConstants.FALLBACK_STRATEGY), equalTo(EXPECTED_STRATEGY));
+    String TEST_ONE_FRAGMENT_WITH_FALLBACK = "io/knotx/splitter/test-one-fragment-with-fallback.html";
+    List<Fragment> testOneFragmentWithFallback = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
+        .split(FileReader.readText(TEST_ONE_FRAGMENT_WITH_FALLBACK));
+    assertThat(testOneFragmentWithFallback.size(), equalTo(2));
+    assertThat(testOneFragmentWithFallback.get(0).isRaw(), equalTo(false));
+    assertThat(testOneFragmentWithFallback.get(0).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
+    assertThat(testOneFragmentWithFallback.get(1).isFallback(), equalTo(true));
+    assertThat(testOneFragmentWithFallback.get(1).getAttribute(FragmentConstants.FALLBACK_STRATEGY), equalTo(EXPECTED_STRATEGY));
   }
 
   @Test
   public void split_whenThereAreMultipleSnippets_expectSnippetToHaveFallback() throws Exception {
-    String TEST_ONE_SNIPPET_BEGIN_HTML = "io/knotx/splitter/test-many-fragments-with-fallback.html";
-    List<Fragment> testOneSnippetBegin = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
-        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    assertThat(testOneSnippetBegin.size(), equalTo(7));
-    assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(true));
+    String TEST_MULTIPLE_SNIPPETS_WITH_FALLBACK_HTML = "io/knotx/splitter/test-many-fragments-with-fallback.html";
+    List<Fragment> testMultipleSnippetsWithFallback = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
+        .split(FileReader.readText(TEST_MULTIPLE_SNIPPETS_WITH_FALLBACK_HTML));
+    assertThat(testMultipleSnippetsWithFallback.size(), equalTo(7));
+    assertThat(testMultipleSnippetsWithFallback.get(0).isRaw(), equalTo(true));
 
-    assertThat(testOneSnippetBegin.get(1).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(1).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
+    assertThat(testMultipleSnippetsWithFallback.get(1).isRaw(), equalTo(false));
+    assertThat(testMultipleSnippetsWithFallback.get(1).fallback().orElse(null), equalTo(EXPECTED_FALLBACK));
 
-    assertThat(testOneSnippetBegin.get(2).isRaw(), equalTo(true));
+    assertThat(testMultipleSnippetsWithFallback.get(2).isRaw(), equalTo(true));
 
-    assertThat(testOneSnippetBegin.get(3).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(3).fallback().isPresent(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(4).isRaw(), equalTo(true));
-    assertThat(testOneSnippetBegin.get(5).isFallback(), equalTo(true));
-    assertThat(testOneSnippetBegin.get(6).isRaw(), equalTo(true));
+    assertThat(testMultipleSnippetsWithFallback.get(3).isRaw(), equalTo(false));
+    assertThat(testMultipleSnippetsWithFallback.get(3).fallback().isPresent(), equalTo(false));
+    assertThat(testMultipleSnippetsWithFallback.get(4).isRaw(), equalTo(true));
+    assertThat(testMultipleSnippetsWithFallback.get(5).isFallback(), equalTo(true));
+    assertThat(testMultipleSnippetsWithFallback.get(6).isRaw(), equalTo(true));
   }
 
   @Test
   public void split_whenSnippetHasBlankFallbackAttribute_expectSnippetToHaveFallback() throws Exception {
-    String TEST_ONE_SNIPPET_BEGIN_HTML = "io/knotx/splitter/test-one-fragment-with-blank-fallback.html";
-    List<Fragment> testOneSnippetBegin = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
-        .split(FileReader.readText(TEST_ONE_SNIPPET_BEGIN_HTML));
-    assertThat(testOneSnippetBegin.size(), equalTo(1));
-    assertThat(testOneSnippetBegin.get(0).isRaw(), equalTo(false));
-    assertThat(testOneSnippetBegin.get(0).fallback().orElse(null), equalTo(StringUtils.EMPTY));
+    String TEST_SNIPPET_WITH_BLANK_FALLBACK_HTML = "io/knotx/splitter/test-one-fragment-with-blank-fallback.html";
+    List<Fragment> testSnippetWithBlankFallback = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
+        .split(FileReader.readText(TEST_SNIPPET_WITH_BLANK_FALLBACK_HTML));
+    assertThat(testSnippetWithBlankFallback.size(), equalTo(1));
+    assertThat(testSnippetWithBlankFallback.get(0).isRaw(), equalTo(false));
+    assertThat(testSnippetWithBlankFallback.get(0).fallback().orElse(null), equalTo(StringUtils.EMPTY));
   }
 
   private SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {
