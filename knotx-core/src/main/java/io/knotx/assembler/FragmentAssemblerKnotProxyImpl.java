@@ -15,6 +15,7 @@
  */
 package io.knotx.assembler;
 
+import com.google.common.collect.Maps;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
@@ -27,6 +28,7 @@ import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -51,9 +53,10 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
   protected Single<KnotContext> processRequest(KnotContext knotContext) {
     if (hasFragments(knotContext)) {
       try {
+        Map<String, Fragment> fallbackFragmentCache = Maps.newHashMap();
         String joinedFragments = knotContext.getFragments().stream()
             .filter(f -> !f.isFallback())
-            .map(f -> processFragment(f, knotContext))
+            .map(f -> processFragment(f, knotContext, fallbackFragmentCache))
             .collect(Collectors.joining());
 
         return Single.just(createSuccessResponse(knotContext, joinedFragments));
@@ -67,8 +70,8 @@ public class FragmentAssemblerKnotProxyImpl extends AbstractKnotProxy {
     }
   }
 
-  private String processFragment(Fragment fragment, KnotContext knotContext) {
-    return fragment.failed() && fragment.fallback().isPresent() ? fallbackHandler.applyFallback(fragment, knotContext)
+  private String processFragment(Fragment fragment, KnotContext knotContext,Map<String, Fragment> fallbackFragmentCache) {
+    return fragment.failed() && fragment.fallback().isPresent() ? fallbackHandler.applyFallback(fragment, knotContext, fallbackFragmentCache)
         : options.getUnprocessedStrategy().get(fragment, patterns);
   }
 

@@ -24,7 +24,7 @@ import java.util.List;
 
 @DataObject(inheritConverter = true)
 public class KnotTask {
-  private String name;
+  private final String name;
   private KnotTaskStatus status = KnotTaskStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
   private List<KnotError> errors = Lists.newArrayList();
 

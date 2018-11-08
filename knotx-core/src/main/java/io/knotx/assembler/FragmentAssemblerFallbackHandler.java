@@ -35,8 +35,6 @@ public class FragmentAssemblerFallbackHandler {
 
   private final Map<String, FallbackStrategy> fallbackStrategies = Maps.newHashMap();
 
-  private final Map<String, Fragment> fallbackFragmentCache = Maps.newHashMap();
-
   private final FragmentAssemblerOptions options;
 
   public FragmentAssemblerFallbackHandler(FragmentAssemblerOptions options) {
@@ -47,8 +45,8 @@ public class FragmentAssemblerFallbackHandler {
     }
   }
 
-  public String applyFallback(Fragment failed, KnotContext knotContext) {
-    Fragment fallback = getFallback(failed, knotContext);
+  public String applyFallback(Fragment failed, KnotContext knotContext, Map<String, Fragment> fallbackFragmentCache) {
+    Fragment fallback = getFallback(failed, knotContext, fallbackFragmentCache);
     FallbackStrategy strategy = getFallbackStrategy(fallback);
     return strategy.applyFallback(failed, fallback, knotContext);
   }
@@ -58,11 +56,11 @@ public class FragmentAssemblerFallbackHandler {
         .orElse(DefaultFallbackStrategy.ID);
     return Optional.ofNullable(fallbackStrategies.get(strategyId)).orElseThrow(() -> {
       LOGGER.error("Fragment {} specifies fallback strategy but no fallback strategy with given id was found", fallbackFragment);
-      return new IllegalStateException(String.format("no strategy with id %s found", strategyId));
+      return new IllegalArgumentException(String.format("no strategy with id %s found", strategyId));
     });
   }
 
-  private Fragment getFallback(Fragment failed, KnotContext knotContext) {
+  private Fragment getFallback(Fragment failed, KnotContext knotContext, Map<String, Fragment> fallbackFragmentCache) {
     String fallbackId = failed.fallback().get();
     Fragment result = fallbackFragmentCache.get(fallbackId);
 
@@ -77,7 +75,7 @@ public class FragmentAssemblerFallbackHandler {
         result = getGlobalFallback(failed)
             .orElseThrow(() -> {
               LOGGER.error("Fragment {} specifies fallback but no fallback snippet with id '{}' was found", failed, fallbackId);
-              return new IllegalStateException(String.format("No fallback snippet with id '%s' was found", fallbackId));
+              return new IllegalArgumentException(String.format("No fallback snippet with id '%s' was found", fallbackId));
             });
       }
       fallbackFragmentCache.put(fallbackId, result);
