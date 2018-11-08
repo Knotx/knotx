@@ -3,6 +3,7 @@ All notable changes to Knot.x will be documented in this file.
 
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
+ - [PR-468](https://github.com/Cognifide/knotx/pull/468) - Fragment processing failure handling (configurable fallback)
  - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Action Knot functionality moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms).
 
 ### Breaking changes

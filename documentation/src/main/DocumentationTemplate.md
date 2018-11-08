@@ -27,6 +27,7 @@
 #include "wiki/Mocks.md"
 #include "wiki/KnotxDeployment.md"
 #include "wiki/KnotxTuning.md"
+#include "wiki/FallbackHandling.md"
 #include "wiki/Logging.md"
 #include "wiki/PerformanceTests.md"
 #include "wiki/FAQ.md"
