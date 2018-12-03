@@ -1,4 +1,8 @@
 # Handlebars Knot
+| ! Note |
+|:------ |
+| @Deprecated: As of release 1.5.0, replaced by [Knot.x Template Engine](https://github.com/Knotx/knotx-template-engine). |
+
 Handlebars Knot is a [[Knot|Knot]] implementation responsible for handlebars template processing.
 
 ## How does it work?

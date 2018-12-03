@@ -35,7 +35,11 @@ import com.github.jknack.handlebars.Helper;
  * </ul>
  *
  * @see Helper
+ *
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-template-engine/">Template Engine</a>
+ * @see <a href="https://github.com/Knotx/knotx-template-engine">Knot.x Template Engine</a>
  */
+@Deprecated
 public interface CustomHandlebarsHelper<T> extends Helper<T> {
 
   /**
