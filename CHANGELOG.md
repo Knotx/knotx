@@ -90,6 +90,45 @@ Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to
 Refactor your custom adapter to inherit [`io.knotx.proxy.AdapterProxy`](https://github.com/Cognifide/knotx/blob/1.3.0/knotx-core/src/main/java/io/knotx/proxy/AdapterProxy.java)
 to [`io.knotx.forms.api.FormsAdapterProxy`](https://github.com/Knotx/knotx-forms/blob/master/api/src/main/java/io/knotx/forms/api/FormsAdapterProxy.java)
 
+#### Migration form Handlebars Knot to Knot.x Template Engine
+Knot.x (<= 1.5.0) used `HandlebarsKnot`. Please follow step below in order 
+to migrate your project from `HandlebarsKnot` to `Template Engine` module.
+
+Handlebars is still the default Template Engine strategy in Knot.x. Thanks to moving into Template Engine module you may now easily
+create and configure your own Template Engine strategy and choose some snippets to be rendered by it.
+See the [example project](https://github.com/Knotx/knotx-example-project) for more details.
+
+> Notice! You may still use old Handlebars Knot with Knot.x 1.5 if you want.
+> However, remember that it is marked as @Deprecated and will be removed in the next major version.
+
+##### Configuration file:
+1. In your main config `application.conf`, update `modules` section from:
+  ```
+    "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle"
+  ```
+  to 
+  ```
+    "templateEngine=io.knotx.te.core.TemplateEngineKnot"
+  ``` 
+  
+2. Define module address in the `global` section
+  ```
+  global {
+    ...
+    templateEngine.address = knotx.knot.te
+  }
+  ```
+3. Replace all occurenes of the Handlebars Knot address in the Server routing `defaultFlow` from `${global.hbs.address}` to `${global.templateEngine.address}`.
+
+3. Instead including `hbsKnot.conf` change include to `templateEngine.conf`. You will find examples configuration files in 
+the [knotx-stack distribution](https://github.com/Knotx/knotx-stack/blob/master/knotx-stack-manager/src/main/packaging/conf/includes).
+
+##### Page templates:
+
+1. Update `data-knotx-knots` values from `handlebars` to `te`.
+
+2. Example helpers: `string_equals` and `encode_uri` that were embedded into Handlebars Knot are no longer available in the Template Engine.
+You may introduce them by defining handlebars extension as it is presented in the [example project](https://github.com/Knotx/knotx-example-project/tree/master/acme-handlebars-ext).
 
 
 ## 1.4.0
