@@ -26,6 +26,11 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ServiceBinder;
 
+/**
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-template-engine/blob/master/core/src/main/java/io/knotx/te/core/TemplateEngineKnot.java">Template Engine Knot</a>
+ * @see <a href="https://github.com/Knotx/knotx-template-engine">Knot.x Template Engine</a>
+ */
+@Deprecated
 public class HandlebarsKnotVerticle extends AbstractVerticle {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HandlebarsKnotVerticle.class);

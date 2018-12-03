@@ -20,7 +20,11 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * Describes Handlebars Knot configuration
+ *
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-template-engine/">Template Engine</a>
+ * @see <a href="https://github.com/Knotx/knotx-template-engine">Knot.x Template Engine</a>
  */
+@Deprecated
 @DataObject(generateConverter = true, publicConverter = false)
 public class HandlebarsKnotOptions {
 
