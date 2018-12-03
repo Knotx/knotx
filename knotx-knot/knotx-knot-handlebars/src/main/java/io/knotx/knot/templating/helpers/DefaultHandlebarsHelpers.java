@@ -24,6 +24,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-template-engine/">Template Engine</a>
+ * @see <a href="https://github.com/Knotx/knotx-template-engine">Knot.x Template Engine</a>
+ */
+@Deprecated
 public enum DefaultHandlebarsHelpers implements Helper<Object> {
 
   /**
