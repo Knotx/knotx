@@ -6,6 +6,7 @@ List of changes that are finished but not yet released in any final version.
  - [PR-468](https://github.com/Cognifide/knotx/pull/468) - Fragment processing failure handling (configurable fallback)
  - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Action Knot functionality moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms).
  - [PR-467](https://github.com/Cognifide/knotx/pull/467) - fixed typo in logger format (URI already contains leading slash)
+ - [PR-473](https://github.com/Cognifide/knotx/pull/473) - mark Handlebars Knot as deprecated on behalf of [Knot.x Template Engine](https://github.com/Knotx/knotx-template-engine).
 
 ### Breaking changes
 #### Migration form Action Knot to Knot.x Forms
