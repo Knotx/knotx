@@ -42,10 +42,10 @@ To render a static markup instead of your failed snippet:
 ```
 <knotx-snippet data-knotx-knots="databridge,handlebars" 
   data-knotx-databridge-name="unstable-service"
-  data-knotx-fallback="CUSTOM">
+  data-knotx-fallback="MY_FALLBACK_ID">
       {{#if _result}}<h2>{{_result.count}}</h2>{{/if}}
 </knotx-snippet>
-<knotx:fallback data-knotx-fallback-id="CUSTOM">
+<knotx:fallback data-knotx-fallback-id="MY_FALLBACK_ID">
   <p class="error">error</p>
 </knotx:fallback>
 ```
@@ -70,11 +70,11 @@ To apply custom markup fallback to all snippets by default:
   snippetOptions {
     tagName = knotx-snippet
     paramsPrefix = data-knotx-
-    defaultFallback = CUSTOM_GLOBAL
+    defaultFallback = MY_GLOBAL_ID
     fallbacks = [
       {
-        id = CUSTOM_GLOBAL
-        markup = "<knotx:fallback data-knotx-fallback-id='CUSTOM_GLOBAL'><p class='error'>error</p></knotx:fallback>"
+        id = MY_GLOBAL_ID
+        markup = "<knotx:fallback data-knotx-fallback-id='MY_GLOBAL_ID'><p class='error'>error</p></knotx:fallback>"
       }
     ]
   }
@@ -109,10 +109,10 @@ the strategy id (as defined in your java class)
 ```
 <knotx-snippet data-knotx-knots="databridge,handlebars" 
   data-knotx-databridge-name="unstable-service"
-  data-knotx-fallback="CUSTOM">
+  data-knotx-fallback="MY_FALLBACK_ID">
       {{#if _result}}<h2>{{_result.count}}</h2>{{/if}}
 </knotx-snippet>
-<knotx:fallback data-knotx-fallback-id="CUSTOM" data-knotx-fallback-strategy="CUSTOM_STRATEGY">
+<knotx:fallback data-knotx-fallback-id="MY_FALLBACK_ID" data-knotx-fallback-strategy="CUSTOM_STRATEGY">
   <p class="error">error</p>
 </knotx:fallback>
 ```
