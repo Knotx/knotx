@@ -94,7 +94,7 @@ public class Fragment {
 
   /**
    * @return replacement markup that should be rendered if this Fragment has failed. Can be empty
-   * string. Null value indicates that no replacement markup is provided.
+   * string. Absent value indicates that no replacement markup is provided.
    */
   public Optional<String> fallback() {
     return Optional.ofNullable(fallback);
