@@ -75,6 +75,14 @@ public class Fragment {
     return new Fragment(Collections.singletonList(RAW_FRAGMENT_ID), data, null);
   }
 
+  public static Fragment snippet(List<String> knots, String data, String fallback) {
+    return new Fragment(knots, data, fallback);
+  }
+
+  public static Fragment snippet(List<String> knots, String data) {
+    return snippet(knots, data, null);
+  }
+
   public static Fragment fallback(String data, String fallbackId) {
     return new Fragment(Collections.singletonList(FALLBACK_FRAGMENT_ID), data, null)
         .setAttribute(FragmentConstants.FALLBACK_ID, fallbackId);
@@ -84,12 +92,12 @@ public class Fragment {
     return Fragment.fallback(data, fallbackId).setAttribute(FragmentConstants.FALLBACK_STRATEGY, strategy);
   }
 
-  public static Fragment snippet(List<String> knots, String data, String fallback) {
-    return new Fragment(knots, data, fallback);
-  }
-
-  public static Fragment snippet(List<String> knots, String data) {
-    return snippet(knots, data, null);
+  /**
+   * @return replacement markup that should be rendered if this Fragment has failed. Can be empty
+   * string. Null value indicates that no replacement markup is provided.
+   */
+  public Optional<String> fallback() {
+    return Optional.ofNullable(fallback);
   }
 
   public JsonObject toJson() {
@@ -157,14 +165,6 @@ public class Fragment {
    */
   public boolean failed() {
     return this.knots.stream().anyMatch(k -> k.getStatus() == KnotTaskStatus.FAILURE);
-  }
-
-  /**
-   * @return replacement markup that should be rendered if this Fragment has failed. Can be empty
-   * string. Null value indicates that no replacement markup is provided.
-   */
-  public Optional<String> fallback() {
-    return Optional.ofNullable(fallback);
   }
 
   public Fragment failure(String knot, Throwable t) {
