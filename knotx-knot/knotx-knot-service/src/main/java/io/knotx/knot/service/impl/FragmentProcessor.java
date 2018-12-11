@@ -16,7 +16,7 @@
 package io.knotx.knot.service.impl;
 
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.exceptions.FragmentExecutionException;
+import io.knotx.exceptions.FragmentProcessingException;
 import io.knotx.knot.service.ServiceKnotOptions;
 import io.knotx.knot.service.service.ServiceEngine;
 import io.knotx.knot.service.service.ServiceEntry;
@@ -96,7 +96,7 @@ public class FragmentProcessor {
     if (fragmentContext.fragment().fallback().isPresent()) {
       return fragmentContext;
     } else {
-      throw new FragmentExecutionException(String.format("Fragment processing failed in %s", ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID), t);
+      throw new FragmentProcessingException(String.format("Fragment processing failed in %s", ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID), t);
     }
   }
 
