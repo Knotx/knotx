@@ -15,9 +15,9 @@
  */
 package io.knotx.exceptions;
 
-public class FragmentExecutionException extends RuntimeException {
+public class FragmentProcessingException extends RuntimeException {
 
-  public FragmentExecutionException(String message, Throwable t) {
+  public FragmentProcessingException(String message, Throwable t) {
     super(message, t);
   }
 
