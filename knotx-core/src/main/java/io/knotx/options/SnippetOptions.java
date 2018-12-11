@@ -16,6 +16,7 @@
 package io.knotx.options;
 
 import com.google.common.collect.Lists;
+import io.knotx.util.StringUtil;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
@@ -32,7 +33,6 @@ public class SnippetOptions {
   private static final String DEFAULT_TAG_NAME = "script";
   private static final String DEFAULT_FALLBACK_TAG_NAME = "knotx:fallback";
   private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
-  private static final String BLANK_TEMPLATE = "<%s %sfallback-id=\"BLANK\"></%s>";
 
   private String tagName;
   private String paramsPrefix;
@@ -91,7 +91,7 @@ public class SnippetOptions {
 
   private void configureDefaultFallback() {
     if (CollectionUtils.isEmpty(fallbacks)) {
-      fallbacks = Lists.newArrayList(new FallbackMetadata("BLANK", String.format(BLANK_TEMPLATE, fallbackTagName, paramsPrefix, fallbackTagName)));
+      fallbacks = Lists.newArrayList(new FallbackMetadata("BLANK", StringUtils.EMPTY));
     }
   }
 
