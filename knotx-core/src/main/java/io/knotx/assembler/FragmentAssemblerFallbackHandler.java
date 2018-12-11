@@ -21,6 +21,7 @@ import io.knotx.dataobjects.KnotContext;
 import io.knotx.fallback.DefaultFallbackStrategy;
 import io.knotx.fallback.FallbackStrategy;
 import io.knotx.fragments.FragmentConstants;
+import io.knotx.options.SnippetOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import java.util.Map;
@@ -87,7 +88,11 @@ public class FragmentAssemblerFallbackHandler {
     return this.options.getSnippetOptions().getFallbacks().stream()
         .filter(f -> StringUtils.equals(failed.fallback().get(), f.getId()))
         .findFirst()
-        .map(fm -> Fragment.fallback(fm.getMarkup(), fm.getId()));
+        .map(fm -> Fragment.fallback(wrap(fm.getMarkup(), this.options.getSnippetOptions()), fm.getId()));
+  }
+
+  private String wrap(String fallbackMarkup, SnippetOptions snippetOptions) {
+    return String.format("<%s>%s</%s>", snippetOptions.getFallbackTagName(), fallbackMarkup, snippetOptions.getFallbackTagName());
   }
 
 }
