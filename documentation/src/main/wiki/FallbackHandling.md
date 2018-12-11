@@ -74,7 +74,7 @@ To apply custom markup fallback to all snippets by default:
     fallbacks = [
       {
         id = MY_GLOBAL_ID
-        markup = "<knotx:fallback data-knotx-fallback-id='MY_GLOBAL_ID'><p class='error'>error</p></knotx:fallback>"
+        markup = "<p class='error'>error</p>"
       }
     ]
   }
