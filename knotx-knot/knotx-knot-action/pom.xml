@@ -28,7 +28,7 @@
 
   <artifactId>knotx-knot-action</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Knot - Action</name>
+  <name>Knot.x - Reactive microservice assembler - Knot - Action (Deprecated)</name>
 
   <dependencies>
     <dependency>
@@ -39,6 +39,7 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-adapter-common</artifactId>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
