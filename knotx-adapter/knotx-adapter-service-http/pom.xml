@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>knotx-adapter-service-http</artifactId>
-  <name>Knot.x - Reactive microservice assembler - Adapter - Service HTTP</name>
+  <name>Knot.x - Reactive microservice assembler - Adapter - Service HTTP (Deprecated)</name>
 
   <dependencies>
     <dependency>
@@ -38,6 +38,7 @@
     <dependency>
       <groupId>io.knotx</groupId>
       <artifactId>knotx-adapter-common</artifactId>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
