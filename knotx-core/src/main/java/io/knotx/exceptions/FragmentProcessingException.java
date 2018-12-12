@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Cognifide Limited
+ * Copyright (C) 2018 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.fragments;
+package io.knotx.exceptions;
 
-public final class FragmentConstants {
+public class FragmentProcessingException extends RuntimeException {
 
-  public static final String SNIPPET_IDENTIFIER_NAME = "knots";
-
-  public static final String SNIPPET_FALLBACK_NAME = "fallback";
-
-  public static final String FALLBACK_ID = "fallback-id";
-
-  public static final String FALLBACK_STRATEGY = "fallback-strategy";
-
-  public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
-
-  static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
-
-  private FragmentConstants() {
-    //constants util class constructor
+  public FragmentProcessingException(String message, Throwable t) {
+    super(message, t);
   }
 
 }

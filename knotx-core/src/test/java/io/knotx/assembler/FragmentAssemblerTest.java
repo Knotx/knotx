@@ -34,7 +34,9 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +46,7 @@ public class FragmentAssemblerTest {
 
   private final static String ADDRESS = "knotx.core.assembler";
   private final static String RAW = "_raw";
+  private final static String FALLBACK = "_fallback";
   private static final String SERVICES = "services";
   private static final String HANDLEBARS = "handlebars";
 
@@ -64,7 +67,7 @@ public class FragmentAssemblerTest {
       VertxTestContext context, Vertx vertx) {
     callAssemblerWithAssertions(context, vertx,
         Collections
-            .singletonList(new ImmutablePair<>(Collections.singletonList(RAW), StringUtils.SPACE)),
+            .singletonList(new ImmutableTriple<>(Collections.singletonList(RAW), null, StringUtils.SPACE)),
         knotContext -> Assertions.assertEquals(HttpResponseStatus.NO_CONTENT.code(),
             knotContext.getClientResponse().getStatusCode()));
   }
@@ -73,10 +76,10 @@ public class FragmentAssemblerTest {
   @KnotxApplyConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectAsIsResult(
       VertxTestContext context, Vertx vertx) throws IOException {
-    List<Pair<List<String>, String>> fragments = Arrays.asList(
-        toPair("io/knotx/assembler/fragment1.txt", RAW),
-        toPair("io/knotx/assembler/fragment2.txt", SERVICES, HANDLEBARS),
-        toPair("io/knotx/assembler/fragment3.txt", RAW));
+    List<Triple<List<String>, String, String>> fragments = Arrays.asList(
+        toTriple("io/knotx/assembler/fragment1.txt",null,  RAW),
+        toTriple("io/knotx/assembler/fragment2.txt", null, SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW));
     String expectedResult = FileReader.readText("io/knotx/server/expectedAsIsResult.html");
     callAssemblerWithAssertions(context, vertx,
         fragments,
@@ -92,10 +95,10 @@ public class FragmentAssemblerTest {
   @KnotxApplyConfiguration("io/knotx/assembler/test.unwrap.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectUnwrapResult(
       VertxTestContext context, Vertx vertx) throws IOException {
-    List<Pair<List<String>, String>> fragments = Arrays.asList(
-        toPair("io/knotx/assembler/fragment1.txt", RAW),
-        toPair("io/knotx/assembler/fragment2.txt", SERVICES, HANDLEBARS),
-        toPair("io/knotx/assembler/fragment3.txt", RAW));
+    List<Triple<List<String>, String, String>> fragments = Arrays.asList(
+        toTriple("io/knotx/assembler/fragment1.txt", null, RAW),
+        toTriple("io/knotx/assembler/fragment2.txt", null, SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW));
     String expectedResult = FileReader.readText("io/knotx/server/expectedUnwrapResult.html");
     callAssemblerWithAssertions(context, vertx,
         fragments,
@@ -111,11 +114,50 @@ public class FragmentAssemblerTest {
   @KnotxApplyConfiguration("io/knotx/assembler/test.ignore.io.knotx.FragmentAssembler.json")
   public void callAssemblerWithManySnippets_expectIgnoreResult(
       VertxTestContext context, Vertx vertx) throws IOException {
-    List<Pair<List<String>, String>> fragments = Arrays.asList(
-        toPair("io/knotx/assembler/fragment1.txt", RAW),
-        toPair("io/knotx/assembler/fragment2.txt", SERVICES, HANDLEBARS),
-        toPair("io/knotx/assembler/fragment3.txt", RAW));
+    List<Triple<List<String>,String, String>> fragments = Arrays.asList(
+        toTriple("io/knotx/assembler/fragment1.txt", null, RAW),
+        toTriple("io/knotx/assembler/fragment2.txt", null, SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW));
     String expectedResult = FileReader.readText("io/knotx/server/expectedIgnoreResult.html");
+    callAssemblerWithAssertions(context, vertx,
+        fragments,
+        knotContext -> {
+          Assertions.assertEquals(HttpResponseStatus.OK.code(),
+              knotContext.getClientResponse().getStatusCode());
+          Assertions
+              .assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
+        });
+  }
+
+  @Test
+  @KnotxApplyConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithFailedSnippet_expectFallback(
+      VertxTestContext context, Vertx vertx) throws IOException {
+    List<Triple<List<String>,String, String>> fragments = Arrays.asList(
+        toTriple("io/knotx/assembler/fragment1.txt", null, RAW),
+        toTriple("io/knotx/assembler/fragment2.txt", "FALLBACK_1", SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW),
+        toTriple("io/knotx/assembler/fallback.txt", null, FALLBACK ));
+    String expectedResult = FileReader.readText("io/knotx/server/expectedFallbackResult.html");
+    callAssemblerWithAssertions(context, vertx,
+        fragments,
+        knotContext -> {
+          Assertions.assertEquals(HttpResponseStatus.OK.code(),
+              knotContext.getClientResponse().getStatusCode());
+          Assertions
+              .assertEquals(expectedResult, knotContext.getClientResponse().getBody().toString());
+        });
+  }
+
+  @Test
+  @KnotxApplyConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
+  public void callAssemblerWithFailedSnippet_expectFallbackForBlank(
+      VertxTestContext context, Vertx vertx) throws IOException {
+    List<Triple<List<String>,String, String>> fragments = Arrays.asList(
+        toTriple("io/knotx/assembler/fragment1.txt", null, RAW),
+        toTriple("io/knotx/assembler/fragment2.txt", "BLANK", SERVICES, HANDLEBARS),
+        toTriple("io/knotx/assembler/fragment3.txt", null, RAW));
+    String expectedResult = FileReader.readText("io/knotx/server/expectedFallbackForBlankResult.html");
     callAssemblerWithAssertions(context, vertx,
         fragments,
         knotContext -> {
@@ -128,7 +170,7 @@ public class FragmentAssemblerTest {
 
   private void callAssemblerWithAssertions(
       VertxTestContext context, Vertx vertx,
-      List<Pair<List<String>, String>> fragments,
+      List<Triple<List<String>, String, String>> fragments,
       Consumer<KnotContext> verifyResultFunction) {
     KnotProxy service = KnotProxy.createProxy(vertx, ADDRESS);
 
@@ -137,8 +179,8 @@ public class FragmentAssemblerTest {
     subscribeToResult_shouldSucceed(context, knotContextSingle, verifyResultFunction);
   }
 
-  private Pair<List<String>, String> toPair(String filePath, String... knots) throws IOException {
-    return new ImmutablePair<>(Arrays.asList(knots), FileReader.readText(filePath));
+  private Triple<List<String>, String, String> toTriple(String filePath, String failed, String... knots) throws IOException {
+    return new ImmutableTriple<>(Arrays.asList(knots), failed, FileReader.readText(filePath));
   }
 
 }

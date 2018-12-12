@@ -16,6 +16,7 @@
 package io.knotx.knot.service.impl;
 
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.exceptions.FragmentProcessingException;
 import io.knotx.knot.service.ServiceKnotOptions;
 import io.knotx.knot.service.service.ServiceEngine;
 import io.knotx.knot.service.service.ServiceEntry;
@@ -43,7 +44,7 @@ public class FragmentProcessor {
   }
 
   public Single<FragmentContext> processSnippet(final FragmentContext fragmentContext,
-      KnotContext request) {
+                                                KnotContext request) {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Processing Handlebars snippet {}", fragmentContext.fragment());
     }
@@ -55,7 +56,8 @@ public class FragmentProcessor {
             fetchServiceData(serviceEntry, request).toObservable()
                 .map(serviceEntry::getResultWithNamespaceAsKey))
         .reduce(new JsonObject(), JsonObject::mergeIn)
-        .map(results -> applyData(fragmentContext, results));
+        .map(results -> applyData(fragmentContext, results))
+        .onErrorReturn(t -> handleError(fragmentContext, request, t));
   }
 
   private Single<JsonObject> fetchServiceData(ServiceEntry service, KnotContext request) {
@@ -77,6 +79,7 @@ public class FragmentProcessor {
       JsonObject serviceResult) {
     LOGGER.trace("Applying data to snippet {}", fragmentContext);
     fragmentContext.fragment().context().mergeIn(serviceResult);
+    fragmentContext.fragment().success(ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID);
     return fragmentContext;
   }
 
@@ -84,6 +87,16 @@ public class FragmentProcessor {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Found service call definition: {} {}", serviceEntry.getAddress(),
           serviceEntry.getParams());
+    }
+  }
+
+  private FragmentContext handleError(FragmentContext fragmentContext, KnotContext request, Throwable t) {
+    LOGGER.error("Fragment processing failed. Cause:{}\nRequest:\n{}\nFragmentContext:\n{}\n", t.getMessage(), request.getClientRequest(), fragmentContext);
+    fragmentContext.fragment().failure(ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID, t);
+    if (fragmentContext.fragment().fallback().isPresent()) {
+      return fragmentContext;
+    } else {
+      throw new FragmentProcessingException(String.format("Fragment processing failed in %s", ServiceKnotProxyImpl.SUPPORTED_FRAGMENT_ID), t);
     }
   }
 

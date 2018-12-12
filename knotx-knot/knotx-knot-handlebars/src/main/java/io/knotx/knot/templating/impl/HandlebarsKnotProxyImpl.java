@@ -23,7 +23,6 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Sets;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
@@ -45,6 +44,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @deprecated  As of release 1.5.0, replaced by <a href="https://github.com/Knotx/knotx-template-engine/">Template Engine</a>
@@ -85,8 +85,8 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         knotContext.setTransition(DEFAULT_TRANSITION);
         Optional.ofNullable(knotContext.getFragments()).ifPresent(fragments ->
             fragments.stream()
-                .filter(fragment -> shouldProcess(Sets.newHashSet(fragment.knots())))
-                .forEach(fragment -> fragment.content(evaluate(fragment)))
+                .filter(this::shouldProcess)
+                .forEach(fragment -> fragment.content(evaluateWithFallback(fragment)))
         );
         observer.onSuccess(knotContext);
       } catch (Exception e) {
@@ -111,6 +111,20 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
         .setClientResponse(errorResponse);
   }
 
+  private String evaluateWithFallback(Fragment fragment) {
+    try {
+      String value = evaluate(fragment);
+      fragment.success(SUPPORTED_FRAGMENT_KNOT);
+      return value;
+    } catch (RuntimeException re) {
+      fragment.failure(SUPPORTED_FRAGMENT_KNOT, re);
+      if (fragment.fallback().isPresent()) {
+        return StringUtils.EMPTY;
+      }
+      throw re;
+    }
+  }
+
   private String evaluate(Fragment fragment) {
     Template template = template(fragment);
     if (LOGGER.isTraceEnabled()) {
@@ -125,6 +139,7 @@ public class HandlebarsKnotProxyImpl extends AbstractKnotProxy {
     } catch (IOException e) {
       LOGGER.error("Could not apply context [{}] to template [{}]", fragment.context(),
           abbreviate(template.text()), e);
+      fragment.failure(SUPPORTED_FRAGMENT_KNOT, e);
       throw new IllegalStateException(e);
     }
   }

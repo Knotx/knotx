@@ -39,7 +39,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServiceKnotProxyImpl.class);
 
-  private static final String SUPPORTED_FRAGMENT_ID = "services";
+  public static final String SUPPORTED_FRAGMENT_ID = "services";
 
   private FragmentProcessor snippetProcessor;
 
@@ -52,7 +52,7 @@ public class ServiceKnotProxyImpl extends AbstractKnotProxy {
     return Optional.ofNullable(knotContext.getFragments())
         .map(fragments ->
             Observable.fromIterable(fragments)
-            .filter(fragment -> fragment.knots().contains(SUPPORTED_FRAGMENT_ID))
+            .filter(this::shouldProcess)
             .doOnNext(this::traceFragment)
             .map(FragmentContext::from)
             .flatMapSingle(

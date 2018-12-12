@@ -15,34 +15,44 @@
  */
 package io.knotx.splitter;
 
-import com.google.common.collect.Lists;
+import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
 import io.knotx.fragments.SnippetPatterns;
 import io.knotx.options.SnippetOptions;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
+import org.apache.commons.lang3.StringUtils;
 
 class HtmlFragmentSplitter implements FragmentSplitter {
 
   private final SnippetPatterns snippetPatterns;
 
+  private final String defaultFallback;
+
   HtmlFragmentSplitter(SnippetOptions snippetOptions) {
     snippetPatterns = new SnippetPatterns(snippetOptions);
+    defaultFallback = snippetOptions.getDefaultFallback();
   }
 
   @Override
   public List<Fragment> split(String html) {
-    List<Fragment> fragments = Lists.newLinkedList();
+    if (StringUtils.isEmpty(html)) {
+      throw new NoSuchElementException("html cannot be empty");
+    }
+    List<Fragment> fragments = new ArrayList<>();
+    List<FallbackMarker> fallbackMarkers = getFallbackMarkers(html);
     if (snippetPatterns.getAnySnippetPattern().matcher(html).matches()) {
       Matcher matcher = snippetPatterns.getSnippetPattern().matcher(html);
       int idx = 0;
       while (matcher.find()) {
         MatchResult matchResult = matcher.toMatchResult();
         if (idx < matchResult.start()) {
-          fragments.add(toRaw(html, idx, matchResult.start()));
+          processMarkup(fragments, fallbackMarkers, html, idx, matchResult.start());
         }
         fragments.add(
             toSnippet(matchResult.group(1).intern()
@@ -51,19 +61,69 @@ class HtmlFragmentSplitter implements FragmentSplitter {
         idx = matchResult.end();
       }
       if (idx < html.length()) {
-        fragments.add(toRaw(html, idx, html.length()));
+        processMarkup(fragments, fallbackMarkers, html, idx, html.length());
       }
     } else {
-      fragments.add(toRaw(html, 0, html.length()));
+      processMarkup(fragments, fallbackMarkers, html, 0, html.length());
     }
     return fragments;
   }
 
-  private Fragment toRaw(String html, int startIdx, int endIdx) {
-    return Fragment.raw(html.substring(startIdx, endIdx));
+  private void processMarkup(List<Fragment> fragments, List<FallbackMarker> fallbackMarkers, String html, int startIdx, int endIdx) {
+    int idx = startIdx;
+    for (FallbackMarker fe : fallbackMarkers) {
+      if (idx > fe.start) {
+        continue;
+      } else if (fe.start > endIdx) {
+        break;
+      } else if (idx < fe.start) {
+        fragments.add(Fragment.raw(html.substring(idx, fe.start)));
+      }
+      fragments.add(toFallback(html, fe));
+      idx = fe.end;
+    }
+    if (idx < endIdx) {
+      fragments.add(Fragment.raw(html.substring(idx, endIdx)));
+    }
+  }
+
+  private Fragment toFallback(String html, FallbackMarker fm) {
+    String snippet = html.substring(fm.start, fm.end);
+    return Fragment.fallback(snippet, fm.id).setAttribute(FragmentConstants.FALLBACK_STRATEGY, fm.strategy);
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
-    return Fragment.snippet(Arrays.asList(ids), html.substring(startIdx, endIdx));
+    String snippet = html.substring(startIdx, endIdx);
+    Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(snippet);
+    String fallback = matcher.matches() ? matcher.group(2) : defaultFallback;
+    return Fragment.snippet(Arrays.asList(ids), snippet, fallback);
   }
+
+  private List<FallbackMarker> getFallbackMarkers(String html) {
+    Matcher matcher = snippetPatterns.getFallbackPattern().matcher(html);
+    List<FallbackMarker> result = new ArrayList<>();
+    while (matcher.find()) {
+      MatchResult matchResult = matcher.toMatchResult();
+      String snippet = html.substring(matchResult.start(), matchResult.end());
+      Matcher strategyMatcher = snippetPatterns.getFallbackWithStrategyPattern().matcher(snippet);
+      String strategy = strategyMatcher.matches() ? strategyMatcher.group(2) : null;
+      result.add(new FallbackMarker(matchResult.start(), matchResult.end(), matcher.group(1), strategy));
+    }
+    return result;
+  }
+
+  private class FallbackMarker {
+    int start;
+    int end;
+    String id;
+    String strategy;
+
+    FallbackMarker(int startIndex, int endIndex, String id, String strategy) {
+      this.start = startIndex;
+      this.end = endIndex;
+      this.id = id;
+      this.strategy = strategy;
+    }
+  }
+
 }

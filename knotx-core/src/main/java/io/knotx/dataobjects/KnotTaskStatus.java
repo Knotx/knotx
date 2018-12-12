@@ -13,24 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.fragments;
+package io.knotx.dataobjects;
 
-public final class FragmentConstants {
-
-  public static final String SNIPPET_IDENTIFIER_NAME = "knots";
-
-  public static final String SNIPPET_FALLBACK_NAME = "fallback";
-
-  public static final String FALLBACK_ID = "fallback-id";
-
-  public static final String FALLBACK_STRATEGY = "fallback-strategy";
-
-  public static final String FRAGMENT_IDENTIFIERS_SEPARATOR = ",";
-
-  static final int DEBUG_MAX_FRAGMENT_CONTENT_LOG_LENGTH = 256;
-
-  private FragmentConstants() {
-    //constants util class constructor
-  }
-
+public enum KnotTaskStatus {
+  SUCCESS, FAILURE, UNPROCESSED
 }

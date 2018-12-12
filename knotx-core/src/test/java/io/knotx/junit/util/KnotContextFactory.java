@@ -19,6 +19,7 @@ import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
+import io.knotx.fragments.FragmentConstants;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.reactivex.core.MultiMap;
@@ -26,6 +27,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 @Deprecated
 public final class KnotContextFactory {
@@ -52,16 +58,36 @@ public final class KnotContextFactory {
         .setClientRequest(new ClientRequest());
   }
 
-  public static KnotContext create(List<Pair<List<String>, String>> fragments) {
+  public static KnotContext create(List<Triple<List<String>, String, String>> fragments) {
     return new KnotContext()
         .setFragments(
             fragments != null
-                ? fragments.stream().map(data -> Fragment.snippet(data.getKey(), data.getValue())).collect(Collectors.toList())
+                ? fragments.stream().map(data -> {
+                  Fragment fragment = Fragment.snippet(data.getLeft(), data.getRight(), data.getMiddle());
+                  if (data.getMiddle() != null) {
+                    fragment.failure(data.getLeft().get(0), new RuntimeException("knot failure"));
+                  }
+                  if ("_fallback".equals(data.getLeft().get(0))) {
+                    fragment.setAttribute(FragmentConstants.FALLBACK_ID, getAttribute(fragment, "data-knotx-fallback-id"));
+                  }
+                  return fragment;
+            }).collect(Collectors.toList())
                 : null)
         .setClientRequest(new ClientRequest())
         .setClientResponse(
             new ClientResponse()
                 .setHeaders(MultiMap.caseInsensitiveMultiMap()));
+  }
+
+  private static String getAttribute(Fragment fragment, String attributeId) {
+    Document document = Jsoup.parseBodyFragment(fragment.content());
+    Element scriptTag = document.body().child(0);
+    List<Attribute> attributes = scriptTag.attributes().asList();
+    return attributes.stream()
+        .filter(a -> StringUtils.equals(attributeId, a.getKey()))
+        .findFirst()
+        .map(Attribute::getValue)
+        .orElse(null);
   }
 
 }
