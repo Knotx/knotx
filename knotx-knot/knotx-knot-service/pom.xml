@@ -28,7 +28,7 @@
 
   <artifactId>knotx-knot-service</artifactId>
 
-  <name>Knot.x - Reactive microservice assembler - Knot - Service</name>
+  <name>Knot.x - Reactive microservice assembler - Knot - Service (Deprecated)</name>
 
   <dependencies>
     <dependency>
