@@ -20,6 +20,10 @@ import com.google.common.io.Resources;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * Please use kntox-junit5 io.knotx.junit5.util.FileReader
+ */
+@Deprecated
 public interface FileReader {
 
   static String readText(String path) throws IOException {
