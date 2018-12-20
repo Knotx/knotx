@@ -217,6 +217,17 @@ Set the name of the request header.
 Set the value of the request header.
 +++
 |===
+[[FallbackMetadata]]
+== FallbackMetadata
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[id]]`id`|`String`|-
+|[[markup]]`markup`|`String`|-
+|===
 [[FilesystemRepositoryOptions]]
 == FilesystemRepositoryOptions
 
@@ -252,6 +263,7 @@ Set the root folder of the repository on file system.
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[fallback]]`fallback`|`Boolean`|-
 |[[raw]]`raw`|`Boolean`|
 +++
 
@@ -375,6 +387,28 @@ Set the header (name and value) to be sent in every request to the remote reposi
 |[[clientResponse]]`clientResponse`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
 |[[fragments]]`fragments`|`Array of link:cheatsheets.adoc#Fragment[Fragment]`|-
 |[[transition]]`transition`|`String`|-
+|===
+[[KnotError]]
+== KnotError
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[code]]`code`|`String`|-
+|===
+[[KnotTask]]
+== KnotTask
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[errors]]`errors`|`Array of link:cheatsheets.adoc#KnotError[KnotError]`|-
+|[[name]]`name`|`String`|-
+|[[status]]`status`|`link:cheatsheets.adoc#KnotTaskStatus[KnotTaskStatus]`|-
 |===
 [[KnotxCSRFOptions]]
 == KnotxCSRFOptions
@@ -613,6 +647,9 @@ Sets the Regular expression of HTTP Request path
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[defaultFallback]]`defaultFallback`|`String`|-
+|[[fallbackTagName]]`fallbackTagName`|`String`|-
+|[[fallbacks]]`fallbacks`|`Array of link:cheatsheets.adoc#FallbackMetadata[FallbackMetadata]`|-
 |[[paramsPrefix]]`paramsPrefix`|`String`|
 +++
 Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
