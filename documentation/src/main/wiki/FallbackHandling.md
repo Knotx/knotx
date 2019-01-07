@@ -26,13 +26,13 @@ You may configure fallback behavior for each snippet - or you may use global con
 snippets in your application. Local configuration (on snippet level) takes precedence over the global one. 
     
 ### Simple blank fallback (per snippet)
-To render an empty string instead of your failed snippet add `data-knotx-fallback="BLANK"` attribute:
+To render an empty string instead of your failed snippet add `fallback="BLANK"` attribute:
 ```
-<knotx-snippet data-knotx-knots="databridge,handlebars" 
-  data-knotx-databridge-name="unstable-service"
-  data-knotx-fallback="BLANK">
+<knotx:snippet knots="databridge,te" 
+  databridge-name="unstable-service"
+  fallback="BLANK">
       {{#if _result}}<h2>{{_result.count}}</h2>{{/if}}
-</knotx-snippet>
+</knotx:snippet>
 ```
 
 ### Static markup fallback (per snippet)
@@ -40,12 +40,12 @@ To render a static markup instead of your failed snippet:
 1. create a fallback snippet with `data-knotx-fallback-id` attribute 
 2. point to it in your snippet
 ```
-<knotx-snippet data-knotx-knots="databridge,handlebars" 
-  data-knotx-databridge-name="unstable-service"
-  data-knotx-fallback="MY_FALLBACK_ID">
+<knotx:snippet knots="databridge,te" 
+  databridge-name="unstable-service"
+  fallback="MY_FALLBACK_ID">
       {{#if _result}}<h2>{{_result.count}}</h2>{{/if}}
-</knotx-snippet>
-<knotx:fallback data-knotx-fallback-id="MY_FALLBACK_ID">
+</knotx:snippet>
+<knotx:fallback fallback-id="MY_FALLBACK_ID">
   <p class="error">error</p>
 </knotx:fallback>
 ```
@@ -104,15 +104,15 @@ public class MyFallbackStrategy implements FallbackStrategy {
 ```
 - make sure that `ServiceLoader` can discover this class - add its fully qualified name to 
 `/META-INF/services/io.knotx.fallback.FallbackStrategy` file. 
-- create a custom fallback snippet with linked strategy id. Use `data-knotx-fallback-strategy` attribute to provide 
+- create a custom fallback snippet with linked strategy id. Use `fallback-strategy` attribute to provide 
 the strategy id (as defined in your java class)  
 ```
-<knotx-snippet data-knotx-knots="databridge,handlebars" 
-  data-knotx-databridge-name="unstable-service"
-  data-knotx-fallback="MY_FALLBACK_ID">
+<knotx:snippet knots="databridge,te" 
+  databridge-name="unstable-service"
+  fallback="MY_FALLBACK_ID">
       {{#if _result}}<h2>{{_result.count}}</h2>{{/if}}
-</knotx-snippet>
-<knotx:fallback data-knotx-fallback-id="MY_FALLBACK_ID" data-knotx-fallback-strategy="CUSTOM_STRATEGY">
+</knotx:snippet>
+<knotx:fallback fallback-id="MY_FALLBACK_ID" data-knotx-fallback-strategy="CUSTOM_STRATEGY">
   <p class="error">error</p>
 </knotx:fallback>
 ```

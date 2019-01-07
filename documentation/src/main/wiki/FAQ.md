@@ -44,9 +44,3 @@ No - please refer to [#87](https://github.com/Cognifide/knotx/issues/87) for det
 ### 3.2 Can I have more than one remote repository defined?
 Yes, you may have more than one instance of `HttpRepositoryConnectorVerticle` defined in your server configuration.
 Please see the example configuration in [#342](https://github.com/Cognifide/knotx/issues/342).
-
-### 3.3 Does Knot.x come with an Action Adapter implementation?
-We noticed that action adapter implementation will be very specific for each project. Because of that Knot.x does 
-not come with an out of the box Action Adapter implementation (not like in case of [[Http Service Adapter|HttpServiceAdapter]]).
-You may see an [Example Action Adapter](https://github.com/Cognifide/knotx/tree/master/knotx-example/knotx-example-action-adapter-http)
-that is used for demo purposes. This is not a production ready code.
