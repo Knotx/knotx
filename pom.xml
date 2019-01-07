@@ -58,11 +58,6 @@
 
   <modules>
     <module>knotx-core</module>
-
-    <module>knotx-mocks</module>
-    <module>knotx-adapter</module>
-    <module>knotx-knot</module>
-
     <module>documentation</module>
   </modules>
 

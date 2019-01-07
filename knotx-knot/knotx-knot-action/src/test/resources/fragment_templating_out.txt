@@ -1,3 +1,0 @@
-<script data-knotx-knots="services" data-knotx-service="some-service" type="text/knotx-snippet">
-    This should not be modified.
-</script>

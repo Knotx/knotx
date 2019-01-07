@@ -11,5 +11,3 @@ The diagram below depicts Knot.x request flow at very high level point of view.
 [[assets/knotx-overview.png|alt=Knot.x Overview]]
 
 Thanks to modular nature, Knot.x can be easily extended by project-specific mechanics (see [[Knots|Knot]]).
-Knot.x can easily adapt responses with different formats to required one (see e.g. [[Service Adapters|ServiceAdapter]]).
-Additionally Knot.x does not concentrate on HTTP protocol so even custom protocols can be used if required.

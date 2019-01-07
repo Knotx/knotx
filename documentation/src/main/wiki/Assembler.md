@@ -53,10 +53,10 @@ See Fragments below and then compare those strategies.
 <h1>test</h1>
 ```
 ```html
-<script data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
+<knotx:snippet knots="databridge,te" databridge-name="first-service" type="text/knotx-snippet">
   <h2>{{message}}</h2>
   <div>{{body.a}}</div>
-</script>
+</knotx:snippet>
 ```
 ```html
 </body>
@@ -71,10 +71,10 @@ It leaves fragments untouched. So, result of join will look like below for our e
 </head>
 <body>
 <h1>test</h1>
-<script data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
+<knotx:snippet knots="databridge,te" databridge-name="first-service" type="text/knotx-snippet">
   <h2>{{message}}</h2>
   <div>{{body.a}}</div>
-</script>
+</knotx:snippet>
 </body>
 </html>
 ```

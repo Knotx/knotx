@@ -66,7 +66,7 @@ being passed, or addresses of the client services used for rendering dynamic con
 Just add `config` section for each module (using **alias** as the reference) that needs default configuration to be modified. 
 You only need to specify elements that should be changed. Follow the guide of each Verticle to see the supported parameters.
 
-Some of the verticles, might respect System properties to alter some configurations. E.g. see the [[Servcer|Server]] 
+Some of the verticles, might respect System properties to alter some configurations. E.g. see the [[Server|Server]] 
 
 ### How to configure Knot.x module
 In your project specific `conf/application.conf` add `config` object for a given module alias. For each module you want to configure put a field with configuration object.
