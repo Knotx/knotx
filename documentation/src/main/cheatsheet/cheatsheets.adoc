@@ -102,44 +102,6 @@ Configure when to collect access log. True if after request arrives, false after
  response.
 +++
 |===
-[[AdapterRequest]]
-== AdapterRequest
-
-++++
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[adapterParams]]`adapterParams`|`Json object`|
-+++
-Set the request params
-+++
-|[[params]]`params`|`Json object`|
-+++
-Set the request params
-+++
-|[[request]]`request`|`link:cheatsheets.adoc#ClientRequest[ClientRequest]`|
-+++
-Set the client request
-+++
-|===
-[[AdapterResponse]]
-== AdapterResponse
-
-++++
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[response]]`response`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
-|[[signal]]`signal`|`String`|-
-|===
 [[BodyHandlerOptions]]
 == BodyHandlerOptions
 
@@ -266,6 +228,17 @@ Set the name of the request header.
 Set the value of the request header.
 +++
 |===
+[[FallbackMetadata]]
+== FallbackMetadata
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[id]]`id`|`String`|-
+|[[markup]]`markup`|`String`|-
+|===
 [[FilesystemRepositoryOptions]]
 == FilesystemRepositoryOptions
 
@@ -301,6 +274,7 @@ Set the root folder of the repository on file system.
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[fallback]]`fallback`|`Boolean`|-
 |[[raw]]`raw`|`Boolean`|
 +++
 
@@ -359,24 +333,6 @@ Set the EB address of the verticle
 Sets snippet options (e.g. with tag and data prefix names).
 +++
 |===
-[[GatewayKnotOptions]]
-== GatewayKnotOptions
-
-++++
- Describes a configuration of Knot.x Gateway knot
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[address]]`address`|`String`|
-+++
-The event bus <code>address</code> the knot is listening on.
- Default is <code>knotx.gateway.gatewayknot</code>
-+++
-|===
 [[HttpRepositoryOptions]]
 == HttpRepositoryOptions
 
@@ -424,6 +380,28 @@ Set the header (name and value) to be sent in every request to the remote reposi
 |[[clientResponse]]`clientResponse`|`link:cheatsheets.adoc#ClientResponse[ClientResponse]`|-
 |[[fragments]]`fragments`|`Array of link:cheatsheets.adoc#Fragment[Fragment]`|-
 |[[transition]]`transition`|`String`|-
+|===
+[[KnotError]]
+== KnotError
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[code]]`code`|`String`|-
+|===
+[[KnotTask]]
+== KnotTask
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[errors]]`errors`|`Array of link:cheatsheets.adoc#KnotError[KnotError]`|-
+|[[name]]`name`|`String`|-
+|[[status]]`status`|`link:cheatsheets.adoc#KnotTaskStatus[KnotTaskStatus]`|-
 |===
 [[KnotxServerOptions]]
 == KnotxServerOptions
@@ -493,20 +471,6 @@ Location of your spec. It can be an absolute path, a local path or remote url (w
 |[[serverOptions]]`serverOptions`|`link:cheatsheets.adoc#HttpServerOptions[HttpServerOptions]`|
 +++
 Set the HTTP Server options
-+++
-|===
-[[ResponseProviderKnotOptions]]
-== ResponseProviderKnotOptions
-
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[address]]`address`|`String`|
-+++
-The <code>address</code> on event bus that the service adapter is listening for requests from
- ServiceKnotVerticle
 +++
 |===
 [[RoutingEntry]]
@@ -598,6 +562,9 @@ Sets operationId name.
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
+|[[defaultFallback]]`defaultFallback`|`String`|-
+|[[fallbackTagName]]`fallbackTagName`|`String`|-
+|[[fallbacks]]`fallbacks`|`Array of link:cheatsheets.adoc#FallbackMetadata[FallbackMetadata]`|-
 |[[paramsPrefix]]`paramsPrefix`|`String`|
 +++
 Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'

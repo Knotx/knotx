@@ -68,6 +68,3 @@ Knot performs its business logic and returns a transition. The transition define
 In some cases Knot can decide to break the route and redirect the user to a different page.
 
 When all Knots on the route processed the request or one of Knots break the routing, Server returns a response to the user.
-
-It is also possible to define a custom request flow, skipping Repository Connector, Fragment Splitter and Fragment Assembler.
-This feature is described in the [[Gateway Mode|GatewayMode]] section.

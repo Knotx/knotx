@@ -121,13 +121,7 @@ Server breaks the routing and responds with `500` to the client.
 | `clientResponse.statusCode`| `500`
 | `transition`| EMPTY 
 
-
-## How to configure?
-Knots are exposed with an unique Event Bus address - that's the only obligation (this is also true for Adapters).
-Please see the example configurations for [[Action Knot|ActionKnot#how-to-configure]], 
-[[Service Knot|ServiceKnot#how-to-configure]].
-
-## How to implement your own Knot?
+## How to implement your own Knot (Deprecated)?
 
 Knot.x provides the [maven archetypes](https://github.com/Knotx/knotx-extension-archetype) to generate custom Knots / [[Adapters|Adapter]]. 
 It is the **recommended** way to create your own Knots.
