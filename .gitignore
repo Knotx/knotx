@@ -73,9 +73,11 @@ settings.json
 *.vertx
 
 target
+*/build/*
 atlassian-ide-plugin.xml
 bin/
 *.bak
+*/.gradle
 
 # Project specific   #
 ######################

@@ -17,8 +17,8 @@ package io.knotx;
 
 public final class Version {
 
-  private static final String VERSION = "${project.version}";
-  private static final String BUILD_TIME = "${timestamp}";
+  private static final String VERSION = "@@project.version@@";
+  private static final String BUILD_TIME = "@@timestamp@@";
 
   public static String getVersion() {
     return VERSION;
