@@ -1,6 +1,0 @@
-rootProject.name = 'knotx-root'
-include ':knotx-core'
-include ':documentation'
-
-project(':knotx-core').projectDir = "$rootDir/knotx-core" as File
-project(':documentation').projectDir = "$rootDir/documentation" as File

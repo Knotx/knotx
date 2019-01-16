@@ -77,7 +77,8 @@ target
 atlassian-ide-plugin.xml
 bin/
 *.bak
-*/.gradle
+**/.gradle
+**/out/*
 
 # Project specific   #
 ######################
