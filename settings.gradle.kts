@@ -17,6 +17,3 @@
 rootProject.name = "knotx-root"
 include(":knotx-core")
 include(":documentation")
-
-project(":knotx-core").projectDir = file("$rootDir/knotx-core")
-project(":documentation").projectDir = file("$rootDir/documentation")

@@ -111,24 +111,22 @@ tasks {
     }
     into("src/main/generated/io/knotx")
   }
-
-  getByName<RatTask>("rat") {
-    excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*")
-  }
-
-  getByName("build").dependsOn("rat")
-
   getByName<JavaCompile>("compileJava").dependsOn("templateClassProcessing")
 
-  getByName<JavaCompile>("compileJava") {
+  named<RatTask>("rat") {
+    excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*")
+  }
+  getByName("build").dependsOn("rat")
+
+  named<JavaCompile>("compileJava") {
     options.annotationProcessorGeneratedSourcesDirectory = File("$projectDir/src/main/generated")
   }
 
-  getByName<Delete>("clean") {
+  named<Delete>("clean") {
     delete.add("src/main/generated")
   }
 
-  getByName<Test>("test") {
+  named<Test>("test") {
     useJUnitPlatform()
     testLogging { showStandardStreams = true }
     testLogging { showExceptions = true }
