@@ -1,9 +1,10 @@
-sudo: required
 language: java
-install: true
-script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Pskip-integration-tests,release
 jdk:
-  - oraclejdk8
+- oraclejdk8
+before_script:
+- chmod +x ./gradlew
+script:
+- ./gradlew clean test --info
 addons:
   sonarqube:
     token:
