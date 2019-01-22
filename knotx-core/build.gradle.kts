@@ -26,6 +26,59 @@ plugins {
 
 description = "Knot.x Core"
 
+publishing {
+  publications {
+    create<MavenPublication>("mavenJava") {
+      groupId = "io.knotx"
+      artifactId = "knotx-core"
+
+      from(components["java"])
+
+      pom {
+        name.set("Knot.x Core")
+        description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
+        url.set("http://knotx.io")
+        licenses {
+          license {
+            name.set("The Apache Software License, Version 2.0")
+            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+          }
+        }
+        developers {
+          developer {
+            id.set("tomaszmichalak")
+            name.set("Tomasz Michalak")
+            email.set("tomasz.michalak@cognifide.com")
+          }
+          developer {
+            id.set("skejven")
+            name.set("Maciej Laskowski")
+            email.set("maciej.laskowski@cognifide.com")
+          }
+          developer {
+            id.set("marcinczeczko")
+            name.set("Marcin Czeczko")
+            email.set("marcin.czeczko@cognifide.com")
+          }
+        }
+        scm {
+          connection.set("scm:git:git://github.com/Cognifide/knotx.git")
+          developerConnection.set("scm:git:ssh://github.com:Cognifide/knotx.git")
+          url.set("http://knotx.io")
+        }
+      }
+    }
+    repositories {
+      maven {
+        val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+        url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+        url = uri("$buildDir/repo")
+      }
+    }
+  }
+}
+
 dependencies {
 
   annotationProcessor(platform("io.knotx:knotx-dependencies:${project.version}"))
