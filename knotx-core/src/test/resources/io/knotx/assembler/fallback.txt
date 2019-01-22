@@ -1,2 +1,2 @@
-<knotx:fallback data-knotx-fallback-id="FALLBACK_1"><p class='error'>fallback</p>
+<knotx:fallback data-knotx-fallback-id="FALLBACK_1"><p class='error'>custom fallback</p>
 </knotx:fallback>

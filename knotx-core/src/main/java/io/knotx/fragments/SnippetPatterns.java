@@ -16,6 +16,7 @@
 package io.knotx.fragments;
 
 
+import io.knotx.fallback.FragmentFallbackConstants;
 import io.knotx.options.SnippetOptions;
 import java.util.regex.Pattern;
 
@@ -30,9 +31,9 @@ public class SnippetPatterns {
       "<%s\\s+%s" + FragmentConstants.SNIPPET_IDENTIFIER_NAME
           + "\\s*=\\s*\"([A-Za-z0-9-,]+)\"[^>]*"
           + "%s" + FragmentConstants.SNIPPET_FALLBACK_NAME + "\\s*=\\s*\"([^\"]*)\"[^>]*>.+?</%s>";
-  private static final String FALLBACK_PATTERN = "<%s\\s+%s" + FragmentConstants.FALLBACK_ID
+  private static final String FALLBACK_PATTERN = "<%s\\s+%s" + FragmentFallbackConstants.FALLBACK_ID
       + "\\s*=\\s*\"([A-Za-z0-9-_,]+)\"[^>]*>.+?</%s>";
-  private static final String FALLBACK_WITH_STRATEGY_PATTERN = "<%s\\s+%s" + FragmentConstants.FALLBACK_ID
+  private static final String FALLBACK_WITH_STRATEGY_PATTERN = "<%s\\s+%s" + FragmentFallbackConstants.FALLBACK_ID
       + "\\s*=\\s*\"([A-Za-z0-9-_,]+)\"[^>]*"
       + "%s" + FragmentConstants.FALLBACK_STRATEGY + "\\s*=\\s*\"([^\"]*)\"[^>]*>.+?</%s>";
 
@@ -57,12 +58,12 @@ public class SnippetPatterns {
                 snippetOptions.getParamsPrefix(), snippetOptions.getTagName()), Pattern.DOTALL);
     fallbackPattern = Pattern
         .compile(String
-            .format(FALLBACK_PATTERN, snippetOptions.getFallbackTagName(), snippetOptions.getParamsPrefix(),
-                snippetOptions.getFallbackTagName()), Pattern.DOTALL);
+            .format(FALLBACK_PATTERN, FragmentFallbackConstants.FALLBACK_TAG_NAME, snippetOptions.getParamsPrefix(),
+                FragmentFallbackConstants.FALLBACK_TAG_NAME), Pattern.DOTALL);
     fallbackWithStrategyPattern = Pattern
         .compile(String
-            .format(FALLBACK_WITH_STRATEGY_PATTERN, snippetOptions.getFallbackTagName(), snippetOptions.getParamsPrefix(),
-                snippetOptions.getParamsPrefix(), snippetOptions.getFallbackTagName()), Pattern.DOTALL);
+            .format(FALLBACK_WITH_STRATEGY_PATTERN, FragmentFallbackConstants.FALLBACK_TAG_NAME, snippetOptions.getParamsPrefix(),
+                snippetOptions.getParamsPrefix(), FragmentFallbackConstants.FALLBACK_TAG_NAME), Pattern.DOTALL);
 
   }
 

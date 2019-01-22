@@ -31,21 +31,16 @@ import org.apache.commons.lang3.StringUtils;
 public class SnippetOptions {
 
   private static final String DEFAULT_TAG_NAME = "script";
-  private static final String DEFAULT_FALLBACK_TAG_NAME = "knotx:fallback";
   private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
 
   private String tagName;
   private String paramsPrefix;
-  private String fallbackTagName;
-  private String defaultFallback;
-  private List<FallbackMetadata> fallbacks;
 
   /**
    * Default constructor
    */
   public SnippetOptions() {
     init();
-    configureDefaultFallback();
   }
 
   /**
@@ -56,9 +51,6 @@ public class SnippetOptions {
   public SnippetOptions(SnippetOptions other) {
     this.tagName = other.tagName;
     this.paramsPrefix = other.paramsPrefix;
-    this.fallbackTagName = other.fallbackTagName;
-    this.defaultFallback = other.defaultFallback;
-    this.fallbacks = new ArrayList<>(other.fallbacks);
   }
 
   /**
@@ -69,7 +61,6 @@ public class SnippetOptions {
   public SnippetOptions(JsonObject json) {
     init();
     SnippetOptionsConverter.fromJson(json, this);
-    configureDefaultFallback();
   }
 
   /**
@@ -86,13 +77,6 @@ public class SnippetOptions {
   private void init() {
     tagName = DEFAULT_TAG_NAME;
     paramsPrefix = DEFAULT_PARAMS_PREFIX;
-    fallbackTagName = DEFAULT_FALLBACK_TAG_NAME;
-  }
-
-  private void configureDefaultFallback() {
-    if (CollectionUtils.isEmpty(fallbacks)) {
-      fallbacks = Lists.newArrayList(new FallbackMetadata("BLANK", StringUtils.EMPTY));
-    }
   }
 
   /**
@@ -100,19 +84,6 @@ public class SnippetOptions {
    */
   public String getTagName() {
     return tagName;
-  }
-
-  public String getFallbackTagName() {
-    return fallbackTagName;
-  }
-
-  public String getDefaultFallback() {
-    return defaultFallback;
-  }
-
-  public SnippetOptions setDefaultFallback(String defaultFallback) {
-    this.defaultFallback = defaultFallback;
-    return this;
   }
 
   /**
@@ -123,11 +94,6 @@ public class SnippetOptions {
    */
   public SnippetOptions setTagName(String tagName) {
     this.tagName = tagName;
-    return this;
-  }
-
-  public SnippetOptions setFallbackTagName(String fallbackTagName) {
-    this.fallbackTagName = fallbackTagName;
     return this;
   }
 
@@ -146,15 +112,6 @@ public class SnippetOptions {
    */
   public SnippetOptions setParamsPrefix(String paramsPrefix) {
     this.paramsPrefix = paramsPrefix == null ? StringUtils.EMPTY : paramsPrefix;
-    return this;
-  }
-
-  public List<FallbackMetadata> getFallbacks() {
-    return fallbacks;
-  }
-
-  public SnippetOptions setFallbacks(List<FallbackMetadata> fallbacks) {
-    this.fallbacks = fallbacks;
     return this;
   }
 }

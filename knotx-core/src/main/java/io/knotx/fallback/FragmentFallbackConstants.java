@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.assembler;
+package io.knotx.fallback;
 
-import io.knotx.dataobjects.Fragment;
+public class FragmentFallbackConstants {
 
-public enum UnprocessedFragmentStrategy {
+  public static final String FALLBACK_TAG_NAME = "knotx:fallback";
+  public static final String FALLBACK_ID = "fallback-id";
 
-  AS_IS {
-    @Override
-    protected String get(Fragment fragment) {
-      return fragment.content();
-    }
-  },
-
-  IGNORE {
-    @Override
-    protected String get(Fragment fragment) {
-      if (!fragment.isRaw() && fragment.unprocessed()) {
-        return "<!-- SNIPPET IGNORED -->";
-      } else {
-        return fragment.content();
-      }
-    }
-  };
-
-  protected abstract String get(Fragment fragment);
+  public FragmentFallbackConstants() {
+    // empty
+  }
 
 }

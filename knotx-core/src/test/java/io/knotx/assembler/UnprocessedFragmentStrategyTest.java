@@ -19,28 +19,26 @@ import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.junit.Assert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.fragments.SnippetPatterns;
 import io.knotx.junit.converter.FragmentArgumentConverter;
 import io.knotx.junit5.util.FileReader;
-import io.knotx.options.SnippetOptions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 
 public class UnprocessedFragmentStrategyTest {
 
   @ParameterizedTest
   @CsvSource(delimiter = ';', value = {
-      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet.txt;script;data-knotx-",
-      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/customTag_snippet.txt;knotx:snippet;data-knotx-",
-      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script;data-knotx-",
+      "io/knotx/assembler/simple_fragment.txt;io/knotx/assembler/simple_fragment.txt;knotx:snippet;",
+      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;knotx:snippet;",
       "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;io/knotx/assembler/customTagAndParamsPrefix_snippet.txt;knotx:snippet;"
   })
   public void asIs_whenConfiguredSnippetTag_expectIgnoredContent(
       @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
-      String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
+      String expectedContentFileName) throws Exception {
     final String unwrappedContent = UnprocessedFragmentStrategy.AS_IS
-        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
+        .get(fragment);
     final String expectedContent = FileReader.readText(expectedContentFileName);
 
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
@@ -48,42 +46,23 @@ public class UnprocessedFragmentStrategyTest {
 
   @ParameterizedTest
   @CsvSource(delimiter = ';', value = {
-      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;script;data-knotx-",
-      "io/knotx/assembler/customTag_snippet.txt|knotx:snippet;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;data-knotx-",
-      "io/knotx/assembler/big_snippet.txt;io/knotx/assembler/big_snippet-expected_unwrapped_content.txt;script;data-knotx-",
-      "io/knotx/assembler/customTagAndParamsPrefix_snippet.txt|knotx:snippet|;io/knotx/assembler/simple_snippet-expected_unwrapped_content.txt;knotx:snippet;"
-  })
-  public void unwrap_whenConfiguredSnippetTag_expectDefinedContentWithComments(
-      @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
-      String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
-    final String unwrappedContent = UnprocessedFragmentStrategy.UNWRAP
-        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
-    final String expectedContent = FileReader.readText(expectedContentFileName);
-
-    assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
-  }
-
-  @ParameterizedTest
-  @CsvSource(delimiter = ';', value = {
-      "io/knotx/assembler/simple_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;script;data-knotx-",
-      "io/knotx/assembler/customTag_snippet.txt;io/knotx/assembler/simple_snippet-expected_ignored_content.txt;knotx:snippet;data-knotx-",
-      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;script;data-knotx-"
+      "io/knotx/assembler/simple_fragment.txt;io/knotx/assembler/simple_fragment-expected_ignored_content.txt;knotx:snippet;",
+      "io/knotx/assembler/raw_fragment.txt;io/knotx/assembler/raw_fragment.txt;knotx:snippet;"
       //when fragment is a raw fragment, it is not ignored
   })
   public void ignore_whenConfiguredSnippetTag_expectIgnoredContent(
       @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
-      String expectedContentFileName, String snippetTagName, String paramsPrefix) throws Exception {
+      String expectedContentFileName) throws Exception {
+    // given
+    Mockito.when(fragment.unprocessed()).thenReturn(true);
+
+    // when
     final String unwrappedContent = UnprocessedFragmentStrategy.IGNORE
-        .get(fragment, new SnippetPatterns(buildOptions(snippetTagName, paramsPrefix)));
+        .get(fragment);
+
+    // then
     final String expectedContent = FileReader.readText(expectedContentFileName);
-
     assertThat(unwrappedContent, equalToIgnoringWhiteSpace(expectedContent));
-  }
-
-  private SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {
-    return new SnippetOptions()
-        .setTagName(snippetTagName)
-        .setParamsPrefix(snippetParamPrefix);
   }
 
 }

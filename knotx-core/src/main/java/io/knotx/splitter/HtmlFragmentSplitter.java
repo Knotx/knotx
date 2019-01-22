@@ -15,7 +15,6 @@
  */
 package io.knotx.splitter;
 
-import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 import io.knotx.dataobjects.Fragment;
 import io.knotx.fragments.FragmentConstants;
 import io.knotx.fragments.SnippetPatterns;
@@ -32,11 +31,8 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private final SnippetPatterns snippetPatterns;
 
-  private final String defaultFallback;
-
   HtmlFragmentSplitter(SnippetOptions snippetOptions) {
     snippetPatterns = new SnippetPatterns(snippetOptions);
-    defaultFallback = snippetOptions.getDefaultFallback();
   }
 
   @Override
@@ -69,7 +65,8 @@ class HtmlFragmentSplitter implements FragmentSplitter {
     return fragments;
   }
 
-  private void processMarkup(List<Fragment> fragments, List<FallbackMarker> fallbackMarkers, String html, int startIdx, int endIdx) {
+  private void processMarkup(List<Fragment> fragments, List<FallbackMarker> fallbackMarkers,
+      String html, int startIdx, int endIdx) {
     int idx = startIdx;
     for (FallbackMarker fe : fallbackMarkers) {
       if (idx > fe.start) {
@@ -89,13 +86,15 @@ class HtmlFragmentSplitter implements FragmentSplitter {
 
   private Fragment toFallback(String html, FallbackMarker fm) {
     String snippet = html.substring(fm.start, fm.end);
-    return Fragment.fallback(snippet, fm.id).setAttribute(FragmentConstants.FALLBACK_STRATEGY, fm.strategy);
+    return Fragment.fallback(snippet, fm.id)
+        .setAttribute(FragmentConstants.FALLBACK_STRATEGY, fm.strategy);
   }
 
   private Fragment toSnippet(String[] ids, String html, int startIdx, int endIdx) {
     String snippet = html.substring(startIdx, endIdx);
     Matcher matcher = snippetPatterns.getSnippetWithFallbackPattern().matcher(snippet);
-    String fallback = matcher.matches() ? matcher.group(2) : defaultFallback;
+    // TODO DEFAULT_FALLBACK
+    String fallback = matcher.matches() ? matcher.group(2) : "BLANK";
     return Fragment.snippet(Arrays.asList(ids), snippet, fallback);
   }
 
@@ -107,12 +106,14 @@ class HtmlFragmentSplitter implements FragmentSplitter {
       String snippet = html.substring(matchResult.start(), matchResult.end());
       Matcher strategyMatcher = snippetPatterns.getFallbackWithStrategyPattern().matcher(snippet);
       String strategy = strategyMatcher.matches() ? strategyMatcher.group(2) : null;
-      result.add(new FallbackMarker(matchResult.start(), matchResult.end(), matcher.group(1), strategy));
+      result.add(
+          new FallbackMarker(matchResult.start(), matchResult.end(), matcher.group(1), strategy));
     }
     return result;
   }
 
   private class FallbackMarker {
+
     int start;
     int end;
     String id;

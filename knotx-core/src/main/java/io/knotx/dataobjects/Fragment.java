@@ -16,6 +16,7 @@
 package io.knotx.dataobjects;
 
 import com.google.common.base.Objects;
+import io.knotx.fallback.FragmentFallbackConstants;
 import io.knotx.fragments.FragmentConstants;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonArray;
@@ -85,7 +86,7 @@ public class Fragment {
 
   public static Fragment fallback(String data, String fallbackId) {
     return new Fragment(Collections.singletonList(FALLBACK_FRAGMENT_ID), data, null)
-        .setAttribute(FragmentConstants.FALLBACK_ID, fallbackId);
+        .setAttribute(FragmentFallbackConstants.FALLBACK_ID, fallbackId);
   }
 
   public static Fragment fallback(String data, String fallbackId, String strategy) {
@@ -165,6 +166,10 @@ public class Fragment {
    */
   public boolean failed() {
     return this.knots.stream().anyMatch(k -> k.getStatus() == KnotTaskStatus.FAILURE);
+  }
+
+  public boolean unprocessed() {
+    return this.knots.stream().allMatch(k -> k.getStatus() == KnotTaskStatus.UNPROCESSED);
   }
 
   public Fragment failure(String knot, Throwable t) {

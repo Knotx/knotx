@@ -28,6 +28,8 @@ description = "Knot.x Core"
 
 dependencies {
 
+  // implementation(project(":knotx-snippet-engine-api"))
+
   annotationProcessor(platform("io.knotx:knotx-dependencies:${project.version}"))
   annotationProcessor(group = "io.vertx", name = "vertx-codegen")
   annotationProcessor(group = "io.vertx", name = "vertx-service-proxy", classifier = "processor")

@@ -1,4 +1,4 @@
-<script data-knotx-knots="auth-3,services" data-knotx-service="first-service" type="text/knotx-snippet">
+<knotx:snippet knots="auth-3" type="text/knotx-snippet">
   <h2>{{message}}</h2>
   <div>{{body.a}}</div>
-</script>
+</knotx:snippet>

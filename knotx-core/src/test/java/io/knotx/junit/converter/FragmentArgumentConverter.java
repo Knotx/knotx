@@ -34,8 +34,8 @@ import org.mockito.Mockito;
  */
 public class FragmentArgumentConverter extends SimpleArgumentConverter {
 
-  private static final String DEFAULT_SNIPPET_TAG_NAME = "script";
-  private static final String DEFAULT_SNIPPET_PARAM_PREFIX = "data-knotx-";
+  private static final String DEFAULT_SNIPPET_TAG_NAME = "knotx:snippet";
+  private static final String DEFAULT_SNIPPET_PARAM_PREFIX = "";
   private static final String PARAMETER_SEPARATOR_REGEX = "\\|";
   private static final String PARAMETER_SEPARATOR = "|";
 

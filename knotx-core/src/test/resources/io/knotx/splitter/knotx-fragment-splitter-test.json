@@ -7,8 +7,8 @@
       "options": {
         "config": {
           "snippetOptions": {
-            "tagName": "script",
-            "paramsPrefix": "data-knotx-"
+            "tagName": "knotx:snippet",
+            "paramsPrefix": ""
           }
         }
       }
