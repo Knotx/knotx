@@ -21,19 +21,29 @@ import java.util.Date
 plugins {
   id("java-library")
   id("maven-publish")
+  id("signing")
   id("org.nosphere.apache.rat") version "0.4.0"
 }
 
-description = "Knot.x Core"
+group = "io.knotx"
+
+tasks.register<Jar>("sourcesJar") {
+  from(sourceSets.main.get().allJava)
+  classifier = "sources"
+}
+
+tasks.register<Jar>("javadocJar") {
+  from(tasks.javadoc)
+  classifier = "javadoc"
+}
 
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
-      groupId = "io.knotx"
       artifactId = "knotx-core"
-
       from(components["java"])
-
+      artifact(tasks["sourcesJar"])
+      artifact(tasks["javadocJar"])
       pom {
         name.set("Knot.x Core")
         description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
@@ -76,6 +86,16 @@ publishing {
         url = uri("$buildDir/repo")
       }
     }
+  }
+}
+
+signing {
+  sign(publishing.publications["mavenJava"])
+}
+
+tasks.javadoc {
+  if (JavaVersion.current().isJava9Compatible) {
+    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
   }
 }
 
