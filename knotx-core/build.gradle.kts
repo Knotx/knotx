@@ -28,12 +28,12 @@ plugins {
 group = "io.knotx"
 
 tasks.register<Jar>("sourcesJar") {
-  from(sourceSets.main.get().allJava)
+  from(sourceSets.named("main").get().allJava)
   classifier = "sources"
 }
 
 tasks.register<Jar>("javadocJar") {
-  from(tasks.javadoc)
+  from(tasks.named<Javadoc>("javadoc"))
   classifier = "javadoc"
 }
 
@@ -93,7 +93,7 @@ signing {
   sign(publishing.publications["mavenJava"])
 }
 
-tasks.javadoc {
+tasks.named<Javadoc>("javadoc") {
   if (JavaVersion.current().isJava9Compatible) {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
   }
@@ -160,13 +160,12 @@ tasks.withType<JavaCompile>().configureEach {
   }
 }
 
-sourceSets {
-  main {
-    java {
-      setSrcDirs(listOf("/src/main/java", "src/main/generated"))
-    }
+sourceSets.named("main") {
+  java {
+    setSrcDirs(listOf("/src/main/java", "src/main/generated"))
   }
 }
+
 
 fun timestamp(): Long {
   return Date().time
