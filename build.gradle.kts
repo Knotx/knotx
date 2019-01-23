@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-allprojects  {
-  version = "2.0.0-SNAPSHOT"
-}
-
 subprojects {
   
   repositories {

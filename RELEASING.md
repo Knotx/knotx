@@ -1,33 +1,36 @@
 # How to release Knot.x
 
 ## Prerequisites
-1. Sonatype.org [JIRA](https://issues.sonatype.org/secure/Signup!default.jspa) account
+In order to create OpenPGP signatures, you will need a key pair (instructions on creating a key pair using the GnuPG tools can be found in the GnuPG HOWTOs). 
+You need to provide the Signing Plugin with your key information, which means three things:
 
-2. Your Sonatype.org account needs to be added to the Knot.x project (if it isn't, please contact the Knot.x team: 
-[knotx.team@gmail.com](email:knotx.team@gmail.com))
+The public key ID (The last 8 symbols of the keyId. You can use gpg -K to get it).
+The absolute path to the secret key ring file containing your private key. 
+(Since gpg 2.1, you need to export the keys with command gpg --keyring secring.gpg --export-secret-keys > ~/.gnupg/secring.gpg).
 
-3. A GPG key generated for the email you have registered on the Sonatype.org JIRA 
-(Follow the [Working with PGP Signatures](http://central.sonatype.org/pages/working-with-pgp-signatures.html) 
-guide to get one). 
-**Don't forget to deploy your public key to the key server!** 
+The passphrase used to protect your private key.
 
-4. Add a `<server>` entry to [your `settings.xml` file](https://maven.apache.org/settings.html#Introduction)
-   ```xml
-   <servers>
-     ...
-     <server>
-       <id>ossrh</id>
-       <username>your_sonatype_org_jira_username</username>
-       <password>your_sonatype_org_jira_password</password>
-     </server>
-       ...
-   </servers>    
-   ```
+These items must be supplied as the values of the signing.keyId, signing.secretKeyRingFile, and signing.password properties, respectively.
+
+Given the personal and private nature of these values, a good practice is to store them in the gradle.properties file in the user’s Gradle home directory.
+
+```
+signing.keyId=24875D73
+signing.password=secret
+signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
+```
+
+### Credentials
+Additionally you need to configure your **ossrh** credentials to deploy artifacts to Maven Central.
+```
+ossrhUsername=username
+ossrhPassword=secret
+```
 
 ## Deploy snapshots
 Snapshot deployment are performed when your version ends in -SNAPSHOT. You can simply run:
 ```
-$> mvn clean deploy
+$> ./gradlew publish
 ```
 
 ## Deploy releases
@@ -39,11 +42,7 @@ $> mvn clean deploy
    ```
    where X, Y and Z are the major, mid and minor version number of the release respectively.
 
-2. Set the release version
-
-   ```
-   $> mvn versions:set -DnewVersion=X.Y.Z -DgenerateBackupPoms=false
-   ```
+2. Set the release version in the `gradle.properties` file
 
 3. Prepare release documentation following [documentation/README.md](https://github.com/Cognifide/knotx/blob/master/documentation/README.md).
 
@@ -58,19 +57,13 @@ $> mvn clean deploy
 5. Build & deploy the artifact to the Nexus Staging repository
 
    ```
-   $> mvn clean deploy -Prelease -Dgpg.passphrase=<your_gpg_key_passphrase>
+   $> ./gradlew publish
    ```
    
 6. On successful deployment, confirm that the artifacts with version X.Y.Z are available on the Nexus Staging:
 [https://oss.sonatype.org/content/groups/staging/io/knotx/](https://oss.sonatype.org/content/groups/staging/io/knotx/)
 
-7. If everything is fine, promote the release to **Nexus Central Release Repositories**
-
-   ```
-   $> mvn nexus-staging:release
-   ```
-   
-   In case you want to drop the release, you can use `nexus-staging:drop`
+7. If everything is fine, promote the release to **Nexus Central Release Repositories** from WEB UI.
    
 8. Create a release on Github: [https://github.com/Cognifide/knotx/releases/new](https://github.com/Cognifide/knotx/releases/new)
   - Set the proper Tag version, e.g.: `X.Y.Z` on the `release/X.Y.Z` branch
@@ -103,3 +96,5 @@ $> mvn clean deploy
    ```
    
      **Replace `<X.Y.Z>` in the maven.org URL with the proper version**
+     
+9. Set the SNAPSHOT version in the `gradle.properties` file.
