@@ -28,7 +28,6 @@ generated
 *.dmg
 *.gz
 *.iso
-*.jar
 *.rar
 *.tar
 *.zip
