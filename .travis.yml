@@ -1,10 +1,10 @@
 language: java
 jdk:
-- oraclejdk8
+  - oraclejdk8
 before_script:
-- chmod +x ./gradlew
+  - chmod +x ./gradlew
 script:
-- ./gradlew clean test --info
+  - ./gradlew clean test --info
 addons:
   sonarqube:
     token:
@@ -13,7 +13,6 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
-
 notifications:
   webhooks:
     urls:
