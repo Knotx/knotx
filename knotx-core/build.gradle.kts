@@ -37,6 +37,11 @@ tasks.register<Jar>("javadocJar") {
   classifier = "javadoc"
 }
 
+tasks.register<Jar>("testJar") {
+  from(sourceSets.named("test").get().output)
+  classifier = "tests"
+}
+
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
@@ -44,6 +49,7 @@ publishing {
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
+      artifact(tasks["testJar"])
       pom {
         name.set("Knot.x Core")
         description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
@@ -125,13 +131,13 @@ dependencies {
   implementation(group = "io.vertx", name = "vertx-circuit-breaker")
   implementation(group = "io.vertx", name = "vertx-hazelcast")
 
-  implementation(group = "ch.qos.logback", name = "logback-classic")
-  implementation(group = "com.google.guava", name = "guava")
-  implementation(group = "commons-io", name = "commons-io")
-  implementation(group = "org.apache.commons", name = "commons-lang3")
-  implementation(group = "org.jsoup", name = "jsoup")
-  implementation(group = "com.typesafe", name = "config")
-  implementation(group = "commons-collections", name = "commons-collections")
+  api(group = "ch.qos.logback", name = "logback-classic")
+  api(group = "com.google.guava", name = "guava")
+  api(group = "commons-io", name = "commons-io")
+  api(group = "org.apache.commons", name = "commons-lang3")
+  api(group = "org.jsoup", name = "jsoup")
+  api(group = "com.typesafe", name = "config")
+  api(group = "commons-collections", name = "commons-collections")
 
   testImplementation(group = "io.knotx", name = "knotx-junit5")
   testImplementation(group = "io.vertx", name = "vertx-junit5")
@@ -168,6 +174,12 @@ tasks.withType<JavaCompile>().configureEach {
 sourceSets.named("main") {
   java {
     setSrcDirs(listOf("/src/main/java", "src/main/generated"))
+  }
+}
+
+sourceSets.named("test") {
+  java {
+    setSrcDirs(listOf("/src/test/java", "/src/main/java", "src/main/generated"))
   }
 }
 
