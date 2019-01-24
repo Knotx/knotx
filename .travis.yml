@@ -1,5 +1,5 @@
+install: gradle wrapper --gradle-version 5.1.1 --distribution-type all
 language: java
-install: true
 
 jdk:
   - oraclejdk8
