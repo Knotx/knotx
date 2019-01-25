@@ -1,6 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.nosphere.apache.rat.RatTask
-import java.util.Date
 
 /*
  * Copyright (C) 2016 Cognifide Limited
