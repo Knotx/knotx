@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx;
 
-public final class Version {
-
-  private static final String VERSION = "@project.version@";
-  private static final String BUILD_TIME = "@build.timestamp@";
-
-  public static String getVersion() {
-    return VERSION;
-  }
-
-  public static String getBuildTime() {
-    return BUILD_TIME;
-  }
-}
+rootProject.name = "knotx-root"
+include(":knotx-core")
+include(":documentation")

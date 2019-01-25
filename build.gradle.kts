@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx;
 
-public final class Version {
-
-  private static final String VERSION = "@project.version@";
-  private static final String BUILD_TIME = "@build.timestamp@";
-
-  public static String getVersion() {
-    return VERSION;
+subprojects {
+  
+  repositories {
+    mavenLocal()
+    maven { url = uri("https://plugins.gradle.org/m2/") }
+    maven { url = uri("http://repo1.maven.org/maven2") }
+    maven { url = uri("https://oss.sonatype.org/content/groups/staging/") }
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
   }
-
-  public static String getBuildTime() {
-    return BUILD_TIME;
-  }
+  
 }
