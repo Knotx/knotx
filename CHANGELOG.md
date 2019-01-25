@@ -4,6 +4,9 @@ All notable changes to Knot.x will be documented in this file.
 ## Unreleased
 List of changes that are finished but not yet released in any final version.
 
+## 2.0.0-SNAPSHOT
+- [481](https://github.com/Cognifide/knotx/pull/481) - Migration from Maven to Gradle 5 & Kotlin DSL. 
+
 ## 1.5.0
  - [PR-468](https://github.com/Cognifide/knotx/pull/468) - Fragment processing failure handling (configurable fallback)
  - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Action Knot functionality moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms).
