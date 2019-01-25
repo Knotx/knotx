@@ -1,6 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.nosphere.apache.rat.RatTask
-import java.util.Date
 
 /*
  * Copyright (C) 2016 Cognifide Limited
@@ -148,8 +147,8 @@ publishing {
     }
     repositories {
       maven {
-        val releasesRepoUrl = "${Sonatype.releasesSnapshot}"
-        val snapshotsRepoUrl = "${Sonatype.releasesStaging}"
+        val releasesRepoUrl = "${Sonatype.releasesStaging}"
+        val snapshotsRepoUrl = "${Sonatype.releasesSnapshot}"
         url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
         credentials {
           username = if (project.hasProperty("ossrhUsername")) project.property("ossrhUsername")?.toString() else "UNKNOWN"
