@@ -27,6 +27,68 @@ plugins {
 
 group = "io.knotx"
 
+// -----------------------------------------------------------------------------
+// Dependencies
+// -----------------------------------------------------------------------------
+
+apply(from = "../gradle/common.deps.gradle.kts")
+apply(from = "../gradle/codegen.deps.gradle.kts")
+dependencies {
+  api(group = "ch.qos.logback", name = "logback-classic")
+  api(group = "com.google.guava", name = "guava")
+  api(group = "commons-io", name = "commons-io")
+  api(group = "org.apache.commons", name = "commons-lang3")
+  api(group = "org.jsoup", name = "jsoup")
+  api(group = "com.typesafe", name = "config")
+  api(group = "commons-collections", name = "commons-collections")
+}
+
+// -----------------------------------------------------------------------------
+// Source sets
+// -----------------------------------------------------------------------------
+
+apply(from = "../gradle/common.gradle.kts")
+sourceSets.named("main") {
+  java.srcDir("src/main/generated")
+}
+sourceSets.named("test") {
+  java.srcDirs(listOf("src/main/java", "src/main/generated"))
+}
+
+// -----------------------------------------------------------------------------
+// Tasks
+// -----------------------------------------------------------------------------
+
+
+tasks {
+  register<Copy>("templateClassProcessing") {
+    val tokens = mapOf("project.version" to project.version, "build.timestamp" to "${Utils.timestamp()}")
+    inputs.properties(tokens)
+
+    from("src/main/java-templates") {
+      include("*.java")
+      filter<ReplaceTokens>("tokens" to tokens)
+    }
+    into("src/main/generated/io/knotx")
+  }
+  getByName<JavaCompile>("compileJava").dependsOn("templateClassProcessing")
+
+  named<RatTask>("rat") {
+    excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*")
+  }
+  getByName("build").dependsOn("rat")
+
+  named<Test>("test") {
+    useJUnitPlatform()
+    testLogging { showStandardStreams = true }
+    testLogging { showExceptions = true }
+    failFast = true
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Publication
+// -----------------------------------------------------------------------------
 tasks.register<Jar>("sourcesJar") {
   from(sourceSets.named("main").get().allJava)
   classifier = "sources"
@@ -86,8 +148,8 @@ publishing {
     }
     repositories {
       maven {
-        val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-        val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+        val releasesRepoUrl = "${Sonatype.releasesSnapshot}"
+        val snapshotsRepoUrl = "${Sonatype.releasesStaging}"
         url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
         credentials {
           username = if (project.hasProperty("ossrhUsername")) project.property("ossrhUsername")?.toString() else "UNKNOWN"
@@ -106,118 +168,5 @@ signing {
 tasks.named<Javadoc>("javadoc") {
   if (JavaVersion.current().isJava9Compatible) {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-  }
-}
-
-dependencies {
-
-  annotationProcessor(platform("io.knotx:knotx-dependencies:${project.version}"))
-  annotationProcessor(group = "io.vertx", name = "vertx-codegen")
-  annotationProcessor(group = "io.vertx", name = "vertx-service-proxy", classifier = "processor")
-  annotationProcessor(group = "io.vertx", name = "vertx-rx-java2-gen")
-
-  implementation(platform("io.knotx:knotx-dependencies:${project.version}"))
-  implementation(group = "io.vertx", name = "vertx-core")
-  implementation(group = "io.vertx", name = "vertx-service-proxy")
-  implementation(group = "io.vertx", name = "vertx-rx-java2")
-  implementation(group = "io.vertx", name = "vertx-codegen")
-  implementation(group = "io.vertx", name = "vertx-config")
-  implementation(group = "io.vertx", name = "vertx-config-hocon")
-  implementation(group = "io.vertx", name = "vertx-web")
-  implementation(group = "io.vertx", name = "vertx-web-api-contract")
-  implementation(group = "io.vertx", name = "vertx-web-client")
-  implementation(group = "io.vertx", name = "vertx-service-discovery")
-  implementation(group = "io.vertx", name = "vertx-circuit-breaker")
-  implementation(group = "io.vertx", name = "vertx-hazelcast")
-
-  api(group = "ch.qos.logback", name = "logback-classic")
-  api(group = "com.google.guava", name = "guava")
-  api(group = "commons-io", name = "commons-io")
-  api(group = "org.apache.commons", name = "commons-lang3")
-  api(group = "org.jsoup", name = "jsoup")
-  api(group = "com.typesafe", name = "config")
-  api(group = "commons-collections", name = "commons-collections")
-
-  testImplementation(group = "io.knotx", name = "knotx-junit5")
-  testImplementation(group = "io.vertx", name = "vertx-junit5")
-  testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-api")
-  testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-params")
-  testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-migrationsupport")
-  testImplementation(group = "io.vertx", name = "vertx-unit")
-  testImplementation(group = "com.github.stefanbirkner", name = "system-rules") {
-    exclude(module = "junit-dep")
-  }
-  testImplementation(group = "com.googlecode.zohhak", name = "zohhak")
-  testImplementation(group = "uk.co.datumedge", name = "hamcrest-json")
-  testImplementation(group = "org.hamcrest", name = "hamcrest-all")
-
-  testImplementation(group = "io.vertx", name = "vertx-core")
-  testImplementation(group = "io.vertx", name = "vertx-web")
-  testImplementation(group = "io.vertx", name = "vertx-web-api-contract")
-  testImplementation(group = "io.vertx", name = "vertx-web-client")
-  testImplementation(group = "io.vertx", name = "vertx-rx-java2")
-  testImplementation(group = "io.vertx", name = "vertx-service-proxy")
-  testImplementation(group = "io.vertx", name = "vertx-config")
-  testImplementation(group = "io.vertx", name = "vertx-config-hocon")
-  testImplementation(group = "io.vertx", name = "vertx-hazelcast")
-}
-
-tasks.withType<JavaCompile>().configureEach {
-  with(options) {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
-    encoding = "UTF-8"
-  }
-}
-
-sourceSets.named("main") {
-  java {
-    setSrcDirs(listOf("/src/main/java", "src/main/generated"))
-  }
-}
-
-sourceSets.named("test") {
-  java {
-    setSrcDirs(listOf("/src/test/java", "/src/main/java", "src/main/generated"))
-  }
-}
-
-
-fun timestamp(): Long {
-  return Date().time
-}
-
-tasks {
-
-  register<Copy>("templateClassProcessing") {
-    val tokens = mapOf("project.version" to project.version, "build.timestamp" to "${timestamp()}")
-    inputs.properties(tokens)
-
-    from("src/main/java-templates") {
-      include("*.java")
-      filter<ReplaceTokens>("tokens" to tokens)
-    }
-    into("src/main/generated/io/knotx")
-  }
-  getByName<JavaCompile>("compileJava").dependsOn("templateClassProcessing")
-
-  named<RatTask>("rat") {
-    excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*")
-  }
-  getByName("build").dependsOn("rat")
-
-  named<JavaCompile>("compileJava") {
-    options.annotationProcessorGeneratedSourcesDirectory = File("$projectDir/src/main/generated")
-  }
-
-  named<Delete>("clean") {
-    delete.add("src/main/generated")
-  }
-
-  named<Test>("test") {
-    useJUnitPlatform()
-    testLogging { showStandardStreams = true }
-    testLogging { showExceptions = true }
-    failFast = true
   }
 }

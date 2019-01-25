@@ -122,10 +122,6 @@ public class ClientRequest {
     return this;
   }
 
-  /**
-   * Serialization variants of MultiMap fields
-   **/
-
   public JsonObject getJsonHeaders() {
     return MultiMapConverter.toJsonObject(headers);
   }
