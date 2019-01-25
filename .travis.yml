@@ -5,6 +5,7 @@ jdk:
   - oraclejdk8
 
 before_script:
+  - gradle wrapper --gradle-version 5.1.1 --distribution-type all
   - chmod +x ./gradlew
   - chmod +x ./gradle/wrapper/gradle-wrapper.jar
 script:
