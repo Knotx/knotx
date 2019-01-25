@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-allprojects  {
-  version = "2.0.0-SNAPSHOT"
-}
-
 subprojects {
   
   repositories {
     mavenLocal()
-    
+    gradlePluginPortal()
     maven(uri("http://repo1.maven.org/maven2"))
+    maven(uri("https://oss.sonatype.org/content/groups/staging/"))
     maven(uri("https://oss.sonatype.org/content/repositories/snapshots"))
   }
   

@@ -1,22 +1,17 @@
-sudo: required
 language: java
 install: true
-script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Pskip-integration-tests,release
+
 jdk:
-  - oraclejdk8
-addons:
-  sonarqube:
-    token:
-      secure: "TmjW3ICOTJqrl0UUDI8CMvMLaPPh0PFpaVGyJjcgxhXF9lwszoHRRHj21rf7o+iCGp/zHmxzUeSyyc24Vgvj5s3iauCff9Qt4lB+ywm5CPcvoz9eVlsrOfak0J+vd1HZEqZm1PsJerb6fopcr2E0fZRrFqRQxdEu60yfBgFutZuWiucSjTvpkKLPGa8gcsXzCxrPk9Rbe1Io4OGmH73LqSgw0h7dbnXj4ofyC0DU19SjRVJfVyqF99eFE1Bbi6IfiqReDKdfuXKODrZb6/qXR1cEsJZUgo9HJ/EvM+4R6UZP1z3rUcQ4vrV0c0Dl88SA4qjOriX/qg8c0Ffzbp29YbfznofL2xxSa9IE2xV5yunXHwLXQRnZcXQ2Oh14CcW+1xWx+Vm/5Fq7FCrSiq15W+xZ/UWkMHvXbWEiUnM1MaO+YDoogUVd24ROZRJNel9WX/uMApRRAFdEd0CQFyDXpmrU6sGRlFzA2JKEP8A8jtVv9vpfNO1ZeMczaLVvaJdvVcv3m62kZu3YWUY6OS+yDnozyzwig2Yp12Ft95+wsbbJnNc9ujsWldNIGADKuQBqgwVkcc83zKRaNtjSyrzhsUhSuIti7MAO2h1/93LALsi8OIhl+2WTKV8aBv5PePRJ6bCe7HLmNRowjooJGmhV2MWcDWMinYEA2nNLWBpiy6Y="
+- oraclejdk8
+
+script:
+- ./gradlew --no-daemon build
+
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
-
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/9f543ed555acc6226fe5
-    on_success: always
-    on_failure: always
-    on_start: never
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"

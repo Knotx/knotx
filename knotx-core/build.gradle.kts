@@ -21,10 +21,94 @@ import java.util.Date
 plugins {
   id("java-library")
   id("maven-publish")
+  id("signing")
   id("org.nosphere.apache.rat") version "0.4.0"
 }
 
-description = "Knot.x Core"
+group = "io.knotx"
+
+tasks.register<Jar>("sourcesJar") {
+  from(sourceSets.named("main").get().allJava)
+  classifier = "sources"
+}
+
+tasks.register<Jar>("javadocJar") {
+  from(tasks.named<Javadoc>("javadoc"))
+  classifier = "javadoc"
+}
+
+tasks.register<Jar>("testJar") {
+  from(sourceSets.named("test").get().output)
+  classifier = "tests"
+}
+
+publishing {
+  publications {
+    create<MavenPublication>("mavenJava") {
+      artifactId = "knotx-core"
+      from(components["java"])
+      artifact(tasks["sourcesJar"])
+      artifact(tasks["javadocJar"])
+      artifact(tasks["testJar"])
+      pom {
+        name.set("Knot.x Core")
+        description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
+        url.set("http://knotx.io")
+        licenses {
+          license {
+            name.set("The Apache Software License, Version 2.0")
+            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+          }
+        }
+        developers {
+          developer {
+            id.set("tomaszmichalak")
+            name.set("Tomasz Michalak")
+            email.set("tomasz.michalak@cognifide.com")
+          }
+          developer {
+            id.set("skejven")
+            name.set("Maciej Laskowski")
+            email.set("maciej.laskowski@cognifide.com")
+          }
+          developer {
+            id.set("marcinczeczko")
+            name.set("Marcin Czeczko")
+            email.set("marcin.czeczko@cognifide.com")
+          }
+        }
+        scm {
+          connection.set("scm:git:git://github.com/Cognifide/knotx.git")
+          developerConnection.set("scm:git:ssh://github.com:Cognifide/knotx.git")
+          url.set("http://knotx.io")
+        }
+      }
+    }
+    repositories {
+      maven {
+        val releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        val snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+        url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+        credentials {
+          username = project.property("ossrhUsername")?.toString()
+          password = project.property("ossrhPassword")?.toString()
+
+          println("Connecting with user: ${username}")
+        }
+      }
+    }
+  }
+}
+
+signing {
+  sign(publishing.publications["mavenJava"])
+}
+
+tasks.named<Javadoc>("javadoc") {
+  if (JavaVersion.current().isJava9Compatible) {
+    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+  }
+}
 
 dependencies {
 
@@ -49,13 +133,13 @@ dependencies {
   implementation(group = "io.vertx", name = "vertx-circuit-breaker")
   implementation(group = "io.vertx", name = "vertx-hazelcast")
 
-  implementation(group = "ch.qos.logback", name = "logback-classic")
-  implementation(group = "com.google.guava", name = "guava")
-  implementation(group = "commons-io", name = "commons-io")
-  implementation(group = "org.apache.commons", name = "commons-lang3")
-  implementation(group = "org.jsoup", name = "jsoup")
-  implementation(group = "com.typesafe", name = "config")
-  implementation(group = "commons-collections", name = "commons-collections")
+  api(group = "ch.qos.logback", name = "logback-classic")
+  api(group = "com.google.guava", name = "guava")
+  api(group = "commons-io", name = "commons-io")
+  api(group = "org.apache.commons", name = "commons-lang3")
+  api(group = "org.jsoup", name = "jsoup")
+  api(group = "com.typesafe", name = "config")
+  api(group = "commons-collections", name = "commons-collections")
 
   testImplementation(group = "io.knotx", name = "knotx-junit5")
   testImplementation(group = "io.vertx", name = "vertx-junit5")
@@ -89,13 +173,18 @@ tasks.withType<JavaCompile>().configureEach {
   }
 }
 
-sourceSets {
-  main {
-    java {
-      setSrcDirs(listOf("/src/main/java", "src/main/generated"))
-    }
+sourceSets.named("main") {
+  java {
+    setSrcDirs(listOf("/src/main/java", "src/main/generated"))
   }
 }
+
+sourceSets.named("test") {
+  java {
+    setSrcDirs(listOf("/src/test/java", "/src/main/java", "src/main/generated"))
+  }
+}
+
 
 fun timestamp(): Long {
   return Date().time
