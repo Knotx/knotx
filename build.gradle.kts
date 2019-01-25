@@ -18,8 +18,8 @@ subprojects {
   
   repositories {
     mavenLocal()
+    gradlePluginPortal()
     maven(uri("http://repo1.maven.org/maven2"))
-    maven(uri("https://plugins.gradle.org/m2/"))
     maven(uri("https://oss.sonatype.org/content/groups/staging/"))
     maven(uri("https://oss.sonatype.org/content/repositories/snapshots"))
   }
