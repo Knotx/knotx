@@ -84,3 +84,4 @@ bin/
 .vertx
 file-uploads
 **/src/main/resources/*-js
+!gradle/wrapper/gradle-wrapper.jar
