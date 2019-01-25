@@ -61,7 +61,7 @@ sourceSets.named("test") {
 
 
 tasks {
-  register<Copy>("templateClassProcessing") {
+  register<Copy>("templatesProcessing") {
     val tokens = mapOf("project.version" to project.version, "build.timestamp" to "${Utils.timestamp()}")
     inputs.properties(tokens)
 
@@ -71,7 +71,7 @@ tasks {
     }
     into("src/main/generated/io/knotx")
   }
-  getByName<JavaCompile>("compileJava").dependsOn("templateClassProcessing")
+  getByName<JavaCompile>("compileJava").dependsOn("templatesProcessing")
 
   named<RatTask>("rat") {
     excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*")
