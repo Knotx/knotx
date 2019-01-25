@@ -28,9 +28,13 @@ generated
 *.dmg
 *.gz
 *.iso
+*.jar
+!gradle-wrapper.jar
 *.rar
 *.tar
 *.zip
+.gradle
+/build/
 
 # Logs and databases #
 ######################
@@ -72,16 +76,14 @@ settings.json
 *.vertx
 
 target
-*/build/*
 atlassian-ide-plugin.xml
 bin/
+**/build/
+**/out/
 *.bak
-**/.gradle
-**/out/*
 
 # Project specific   #
 ######################
 .vertx
 file-uploads
 **/src/main/resources/*-js
-!gradle/wrapper/gradle-wrapper.jar
