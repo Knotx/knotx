@@ -17,6 +17,7 @@ package io.knotx.assembler;
 
 import io.knotx.dataobjects.Fragment;
 
+// TODO: Rename to FragmentsAssembleStrategy
 public enum UnprocessedFragmentStrategy {
 
   AS_IS {
@@ -37,6 +38,7 @@ public enum UnprocessedFragmentStrategy {
     }
   };
 
+  // TODO: Rename to getBody or extractBody
   protected abstract String get(Fragment fragment);
 
 }
