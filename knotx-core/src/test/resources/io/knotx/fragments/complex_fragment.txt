@@ -1,7 +1,7 @@
-<script data-knotx-knots="services,handlebars"
-        data-knotx-service="first-service"
-        data-knotx-service-second="second-service"
-        data-knotx-service-third="third-service"
+<knotx:snippet knots="any"
+        any-first="first-service"
+        any-second="second-service"
+        any-third="third-service"
         type="text/knotx-snippet">
   <div class="col-md-4">
     <h2>Snippet1 - {{_result.message}}</h2>
@@ -19,4 +19,4 @@
     <h2>Snippet1 - {{third._result.message}}</h2>
     <div>Snippet1 - {{third._result.body.a}}</div>
   </div>
-</script>
+</knotx:snippet>

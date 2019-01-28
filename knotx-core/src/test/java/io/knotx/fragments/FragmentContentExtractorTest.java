@@ -36,10 +36,8 @@ public class FragmentContentExtractorTest {
 
   @ParameterizedTest
   @CsvSource(delimiter = ';', value = {
-      "io/knotx/fragments/simple_default_snippet.txt|script;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_default_snippet.txt|script;io/knotx/fragments/complex_snippet-expected_content.txt",
-      "io/knotx/fragments/simple_custom_snippet.txt|knotx:snippet;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_custom_snippet.txt|knotx:snippet;io/knotx/fragments/complex_snippet-expected_content.txt"
+      "io/knotx/fragments/simple_fragment.txt;io/knotx/fragments/simple_fragment-expected_content.txt",
+      "io/knotx/fragments/complex_fragment.txt;io/knotx/fragments/complex_fragment-expected_content.txt"
   })
   public void unwrappedContent_withFragment_expectDefinedContent(
       @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
@@ -52,10 +50,8 @@ public class FragmentContentExtractorTest {
 
   @ParameterizedTest
   @CsvSource(delimiter = ';', value = {
-      "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
-      "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
+      "io/knotx/fragments/simple_fragment.txt;io/knotx/fragments/simple_fragment-expected_content.txt",
+      "io/knotx/fragments/complex_fragment.txt;io/knotx/fragments/complex_fragment-expected_content.txt"
   })
   public void unwrappedContent_withString_expectDefinedContent(
       String snippetFileName,
@@ -68,10 +64,8 @@ public class FragmentContentExtractorTest {
 
   @ParameterizedTest
   @CsvSource(delimiter = ';', value = {
-      "io/knotx/fragments/simple_default_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_default_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt",
-      "io/knotx/fragments/simple_custom_snippet.txt;io/knotx/fragments/simple_snippet-expected_content.txt",
-      "io/knotx/fragments/complex_custom_snippet.txt;io/knotx/fragments/complex_snippet-expected_content.txt"
+      "io/knotx/fragments/simple_fragment.txt;io/knotx/fragments/simple_fragment-expected_content.txt",
+      "io/knotx/fragments/complex_fragment.txt;io/knotx/fragments/complex_fragment-expected_content.txt"
   })
   public void unwrapFragmentContent_withFragment_expectDefinedContent(
       @ConvertWith(FragmentArgumentConverter.class) Fragment fragment,
@@ -85,8 +79,8 @@ public class FragmentContentExtractorTest {
 
   @ParameterizedTest
   @CsvSource(delimiter = ';', value = {
-      "io/knotx/fragments/empty_snippet.txt",
-      "io/knotx/fragments/raw_snippet.txt"
+      "io/knotx/fragments/empty_fragment.txt",
+      "io/knotx/fragments/raw_fragment.txt"
   })
   public void getUnwrappedContent_withRawFragment_expectNotChangedContent(
       @ConvertWith(FragmentArgumentConverter.class) Fragment fragment) throws Exception {

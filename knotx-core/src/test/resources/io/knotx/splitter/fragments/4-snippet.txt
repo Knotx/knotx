@@ -1,4 +1,4 @@
-<script data-knotx-knots="form-1,services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
+<knotx:snippet knots="form-1,any" any="first-service" type="text/knotx-snippet">
   <h2>{{message}}</h2>
   <div>{{body.a}}</div>
-</script>
+</knotx:snippet>

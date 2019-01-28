@@ -17,7 +17,6 @@ package io.knotx.splitter;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
@@ -31,11 +30,10 @@ import org.junit.jupiter.api.Test;
 
 public class HtmlFragmentSplitterTest {
 
-  private static final String DEFAULT_SCRIPT_TAG = "script";
-  private static final String CUSTOM_SCRIPT_TAG = "knotx:snippet";
-  private static final String DEFAULT_PARAMS_PREFIX = "data-knotx-";
+  private static final String DEFAULT_SCRIPT_TAG = "knotx:snippet";
+  private static final String DEFAULT_PARAMS_PREFIX = "";
   private static final String EXPECTED_ONE_FRAGMENT =
-      "<script data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></script>";
+      "<knotx:snippet knots=\"templating-X\" any=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></knotx:snippet>";
   private static final String EXPECTED_FALLBACK = "FALLBACK_SNIPPET_ID";
   private static final String EXPECTED_STRATEGY = "FALLBACK_STRATEGY_NAME";
 
@@ -107,25 +105,10 @@ public class HtmlFragmentSplitterTest {
   }
 
   @Test
-  public void split_whenCustomSnippetTagOneSnippet_expectThreeFragmentsAndSnippetInTheMiddle()
-      throws Exception {
-    String TEST_ONE_SNIPPET_MIDDLE_HTML = "io/knotx/splitter/test-custom-snippet-tag.html";
-    List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(buildOptions(CUSTOM_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
-        .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
-    assertThat(testOneSnippetMiddle.size(), equalTo(3));
-    assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
-    assertThat(testOneSnippetMiddle.get(1).isRaw(), equalTo(false));
-    assertThat(testOneSnippetMiddle.get(1).content(), equalTo(
-        "<knotx:snippet data-knotx-knots=\"templating-X\" data-knotx-service=\"first-service\"><h2>{{message}}</h2></knotx:snippet>"));
-    assertThat(testOneSnippetMiddle.get(1).fallback().isPresent(), equalTo(false));
-    assertThat(testOneSnippetMiddle.get(2).isRaw(), equalTo(true));
-  }
-
-  @Test
   public void split_whenCustomSnippetTagManySnippets_expectFiveSnippetsFound()
       throws Exception {
-    String TEST_ONE_SNIPPET_MIDDLE_HTML = "io/knotx/splitter/test-many-fragments-custom-snippet.html";
-    List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(buildOptions(CUSTOM_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
+    String TEST_ONE_SNIPPET_MIDDLE_HTML = "io/knotx/splitter/test-many-fragments.html";
+    List<Fragment> testOneSnippetMiddle = new HtmlFragmentSplitter(buildOptions(DEFAULT_SCRIPT_TAG, DEFAULT_PARAMS_PREFIX))
         .split(FileReader.readText(TEST_ONE_SNIPPET_MIDDLE_HTML));
     assertThat(testOneSnippetMiddle.size(), equalTo(9));
     assertThat(testOneSnippetMiddle.get(0).isRaw(), equalTo(true));
@@ -165,7 +148,8 @@ public class HtmlFragmentSplitterTest {
     assertThat(testMultipleSnippetsWithFallback.get(2).isRaw(), equalTo(true));
 
     assertThat(testMultipleSnippetsWithFallback.get(3).isRaw(), equalTo(false));
-    assertThat(testMultipleSnippetsWithFallback.get(3).fallback().isPresent(), equalTo(false));
+    // TODO DEFAULT_FALLBACK
+    assertThat(testMultipleSnippetsWithFallback.get(3).fallback().isPresent(), equalTo(true));
     assertThat(testMultipleSnippetsWithFallback.get(4).isRaw(), equalTo(true));
     assertThat(testMultipleSnippetsWithFallback.get(5).isFallback(), equalTo(true));
     assertThat(testMultipleSnippetsWithFallback.get(6).isRaw(), equalTo(true));

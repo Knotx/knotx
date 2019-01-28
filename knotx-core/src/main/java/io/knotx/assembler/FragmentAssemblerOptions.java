@@ -31,9 +31,9 @@ public class FragmentAssemblerOptions {
   private static final String DEFAULT_ADDRESS = "knotx.core.assembler";
 
   /**
-   * Default strategy of handling unprocessed knotx snippets = UNWRAP
+   * Default strategy of handling unprocessed knotx snippets = AS_IS
    */
-  private static final UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.UNWRAP;
+  private static final UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.AS_IS;
 
   private String address;
   private UnprocessedFragmentStrategy unprocessedStrategy;
