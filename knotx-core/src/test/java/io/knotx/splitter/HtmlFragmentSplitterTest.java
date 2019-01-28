@@ -17,7 +17,6 @@ package io.knotx.splitter;
 
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.knotx.dataobjects.Fragment;
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.Test;
 public class HtmlFragmentSplitterTest {
 
   private static final String DEFAULT_SCRIPT_TAG = "knotx:snippet";
-  private static final String CUSTOM_SCRIPT_TAG = "knotx:snippet";
   private static final String DEFAULT_PARAMS_PREFIX = "";
   private static final String EXPECTED_ONE_FRAGMENT =
       "<knotx:snippet knots=\"templating-X\" any=\"first-service\" type=\"text/knotx-snippet\"><h2>{{message}}</h2></knotx:snippet>";

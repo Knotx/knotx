@@ -54,6 +54,7 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
     try {
       Map<String, Fragment> fallbackFragmentCache = Maps.newHashMap();
       knotContext.getFragments().stream()
+          // TODO: Fragment should not have logic like isFallback, it should be focused on being data structure
           .filter(f -> !f.isFallback())
           .filter(Fragment::failed)
           .forEach(f -> f.content(applyFallback(f, knotContext, fallbackFragmentCache)));
