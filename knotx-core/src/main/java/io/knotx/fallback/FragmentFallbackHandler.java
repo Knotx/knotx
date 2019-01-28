@@ -66,6 +66,8 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
       routingContext.put(KnotContext.KEY, new KnotContext()
           .setClientRequest(knotContext.getClientRequest())
           .setClientResponse(errorResponse));
+    } finally {
+      routingContext.next();
     }
   }
 
