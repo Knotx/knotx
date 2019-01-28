@@ -19,34 +19,24 @@ package io.knotx.fragment;
 import io.vertx.core.json.JsonObject;
 import java.util.Objects;
 
-public class Fragment {
+public class NewFragment {
 
-  private String fragmentType;
-
+  private String type;
   private JsonObject configuration;
-
   private String body;
 
-  private Fragment(String fragmentType, JsonObject configuration, String body) {
-    this.fragmentType = fragmentType;
+  public NewFragment(String type, JsonObject configuration, String body) {
+    this.type = type;
     this.configuration = configuration;
     this.body = body;
   }
 
-  public static Fragment raw(String body) {
-    return new Fragment("_RAW", new JsonObject(), body);
+  public String getType() {
+    return type;
   }
 
-  public static Fragment of(String fragmentType, JsonObject configuration,String body) {
-    return new Fragment(fragmentType, configuration, body);
-  }
-
-  public String getFragmentType() {
-    return fragmentType;
-  }
-
-  public Fragment setFragmentType(String fragmentType) {
-    this.fragmentType = fragmentType;
+  public NewFragment setType(String type) {
+    this.type = type;
     return this;
   }
 
@@ -54,7 +44,7 @@ public class Fragment {
     return configuration;
   }
 
-  public Fragment setConfiguration(JsonObject configuration) {
+  public NewFragment setConfiguration(JsonObject configuration) {
     this.configuration = configuration;
     return this;
   }
@@ -63,7 +53,7 @@ public class Fragment {
     return body;
   }
 
-  public Fragment setBody(String body) {
+  public NewFragment setBody(String body) {
     this.body = body;
     return this;
   }
@@ -76,24 +66,23 @@ public class Fragment {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Fragment fragment = (Fragment) o;
-    return Objects.equals(fragmentType, fragment.fragmentType) &&
-        Objects.equals(configuration, fragment.configuration) &&
-        Objects.equals(body, fragment.body);
+    NewFragment that = (NewFragment) o;
+    return Objects.equals(type, that.type) &&
+        Objects.equals(configuration, that.configuration) &&
+        Objects.equals(body, that.body);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(fragmentType, configuration, body);
+    return Objects.hash(type, configuration, body);
   }
 
   @Override
   public String toString() {
-    return "Fragment{" +
-        "fragmentType='" + fragmentType + '\'' +
+    return "NewFragment{" +
+        "type='" + type + '\'' +
         ", configuration=" + configuration +
         ", body='" + body + '\'' +
         '}';
   }
-
 }

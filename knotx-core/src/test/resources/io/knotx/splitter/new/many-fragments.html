@@ -1,0 +1,26 @@
+<html>
+<head>
+  <title>Test</title>
+</head>
+<body>
+<h1>single snippet</h1>
+<knotx:auth secret-key="pass">
+</knotx:auth>
+<h2>two snippets in a row</h2>
+<knotx:snippet knots="any" any-key="any-value">
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:snippet><knotx:snippet knots="any-second">
+  <h1>test</h1>
+</knotx:snippet>
+<h3>single snippet again</h3>
+<knotx:fallback id="1234" fallback-config='{"key":"value"}'>
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
+</knotx:fallback>
+<h4>End</h4>
+</body>
+<script>
+  var test = "this is not a snippet";
+</script>
+</html>

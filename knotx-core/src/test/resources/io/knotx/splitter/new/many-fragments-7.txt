@@ -1,0 +1,2 @@
+  <h2>{{message}}</h2>
+  <div>{{body.a}}</div>
