@@ -37,7 +37,7 @@ public class MockKnotProxy implements KnotProxy {
     register(vertx, address, null);
   }
 
-  public static void register(Vertx vertx, String address, Consumer<SnippetFragmentsContext> knot) {
+  static void register(Vertx vertx, String address, Consumer<SnippetFragmentsContext> knot) {
     new ServiceBinder(vertx)
         .setAddress(address)
         .register(KnotProxy.class, new MockKnotProxy(knot));
@@ -52,4 +52,3 @@ public class MockKnotProxy implements KnotProxy {
     result.handle(Future.succeededFuture(snippetFragmentsContext));
   }
 }
-

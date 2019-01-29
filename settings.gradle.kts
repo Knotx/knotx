@@ -16,4 +16,5 @@
 
 rootProject.name = "knotx-root"
 include(":knotx-core")
+include(":it-test")
 include(":documentation")
