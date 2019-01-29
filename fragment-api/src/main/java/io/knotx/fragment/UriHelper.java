@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.http;
+package io.knotx.fragment;
 
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.vertx.reactivex.core.MultiMap;
 import java.util.List;
 import java.util.Map;
 
-public final class UriHelper {
+final class UriHelper {
 
   private UriHelper() {
     // util constructor
   }
 
-  public static MultiMap getParams(String uri) {
+  static MultiMap getParams(String uri) {
     QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
     Map<String, List<String>> queryParams = queryStringDecoder.parameters();
 

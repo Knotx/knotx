@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Cognifide Limited
+ * Copyright (C) 2019 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@ModuleGen(name = "knotx-fragment-api", groupPackage = "io.knotx")
+package io.knotx.fragment;
 
-rootProject.name = "knotx-root"
-include(":fragment-api")
-include(":knotx-core")
-include(":documentation")
+import io.vertx.codegen.annotations.ModuleGen;

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.util;
+package io.knotx.fragment;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.MultiMap;
 
-public final class MultiMapConverter {
+final class MultiMapConverter {
 
   private MultiMapConverter() {
     //util constructor
@@ -39,7 +39,7 @@ public final class MultiMapConverter {
    * @param multiMap - {@link MultiMap} to convert
    * @return - {@link JsonObject} with {@link JsonArray} under each object key
    */
-  public static JsonObject toJsonObject(MultiMap multiMap) {
+  static JsonObject toJsonObject(MultiMap multiMap) {
     JsonObject json = new JsonObject();
 
     multiMap.getDelegate().forEach(
@@ -67,7 +67,7 @@ public final class MultiMapConverter {
    * @param json - {@link JsonObject} to convert
    * @return - {@link MultiMap} created from {@link JsonObject}
    */
-  public static MultiMap fromJsonObject(JsonObject json) {
+  static MultiMap fromJsonObject(JsonObject json) {
     MultiMap map = MultiMap.caseInsensitiveMultiMap();
 
     json.stream()

@@ -33,7 +33,6 @@ group = "io.knotx"
 apply(from = "../gradle/common.deps.gradle.kts")
 apply(from = "../gradle/codegen.deps.gradle.kts")
 dependencies {
-  api(project(":fragment-api"))
   api(group = "ch.qos.logback", name = "logback-classic")
   api(group = "com.google.guava", name = "guava")
   api(group = "commons-io", name = "commons-io")
@@ -107,13 +106,13 @@ tasks.register<Jar>("testJar") {
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
-      artifactId = "knotx-core"
+      artifactId = "fragment-api"
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
       artifact(tasks["testJar"])
       pom {
-        name.set("Knot.x Core")
+        name.set("Knot.x Core Fragment API")
         description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
         url.set("http://knotx.io")
         licenses {

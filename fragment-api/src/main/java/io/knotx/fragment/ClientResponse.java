@@ -17,8 +17,6 @@ package io.knotx.fragment;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import io.knotx.util.DataObjectsUtil;
-import io.knotx.util.MultiMapConverter;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.buffer.Buffer;
