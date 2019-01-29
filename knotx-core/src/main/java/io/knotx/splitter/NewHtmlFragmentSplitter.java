@@ -24,8 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
-// TODO this class will implement io.knotx.splitter.FragmentSplitter
-public class NewHtmlFragmentSplitter {
+public class NewHtmlFragmentSplitter implements FragmentSplitter {
 
   private static final String DYNAMIC_FRAGMENT_REGEXP = "<knotx:(?<type>\\w+)(?<attributes>.*?[^>])>(?<body>.*?)</knotx:\\1>";
   private static final Pattern DYNAMIC_FRAGMENT_PATTERN = Pattern

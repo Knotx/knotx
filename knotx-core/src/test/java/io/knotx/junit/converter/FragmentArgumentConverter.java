@@ -17,7 +17,7 @@ package io.knotx.junit.converter;
 
 import static org.mockito.Mockito.when;
 
-import io.knotx.dataobjects.Fragment;
+import io.knotx.dataobjects.SnippetFragment;
 import io.knotx.junit5.util.FileReader;
 import java.io.IOException;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +41,7 @@ public class FragmentArgumentConverter extends SimpleArgumentConverter {
 
     String toConvert = String.valueOf(source);
 
-    if (targetType.equals(Fragment.class)) {
+    if (targetType.equals(SnippetFragment.class)) {
       try {
         return createFragmentMock(toConvert);
       } catch (IOException e) {
@@ -54,7 +54,7 @@ public class FragmentArgumentConverter extends SimpleArgumentConverter {
   }
 
   /**
-   * Builds mock of {@link io.knotx.dataobjects.Fragment} from provided fragmentParameters. The only
+   * Builds mock of {@link SnippetFragment} from provided fragmentParameters. The only
    * mandatory value of the fragmentParameters is fragment content file, that will be the fragment
    * content. There 2 additional params:
    *
@@ -65,17 +65,17 @@ public class FragmentArgumentConverter extends SimpleArgumentConverter {
    *
    * You can embed them in the fragmentParameters, separated by <bb>|</bb> character.<br>
    * <br>
-   * <i>Example:</i> "content.txt|knotx:snippet|data-knotx-" will produce Fragment mock with
+   * <i>Example:</i> "content.txt|knotx:snippet|data-knotx-" will produce SnippetFragment mock with
    * content read from content.txt, snippet tag name set to "knotx:snippet" and snippet parameters
    * prefix set to "data-knotx-". If the last character of fragmentParameters is the separator
    * <bb>|</bb>, then snippet parameters prefix will be set to empty string (no prefix).
    */
-  static Fragment createFragmentMock(String fragmentParameters) throws IOException {
+  static SnippetFragment createFragmentMock(String fragmentParameters) throws IOException {
     final String[] params = fragmentParameters.split(PARAMETER_SEPARATOR_REGEX);
     final String fragmentContentFile = params[0];
     final String fragmentContent = FileReader.readText(fragmentContentFile);
 
-    Fragment fragmentMock = Mockito.mock(Fragment.class);
+    SnippetFragment fragmentMock = Mockito.mock(SnippetFragment.class);
     when(fragmentMock.content()).thenReturn(fragmentContent);
     return fragmentMock;
   }

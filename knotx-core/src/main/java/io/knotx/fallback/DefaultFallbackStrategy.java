@@ -15,8 +15,8 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.dataobjects.Fragment;
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.dataobjects.SnippetFragment;
+import io.knotx.dataobjects.SnippetFragmentsContext;
 
 public class DefaultFallbackStrategy implements FallbackStrategy {
   public static final String ID  = "DEFAULT";
@@ -27,7 +27,7 @@ public class DefaultFallbackStrategy implements FallbackStrategy {
   }
 
   @Override
-  public String applyFallback(Fragment failed, Fragment fallback, KnotContext knotContext) {
+  public String applyFallback(SnippetFragment failed, SnippetFragment fallback, SnippetFragmentsContext snippetFragmentsContext) {
     return fallback.getDelegate().getBody();
   }
 }

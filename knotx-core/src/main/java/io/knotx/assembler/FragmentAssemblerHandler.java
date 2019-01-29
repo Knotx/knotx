@@ -16,7 +16,7 @@
 package io.knotx.assembler;
 
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.server.api.RequestContext;
+import io.knotx.server.api.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -36,15 +36,15 @@ public class FragmentAssemblerHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext routingContext) {
-    RequestContext requestContext = routingContext.get(RequestContext.KEY);
-    String responseBody = requestContext.getFragments().stream()
+    FragmentsContext fragmentsContext = routingContext.get(FragmentsContext.KEY);
+    String responseBody = fragmentsContext.getFragments().stream()
         .map(fragment -> options.getAssembleStrategy().extractBody(fragment))
         .collect(Collectors.joining());
-    RequestContext response = createSuccessResponse(requestContext, responseBody);
-    routingContext.put(RequestContext.KEY, response);
+    FragmentsContext response = createSuccessResponse(fragmentsContext, responseBody);
+    routingContext.put(FragmentsContext.KEY, response);
   }
 
-  private RequestContext createSuccessResponse(RequestContext inputContext,
+  private FragmentsContext createSuccessResponse(FragmentsContext inputContext,
       String responseBody) {
     ClientResponse clientResponse = inputContext.getClientResponse();
     if (StringUtils.isBlank(responseBody)) {
@@ -59,7 +59,7 @@ public class FragmentAssemblerHandler implements Handler<RoutingContext> {
           .setStatusCode(HttpResponseStatus.OK.code());
     }
 
-    return new RequestContext()
+    return new FragmentsContext()
         .setClientRequest(inputContext.getClientRequest())
         .setClientResponse(clientResponse);
   }

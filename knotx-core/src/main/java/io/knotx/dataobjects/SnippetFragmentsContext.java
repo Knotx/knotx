@@ -19,7 +19,7 @@ import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.knotx.fragment.NewFragment;
-import io.knotx.server.api.RequestContext;
+import io.knotx.server.api.FragmentsContext;
 import io.reactivex.Single;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
@@ -27,25 +27,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @DataObject(inheritConverter = true)
-public class KnotContext {
+public class SnippetFragmentsContext {
 
-  public static final String KEY = "knotContext";
+  public static final String KEY = "snippetFragmentsContext";
   // we do not use converters intentionally in this case
   private static final String DELEGATE_KEY = "_DELEGATE";
   private static final String TRANSITION_KEY = "_TRANSITION";
 
-  private RequestContext delegate;
+  private FragmentsContext delegate;
 
   private String transition;
 
   private volatile Cache<String, Single<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
-  public KnotContext(RequestContext delegate) {
+  public SnippetFragmentsContext(FragmentsContext delegate) {
     this.delegate = delegate;
   }
 
-  public KnotContext(JsonObject json) {
-    this.delegate = new RequestContext(json.getJsonObject(DELEGATE_KEY));
+  public SnippetFragmentsContext(JsonObject json) {
+    this.delegate = new FragmentsContext(json.getJsonObject(DELEGATE_KEY));
     this.transition = json.getString(TRANSITION_KEY);
   }
 
@@ -60,7 +60,7 @@ public class KnotContext {
     return transition;
   }
 
-  public KnotContext setTransition(String transition) {
+  public SnippetFragmentsContext setTransition(String transition) {
     this.transition = transition;
     return this;
   }
@@ -69,7 +69,7 @@ public class KnotContext {
     return delegate.getClientRequest();
   }
 
-  public KnotContext setClientRequest(ClientRequest request) {
+  public SnippetFragmentsContext setClientRequest(ClientRequest request) {
     this.delegate.setClientRequest(request);
     return this;
   }
@@ -78,28 +78,28 @@ public class KnotContext {
     return delegate.getClientResponse();
   }
 
-  public KnotContext setClientResponse(ClientResponse response) {
+  public SnippetFragmentsContext setClientResponse(ClientResponse response) {
     this.delegate.setClientResponse(response);
     return this;
   }
 
-  public List<Fragment> getFragments() {
-    return delegate.getFragments().stream().map(Fragment::new)
+  public List<SnippetFragment> getFragments() {
+    return delegate.getFragments().stream().map(SnippetFragment::new)
         .collect(Collectors.toList());
   }
 
-  public KnotContext setFragments(List<Fragment> fragments) {
+  public SnippetFragmentsContext setFragments(List<SnippetFragment> fragments) {
     List<NewFragment> delegates = fragments.stream().map(f -> f.getDelegate())
         .collect(Collectors.toList());
     this.delegate.setFragments(delegates);
     return this;
   }
 
-  public RequestContext getDelegate() {
+  public FragmentsContext getDelegate() {
     return delegate;
   }
 
-  public KnotContext setDelegate(RequestContext delegate) {
+  public SnippetFragmentsContext setDelegate(FragmentsContext delegate) {
     this.delegate = delegate;
     return this;
   }
@@ -113,10 +113,10 @@ public class KnotContext {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof KnotContext)) {
+    if (!(o instanceof SnippetFragmentsContext)) {
       return false;
     }
-    KnotContext that = (KnotContext) o;
+    SnippetFragmentsContext that = (SnippetFragmentsContext) o;
     return Objects.equal(transition, that.transition) &&
         Objects.equal(delegate, that.delegate);
   }

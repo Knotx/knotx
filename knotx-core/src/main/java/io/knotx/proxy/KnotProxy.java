@@ -15,7 +15,7 @@
  */
 package io.knotx.proxy;
 
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.dataobjects.SnippetFragmentsContext;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;
@@ -35,5 +35,6 @@ public interface KnotProxy {
     return new KnotProxyVertxEBProxy(vertx, address, deliveryOptions);
   }
 
-  void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result);
+  void process(
+      SnippetFragmentsContext snippetFragmentsContext, Handler<AsyncResult<SnippetFragmentsContext>> result);
 }

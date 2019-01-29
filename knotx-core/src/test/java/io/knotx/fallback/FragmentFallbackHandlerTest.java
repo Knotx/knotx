@@ -15,22 +15,8 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.dataobjects.KnotContext;
-import io.knotx.junit.util.FileReader;
 //import io.knotx.junit.util.KnotContextFactory;
-import io.knotx.junit5.KnotxApplyConfiguration;
-import io.knotx.options.FallbackMetadata;
-import io.vertx.reactivex.ext.web.RoutingContext;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+
 
 /**
  * TODO Test extracted from Assembler, must be refactored
@@ -62,16 +48,16 @@ public class FragmentFallbackHandlerTest {
 //    FragmentFallbackHandlerOptions options = new FragmentFallbackHandlerOptions();
 //    options.setDefaultFallback(DEFAULT_FALLBACK_ID);
 //
-//    final KnotContext knotContext = KnotContextFactory.create(fragments);
+//    final SnippetFragmentsContext knotContext = KnotContextFactory.create(fragments);
 //
 //    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
-//    Mockito.when(mockContext.get(KnotContext.KEY)).thenReturn(knotContext);
+//    Mockito.when(mockContext.get(SnippetFragmentsContext.KEY)).thenReturn(knotContext);
 //
 //    // when
 //    new FragmentFallbackHandler(options).handle(mockContext);
 //
 //    // then
-//    KnotContext result = mockContext.get(KnotContext.KEY);
+//    SnippetFragmentsContext result = mockContext.get(SnippetFragmentsContext.KEY);
 //    result.getFragments().stream()
 //        .filter(fragment -> !fragment.isRaw() && !fragment.isFallback())
 //        .forEach(
@@ -95,16 +81,16 @@ public class FragmentFallbackHandlerTest {
 //    options.setFallbacks(Collections
 //        .singletonList(new FallbackMetadata(CUSTOM_FALLBACK_ID, CUSTOM_FALLBACK_MESSAGE)));
 //
-//    final KnotContext knotContext = KnotContextFactory.create(fragments);
+//    final SnippetFragmentsContext knotContext = KnotContextFactory.create(fragments);
 //
 //    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
-//    Mockito.when(mockContext.get(KnotContext.KEY)).thenReturn(knotContext);
+//    Mockito.when(mockContext.get(SnippetFragmentsContext.KEY)).thenReturn(knotContext);
 //
 //    // when
 //    new FragmentFallbackHandler(options).handle(mockContext);
 //
 //    // then
-//    KnotContext result = mockContext.get(KnotContext.KEY);
+//    SnippetFragmentsContext result = mockContext.get(SnippetFragmentsContext.KEY);
 //    result.getFragments().stream()
 //        .filter(fragment -> !fragment.isRaw() && !fragment.isFallback())
 //        .forEach(

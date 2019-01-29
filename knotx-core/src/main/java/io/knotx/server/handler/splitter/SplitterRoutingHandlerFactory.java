@@ -15,7 +15,7 @@
  */
 package io.knotx.server.handler.splitter;
 
-import io.knotx.server.api.RequestContext;
+import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.knotx.splitter.NewHtmlFragmentSplitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -51,21 +51,21 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
 
     @Override
     public void handle(RoutingContext context) {
-      RequestContext requestContext = context.get(RequestContext.KEY);
+      FragmentsContext fragmentsContext = context.get(FragmentsContext.KEY);
       try {
-        requestContext
-            .setFragments(splitter.split(requestContext.getClientResponse().getBody().toString()));
-        requestContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
-        traceMessage(requestContext);
-        context.put(RequestContext.KEY, requestContext);
+        fragmentsContext
+            .setFragments(splitter.split(fragmentsContext.getClientResponse().getBody().toString()));
+        fragmentsContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
+        traceMessage(fragmentsContext);
+        context.put(FragmentsContext.KEY, fragmentsContext);
       } catch (Exception e) {
-        context.fail(requestContext.getClientResponse().getStatusCode());
+        context.fail(fragmentsContext.getClientResponse().getStatusCode());
       } finally {
         context.next();
       }
     }
 
-    private void traceMessage(RequestContext ctx) {
+    private void traceMessage(FragmentsContext ctx) {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx);
       }

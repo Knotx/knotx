@@ -17,7 +17,7 @@ package io.knotx.server.handler.http.request.context;
 
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.server.api.RequestContext;
+import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -35,8 +35,8 @@ public class RequestContextRoutingHandlerFactory implements RoutingHandlerFactor
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
     return routingContext -> {
-      routingContext.put(RequestContext.KEY,
-          new RequestContext().setClientRequest(new ClientRequest(routingContext.request()))
+      routingContext.put(FragmentsContext.KEY,
+          new FragmentsContext().setClientRequest(new ClientRequest(routingContext.request()))
               .setClientResponse(
                   new ClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody()));
       routingContext.next();

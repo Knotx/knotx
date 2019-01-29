@@ -17,7 +17,7 @@ package io.knotx.server.handler.repository;
 
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
-import io.knotx.server.api.RequestContext;
+import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -64,7 +64,7 @@ public class RepositoryRoutingHandlerFactory implements RoutingHandlerFactory {
 
     @Override
     public void handle(RoutingContext context) {
-      final RequestContext requestContext = context.get(RequestContext.KEY);
+      final FragmentsContext fragmentsContext = context.get(FragmentsContext.KEY);
       proxies
           .computeIfAbsent(configuration.getString("proxyAddress"), adr -> {
             JsonObject deliveryOptions = configuration.getJsonObject("deliveryOptions");
@@ -73,20 +73,20 @@ public class RepositoryRoutingHandlerFactory implements RoutingHandlerFactory {
                     deliveryOptions != null ? new DeliveryOptions(deliveryOptions)
                         : new DeliveryOptions());
           })
-          .rxProcess(requestContext.getClientRequest())
+          .rxProcess(fragmentsContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
               repoResponse -> handleRepositoryResponse(repoResponse, context,
-                  requestContext),
+                  fragmentsContext),
               context::fail
           );
     }
 
     void handleRepositoryResponse(ClientResponse repoResponse, RoutingContext context,
-        RequestContext requestContext) {
+        FragmentsContext fragmentsContext) {
       if (isSuccessResponse(repoResponse)) {
-        requestContext.setClientResponse(repoResponse);
-        context.put(RequestContext.KEY, requestContext);
+        fragmentsContext.setClientResponse(repoResponse);
+        context.put(FragmentsContext.KEY, fragmentsContext);
         context.next();
       } else {
         endResponse(repoResponse, context);

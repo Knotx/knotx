@@ -26,20 +26,19 @@ import java.util.Objects;
  * An entity representing a markup slice produced during Template fragmentation. It represents both
  * markup with static and dynamic content.
  */
-// TODO rename to SnippetFragment
 @DataObject(inheritConverter = true)
-public class Fragment {
+public class SnippetFragment {
 
   // we do not use converters intentionally in this case
   private static final String DELEGATE_KEY = "_DELEGATE";
 
   private NewFragment delegate;
 
-  public Fragment(JsonObject json) {
+  public SnippetFragment(JsonObject json) {
     this.delegate = new NewFragment(json.getJsonObject(DELEGATE_KEY));
   }
 
-  public Fragment(NewFragment delegate) {
+  public SnippetFragment(NewFragment delegate) {
     this.delegate = delegate;
   }
 
@@ -64,7 +63,7 @@ public class Fragment {
     return delegate.getBody();
   }
 
-  public Fragment content(String content) {
+  public SnippetFragment content(String content) {
     this.delegate.setBody(content);
     return this;
   }
@@ -79,7 +78,7 @@ public class Fragment {
   }
 
   /**
-   * @return true if processing of this Fragment has failed
+   * @return true if processing of this SnippetFragment has failed
    */
   public boolean failed() {
     return this.delegate.failed();
@@ -97,7 +96,7 @@ public class Fragment {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Fragment fragment = (Fragment) o;
+    SnippetFragment fragment = (SnippetFragment) o;
     return Objects.equals(delegate, fragment.delegate);
   }
 

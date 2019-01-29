@@ -15,10 +15,10 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.dataobjects.Fragment;
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.dataobjects.SnippetFragment;
+import io.knotx.dataobjects.SnippetFragmentsContext;
 
 public interface FallbackStrategy {
   String getId();
-  String applyFallback(Fragment failed, Fragment fallback, KnotContext knotContext);
+  String applyFallback(SnippetFragment failed, SnippetFragment fallback, SnippetFragmentsContext snippetFragmentsContext);
 }

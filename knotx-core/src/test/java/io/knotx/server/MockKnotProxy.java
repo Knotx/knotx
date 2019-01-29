@@ -15,7 +15,7 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.dataobjects.SnippetFragmentsContext;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -27,9 +27,9 @@ import java.util.function.Consumer;
 
 public class MockKnotProxy implements KnotProxy {
 
-  private Consumer<KnotContext> knot;
+  private Consumer<SnippetFragmentsContext> knot;
 
-  private MockKnotProxy(Consumer<KnotContext> knot) {
+  private MockKnotProxy(Consumer<SnippetFragmentsContext> knot) {
     this.knot = knot;
   }
 
@@ -37,18 +37,19 @@ public class MockKnotProxy implements KnotProxy {
     register(vertx, address, null);
   }
 
-  public static void register(Vertx vertx, String address, Consumer<KnotContext> knot) {
+  public static void register(Vertx vertx, String address, Consumer<SnippetFragmentsContext> knot) {
     new ServiceBinder(vertx)
         .setAddress(address)
         .register(KnotProxy.class, new MockKnotProxy(knot));
   }
 
   @Override
-  public void process(KnotContext knotContext, Handler<AsyncResult<KnotContext>> result) {
+  public void process(
+      SnippetFragmentsContext snippetFragmentsContext, Handler<AsyncResult<SnippetFragmentsContext>> result) {
     if (knot != null) {
-      knot.accept(knotContext);
+      knot.accept(snippetFragmentsContext);
     }
-    result.handle(Future.succeededFuture(knotContext));
+    result.handle(Future.succeededFuture(snippetFragmentsContext));
   }
 }
 

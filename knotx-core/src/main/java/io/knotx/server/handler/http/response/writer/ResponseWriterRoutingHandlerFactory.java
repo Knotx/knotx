@@ -16,7 +16,7 @@
 package io.knotx.server.handler.http.response.writer;
 
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.server.api.RequestContext;
+import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -46,8 +46,8 @@ public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactor
     return routingContext -> {
       Set<String> allowedResponseHeaders = getAllowedHeaders(config);
 
-      RequestContext requestContext = routingContext.get(RequestContext.KEY);
-      sendResponse(routingContext, allowedResponseHeaders, requestContext.getClientResponse());
+      FragmentsContext fragmentsContext = routingContext.get(FragmentsContext.KEY);
+      sendResponse(routingContext, allowedResponseHeaders, fragmentsContext.getClientResponse());
     };
   }
 

@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Objects;
 
 @DataObject(generateConverter = true)
-public class RequestContext {
+public class FragmentsContext {
 
-  public static final String KEY = "REQUEST_CONTEXT";
+  public static final String KEY = "fragmentsContext";
 
   private List<FragmentProcessingLog> history;
 
@@ -38,19 +38,23 @@ public class RequestContext {
 
   private List<NewFragment> fragments;
 
-  public RequestContext() {
-    //Nothing to set by default
+  public FragmentsContext() {
+    init();
+  }
+
+  public FragmentsContext(JsonObject json) {
+    init();
+    FragmentsContextConverter.fromJson(json, this);
+  }
+
+  private void init() {
     history = Lists.newArrayList();
     fragments = Lists.newArrayList();
   }
 
-  public RequestContext(JsonObject json) {
-    RequestContextConverter.fromJson(json, this);
-  }
-
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    RequestContextConverter.toJson(this, json);
+    FragmentsContextConverter.toJson(this, json);
     return json;
   }
 
@@ -58,7 +62,7 @@ public class RequestContext {
     return clientRequest;
   }
 
-  public RequestContext setClientRequest(ClientRequest clientRequest) {
+  public FragmentsContext setClientRequest(ClientRequest clientRequest) {
     this.clientRequest = clientRequest;
     return this;
   }
@@ -67,7 +71,7 @@ public class RequestContext {
     return clientResponse;
   }
 
-  public RequestContext setClientResponse(ClientResponse clientResponse) {
+  public FragmentsContext setClientResponse(ClientResponse clientResponse) {
     this.clientResponse = clientResponse;
     return this;
   }
@@ -76,7 +80,7 @@ public class RequestContext {
     return fragments;
   }
 
-  public RequestContext setFragments(List<NewFragment> fragments) {
+  public FragmentsContext setFragments(List<NewFragment> fragments) {
     this.fragments = fragments;
     return this;
   }
@@ -93,7 +97,7 @@ public class RequestContext {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RequestContext that = (RequestContext) o;
+    FragmentsContext that = (FragmentsContext) o;
     return Objects.equals(clientRequest, that.clientRequest) &&
         Objects.equals(clientResponse, that.clientResponse) &&
         Objects.equals(fragments, that.fragments);
@@ -106,7 +110,7 @@ public class RequestContext {
 
   @Override
   public String toString() {
-    return "RequestContext{" +
+    return "FragmentsContext{" +
         "clientRequest=" + clientRequest +
         ", clientResponse=" + clientResponse +
         ", fragments=" + fragments +
