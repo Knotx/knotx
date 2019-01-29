@@ -16,8 +16,8 @@
 package io.knotx.server.handler.repository;
 
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.RepositoryConnectorProxy;
+import io.knotx.server.api.RequestContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -64,7 +64,7 @@ public class RepositoryRoutingHandlerFactory implements RoutingHandlerFactory {
 
     @Override
     public void handle(RoutingContext context) {
-      final KnotContext knotContext = context.get(KnotContext.KEY);
+      final RequestContext requestContext = context.get(RequestContext.KEY);
       proxies
           .computeIfAbsent(configuration.getString("proxyAddress"), adr -> {
             JsonObject deliveryOptions = configuration.getJsonObject("deliveryOptions");
@@ -73,20 +73,20 @@ public class RepositoryRoutingHandlerFactory implements RoutingHandlerFactory {
                     deliveryOptions != null ? new DeliveryOptions(deliveryOptions)
                         : new DeliveryOptions());
           })
-          .rxProcess(knotContext.getClientRequest())
+          .rxProcess(requestContext.getClientRequest())
           .doOnSuccess(this::traceMessage)
           .subscribe(
               repoResponse -> handleRepositoryResponse(repoResponse, context,
-                  knotContext),
+                  requestContext),
               context::fail
           );
     }
 
     void handleRepositoryResponse(ClientResponse repoResponse, RoutingContext context,
-        KnotContext knotContext) {
+        RequestContext requestContext) {
       if (isSuccessResponse(repoResponse)) {
-        knotContext.setClientResponse(repoResponse);
-        context.put(KnotContext.KEY, knotContext);
+        requestContext.setClientResponse(repoResponse);
+        context.put(RequestContext.KEY, requestContext);
         context.next();
       } else {
         endResponse(repoResponse, context);

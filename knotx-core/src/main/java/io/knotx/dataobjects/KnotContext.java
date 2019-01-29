@@ -18,43 +18,42 @@ package io.knotx.dataobjects;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.knotx.fragment.NewFragment;
+import io.knotx.server.api.RequestContext;
 import io.reactivex.Single;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@DataObject(generateConverter = true)
+@DataObject(inheritConverter = true)
 public class KnotContext {
 
   public static final String KEY = "knotContext";
+  // we do not use converters intentionally in this case
+  private static final String DELEGATE_KEY = "_DELEGATE";
+  private static final String TRANSITION_KEY = "_TRANSITION";
+
+  private RequestContext delegate;
 
   private String transition;
 
-  private ClientRequest clientRequest;
-
-  private ClientResponse clientResponse;
-
-  private List<Fragment> fragments;
-
   private volatile Cache<String, Single<JsonObject>> cache = CacheBuilder.newBuilder().build();
 
-  public KnotContext() {
-    //Nothing to set by default
+  public KnotContext(RequestContext delegate) {
+    this.delegate = delegate;
   }
 
   public KnotContext(JsonObject json) {
-    KnotContextConverter.fromJson(json, this);
+    this.delegate = new RequestContext(json.getJsonObject(DELEGATE_KEY));
+    this.transition = json.getString(TRANSITION_KEY);
   }
 
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    KnotContextConverter.toJson(this, json);
+    json.put(DELEGATE_KEY, delegate.toJson());
+    json.put(TRANSITION_KEY, transition);
     return json;
-  }
-
-  public KnotContext clearFragments() {
-    this.fragments = null;
-    return this;
   }
 
   public String getTransition() {
@@ -67,29 +66,41 @@ public class KnotContext {
   }
 
   public ClientRequest getClientRequest() {
-    return clientRequest;
+    return delegate.getClientRequest();
   }
 
   public KnotContext setClientRequest(ClientRequest request) {
-    this.clientRequest = request;
+    this.delegate.setClientRequest(request);
     return this;
   }
 
   public ClientResponse getClientResponse() {
-    return clientResponse;
+    return delegate.getClientResponse();
   }
 
   public KnotContext setClientResponse(ClientResponse response) {
-    this.clientResponse = response;
+    this.delegate.setClientResponse(response);
     return this;
   }
 
   public List<Fragment> getFragments() {
-    return fragments;
+    return delegate.getFragments().stream().map(Fragment::new)
+        .collect(Collectors.toList());
   }
 
   public KnotContext setFragments(List<Fragment> fragments) {
-    this.fragments = fragments;
+    List<NewFragment> delegates = fragments.stream().map(f -> f.getDelegate())
+        .collect(Collectors.toList());
+    this.delegate.setFragments(delegates);
+    return this;
+  }
+
+  public RequestContext getDelegate() {
+    return delegate;
+  }
+
+  public KnotContext setDelegate(RequestContext delegate) {
+    this.delegate = delegate;
     return this;
   }
 
@@ -107,14 +118,12 @@ public class KnotContext {
     }
     KnotContext that = (KnotContext) o;
     return Objects.equal(transition, that.transition) &&
-        Objects.equal(clientRequest, that.clientRequest) &&
-        Objects.equal(clientResponse, that.clientResponse) &&
-        Objects.equal(fragments, that.fragments);
+        Objects.equal(delegate, that.delegate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(transition, clientRequest, clientResponse, fragments);
+    return Objects.hashCode(transition, delegate);
   }
 
 }

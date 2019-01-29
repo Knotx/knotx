@@ -17,6 +17,7 @@ package io.knotx.server.handler.knot;
 
 import io.knotx.dataobjects.KnotContext;
 import io.knotx.reactivex.proxy.KnotProxy;
+import io.knotx.server.api.RequestContext;
 import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.vertx.core.Handler;
@@ -74,12 +75,13 @@ public class KnotEngineRoutingHandlerFactory implements RoutingHandlerFactory {
 
     private void handleRoute(final RoutingContext context, final String address,
         final Map<String, RoutingEntry> routing) {
-      KnotContext knotContext = context.get(KnotContext.KEY);
+      RequestContext requestContext = context.get(RequestContext.KEY);
+      KnotContext knotContext = new KnotContext(requestContext);
 
       proxies.computeIfAbsent(address,
           adr -> KnotProxy.createProxyWithOptions(vertx, adr, new DeliveryOptions(deliveryOptions)))
           .rxProcess(knotContext)
-          .doOnSuccess(ctx -> context.put(KnotContext.KEY, ctx))
+          .doOnSuccess(ctx -> context.put(RequestContext.KEY, ctx.getDelegate()) )
           .subscribe(ctx -> {
                 if (StringUtils.isNotBlank(ctx.getTransition())) {
                   doTransition(context, ctx, routing);
@@ -104,7 +106,7 @@ public class KnotEngineRoutingHandlerFactory implements RoutingHandlerFactory {
             "Received transition '{}' from '{}'. No further routing available for the transition. Go to the response generation.",
             ctx.getTransition(), address);
         // last knot can return default transition
-        context.put(KnotContext.KEY, ctx);
+        context.put(RequestContext.KEY, ctx.getDelegate());
         context.next();
       }
     }
@@ -112,7 +114,7 @@ public class KnotEngineRoutingHandlerFactory implements RoutingHandlerFactory {
     private void doEndProcessing(RoutingContext context, KnotContext ctx) {
       LOGGER.debug("Request processing finished by {} Knot. Go to the response generation",
           address);
-      context.put(KnotContext.KEY, ctx);
+      context.put(RequestContext.KEY, ctx.getDelegate());
       context.next();
     }
 

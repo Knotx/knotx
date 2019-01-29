@@ -42,7 +42,7 @@ Fragment Assembler joins all those Fragments into one string:
 ### How does Assembler join unprocessed Fragments?
 Lets imagine that some Fragments were not processed and they still contain dynamic snippets definitions. 
 It is not expected behaviour, so Fragment Assembler must handle it. There are three possible strategies 
-provided: `AS_IS`, `UNWRAP`, `IGNORE`. They can be configured with entry `unprocessedStrategy`.
+provided: `AS_IS`, `UNWRAP`, `IGNORE`. They can be configured with entry `assembleStrategy`.
 See Fragments below and then compare those strategies. 
 ```html
 <html>
@@ -113,8 +113,8 @@ It ignores all Fragments which contains dynamic tag definitions.
 See the [FragmentAssemblerOptions](https://github.com/Cognifide/knotx/blob/master/documentation/src/main/cheatsheet/cheatsheets.adoc#fragmentassembleroptions) for all configuration options and its defaults.
 
 **Important - when specifying `snippetTagName` remember to not use standard HTML tags like `div`, `span`, etc.
-Knot.x splits an HTML into fragments by parsing it as a string to get the best possible performance. 
+Knot.x splits an HTML into fragments by parsing it as a string to extractBody the best possible performance. 
 It simply search the text for the opening and first matching closing tag. It does not analyse the text 
 as HTML. So, if you use `div` as fragmentTagName, and inside your will use multiple `div` tags too, 
-then it will not pick the one that matches first opening, instead it will get the fragment up to the 
+then it will not pick the one that matches first opening, instead it will extractBody the fragment up to the 
 first closing `div` tag. It will result in a broken HTML structure.**

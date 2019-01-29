@@ -16,19 +16,43 @@
 package io.knotx.fragment;
 
 
+import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+@DataObject(generateConverter = true)
 public class NewFragment {
+
+  private List<FragmentProcessingLog> auditLog;
+  private JsonObject payload;
 
   private String type;
   private JsonObject configuration;
   private String body;
 
   public NewFragment(String type, JsonObject configuration, String body) {
+    init();
     this.type = type;
     this.configuration = configuration;
     this.body = body;
+  }
+
+  public NewFragment(JsonObject json) {
+    init();
+    NewFragmentConverter.fromJson(json, this);
+  }
+
+  public JsonObject toJson() {
+    JsonObject json = new JsonObject();
+    NewFragmentConverter.toJson(this, json);
+    return json;
+  }
+
+  private void init() {
+    this.auditLog = new ArrayList<>();
+    this.payload = new JsonObject();
   }
 
   public String getType() {
@@ -58,6 +82,30 @@ public class NewFragment {
     return this;
   }
 
+  public void appendLog(FragmentProcessingLog historyLog) {
+    auditLog.add(historyLog);
+  }
+
+  public boolean failed() {
+    if (auditLog.isEmpty()) {
+      return false;
+    }
+    return auditLog.stream()
+        .anyMatch(f -> f.getStatus().equals(FragmentProcessingStatus.FAILURE));
+  }
+
+  public boolean processed() {
+    if (auditLog.isEmpty()) {
+      return true;
+    }
+    return auditLog.stream()
+        .allMatch(f -> f.getStatus().equals(FragmentProcessingStatus.SUCCESS));
+  }
+
+  public JsonObject getPayload() {
+    return payload;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -80,7 +128,8 @@ public class NewFragment {
   @Override
   public String toString() {
     return "NewFragment{" +
-        "type='" + type + '\'' +
+        "auditLog=" + auditLog +
+        ", type='" + type + '\'' +
         ", configuration=" + configuration +
         ", body='" + body + '\'' +
         '}';

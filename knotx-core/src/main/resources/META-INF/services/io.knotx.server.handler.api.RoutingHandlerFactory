@@ -20,7 +20,7 @@ io.knotx.server.handler.http.response.cookie.CookieRoutingHandlerFactory
 io.knotx.server.handler.failure.ErrorRoutingHandlerFactory
 
 # Knot.x handlers
-io.knotx.server.handler.http.request.context.KnotContextRoutingHandlerFactory
+io.knotx.server.handler.http.request.context.RequestContextRoutingHandlerFactory
 io.knotx.server.handler.splitter.SplitterRoutingHandlerFactory
 io.knotx.server.handler.repository.RepositoryRoutingHandlerFactory
 io.knotx.server.handler.knot.KnotEngineRoutingHandlerFactory

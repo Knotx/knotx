@@ -16,7 +16,7 @@
 package io.knotx.server.handler.http.response.writer;
 
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.server.api.RequestContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -46,8 +46,8 @@ public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactor
     return routingContext -> {
       Set<String> allowedResponseHeaders = getAllowedHeaders(config);
 
-      KnotContext knotContext = routingContext.get(KnotContext.KEY);
-      sendResponse(routingContext, allowedResponseHeaders, knotContext.getClientResponse());
+      RequestContext requestContext = routingContext.get(RequestContext.KEY);
+      sendResponse(routingContext, allowedResponseHeaders, requestContext.getClientResponse());
     };
   }
 
@@ -63,9 +63,6 @@ public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactor
     HttpServerResponse httpResponse = context.response();
     writeHeaders(httpResponse, allowedResponseHeaders, clientResponse);
     httpResponse.setStatusCode(clientResponse.getStatusCode());
-
-    LOG.info("!!! HTTP response [{}]", httpResponse.getStatusCode());
-
     if (isOkClientResponse(clientResponse)) {
       httpResponse.end(Buffer.newInstance(clientResponse.getBody()));
     } else {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.dataobjects;
+package io.knotx.fragment;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -23,26 +23,26 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 
 @DataObject(inheritConverter = true)
-public class KnotTask {
+public class FragmentProcessingLog {
   private final String name;
-  private KnotTaskStatus status = KnotTaskStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
-  private List<KnotError> errors = Lists.newArrayList();
+  private FragmentProcessingStatus status = FragmentProcessingStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
+  private List<FragmentProcessingError> errors = Lists.newArrayList();
 
   private static final String NAME_KEY = "_NAME";
   private static final String STATUS_KEY = "_STATUS";
   private static final String ERRORS_KEY = "_ERRORS";
 
-  public KnotTask(String name) {
+  public FragmentProcessingLog(String name) {
     this.name = name;
   }
 
-  public KnotTask(JsonObject knot) {
+  public FragmentProcessingLog(JsonObject knot) {
     name = knot.getString(NAME_KEY);
-    status = KnotTaskStatus.valueOf(knot.getString(STATUS_KEY));
+    status = FragmentProcessingStatus.valueOf(knot.getString(STATUS_KEY));
     JsonArray jsonErrors = knot.getJsonArray(ERRORS_KEY);
     errors = Lists.newArrayList();
     for (Object error : jsonErrors) {
-      errors.add(new KnotError((JsonObject) error));
+      errors.add(new FragmentProcessingError((JsonObject) error));
     }
   }
 
@@ -58,20 +58,20 @@ public class KnotTask {
     return name;
   }
 
-  public KnotTaskStatus getStatus() {
+  public FragmentProcessingStatus getStatus() {
     return status;
   }
 
-  public List<KnotError> getErrors() {
+  public List<FragmentProcessingError> getErrors() {
     return errors;
   }
 
-  public KnotTask error(String code, Object message) {
-    errors.add(new KnotError(code, message));
+  public FragmentProcessingLog error(String code, Object message) {
+    errors.add(new FragmentProcessingError(code, message));
     return this;
   }
 
-  public KnotTask setStatus(KnotTaskStatus status) {
+  public FragmentProcessingLog setStatus(FragmentProcessingStatus status) {
     this.status = status;
     return this;
   }
@@ -81,10 +81,10 @@ public class KnotTask {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof KnotTask)) {
+    if (!(o instanceof FragmentProcessingLog)) {
       return false;
     }
-    KnotTask that = (KnotTask) o;
+    FragmentProcessingLog that = (FragmentProcessingLog) o;
     return Objects.equal(name, that.name) &&
         Objects.equal(status, that.status) &&
         Objects.equal(errors, that.errors);

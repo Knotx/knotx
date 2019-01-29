@@ -17,7 +17,6 @@ package io.knotx.fallback;
 
 import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.fragments.FragmentContentExtractor;
 
 public class DefaultFallbackStrategy implements FallbackStrategy {
   public static final String ID  = "DEFAULT";
@@ -29,6 +28,6 @@ public class DefaultFallbackStrategy implements FallbackStrategy {
 
   @Override
   public String applyFallback(Fragment failed, Fragment fallback, KnotContext knotContext) {
-    return FragmentContentExtractor.unwrapContent(fallback);
+    return fallback.getDelegate().getBody();
   }
 }

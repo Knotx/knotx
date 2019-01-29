@@ -13,8 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.dataobjects;
+package io.knotx.assembler;
 
-public enum KnotTaskStatus {
-  SUCCESS, FAILURE, UNPROCESSED
+import io.knotx.fragment.NewFragment;
+
+public enum FragmentAssembleStrategy {
+
+  AS_IS {
+    @Override
+    protected String extractBody(NewFragment fragment) {
+      return fragment.getBody();
+    }
+  },
+
+  IGNORE {
+    @Override
+    protected String extractBody(NewFragment fragment) {
+      if (fragment.processed()) {
+        return fragment.getBody();
+      } else {
+        return SNIPPET_IGNORED;
+      }
+    }
+  };
+
+  static final String SNIPPET_IGNORED = "<!-- SNIPPET IGNORED -->";
+
+  protected abstract String extractBody(NewFragment fragment);
+
 }

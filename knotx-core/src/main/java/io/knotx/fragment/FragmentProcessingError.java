@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package io.knotx.dataobjects;
+package io.knotx.fragment;
 
 import com.google.common.base.Objects;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 @DataObject(inheritConverter = true)
-public class KnotError {
+public class FragmentProcessingError {
 
   private static final String CODE_KEY = "_CODE";
   private static final String MESSAGE_KEY = "_MESSAGE";
@@ -29,12 +29,12 @@ public class KnotError {
   private String code;
   private Object message;
 
-  public KnotError(String code, Object message) {
+  public FragmentProcessingError(String code, Object message) {
     this.code = code;
     this.message = message;
   }
 
-  public KnotError(JsonObject x) {
+  public FragmentProcessingError(JsonObject x) {
     this(x.getString(CODE_KEY), x.getString(MESSAGE_KEY));
   }
 
@@ -55,10 +55,10 @@ public class KnotError {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof KnotError)) {
+    if (!(o instanceof FragmentProcessingError)) {
       return false;
     }
-    KnotError that = (KnotError) o;
+    FragmentProcessingError that = (FragmentProcessingError) o;
     return Objects.equal(code, that.code) &&
         Objects.equal(message, that.message);
   }

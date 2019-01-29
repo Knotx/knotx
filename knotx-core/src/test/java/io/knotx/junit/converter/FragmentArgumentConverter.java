@@ -18,11 +18,8 @@ package io.knotx.junit.converter;
 import static org.mockito.Mockito.when;
 
 import io.knotx.dataobjects.Fragment;
-import io.knotx.fragments.SnippetPatterns;
 import io.knotx.junit5.util.FileReader;
-import io.knotx.options.SnippetOptions;
 import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
@@ -34,10 +31,7 @@ import org.mockito.Mockito;
  */
 public class FragmentArgumentConverter extends SimpleArgumentConverter {
 
-  private static final String DEFAULT_SNIPPET_TAG_NAME = "knotx:snippet";
-  private static final String DEFAULT_SNIPPET_PARAM_PREFIX = "";
   private static final String PARAMETER_SEPARATOR_REGEX = "\\|";
-  private static final String PARAMETER_SEPARATOR = "|";
 
   @Override
   protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
@@ -79,36 +73,11 @@ public class FragmentArgumentConverter extends SimpleArgumentConverter {
   static Fragment createFragmentMock(String fragmentParameters) throws IOException {
     final String[] params = fragmentParameters.split(PARAMETER_SEPARATOR_REGEX);
     final String fragmentContentFile = params[0];
-    final String snippetTagName = extractSnippetTagName(params);
     final String fragmentContent = FileReader.readText(fragmentContentFile);
-    final String snippetParamPrefix = extractSnippetParamPrefix(params, fragmentParameters);
-    final SnippetPatterns patterns =
-        new SnippetPatterns(buildOptions(snippetTagName, snippetParamPrefix));
 
     Fragment fragmentMock = Mockito.mock(Fragment.class);
     when(fragmentMock.content()).thenReturn(fragmentContent);
-    when(fragmentMock.isRaw())
-        .thenReturn(!patterns.getAnySnippetPattern().matcher(fragmentContent).matches());
     return fragmentMock;
   }
 
-  private static SnippetOptions buildOptions(String snippetTagName, String snippetParamPrefix) {
-    return new SnippetOptions().setTagName(snippetTagName).setParamsPrefix(snippetParamPrefix);
-  }
-
-  private static String extractSnippetTagName(String[] params) {
-    if (params.length > 1) {
-      return params[1];
-    }
-    return DEFAULT_SNIPPET_TAG_NAME;
-  }
-
-  private static String extractSnippetParamPrefix(String[] params, String fragmentParameters) {
-    if (params.length > 2) {
-      return params[2];
-    } else if (StringUtils.endsWith(fragmentParameters, PARAMETER_SEPARATOR)) {
-      return "";
-    }
-    return DEFAULT_SNIPPET_PARAM_PREFIX;
-  }
 }

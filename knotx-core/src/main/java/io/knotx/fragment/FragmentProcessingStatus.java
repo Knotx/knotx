@@ -13,32 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.assembler;
+package io.knotx.fragment;
 
-import io.knotx.dataobjects.Fragment;
-
-// TODO: Rename to FragmentsAssembleStrategy
-public enum UnprocessedFragmentStrategy {
-
-  AS_IS {
-    @Override
-    protected String get(Fragment fragment) {
-      return fragment.content();
-    }
-  },
-
-  IGNORE {
-    @Override
-    protected String get(Fragment fragment) {
-      if (!fragment.isRaw() && fragment.unprocessed()) {
-        return "<!-- SNIPPET IGNORED -->";
-      } else {
-        return fragment.content();
-      }
-    }
-  };
-
-  // TODO: Rename to getBody or extractBody
-  protected abstract String get(Fragment fragment);
-
+public enum FragmentProcessingStatus {
+  SUCCESS, FAILURE, UNPROCESSED
 }

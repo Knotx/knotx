@@ -17,7 +17,7 @@ package io.knotx.server.handler.http.request.context;
 
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.server.api.RequestContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -25,18 +25,18 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
-public class KnotContextRoutingHandlerFactory implements RoutingHandlerFactory {
+public class RequestContextRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public String getName() {
-    return "knotContextHandler";
+    return "requestContextHandler";
   }
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
     return routingContext -> {
-      routingContext.put(KnotContext.KEY,
-          new KnotContext().setClientRequest(new ClientRequest(routingContext.request()))
+      routingContext.put(RequestContext.KEY,
+          new RequestContext().setClientRequest(new ClientRequest(routingContext.request()))
               .setClientResponse(
                   new ClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody()));
       routingContext.next();

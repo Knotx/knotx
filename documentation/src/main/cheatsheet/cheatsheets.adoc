@@ -300,7 +300,7 @@ Set the EB address of the verticle
 +++
 Sets snippet options (e.g. with tag and data prefix names).
 +++
-|[[unprocessedStrategy]]`unprocessedStrategy`|`link:cheatsheets.adoc#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
+|[[assembleStrategy]]`assembleStrategy`|`link:cheatsheets.adoc#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
 +++
 Set the strategy how to assembly markup with snippets that were not processed by any Knot.
  Allowed values are:
@@ -796,7 +796,7 @@ Set the EB address of the verticle
 +++
 Sets snippet options (e.g. with tag and data prefix names).
 +++
-|[[unprocessedStrategy]]`unprocessedStrategy`|`link:cheatsheets.adoc#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
+|[[assembleStrategy]]`assembleStrategy`|`link:cheatsheets.adoc#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
 +++
 Set the strategy how to assembly markup with snippets that were not processed by any Knot.
  Allowed values are:

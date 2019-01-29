@@ -243,7 +243,7 @@ Set the EB address of the verticle
 +++
 Sets snippet options (e.g. with tag and data prefix names).
 +++
-|[[unprocessedStrategy]]`unprocessedStrategy`|`link:enums.html#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
+|[[assembleStrategy]]`assembleStrategy`|`link:enums.html#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|
 +++
 Set the strategy how to assembly markup with snippets that were not processed by any Knot.
  Allowed values are:

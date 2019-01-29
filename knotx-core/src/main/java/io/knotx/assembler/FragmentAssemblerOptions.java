@@ -15,29 +15,21 @@
  */
 package io.knotx.assembler;
 
-import io.knotx.options.SnippetOptions;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Describes FragmentAssembler Knot configuration
+ * Describes {@link FragmentAssemblerHandler} configuration.
  */
 @DataObject(generateConverter = true, publicConverter = false)
 public class FragmentAssemblerOptions {
 
   /**
-   * Default address of the verticle on the event bus = knotx.core.assembler
+   * Default strategy of handling unprocessed knotx snippets = IGNORE
    */
-  private static final String DEFAULT_ADDRESS = "knotx.core.assembler";
+  private static final FragmentAssembleStrategy DEFAULT_UNPROCESSED_STRATEGY = FragmentAssembleStrategy.IGNORE;
 
-  /**
-   * Default strategy of handling unprocessed knotx snippets = AS_IS
-   */
-  private static final UnprocessedFragmentStrategy DEFAULT_UNPROCESSED_STRATEGY = UnprocessedFragmentStrategy.AS_IS;
-
-  private String address;
-  private UnprocessedFragmentStrategy unprocessedStrategy;
-  private SnippetOptions snippetOptions;
+  private FragmentAssembleStrategy assembleStrategy;
 
   /**
    * Default constructor
@@ -46,15 +38,18 @@ public class FragmentAssemblerOptions {
     init();
   }
 
+  public FragmentAssemblerOptions(FragmentAssembleStrategy assembleStrategy) {
+    init();
+    this.assembleStrategy = assembleStrategy;
+  }
+
   /**
    * Copy constructor
    *
    * @param other the instance to copy
    */
   public FragmentAssemblerOptions(FragmentAssemblerOptions other) {
-    this.address = other.address;
-    this.snippetOptions = other.snippetOptions;
-    this.unprocessedStrategy = other.unprocessedStrategy;
+    this.assembleStrategy = other.assembleStrategy;
   }
 
   /**
@@ -79,70 +74,30 @@ public class FragmentAssemblerOptions {
   }
 
   private void init() {
-    address = DEFAULT_ADDRESS;
-    unprocessedStrategy = DEFAULT_UNPROCESSED_STRATEGY;
-    snippetOptions = new SnippetOptions();
+    assembleStrategy = DEFAULT_UNPROCESSED_STRATEGY;
   }
 
   /**
-   * @return EB address of the verticle
+   * @return fragment strategy name
    */
-  public String getAddress() {
-    return address;
+  public FragmentAssembleStrategy getAssembleStrategy() {
+    return assembleStrategy;
   }
 
   /**
-   * Set the EB address of the verticle
-   *
-   * @param address EB address
-   * @return a reference to this, so the API can be used fluently
-   */
-  public FragmentAssemblerOptions setAddress(String address) {
-    this.address = address;
-    return this;
-  }
-
-  /**
-   * @return Unprocessed snippets strategy name
-   */
-  public UnprocessedFragmentStrategy getUnprocessedStrategy() {
-    return unprocessedStrategy;
-  }
-
-  /**
-   * Set the strategy how to assembly markup with snippets that were not processed by any Knot.
-   * Allowed values are:
+   * Set the strategy how to assembly markup with all fragments.. Allowed values are:
    * <ul>
-   * <li>AS_IS - Keep the whole unprocessed snippet as is</li>
-   * <li>UNWRAP - Remove the wrapping script tag from the snippet</li>
-   * <li>IGNORE - Remove snippet from the markup</li>
+   * <li>AS_IS - Keep all fragments as they are</li>
+   * <li>IGNORE - Remove frangments that were not processed from the markup</li>
    * </ul>
-   * If not set, a default value is <b>UNWRAP</b>
+   * If not set, a default value is <b>IGNORE</b></b>
    *
-   * @param unprocessedStrategy a strategy enum
+   * @param assembleStrategy a strategy enum
    * @return a reference to this, so the API can be used fluently
    */
-  public FragmentAssemblerOptions setUnprocessedStrategy(
-      UnprocessedFragmentStrategy unprocessedStrategy) {
-    this.unprocessedStrategy = unprocessedStrategy;
+  public FragmentAssemblerOptions setAssembleStrategy(
+      FragmentAssembleStrategy assembleStrategy) {
+    this.assembleStrategy = assembleStrategy;
     return this;
   }
-
-  /**
-   * @return a snippet configuration
-   */
-  public SnippetOptions getSnippetOptions() {
-    return snippetOptions;
-  }
-
-  /**
-   * Sets snippet options (e.g. with tag and data prefix names).
-   * @param snippetOptions options
-   * @return a reference to this, so the API can be used fluently
-   */
-  public FragmentAssemblerOptions setSnippetOptions(SnippetOptions snippetOptions) {
-    this.snippetOptions = snippetOptions;
-    return this;
-  }
-
 }

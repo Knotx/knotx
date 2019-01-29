@@ -15,12 +15,11 @@
  */
 package io.knotx.server.handler.splitter;
 
-import io.knotx.dataobjects.KnotContext;
-import io.knotx.reactivex.proxy.KnotProxy;
+import io.knotx.server.api.RequestContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.splitter.NewHtmlFragmentSplitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -44,43 +43,29 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
 
     private final Logger LOGGER = LoggerFactory.getLogger(KnotxSplitterHandler.class);
 
-    private KnotProxy splitter;
-
-    private JsonObject configuration;
+    private NewHtmlFragmentSplitter splitter;
 
     private KnotxSplitterHandler(Vertx vertx, JsonObject configuration) {
-      JsonObject deliveryOptions = configuration.getJsonObject("deliveryOptions");
-      this.splitter = KnotProxy
-          .createProxyWithOptions(vertx, configuration.getString("proxyAddress"),
-              deliveryOptions != null ? new DeliveryOptions(deliveryOptions)
-                  : new DeliveryOptions());
-      this.configuration = configuration;
+      splitter = new NewHtmlFragmentSplitter();
     }
 
     @Override
     public void handle(RoutingContext context) {
-      KnotContext knotContext = context.get(KnotContext.KEY);
-
-      splitter.rxProcess(knotContext)
-          .doOnSuccess(this::traceMessage)
-          .subscribe(
-              ctx -> {
-                if (ctx.getClientResponse().getStatusCode() == HttpResponseStatus.OK.code()) {
-                  context.put(KnotContext.KEY, ctx);
-                  context.next();
-                } else {
-                  context.fail(ctx.getClientResponse().getStatusCode());
-                }
-              },
-              error -> {
-                LOGGER.error("Error happened while communicating with {} engine", error,
-                    configuration.getString("proxyAddress"));
-                context.fail(error);
-              }
-          );
+      RequestContext requestContext = context.get(RequestContext.KEY);
+      try {
+        requestContext
+            .setFragments(splitter.split(requestContext.getClientResponse().getBody().toString()));
+        requestContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
+        traceMessage(requestContext);
+        context.put(RequestContext.KEY, requestContext);
+      } catch (Exception e) {
+        context.fail(requestContext.getClientResponse().getStatusCode());
+      } finally {
+        context.next();
+      }
     }
 
-    private void traceMessage(KnotContext ctx) {
+    private void traceMessage(RequestContext ctx) {
       if (LOGGER.isTraceEnabled()) {
         LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx);
       }

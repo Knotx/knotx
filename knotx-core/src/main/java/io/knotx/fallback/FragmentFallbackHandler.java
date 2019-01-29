@@ -17,11 +17,12 @@ package io.knotx.fallback;
 
 import com.google.common.collect.Maps;
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.dataobjects.Fragment;
 import io.knotx.dataobjects.KnotContext;
-import io.knotx.fragments.FragmentConstants;
+import io.knotx.fragment.NewFragment;
+import io.knotx.server.api.RequestContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.ext.web.RoutingContext;
@@ -50,66 +51,53 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
 
   @Override
   public void handle(RoutingContext routingContext) {
-    KnotContext knotContext = routingContext.get(KnotContext.KEY);
+    RequestContext requestContext = routingContext.get(RequestContext.KEY);
     try {
-      Map<String, Fragment> fallbackFragmentCache = Maps.newHashMap();
-      knotContext.getFragments().stream()
-          .filter(f -> !f.isFallback())
-          .filter(Fragment::failed)
-          .forEach(f -> f.content(applyFallback(f, knotContext, fallbackFragmentCache)));
-      routingContext.put(KnotContext.KEY, knotContext);
+      Map<String, NewFragment> fallbackFragmentCache = Maps.newHashMap();
+      requestContext.getFragments().stream()
+          .filter(NewFragment::failed)
+          .forEach(f -> f.setBody(applyFallback(f, requestContext, fallbackFragmentCache)));
+      routingContext.put(KnotContext.KEY, requestContext);
     } catch (Exception ex) {
       LOGGER.error("Exception happened during Fragment assembly.", ex);
 
       ClientResponse errorResponse = new ClientResponse()
           .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-      routingContext.put(KnotContext.KEY, new KnotContext()
-          .setClientRequest(knotContext.getClientRequest())
+      routingContext.put(RequestContext.KEY, new RequestContext()
+          .setClientRequest(requestContext.getClientRequest())
           .setClientResponse(errorResponse));
     } finally {
       routingContext.next();
     }
   }
 
-  private String applyFallback(Fragment failed, KnotContext knotContext,
-      Map<String, Fragment> fallbackFragmentCache) {
-    Fragment fallback = getFallback(failed, knotContext, fallbackFragmentCache);
-    FallbackStrategy strategy = getFallbackStrategy(fallback);
-    return strategy.applyFallback(failed, fallback, knotContext);
+  private String applyFallback(NewFragment failed, RequestContext knotContext,
+      Map<String, NewFragment> fallbackFragmentCache) {
+    NewFragment fallback = getFallback(failed.getConfiguration().getString("fallback-id"),
+        knotContext, fallbackFragmentCache);
+    return fallback.getBody();
   }
 
-  private FallbackStrategy getFallbackStrategy(Fragment fallbackFragment) {
-    String strategyId = Optional
-        .ofNullable(fallbackFragment.getAttribute(FragmentConstants.FALLBACK_STRATEGY))
-        .orElse(DefaultFallbackStrategy.ID);
-    return Optional.ofNullable(fallbackStrategies.get(strategyId)).orElseThrow(() -> {
-      LOGGER.error(
-          "Fragment {} specifies fallback strategy but no fallback strategy with given id was found",
-          fallbackFragment);
-      return new IllegalArgumentException(
-          String.format("no strategy with id %s found", strategyId));
-    });
-  }
-
-  private Fragment getFallback(Fragment failed, KnotContext knotContext,
-      Map<String, Fragment> fallbackFragmentCache) {
-    String fallbackId = failed.fallback().get();
-    Fragment result = fallbackFragmentCache.get(fallbackId);
+  private NewFragment getFallback(String fallbackId, RequestContext requestContext,
+      Map<String, NewFragment> fallbackFragmentCache) {
+    NewFragment result = fallbackFragmentCache.get(fallbackId);
 
     if (result == null) {
-      result = knotContext.getFragments().stream()
-          .filter(Fragment::isFallback)
+      result = requestContext.getFragments().stream()
+          .filter(fragment -> "fallback".equals(fragment.getType()))
           .filter(
-              f -> StringUtils.equals(fallbackId, f.getAttribute(FragmentFallbackConstants.FALLBACK_ID)))
+              f -> StringUtils
+                  .equals(fallbackId,
+                      f.getConfiguration().getString(FragmentFallbackConstants.FALLBACK_ID)))
           .findFirst()
           .orElse(null);
 
       if (result == null) {
-        result = getGlobalFallback(failed)
+        result = getGlobalFallback(fallbackId)
             .orElseThrow(() -> {
-              LOGGER.error(
-                  "Fragment {} specifies fallback but no fallback snippet with id '{}' was found",
-                  failed, fallbackId);
+//              LOGGER.error(
+//                  "Fragment {} specifies fallback but no fallback snippet with id '{}' was found",
+//                  failed, fallbackId);
               return new IllegalArgumentException(
                   String.format("No fallback snippet with id '%s' was found", fallbackId));
             });
@@ -119,17 +107,11 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
     return result;
   }
 
-  private Optional<Fragment> getGlobalFallback(Fragment failed) {
+  private Optional<NewFragment> getGlobalFallback(String fallbackId) {
     return this.options.getFallbacks().stream()
-        .filter(f -> StringUtils.equals(failed.fallback().get(), f.getId()))
+        .filter(f -> StringUtils.equals(fallbackId, f.getId()))
         .findFirst()
-        .map(fm -> Fragment
-            .fallback(wrap(fm.getMarkup()), fm.getId()));
+        .map(metadata -> new NewFragment("fallback",
+            new JsonObject().put("fallback-id", metadata.getId()), metadata.getMarkup()));
   }
-
-  private String wrap(String fallbackMarkup) {
-    return String.format("<%s>%s</%s>", FragmentFallbackConstants.FALLBACK_TAG_NAME, fallbackMarkup,
-        FragmentFallbackConstants.FALLBACK_TAG_NAME);
-  }
-
 }

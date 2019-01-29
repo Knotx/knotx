@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.dataobjects.KnotContext;
+import io.knotx.server.api.RequestContext;
 import io.knotx.server.handler.repository.RepositoryRoutingHandlerFactory.KnotxRepositoryHandler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.MultiMap;
@@ -51,7 +51,7 @@ public class KnotxRepositoryHandlerTest {
   @Mock
   private RoutingContext routingContext;
   @Mock
-  private KnotContext knotContext;
+  private RequestContext requestContext;
   @Mock
   private HttpServerResponse httpServerResponse;
 
@@ -68,7 +68,7 @@ public class KnotxRepositoryHandlerTest {
     when(clientResponse.getStatusCode()).thenReturn(200);
     when(routingContext.response()).thenReturn(httpServerResponse);
 
-    tested.handleRepositoryResponse(clientResponse, routingContext, knotContext);
+    tested.handleRepositoryResponse(clientResponse, routingContext, requestContext);
     verify(routingContext, times(1)).next();
   }
 
@@ -79,7 +79,7 @@ public class KnotxRepositoryHandlerTest {
     when(clientResponse.getBody()).thenReturn(Buffer.buffer().getDelegate());
     when(routingContext.response()).thenReturn(httpServerResponse);
 
-    tested.handleRepositoryResponse(clientResponse, routingContext, knotContext);
+    tested.handleRepositoryResponse(clientResponse, routingContext, requestContext);
 
     verify(routingContext, times(0)).next();
     verify(httpServerResponse, times(1)).setStatusCode(400);
