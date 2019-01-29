@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.knotx.dataobjects.ClientResponse;
+import io.knotx.fragment.ClientResponse;
 import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.handler.repository.RepositoryRoutingHandlerFactory.KnotxRepositoryHandler;
 import io.vertx.core.json.JsonObject;

@@ -15,8 +15,8 @@
  */
 package io.knotx.repository.http;
 
-import io.knotx.dataobjects.ClientRequest;
-import io.knotx.dataobjects.ClientResponse;
+import io.knotx.fragment.ClientRequest;
+import io.knotx.fragment.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.proxy.RepositoryConnectorProxy;

@@ -18,8 +18,8 @@ package io.knotx.assembler;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.google.common.collect.Lists;
-import io.knotx.dataobjects.ClientRequest;
-import io.knotx.dataobjects.ClientResponse;
+import io.knotx.fragment.ClientRequest;
+import io.knotx.fragment.ClientResponse;
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;

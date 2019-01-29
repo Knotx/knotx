@@ -15,7 +15,7 @@
  */
 package io.knotx.server;
 
-import io.knotx.dataobjects.SnippetFragmentsContext;
+import io.knotx.snippet.SnippetFragmentsContext;
 import io.knotx.proxy.KnotProxy;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;

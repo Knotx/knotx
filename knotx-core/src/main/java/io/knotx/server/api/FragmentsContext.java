@@ -16,8 +16,8 @@
 package io.knotx.server.api;
 
 import com.google.common.collect.Lists;
-import io.knotx.dataobjects.ClientRequest;
-import io.knotx.dataobjects.ClientResponse;
+import io.knotx.fragment.ClientRequest;
+import io.knotx.fragment.ClientResponse;
 import io.knotx.fragment.Fragment;
 import io.knotx.fragment.HandlerLogEntry;
 import io.vertx.codegen.annotations.DataObject;

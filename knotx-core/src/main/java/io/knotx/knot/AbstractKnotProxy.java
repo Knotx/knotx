@@ -16,8 +16,8 @@
 package io.knotx.knot;
 
 import com.google.common.collect.Sets;
-import io.knotx.dataobjects.SnippetFragment;
-import io.knotx.dataobjects.SnippetFragmentsContext;
+import io.knotx.snippet.SnippetFragment;
+import io.knotx.snippet.SnippetFragmentsContext;
 import io.knotx.proxy.KnotProxy;
 import io.reactivex.Single;
 import io.vertx.core.AsyncResult;

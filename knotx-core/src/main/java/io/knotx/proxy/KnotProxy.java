@@ -15,7 +15,7 @@
  */
 package io.knotx.proxy;
 
-import io.knotx.dataobjects.SnippetFragmentsContext;
+import io.knotx.snippet.SnippetFragmentsContext;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;

@@ -15,8 +15,8 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.dataobjects.SnippetFragment;
-import io.knotx.dataobjects.SnippetFragmentsContext;
+import io.knotx.snippet.SnippetFragment;
+import io.knotx.snippet.SnippetFragmentsContext;
 
 public interface FallbackStrategy {
   String getId();

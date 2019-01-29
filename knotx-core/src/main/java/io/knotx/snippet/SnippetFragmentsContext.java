@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.dataobjects;
+package io.knotx.snippet;
 
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.knotx.fragment.ClientRequest;
+import io.knotx.fragment.ClientResponse;
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.FragmentsContext;
 import io.reactivex.Single;

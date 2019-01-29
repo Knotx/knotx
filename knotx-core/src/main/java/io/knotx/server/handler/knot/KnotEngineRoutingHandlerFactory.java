@@ -15,7 +15,7 @@
  */
 package io.knotx.server.handler.knot;
 
-import io.knotx.dataobjects.SnippetFragmentsContext;
+import io.knotx.snippet.SnippetFragmentsContext;
 import io.knotx.reactivex.proxy.KnotProxy;
 import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.configuration.RoutingEntry;

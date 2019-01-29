@@ -17,7 +17,7 @@ package io.knotx.junit.converter;
 
 import static org.mockito.Mockito.when;
 
-import io.knotx.dataobjects.SnippetFragment;
+import io.knotx.snippet.SnippetFragment;
 import io.knotx.junit5.util.FileReader;
 import java.io.IOException;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -16,8 +16,8 @@
 package io.knotx.fallback;
 
 import com.google.common.collect.Maps;
-import io.knotx.dataobjects.ClientResponse;
-import io.knotx.dataobjects.SnippetFragmentsContext;
+import io.knotx.fragment.ClientResponse;
+import io.knotx.snippet.SnippetFragmentsContext;
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
