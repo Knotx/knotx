@@ -23,30 +23,30 @@ import java.util.List;
 import java.util.Objects;
 
 @DataObject(generateConverter = true)
-public class NewFragment {
+public class Fragment {
 
-  private List<FragmentProcessingLog> auditLog;
+  private List<HandlerLogEntry> auditLog;
   private JsonObject payload;
 
   private String type;
   private JsonObject configuration;
   private String body;
 
-  public NewFragment(String type, JsonObject configuration, String body) {
+  public Fragment(String type, JsonObject configuration, String body) {
     init();
     this.type = type;
     this.configuration = configuration;
     this.body = body;
   }
 
-  public NewFragment(JsonObject json) {
+  public Fragment(JsonObject json) {
     init();
-    NewFragmentConverter.fromJson(json, this);
+    FragmentConverter.fromJson(json, this);
   }
 
   public JsonObject toJson() {
     JsonObject json = new JsonObject();
-    NewFragmentConverter.toJson(this, json);
+    FragmentConverter.toJson(this, json);
     return json;
   }
 
@@ -59,7 +59,7 @@ public class NewFragment {
     return type;
   }
 
-  public NewFragment setType(String type) {
+  public Fragment setType(String type) {
     this.type = type;
     return this;
   }
@@ -68,7 +68,7 @@ public class NewFragment {
     return configuration;
   }
 
-  public NewFragment setConfiguration(JsonObject configuration) {
+  public Fragment setConfiguration(JsonObject configuration) {
     this.configuration = configuration;
     return this;
   }
@@ -77,12 +77,12 @@ public class NewFragment {
     return body;
   }
 
-  public NewFragment setBody(String body) {
+  public Fragment setBody(String body) {
     this.body = body;
     return this;
   }
 
-  public void appendLog(FragmentProcessingLog historyLog) {
+  public void appendLog(HandlerLogEntry historyLog) {
     auditLog.add(historyLog);
   }
 
@@ -91,7 +91,7 @@ public class NewFragment {
       return false;
     }
     return auditLog.stream()
-        .anyMatch(f -> f.getStatus().equals(FragmentProcessingStatus.FAILURE));
+        .anyMatch(f -> f.getStatus().equals(HanlderStatus.FAILURE));
   }
 
   public boolean processed() {
@@ -99,7 +99,7 @@ public class NewFragment {
       return true;
     }
     return auditLog.stream()
-        .allMatch(f -> f.getStatus().equals(FragmentProcessingStatus.SUCCESS));
+        .allMatch(f -> f.getStatus().equals(HanlderStatus.SUCCESS));
   }
 
   public JsonObject getPayload() {
@@ -114,7 +114,7 @@ public class NewFragment {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    NewFragment that = (NewFragment) o;
+    Fragment that = (Fragment) o;
     return Objects.equals(type, that.type) &&
         Objects.equals(configuration, that.configuration) &&
         Objects.equals(body, that.body);
@@ -127,7 +127,7 @@ public class NewFragment {
 
   @Override
   public String toString() {
-    return "NewFragment{" +
+    return "Fragment{" +
         "auditLog=" + auditLog +
         ", type='" + type + '\'' +
         ", configuration=" + configuration +

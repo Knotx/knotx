@@ -16,7 +16,7 @@
 package io.knotx.splitter;
 
 import com.google.common.collect.Lists;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -33,8 +33,8 @@ public class NewHtmlFragmentSplitter implements FragmentSplitter {
 
   private AttributesParser attributesParser = new NewAttributesParser();
 
-  public List<NewFragment> split(String html) {
-    List<NewFragment> fragments = Lists.newArrayList();
+  public List<Fragment> split(String html) {
+    List<Fragment> fragments = Lists.newArrayList();
     if (StringUtils.isNotBlank(html)) {
       Matcher matcher = DYNAMIC_FRAGMENT_PATTERN.matcher(html);
       int idx = 0;
@@ -54,14 +54,14 @@ public class NewHtmlFragmentSplitter implements FragmentSplitter {
     return fragments;
   }
 
-  private NewFragment toStatic(String html, int startIdx, int endIdx) {
-    return new NewFragment(STATIC_FRAGMENT_TYPE, new JsonObject(),
+  private Fragment toStatic(String html, int startIdx, int endIdx) {
+    return new Fragment(STATIC_FRAGMENT_TYPE, new JsonObject(),
         html.substring(startIdx, endIdx));
   }
 
-  private NewFragment toDynamic(String type, String attributes, String body) {
+  private Fragment toDynamic(String type, String attributes, String body) {
     JsonObject configuration = new JsonObject();
     attributesParser.get(attributes).forEach(it -> configuration.put(it.getKey(), it.getValue()));
-    return new NewFragment(type, configuration, body);
+    return new Fragment(type, configuration, body);
   }
 }

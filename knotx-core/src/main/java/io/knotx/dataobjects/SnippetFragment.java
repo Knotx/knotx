@@ -16,7 +16,7 @@
 package io.knotx.dataobjects;
 
 import com.google.common.collect.Lists;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
@@ -32,13 +32,13 @@ public class SnippetFragment {
   // we do not use converters intentionally in this case
   private static final String DELEGATE_KEY = "_DELEGATE";
 
-  private NewFragment delegate;
+  private Fragment delegate;
 
   public SnippetFragment(JsonObject json) {
-    this.delegate = new NewFragment(json.getJsonObject(DELEGATE_KEY));
+    this.delegate = new Fragment(json.getJsonObject(DELEGATE_KEY));
   }
 
-  public SnippetFragment(NewFragment delegate) {
+  public SnippetFragment(Fragment delegate) {
     this.delegate = delegate;
   }
 
@@ -84,7 +84,7 @@ public class SnippetFragment {
     return this.delegate.failed();
   }
 
-  public NewFragment getDelegate() {
+  public Fragment getDelegate() {
     return delegate;
   }
 

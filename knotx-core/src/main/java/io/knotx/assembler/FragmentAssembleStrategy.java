@@ -15,20 +15,20 @@
  */
 package io.knotx.assembler;
 
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 
 public enum FragmentAssembleStrategy {
 
   AS_IS {
     @Override
-    protected String extractBody(NewFragment fragment) {
+    protected String extractBody(Fragment fragment) {
       return fragment.getBody();
     }
   },
 
   IGNORE {
     @Override
-    protected String extractBody(NewFragment fragment) {
+    protected String extractBody(Fragment fragment) {
       if (fragment.processed()) {
         return fragment.getBody();
       } else {
@@ -39,6 +39,6 @@ public enum FragmentAssembleStrategy {
 
   static final String SNIPPET_IGNORED = "<!-- SNIPPET IGNORED -->";
 
-  protected abstract String extractBody(NewFragment fragment);
+  protected abstract String extractBody(Fragment fragment);
 
 }

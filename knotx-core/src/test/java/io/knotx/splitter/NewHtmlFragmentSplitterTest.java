@@ -16,7 +16,7 @@
 package io.knotx.splitter;
 
 import com.google.common.collect.Lists;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 import io.knotx.junit5.util.FileReader;
 import io.vertx.core.json.JsonObject;
 import java.io.IOException;
@@ -37,7 +37,7 @@ class NewHtmlFragmentSplitterTest {
   @Test
   public void split_whenNull_expectNoFragments() {
     // when
-    List<NewFragment> fragments = tested.split(null);
+    List<Fragment> fragments = tested.split(null);
 
     // then
     Assert.assertTrue(fragments.isEmpty());
@@ -46,7 +46,7 @@ class NewHtmlFragmentSplitterTest {
   @Test
   public void split_whenEmptyHtml_expectNoFragments() {
     // when
-    List<NewFragment> fragments = tested.split("");
+    List<Fragment> fragments = tested.split("");
 
     // then
     Assert.assertTrue(fragments.isEmpty());
@@ -58,7 +58,7 @@ class NewHtmlFragmentSplitterTest {
     String html = from("static-fragment.html");
 
     // when
-    List<NewFragment> fragments = tested.split(html);
+    List<Fragment> fragments = tested.split(html);
 
     // then
     Assert.assertEquals(1, fragments.size());
@@ -72,11 +72,11 @@ class NewHtmlFragmentSplitterTest {
     String html = from("dynamic-fragment.html");
 
     // when
-    List<NewFragment> fragments = tested.split(html);
+    List<Fragment> fragments = tested.split(html);
 
     // then
     Assert.assertEquals(1, fragments.size());
-    NewFragment fragment = fragments.get(0);
+    Fragment fragment = fragments.get(0);
     Assert.assertEquals("fragmentType", fragment.getType());
     Assert.assertEquals("valueOne", fragment.getConfiguration().getString("attributeOne"));
     Assert.assertEquals("valueTwo", fragment.getConfiguration().getString("attributeTwo"));
@@ -90,29 +90,29 @@ class NewHtmlFragmentSplitterTest {
     String html = from("many-fragments.html");
 
     // when
-    List<NewFragment> actualFragments = tested.split(html);
+    List<Fragment> actualFragments = tested.split(html);
 
     // then
-    List<NewFragment> expectedFragments = Lists.newArrayList(
-        new NewFragment("_STATIC", new JsonObject(), from("many-fragments-1.txt")),
-        new NewFragment("auth", new JsonObject().put("secret-key", "pass"),
+    List<Fragment> expectedFragments = Lists.newArrayList(
+        new Fragment("_STATIC", new JsonObject(), from("many-fragments-1.txt")),
+        new Fragment("auth", new JsonObject().put("secret-key", "pass"),
             from("many-fragments-2.txt")),
-        new NewFragment("_STATIC", new JsonObject(), from("many-fragments-3.txt")),
-        new NewFragment("snippet", new JsonObject().put("knots", "any").put("any-key", "any-value"),
+        new Fragment("_STATIC", new JsonObject(), from("many-fragments-3.txt")),
+        new Fragment("snippet", new JsonObject().put("knots", "any").put("any-key", "any-value"),
             from("many-fragments-4.txt")),
-        new NewFragment("snippet", new JsonObject().put("knots", "any-second"),
+        new Fragment("snippet", new JsonObject().put("knots", "any-second"),
             from("many-fragments-5.txt")),
-        new NewFragment("_STATIC", new JsonObject(), from("many-fragments-6.txt")),
-        new NewFragment("fallback",
+        new Fragment("_STATIC", new JsonObject(), from("many-fragments-6.txt")),
+        new Fragment("fallback",
             new JsonObject().put("id", "1234").put("fallback-config", "{\"key\":\"value\"}"),
             from("many-fragments-7.txt")),
-        new NewFragment("_STATIC", new JsonObject(), from("many-fragments-8.txt"))
+        new Fragment("_STATIC", new JsonObject(), from("many-fragments-8.txt"))
     );
     Assert.assertEquals(expectedFragments.size(), actualFragments.size());
 
     for (int i = 0; i < expectedFragments.size(); i++) {
-      NewFragment expected = expectedFragments.get(i);
-      NewFragment actual = actualFragments.get(i);
+      Fragment expected = expectedFragments.get(i);
+      Fragment actual = actualFragments.get(i);
       Assert.assertEquals(expected.getType(), actual.getType());
       Assert.assertEquals(expected.getConfiguration(), actual.getConfiguration());
       Assert.assertEquals(expected.getBody().trim(), actual.getBody().trim());

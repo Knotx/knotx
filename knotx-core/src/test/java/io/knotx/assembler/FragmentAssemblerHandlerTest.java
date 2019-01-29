@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.google.common.collect.Lists;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 import io.knotx.server.api.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
@@ -80,7 +80,7 @@ public class FragmentAssemblerHandlerTest {
     fragmentsContext.setClientResponse(clientResponse);
     fragmentsContext.setClientRequest(clientRequest);
     fragmentsContext.setFragments(
-        Lists.newArrayList(new NewFragment("_STATIC", new JsonObject(), expectedBody)));
+        Lists.newArrayList(new Fragment("_STATIC", new JsonObject(), expectedBody)));
 
     Mockito.when(routingContext.get(any())).thenReturn(fragmentsContext);
     Mockito.when(clientResponse.getHeaders()).thenReturn(headers);

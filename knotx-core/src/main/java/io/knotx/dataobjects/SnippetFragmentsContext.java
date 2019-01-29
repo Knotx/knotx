@@ -18,7 +18,7 @@ package io.knotx.dataobjects;
 import com.google.common.base.Objects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 import io.knotx.server.api.FragmentsContext;
 import io.reactivex.Single;
 import io.vertx.codegen.annotations.DataObject;
@@ -89,7 +89,7 @@ public class SnippetFragmentsContext {
   }
 
   public SnippetFragmentsContext setFragments(List<SnippetFragment> fragments) {
-    List<NewFragment> delegates = fragments.stream().map(f -> f.getDelegate())
+    List<Fragment> delegates = fragments.stream().map(f -> f.getDelegate())
         .collect(Collectors.toList());
     this.delegate.setFragments(delegates);
     return this;

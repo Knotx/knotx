@@ -18,7 +18,7 @@ package io.knotx.fallback;
 import com.google.common.collect.Maps;
 import io.knotx.dataobjects.ClientResponse;
 import io.knotx.dataobjects.SnippetFragmentsContext;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
 import io.knotx.server.api.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -53,9 +53,9 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
   public void handle(RoutingContext routingContext) {
     FragmentsContext fragmentsContext = routingContext.get(FragmentsContext.KEY);
     try {
-      Map<String, NewFragment> fallbackFragmentCache = Maps.newHashMap();
+      Map<String, Fragment> fallbackFragmentCache = Maps.newHashMap();
       fragmentsContext.getFragments().stream()
-          .filter(NewFragment::failed)
+          .filter(Fragment::failed)
           .forEach(f -> f.setBody(applyFallback(f, fragmentsContext, fallbackFragmentCache)));
       routingContext.put(SnippetFragmentsContext.KEY, fragmentsContext);
     } catch (Exception ex) {
@@ -71,16 +71,16 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
     }
   }
 
-  private String applyFallback(NewFragment failed, FragmentsContext knotContext,
-      Map<String, NewFragment> fallbackFragmentCache) {
-    NewFragment fallback = getFallback(failed.getConfiguration().getString("fallback-id"),
+  private String applyFallback(Fragment failed, FragmentsContext knotContext,
+      Map<String, Fragment> fallbackFragmentCache) {
+    Fragment fallback = getFallback(failed.getConfiguration().getString("fallback-id"),
         knotContext, fallbackFragmentCache);
     return fallback.getBody();
   }
 
-  private NewFragment getFallback(String fallbackId, FragmentsContext fragmentsContext,
-      Map<String, NewFragment> fallbackFragmentCache) {
-    NewFragment result = fallbackFragmentCache.get(fallbackId);
+  private Fragment getFallback(String fallbackId, FragmentsContext fragmentsContext,
+      Map<String, Fragment> fallbackFragmentCache) {
+    Fragment result = fallbackFragmentCache.get(fallbackId);
 
     if (result == null) {
       result = fragmentsContext.getFragments().stream()
@@ -107,11 +107,11 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
     return result;
   }
 
-  private Optional<NewFragment> getGlobalFallback(String fallbackId) {
+  private Optional<Fragment> getGlobalFallback(String fallbackId) {
     return this.options.getFallbacks().stream()
         .filter(f -> StringUtils.equals(fallbackId, f.getId()))
         .findFirst()
-        .map(metadata -> new NewFragment("fallback",
+        .map(metadata -> new Fragment("fallback",
             new JsonObject().put("fallback-id", metadata.getId()), metadata.getMarkup()));
   }
 }

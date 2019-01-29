@@ -15,6 +15,6 @@
  */
 package io.knotx.fragment;
 
-public enum FragmentProcessingStatus {
+public enum HanlderStatus {
   SUCCESS, FAILURE, UNPROCESSED
 }

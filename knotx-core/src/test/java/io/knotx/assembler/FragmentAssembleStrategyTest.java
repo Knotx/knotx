@@ -17,9 +17,9 @@ package io.knotx.assembler;
 
 import static org.junit.Assert.assertEquals;
 
-import io.knotx.fragment.FragmentProcessingLog;
-import io.knotx.fragment.FragmentProcessingStatus;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
+import io.knotx.fragment.HandlerLogEntry;
+import io.knotx.fragment.HanlderStatus;
 import io.vertx.core.json.JsonObject;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class FragmentAssembleStrategyTest {
     // given
     String expectedBody = "<h1>Some text</h1>\n"
         + "<p>Some text</p>";
-    NewFragment fragment = new NewFragment("_STATIC", new JsonObject(), expectedBody);
+    Fragment fragment = new Fragment("_STATIC", new JsonObject(), expectedBody);
 
     // when
     String actualBody = FragmentAssembleStrategy.AS_IS.extractBody(fragment);
@@ -43,9 +43,9 @@ public class FragmentAssembleStrategyTest {
     // given
     String expectedBody = "<h1>Some text</h1>\n"
         + "<p>Some text</p>";
-    NewFragment fragment = new NewFragment("_STATIC", new JsonObject(), expectedBody);
-    fragment.appendLog(new FragmentProcessingLog("anyHandler").setStatus(
-        FragmentProcessingStatus.UNPROCESSED));
+    Fragment fragment = new Fragment("_STATIC", new JsonObject(), expectedBody);
+    fragment.appendLog(new HandlerLogEntry("anyHandler").setStatus(
+        HanlderStatus.UNPROCESSED));
 
     // when
     String actualBody = FragmentAssembleStrategy.AS_IS.extractBody(fragment);
@@ -56,9 +56,9 @@ public class FragmentAssembleStrategyTest {
   @Test
   public void ignore_whenUnprocessedFragment_expectIgnoredBody() {
     // given
-    NewFragment fragment = new NewFragment("_STATIC", new JsonObject(), "ANY BODY");
-    fragment.appendLog(new FragmentProcessingLog("anyHandler").setStatus(
-        FragmentProcessingStatus.UNPROCESSED));
+    Fragment fragment = new Fragment("_STATIC", new JsonObject(), "ANY BODY");
+    fragment.appendLog(new HandlerLogEntry("anyHandler").setStatus(
+        HanlderStatus.UNPROCESSED));
 
     // when
     final String actualBody = FragmentAssembleStrategy.IGNORE.extractBody(fragment);
@@ -72,9 +72,9 @@ public class FragmentAssembleStrategyTest {
     // given
     String expectedBody = "<h1>Some text</h1>\n"
         + "<p>Some text</p>";
-    NewFragment fragment = new NewFragment("_STATIC", new JsonObject(), expectedBody);
-    fragment.appendLog(new FragmentProcessingLog("anyHandler").setStatus(
-        FragmentProcessingStatus.SUCCESS));
+    Fragment fragment = new Fragment("_STATIC", new JsonObject(), expectedBody);
+    fragment.appendLog(new HandlerLogEntry("anyHandler").setStatus(
+        HanlderStatus.SUCCESS));
 
     // when
     final String actualBody = FragmentAssembleStrategy.IGNORE.extractBody(fragment);

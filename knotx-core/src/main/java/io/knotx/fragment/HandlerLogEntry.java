@@ -23,26 +23,26 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 
 @DataObject(inheritConverter = true)
-public class FragmentProcessingLog {
+public class HandlerLogEntry {
   private final String name;
-  private FragmentProcessingStatus status = FragmentProcessingStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
-  private List<FragmentProcessingError> errors = Lists.newArrayList();
+  private HanlderStatus status = HanlderStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
+  private List<HandlerError> errors = Lists.newArrayList();
 
   private static final String NAME_KEY = "_NAME";
   private static final String STATUS_KEY = "_STATUS";
   private static final String ERRORS_KEY = "_ERRORS";
 
-  public FragmentProcessingLog(String name) {
+  public HandlerLogEntry(String name) {
     this.name = name;
   }
 
-  public FragmentProcessingLog(JsonObject knot) {
+  public HandlerLogEntry(JsonObject knot) {
     name = knot.getString(NAME_KEY);
-    status = FragmentProcessingStatus.valueOf(knot.getString(STATUS_KEY));
+    status = HanlderStatus.valueOf(knot.getString(STATUS_KEY));
     JsonArray jsonErrors = knot.getJsonArray(ERRORS_KEY);
     errors = Lists.newArrayList();
     for (Object error : jsonErrors) {
-      errors.add(new FragmentProcessingError((JsonObject) error));
+      errors.add(new HandlerError((JsonObject) error));
     }
   }
 
@@ -58,20 +58,20 @@ public class FragmentProcessingLog {
     return name;
   }
 
-  public FragmentProcessingStatus getStatus() {
+  public HanlderStatus getStatus() {
     return status;
   }
 
-  public List<FragmentProcessingError> getErrors() {
+  public List<HandlerError> getErrors() {
     return errors;
   }
 
-  public FragmentProcessingLog error(String code, Object message) {
-    errors.add(new FragmentProcessingError(code, message));
+  public HandlerLogEntry error(String code, Object message) {
+    errors.add(new HandlerError(code, message));
     return this;
   }
 
-  public FragmentProcessingLog setStatus(FragmentProcessingStatus status) {
+  public HandlerLogEntry setStatus(HanlderStatus status) {
     this.status = status;
     return this;
   }
@@ -81,10 +81,10 @@ public class FragmentProcessingLog {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof FragmentProcessingLog)) {
+    if (!(o instanceof HandlerLogEntry)) {
       return false;
     }
-    FragmentProcessingLog that = (FragmentProcessingLog) o;
+    HandlerLogEntry that = (HandlerLogEntry) o;
     return Objects.equal(name, that.name) &&
         Objects.equal(status, that.status) &&
         Objects.equal(errors, that.errors);

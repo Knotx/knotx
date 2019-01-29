@@ -18,8 +18,8 @@ package io.knotx.server.api;
 import com.google.common.collect.Lists;
 import io.knotx.dataobjects.ClientRequest;
 import io.knotx.dataobjects.ClientResponse;
-import io.knotx.fragment.FragmentProcessingLog;
-import io.knotx.fragment.NewFragment;
+import io.knotx.fragment.Fragment;
+import io.knotx.fragment.HandlerLogEntry;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
@@ -30,13 +30,13 @@ public class FragmentsContext {
 
   public static final String KEY = "fragmentsContext";
 
-  private List<FragmentProcessingLog> history;
+  private List<HandlerLogEntry> history;
 
   private ClientRequest clientRequest;
 
   private ClientResponse clientResponse;
 
-  private List<NewFragment> fragments;
+  private List<Fragment> fragments;
 
   public FragmentsContext() {
     init();
@@ -76,16 +76,16 @@ public class FragmentsContext {
     return this;
   }
 
-  public List<NewFragment> getFragments() {
+  public List<Fragment> getFragments() {
     return fragments;
   }
 
-  public FragmentsContext setFragments(List<NewFragment> fragments) {
+  public FragmentsContext setFragments(List<Fragment> fragments) {
     this.fragments = fragments;
     return this;
   }
 
-  public void addHistoryLog(FragmentProcessingLog historyLog) {
+  public void addHistoryLog(HandlerLogEntry historyLog) {
     history.add(historyLog);
   }
 

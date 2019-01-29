@@ -21,7 +21,7 @@ import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
 @DataObject(inheritConverter = true)
-public class FragmentProcessingError {
+public class HandlerError {
 
   private static final String CODE_KEY = "_CODE";
   private static final String MESSAGE_KEY = "_MESSAGE";
@@ -29,12 +29,12 @@ public class FragmentProcessingError {
   private String code;
   private Object message;
 
-  public FragmentProcessingError(String code, Object message) {
+  public HandlerError(String code, Object message) {
     this.code = code;
     this.message = message;
   }
 
-  public FragmentProcessingError(JsonObject x) {
+  public HandlerError(JsonObject x) {
     this(x.getString(CODE_KEY), x.getString(MESSAGE_KEY));
   }
 
@@ -55,10 +55,10 @@ public class FragmentProcessingError {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof FragmentProcessingError)) {
+    if (!(o instanceof HandlerError)) {
       return false;
     }
-    FragmentProcessingError that = (FragmentProcessingError) o;
+    HandlerError that = (HandlerError) o;
     return Objects.equal(code, that.code) &&
         Objects.equal(message, that.message);
   }
