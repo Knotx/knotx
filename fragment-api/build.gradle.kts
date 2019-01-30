@@ -90,7 +90,7 @@ publishing {
       artifact(tasks["javadocJar"])
       pom {
         name.set("Knot.x Core Fragment API")
-        description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
+        description.set("Fragment API - Knot.x processing model")
         url.set("http://knotx.io")
         licenses {
           license {
