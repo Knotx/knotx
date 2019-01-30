@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.fallback;
+@ModuleGen(name = "knotx-knot-engine-api", groupPackage = "io.knotx")
+package io.knotx.knotengine.api;
 
-import io.knotx.snippet.SnippetFragment;
-import io.knotx.snippet.SnippetFragmentsContext;
-
-public class DefaultFallbackStrategy implements FallbackStrategy {
-  public static final String ID  = "DEFAULT";
-
-  @Override
-  public String getId() {
-    return ID;
-  }
-
-  @Override
-  public String applyFallback(SnippetFragment failed, SnippetFragment fallback, SnippetFragmentsContext snippetFragmentsContext) {
-    return fallback.getDelegate().getBody();
-  }
-}
+import io.vertx.codegen.annotations.ModuleGen;

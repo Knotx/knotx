@@ -21,6 +21,13 @@ include("knotx-core")
 include("knotx-launcher")
 include("it-test")
 
+include("knotx-knot-engine-api")
+include("knotx-knot-engine-core")
+
+
 project(":knotx-fragment-api").projectDir = file("fragment-api")
 project(":knotx-server-http-api").projectDir = file("server-http/api")
 project(":knotx-launcher").projectDir = file("launcher")
+
+project(":knotx-knot-engine-api").projectDir = file("knot-engine/api")
+project(":knotx-knot-engine-core").projectDir = file("knot-engine/core")

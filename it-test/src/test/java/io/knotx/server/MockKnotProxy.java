@@ -15,8 +15,9 @@
  */
 package io.knotx.server;
 
-import io.knotx.snippet.SnippetFragmentsContext;
-import io.knotx.proxy.KnotProxy;
+
+import io.knotx.knotengine.api.KnotProxy;
+import io.knotx.knotengine.api.SnippetFragmentsContext;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -45,7 +46,8 @@ public class MockKnotProxy implements KnotProxy {
 
   @Override
   public void process(
-      SnippetFragmentsContext snippetFragmentsContext, Handler<AsyncResult<SnippetFragmentsContext>> result) {
+      SnippetFragmentsContext snippetFragmentsContext,
+      Handler<AsyncResult<SnippetFragmentsContext>> result) {
     if (knot != null) {
       knot.accept(snippetFragmentsContext);
     }
