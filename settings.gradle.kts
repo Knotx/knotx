@@ -19,15 +19,19 @@ include("knotx-fragment-api")
 include("knotx-server-http-api")
 include("knotx-core")
 include("knotx-launcher")
-include("it-test")
-
+include("knotx-splitter-html")
+include("knotx-assembler")
 include("knotx-knot-engine-api")
 include("knotx-knot-engine-core")
+include("it-test")
+
+
 
 
 project(":knotx-fragment-api").projectDir = file("fragment-api")
 project(":knotx-server-http-api").projectDir = file("server-http/api")
 project(":knotx-launcher").projectDir = file("launcher")
-
+project(":knotx-splitter-html").projectDir = file("splitter-html")
+project(":knotx-assembler").projectDir = file("assembler")
 project(":knotx-knot-engine-api").projectDir = file("knot-engine/api")
 project(":knotx-knot-engine-core").projectDir = file("knot-engine/core")

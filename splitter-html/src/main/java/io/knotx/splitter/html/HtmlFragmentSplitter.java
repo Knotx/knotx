@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+package io.knotx.splitter.html;
 
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
@@ -24,16 +24,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
-public class NewHtmlFragmentSplitter implements FragmentSplitter {
+class HtmlFragmentSplitter {
 
   private static final String DYNAMIC_FRAGMENT_REGEXP = "<knotx:(?<type>\\w+)(?<attributes>.*?[^>])>(?<body>.*?)</knotx:\\1>";
   private static final Pattern DYNAMIC_FRAGMENT_PATTERN = Pattern
       .compile(DYNAMIC_FRAGMENT_REGEXP, Pattern.DOTALL);
   private static final String STATIC_FRAGMENT_TYPE = "_STATIC";
 
-  private AttributesParser attributesParser = new NewAttributesParser();
+  private HtmlAttributesParser attributesParser = new HtmlAttributesParser();
 
-  public List<Fragment> split(String html) {
+  /**
+   * Splits a template (markup) into list of fragments (see {@link Fragment}).
+   *
+   * @param html - a string containing the template content which will be split.
+   * @return list of fragments (see {@link Fragment}).
+   */
+  List<Fragment> split(String html) {
     List<Fragment> fragments = Lists.newArrayList();
     if (StringUtils.isNotBlank(html)) {
       Matcher matcher = DYNAMIC_FRAGMENT_PATTERN.matcher(html);

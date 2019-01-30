@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+package io.knotx.splitter.html;
 
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,13 +21,13 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class NewAttributesParserTest {
+public class HtmlAttributesParserTest {
 
-  private AttributesParser tested;
+  private HtmlAttributesParser tested;
 
   @BeforeEach
   void setUp() {
-    tested = new NewAttributesParser();
+    tested = new HtmlAttributesParser();
   }
 
   @Test

@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+@ModuleGen(name = "knotx-assembler", groupPackage = "io.knotx")
+package io.knotx.assembler;
 
-import io.knotx.fragment.Fragment;
-import java.util.List;
-
-@FunctionalInterface
-public interface FragmentSplitter {
-
-  /**
-   * Splits a template (markup) into list of fragments (see {@link Fragment}).
-   *
-   * @param template - a string containing the template content which will be split.
-   * @return list of fragments (see {@link Fragment}).
-   */
-  List<Fragment> split(String template);
-
-}
+import io.vertx.codegen.annotations.ModuleGen;

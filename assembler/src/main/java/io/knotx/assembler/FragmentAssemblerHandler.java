@@ -26,7 +26,7 @@ import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentAssemblerHandler extends FragmentContextHandler {
+class FragmentAssemblerHandler extends FragmentContextHandler {
 
   private FragmentAssemblerOptions options;
 

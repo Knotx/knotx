@@ -17,7 +17,7 @@ package io.knotx.assembler;
 
 import io.knotx.fragment.Fragment;
 
-public enum FragmentAssembleStrategy {
+enum FragmentAssembleStrategy {
 
   AS_IS {
     @Override
