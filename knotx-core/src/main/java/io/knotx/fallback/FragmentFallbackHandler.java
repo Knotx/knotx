@@ -49,9 +49,9 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
       List<Fragment> inputFragments = fragmentsContext.getFragments();
       inputFragments.stream()
           .filter(Fragment::failed)
-          .forEach(f -> f.setBody(applyFallback(f, fragmentsContext)));
+          .forEach(fragment -> applyFallback(fragment, fragmentsContext));
 
-      fragmentsContext.setFragments(clearFallbackFragments(inputFragments));
+      fragmentsContext.setFragments(filterNotFallbackFragments(inputFragments));
       routingContext.put(SnippetFragmentsContext.KEY, fragmentsContext);
     } catch (Exception ex) {
       LOGGER.error("Exception happened during SnippetFragment assembly.", ex);
@@ -66,7 +66,7 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
     }
   }
 
-  private List<Fragment> clearFallbackFragments(List<Fragment> fragments) {
+  private List<Fragment> filterNotFallbackFragments(List<Fragment> fragments) {
     List<Fragment> result = new ArrayList<>(fragments.size());
     fragments.forEach(fragment -> {
       if (!FallbackConstants.FALLBACK_TYPE.equals(fragment.getType())) {
@@ -76,18 +76,18 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
     return result;
   }
 
-  private String applyFallback(Fragment failed, FragmentsContext knotContext) {
-    String fallbackIdentifier = getFallbackId(failed);
-
+  private void applyFallback(Fragment failedFragment, FragmentsContext knotContext) {
+    String fallbackIdentifier = getFallbackId(failedFragment);
     List<Fragment> fallbackFragments = knotContext.getFragments()
         .stream().filter(fragment -> FallbackConstants.FALLBACK_TYPE.equals(fragment.getType()))
         .collect(Collectors.toList());
 
-    return getFallbackBody(fallbackIdentifier, fallbackFragments);
+    String fallbackBody = getFallbackBody(fallbackIdentifier, fallbackFragments);
+    failedFragment.setBody(fallbackBody);
   }
 
-  private String getFallbackId(Fragment failed) {
-    String fallbackIdentifier = failed.getConfiguration()
+  private String getFallbackId(Fragment failedFragment) {
+    String fallbackIdentifier = failedFragment.getConfiguration()
         .getString(FallbackConstants.FALLBACK_IDENTIFIER);
     if (StringUtils.isBlank(fallbackIdentifier)) {
       fallbackIdentifier = options.getDefaultFallback();

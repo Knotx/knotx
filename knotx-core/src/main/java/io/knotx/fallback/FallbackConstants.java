@@ -15,14 +15,14 @@
  */
 package io.knotx.fallback;
 
-public class FallbackConstants {
+final class FallbackConstants {
 
   static final String FALLBACK_IDENTIFIER = "fallback-id";
   static final String DEFAULT_FALLBACK_ID = "BLANK";
   static final String EMPTY_FALLBACK_VALUE = "";
   static final String FALLBACK_TYPE = "fallback";
 
-  public FallbackConstants() {
+  private FallbackConstants() {
     // empty
   }
 

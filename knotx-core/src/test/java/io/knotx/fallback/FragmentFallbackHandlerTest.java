@@ -33,9 +33,8 @@ public class FragmentFallbackHandlerTest {
   private static final String CUSTOM_FALLBACK_MESSAGE = "<p class='error'>custom fallback</p>";
   private static final String CUSTOM_FALLBACK_ID = "FALLBACK_1";
 
-
   @Test
-  public void callHandlerWithCorrectFragment_expectFragment() {
+  public void handle_whenCorrectFragment_expectNotChangedBody() {
     // given
     String actualBody = "ACTUAL CONTENT";
     Fragment fragment = new Fragment("ANY", new JsonObject(), actualBody);
@@ -54,7 +53,7 @@ public class FragmentFallbackHandlerTest {
   }
 
   @Test
-  public void callHandlerWithFailedFragment_expectDefaultFallback() {
+  public void handle_whenFailedFragmentWithoutFallbackIdentifier_expectEmptyBody() {
     // given
     String actualBody = "ACTUAL CONTENT";
     Fragment fragment = new Fragment("ANY", new JsonObject(), actualBody);
@@ -77,7 +76,7 @@ public class FragmentFallbackHandlerTest {
   }
 
   @Test
-  public void callHandlerWithFailedFragmentWithCustomMetadataFallback_expectDefaultFallback() {
+  public void handle_whenFailedFragmentWithFallbackIdentifierFromHandlerConfiguration_expectCustomBody() {
     // given
     String actualBody = "ACTUAL CONTENT";
     Fragment fragment = new Fragment("ANY", new JsonObject().put(
@@ -85,7 +84,6 @@ public class FragmentFallbackHandlerTest {
         actualBody);
     fragment.appendLog(new HandlerLogEntry("any-one").setStatus(HanlderStatus.FAILURE));
 
-    // we use the default fallback mechanism that replace the content with empty string
     FragmentFallbackHandlerOptions options = new FragmentFallbackHandlerOptions();
     options.addFallback(new FallbackMetadata(CUSTOM_FALLBACK_ID, CUSTOM_FALLBACK_MESSAGE));
 
@@ -103,7 +101,7 @@ public class FragmentFallbackHandlerTest {
   }
 
   @Test
-  public void callHandlerWithFailedFragmentWithCustomFragmentFallback_expectDefaultFallback() {
+  public void handle_whenFailedFragmentWithFallbackIdentifierWhenFallbackDefinedAsFragment_expectCustomBody() {
     // given
     String actualBody = "ACTUAL CONTENT";
     Fragment testedFragment = new Fragment("ANY", new JsonObject().put(
