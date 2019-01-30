@@ -18,15 +18,15 @@ package io.knotx.fragment;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import io.knotx.http.UriHelper;
-import io.knotx.util.DataObjectsUtil;
-import io.knotx.util.MultiMapConverter;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.http.HttpServerRequest;
+import java.util.List;
+import java.util.Map;
 
 @DataObject(generateConverter = true)
 public class ClientRequest {
@@ -61,7 +61,7 @@ public class ClientRequest {
     this.path = serverRequest.path();
     this.method = serverRequest.method();
     this.headers = MultiMap.caseInsensitiveMultiMap().setAll(serverRequest.headers());
-    this.params = UriHelper.getParams(serverRequest.uri());
+    this.params = getParams(serverRequest.uri());
     this.formAttributes = MultiMap.caseInsensitiveMultiMap().setAll(serverRequest.formAttributes());
   }
 
@@ -178,6 +178,20 @@ public class ClientRequest {
         .add("params", DataObjectsUtil.toString(params))
         .add("formAttributes", DataObjectsUtil.toString(formAttributes))
         .toString();
+  }
+
+  private MultiMap getParams(String uri) {
+    QueryStringDecoder queryStringDecoder = new QueryStringDecoder(uri);
+    Map<String, List<String>> queryParams = queryStringDecoder.parameters();
+
+    io.vertx.core.MultiMap params = io.vertx.core.MultiMap.caseInsensitiveMultiMap();
+    if (!queryParams.isEmpty()) {
+      for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+        params.add(entry.getKey(), entry.getValue());
+      }
+
+    }
+    return MultiMap.newInstance(params);
   }
 }
 
