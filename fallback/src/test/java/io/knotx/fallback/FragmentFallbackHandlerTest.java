@@ -18,7 +18,6 @@ package io.knotx.fallback;
 import io.knotx.fragment.Fragment;
 import io.knotx.fragment.HandlerLogEntry;
 import io.knotx.fragment.HanlderStatus;
-import io.knotx.options.FallbackMetadata;
 import io.knotx.server.api.context.FragmentsContext;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.web.RoutingContext;

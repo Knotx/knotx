@@ -16,7 +16,6 @@
 package io.knotx.fallback;
 
 import io.knotx.fragment.Fragment;
-import io.knotx.options.FallbackMetadata;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
 import io.knotx.server.api.handler.FragmentContextHandler;
@@ -30,7 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentFallbackHandler extends FragmentContextHandler {
+class FragmentFallbackHandler extends FragmentContextHandler {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FragmentFallbackHandler.class);

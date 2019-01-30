@@ -15,7 +15,6 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.options.FallbackMetadata;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
