@@ -13,32 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@ModuleGen(name = "knotx-assembler", groupPackage = "io.knotx")
 package io.knotx.assembler;
 
-import io.knotx.fragment.Fragment;
-
-public enum FragmentAssembleStrategy {
-
-  AS_IS {
-    @Override
-    protected String extractBody(Fragment fragment) {
-      return fragment.getBody();
-    }
-  },
-
-  IGNORE {
-    @Override
-    protected String extractBody(Fragment fragment) {
-      if (fragment.processed()) {
-        return fragment.getBody();
-      } else {
-        return SNIPPET_IGNORED;
-      }
-    }
-  };
-
-  static final String SNIPPET_IGNORED = "<!-- SNIPPET IGNORED -->";
-
-  protected abstract String extractBody(Fragment fragment);
-
-}
+import io.vertx.codegen.annotations.ModuleGen;
