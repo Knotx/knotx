@@ -17,7 +17,6 @@
 package io.knotx.launcher;
 
 import com.google.common.collect.Lists;
-import io.knotx.Version;
 import io.knotx.launcher.ModuleDescriptor.DeploymentState;
 import io.reactivex.Observable;
 import io.reactivex.Single;
