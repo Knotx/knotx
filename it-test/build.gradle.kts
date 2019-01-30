@@ -29,7 +29,8 @@ group = "io.knotx"
 
 apply(from = "../gradle/common.deps.gradle.kts")
 dependencies {
-  compile(project(":knotx-core"))
+  testCompile(project(":knotx-core"))
+  testCompile(project(":knotx-launcher"))
 }
 
 // -----------------------------------------------------------------------------

@@ -33,8 +33,8 @@ group = "io.knotx"
 apply(from = "../gradle/common.deps.gradle.kts")
 apply(from = "../gradle/codegen.deps.gradle.kts")
 dependencies {
-  api(project(":fragment-api"))
-  api(project(":server-http-api"))
+  api(project(":knotx-fragment-api"))
+  api(project(":knotx-server-http-api"))
   api(group = "ch.qos.logback", name = "logback-classic")
   api(group = "com.google.guava", name = "guava")
   api(group = "commons-io", name = "commons-io")
@@ -62,18 +62,6 @@ sourceSets.named("test") {
 
 
 tasks {
-  register<Copy>("templatesProcessing") {
-    val tokens = mapOf("project.version" to project.version, "build.timestamp" to "${Utils.timestamp()}")
-    inputs.properties(tokens)
-
-    from("src/main/java-templates") {
-      include("*.java")
-      filter<ReplaceTokens>("tokens" to tokens)
-    }
-    into("src/main/generated/io/knotx")
-  }
-  getByName<JavaCompile>("compileJava").dependsOn("templatesProcessing")
-
   named<RatTask>("rat") {
     excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*", "*.iml")
   }
@@ -100,11 +88,6 @@ tasks.register<Jar>("javadocJar") {
   classifier = "javadoc"
 }
 
-tasks.register<Jar>("testJar") {
-  from(sourceSets.named("test").get().output)
-  classifier = "tests"
-}
-
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
@@ -112,7 +95,6 @@ publishing {
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
-      artifact(tasks["testJar"])
       pom {
         name.set("Knot.x Core")
         description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
