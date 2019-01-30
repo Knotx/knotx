@@ -15,21 +15,21 @@
  */
 package io.knotx.server.handler.http.request.context;
 
-import io.knotx.fragment.ClientRequest;
-import io.knotx.fragment.ClientResponse;
-import io.knotx.server.api.FragmentsContext;
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.context.ClientRequest;
+import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
-public class RequestContextRoutingHandlerFactory implements RoutingHandlerFactory {
+public class FragmentContextRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public String getName() {
-    return "requestContextHandler";
+    return "fragmentContextHandler";
   }
 
   @Override

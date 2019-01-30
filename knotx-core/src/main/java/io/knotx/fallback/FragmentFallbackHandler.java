@@ -15,13 +15,12 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.fragment.ClientResponse;
 import io.knotx.fragment.Fragment;
 import io.knotx.options.FallbackMetadata;
-import io.knotx.server.api.FragmentsContext;
-import io.knotx.snippet.SnippetFragmentsContext;
+import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.handler.FragmentContextHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.ext.web.RoutingContext;
@@ -31,7 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentFallbackHandler implements Handler<RoutingContext> {
+public class FragmentFallbackHandler extends FragmentContextHandler {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FragmentFallbackHandler.class);
@@ -43,27 +42,26 @@ public class FragmentFallbackHandler implements Handler<RoutingContext> {
   }
 
   @Override
-  public void handle(RoutingContext routingContext) {
-    FragmentsContext fragmentsContext = routingContext.get(FragmentsContext.KEY);
-    try {
-      List<Fragment> inputFragments = fragmentsContext.getFragments();
-      inputFragments.stream()
-          .filter(Fragment::failed)
-          .forEach(fragment -> applyFallback(fragment, fragmentsContext));
+  protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
+    List<Fragment> inputFragments = fragmentsContext.getFragments();
+    inputFragments.stream()
+        .filter(Fragment::failed)
+        .forEach(fragment -> applyFallback(fragment, fragmentsContext));
 
-      fragmentsContext.setFragments(filterNotFallbackFragments(inputFragments));
-      routingContext.put(SnippetFragmentsContext.KEY, fragmentsContext);
-    } catch (Exception ex) {
-      LOGGER.error("Exception happened during SnippetFragment assembly.", ex);
+    fragmentsContext.setFragments(filterNotFallbackFragments(inputFragments));
+    return fragmentsContext;
+  }
 
-      ClientResponse errorResponse = new ClientResponse()
-          .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-      routingContext.put(FragmentsContext.KEY, new FragmentsContext()
-          .setClientRequest(fragmentsContext.getClientRequest())
-          .setClientResponse(errorResponse));
-    } finally {
-      routingContext.next();
-    }
+  @Override
+  protected void handleError(RoutingContext context, FragmentsContext fragmentsContext,
+      Exception e) {
+    LOGGER.error("Exception happened during SnippetFragment assembly.", e);
+    //TODO should context.fail() be called there? Write unit test.
+    ClientResponse errorResponse = new ClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+    context.put(FragmentsContext.KEY, new FragmentsContext()
+        .setClientRequest(fragmentsContext.getClientRequest())
+        .setClientResponse(errorResponse));
   }
 
   private List<Fragment> filterNotFallbackFragments(List<Fragment> fragments) {

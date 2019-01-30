@@ -15,9 +15,9 @@
  */
 package io.knotx.repository.fs;
 
-import io.knotx.fragment.ClientRequest;
-import io.knotx.fragment.ClientResponse;
 import io.knotx.proxy.RepositoryConnectorProxy;
+import io.knotx.server.api.context.ClientRequest;
+import io.knotx.server.api.context.ClientResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;

@@ -17,9 +17,9 @@ package io.knotx.server.handler.knot;
 
 import io.knotx.snippet.SnippetFragmentsContext;
 import io.knotx.reactivex.proxy.KnotProxy;
-import io.knotx.server.api.FragmentsContext;
+import io.knotx.server.api.context.FragmentsContext;
 import io.knotx.server.configuration.RoutingEntry;
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;

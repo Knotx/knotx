@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Cognifide Limited
+ * Copyright (C) 2019 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@ModuleGen(name = "knotx-server-http-api", groupPackage = "io.knotx")
+package io.knotx.server.api;
 
-rootProject.name = "knotx-root"
-include(":fragment-api")
-include(":server-http-api")
-include(":knotx-core")
-include(":it-test")
-include(":documentation")
-
-project(":server-http-api").projectDir = file("server-http/api")
+import io.vertx.codegen.annotations.ModuleGen;

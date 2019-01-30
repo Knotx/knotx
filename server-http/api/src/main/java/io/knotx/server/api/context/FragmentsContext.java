@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.api;
+package io.knotx.server.api.context;
 
 import com.google.common.collect.Lists;
-import io.knotx.fragment.ClientRequest;
-import io.knotx.fragment.ClientResponse;
 import io.knotx.fragment.Fragment;
 import io.knotx.fragment.HandlerLogEntry;
 import io.vertx.codegen.annotations.DataObject;

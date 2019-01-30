@@ -30,16 +30,13 @@ group = "io.knotx"
 // Dependencies
 // -----------------------------------------------------------------------------
 
-apply(from = "../gradle/common.deps.gradle.kts")
-apply(from = "../gradle/codegen.deps.gradle.kts")
+apply(from = "../../gradle/common.deps.gradle.kts")
+apply(from = "../../gradle/codegen.deps.gradle.kts")
 dependencies {
   api(project(":fragment-api"))
-  api(project(":server-http-api"))
-  api(group = "ch.qos.logback", name = "logback-classic")
   api(group = "com.google.guava", name = "guava")
   api(group = "commons-io", name = "commons-io")
   api(group = "org.apache.commons", name = "commons-lang3")
-  api(group = "org.jsoup", name = "jsoup")
   api(group = "com.typesafe", name = "config")
   api(group = "commons-collections", name = "commons-collections")
 }
@@ -48,12 +45,9 @@ dependencies {
 // Source sets
 // -----------------------------------------------------------------------------
 
-apply(from = "../gradle/common.gradle.kts")
+apply(from = "../../gradle/common.gradle.kts")
 sourceSets.named("main") {
   java.srcDir("src/main/generated")
-}
-sourceSets.named("test") {
-  java.srcDirs(listOf("src/main/java", "src/main/generated"))
 }
 
 // -----------------------------------------------------------------------------
@@ -62,18 +56,6 @@ sourceSets.named("test") {
 
 
 tasks {
-  register<Copy>("templatesProcessing") {
-    val tokens = mapOf("project.version" to project.version, "build.timestamp" to "${Utils.timestamp()}")
-    inputs.properties(tokens)
-
-    from("src/main/java-templates") {
-      include("*.java")
-      filter<ReplaceTokens>("tokens" to tokens)
-    }
-    into("src/main/generated/io/knotx")
-  }
-  getByName<JavaCompile>("compileJava").dependsOn("templatesProcessing")
-
   named<RatTask>("rat") {
     excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*", "*.iml")
   }
@@ -100,22 +82,16 @@ tasks.register<Jar>("javadocJar") {
   classifier = "javadoc"
 }
 
-tasks.register<Jar>("testJar") {
-  from(sourceSets.named("test").get().output)
-  classifier = "tests"
-}
-
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
-      artifactId = "knotx-core"
+      artifactId = "fragment-api"
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
-      artifact(tasks["testJar"])
       pom {
-        name.set("Knot.x Core")
-        description.set("Knot.x - efficient, high-performance and scalable integration platform for modern websites")
+        name.set("Knot.x Core HTTP Server API")
+        description.set("HTTP Server API - Knot.x HTTP Server models")
         url.set("http://knotx.io")
         licenses {
           license {
