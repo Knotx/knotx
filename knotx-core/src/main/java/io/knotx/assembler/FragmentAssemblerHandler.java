@@ -15,8 +15,8 @@
  */
 package io.knotx.assembler;
 
-import io.knotx.server.api.ClientResponse;
-import io.knotx.server.api.FragmentsContext;
+import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;

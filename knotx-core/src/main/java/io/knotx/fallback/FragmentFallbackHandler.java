@@ -17,8 +17,8 @@ package io.knotx.fallback;
 
 import io.knotx.fragment.Fragment;
 import io.knotx.options.FallbackMetadata;
-import io.knotx.server.api.ClientResponse;
-import io.knotx.server.api.FragmentsContext;
+import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.FragmentsContext;
 import io.knotx.snippet.SnippetFragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;

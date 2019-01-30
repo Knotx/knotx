@@ -15,8 +15,8 @@
  */
 package io.knotx.proxy;
 
-import io.knotx.server.api.ClientRequest;
-import io.knotx.server.api.ClientResponse;
+import io.knotx.server.api.context.ClientRequest;
+import io.knotx.server.api.context.ClientResponse;
 import io.vertx.codegen.annotations.ProxyGen;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.AsyncResult;

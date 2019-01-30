@@ -15,7 +15,7 @@
  */
 package io.knotx.server.configuration;
 
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
@@ -51,14 +51,14 @@ public class RoutingHandlerOptions {
   }
 
   /**
-   * @return {@link io.knotx.server.handler.api.RoutingHandlerFactory} name
+   * @return {@link RoutingHandlerFactory} name
    */
   public String getName() {
     return name;
   }
 
   /**
-   * Sets {@link io.knotx.server.handler.api.RoutingHandlerFactory} name
+   * Sets {@link RoutingHandlerFactory} name
    *
    * @param name handler factory name
    * @return reference to this, so the API can be used fluently
@@ -69,7 +69,7 @@ public class RoutingHandlerOptions {
   }
 
   /**
-   * @return JSON configuration used during {@link io.knotx.server.handler.api.RoutingHandlerFactory#create(Vertx,
+   * @return JSON configuration used during {@link RoutingHandlerFactory#create(Vertx,
    * JsonObject)} initialization
    */
   public JsonObject getConfig() {

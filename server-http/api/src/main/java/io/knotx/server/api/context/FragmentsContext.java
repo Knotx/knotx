@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.api;
+package io.knotx.server.api.context;
 
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;

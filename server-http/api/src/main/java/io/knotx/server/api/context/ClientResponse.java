@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.api;
+package io.knotx.server.api.context;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import io.knotx.server.api.MultiMapConverter;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.buffer.Buffer;

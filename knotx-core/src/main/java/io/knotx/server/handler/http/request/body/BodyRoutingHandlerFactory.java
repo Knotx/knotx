@@ -15,7 +15,7 @@
  */
 package io.knotx.server.handler.http.request.body;
 
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;

@@ -15,8 +15,8 @@
  */
 package io.knotx.server.handler.splitter;
 
-import io.knotx.server.api.FragmentsContext;
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.knotx.splitter.NewHtmlFragmentSplitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;

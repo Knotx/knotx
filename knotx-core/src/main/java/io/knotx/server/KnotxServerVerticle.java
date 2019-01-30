@@ -17,7 +17,7 @@ package io.knotx.server;
 
 import io.knotx.server.configuration.KnotxServerOptions;
 import io.knotx.server.configuration.RoutingOperationOptions;
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.SingleSource;
 import io.vertx.core.Context;

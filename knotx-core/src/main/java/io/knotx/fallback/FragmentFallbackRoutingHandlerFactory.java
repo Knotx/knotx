@@ -15,7 +15,7 @@
  */
 package io.knotx.fallback;
 
-import io.knotx.server.handler.api.RoutingHandlerFactory;
+import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
