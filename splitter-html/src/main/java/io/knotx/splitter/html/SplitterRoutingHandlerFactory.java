@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.handler.splitter;
+package io.knotx.splitter.html;
 
 import io.knotx.server.api.context.FragmentsContext;
 import io.knotx.server.api.handler.FragmentContextHandler;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
-import io.knotx.splitter.NewHtmlFragmentSplitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
@@ -40,10 +39,10 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
 
   public class KnotxSplitterHandler extends FragmentContextHandler {
 
-    private NewHtmlFragmentSplitter splitter;
+    private HtmlFragmentSplitter splitter;
 
     private KnotxSplitterHandler() {
-      splitter = new NewHtmlFragmentSplitter();
+      splitter = new HtmlFragmentSplitter();
     }
 
     @Override

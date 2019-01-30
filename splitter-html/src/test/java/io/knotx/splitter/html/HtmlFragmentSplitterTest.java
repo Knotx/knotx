@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+package io.knotx.splitter.html;
 
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
@@ -25,13 +25,13 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class NewHtmlFragmentSplitterTest {
+public class HtmlFragmentSplitterTest {
 
-  private NewHtmlFragmentSplitter tested;
+  private HtmlFragmentSplitter tested;
 
   @BeforeEach
   void setUp() {
-    tested = new NewHtmlFragmentSplitter();
+    tested = new HtmlFragmentSplitter();
   }
 
   @Test
@@ -120,7 +120,7 @@ class NewHtmlFragmentSplitterTest {
   }
 
   private String from(String fileName) throws IOException {
-    return FileReader.readText("io/knotx/splitter/new/" + fileName);
+    return FileReader.readText(fileName);
   }
 
 }

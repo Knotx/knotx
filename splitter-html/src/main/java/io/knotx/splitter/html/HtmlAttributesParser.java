@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.splitter;
+package io.knotx.splitter.html;
 
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -23,13 +23,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class NewAttributesParser implements AttributesParser {
+class HtmlAttributesParser {
 
   private static final String HTML_ATTRIBUTE_REGEXP = "(?<key>[\\w\\-]+)\\s*=\\s*(?<value>'((?:\\\\'|[^'])*)'|\"((?:\\\\\"|[^\"])*)\")";
   private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(HTML_ATTRIBUTE_REGEXP, Pattern.DOTALL);
 
-  @Override
-  public List<Pair<String, String>> get(String attributes) {
+  List<Pair<String, String>> get(String attributes) {
     List<Pair<String, String>> result = Lists.newArrayList();
     if (StringUtils.isNotBlank(attributes)) {
       Matcher matcher = ATTRIBUTE_PATTERN.matcher(attributes);
