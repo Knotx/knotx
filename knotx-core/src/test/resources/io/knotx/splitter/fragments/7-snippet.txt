@@ -1,4 +1,0 @@
-<knotx:snippet knots="auth-3" type="text/knotx-snippet">
-  <h2>{{message}}</h2>
-  <div>{{body.a}}</div>
-</knotx:snippet>
