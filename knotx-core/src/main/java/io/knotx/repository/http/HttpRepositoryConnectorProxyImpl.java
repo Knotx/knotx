@@ -16,11 +16,11 @@
 package io.knotx.repository.http;
 
 import com.google.common.base.Joiner;
-import io.knotx.fragment.ClientRequest;
-import io.knotx.fragment.ClientResponse;
 import io.knotx.http.AllowedHeadersFilter;
 import io.knotx.http.MultiMapCollector;
 import io.knotx.proxy.RepositoryConnectorProxy;
+import io.knotx.server.api.ClientRequest;
+import io.knotx.server.api.ClientResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;

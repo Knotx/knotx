@@ -15,7 +15,7 @@
  */
 package io.knotx.server.handler.http.response.writer;
 
-import io.knotx.fragment.ClientResponse;
+import io.knotx.server.api.ClientResponse;
 import io.knotx.server.api.FragmentsContext;
 import io.knotx.server.handler.api.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
