@@ -21,10 +21,8 @@ io.knotx.server.handler.failure.ErrorRoutingHandlerFactory
 
 # Knot.x handlers
 io.knotx.server.handler.http.request.context.FragmentContextRoutingHandlerFactory
-io.knotx.server.handler.splitter.SplitterRoutingHandlerFactory
 io.knotx.server.handler.repository.RepositoryRoutingHandlerFactory
 io.knotx.server.handler.knot.KnotEngineRoutingHandlerFactory
-io.knotx.server.handler.assembler.AssemblerRoutingHandlerFactory
 io.knotx.server.handler.http.response.header.CustomHeaderRoutingHandlerFactory
 io.knotx.server.handler.http.response.writer.ResponseWriterRoutingHandlerFactory
 io.knotx.fallback.FragmentFallbackRoutingHandlerFactory
