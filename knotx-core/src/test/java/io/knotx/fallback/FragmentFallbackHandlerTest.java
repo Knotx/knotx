@@ -15,90 +15,115 @@
  */
 package io.knotx.fallback;
 
-//import io.knotx.junit.util.KnotContextFactory;
+import io.knotx.fragment.Fragment;
+import io.knotx.fragment.HandlerLogEntry;
+import io.knotx.fragment.HanlderStatus;
+import io.knotx.options.FallbackMetadata;
+import io.knotx.server.api.FragmentsContext;
+import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import java.util.Arrays;
+import java.util.Collections;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-
-/**
- * TODO Test extracted from Assembler, must be refactored
- */
 public class FragmentFallbackHandlerTest {
 
-  private final static String FRAGMENT_RAW = "_raw";
-  private final static String FALLBACK_KNOT = "_fallback";
-  private static final String SERVICE_KNOT = "services";
-  private static final String HANDLEBARS_KNOT = "handlebars";
-  private static final String DEFAULT_FALLBACK_MESSAGE = "<p class='error'>default fallback</p>";
   private static final String CUSTOM_FALLBACK_MESSAGE = "<p class='error'>custom fallback</p>";
-  private final static String DEFAULT_FALLBACK_ID = "BLANK";
   private static final String CUSTOM_FALLBACK_ID = "FALLBACK_1";
 
-//  @Test
-//  @KnotxApplyConfiguration("io/knotx/assembler/test.asIs.io.knotx.FragmentAssembler.json")
-//  public void callHandlerWithFailedSnippet_expectDefaultFallback() throws IOException {
-//    // when
-//    List<Triple<List<String>, String, String>> fragments = Arrays.asList(
-//        toTriple("io/knotx/assembler/fragment1.txt", null,
-//            FRAGMENT_RAW),
-//        toTriple("io/knotx/assembler/fragment2.txt", DEFAULT_FALLBACK_ID,
-//            SERVICE_KNOT, HANDLEBARS_KNOT),
-//        toTriple("io/knotx/assembler/fragment3.txt", null,
-//            FRAGMENT_RAW));
-//
-//    // we use the default fallback mechanism that replace the content with empty string
-//    FragmentFallbackHandlerOptions options = new FragmentFallbackHandlerOptions();
-//    options.setDefaultFallback(DEFAULT_FALLBACK_ID);
-//
-//    final SnippetFragmentsContext knotContext = KnotContextFactory.create(fragments);
-//
-//    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
-//    Mockito.when(mockContext.get(SnippetFragmentsContext.KEY)).thenReturn(knotContext);
-//
-//    // when
-//    new FragmentFallbackHandler(options).handle(mockContext);
-//
-//    // then
-//    SnippetFragmentsContext result = mockContext.get(SnippetFragmentsContext.KEY);
-//    result.getFragments().stream()
-//        .filter(fragment -> !fragment.isRaw() && !fragment.isFallback())
-//        .forEach(
-//            fragment -> Assert.assertEquals(StringUtils.EMPTY, fragment.content()));
-//  }
-//
-//  @Test
-//  public void callHandlerWithFailedSnippet_expectCustomFallback() throws IOException {
-//    // when
-//    List<Triple<List<String>, String, String>> fragments = Arrays.asList(
-//        toTriple("io/knotx/assembler/fragment1.txt", null, FRAGMENT_RAW),
-//        toTriple("io/knotx/assembler/fragment2.txt", CUSTOM_FALLBACK_ID, SERVICE_KNOT,
-//            HANDLEBARS_KNOT),
-//        toTriple("io/knotx/assembler/fragment3.txt", null, FRAGMENT_RAW),
-//        toTriple("io/knotx/assembler/fallback.txt", null, FALLBACK_KNOT));
-//
-//    FragmentFallbackHandlerOptions options = new FragmentFallbackHandlerOptions();
-//    options.setDefaultFallback(DEFAULT_FALLBACK_ID);
-//    options.setFallbacks(Collections
-//        .singletonList(new FallbackMetadata(DEFAULT_FALLBACK_ID, DEFAULT_FALLBACK_MESSAGE)));
-//    options.setFallbacks(Collections
-//        .singletonList(new FallbackMetadata(CUSTOM_FALLBACK_ID, CUSTOM_FALLBACK_MESSAGE)));
-//
-//    final SnippetFragmentsContext knotContext = KnotContextFactory.create(fragments);
-//
-//    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
-//    Mockito.when(mockContext.get(SnippetFragmentsContext.KEY)).thenReturn(knotContext);
-//
-//    // when
-//    new FragmentFallbackHandler(options).handle(mockContext);
-//
-//    // then
-//    SnippetFragmentsContext result = mockContext.get(SnippetFragmentsContext.KEY);
-//    result.getFragments().stream()
-//        .filter(fragment -> !fragment.isRaw() && !fragment.isFallback())
-//        .forEach(
-//            fragment -> Assert.assertEquals(CUSTOM_FALLBACK_MESSAGE + "\n", fragment.content()));
-//  }
-//
-//  private Triple<List<String>, String, String> toTriple(String filePath, String failed,
-//      String... knots) throws IOException {
-//    return new ImmutableTriple<>(Arrays.asList(knots), failed, FileReader.readText(filePath));
-//  }
+  @Test
+  public void handle_whenCorrectFragment_expectNotChangedBody() {
+    // given
+    String actualBody = "ACTUAL CONTENT";
+    Fragment fragment = new Fragment("ANY", new JsonObject(), actualBody);
+
+    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
+    Mockito.when(mockContext.get(FragmentsContext.KEY)).thenReturn(new FragmentsContext()
+        .setFragments(Collections.singletonList(fragment)));
+
+    // when
+    new FragmentFallbackHandler(new FragmentFallbackHandlerOptions()).handle(mockContext);
+
+    // then
+    FragmentsContext result = mockContext.get(FragmentsContext.KEY);
+    Assert.assertEquals(1, result.getFragments().size());
+    Assert.assertEquals(actualBody, result.getFragments().get(0).getBody());
+  }
+
+  @Test
+  public void handle_whenFailedFragmentWithoutFallbackIdentifier_expectEmptyBody() {
+    // given
+    String actualBody = "ACTUAL CONTENT";
+    Fragment fragment = new Fragment("ANY", new JsonObject(), actualBody);
+    fragment.appendLog(new HandlerLogEntry("any-one").setStatus(HanlderStatus.SUCCESS));
+    fragment.appendLog(new HandlerLogEntry("any-two").setStatus(HanlderStatus.FAILURE));
+    fragment.appendLog(new HandlerLogEntry("any-three").setStatus(HanlderStatus.SUCCESS));
+
+    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
+    Mockito.when(mockContext.get(FragmentsContext.KEY)).thenReturn(new FragmentsContext()
+        .setFragments(Collections.singletonList(fragment)));
+
+    // when
+    new FragmentFallbackHandler(new FragmentFallbackHandlerOptions()).handle(mockContext);
+
+    // then
+    FragmentsContext result = mockContext.get(FragmentsContext.KEY);
+    Assert.assertEquals(1, result.getFragments().size());
+    Assert.assertEquals(FallbackConstants.EMPTY_FALLBACK_VALUE,
+        result.getFragments().get(0).getBody());
+  }
+
+  @Test
+  public void handle_whenFailedFragmentWithFallbackIdentifierFromHandlerConfiguration_expectCustomBody() {
+    // given
+    String actualBody = "ACTUAL CONTENT";
+    Fragment fragment = new Fragment("ANY", new JsonObject().put(
+        FallbackConstants.FALLBACK_IDENTIFIER, CUSTOM_FALLBACK_ID),
+        actualBody);
+    fragment.appendLog(new HandlerLogEntry("any-one").setStatus(HanlderStatus.FAILURE));
+
+    FragmentFallbackHandlerOptions options = new FragmentFallbackHandlerOptions();
+    options.addFallback(new FallbackMetadata(CUSTOM_FALLBACK_ID, CUSTOM_FALLBACK_MESSAGE));
+
+    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
+    Mockito.when(mockContext.get(FragmentsContext.KEY)).thenReturn(new FragmentsContext()
+        .setFragments(Collections.singletonList(fragment)));
+
+    // when
+    new FragmentFallbackHandler(options).handle(mockContext);
+
+    // then
+    FragmentsContext result = mockContext.get(FragmentsContext.KEY);
+    Assert.assertEquals(1, result.getFragments().size());
+    Assert.assertEquals(CUSTOM_FALLBACK_MESSAGE, result.getFragments().get(0).getBody());
+  }
+
+  @Test
+  public void handle_whenFailedFragmentWithFallbackIdentifierWhenFallbackDefinedAsFragment_expectCustomBody() {
+    // given
+    String actualBody = "ACTUAL CONTENT";
+    Fragment testedFragment = new Fragment("ANY", new JsonObject().put(
+        FallbackConstants.FALLBACK_IDENTIFIER, CUSTOM_FALLBACK_ID),
+        actualBody);
+    testedFragment.appendLog(new HandlerLogEntry("any-two").setStatus(HanlderStatus.FAILURE));
+
+    Fragment fallbackFragment = new Fragment(FallbackConstants.FALLBACK_TYPE,
+        new JsonObject()
+            .put(FallbackConstants.FALLBACK_IDENTIFIER, CUSTOM_FALLBACK_ID),
+        CUSTOM_FALLBACK_MESSAGE);
+    RoutingContext mockContext = Mockito.mock(RoutingContext.class);
+    Mockito.when(mockContext.get(FragmentsContext.KEY)).thenReturn(new FragmentsContext()
+        .setFragments(Arrays.asList(testedFragment, fallbackFragment)));
+
+    // when
+    new FragmentFallbackHandler(new FragmentFallbackHandlerOptions()).handle(mockContext);
+
+    // then
+    FragmentsContext result = mockContext.get(FragmentsContext.KEY);
+    Assert.assertEquals(1, result.getFragments().size());
+    Assert.assertEquals(CUSTOM_FALLBACK_MESSAGE, result.getFragments().get(0).getBody());
+  }
+
 }
