@@ -17,8 +17,8 @@ package io.knotx.assembler;
 
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.handler.FragmentContextHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.reactivex.core.MultiMap;
@@ -26,7 +26,7 @@ import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class FragmentAssemblerHandler implements Handler<RoutingContext> {
+public class FragmentAssemblerHandler extends FragmentContextHandler {
 
   private FragmentAssemblerOptions options;
 
@@ -35,13 +35,11 @@ public class FragmentAssemblerHandler implements Handler<RoutingContext> {
   }
 
   @Override
-  public void handle(RoutingContext routingContext) {
-    FragmentsContext fragmentsContext = routingContext.get(FragmentsContext.KEY);
+  protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
     String responseBody = fragmentsContext.getFragments().stream()
         .map(fragment -> options.getAssembleStrategy().extractBody(fragment))
         .collect(Collectors.joining());
-    FragmentsContext response = createSuccessResponse(fragmentsContext, responseBody);
-    routingContext.put(FragmentsContext.KEY, response);
+    return createSuccessResponse(fragmentsContext, responseBody);
   }
 
   private FragmentsContext createSuccessResponse(FragmentsContext inputContext,

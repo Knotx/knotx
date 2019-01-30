@@ -25,11 +25,11 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
-public class RequestContextRoutingHandlerFactory implements RoutingHandlerFactory {
+public class FragmentContextRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public String getName() {
-    return "requestContextHandler";
+    return "fragmentContextHandler";
   }
 
   @Override
