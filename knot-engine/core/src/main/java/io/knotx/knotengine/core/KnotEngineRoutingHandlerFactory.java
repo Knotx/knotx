@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.handler.knot;
+package io.knotx.knotengine.core;
 
-import io.knotx.snippet.SnippetFragmentsContext;
-import io.knotx.reactivex.proxy.KnotProxy;
+import io.knotx.knotengine.api.SnippetFragmentsContext;
+import io.knotx.reactivex.knotengine.api.KnotProxy;
 import io.knotx.server.api.context.FragmentsContext;
-import io.knotx.server.configuration.RoutingEntry;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -76,12 +75,13 @@ public class KnotEngineRoutingHandlerFactory implements RoutingHandlerFactory {
     private void handleRoute(final RoutingContext context, final String address,
         final Map<String, RoutingEntry> routing) {
       FragmentsContext fragmentsContext = context.get(FragmentsContext.KEY);
-      SnippetFragmentsContext snippetFragmentsContext = new SnippetFragmentsContext(fragmentsContext);
+      SnippetFragmentsContext snippetFragmentsContext = new SnippetFragmentsContext(
+          fragmentsContext);
 
       proxies.computeIfAbsent(address,
           adr -> KnotProxy.createProxyWithOptions(vertx, adr, new DeliveryOptions(deliveryOptions)))
           .rxProcess(snippetFragmentsContext)
-          .doOnSuccess(ctx -> context.put(FragmentsContext.KEY, ctx.getDelegate()) )
+          .doOnSuccess(ctx -> context.put(FragmentsContext.KEY, ctx.getDelegate()))
           .subscribe(ctx -> {
                 if (StringUtils.isNotBlank(ctx.getTransition())) {
                   doTransition(context, ctx, routing);

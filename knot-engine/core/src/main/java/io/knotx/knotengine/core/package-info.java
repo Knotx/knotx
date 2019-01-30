@@ -13,21 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.junit.util;
+@ModuleGen(name = "knotx-knot-engine-core", groupPackage = "io.knotx")
+package io.knotx.knotengine.core;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-/**
- * Please use kntox-junit5 io.knotx.junit5.util.FileReader
- */
-@Deprecated
-public interface FileReader {
-
-  static String readText(String path) throws IOException {
-    return CharStreams
-        .toString(new InputStreamReader(Resources.getResource(path).openStream(), "utf-8"));
-  }
-}
+import io.vertx.codegen.annotations.ModuleGen;

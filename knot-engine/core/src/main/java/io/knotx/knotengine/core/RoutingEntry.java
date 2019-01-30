@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.configuration;
+package io.knotx.knotengine.core;
 
 import com.google.common.collect.Maps;
 import io.vertx.codegen.annotations.DataObject;
