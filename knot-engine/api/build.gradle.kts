@@ -86,13 +86,13 @@ tasks.register<Jar>("javadocJar") {
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
-      artifactId = "fragment-api"
+      artifactId = "knotx-knot-engine-api"
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
       pom {
         name.set("Knot.x Knot Engine API")
-        description.set("HTTP Knot Engine API")
+        description.set("Knot Engine API - contracts and models for Knot modules")
         url.set("http://knotx.io")
         licenses {
           license {
