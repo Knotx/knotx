@@ -15,10 +15,13 @@
  */
 
 rootProject.name = "knotx-root"
-include(":fragment-api")
-include(":server-http-api")
-include(":knotx-core")
-include(":it-test")
-include(":documentation")
+include("knotx-fragment-api")
+include("knotx-server-http-api")
+include("knotx-core")
+include("knotx-launcher")
+include("it-test")
+include("documentation")
 
-project(":server-http-api").projectDir = file("server-http/api")
+project("knotx-fragment-api").projectDir = file("fragment-api")
+project("knotx-server-http-api").projectDir = file("server-http/api")
+project("knotx-launcher").projectDir = file("launcher")
