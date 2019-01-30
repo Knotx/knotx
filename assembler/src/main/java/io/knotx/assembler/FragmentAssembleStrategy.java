@@ -13,18 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.knotx.assembler;
 
-rootProject.name = "knotx-root"
-include("knotx-fragment-api")
-include("knotx-server-http-api")
-include("knotx-core")
-include("knotx-launcher")
-include("knotx-splitter-html")
-include("knotx-assembler")
-include("it-test")
+import io.knotx.fragment.Fragment;
 
-project(":knotx-fragment-api").projectDir = file("fragment-api")
-project(":knotx-server-http-api").projectDir = file("server-http/api")
-project(":knotx-launcher").projectDir = file("launcher")
-project(":knotx-splitter-html").projectDir = file("splitter-html")
-project(":knotx-assembler").projectDir = file("assembler")
+enum FragmentAssembleStrategy {
+
+  AS_IS {
+    @Override
+    protected String extractBody(Fragment fragment) {
+      return fragment.getBody();
+    }
+  },
+
+  IGNORE {
+    @Override
+    protected String extractBody(Fragment fragment) {
+      if (fragment.processed()) {
+        return fragment.getBody();
+      } else {
+        return SNIPPET_IGNORED;
+      }
+    }
+  };
+
+  static final String SNIPPET_IGNORED = "<!-- SNIPPET IGNORED -->";
+
+  protected abstract String extractBody(Fragment fragment);
+
+}
