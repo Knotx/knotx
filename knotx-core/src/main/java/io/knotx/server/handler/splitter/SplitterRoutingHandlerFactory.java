@@ -16,13 +16,12 @@
 package io.knotx.server.handler.splitter;
 
 import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.handler.FragmentContextHandler;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.knotx.splitter.NewHtmlFragmentSplitter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
@@ -36,40 +35,25 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
-    return new KnotxSplitterHandler(vertx, config);
+    return new KnotxSplitterHandler();
   }
 
-  public class KnotxSplitterHandler implements Handler<RoutingContext> {
-
-    private final Logger LOGGER = LoggerFactory.getLogger(KnotxSplitterHandler.class);
+  public class KnotxSplitterHandler extends FragmentContextHandler {
 
     private NewHtmlFragmentSplitter splitter;
 
-    private KnotxSplitterHandler(Vertx vertx, JsonObject configuration) {
+    private KnotxSplitterHandler() {
       splitter = new NewHtmlFragmentSplitter();
     }
 
     @Override
-    public void handle(RoutingContext context) {
-      FragmentsContext fragmentsContext = context.get(FragmentsContext.KEY);
-      try {
-        fragmentsContext
-            .setFragments(splitter.split(fragmentsContext.getClientResponse().getBody().toString()));
-        fragmentsContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
-        traceMessage(fragmentsContext);
-        context.put(FragmentsContext.KEY, fragmentsContext);
-      } catch (Exception e) {
-        context.fail(fragmentsContext.getClientResponse().getStatusCode());
-      } finally {
-        context.next();
-      }
+    protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
+      fragmentsContext
+          .setFragments(splitter.split(fragmentsContext.getClientResponse().getBody().toString()));
+      fragmentsContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
+      return fragmentsContext;
     }
 
-    private void traceMessage(FragmentsContext ctx) {
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Got message from <fragment-splitter> with value <{}>", ctx);
-      }
-    }
 
   }
 

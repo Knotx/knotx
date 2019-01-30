@@ -36,10 +36,21 @@ public abstract class FragmentContextHandler implements Handler<RoutingContext> 
       traceMessage(result);
       context.put(FragmentsContext.KEY, result);
     } catch (Exception e) {
-      context.fail(fragmentsContext.getClientResponse().getStatusCode());
+      handleError(context, fragmentsContext, e);
     } finally {
       context.next();
     }
+  }
+
+  /**
+   * Enables to handle error that occurred during fragment context handling
+   * @param context - vert.x web context that contains payload passed between handlers
+   * @param fragmentsContext - knot.x fragment context from the previous handler
+   * @param e - exception
+   */
+  protected void handleError(RoutingContext context, FragmentsContext fragmentsContext, Exception e) {
+    context.fail(fragmentsContext.getClientResponse().getStatusCode());
+    LOGGER.error("Failed to process {}", fragmentsContext.getClientRequest().getPath(), e);
   }
 
   /**
