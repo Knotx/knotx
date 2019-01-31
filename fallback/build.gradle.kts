@@ -33,6 +33,8 @@ group = "io.knotx"
 apply(from = "../gradle/common.deps.gradle.kts")
 apply(from = "../gradle/codegen.deps.gradle.kts")
 dependencies {
+  implementation(project(":knotx-fragment-api"))
+  implementation(project(":knotx-server-http-api"))
   api(group = "com.google.guava", name = "guava")
   api(group = "commons-io", name = "commons-io")
   api(group = "org.apache.commons", name = "commons-lang3")
@@ -84,13 +86,13 @@ tasks.register<Jar>("javadocJar") {
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
-      artifactId = "knotx-fragment-api"
+      artifactId = "knotx-fallback"
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
       pom {
-        name.set("Knot.x Core Fragment API")
-        description.set("Fragment API - Knot.x processing model")
+        name.set("Knot.x Core Fallback")
+        description.set("Fallbacks used when fragment processing failed.")
         url.set("http://knotx.io")
         licenses {
           license {

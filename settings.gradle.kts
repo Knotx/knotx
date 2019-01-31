@@ -23,9 +23,8 @@ include("knotx-splitter-html")
 include("knotx-assembler")
 include("knotx-knot-engine-api")
 include("knotx-knot-engine-core")
+include("knotx-fallback")
 include("it-test")
-
-
 
 
 project(":knotx-fragment-api").projectDir = file("fragment-api")
@@ -35,3 +34,4 @@ project(":knotx-splitter-html").projectDir = file("splitter-html")
 project(":knotx-assembler").projectDir = file("assembler")
 project(":knotx-knot-engine-api").projectDir = file("knot-engine/api")
 project(":knotx-knot-engine-core").projectDir = file("knot-engine/core")
+project(":knotx-fallback").projectDir = file("fallback")
