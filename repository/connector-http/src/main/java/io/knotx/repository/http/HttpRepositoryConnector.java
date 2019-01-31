@@ -16,23 +16,19 @@
 package io.knotx.repository.http;
 
 import com.google.common.base.Joiner;
-import io.knotx.http.AllowedHeadersFilter;
-import io.knotx.http.MultiMapCollector;
-import io.knotx.proxy.RepositoryConnectorProxy;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.FragmentsContext;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.reactivex.Observable;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
 import io.vertx.core.http.RequestOptions;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.http.HttpClient;
 import io.vertx.reactivex.core.http.HttpClientRequest;
@@ -43,10 +39,9 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProxy {
+class HttpRepositoryConnector {
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(HttpRepositoryConnectorProxyImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryConnector.class);
 
   private static final String ERROR_MESSAGE = "Unable to get template from the repository";
 
@@ -55,36 +50,35 @@ public class HttpRepositoryConnectorProxyImpl implements RepositoryConnectorProx
   private final HttpClient httpClient;
 
 
-  public HttpRepositoryConnectorProxyImpl(Vertx vertx, HttpRepositoryOptions configuration) {
+  HttpRepositoryConnector(Vertx vertx, HttpRepositoryOptions configuration) {
     this.configuration = configuration;
-    this.httpClient = HttpClient
-        .newInstance(vertx.createHttpClient(configuration.getClientOptions()));
+    this.httpClient = vertx.createHttpClient(configuration.getClientOptions());
   }
 
-  @Override
-  public void process(ClientRequest request, Handler<AsyncResult<ClientResponse>> result) {
-    MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
-        request.getHeaders());
-
-    RequestOptions httpRequestData = buildRequestData(request);
-
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("GET HTTP Repository: {}  with headers [{}]",
-    	  getUrl(httpRequestData),
-          flatternMultiMap(requestHeaders)
-      );
-    }
-
-    get(httpClient, httpRequestData, requestHeaders)
-        .doOnNext(this::traceHttpResponse)
-        .flatMap(response -> processResponse(response, httpRequestData))
-        .subscribe(
-            response -> result.handle(Future.succeededFuture(response)),
-            error -> {
-              LOGGER.error(ERROR_MESSAGE, error);
-              result.handle(Future.succeededFuture(toInternalError()));
-            }
-        );
+  FragmentsContext process(FragmentsContext fragmentsContext) {
+//    MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
+//        request.getHeaders());
+//
+//    RequestOptions httpRequestData = buildRequestData(request);
+//
+//    if (LOGGER.isDebugEnabled()) {
+//      LOGGER.debug("GET HTTP Repository: {}  with headers [{}]",
+//    	  getUrl(httpRequestData),
+//          flatternMultiMap(requestHeaders)
+//      );
+//    }
+//
+//    get(httpClient, httpRequestData, requestHeaders)
+//        .doOnNext(this::traceHttpResponse)
+//        .flatMap(response -> processResponse(response, httpRequestData))
+//        .subscribe(
+//            response -> result.handle(Future.succeededFuture(response)),
+//            error -> {
+//              LOGGER.error(ERROR_MESSAGE, error);
+//              result.handle(Future.succeededFuture(toInternalError()));
+//            }
+//        );
+    return null;
   }
 
   private String getUrl(RequestOptions httpRequestData) {

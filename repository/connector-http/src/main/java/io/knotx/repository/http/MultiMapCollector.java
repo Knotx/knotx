@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.http;
+package io.knotx.repository.http;
 
 import com.google.common.collect.ImmutableSet;
 import io.vertx.reactivex.core.MultiMap;

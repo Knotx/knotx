@@ -15,7 +15,7 @@
  */
 package io.knotx.repository.http;
 
-import io.knotx.configuration.CustomHttpHeader;
+import io.knotx.server.api.header.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
 import io.vertx.core.http.HttpClientOptions;
@@ -33,12 +33,6 @@ import java.util.stream.Collectors;
 @DataObject(generateConverter = true, publicConverter = false)
 public class HttpRepositoryOptions {
 
-  /**
-   * Default EB address of the HTTP repository
-   */
-  public static final String DEFAULT_ADDRESS = "knotx.core.repository.http";
-
-  private String address;
   private HttpClientOptions clientOptions;
   private ClientDestination clientDestination;
   private Set<String> allowedRequestHeaders;
@@ -59,7 +53,6 @@ public class HttpRepositoryOptions {
    * @param other the instance to copy
    */
   public HttpRepositoryOptions(HttpRepositoryOptions other) {
-    this.address = other.address;
     this.clientOptions = new HttpClientOptions(other.clientOptions);
     this.clientDestination = null;
     this.allowedRequestHeaders = new HashSet<>(other.allowedRequestHeaders);
@@ -93,29 +86,10 @@ public class HttpRepositoryOptions {
   }
 
   private void init() {
-    address = DEFAULT_ADDRESS;
     clientOptions = new HttpClientOptions();
     clientDestination = new ClientDestination();
     allowedRequestHeaders = new HashSet<>();
     customHttpHeader = null;
-  }
-
-  /**
-   * @return EB address of the HTTP repository verticle
-   */
-  public String getAddress() {
-    return address;
-  }
-
-  /**
-   * Set the EB address of the HTTP repository verticle
-   *
-   * @param address an EB address of the verticle
-   * @return a reference to this, so the API can be used fluently
-   */
-  public HttpRepositoryOptions setAddress(String address) {
-    this.address = address;
-    return this;
   }
 
   /**

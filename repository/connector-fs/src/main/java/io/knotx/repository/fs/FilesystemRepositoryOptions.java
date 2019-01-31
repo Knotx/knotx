@@ -26,16 +26,10 @@ import org.apache.commons.lang3.StringUtils;
 public class FilesystemRepositoryOptions {
 
   /**
-   * Default EB address of the file system repository verticle
-   */
-  public final String DEFAULT_ADDRESS = "knotx.core.repository.filesystem";
-
-  /**
    * Default root folder of the filesystem repository
    */
   public final String DEFAULT_CATALOGUE = StringUtils.EMPTY;
 
-  private String address;
   private String catalogue;
 
   /**
@@ -52,7 +46,6 @@ public class FilesystemRepositoryOptions {
    * @param other the instance to copy
    */
   public FilesystemRepositoryOptions(FilesystemRepositoryOptions other) {
-    this.address = other.address;
     this.catalogue = other.catalogue;
   }
 
@@ -78,26 +71,7 @@ public class FilesystemRepositoryOptions {
   }
 
   private void init() {
-    address = DEFAULT_ADDRESS;
     catalogue = DEFAULT_CATALOGUE;
-  }
-
-  /**
-   * @return EB address of the verticle
-   */
-  public String getAddress() {
-    return address;
-  }
-
-  /**
-   * Set the EB address of the file system repository verticle
-   *
-   * @param address an EB address of the verticle
-   * @return a reference to this, so the API can be used fluently
-   */
-  public FilesystemRepositoryOptions setAddress(String address) {
-    this.address = address;
-    return this;
   }
 
   /**
