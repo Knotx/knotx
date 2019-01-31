@@ -16,10 +16,10 @@
 package io.knotx.server.handler.http.request.body;
 
 import io.knotx.server.KnotxServerVerticle;
-import io.knotx.util.StringUtil;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.BodyHandler;
+import org.apache.commons.lang3.StringUtils;
 
 @DataObject(generateConverter = true, publicConverter = false)
 public class BodyHandlerOptions {
@@ -27,9 +27,9 @@ public class BodyHandlerOptions {
   /**
    * Default file upload folder = file-uploads
    */
-  private static final String DEFAULT_UPLOAD_DIRECTORY = StringUtil
-      .getString(KnotxServerVerticle.KNOTX_FILE_UPLOAD_DIR_PROPERTY,
-          BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
+  private static final String DEFAULT_UPLOAD_DIRECTORY = getStringProperty(
+      KnotxServerVerticle.KNOTX_FILE_UPLOAD_DIR_PROPERTY,
+      BodyHandler.DEFAULT_UPLOADS_DIRECTORY);
 
   private String fileUploadDirectory;
   private Long fileUploadLimit;
@@ -82,5 +82,34 @@ public class BodyHandlerOptions {
   public BodyHandlerOptions setFileUploadDirectory(String fileUploadDirectory) {
     this.fileUploadDirectory = fileUploadDirectory;
     return this;
+  }
+
+  /**
+   * Returns the string value of the system property with the specified name. The first argument is
+   * treated as the name of a system property.  System properties are accessible through the {@link
+   * java.lang.System#getProperty(java.lang.String)} method.
+   *
+   * <p>The second argument is the default value. The default value is
+   * returned if there is no property of the specified name or if the specified name is empty or
+   * {@code null}.
+   *
+   * @param propertyName property name.
+   * @param defaultVal default value.
+   * @return the {@code String} value of the property.
+   * @throws SecurityException for the same reasons as {@link System#getProperty(String)
+   * System.getProperty}
+   * @see System#getProperty(java.lang.String)
+   * @see System#getProperty(java.lang.String, java.lang.String)
+   */
+  private static String getStringProperty(String propertyName, String defaultVal) {
+    String value = null;
+    try {
+      value = System.getProperty(propertyName);
+    } catch (IllegalArgumentException | NullPointerException e) {
+    }
+    if (StringUtils.isNotBlank(value)) {
+      return value;
+    }
+    return defaultVal;
   }
 }

@@ -1,4 +1,0 @@
-<knotx:snippet knots="form-1,any" any="first-service" type="text/knotx-snippet">
-  <h2>{{message}}</h2>
-  <div>{{body.a}}</div>
-</knotx:snippet>
