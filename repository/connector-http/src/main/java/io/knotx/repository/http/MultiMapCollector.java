@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
+class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
 
   private final Function<T, String> keyGetter;
   private final Function<T, List<String>> value;
@@ -35,7 +35,7 @@ public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
     this.value = value;
   }
 
-  public static <T> MultiMapCollector<T> toMultiMap(Function<T, String> keyGetter,
+  static <T> MultiMapCollector<T> toMultiMap(Function<T, String> keyGetter,
       Function<T, List<String>> valueGetter) {
     return new MultiMapCollector<>(keyGetter, valueGetter);
   }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class AllowedHeadersFilter implements Predicate<String> {
+class AllowedHeadersFilter implements Predicate<String> {
 
   private final List<Pattern> patterns;
 
@@ -27,7 +27,7 @@ public class AllowedHeadersFilter implements Predicate<String> {
     this.patterns = patterns;
   }
 
-  public static AllowedHeadersFilter create(List<Pattern> patterns) {
+  static AllowedHeadersFilter create(List<Pattern> patterns) {
     return new AllowedHeadersFilter(patterns);
   }
 

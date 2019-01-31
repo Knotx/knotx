@@ -20,7 +20,6 @@ import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -54,11 +53,10 @@ class FilesystemRepositoryConnector {
     return fileSystem.rxReadFile(localFilePath)
         .map(buffer -> this.processSuccess(buffer, localFilePath))
         .map(fragmentsContext::setClientResponse)
-        .onErrorResumeNext(error -> process(error, fragmentsContext));
-//        .onErrorReturn(error -> process(error, fragmentsContext));
+        .onErrorResumeNext(error -> processError(error, fragmentsContext));
   }
 
-  private Single<FragmentsContext> process(Throwable error,
+  private Single<FragmentsContext> processError(Throwable error,
       FragmentsContext fragmentsContext) {
     LOGGER.error(ERROR_MESSAGE);
     HttpResponseStatus statusCode;

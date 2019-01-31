@@ -16,8 +16,9 @@
 package io.knotx.repository.http;
 
 import io.knotx.server.api.context.FragmentsContext;
-import io.knotx.server.api.handler.FragmentContextHandler;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
+import io.knotx.server.api.handler.reactivex.FragmentContextHandler;
+import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
@@ -28,31 +29,28 @@ public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHand
 
   @Override
   public String getName() {
-    return "splitterHandler";
+    return "fsRepoConnectorHandler";
   }
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
-    return new HttpRepositoryConnectorHandler(vertx, config);
+    return new FilesystemRepositoryConnectorHandler(vertx, config);
   }
 
-  public class HttpRepositoryConnectorHandler extends FragmentContextHandler {
+  public class FilesystemRepositoryConnectorHandler extends FragmentContextHandler {
 
     private HttpRepositoryConnector connector;
 
-    private HttpRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
+    private FilesystemRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
       connector = new HttpRepositoryConnector(vertx, new HttpRepositoryOptions(config));
     }
 
     @Override
-    protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
-      //ToDo
-      return fragmentsContext;
+    protected Single<FragmentsContext> handle(RoutingContext context,
+        FragmentsContext fragmentsContext) {
+      return connector.process(fragmentsContext);
     }
-
-
   }
 
 }
-
 

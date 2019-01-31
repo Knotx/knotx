@@ -18,8 +18,8 @@ package io.knotx.repository.http;
 import io.knotx.server.api.header.CustomHttpHeader;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
-import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClientOptions;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @DataObject(generateConverter = true, publicConverter = false)
 public class HttpRepositoryOptions {
 
-  private HttpClientOptions clientOptions;
+  private WebClientOptions clientOptions;
   private ClientDestination clientDestination;
   private Set<String> allowedRequestHeaders;
   private List<Pattern> allowedRequestHeaderPatterns;
@@ -53,7 +53,7 @@ public class HttpRepositoryOptions {
    * @param other the instance to copy
    */
   public HttpRepositoryOptions(HttpRepositoryOptions other) {
-    this.clientOptions = new HttpClientOptions(other.clientOptions);
+    this.clientOptions = new WebClientOptions(other.clientOptions);
     this.clientDestination = null;
     this.allowedRequestHeaders = new HashSet<>(other.allowedRequestHeaders);
     this.allowedRequestHeaderPatterns = new ArrayList<>(other.allowedRequestHeaderPatterns);
@@ -86,27 +86,27 @@ public class HttpRepositoryOptions {
   }
 
   private void init() {
-    clientOptions = new HttpClientOptions();
+    clientOptions = new WebClientOptions();
     clientDestination = new ClientDestination();
     allowedRequestHeaders = new HashSet<>();
     customHttpHeader = null;
   }
 
   /**
-   * @return {@link io.vertx.core.http.HttpClientOptions}
+   * @return {@link WebClientOptions}
    */
-  public HttpClientOptions getClientOptions() {
+  public WebClientOptions getClientOptions() {
     return clientOptions;
   }
 
   /**
-   * Set the {@link io.vertx.core.http.HttpClientOptions} used by the HTTP client
+   * Set the {@link WebClientOptions} used by the HTTP client
    * to communicate with remote http repository
    *
-   * @param clientOptions {@link io.vertx.core.http.HttpClientOptions} object
+   * @param clientOptions {@link WebClientOptions} object
    * @return a reference to this, so the API can be used fluently
    */
-  public HttpRepositoryOptions setClientOptions(HttpClientOptions clientOptions) {
+  public HttpRepositoryOptions setClientOptions(WebClientOptions clientOptions) {
     this.clientOptions = clientOptions;
     return this;
   }
