@@ -60,10 +60,10 @@ class FilesystemRepositoryConnectorTest {
     //when
     FilesystemRepositoryConnector connector = new FilesystemRepositoryConnector(
         vertx.fileSystem(), new FilesystemRepositoryOptions());
-    Single<FragmentsContext> process = connector.process(fragmentsContext);
+    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
 
     //then
-    RequestUtil.subscribeToResult_shouldSucceed(testContext, process,
+    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> assertEquals(HttpResponseStatus.NOT_FOUND.code(),
             result.getClientResponse().getStatusCode())
     );
@@ -79,10 +79,10 @@ class FilesystemRepositoryConnectorTest {
     //when
     FilesystemRepositoryConnector connector = new FilesystemRepositoryConnector(
         vertx.fileSystem(), new FilesystemRepositoryOptions());
-    Single<FragmentsContext> process = connector.process(fragmentsContext);
+    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
 
     //then
-    RequestUtil.subscribeToResult_shouldSucceed(testContext, process,
+    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
