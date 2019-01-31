@@ -29,7 +29,7 @@ public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHand
 
   @Override
   public String getName() {
-    return "fsRepoConnectorHandler";
+    return "httpRepoConnectorHandler";
   }
 
   @Override
