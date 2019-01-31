@@ -32,6 +32,9 @@ dependencies {
   testCompile(project(":knotx-splitter-html"))
   testCompile(project(":knotx-assembler"))
   testCompile(project(":knotx-core"))
+  testCompile(project(":knotx-knot-engine-api"))
+  testCompile(project(":knotx-knot-engine-core"))
+  testCompile(project(":knotx-fallback"))
   testCompile(project(":knotx-launcher"))
 }
 
@@ -50,7 +53,7 @@ tasks {
   getByName<JavaCompile>("compileJava")
 
   named<RatTask>("rat") {
-    excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*", "*.iml")
+    excludes.addAll("**/*.json", "**/*.MD", "**/*.templ", "**/*.adoc", "**/build/*", "**/out/*", "**/generated/*", "/src/test/resources/*", "*.iml", ".vertx/*")
   }
   getByName("build").dependsOn("rat")
 
