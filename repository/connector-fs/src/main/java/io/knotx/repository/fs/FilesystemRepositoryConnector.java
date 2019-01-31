@@ -19,15 +19,15 @@ import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.Future;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.vertx.core.http.impl.MimeMapping;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
-import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.file.FileSystem;
 import java.nio.file.NoSuchFileException;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 class FilesystemRepositoryConnector {
@@ -39,45 +39,51 @@ class FilesystemRepositoryConnector {
   private final FilesystemRepositoryOptions config;
   private final FileSystem fileSystem;
 
-  FilesystemRepositoryConnector(Vertx vertx, FilesystemRepositoryOptions configuration) {
-    this.fileSystem = FileSystem.newInstance(vertx.getDelegate().fileSystem());
+  FilesystemRepositoryConnector(FileSystem fileSystem, FilesystemRepositoryOptions configuration) {
+    this.fileSystem = fileSystem;
     this.config = configuration;
   }
 
-  FragmentsContext process(FragmentsContext fragmentsContext) {
-//    final String localFilePath =
-//        config.getCatalogue() + StringUtils.stripStart(request.getPath(), "/");
-//    final Optional<String> contentType = Optional
-//        .ofNullable(MimeMapping.getMimeTypeForFilename(localFilePath));
-//
-//    LOGGER.debug("Fetching file `{}` from local repository.", localFilePath);
-//
-//    fileSystem.rxReadFile(localFilePath)
-//        .map(buffer -> new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
-//            .setHeaders(headers(contentType)).setBody(buffer.getDelegate()))
-//        .subscribe(
-//            response -> result.handle(Future.succeededFuture(response)),
-//            error -> {
-//              LOGGER.error(ERROR_MESSAGE, error);
-//              result.handle(Future.succeededFuture(processError(error)));
-//            }
-//        );
-    return null;
+  Single<FragmentsContext> process(FragmentsContext fragmentsContext) {
+    ClientRequest request = fragmentsContext.getClientRequest();
+    final String localFilePath =
+        config.getCatalogue() + StringUtils.stripStart(request.getPath(), "/");
+
+    LOGGER.debug("Fetching file `{}` from local repository.", localFilePath);
+
+    return fileSystem.rxReadFile(localFilePath)
+        .map(buffer -> this.processSuccess(buffer, localFilePath))
+        .map(fragmentsContext::setClientResponse)
+        .onErrorResumeNext(error -> process(error, fragmentsContext));
+//        .onErrorReturn(error -> process(error, fragmentsContext));
   }
 
-  private MultiMap headers(Optional<String> contentType) {
-    MultiMap headers = MultiMap.caseInsensitiveMultiMap();
-    contentType.ifPresent(s -> headers.add("Content-Type", s));
-    return headers;
-  }
-
-  private ClientResponse processError(Throwable error) {
+  private Single<FragmentsContext> process(Throwable error,
+      FragmentsContext fragmentsContext) {
+    LOGGER.error(ERROR_MESSAGE);
     HttpResponseStatus statusCode;
     if (error.getCause().getClass().equals(NoSuchFileException.class)) {
       statusCode = HttpResponseStatus.NOT_FOUND;
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
-    return new ClientResponse().setStatusCode(statusCode.code());
+    fragmentsContext.setClientResponse(new ClientResponse().setStatusCode(statusCode.code()));
+    return Single.just(fragmentsContext);
   }
+
+
+  private MultiMap headers(String contentType) {
+    MultiMap headers = MultiMap.caseInsensitiveMultiMap();
+    if (StringUtils.isNotBlank(contentType)) {
+      headers.add("Content-Type", contentType);
+    }
+    return headers;
+  }
+
+  private ClientResponse processSuccess(Buffer buffer, String filePath) {
+    return new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
+        .setHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)))
+        .setBody(buffer.getDelegate());
+  }
+
 }

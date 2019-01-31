@@ -16,18 +16,20 @@
 package io.knotx.repository.fs;
 
 import io.knotx.server.api.context.FragmentsContext;
-import io.knotx.server.api.handler.FragmentContextHandler;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
+import io.knotx.server.api.handler.reactivex.FragmentContextHandler;
+import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.file.FileSystem;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
 public class FilesystemRepositoryConnectorRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public String getName() {
-    return "splitterHandler";
+    return "fsRepoConnectorHandler";
   }
 
   @Override
@@ -40,16 +42,16 @@ public class FilesystemRepositoryConnectorRoutingHandlerFactory implements Routi
     private FilesystemRepositoryConnector connector;
 
     private FilesystemRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
-      connector = new FilesystemRepositoryConnector(vertx, new FilesystemRepositoryOptions(config));
+      connector = new FilesystemRepositoryConnector(
+          FileSystem.newInstance(vertx.getDelegate().fileSystem()),
+          new FilesystemRepositoryOptions(config));
     }
 
     @Override
-    protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
-      //ToDo
-      return fragmentsContext;
+    protected Single<FragmentsContext> handle(RoutingContext context,
+        FragmentsContext fragmentsContext) {
+      return connector.process(fragmentsContext);
     }
-
-
   }
 
 }
