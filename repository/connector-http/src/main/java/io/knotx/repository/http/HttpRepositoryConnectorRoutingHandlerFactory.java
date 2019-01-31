@@ -34,14 +34,14 @@ public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHand
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
-    return new FilesystemRepositoryConnectorHandler(vertx, config);
+    return new HttpRepositoryConnectorHandler(vertx, config);
   }
 
-  public class FilesystemRepositoryConnectorHandler extends FragmentContextHandler {
+  public class HttpRepositoryConnectorHandler extends FragmentContextHandler {
 
     private HttpRepositoryConnector connector;
 
-    private FilesystemRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
+    private HttpRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
       connector = new HttpRepositoryConnector(vertx, new HttpRepositoryOptions(config));
     }
 
