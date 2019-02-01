@@ -15,10 +15,12 @@
  */
 package io.knotx.repository.http;
 
-import com.google.common.base.Joiner;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.util.AllowedHeadersFilter;
+import io.knotx.server.util.DataObjectsUtil;
+import io.knotx.server.util.MultiMapCollector;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
@@ -66,7 +68,7 @@ class HttpRepositoryConnector {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("GET HTTP Repository: {}  with headers [{}]",
           getUrl(httpRequestData),
-          flatternMultiMap(requestHeaders)
+          DataObjectsUtil.toString(requestHeaders)
       );
     }
 
@@ -90,19 +92,19 @@ class HttpRepositoryConnector {
 
     if (HttpStatusClass.SUCCESS.contains(statusCode)) {
       LOGGER.debug("Repository 2xx response: {}, Headers[{}]", statusCode,
-          flatternMultiMap(resp.headers()));
+          DataObjectsUtil.toString(resp.headers()));
     } else if (HttpStatusClass.REDIRECTION.contains(statusCode)) { // redirect
       LOGGER.info("Repository 3xx response: {}, Headers[{}]", statusCode,
-          flatternMultiMap(resp.headers()));
+          DataObjectsUtil.toString(resp.headers()));
     } else if (HttpStatusClass.CLIENT_ERROR.contains(statusCode)) { // errors
       LOGGER.warn("Repository client error 4xx. Request URL: {}, response: {}, Headers[{}]",
-          getUrl(httpRequestData), statusCode, flatternMultiMap(resp.headers()));
+          getUrl(httpRequestData), statusCode, DataObjectsUtil.toString(resp.headers()));
     } else if (HttpStatusClass.SERVER_ERROR.contains(statusCode)) {
       LOGGER.error("Repository server error 5xx. Request URL: {},  response: {}, Headers[{}]",
-          getUrl(httpRequestData), statusCode, flatternMultiMap(resp.headers()));
+          getUrl(httpRequestData), statusCode, DataObjectsUtil.toString(resp.headers()));
     } else {
       LOGGER.warn("Other response: {}, Headers[{}]", statusCode,
-          flatternMultiMap(resp.headers()));
+          DataObjectsUtil.toString(resp.headers()));
     }
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("HTTP Repository request: [{}, {}] -> got response [{}, {}]",
@@ -208,15 +210,5 @@ class HttpRepositoryConnector {
     if (LOGGER.isTraceEnabled()) {
       LOGGER.trace("Got response from remote repository status [{}]", response.statusCode());
     }
-  }
-
-  private static String flatternMultiMap(MultiMap multiMap) {
-    StringBuilder result = new StringBuilder();
-    multiMap.names().forEach(
-        name -> result.append(name).append(":").append(Joiner.on(";").join(multiMap.getAll(name)))
-            .append("|")
-    );
-
-    return result.toString();
   }
 }
