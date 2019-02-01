@@ -17,8 +17,6 @@ package io.knotx.knotengine.core;
 
 import io.knotx.knotengine.api.SnippetFragmentsContext;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
@@ -59,22 +57,18 @@ public class KnotEngineRoutingHandlerFactory implements RoutingHandlerFactory {
     public void handle(RoutingContext context) {
       try {
         RoutingEntry firstRouteEntry = options.getRouting();
-        engine.handleRoute(context, firstRouteEntry, new SingleObserver<SnippetFragmentsContext>() {
-          @Override
-          public void onSubscribe(Disposable d) {
-            throw new UnsupportedOperationException();
-          }
+        engine.handleRoute(context, firstRouteEntry,
+            new OnCompleteObserver<SnippetFragmentsContext>() {
+              @Override
+              public void onSuccess(SnippetFragmentsContext snippetFragmentsContext) {
+                context.next();
+              }
 
-          @Override
-          public void onSuccess(SnippetFragmentsContext snippetFragmentsContext) {
-            context.next();
-          }
-
-          @Override
-          public void onError(Throwable e) {
-            context.fail(e);
-          }
-        });
+              @Override
+              public void onError(Throwable e) {
+                context.fail(e);
+              }
+            });
       } catch (Exception ex) {
         LOGGER.error("Something very unexpected happened", ex);
         context.fail(ex);

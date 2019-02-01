@@ -29,8 +29,6 @@ import io.knotx.knotengine.core.junit.MockKnotProxy;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.json.JsonObject;
@@ -353,15 +351,9 @@ public class KnotEngineTest {
     });
   }
 
-  private SingleObserver<SnippetFragmentsContext> onComplete(
+  private OnCompleteObserver<SnippetFragmentsContext> onComplete(
       Consumer<SnippetFragmentsContext> onSuccess, Consumer<Throwable> onError) {
-    return new SingleObserver<SnippetFragmentsContext>() {
-
-      @Override
-      public void onSubscribe(Disposable d) {
-        throw new UnsupportedOperationException();
-      }
-
+    return new OnCompleteObserver<SnippetFragmentsContext>() {
       @Override
       public void onSuccess(SnippetFragmentsContext snippetFragmentsContext) {
         try {

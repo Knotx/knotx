@@ -44,12 +44,12 @@ class KnotEngine {
   }
 
   void handleRoute(final RoutingContext context, RoutingEntry route,
-      SingleObserver<SnippetFragmentsContext> onComplete) {
+      OnCompleteObserver<SnippetFragmentsContext> onComplete) {
     handleRoute(context, route.getAddress(), route.getOnTransition(), onComplete);
   }
 
   void handleRoute(final RoutingContext context, final String address,
-      final Map<String, RoutingEntry> routing, SingleObserver<SnippetFragmentsContext> onComplete) {
+      final Map<String, RoutingEntry> routing, OnCompleteObserver<SnippetFragmentsContext> onComplete) {
     FragmentsContext fragmentsContext = context.get(FragmentsContext.KEY);
     SnippetFragmentsContext snippetFragmentsContext = new SnippetFragmentsContext(
         fragmentsContext);
@@ -74,7 +74,7 @@ class KnotEngine {
 
   private void doTransition(RoutingContext context, SnippetFragmentsContext ctx,
       final Map<String, RoutingEntry> routing, String currentAddress,
-      SingleObserver<SnippetFragmentsContext> onComplete) {
+      OnCompleteObserver<SnippetFragmentsContext> onComplete) {
     RoutingEntry entry = routing.get(ctx.getTransition());
     if (entry != null) {
       handleRoute(context, entry.getAddress(), entry.getOnTransition(), onComplete);
@@ -89,7 +89,7 @@ class KnotEngine {
   }
 
   private void doEndProcessing(RoutingContext context, SnippetFragmentsContext ctx,
-      String currentAddress, SingleObserver<SnippetFragmentsContext> onComplete) {
+      String currentAddress, OnCompleteObserver<SnippetFragmentsContext> onComplete) {
     LOGGER.debug("Request processing finished by {} Knot. Go to the response generation",
         currentAddress);
     context.put(FragmentsContext.KEY, ctx.getDelegate());
