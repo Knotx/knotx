@@ -13,44 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.handler.http.response.header;
+package io.knotx.repository.http;
 
-import io.knotx.server.api.header.CustomHttpHeader;
+import io.knotx.server.api.context.FragmentsContext;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
+import io.knotx.server.api.handler.reactivex.FragmentContextHandler;
+import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
-public class CustomHeaderRoutingHandlerFactory implements RoutingHandlerFactory {
+
+public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public String getName() {
-    return "headerHandler";
+    return "httpRepoConnectorHandler";
   }
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
-    return new KnotxHeaderHandler(config);
+    return new HttpRepositoryConnectorHandler(vertx, config);
   }
 
-  public class KnotxHeaderHandler implements Handler<RoutingContext> {
+  public class HttpRepositoryConnectorHandler extends FragmentContextHandler {
 
-    private CustomHttpHeader customHeader;
+    private HttpRepositoryConnector connector;
 
-    KnotxHeaderHandler(JsonObject configuration) {
-      this.customHeader = new CustomHttpHeader(configuration);
+    private HttpRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
+      connector = new HttpRepositoryConnector(vertx, new HttpRepositoryOptions(config));
     }
 
     @Override
-    public void handle(RoutingContext context) {
-      if (customHeader != null) {
-        context.response().headers()
-            .add(customHeader.getName(), customHeader.getValue());
-      }
-      context.next();
+    protected Single<FragmentsContext> handle(RoutingContext context,
+        FragmentsContext fragmentsContext) {
+      return connector.process(fragmentsContext);
     }
   }
-}
 
+}
 

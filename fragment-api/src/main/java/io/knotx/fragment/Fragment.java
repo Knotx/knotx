@@ -15,7 +15,6 @@
  */
 package io.knotx.fragment;
 
-
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.Objects;
 @DataObject(generateConverter = true)
 public class Fragment {
 
+  //FIXME auditLog is not serialized to json
   private List<HandlerLogEntry> auditLog;
   private JsonObject payload;
 

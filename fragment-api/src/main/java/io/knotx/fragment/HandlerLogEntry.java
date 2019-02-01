@@ -17,12 +17,10 @@ package io.knotx.fragment;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
-import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
 
-@DataObject(inheritConverter = true)
 public class HandlerLogEntry {
   private final String name;
   private HanlderStatus status = HanlderStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
