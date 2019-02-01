@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.repository.http;
+package io.knotx.server.util;
 
 import com.google.common.collect.ImmutableSet;
 import io.vertx.reactivex.core.MultiMap;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
+public class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
 
   private final Function<T, String> keyGetter;
   private final Function<T, List<String>> value;
@@ -35,7 +35,7 @@ class MultiMapCollector<T> implements Collector<T, MultiMap, MultiMap> {
     this.value = value;
   }
 
-  static <T> MultiMapCollector<T> toMultiMap(Function<T, String> keyGetter,
+  public static <T> MultiMapCollector<T> toMultiMap(Function<T, String> keyGetter,
       Function<T, List<String>> valueGetter) {
     return new MultiMapCollector<>(keyGetter, valueGetter);
   }

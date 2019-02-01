@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.repository.http;
+package io.knotx.server.util;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-class AllowedHeadersFilter implements Predicate<String> {
+public class AllowedHeadersFilter implements Predicate<String> {
 
   private final List<Pattern> patterns;
 
@@ -27,7 +27,7 @@ class AllowedHeadersFilter implements Predicate<String> {
     this.patterns = patterns;
   }
 
-  static AllowedHeadersFilter create(List<Pattern> patterns) {
+  public static AllowedHeadersFilter create(List<Pattern> patterns) {
     return new AllowedHeadersFilter(patterns);
   }
 
