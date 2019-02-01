@@ -52,8 +52,16 @@ class FilesystemRepositoryConnector {
 
     return fileSystem.rxReadFile(localFilePath)
         .map(buffer -> this.processSuccess(buffer, localFilePath))
+        .doOnSuccess(this::traceReadFile)
         .map(fragmentsContext::setClientResponse)
         .onErrorResumeNext(error -> processError(error, fragmentsContext));
+  }
+
+  private void traceReadFile(ClientResponse clientResponse) {
+    if (LOGGER.isTraceEnabled()) {
+      LOGGER.trace("FS Repository template: {}, {}", clientResponse.getBody(),
+          clientResponse.getHeaders());
+    }
   }
 
   private Single<FragmentsContext> processError(Throwable error,
