@@ -17,6 +17,7 @@ package io.knotx.knotengine.api;
 
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
+import io.knotx.fragment.HandlerLogEntry;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
@@ -75,6 +76,21 @@ public class SnippetFragment {
    */
   public JsonObject context() {
     return delegate.getPayload();
+  }
+
+  public void addSuccessLog(String knotIdentifier) {
+    delegate.appendLog(HandlerLogEntry.success(knotIdentifier));
+  }
+
+  public void addFailedLog(String knotIdentifier, Exception e) {
+    delegate.appendLog(HandlerLogEntry.failed(knotIdentifier, e));
+  }
+
+  /**
+   * @return true if processing of this SnippetFragment has failed
+   */
+  public boolean processed(String name) {
+    return this.delegate.getAuditLog().stream().anyMatch(log -> log.getName().equals(name));
   }
 
   /**

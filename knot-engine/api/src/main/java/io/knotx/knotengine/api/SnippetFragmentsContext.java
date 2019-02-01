@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @DataObject(inheritConverter = true)
 public class SnippetFragmentsContext {
 
-  public static final String KEY = "snippetFragmentsContext";
   // we do not use converters intentionally in this case
   private static final String DELEGATE_KEY = "_DELEGATE";
   private static final String TRANSITION_KEY = "_TRANSITION";

@@ -27,6 +27,12 @@ plugins {
 group = "io.knotx"
 
 // -----------------------------------------------------------------------------
+// Configurations
+// -----------------------------------------------------------------------------
+
+val junitTestCompile = configurations.create("junitTestCompile")
+
+// -----------------------------------------------------------------------------
 // Dependencies
 // -----------------------------------------------------------------------------
 
@@ -41,6 +47,12 @@ dependencies {
   implementation(group = "org.apache.commons", name = "commons-lang3")
   implementation(group = "com.typesafe", name = "config")
   implementation(group = "commons-collections", name = "commons-collections")
+
+  junitTestCompile(platform("io.knotx:knotx-dependencies:${project.version}"))
+  junitTestCompile(project(":knotx-fragment-api"))
+  junitTestCompile(project(":knotx-knot-engine-api"))
+  junitTestCompile("io.vertx:vertx-core")
+  junitTestCompile("io.vertx:vertx-service-proxy")
 }
 
 // -----------------------------------------------------------------------------
@@ -50,6 +62,13 @@ dependencies {
 apply(from = "../../gradle/common.gradle.kts")
 sourceSets.named("main") {
   java.srcDir("src/main/generated")
+}
+sourceSets.create("junitTest") {
+  compileClasspath += sourceSets.named("main").get().output
+}
+sourceSets.named("test") {
+  compileClasspath += sourceSets.named("junitTest").get().output
+  runtimeClasspath += sourceSets.named("junitTest").get().output
 }
 
 // -----------------------------------------------------------------------------
@@ -84,6 +103,15 @@ tasks.register<Jar>("javadocJar") {
   classifier = "javadoc"
 }
 
+val testJar = tasks.register<Jar>("testJar") {
+  from(sourceSets.named("junitTest").get().output)
+  classifier = "tests"
+}
+
+artifacts {
+  add("junitTestCompile", testJar)
+}
+
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
@@ -91,6 +119,7 @@ publishing {
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
+      artifact(tasks["testJar"])
       pom {
         name.set("Knot.x Knot Engine Core")
         description.set("Knot Engine Core - Knot.x knots routing engine")

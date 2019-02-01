@@ -82,6 +82,15 @@ public class Fragment {
     return this;
   }
 
+  public List<HandlerLogEntry> getAuditLog() {
+    return auditLog;
+  }
+
+  public Fragment setAuditLog(List<HandlerLogEntry> auditLog) {
+    this.auditLog = auditLog;
+    return this;
+  }
+
   public void appendLog(HandlerLogEntry historyLog) {
     auditLog.add(historyLog);
   }

@@ -24,6 +24,7 @@ import java.util.List;
 
 @DataObject(inheritConverter = true)
 public class HandlerLogEntry {
+
   private final String name;
   private HanlderStatus status = HanlderStatus.UNPROCESSED; // SUCCESS, FAILURE, UNPROCESSED
   private List<HandlerError> errors = Lists.newArrayList();
@@ -44,6 +45,19 @@ public class HandlerLogEntry {
     for (Object error : jsonErrors) {
       errors.add(new HandlerError((JsonObject) error));
     }
+  }
+
+  public static HandlerLogEntry success(String name) {
+    HandlerLogEntry historyLog = new HandlerLogEntry(name);
+    historyLog.setStatus(HanlderStatus.SUCCESS);
+    return historyLog;
+  }
+
+  public static HandlerLogEntry failed(String name, Exception e) {
+    HandlerLogEntry historyLog = new HandlerLogEntry(name);
+    historyLog.setStatus(HanlderStatus.FAILURE);
+    historyLog.getErrors().add(new HandlerError(e.getClass().getName(), e.getMessage()));
+    return historyLog;
   }
 
   public JsonObject toJson() {

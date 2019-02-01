@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Cognifide Limited
+ * Copyright (C) 2019 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server;
+package io.knotx.knotengine.core.junit;
 
 
 import io.knotx.knotengine.api.KnotProxy;
@@ -25,8 +25,7 @@ import io.vertx.core.Vertx;
 import io.vertx.serviceproxy.ServiceBinder;
 import java.util.function.Consumer;
 
-
-public class MockKnotProxy implements KnotProxy {
+public final class MockKnotProxy implements KnotProxy {
 
   private Consumer<SnippetFragmentsContext> knot;
 
@@ -38,7 +37,7 @@ public class MockKnotProxy implements KnotProxy {
     register(vertx, address, null);
   }
 
-  static void register(Vertx vertx, String address, Consumer<SnippetFragmentsContext> knot) {
+  public static void register(Vertx vertx, String address, Consumer<SnippetFragmentsContext> knot) {
     new ServiceBinder(vertx)
         .setAddress(address)
         .register(KnotProxy.class, new MockKnotProxy(knot));

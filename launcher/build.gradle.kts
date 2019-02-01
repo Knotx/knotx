@@ -30,6 +30,8 @@ group = "io.knotx"
 // Dependencies
 // -----------------------------------------------------------------------------
 
+val junitTestCompile = configurations.create("junitTestCompile")
+
 apply(from = "../gradle/common.deps.gradle.kts")
 apply(from = "../gradle/codegen.deps.gradle.kts")
 dependencies {
@@ -41,6 +43,8 @@ dependencies {
   api(group = "commons-collections", name = "commons-collections")
 }
 
+junitTestCompile.extendsFrom(configurations.named("compile").get())
+
 // -----------------------------------------------------------------------------
 // Source sets
 // -----------------------------------------------------------------------------
@@ -49,9 +53,9 @@ apply(from = "../gradle/common.gradle.kts")
 sourceSets.named("main") {
   java.srcDir("src/main/generated")
 }
-sourceSets.create("junit-test") {
+sourceSets.create("junitTest") {
   compileClasspath = sourceSets.named("main").get().output
-  compileClasspath += sourceSets.named("test").get().runtimeClasspath
+//  compileClasspath += sourceSets.named("test").get().runtimeClasspath
 }
 
 
@@ -101,7 +105,7 @@ tasks.register<Jar>("javadocJar") {
 }
 
 tasks.register<Jar>("testJar") {
-  from(sourceSets.named("junit-test").get().output)
+  from(sourceSets.named("junitTest").get().output)
   classifier = "tests"
 }
 
