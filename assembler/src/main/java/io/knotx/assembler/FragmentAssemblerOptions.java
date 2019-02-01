@@ -90,7 +90,7 @@ public class FragmentAssemblerOptions {
    * <li>AS_IS - Keep all fragments as they are</li>
    * <li>IGNORE - Remove frangments that were not processed from the markup</li>
    * </ul>
-   * If not set, a default value is <b>IGNORE</b></b>
+   * If not set, a default value is <b>IGNORE</b>
    *
    * @param assembleStrategy a strategy enum
    * @return a reference to this, so the API can be used fluently
