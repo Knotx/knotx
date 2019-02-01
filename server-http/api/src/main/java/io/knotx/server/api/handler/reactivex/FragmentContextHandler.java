@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.api.handler;
+package io.knotx.server.api.handler.reactivex;
 
 import io.knotx.server.api.context.FragmentsContext;
+import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -26,28 +27,32 @@ import io.vertx.reactivex.ext.web.RoutingContext;
  */
 public abstract class FragmentContextHandler implements Handler<RoutingContext> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FragmentContextHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(
+      FragmentContextHandler.class);
 
   @Override
   public void handle(RoutingContext context) {
     FragmentsContext fragmentsContext = context.get(FragmentsContext.KEY);
-    try {
-      FragmentsContext result = handle(context, fragmentsContext);
-      traceMessage(result);
-      context.put(FragmentsContext.KEY, result);
-      context.next();
-    } catch (Exception e) {
-      handleError(context, fragmentsContext, e);
-    }
+    handle(context, fragmentsContext)
+        .doOnSuccess(this::traceMessage)
+        .subscribe(
+            result -> {
+              context.put(FragmentsContext.KEY, result);
+              context.next();
+            },
+            e -> handleError(context, fragmentsContext, e)
+        );
   }
 
   /**
    * Enables to handle error that occurred during fragment context handling
+   *
    * @param context - vert.x web context that contains payload passed between handlers
    * @param fragmentsContext - knot.x fragment context from the previous handler
    * @param e - exception
    */
-  protected void handleError(RoutingContext context, FragmentsContext fragmentsContext, Exception e) {
+  protected void handleError(RoutingContext context, FragmentsContext fragmentsContext,
+      Throwable e) {
     context.fail(fragmentsContext.getClientResponse().getStatusCode());
     LOGGER.error("Failed to process {}", fragmentsContext.getClientRequest().getPath(), e);
   }
@@ -59,7 +64,7 @@ public abstract class FragmentContextHandler implements Handler<RoutingContext> 
    * @param fragmentsContext - knot.x fragment context from the previous handler
    * @return FragmentsContext that is saved into routing context and passed to the next handler
    */
-  protected abstract FragmentsContext handle(RoutingContext context,
+  protected abstract Single<FragmentsContext> handle(RoutingContext context,
       FragmentsContext fragmentsContext);
 
   private void traceMessage(FragmentsContext ctx) {

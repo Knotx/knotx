@@ -17,7 +17,7 @@ package io.knotx.server.configuration;
 
 import static io.knotx.server.KnotxServerVerticle.KNOTX_PORT_PROP_NAME;
 
-import io.knotx.configuration.CustomHttpHeader;
+import io.knotx.server.api.header.CustomHttpHeader;
 import io.knotx.server.handler.logger.AccessLogOptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.BackpressureOverflowStrategy;

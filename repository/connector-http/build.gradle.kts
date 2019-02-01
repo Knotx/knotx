@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Cognifide Limited
+ * Copyright (C) 2019 Cognifide Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ apply(from = "../../gradle/common.deps.gradle.kts")
 apply(from = "../../gradle/codegen.deps.gradle.kts")
 dependencies {
   api(project(":knotx-fragment-api"))
+  api(project(":knotx-server-http-api"))
   api(group = "com.google.guava", name = "guava")
   api(group = "commons-io", name = "commons-io")
   api(group = "org.apache.commons", name = "commons-lang3")
@@ -85,13 +86,13 @@ tasks.register<Jar>("javadocJar") {
 publishing {
   publications {
     create<MavenPublication>("mavenJava") {
-      artifactId = "knotx-server-http-api"
+      artifactId = "knotx-repository-connector-http"
       from(components["java"])
       artifact(tasks["sourcesJar"])
       artifact(tasks["javadocJar"])
       pom {
-        name.set("Knot.x Core HTTP Server API")
-        description.set("HTTP Server API - Knot.x HTTP Server models")
+        name.set("Knot.x Core Repository Connector FS")
+        description.set("Repository Connector FS - enables fetching templates from filesystem repositories")
         url.set("http://knotx.io")
         licenses {
           license {
