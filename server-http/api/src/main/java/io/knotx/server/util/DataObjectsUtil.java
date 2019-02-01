@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.server.api.context;
+package io.knotx.server.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import io.vertx.reactivex.core.MultiMap;
 import java.util.Arrays;
 
-final class DataObjectsUtil {
+public final class DataObjectsUtil {
 
   private DataObjectsUtil() {
     //util constructor
@@ -34,7 +34,7 @@ final class DataObjectsUtil {
    * @param that - compared {@link MultiMap} object that
    * @return - true if objects are equals, false otherwise
    */
-  static boolean equalsMultiMap(MultiMap self, MultiMap that) {
+  public static boolean equalsMultiMap(MultiMap self, MultiMap that) {
     return Objects.equal(self.names(), that.names()) &&
         self.names().stream()
             .allMatch(name -> that.contains(name) && self.getAll(name).equals(that.getAll(name)));
@@ -47,7 +47,7 @@ final class DataObjectsUtil {
    * @param that - compared Buffer object that
    * @return - true if objects are equals, false otherwise
    */
-  static boolean equalsBody(io.vertx.core.buffer.Buffer self,
+  public static boolean equalsBody(io.vertx.core.buffer.Buffer self,
       io.vertx.core.buffer.Buffer that) {
     if (self == that) {
       return true;
@@ -71,7 +71,7 @@ final class DataObjectsUtil {
    * @param multiMap - object to compute hashcode from
    * @return - hashcode of the given {@link MultiMap} object
    */
-  static int multiMapHash(MultiMap multiMap) {
+  public static int multiMapHash(MultiMap multiMap) {
     return multiMap.getDelegate().entries().stream().mapToInt(
         entry -> 31 * entry.getKey().hashCode() + (entry.getValue() == null ? 0
             : entry.getValue().hashCode())
@@ -84,7 +84,7 @@ final class DataObjectsUtil {
    * @param multiMap - {@link MultiMap}
    * @return String representing given MultiMap
    */
-  static String toString(MultiMap multiMap) {
+  public static String toString(MultiMap multiMap) {
     StringBuilder result = new StringBuilder();
     multiMap.names().stream().forEach(
         name -> result.append(name).append(":").append(Joiner.on(";").join(multiMap.getAll(name)))

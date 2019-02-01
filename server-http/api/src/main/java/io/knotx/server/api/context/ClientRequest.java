@@ -18,6 +18,7 @@ package io.knotx.server.api.context;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import io.knotx.server.util.DataObjectsUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.codegen.annotations.GenIgnore;
