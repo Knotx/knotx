@@ -190,7 +190,7 @@ class HttpRepositoryConnector {
       );
     }
 
-    //Overide host header if provided in client destination
+    //Override host header if provided in client destination
     if (StringUtils.isNotBlank(hostHeader)) {
       result.set(HttpHeaderNames.HOST.toString(), hostHeader);
     }
@@ -202,12 +202,6 @@ class HttpRepositoryConnector {
     return headers.names().stream()
         .filter(AllowedHeadersFilter.create(configuration.getAllowedRequestHeadersPatterns()))
         .collect(MultiMapCollector.toMultiMap(o -> o, headers::getAll));
-  }
-
-  private void traceHttpResponse(HttpClientResponse response) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Got response from remote repository status [{}]", response.statusCode());
-    }
   }
 
   private static String flatternMultiMap(MultiMap multiMap) {

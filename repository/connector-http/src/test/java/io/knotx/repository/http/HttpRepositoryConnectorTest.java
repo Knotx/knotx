@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +34,7 @@ import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.Vertx;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +50,7 @@ class HttpRepositoryConnectorTest {
 
   @Mock
   private ClientRequest clientRequest;
+
   private FragmentsContext fragmentsContext;
   private WireMockServer wireMockServer;
   private HttpRepositoryOptions httpRepositoryOptions;
@@ -120,6 +123,87 @@ class HttpRepositoryConnectorTest {
           assertEquals(body, clientResponse.getBody().toString());
           assertEquals("text/html", clientResponse.getHeaders().get("Content-Type"));
           assertEquals("Test Value", clientResponse.getHeaders().get("TestName"));
+          this.wireMockServer.stop();
+        }
+    );
+  }
+
+  @Test
+  void process_whenEmptyTemplate_expectStatusOKAndEmptyBody(VertxTestContext testContext, Vertx vertx) {
+    //given
+    final String requestPath = "/empty-body.html";
+    when(clientRequest.getPath()).thenReturn(requestPath);
+    when(clientRequest.getHeaders()).thenReturn(MultiMap.caseInsensitiveMultiMap());
+
+    wireMockServer.stubFor(get(urlEqualTo(requestPath))
+        .willReturn(aResponse()
+            .withHeader("Content-Type", "text/html")
+            .withStatus(HttpResponseStatus.OK.code())
+            .withBody(StringUtils.EMPTY)));
+
+    //when
+    HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
+    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+
+    //then
+    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
+        result -> {
+          final ClientResponse clientResponse = result.getClientResponse();
+          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
+          assertTrue(clientResponse.getBody().toString().isEmpty());
+          assertEquals("text/html", clientResponse.getHeaders().get("Content-Type"));
+          this.wireMockServer.stop();
+        }
+    );
+  }
+
+  @Test
+  void process_whenRedirect_expectRedirectStatusAndEmptyBody(VertxTestContext testContext, Vertx vertx) {
+    //given
+    final String requestPath = "/redirect.html";
+    when(clientRequest.getPath()).thenReturn(requestPath);
+    when(clientRequest.getHeaders()).thenReturn(MultiMap.caseInsensitiveMultiMap());
+
+    wireMockServer.stubFor(get(urlEqualTo(requestPath))
+        .willReturn(aResponse()
+            .withStatus(HttpResponseStatus.TEMPORARY_REDIRECT.code())));
+
+    //when
+    HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
+    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+
+    //then
+    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
+        result -> {
+          final ClientResponse clientResponse = result.getClientResponse();
+          assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT.code(), clientResponse.getStatusCode());
+          assertTrue(clientResponse.getBody().toString().isEmpty());
+          this.wireMockServer.stop();
+        }
+    );
+  }
+
+  @Test
+  void process_whenServerError_expectServerErrorStatusAndEmptyBody(VertxTestContext testContext, Vertx vertx) {
+    //given
+    final String requestPath = "/500.html";
+    when(clientRequest.getPath()).thenReturn(requestPath);
+    when(clientRequest.getHeaders()).thenReturn(MultiMap.caseInsensitiveMultiMap());
+
+    wireMockServer.stubFor(get(urlEqualTo(requestPath))
+        .willReturn(aResponse()
+            .withStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())));
+
+    //when
+    HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
+    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+
+    //then
+    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
+        result -> {
+          final ClientResponse clientResponse = result.getClientResponse();
+          assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), clientResponse.getStatusCode());
+          assertTrue(clientResponse.getBody().toString().isEmpty());
           this.wireMockServer.stop();
         }
     );
