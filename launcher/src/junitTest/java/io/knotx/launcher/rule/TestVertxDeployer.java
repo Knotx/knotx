@@ -15,7 +15,6 @@
  */
 package io.knotx.launcher.rule;
 
-import com.google.common.collect.Lists;
 import io.knotx.launcher.KnotxStarterVerticle;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -23,6 +22,7 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.junit.RunTestOnContext;
 import io.vertx.reactivex.core.Vertx;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.rules.TestRule;
@@ -76,10 +76,11 @@ public class TestVertxDeployer implements TestRule {
   private DeploymentOptions createConfig(String path) {
     return new DeploymentOptions()
         .setConfig(new JsonObject().put("configRetrieverOptions", new ConfigRetrieverOptions()
-            .setStores(Lists.newArrayList(
-                new ConfigStoreOptions().setType("file").setFormat(getConfigFormat(path))
-                    .setConfig(new JsonObject().put("path", path))
-            )).toJson()));
+            .setStores(
+                Arrays.asList(
+                    new ConfigStoreOptions().setType("file").setFormat(getConfigFormat(path))
+                        .setConfig(new JsonObject().put("path", path))
+                )).toJson()));
   }
 
   private String getConfigFormat(String path) {

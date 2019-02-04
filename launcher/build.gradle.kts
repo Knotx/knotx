@@ -43,7 +43,7 @@ dependencies {
   api(group = "commons-collections", name = "commons-collections")
 }
 
-junitTestCompile.extendsFrom(configurations.named("compile").get())
+junitTestCompile.extendsFrom(configurations.named("testImplementation").get())
 
 // -----------------------------------------------------------------------------
 // Source sets
@@ -54,8 +54,7 @@ sourceSets.named("main") {
   java.srcDir("src/main/generated")
 }
 sourceSets.create("junitTest") {
-  compileClasspath = sourceSets.named("main").get().output
-//  compileClasspath += sourceSets.named("test").get().runtimeClasspath
+  compileClasspath += sourceSets.named("main").get().output
 }
 
 
