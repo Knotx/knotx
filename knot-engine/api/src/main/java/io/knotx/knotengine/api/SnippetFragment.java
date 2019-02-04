@@ -87,7 +87,7 @@ public class SnippetFragment {
   }
 
   /**
-   * @return true if processing of this SnippetFragment has failed
+   * @return true if this fragment was processed by module with the given name.
    */
   public boolean processed(String name) {
     return this.delegate.getAuditLog().stream().anyMatch(log -> log.getName().equals(name));
