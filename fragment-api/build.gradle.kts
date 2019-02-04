@@ -34,10 +34,6 @@ apply(from = "../gradle/common.deps.gradle.kts")
 apply(from = "../gradle/codegen.deps.gradle.kts")
 dependencies {
   api(group = "com.google.guava", name = "guava")
-  api(group = "commons-io", name = "commons-io")
-  api(group = "org.apache.commons", name = "commons-lang3")
-  api(group = "com.typesafe", name = "config")
-  api(group = "commons-collections", name = "commons-collections")
 }
 
 // -----------------------------------------------------------------------------

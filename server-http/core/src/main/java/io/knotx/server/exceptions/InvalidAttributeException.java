@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.knotx.exceptions;
+package io.knotx.server.exceptions;
 
 public class InvalidAttributeException extends RuntimeException {
 
