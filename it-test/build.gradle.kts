@@ -31,7 +31,7 @@ apply(from = "../gradle/common.deps.gradle.kts")
 dependencies {
   testCompile(project(":knotx-splitter-html"))
   testCompile(project(":knotx-assembler"))
-  testCompile(project(":knotx-core"))
+  testCompile(project(":knotx-server-http-core"))
   testCompile(project(":knotx-knot-engine-api"))
   testCompile(project(":knotx-knot-engine-core"))
   testCompile(project(path = ":knotx-knot-engine-core", configuration = "junitTestCompile"))
