@@ -34,6 +34,7 @@ dependencies {
   testCompile(project(":knotx-core"))
   testCompile(project(":knotx-knot-engine-api"))
   testCompile(project(":knotx-knot-engine-core"))
+  testCompile(project(path = ":knotx-knot-engine-core", configuration = "junitTestCompile"))
   testCompile(project(":knotx-fallback"))
   testCompile(project(":knotx-launcher"))
 }

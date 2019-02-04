@@ -24,7 +24,6 @@ import java.util.Objects;
 @DataObject(generateConverter = true)
 public class Fragment {
 
-  //FIXME auditLog is not serialized to json
   private List<HandlerLogEntry> auditLog;
   private JsonObject payload;
 
@@ -82,6 +81,15 @@ public class Fragment {
     return this;
   }
 
+  public List<HandlerLogEntry> getAuditLog() {
+    return auditLog;
+  }
+
+  public Fragment setAuditLog(List<HandlerLogEntry> auditLog) {
+    this.auditLog = auditLog;
+    return this;
+  }
+
   public void appendLog(HandlerLogEntry historyLog) {
     auditLog.add(historyLog);
   }
@@ -104,6 +112,11 @@ public class Fragment {
 
   public JsonObject getPayload() {
     return payload;
+  }
+
+  public Fragment setPayload(JsonObject payload) {
+    this.payload = payload;
+    return this;
   }
 
   @Override

@@ -1,0 +1,14 @@
+{
+  "address": "A-knot",
+  "onTransition": {
+    "go-b": {
+      "address": "B-knot"
+    },
+    "go-d": {
+      "address": "D-knot"
+    },
+    "go-e": {
+      "address": "E-knot"
+    }
+  }
+}

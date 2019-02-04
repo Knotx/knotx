@@ -17,8 +17,10 @@
 package io.knotx.fragment;
 
 import com.google.common.base.Objects;
+import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 
+@DataObject(inheritConverter = true)
 public class HandlerError {
 
   private static final String CODE_KEY = "_CODE";
