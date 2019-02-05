@@ -18,6 +18,7 @@ package io.knotx.server.api.context;
 import io.knotx.fragment.Fragment;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,12 @@ public class RequestEvent {
     this.clientRequest = clientRequest;
     this.fragments = fragments;
     this.payload = payload;
+  }
+
+  public RequestEvent(ClientRequest clientRequest) {
+    this.clientRequest = clientRequest;
+    this.fragments = new ArrayList<>();
+    this.payload = new JsonObject();
   }
 
   public RequestEvent(JsonObject json) {

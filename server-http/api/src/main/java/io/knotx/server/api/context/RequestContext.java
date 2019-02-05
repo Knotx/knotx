@@ -26,7 +26,8 @@ public class RequestContext {
   private RequestEvent requestEvent;
   private final RequestEventLog log;
 
-  public RequestContext() {
+  public RequestContext(RequestEvent requestEvent) {
+    this.requestEvent = requestEvent;
     log = new RequestEventLog();
   }
 

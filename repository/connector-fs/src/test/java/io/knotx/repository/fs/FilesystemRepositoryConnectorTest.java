@@ -50,7 +50,7 @@ class FilesystemRepositoryConnectorTest {
 
   @BeforeEach
   void setUp() {
-    requestEvent = new RequestEvent(clientRequest, null, new JsonObject());
+    requestEvent = new RequestEvent(clientRequest);
   }
 
   @Test

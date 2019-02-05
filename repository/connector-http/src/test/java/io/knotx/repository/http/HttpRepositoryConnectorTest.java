@@ -60,7 +60,7 @@ class HttpRepositoryConnectorTest {
 
   @BeforeEach
   void setUp() {
-    requestEvent = new RequestEvent(clientRequest, null, new JsonObject());
+    requestEvent = new RequestEvent(clientRequest);
     this.wireMockServer = new WireMockServer(options().dynamicPort());
     this.wireMockServer.start();
 

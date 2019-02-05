@@ -17,6 +17,7 @@ package io.knotx.server.handler.http.request.context;
 
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.RequestContext;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -25,20 +26,19 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
-public class FragmentContextRoutingHandlerFactory implements RoutingHandlerFactory {
+//ToDo unit tests
+public class RequestContextRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public String getName() {
-    return "fragmentContextHandler";
+    return "requestContextHandler";
   }
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
     return routingContext -> {
-      routingContext.put(RequestEvent.KEY,
-          new RequestEvent().setClientRequest(new ClientRequest(routingContext.request()))
-              .setClientResponse(
-                  new ClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody()));
+      final RequestEvent requestEvent = new RequestEvent(new ClientRequest(routingContext.request()));
+      routingContext.put(RequestContext.KEY, new RequestContext(requestEvent));
       routingContext.next();
     };
   }
