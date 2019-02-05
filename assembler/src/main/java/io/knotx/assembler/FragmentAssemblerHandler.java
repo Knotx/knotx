@@ -19,27 +19,27 @@ import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandler;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.MultiMap;
-import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 class FragmentAssemblerHandler extends RequestEventHandler {
 
   @Override
-  protected RequestEvent handle(RoutingContext context, RequestEvent requestEvent) {
-    String responseBody = requestEvent.getFragments().stream()
+  protected RequestEventResult handle(RequestEvent requestEvent) {
+    final String responseBody = requestEvent.getFragments().stream()
         .map(Fragment::getBody)
         .collect(Collectors.joining());
     return createSuccessResponse(requestEvent, responseBody);
   }
 
-  private RequestEvent createSuccessResponse(RequestEvent inputContext,
-      String responseBody) {
-    ClientResponse clientResponse = inputContext.getClientResponse();
+  private RequestEventResult createSuccessResponse(RequestEvent inputContext, String responseBody) {
+    ClientResponse clientResponse = new ClientResponse();
     if (StringUtils.isBlank(responseBody)) {
       clientResponse.setStatusCode(HttpResponseStatus.NO_CONTENT.code());
     } else {
@@ -52,9 +52,10 @@ class FragmentAssemblerHandler extends RequestEventHandler {
           .setStatusCode(HttpResponseStatus.OK.code());
     }
 
-    return new RequestEvent()
-        .setClientRequest(inputContext.getClientRequest())
-        .setClientResponse(clientResponse);
+    JsonObject payload = inputContext.getPayload()
+        .put("assemblerResult", clientResponse);
+    return RequestEventResult.success(
+        new RequestEvent(inputContext.getClientRequest(), inputContext.getFragments(), payload));
   }
 
 }

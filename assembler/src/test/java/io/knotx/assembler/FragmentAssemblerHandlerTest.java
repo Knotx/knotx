@@ -15,13 +15,15 @@
  */
 package io.knotx.assembler;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
@@ -43,56 +45,47 @@ public class FragmentAssemblerHandlerTest {
   @Mock
   private ClientRequest clientRequest;
 
-  @Mock
-  private ClientResponse clientResponse;
-
   @Test
   public void callAssemblerWithNoFragments_expectNoContentStatus() {
     // given
     FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler();
-
-    RequestEvent requestEvent = new RequestEvent();
-
-    requestEvent.setClientResponse(clientResponse);
-    requestEvent.setClientRequest(clientRequest);
-
-    Mockito.when(routingContext.get(any())).thenReturn(requestEvent);
+    RequestEvent requestEvent = new RequestEvent(clientRequest);
 
     // when
-    assemblerHandler.handle(routingContext);
+    final RequestEventResult result = assemblerHandler.handle(requestEvent);
 
     // then
-    Mockito.verify(clientResponse).setStatusCode(HttpResponseStatus.NO_CONTENT.code());
+    assertTrue(result.getRequestEvent().isPresent());
+    final ClientResponse assemblerResult = extractAssemblerResult(result.getRequestEvent().get());
+    assertEquals(HttpResponseStatus.NO_CONTENT.code(), assemblerResult.getStatusCode());
   }
 
   @Test
-  public void callAssemblerWithFragment_expectOkStatus() {
+  public void callAssemblerWithFragment_expectAssemblerResultWithBodyAndOkStatus() {
     // given
     String expectedBody = "<h1>Some text</h1>\n"
         + "<p>Some text</p>";
     FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler();
 
-    MultiMap headers = Mockito.mock(MultiMap.class);
-
-    RequestEvent requestEvent = new RequestEvent();
-    requestEvent.setClientResponse(clientResponse);
-    requestEvent.setClientRequest(clientRequest);
-    requestEvent.setFragments(
-        Lists.newArrayList(new Fragment("_STATIC", new JsonObject(), expectedBody)));
-
-    Mockito.when(routingContext.get(any())).thenReturn(requestEvent);
-    Mockito.when(clientResponse.getHeaders()).thenReturn(headers);
-    Mockito.when(clientResponse.setBody(any())).thenReturn(clientResponse);
-    Mockito.when(clientResponse.setHeaders(any())).thenReturn(clientResponse);
+    RequestEvent requestEvent = new RequestEvent(clientRequest,
+        Lists.newArrayList(new Fragment("_STATIC", new JsonObject(), expectedBody)),
+        new JsonObject());
 
     // when
-    assemblerHandler.handle(routingContext);
+    final RequestEventResult result = assemblerHandler.handle(requestEvent);
 
     // then
-    Mockito.verify(clientResponse).setBody(Buffer.buffer(expectedBody));
-    Mockito.verify(clientResponse).setStatusCode(HttpResponseStatus.OK.code());
-    Mockito.verify(headers).add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
-        Integer.toString(expectedBody.length()));
+    assertTrue(result.getRequestEvent().isPresent());
+    final ClientResponse assemblerResult = extractAssemblerResult(result.getRequestEvent().get());
+    assertEquals(Buffer.buffer(expectedBody), assemblerResult.getBody());
+    assertEquals(HttpResponseStatus.OK.code(), assemblerResult.getStatusCode());
+    assertEquals(Integer.toString((expectedBody.length())),
+        assemblerResult.getHeaders().get(HttpHeaders.CONTENT_LENGTH));
+  }
+
+  private ClientResponse extractAssemblerResult(RequestEvent requestEvent) {
+    return new ClientResponse(
+        requestEvent.getPayload().getJsonObject("assemblerResult"));
   }
 
 }
