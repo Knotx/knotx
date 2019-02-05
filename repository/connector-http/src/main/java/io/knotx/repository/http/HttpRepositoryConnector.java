@@ -39,7 +39,6 @@ import io.vertx.reactivex.ext.web.client.WebClient;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
-import java.nio.file.NoSuchFileException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -75,8 +74,7 @@ class HttpRepositoryConnector {
 
     return getRequest(webClient, httpRequestData, requestHeaders)
         .doOnSuccess(resp -> logResponse(resp, httpRequestData, requestHeaders))
-        .flatMap(resp -> toRequestEvent(resp, requestEvent))
-        .map(RequestEventResult::success)
+        .flatMap(resp -> toRequestEventResult(resp, requestEvent))
         .onErrorResumeNext(error -> processError(error, httpRequestData));
   }
 
@@ -115,24 +113,30 @@ class HttpRepositoryConnector {
     }
   }
 
-  private Single<RequestEvent> toRequestEvent(HttpResponse<Buffer> response, RequestEvent inputEvent) {
-    return toBody(response)
-        .map(buffer -> new ClientResponse()
-            .setBody(buffer.getDelegate())
-            .setHeaders(response.headers())
-            .setStatusCode(response.statusCode())
-        )
-        .map(cr -> new RequestEvent(inputEvent.getClientRequest(),
-            inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", cr)));
+  private Single<RequestEventResult> toRequestEventResult(HttpResponse<Buffer> response,
+      RequestEvent inputEvent) {
+    final Single<RequestEventResult> result;
+    if (HttpStatusClass.SUCCESS.contains(response.statusCode()) || HttpStatusClass.REDIRECTION
+        .contains(response.statusCode())) {
+      result = Single.just(response)
+          .map(this::toClientResponse)
+          .map(cr -> new RequestEvent(inputEvent.getClientRequest(),
+              inputEvent.getFragments(),
+              inputEvent.appendPayload("repositoryResponse", cr.toJson())))
+          .map(RequestEventResult::success);
+    } else {
+      result = Single.just(response)
+          .map(this::toClientResponse)
+          .map(RequestEventResult::fail);
+    }
+    return result;
   }
 
-  private Single<Buffer> toBody(HttpResponse<Buffer> response) {
-    if (response.body() != null) {
-      return Single.just(response.body());
-    } else {
-      LOGGER.warn("Repository returned empty body");
-      return Single.just(Buffer.buffer());
-    }
+  private ClientResponse toClientResponse(HttpResponse<Buffer> response) {
+    return new ClientResponse()
+        .setBody(response.body() != null ? response.body().getDelegate() : Buffer.buffer().getDelegate())
+        .setHeaders(response.headers())
+        .setStatusCode(response.statusCode());
   }
 
   private Single<HttpResponse<Buffer>> getRequest(WebClient webClient,

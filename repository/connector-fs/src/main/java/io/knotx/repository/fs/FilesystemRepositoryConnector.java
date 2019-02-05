@@ -97,7 +97,7 @@ class FilesystemRepositoryConnector {
         .setBody(buffer.getDelegate())
         .setHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)));
     return new RequestEvent(inputEvent.getClientRequest(),
-        inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", repositoryResponse));
+        inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", repositoryResponse.toJson()));
   }
 
 }

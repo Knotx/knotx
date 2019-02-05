@@ -32,7 +32,6 @@ import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
-import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
@@ -134,7 +133,8 @@ class HttpRepositoryConnectorTest {
   }
 
   @Test
-  void process_whenEmptyTemplate_expectStatusOKAndEmptyBody(VertxTestContext testContext, Vertx vertx) {
+  void process_whenEmptyTemplate_expectStatusOKAndEmptyBody(VertxTestContext testContext,
+      Vertx vertx) {
     //given
     final String requestPath = "/empty-body.html";
     when(clientRequest.getPath()).thenReturn(requestPath);
@@ -166,7 +166,8 @@ class HttpRepositoryConnectorTest {
   }
 
   @Test
-  void process_whenRedirect_expectRedirectStatusAndEmptyBody(VertxTestContext testContext, Vertx vertx) {
+  void process_whenRedirect_expectRedirectStatusAndEmptyBody(VertxTestContext testContext,
+      Vertx vertx) {
     //given
     final String requestPath = "/redirect.html";
     when(clientRequest.getPath()).thenReturn(requestPath);
@@ -188,7 +189,8 @@ class HttpRepositoryConnectorTest {
 
           assertTrue(result.getRequestEvent().isPresent());
           final ClientResponse repositoryResponse = getRepositoryResponse(result);
-          assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT.code(), repositoryResponse.getStatusCode());
+          assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT.code(),
+              repositoryResponse.getStatusCode());
           assertTrue(repositoryResponse.getBody().toString().isEmpty());
           this.wireMockServer.stop();
         }
@@ -196,7 +198,8 @@ class HttpRepositoryConnectorTest {
   }
 
   @Test
-  void process_whenServerError_expectServerErrorStatusAndEmptyBody(VertxTestContext testContext, Vertx vertx) {
+  void process_whenServerError_expectServerErrorStatusAndEmptyBody(VertxTestContext testContext,
+      Vertx vertx) {
     //given
     final String requestPath = "/500.html";
     when(clientRequest.getPath()).thenReturn(requestPath);
@@ -214,33 +217,10 @@ class HttpRepositoryConnectorTest {
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           final ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-
-          assertTrue(result.getRequestEvent().isPresent());
-          final ClientResponse repositoryResponse = getRepositoryResponse(result);
-          assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), repositoryResponse.getStatusCode());
-          assertTrue(repositoryResponse.getBody().toString().isEmpty());
-          this.wireMockServer.stop();
-        }
-    );
-  }
-
-  @Test
-  void process_whenUnexpectedError_expectFailedResult(VertxTestContext testContext, Vertx vertx) {
-    //given
-    when(clientRequest.getPath()).thenThrow(new RuntimeException());
-
-    //when
-    HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
-
-    //then
-    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
-        result -> {
-          final ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), clientResponse.getStatusCode());
 
           assertFalse(result.getRequestEvent().isPresent());
+          this.wireMockServer.stop();
         }
     );
   }

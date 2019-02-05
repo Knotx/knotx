@@ -52,8 +52,7 @@ class FragmentAssemblerHandler extends RequestEventHandler {
           .setStatusCode(HttpResponseStatus.OK.code());
     }
 
-    JsonObject payload = inputContext.getPayload()
-        .put("assemblerResult", clientResponse);
+    JsonObject payload = inputContext.getPayload().put("assemblerResult", clientResponse.toJson());
     return RequestEventResult.success(
         new RequestEvent(inputContext.getClientRequest(), inputContext.getFragments(), payload));
   }
