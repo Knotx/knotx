@@ -15,17 +15,27 @@
  */
 package io.knotx.splitter.html;
 
+import io.knotx.fragment.Fragment;
+import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandler;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
-
+import java.util.List;
+import java.util.Optional;
 
 public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(SplitterRoutingHandlerFactory.class);
+  private static final String MISSING_REPOSITORY_PAYLOAD = "repositoryResponse is missing";
 
   @Override
   public String getName() {
@@ -37,6 +47,7 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
     return new KnotxSplitterHandler();
   }
 
+  //ToDo unit tests
   public class KnotxSplitterHandler extends RequestEventHandler {
 
     private HtmlFragmentSplitter splitter;
@@ -46,13 +57,28 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
     }
 
     @Override
-    protected RequestEvent handle(RoutingContext context, RequestEvent requestEvent) {
-      requestEvent
-          .setFragments(splitter.split(requestEvent.getClientResponse().getBody().toString()));
-      requestEvent.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
-      return requestEvent;
+    protected RequestEventResult handle(RequestEvent requestEvent) {
+      final Optional<ClientResponse> repositoryResponse = getRepositoryResponse(requestEvent);
+      final RequestEventResult result;
+      if (repositoryResponse.isPresent()) {
+        List<Fragment> fragments = splitter.split(repositoryResponse.get().getBody().toString());
+        RequestEvent requestEventWithFragments = new RequestEvent(requestEvent.getClientRequest(), fragments, requestEvent.getPayload());
+        result = RequestEventResult.success(requestEventWithFragments);
+      } else {
+        LOGGER.error(MISSING_REPOSITORY_PAYLOAD);
+        ClientResponse failResponse = new ClientResponse()
+            .setStatusCode(HttpResponseStatus.BAD_REQUEST.code())
+            .setBody(Buffer.buffer(MISSING_REPOSITORY_PAYLOAD));
+        result = RequestEventResult.fail(failResponse);
+      }
+      return result;
     }
 
+    private Optional<ClientResponse> getRepositoryResponse(RequestEvent requestEvent) {
+      final JsonObject repositoryResponse = requestEvent.getPayload()
+          .getJsonObject("repositoryResponse");
+      return Optional.ofNullable(repositoryResponse).map(ClientResponse::new);
+    }
 
   }
 

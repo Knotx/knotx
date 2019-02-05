@@ -122,10 +122,8 @@ class HttpRepositoryConnector {
             .setHeaders(response.headers())
             .setStatusCode(response.statusCode())
         )
-        .map(cr -> {
-          return new RequestEvent(inputEvent.getClientRequest(),
-              inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", cr));
-        });
+        .map(cr -> new RequestEvent(inputEvent.getClientRequest(),
+            inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", cr)));
   }
 
   private Single<Buffer> toBody(HttpResponse<Buffer> response) {
