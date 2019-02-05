@@ -16,6 +16,7 @@
 package io.knotx.server.handler.http.response.writer;
 
 import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.RequestContext;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -30,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+//ToDo unit tests
 public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
@@ -42,8 +44,8 @@ public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactor
     return routingContext -> {
       Set<String> allowedResponseHeaders = getAllowedHeaders(config);
 
-      RequestEvent requestEvent = routingContext.get(RequestEvent.KEY);
-      sendResponse(routingContext, allowedResponseHeaders, requestEvent.getClientResponse());
+      RequestContext requestContext = routingContext.get(RequestContext.KEY);
+      sendResponse(routingContext, allowedResponseHeaders, requestContext);
     };
   }
 
@@ -55,19 +57,17 @@ public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactor
   }
 
   private void sendResponse(RoutingContext context, Set<String> allowedResponseHeaders,
-      ClientResponse clientResponse) {
+      RequestContext requestContext) {
+    //FixMe should ClientResponse be part of RequestContext?
+    ClientResponse clientResponse = new ClientResponse(); //requestContext.getClientResponse();
     HttpServerResponse httpResponse = context.response();
     writeHeaders(httpResponse, allowedResponseHeaders, clientResponse);
     httpResponse.setStatusCode(clientResponse.getStatusCode());
-    if (isOkClientResponse(clientResponse)) {
-      httpResponse.end(Buffer.newInstance(clientResponse.getBody()));
-    } else {
+    if (requestContext.status().isFailed()) {
       httpResponse.end();
+    } else {
+      httpResponse.end(Buffer.newInstance(clientResponse.getBody()));
     }
-  }
-
-  private boolean isOkClientResponse(ClientResponse clientResponse) {
-    return clientResponse.getStatusCode() == HttpResponseStatus.OK.code();
   }
 
   private void writeHeaders(final HttpServerResponse response, Set<String> allowedResponseHeaders,
