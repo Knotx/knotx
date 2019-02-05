@@ -68,7 +68,7 @@ class FilesystemRepositoryConnector {
 
   private Single<RequestEventResult> processError(Throwable error, String localFilePath) {
     final String message = String.format(ERROR_MESSAGE, localFilePath);
-    LOGGER.error(message);
+    LOGGER.error(message, error);
     HttpResponseStatus statusCode;
     if (error.getCause().getClass().equals(NoSuchFileException.class)) {
       statusCode = HttpResponseStatus.NOT_FOUND;
@@ -90,14 +90,14 @@ class FilesystemRepositoryConnector {
     return headers;
   }
 
-  // ToDo there be repository-api with repositoryResult model!!
+  // ToDo there be repository-api with repositoryResult model??
   private RequestEvent processSuccess(Buffer buffer, String filePath,
-      RequestEvent intputEvent) {
-    JsonObject result = new JsonObject()
-        .put("body", buffer.toString())
-        .put("Content-Type", MimeMapping.getMimeTypeForFilename(filePath));
-    return new RequestEvent(intputEvent.getClientRequest(),
-        intputEvent.getFragments(), intputEvent.appendPayload("repositoryResult", result));
+      RequestEvent inputEvent) {
+    ClientResponse repositoryResponse = new ClientResponse()
+        .setBody(buffer.getDelegate())
+        .setHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)));
+    return new RequestEvent(inputEvent.getClientRequest(),
+        inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", repositoryResponse));
   }
 
 }

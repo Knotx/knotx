@@ -88,13 +88,13 @@ class FilesystemRepositoryConnectorTest {
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           final Optional<RequestEvent> requestEvent = result.getRequestEvent();
-          assertTrue(requestEvent.isPresent())
+          assertTrue(requestEvent.isPresent());
           ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-          final JsonObject repositoryResult = requestEvent.get().getPayload()
-              .getJsonObject("repositoryResult");
-          assertEquals("hello", repositoryResult.getString("body").trim());
-          assertEquals("text/plain", repositoryResult.getString("Content-Type"));
+          final ClientResponse repositoryResponse = new ClientResponse(requestEvent.get().getPayload()
+              .getJsonObject("repositoryResponse"));
+          assertEquals("hello", repositoryResponse.getBody().toString().trim());
+          assertEquals("text/plain", repositoryResponse.getHeaders().get("Content-Type"));
         }
     );
   }

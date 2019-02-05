@@ -21,6 +21,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -28,8 +29,10 @@ import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
+import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.MultiMap;
@@ -57,8 +60,7 @@ class HttpRepositoryConnectorTest {
 
   @BeforeEach
   void setUp() {
-    requestEvent = new RequestEvent();
-    requestEvent.setClientRequest(clientRequest);
+    requestEvent = new RequestEvent(clientRequest, null, new JsonObject());
     this.wireMockServer = new WireMockServer(options().dynamicPort());
     this.wireMockServer.start();
 
@@ -83,7 +85,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEvent> connectorResult = connector.process(requestEvent);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -113,16 +115,19 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEvent> connectorResult = connector.process(requestEvent);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           final ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-          assertEquals(body, clientResponse.getBody().toString());
-          assertEquals("text/html", clientResponse.getHeaders().get("Content-Type"));
-          assertEquals("Test Value", clientResponse.getHeaders().get("TestName"));
+
+          assertTrue(result.getRequestEvent().isPresent());
+          final ClientResponse repositoryResponse = getRepositoryResponse(result);
+          assertEquals(body, repositoryResponse.getBody().toString());
+          assertEquals("text/html", repositoryResponse.getHeaders().get("Content-Type"));
+          assertEquals("Test Value", repositoryResponse.getHeaders().get("TestName"));
           this.wireMockServer.stop();
         }
     );
@@ -143,15 +148,18 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEvent> connectorResult = connector.process(requestEvent);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           final ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-          assertTrue(clientResponse.getBody().toString().isEmpty());
-          assertEquals("text/html", clientResponse.getHeaders().get("Content-Type"));
+
+          assertTrue(result.getRequestEvent().isPresent());
+          final ClientResponse repositoryResponse = getRepositoryResponse(result);
+          assertTrue(repositoryResponse.getBody().toString().isEmpty());
+          assertEquals("text/html", repositoryResponse.getHeaders().get("Content-Type"));
           this.wireMockServer.stop();
         }
     );
@@ -170,14 +178,18 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEvent> connectorResult = connector.process(requestEvent);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           final ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT.code(), clientResponse.getStatusCode());
-          assertTrue(clientResponse.getBody().toString().isEmpty());
+          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
+
+          assertTrue(result.getRequestEvent().isPresent());
+          final ClientResponse repositoryResponse = getRepositoryResponse(result);
+          assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT.code(), repositoryResponse.getStatusCode());
+          assertTrue(repositoryResponse.getBody().toString().isEmpty());
           this.wireMockServer.stop();
         }
     );
@@ -196,17 +208,46 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEvent> connectorResult = connector.process(requestEvent);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+
+    //then
+    RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
+        result -> {
+          final ClientResponse clientResponse = result.getClientResponse();
+          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
+
+          assertTrue(result.getRequestEvent().isPresent());
+          final ClientResponse repositoryResponse = getRepositoryResponse(result);
+          assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), repositoryResponse.getStatusCode());
+          assertTrue(repositoryResponse.getBody().toString().isEmpty());
+          this.wireMockServer.stop();
+        }
+    );
+  }
+
+  @Test
+  void process_whenUnexpectedError_expectFailedResult(VertxTestContext testContext, Vertx vertx) {
+    //given
+    when(clientRequest.getPath()).thenThrow(new RuntimeException());
+
+    //when
+    HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
           final ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), clientResponse.getStatusCode());
-          assertTrue(clientResponse.getBody().toString().isEmpty());
-          this.wireMockServer.stop();
+
+          assertFalse(result.getRequestEvent().isPresent());
         }
     );
+  }
+
+  private ClientResponse getRepositoryResponse(RequestEventResult result) {
+    return new ClientResponse(
+        result.getRequestEvent().get().getPayload().getJsonObject("repositoryResponse"));
   }
 
 }

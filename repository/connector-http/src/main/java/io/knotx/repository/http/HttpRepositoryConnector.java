@@ -18,6 +18,7 @@ package io.knotx.repository.http;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.knotx.server.util.AllowedHeadersFilter;
 import io.knotx.server.util.DataObjectsUtil;
 import io.knotx.server.util.MultiMapCollector;
@@ -38,6 +39,7 @@ import io.vertx.reactivex.ext.web.client.WebClient;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.NoSuchFileException;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +47,7 @@ class HttpRepositoryConnector {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HttpRepositoryConnector.class);
 
-  private static final String ERROR_MESSAGE = "Unable to get template from the repository";
+  private static final String ERROR_MESSAGE = "Unable to get template %s from the repository";
 
   private final HttpRepositoryOptions configuration;
 
@@ -57,7 +59,7 @@ class HttpRepositoryConnector {
     this.webClient = WebClient.create(vertx, configuration.getClientOptions());
   }
 
-  Single<RequestEvent> process(RequestEvent requestEvent) {
+  Single<RequestEventResult> process(RequestEvent requestEvent) {
     ClientRequest request = requestEvent.getClientRequest();
     MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
         request.getHeaders());
@@ -73,16 +75,18 @@ class HttpRepositoryConnector {
 
     return getRequest(webClient, httpRequestData, requestHeaders)
         .doOnSuccess(resp -> logResponse(resp, httpRequestData, requestHeaders))
-        .flatMap(this::toClientResponse)
-        .map(requestEvent::setClientResponse)
-        .onErrorResumeNext(error -> processFatalError(error, requestEvent));
+        .flatMap(resp -> toRequestEvent(resp, requestEvent))
+        .map(RequestEventResult::success)
+        .onErrorResumeNext(error -> processError(error, httpRequestData));
   }
 
-  private Single<RequestEvent> processFatalError(Throwable error,
-      RequestEvent requestEvent) {
-    LOGGER.error(ERROR_MESSAGE, error);
-    return Single.just(requestEvent.setClientResponse(
-        new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())));
+  private Single<RequestEventResult> processError(Throwable error, RequestOptions httpRequestData) {
+    final String message = String.format(ERROR_MESSAGE, getUrl(httpRequestData));
+    LOGGER.error(message, error);
+    final ClientResponse clientResponse = new ClientResponse()
+        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
+        .setBody(io.vertx.core.buffer.Buffer.buffer(message));
+    return Single.just(RequestEventResult.fail(clientResponse));
   }
 
   private void logResponse(HttpResponse<Buffer> resp, RequestOptions httpRequestData,
@@ -111,13 +115,17 @@ class HttpRepositoryConnector {
     }
   }
 
-  private Single<ClientResponse> toClientResponse(HttpResponse<Buffer> response) {
+  private Single<RequestEvent> toRequestEvent(HttpResponse<Buffer> response, RequestEvent inputEvent) {
     return toBody(response)
         .map(buffer -> new ClientResponse()
             .setBody(buffer.getDelegate())
             .setHeaders(response.headers())
             .setStatusCode(response.statusCode())
-        );
+        )
+        .map(cr -> {
+          return new RequestEvent(inputEvent.getClientRequest(),
+              inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", cr));
+        });
   }
 
   private Single<Buffer> toBody(HttpResponse<Buffer> response) {
