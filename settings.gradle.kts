@@ -17,6 +17,7 @@
 rootProject.name = "knotx-root"
 include("knotx-fragment-api")
 include("knotx-server-http-api")
+include("knotx-server-http-core")
 include("knotx-core")
 include("knotx-launcher")
 include("knotx-splitter-html")
@@ -28,6 +29,7 @@ include("it-test")
 
 project(":knotx-fragment-api").projectDir = file("fragment-api")
 project(":knotx-server-http-api").projectDir = file("server-http/api")
+project(":knotx-server-http-core").projectDir = file("server-http/core")
 project(":knotx-launcher").projectDir = file("launcher")
 project(":knotx-splitter-html").projectDir = file("splitter-html")
 project(":knotx-assembler").projectDir = file("assembler")

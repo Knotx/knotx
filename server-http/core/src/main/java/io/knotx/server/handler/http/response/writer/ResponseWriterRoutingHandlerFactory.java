@@ -22,8 +22,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.http.HttpServerResponse;
@@ -33,8 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ResponseWriterRoutingHandlerFactory implements RoutingHandlerFactory {
-
-  private static final Logger LOG = LoggerFactory.getLogger(ResponseWriterRoutingHandlerFactory.class);
 
   @Override
   public String getName() {

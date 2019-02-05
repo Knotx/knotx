@@ -23,6 +23,5 @@ io.knotx.server.handler.failure.ErrorRoutingHandlerFactory
 io.knotx.server.handler.http.request.context.FragmentContextRoutingHandlerFactory
 io.knotx.server.handler.http.response.header.CustomHeaderRoutingHandlerFactory
 io.knotx.server.handler.http.response.writer.ResponseWriterRoutingHandlerFactory
-io.knotx.fallback.FragmentFallbackRoutingHandlerFactory
 
 

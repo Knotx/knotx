@@ -18,15 +18,11 @@ package io.knotx.server.handler.csrf;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
 
 public class CSRFHandlerFactory implements RoutingHandlerFactory {
-
-  private static final Logger LOG = LoggerFactory.getLogger(RoutingHandlerFactory.class);
 
   @Override
   public String getName() {
