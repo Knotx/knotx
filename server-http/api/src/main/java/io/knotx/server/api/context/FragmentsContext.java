@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 @DataObject(generateConverter = true)
-public class FragmentsContext {
+public class FragmentsContext { // ToDo this is RequestEvent
 
   public static final String KEY = "fragmentsContext";
 

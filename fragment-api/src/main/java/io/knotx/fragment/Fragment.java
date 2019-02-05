@@ -15,107 +15,71 @@
  */
 package io.knotx.fragment;
 
-import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
-@DataObject(generateConverter = true)
 public class Fragment {
 
-  private List<HandlerLogEntry> auditLog;
-  private JsonObject payload;
+  private static final String ID_KEY = "id";
+  private static final String TYPE_KEY = "type";
+  private static final String CONFIGURATION_KEY = "configuration";
+  private static final String BODY_KEY = "body";
+  private static final String PAYLOAD_KEY = "payload";
 
-  private String type;
-  private JsonObject configuration;
-  private String body;
+  private final String id;
+  private final String type;
+  private final JsonObject configuration;
+  private final String body;
+  private final JsonObject payload;
 
   public Fragment(String type, JsonObject configuration, String body) {
-    init();
+    this.id = UUID.randomUUID().toString();
     this.type = type;
     this.configuration = configuration;
     this.body = body;
+    this.payload = new JsonObject();
   }
 
   public Fragment(JsonObject json) {
-    init();
-    FragmentConverter.fromJson(json, this);
+    this.id = json.getString(ID_KEY);
+    this.type = json.getString(TYPE_KEY);
+    this.configuration = json.getJsonObject(CONFIGURATION_KEY);
+    this.body = json.getString(BODY_KEY);
+    this.payload = json.getJsonObject(PAYLOAD_KEY);
   }
 
   public JsonObject toJson() {
-    JsonObject json = new JsonObject();
-    FragmentConverter.toJson(this, json);
-    return json;
+    return new JsonObject()
+        .put(ID_KEY, id)
+        .put(TYPE_KEY, type)
+        .put(CONFIGURATION_KEY, configuration)
+        .put(BODY_KEY, body)
+        .put(PAYLOAD_KEY, payload);
   }
 
-  private void init() {
-    this.auditLog = new ArrayList<>();
-    this.payload = new JsonObject();
+  public String getId() {
+    return id;
   }
 
   public String getType() {
     return type;
   }
 
-  public Fragment setType(String type) {
-    this.type = type;
-    return this;
-  }
-
   public JsonObject getConfiguration() {
-    return configuration;
-  }
-
-  public Fragment setConfiguration(JsonObject configuration) {
-    this.configuration = configuration;
-    return this;
+    return configuration.copy();
   }
 
   public String getBody() {
     return body;
   }
 
-  public Fragment setBody(String body) {
-    this.body = body;
-    return this;
-  }
-
-  public List<HandlerLogEntry> getAuditLog() {
-    return auditLog;
-  }
-
-  public Fragment setAuditLog(List<HandlerLogEntry> auditLog) {
-    this.auditLog = auditLog;
-    return this;
-  }
-
-  public void appendLog(HandlerLogEntry historyLog) {
-    auditLog.add(historyLog);
-  }
-
-  public boolean failed() {
-    if (auditLog.isEmpty()) {
-      return false;
-    }
-    return auditLog.stream()
-        .anyMatch(f -> f.getStatus().equals(HanlderStatus.FAILURE));
-  }
-
-  public boolean processed() {
-    if (auditLog.isEmpty()) {
-      return true;
-    }
-    return auditLog.stream()
-        .allMatch(f -> f.getStatus().equals(HanlderStatus.SUCCESS));
-  }
-
   public JsonObject getPayload() {
-    return payload;
+    return payload.copy();
   }
 
-  public Fragment setPayload(JsonObject payload) {
-    this.payload = payload;
+  public Fragment appendPayload(String key, Object value) {
+    this.payload.put(key, value);
     return this;
   }
 
@@ -127,24 +91,27 @@ public class Fragment {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Fragment that = (Fragment) o;
-    return Objects.equals(type, that.type) &&
-        Objects.equals(configuration, that.configuration) &&
-        Objects.equals(body, that.body);
+    Fragment fragment = (Fragment) o;
+    return Objects.equals(id, fragment.id) &&
+        Objects.equals(type, fragment.type) &&
+        Objects.equals(configuration, fragment.configuration) &&
+        Objects.equals(body, fragment.body) &&
+        Objects.equals(payload, fragment.payload);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, configuration, body);
+    return Objects.hash(id, type, configuration, body, payload);
   }
 
   @Override
   public String toString() {
     return "Fragment{" +
-        "auditLog=" + auditLog +
+        "id='" + id + '\'' +
         ", type='" + type + '\'' +
         ", configuration=" + configuration +
         ", body='" + body + '\'' +
+        ", payload=" + payload +
         '}';
   }
 }
