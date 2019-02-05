@@ -15,8 +15,6 @@
  */
 package io.knotx.assembler;
 
-import io.knotx.assembler.FragmentAssemblerHandler;
-import io.knotx.assembler.FragmentAssemblerOptions;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
@@ -32,6 +30,6 @@ public class AssemblerRoutingHandlerFactory implements RoutingHandlerFactory {
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
-    return new FragmentAssemblerHandler(new FragmentAssemblerOptions(config));
+    return new FragmentAssemblerHandler();
   }
 }

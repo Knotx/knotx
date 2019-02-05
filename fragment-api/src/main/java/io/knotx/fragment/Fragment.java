@@ -30,7 +30,7 @@ public class Fragment {
   private final String id;
   private final String type;
   private final JsonObject configuration;
-  private final String body;
+  private String body;
   private final JsonObject payload;
 
   public Fragment(String type, JsonObject configuration, String body) {
@@ -72,6 +72,11 @@ public class Fragment {
 
   public String getBody() {
     return body;
+  }
+
+  public Fragment setBody(String body) {
+    this.body = body;
+    return this;
   }
 
   public JsonObject getPayload() {

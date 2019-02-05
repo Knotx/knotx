@@ -1,5 +1,3 @@
-import org.nosphere.apache.rat.RatTask
-
 /*
  * Copyright (C) 2016 Cognifide Limited
  *
@@ -15,6 +13,8 @@ import org.nosphere.apache.rat.RatTask
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.nosphere.apache.rat.RatTask
 
 plugins {
   id("java")
@@ -32,7 +32,6 @@ dependencies {
   testCompile(project(":knotx-splitter-html"))
   testCompile(project(":knotx-assembler"))
   testCompile(project(":knotx-server-http-core"))
-  testCompile(project(":knotx-fallback"))
   testCompile(project(":knotx-launcher"))
 }
 

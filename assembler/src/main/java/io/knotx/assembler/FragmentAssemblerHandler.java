@@ -15,6 +15,7 @@
  */
 package io.knotx.assembler;
 
+import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.FragmentsContext;
 import io.knotx.server.api.handler.FragmentContextHandler;
@@ -28,16 +29,10 @@ import org.apache.commons.lang3.StringUtils;
 
 class FragmentAssemblerHandler extends FragmentContextHandler {
 
-  private FragmentAssemblerOptions options;
-
-  public FragmentAssemblerHandler(FragmentAssemblerOptions options) {
-    this.options = options;
-  }
-
   @Override
   protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
     String responseBody = fragmentsContext.getFragments().stream()
-        .map(fragment -> options.getAssembleStrategy().extractBody(fragment))
+        .map(Fragment::getBody)
         .collect(Collectors.joining());
     return createSuccessResponse(fragmentsContext, responseBody);
   }

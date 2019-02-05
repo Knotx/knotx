@@ -49,8 +49,7 @@ public class FragmentAssemblerHandlerTest {
   @Test
   public void callAssemblerWithNoFragments_expectNoContentStatus() {
     // given
-    FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler(
-        new FragmentAssemblerOptions(FragmentAssembleStrategy.AS_IS));
+    FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler();
 
     FragmentsContext fragmentsContext = new FragmentsContext();
 
@@ -71,8 +70,7 @@ public class FragmentAssemblerHandlerTest {
     // given
     String expectedBody = "<h1>Some text</h1>\n"
         + "<p>Some text</p>";
-    FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler(
-        new FragmentAssemblerOptions(FragmentAssembleStrategy.AS_IS));
+    FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler();
 
     MultiMap headers = Mockito.mock(MultiMap.class);
 

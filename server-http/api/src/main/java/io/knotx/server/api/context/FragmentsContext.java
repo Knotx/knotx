@@ -17,7 +17,6 @@ package io.knotx.server.api.context;
 
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
-import io.knotx.fragment.HandlerLogEntry;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import java.util.List;
