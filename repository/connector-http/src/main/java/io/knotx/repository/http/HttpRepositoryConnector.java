@@ -17,7 +17,7 @@ package io.knotx.repository.http;
 
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.util.AllowedHeadersFilter;
 import io.knotx.server.util.DataObjectsUtil;
 import io.knotx.server.util.MultiMapCollector;
@@ -57,8 +57,8 @@ class HttpRepositoryConnector {
     this.webClient = WebClient.create(vertx, configuration.getClientOptions());
   }
 
-  Single<FragmentsContext> process(FragmentsContext fragmentsContext) {
-    ClientRequest request = fragmentsContext.getClientRequest();
+  Single<RequestEvent> process(RequestEvent requestEvent) {
+    ClientRequest request = requestEvent.getClientRequest();
     MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
         request.getHeaders());
 
@@ -74,14 +74,14 @@ class HttpRepositoryConnector {
     return getRequest(webClient, httpRequestData, requestHeaders)
         .doOnSuccess(resp -> logResponse(resp, httpRequestData, requestHeaders))
         .flatMap(this::toClientResponse)
-        .map(fragmentsContext::setClientResponse)
-        .onErrorResumeNext(error -> processFatalError(error, fragmentsContext));
+        .map(requestEvent::setClientResponse)
+        .onErrorResumeNext(error -> processFatalError(error, requestEvent));
   }
 
-  private Single<FragmentsContext> processFatalError(Throwable error,
-      FragmentsContext fragmentsContext) {
+  private Single<RequestEvent> processFatalError(Throwable error,
+      RequestEvent requestEvent) {
     LOGGER.error(ERROR_MESSAGE, error);
-    return Single.just(fragmentsContext.setClientResponse(
+    return Single.just(requestEvent.setClientResponse(
         new ClientResponse().setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())));
   }
 

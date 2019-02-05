@@ -15,9 +15,9 @@
  */
 package io.knotx.repository.http;
 
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
-import io.knotx.server.api.handler.reactivex.FragmentContextHandler;
+import io.knotx.server.api.handler.reactivex.RequestEventHandler;
 import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
@@ -37,7 +37,7 @@ public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHand
     return new HttpRepositoryConnectorHandler(vertx, config);
   }
 
-  public class HttpRepositoryConnectorHandler extends FragmentContextHandler {
+  public class HttpRepositoryConnectorHandler extends RequestEventHandler {
 
     private HttpRepositoryConnector connector;
 
@@ -46,9 +46,9 @@ public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHand
     }
 
     @Override
-    protected Single<FragmentsContext> handle(RoutingContext context,
-        FragmentsContext fragmentsContext) {
-      return connector.process(fragmentsContext);
+    protected Single<RequestEvent> handle(RoutingContext context,
+        RequestEvent requestEvent) {
+      return connector.process(requestEvent);
     }
   }
 

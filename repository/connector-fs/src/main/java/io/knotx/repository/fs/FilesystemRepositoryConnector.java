@@ -17,10 +17,12 @@ package io.knotx.repository.fs;
 
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.http.impl.MimeMapping;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -33,7 +35,7 @@ class FilesystemRepositoryConnector {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemRepositoryConnector.class);
 
-  private static final String ERROR_MESSAGE = "Unable to get template from the repository";
+  private static final String ERROR_MESSAGE = "Unable to get template %s from the repository";
 
   private final FilesystemRepositoryOptions config;
   private final FileSystem fileSystem;
@@ -43,38 +45,40 @@ class FilesystemRepositoryConnector {
     this.config = configuration;
   }
 
-  Single<FragmentsContext> process(FragmentsContext fragmentsContext) {
-    ClientRequest request = fragmentsContext.getClientRequest();
+  Single<RequestEventResult> process(RequestEvent requestEvent) {
+    ClientRequest request = requestEvent.getClientRequest();
     final String localFilePath =
         config.getCatalogue() + StringUtils.stripStart(request.getPath(), "/");
 
     LOGGER.debug("Fetching file `{}` from local repository.", localFilePath);
 
     return fileSystem.rxReadFile(localFilePath)
-        .map(buffer -> this.processSuccess(buffer, localFilePath))
+        .map(buffer -> this.processSuccess(buffer, localFilePath, requestEvent))
         .doOnSuccess(this::traceReadFile)
-        .map(fragmentsContext::setClientResponse)
-        .onErrorResumeNext(error -> processError(error, fragmentsContext));
+        .map(RequestEventResult::success)
+        .onErrorResumeNext(error -> processError(error, localFilePath));
   }
 
-  private void traceReadFile(ClientResponse clientResponse) {
+  private void traceReadFile(RequestEvent requestEvent) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("FS Repository template: {}, {}", clientResponse.getBody(),
-          clientResponse.getHeaders());
+      LOGGER.trace("FS Repository template: {}",
+          requestEvent.getPayload().getJsonObject("repositoryResult"));
     }
   }
 
-  private Single<FragmentsContext> processError(Throwable error,
-      FragmentsContext fragmentsContext) {
-    LOGGER.error(ERROR_MESSAGE);
+  private Single<RequestEventResult> processError(Throwable error, String localFilePath) {
+    final String message = String.format(ERROR_MESSAGE, localFilePath);
+    LOGGER.error(message);
     HttpResponseStatus statusCode;
     if (error.getCause().getClass().equals(NoSuchFileException.class)) {
       statusCode = HttpResponseStatus.NOT_FOUND;
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
-    fragmentsContext.setClientResponse(new ClientResponse().setStatusCode(statusCode.code()));
-    return Single.just(fragmentsContext);
+    final ClientResponse clientResponse = new ClientResponse()
+        .setStatusCode(statusCode.code())
+        .setBody(io.vertx.core.buffer.Buffer.buffer(message));
+    return Single.just(RequestEventResult.fail(clientResponse));
   }
 
 
@@ -86,10 +90,14 @@ class FilesystemRepositoryConnector {
     return headers;
   }
 
-  private ClientResponse processSuccess(Buffer buffer, String filePath) {
-    return new ClientResponse().setStatusCode(HttpResponseStatus.OK.code())
-        .setHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)))
-        .setBody(buffer.getDelegate());
+  // ToDo there be repository-api with repositoryResult model!!
+  private RequestEvent processSuccess(Buffer buffer, String filePath,
+      RequestEvent intputEvent) {
+    JsonObject result = new JsonObject()
+        .put("body", buffer.toString())
+        .put("Content-Type", MimeMapping.getMimeTypeForFilename(filePath));
+    return new RequestEvent(intputEvent.getClientRequest(),
+        intputEvent.getFragments(), intputEvent.appendPayload("repositoryResult", result));
   }
 
 }

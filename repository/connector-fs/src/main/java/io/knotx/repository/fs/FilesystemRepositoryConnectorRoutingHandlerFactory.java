@@ -15,9 +15,10 @@
  */
 package io.knotx.repository.fs;
 
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
-import io.knotx.server.api.handler.reactivex.FragmentContextHandler;
+import io.knotx.server.api.handler.reactivex.RequestEventHandler;
 import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
@@ -37,7 +38,7 @@ public class FilesystemRepositoryConnectorRoutingHandlerFactory implements Routi
     return new FilesystemRepositoryConnectorHandler(vertx, config);
   }
 
-  public class FilesystemRepositoryConnectorHandler extends FragmentContextHandler {
+  public class FilesystemRepositoryConnectorHandler extends RequestEventHandler {
 
     private FilesystemRepositoryConnector connector;
 
@@ -48,9 +49,8 @@ public class FilesystemRepositoryConnectorRoutingHandlerFactory implements Routi
     }
 
     @Override
-    protected Single<FragmentsContext> handle(RoutingContext context,
-        FragmentsContext fragmentsContext) {
-      return connector.process(fragmentsContext);
+    protected Single<RequestEventResult> handle(RequestEvent requestEvent) {
+      return connector.process(requestEvent);
     }
   }
 

@@ -17,8 +17,8 @@ package io.knotx.assembler;
 
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientResponse;
-import io.knotx.server.api.context.FragmentsContext;
-import io.knotx.server.api.handler.FragmentContextHandler;
+import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventHandler;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
@@ -27,17 +27,17 @@ import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-class FragmentAssemblerHandler extends FragmentContextHandler {
+class FragmentAssemblerHandler extends RequestEventHandler {
 
   @Override
-  protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
-    String responseBody = fragmentsContext.getFragments().stream()
+  protected RequestEvent handle(RoutingContext context, RequestEvent requestEvent) {
+    String responseBody = requestEvent.getFragments().stream()
         .map(Fragment::getBody)
         .collect(Collectors.joining());
-    return createSuccessResponse(fragmentsContext, responseBody);
+    return createSuccessResponse(requestEvent, responseBody);
   }
 
-  private FragmentsContext createSuccessResponse(FragmentsContext inputContext,
+  private RequestEvent createSuccessResponse(RequestEvent inputContext,
       String responseBody) {
     ClientResponse clientResponse = inputContext.getClientResponse();
     if (StringUtils.isBlank(responseBody)) {
@@ -52,7 +52,7 @@ class FragmentAssemblerHandler extends FragmentContextHandler {
           .setStatusCode(HttpResponseStatus.OK.code());
     }
 
-    return new FragmentsContext()
+    return new RequestEvent()
         .setClientRequest(inputContext.getClientRequest())
         .setClientResponse(clientResponse);
   }

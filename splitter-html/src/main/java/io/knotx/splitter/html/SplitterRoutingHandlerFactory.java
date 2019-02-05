@@ -15,8 +15,8 @@
  */
 package io.knotx.splitter.html;
 
-import io.knotx.server.api.context.FragmentsContext;
-import io.knotx.server.api.handler.FragmentContextHandler;
+import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventHandler;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -37,7 +37,7 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
     return new KnotxSplitterHandler();
   }
 
-  public class KnotxSplitterHandler extends FragmentContextHandler {
+  public class KnotxSplitterHandler extends RequestEventHandler {
 
     private HtmlFragmentSplitter splitter;
 
@@ -46,11 +46,11 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
     }
 
     @Override
-    protected FragmentsContext handle(RoutingContext context, FragmentsContext fragmentsContext) {
-      fragmentsContext
-          .setFragments(splitter.split(fragmentsContext.getClientResponse().getBody().toString()));
-      fragmentsContext.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
-      return fragmentsContext;
+    protected RequestEvent handle(RoutingContext context, RequestEvent requestEvent) {
+      requestEvent
+          .setFragments(splitter.split(requestEvent.getClientResponse().getBody().toString()));
+      requestEvent.getClientResponse().setStatusCode(HttpResponseStatus.OK.code()).clearBody();
+      return requestEvent;
     }
 
 

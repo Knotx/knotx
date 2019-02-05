@@ -27,7 +27,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.junit5.VertxExtension;
@@ -51,14 +51,14 @@ class HttpRepositoryConnectorTest {
   @Mock
   private ClientRequest clientRequest;
 
-  private FragmentsContext fragmentsContext;
+  private RequestEvent requestEvent;
   private WireMockServer wireMockServer;
   private HttpRepositoryOptions httpRepositoryOptions;
 
   @BeforeEach
   void setUp() {
-    fragmentsContext = new FragmentsContext();
-    fragmentsContext.setClientRequest(clientRequest);
+    requestEvent = new RequestEvent();
+    requestEvent.setClientRequest(clientRequest);
     this.wireMockServer = new WireMockServer(options().dynamicPort());
     this.wireMockServer.start();
 
@@ -83,7 +83,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEvent> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -113,7 +113,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEvent> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -143,7 +143,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEvent> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -170,7 +170,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEvent> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -196,7 +196,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEvent> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,

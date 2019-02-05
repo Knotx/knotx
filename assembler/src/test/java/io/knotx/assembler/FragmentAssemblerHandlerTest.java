@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
@@ -51,12 +51,12 @@ public class FragmentAssemblerHandlerTest {
     // given
     FragmentAssemblerHandler assemblerHandler = new FragmentAssemblerHandler();
 
-    FragmentsContext fragmentsContext = new FragmentsContext();
+    RequestEvent requestEvent = new RequestEvent();
 
-    fragmentsContext.setClientResponse(clientResponse);
-    fragmentsContext.setClientRequest(clientRequest);
+    requestEvent.setClientResponse(clientResponse);
+    requestEvent.setClientRequest(clientRequest);
 
-    Mockito.when(routingContext.get(any())).thenReturn(fragmentsContext);
+    Mockito.when(routingContext.get(any())).thenReturn(requestEvent);
 
     // when
     assemblerHandler.handle(routingContext);
@@ -74,13 +74,13 @@ public class FragmentAssemblerHandlerTest {
 
     MultiMap headers = Mockito.mock(MultiMap.class);
 
-    FragmentsContext fragmentsContext = new FragmentsContext();
-    fragmentsContext.setClientResponse(clientResponse);
-    fragmentsContext.setClientRequest(clientRequest);
-    fragmentsContext.setFragments(
+    RequestEvent requestEvent = new RequestEvent();
+    requestEvent.setClientResponse(clientResponse);
+    requestEvent.setClientRequest(clientRequest);
+    requestEvent.setFragments(
         Lists.newArrayList(new Fragment("_STATIC", new JsonObject(), expectedBody)));
 
-    Mockito.when(routingContext.get(any())).thenReturn(fragmentsContext);
+    Mockito.when(routingContext.get(any())).thenReturn(requestEvent);
     Mockito.when(clientResponse.getHeaders()).thenReturn(headers);
     Mockito.when(clientResponse.setBody(any())).thenReturn(clientResponse);
     Mockito.when(clientResponse.setHeaders(any())).thenReturn(clientResponse);

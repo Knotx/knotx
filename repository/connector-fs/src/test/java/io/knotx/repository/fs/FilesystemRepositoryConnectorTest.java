@@ -16,17 +16,21 @@
 package io.knotx.repository.fs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
-import io.knotx.server.api.context.FragmentsContext;
+import io.knotx.server.api.context.RequestEvent;
+import io.knotx.server.api.handler.RequestEventResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
+import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.Vertx;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,12 +46,11 @@ class FilesystemRepositoryConnectorTest {
 
   @Mock
   private ClientRequest clientRequest;
-  private FragmentsContext fragmentsContext;
+  private RequestEvent requestEvent;
 
   @BeforeEach
   void setUp() {
-    fragmentsContext = new FragmentsContext();
-    fragmentsContext.setClientRequest(clientRequest);
+    requestEvent = new RequestEvent(clientRequest, null, new JsonObject());
   }
 
   @Test
@@ -60,7 +63,7 @@ class FilesystemRepositoryConnectorTest {
     //when
     FilesystemRepositoryConnector connector = new FilesystemRepositoryConnector(
         vertx.fileSystem(), new FilesystemRepositoryOptions());
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -79,15 +82,19 @@ class FilesystemRepositoryConnectorTest {
     //when
     FilesystemRepositoryConnector connector = new FilesystemRepositoryConnector(
         vertx.fileSystem(), new FilesystemRepositoryOptions());
-    Single<FragmentsContext> connectorResult = connector.process(fragmentsContext);
+    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
+          final Optional<RequestEvent> requestEvent = result.getRequestEvent();
+          assertTrue(requestEvent.isPresent())
           ClientResponse clientResponse = result.getClientResponse();
           assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-          assertEquals("hello", clientResponse.getBody().toString().trim());
-          assertEquals("text/plain", clientResponse.getHeaders().get("Content-Type"));
+          final JsonObject repositoryResult = requestEvent.get().getPayload()
+              .getJsonObject("repositoryResult");
+          assertEquals("hello", repositoryResult.getString("body").trim());
+          assertEquals("text/plain", repositoryResult.getString("Content-Type"));
         }
     );
   }
