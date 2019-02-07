@@ -61,18 +61,3 @@ paths:
           description: "Request forbidden"
         501:
           description: "Endpoint not configured correctly."
-  /content/routing.html:
-    get:
-      tags: [ knot ]
-      summary: Validates knots routing configuration based on mocked responses.
-      operationId: knotEngine-get
-      responses:
-        default:
-          description: empty
-    post:
-      tags: [ knot ]
-      summary: Validates knots routing configuration based on mocked responses.
-      operationId: knotEngine-post
-      responses:
-        default:
-          description: empty

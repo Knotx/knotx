@@ -17,13 +17,17 @@ package io.knotx.server.api.handler;
 
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.reactivex.core.MultiMap;
 import java.util.Optional;
 
 public class RequestEventResult {
 
+  private String errorMessage;
   private RequestEvent requestEvent;
-  private ClientResponse clientResponse;
+  private Integer statusCode;
+  private MultiMap headers = MultiMap.caseInsensitiveMultiMap();
+  private Buffer body;
 
   private RequestEventResult() {
     //private
@@ -32,13 +36,13 @@ public class RequestEventResult {
   public static RequestEventResult success(RequestEvent requestEvent) {
     final RequestEventResult result = new RequestEventResult();
     result.requestEvent = requestEvent;
-    result.clientResponse = new ClientResponse().setStatusCode(HttpResponseStatus.OK.code());
     return result;
   }
 
-  public static RequestEventResult fail(ClientResponse clientResponse) {
+  public static RequestEventResult fail(String errorMessage) {
     final RequestEventResult result = new RequestEventResult();
-    result.clientResponse = clientResponse;
+    result.errorMessage = errorMessage;
+
     return result;
   }
 
@@ -47,11 +51,38 @@ public class RequestEventResult {
     throw new UnsupportedOperationException("Implement me!");
   }
 
+  public RequestEventResult withStatusCode(int statusCode) {
+    this.statusCode = statusCode;
+    return this;
+  }
+
+  public RequestEventResult withHeaders(MultiMap headers) {
+    this.headers = headers;
+    return this;
+  }
+
+  public RequestEventResult withBody(Buffer body) {
+    this.body = body;
+    return this;
+  }
+
   public Optional<RequestEvent> getRequestEvent() {
     return Optional.ofNullable(requestEvent);
   }
 
-  public ClientResponse getClientResponse() {
-    return clientResponse;
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public Integer getStatusCode() {
+    return statusCode;
+  }
+
+  public MultiMap getHeaders() {
+    return headers;
+  }
+
+  public Buffer getBody() {
+    return body;
   }
 }

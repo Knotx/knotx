@@ -94,15 +94,22 @@ public abstract class RequestEventHandler implements Handler<RoutingContext> {
 
   private void next(RoutingContext context, RequestContext requestContext,
       RequestEventResult result) {
-    requestContext.success(getHandlerId(), result.getRequestEvent().get());
     context.put(RequestContext.KEY, requestContext);
+    requestContext.success(getHandlerId(), result.getRequestEvent().get())
+        .withBody(result.getBody())
+        .withHeaders(result.getHeaders())
+        .withStatusCode(result.getStatusCode());
     context.next();
   }
 
   private void fail(RoutingContext context, RequestContext requestContext,
       RequestEventResult result) {
-    requestContext.failure(getHandlerId(), result.getClientResponse());
-    context.fail(result.getClientResponse().getStatusCode());
+    requestContext.failure(getHandlerId(), result.getErrorMessage())
+        .withBody(result.getBody())
+        .withHeaders(result.getHeaders())
+        .withStatusCode(result.getStatusCode());
+    context.fail(result.getStatusCode() != null ?
+        result.getStatusCode() : HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
   }
 
 }

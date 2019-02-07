@@ -16,7 +16,10 @@
 package io.knotx.server.api.context;
 
 import io.knotx.server.api.context.RequestEventLog.Entry;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.core.MultiMap;
 import java.util.Optional;
 
 public class RequestContext {
@@ -24,20 +27,27 @@ public class RequestContext {
   public static final String KEY = "requestContext";
 
   private RequestEvent requestEvent;
+  private ClientResponse clientResponse;
   private final RequestEventLog log;
 
   public RequestContext(RequestEvent requestEvent) {
     this.requestEvent = requestEvent;
     log = new RequestEventLog();
+    clientResponse = new ClientResponse();
   }
 
   public RequestContext(JsonObject json) {
     this.requestEvent = new RequestEvent(json.getJsonObject("requestEvent"));
     this.log = new RequestEventLog(json.getJsonObject("log"));
+    this.clientResponse = new ClientResponse(json.getJsonObject("clientResponse"));
   }
 
   public RequestEvent getRequestEvent() {
     return requestEvent;
+  }
+
+  public ClientResponse getClientResponse() {
+    return clientResponse;
   }
 
   public Status status() {
@@ -49,17 +59,42 @@ public class RequestContext {
         .orElse(Status.ok());
   }
 
-  public void success(String handlerId, RequestEvent requestEvent) {
+  public RequestContext success(String handlerId, RequestEvent requestEvent) {
     this.requestEvent = requestEvent;
     log.append(handlerId, RequestEventLog.Status.SUCCESS);
+    return this;
   }
 
-  public void failure(String handlerId, ClientResponse clientResponse) {
-    log.append(handlerId, RequestEventLog.Status.FAILURE, clientResponse);
+  public RequestContext failure(String handlerId, String errorMessage) {
+    log.append(handlerId, RequestEventLog.Status.FAILURE, errorMessage);
+    return this;
   }
 
   public void fatal(String handlerId) {
     log.append(handlerId, RequestEventLog.Status.FATAL);
+    this.clientResponse.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+  }
+
+
+  public RequestContext withStatusCode(Integer statusCode) {
+    if (statusCode != null) {
+      clientResponse.setStatusCode(statusCode);
+    }
+    return this;
+  }
+
+  public RequestContext withHeaders(MultiMap headers) {
+    if (headers != null) {
+      clientResponse.getHeaders().addAll(headers);
+    }
+    return this;
+  }
+
+  public RequestContext withBody(Buffer body) {
+    if (body != null) {
+      clientResponse.setBody(body);
+    }
+    return this;
   }
 
   public JsonObject toJson() {

@@ -48,8 +48,8 @@ public class RequestEventLog {
     return operations;
   }
 
-  void append(String handlerId, Status status, ClientResponse clientResponse) {
-    operations.add(new Entry(handlerId, status, clientResponse));
+  void append(String handlerId, Status status, String errorMessage) {
+    operations.add(new Entry(handlerId, status, errorMessage));
   }
 
   void append(String handlerId, Status status) {
@@ -59,20 +59,20 @@ public class RequestEventLog {
   static class Entry {
     private String handlerId;
     private Status status;
-    private ClientResponse clientResponse;
+    private String errorMessage;
     private long timestamp;
 
-    private Entry(String handlerId, Status status, ClientResponse clientResponse) {
+    private Entry(String handlerId, Status status, String errorMessage) {
       this.handlerId = handlerId;
       this.status = status;
-      this.clientResponse = clientResponse;
+      this.errorMessage = errorMessage;
       this.timestamp = System.currentTimeMillis();
     }
 
     Entry(JsonObject json) {
       this.handlerId = json.getString("handlerId");
       this.status = Status.valueOf(json.getString("status"));
-      this.clientResponse = new ClientResponse(json.getJsonObject("clientResponse"));
+      this.errorMessage = json.getString("errorMessage");
       this.timestamp = json.getLong("timestamp");
     }
 
@@ -80,7 +80,7 @@ public class RequestEventLog {
       return new JsonObject()
           .put("handlerId", handlerId)
           .put("status", status)
-          .put("clientResponse", clientResponse.toJson())
+          .put("errorMessage", errorMessage)
           .put("timestamp", timestamp);
     }
 
@@ -92,8 +92,8 @@ public class RequestEventLog {
       return status;
     }
 
-    public Optional<ClientResponse> getClientResponse() {
-      return Optional.ofNullable(clientResponse);
+    public Optional<String> getErrorMessage() {
+      return Optional.ofNullable(errorMessage);
     }
 
     public long getTimestamp() {
