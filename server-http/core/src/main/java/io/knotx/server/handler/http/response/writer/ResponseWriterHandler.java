@@ -18,11 +18,13 @@ package io.knotx.server.handler.http.response.writer;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpStatusClass;
 import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.http.HttpServerResponse;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.Set;
@@ -41,6 +43,7 @@ class ResponseWriterHandler implements Handler<RoutingContext> {
   @Override
   public void handle(RoutingContext context) {
     RequestContext requestContext = context.get(RequestContext.KEY);
+    traceRequest(requestContext);
     try {
       if (isOk(requestContext)) {
         end(context, requestContext);
@@ -52,29 +55,29 @@ class ResponseWriterHandler implements Handler<RoutingContext> {
     }
   }
 
+  private void traceRequest(RequestContext requestContext) {
+    if(LOGGER.isTraceEnabled()) {
+      LOGGER.trace("Request history: {}", requestContext.toJson().encodePrettily());
+    }
+  }
+
   private boolean isOk(RequestContext requestContext) {
     return !requestContext.status().isFailed();
   }
 
   private void end(RoutingContext context, RequestContext requestContext) {
-    HttpServerResponse httpResponse = context.response();
-
-    ClientResponse clientResponse = extractAssemblerResult(requestContext);
-    writeHeaders(httpResponse, allowedResponseHeaders, clientResponse);
-    httpResponse.setStatusCode(clientResponse.getStatusCode());
-    httpResponse.end(Buffer.newInstance(clientResponse.getBody()));
-  }
-
-  //FixMe should ClientResponse be part of RequestContext?
-  private ClientResponse extractAssemblerResult(RequestContext requestContext) {
-    return new ClientResponse(
-        requestContext.getRequestEvent().getPayload().getJsonObject("assemblerResult"));
+    final ClientResponse clientResponse = requestContext.getClientResponse();
+    final ServerResponse serverResponse = new ServerResponse()
+        .withBody(clientResponse.getBody())
+        .withHeaders(clientResponse.getHeaders())
+        .withStatusCode(clientResponse.getStatusCode());
+    serverResponse.end(context);
   }
 
   private void fail(RoutingContext context, RequestContext requestContext) {
     HttpServerResponse httpResponse = context.response();
-    //ToDo maybe more fancy logic here?
-    httpResponse.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+
+    httpResponse.setStatusCode(requestContext.getClientResponse().getStatusCode());
     httpResponse.end();
   }
 
@@ -85,21 +88,62 @@ class ResponseWriterHandler implements Handler<RoutingContext> {
     httpResponse.end();
   }
 
-  private void writeHeaders(final HttpServerResponse response, Set<String> allowedResponseHeaders,
-      final ClientResponse clientResponse) {
-    clientResponse.getHeaders().names().stream()
-        .filter(header -> headerFilter(allowedResponseHeaders, header))
-        .forEach(
-            name ->
-                clientResponse.getHeaders()
-                    .getAll(name)
-                    .forEach(value -> response.headers().add(name, value))
-        );
-    response.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
-  }
-
   private Boolean headerFilter(Set<String> allowedResponseHeaders, String name) {
     return allowedResponseHeaders.contains(name.toLowerCase());
+  }
+
+  private class ServerResponse {
+    private int statusCode;
+    private MultiMap headers;
+    private Buffer body;
+
+    ServerResponse withStatusCode(int statusCode) {
+      final HttpStatusClass httpStatusClass = HttpStatusClass.valueOf(statusCode);
+      if (httpStatusClass != HttpStatusClass.UNKNOWN) {
+        this.statusCode = statusCode;
+      } else {
+        this.statusCode = HttpResponseStatus.BAD_REQUEST.code();
+      }
+      return this;
+    }
+
+    ServerResponse withHeaders(MultiMap headers) {
+      if (headers != null) {
+        this.headers = headers;
+      } else {
+        this.headers = MultiMap.caseInsensitiveMultiMap();
+      }
+      return this;
+    }
+
+    ServerResponse withBody(Buffer body) {
+      this.body = body;
+      return this;
+    }
+
+    void end(RoutingContext context) {
+      HttpServerResponse httpResponse = context.response();
+      writeHeaders(httpResponse, allowedResponseHeaders);
+      httpResponse.setStatusCode(statusCode);
+      if (body != null) {
+        httpResponse.end(io.vertx.reactivex.core.buffer.Buffer.newInstance(body));
+      } else {
+        httpResponse.end();
+      }
+    }
+
+    private void writeHeaders(final HttpServerResponse response, Set<String> allowedResponseHeaders) {
+      headers.names().stream()
+          .filter(header -> headerFilter(allowedResponseHeaders, header))
+          .forEach(
+              name ->
+                  headers
+                      .getAll(name)
+                      .forEach(value -> response.headers().add(name, value))
+          );
+      response.headers().remove(HttpHeaders.CONTENT_LENGTH.toString());
+    }
+
   }
 }
 

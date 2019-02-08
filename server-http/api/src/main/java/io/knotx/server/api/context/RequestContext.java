@@ -33,7 +33,7 @@ public class RequestContext {
   public RequestContext(RequestEvent requestEvent) {
     this.requestEvent = requestEvent;
     log = new RequestEventLog();
-    clientResponse = new ClientResponse();
+    clientResponse = new ClientResponse().setStatusCode(HttpResponseStatus.OK.code());
   }
 
   public RequestContext(JsonObject json) {
