@@ -21,6 +21,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
+import org.apache.commons.lang3.StringUtils;
 
 public class CustomHeaderRoutingHandlerFactory implements RoutingHandlerFactory {
 
@@ -31,20 +32,20 @@ public class CustomHeaderRoutingHandlerFactory implements RoutingHandlerFactory 
 
   @Override
   public Handler<RoutingContext> create(Vertx vertx, JsonObject config) {
-    return new KnotxHeaderHandler(config);
+    return new CustomHeaderRoutingHandler(config);
   }
 
-  public class KnotxHeaderHandler implements Handler<RoutingContext> {
+  static class CustomHeaderRoutingHandler implements Handler<RoutingContext> {
 
     private CustomHttpHeader customHeader;
 
-    KnotxHeaderHandler(JsonObject configuration) {
+    CustomHeaderRoutingHandler(JsonObject configuration) {
       this.customHeader = new CustomHttpHeader(configuration);
     }
 
     @Override
     public void handle(RoutingContext context) {
-      if (customHeader != null) {
+      if (customHeader != null && StringUtils.isNotBlank(customHeader.getName())) {
         context.response().headers()
             .add(customHeader.getName(), customHeader.getValue());
       }
