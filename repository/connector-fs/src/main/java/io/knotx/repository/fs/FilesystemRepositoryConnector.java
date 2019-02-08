@@ -88,6 +88,7 @@ class FilesystemRepositoryConnector {
     return RequestEventHandlerResult
         .success(inputEvent)
         .withBody(buffer.getDelegate())
+        .withStatusCode(HttpResponseStatus.OK.code())
         .withHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)));
   }
 

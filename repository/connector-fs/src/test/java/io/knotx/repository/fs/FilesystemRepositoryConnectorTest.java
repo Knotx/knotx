@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 
 import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
-import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -67,7 +66,7 @@ class FilesystemRepositoryConnectorTest {
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> assertEquals(HttpResponseStatus.NOT_FOUND.code(),
-            result.getClientResponse().getStatusCode())
+            result.getStatusCode().intValue())
     );
   }
 
@@ -88,12 +87,9 @@ class FilesystemRepositoryConnectorTest {
         result -> {
           final Optional<RequestEvent> requestEvent = result.getRequestEvent();
           assertTrue(requestEvent.isPresent());
-          ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-          final ClientResponse repositoryResponse = new ClientResponse(requestEvent.get().getPayload()
-              .getJsonObject("repositoryResponse"));
-          assertEquals("hello", repositoryResponse.getBody().toString().trim());
-          assertEquals("text/plain", repositoryResponse.getHeaders().get("Content-Type"));
+          assertEquals(HttpResponseStatus.OK.code(), result.getStatusCode().intValue());
+          assertEquals("hello", result.getBody().toString().trim());
+          assertEquals("text/plain", result.getHeaders().get("Content-Type"));
         }
     );
   }

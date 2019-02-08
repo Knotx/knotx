@@ -112,7 +112,8 @@ class HttpRepositoryConnector {
   private Single<RequestEventHandlerResult> toRequestEventResult(HttpResponse<Buffer> response,
       RequestEvent inputEvent) {
     final Single<RequestEventHandlerResult> result;
-    if (HttpStatusClass.SUCCESS.contains(response.statusCode())) {
+    if (HttpStatusClass.SUCCESS.contains(response.statusCode()) || HttpStatusClass.REDIRECTION
+        .contains(response.statusCode())) {
       result = Single.just(response)
           .map(repoResponse -> success(response, inputEvent));
     } else {
@@ -126,7 +127,7 @@ class HttpRepositoryConnector {
       RequestEvent inputEvent) {
     return RequestEventHandlerResult
         .success(inputEvent)
-        .withBody(response.body().getDelegate())
+        .withBody(defaultEmptyBody(response.body()))
         .withHeaders(response.headers())
         .withStatusCode(response.statusCode());
   }
@@ -134,9 +135,13 @@ class HttpRepositoryConnector {
   private RequestEventHandlerResult fail(HttpResponse<Buffer> response) {
     return RequestEventHandlerResult
         .fail(String.format("Repository responded with %s", response.statusCode()))
-        .withBody(response.body().getDelegate())
+        .withBody(defaultEmptyBody(response.body()))
         .withHeaders(response.headers())
         .withStatusCode(response.statusCode());
+  }
+
+  private io.vertx.core.buffer.Buffer defaultEmptyBody(Buffer body) {
+    return body != null ? body.getDelegate() : io.vertx.core.buffer.Buffer.buffer();
   }
 
   private Single<HttpResponse<Buffer>> getRequest(WebClient webClient,

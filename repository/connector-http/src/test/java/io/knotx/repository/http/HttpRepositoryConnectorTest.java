@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
-import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -89,8 +88,7 @@ class HttpRepositoryConnectorTest {
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
-          assertEquals(HttpResponseStatus.NOT_FOUND.code(),
-              result.getClientResponse().getStatusCode());
+          assertEquals(HttpResponseStatus.NOT_FOUND.code(), result.getStatusCode().intValue());
           this.wireMockServer.stop();
         }
     );
@@ -119,14 +117,12 @@ class HttpRepositoryConnectorTest {
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
-          final ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
+          assertEquals(HttpResponseStatus.OK.code(), result.getStatusCode().intValue());
 
           assertTrue(result.getRequestEvent().isPresent());
-          final ClientResponse repositoryResponse = getRepositoryResponse(result);
-          assertEquals(body, repositoryResponse.getBody().toString());
-          assertEquals("text/html", repositoryResponse.getHeaders().get("Content-Type"));
-          assertEquals("Test Value", repositoryResponse.getHeaders().get("TestName"));
+          assertEquals(body, result.getBody().toString());
+          assertEquals("text/html", result.getHeaders().get("Content-Type"));
+          assertEquals("Test Value", result.getHeaders().get("TestName"));
           this.wireMockServer.stop();
         }
     );
@@ -153,13 +149,11 @@ class HttpRepositoryConnectorTest {
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
-          final ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
+          assertEquals(HttpResponseStatus.OK.code(), result.getStatusCode().intValue());
 
           assertTrue(result.getRequestEvent().isPresent());
-          final ClientResponse repositoryResponse = getRepositoryResponse(result);
-          assertTrue(repositoryResponse.getBody().toString().isEmpty());
-          assertEquals("text/html", repositoryResponse.getHeaders().get("Content-Type"));
+          assertTrue(result.getBody().toString().isEmpty());
+          assertEquals("text/html", result.getHeaders().get("Content-Type"));
           this.wireMockServer.stop();
         }
     );
@@ -184,14 +178,10 @@ class HttpRepositoryConnectorTest {
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
-          final ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.OK.code(), clientResponse.getStatusCode());
-
           assertTrue(result.getRequestEvent().isPresent());
-          final ClientResponse repositoryResponse = getRepositoryResponse(result);
           assertEquals(HttpResponseStatus.TEMPORARY_REDIRECT.code(),
-              repositoryResponse.getStatusCode());
-          assertTrue(repositoryResponse.getBody().toString().isEmpty());
+              result.getStatusCode().intValue());
+          assertTrue(result.getBody().toString().isEmpty());
           this.wireMockServer.stop();
         }
     );
@@ -216,18 +206,12 @@ class HttpRepositoryConnectorTest {
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
         result -> {
-          final ClientResponse clientResponse = result.getClientResponse();
-          assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), clientResponse.getStatusCode());
-
+          assertEquals(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(),
+              result.getStatusCode().intValue());
           assertFalse(result.getRequestEvent().isPresent());
           this.wireMockServer.stop();
         }
     );
-  }
-
-  private ClientResponse getRepositoryResponse(RequestEventHandlerResult result) {
-    return new ClientResponse(
-        result.getRequestEvent().get().getPayload().getJsonObject("repositoryResponse"));
   }
 
 }
