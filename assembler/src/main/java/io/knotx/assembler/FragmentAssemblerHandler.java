@@ -16,14 +16,12 @@
 package io.knotx.assembler;
 
 import io.knotx.fragment.Fragment;
-import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandler;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.MultiMap;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -38,23 +36,23 @@ class FragmentAssemblerHandler extends RequestEventHandler {
     return createSuccessResponse(requestEvent, responseBody);
   }
 
-  private RequestEventHandlerResult createSuccessResponse(RequestEvent inputContext, String responseBody) {
-    ClientResponse clientResponse = new ClientResponse();
+  private RequestEventHandlerResult createSuccessResponse(RequestEvent inputContext,
+      String responseBody) {
+    MultiMap headers = MultiMap.caseInsensitiveMultiMap();
+    int statusCode;
+
     if (StringUtils.isBlank(responseBody)) {
-      clientResponse.setStatusCode(HttpResponseStatus.NO_CONTENT.code());
+      statusCode = HttpResponseStatus.NO_CONTENT.code();
     } else {
-      MultiMap headers = clientResponse.getHeaders();
       headers.add(HttpHeaders.CONTENT_LENGTH.toString().toLowerCase(),
           Integer.toString(responseBody.length()));
-
-      clientResponse.setBody(Buffer.buffer(responseBody))
-          .setHeaders(headers)
-          .setStatusCode(HttpResponseStatus.OK.code());
+      statusCode = HttpResponseStatus.OK.code();
     }
 
-    JsonObject payload = inputContext.getPayload().put("assemblerResult", clientResponse.toJson());
-    return RequestEventHandlerResult.success(
-        new RequestEvent(inputContext.getClientRequest(), inputContext.getFragments(), payload));
+    return RequestEventHandlerResult.success(inputContext)
+        .withBody(Buffer.buffer(responseBody))
+        .withStatusCode(statusCode)
+        .withHeaders(headers);
   }
 
 }

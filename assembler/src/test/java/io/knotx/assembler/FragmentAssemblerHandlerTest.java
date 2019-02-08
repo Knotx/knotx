@@ -21,14 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.common.collect.Lists;
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientRequest;
-import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.ext.web.RoutingContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -36,9 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class FragmentAssemblerHandlerTest {
-
-  @Mock
-  private RoutingContext routingContext;
 
   @Mock
   private ClientRequest clientRequest;
@@ -54,8 +49,7 @@ public class FragmentAssemblerHandlerTest {
 
     // then
     assertTrue(result.getRequestEvent().isPresent());
-    final ClientResponse assemblerResult = extractAssemblerResult(result.getRequestEvent().get());
-    assertEquals(HttpResponseStatus.NO_CONTENT.code(), assemblerResult.getStatusCode());
+    assertEquals(HttpResponseStatus.NO_CONTENT.code(), result.getStatusCode().intValue());
   }
 
   @Test
@@ -74,16 +68,10 @@ public class FragmentAssemblerHandlerTest {
 
     // then
     assertTrue(result.getRequestEvent().isPresent());
-    final ClientResponse assemblerResult = extractAssemblerResult(result.getRequestEvent().get());
-    assertEquals(Buffer.buffer(expectedBody), assemblerResult.getBody());
-    assertEquals(HttpResponseStatus.OK.code(), assemblerResult.getStatusCode());
+    assertEquals(Buffer.buffer(expectedBody), result.getBody());
+    assertEquals(HttpResponseStatus.OK.code(), result.getStatusCode().intValue());
     assertEquals(Integer.toString((expectedBody.length())),
-        assemblerResult.getHeaders().get(HttpHeaders.CONTENT_LENGTH));
-  }
-
-  private ClientResponse extractAssemblerResult(RequestEvent requestEvent) {
-    return new ClientResponse(
-        requestEvent.getPayload().getJsonObject("assemblerResult"));
+        result.getHeaders().get(HttpHeaders.CONTENT_LENGTH));
   }
 
 }
