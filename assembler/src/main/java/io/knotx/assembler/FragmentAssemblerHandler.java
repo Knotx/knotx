@@ -19,7 +19,7 @@ import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandler;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
@@ -31,14 +31,14 @@ import org.apache.commons.lang3.StringUtils;
 class FragmentAssemblerHandler extends RequestEventHandler {
 
   @Override
-  protected RequestEventResult handle(RequestEvent requestEvent) {
+  protected RequestEventHandlerResult handle(RequestEvent requestEvent) {
     final String responseBody = requestEvent.getFragments().stream()
         .map(Fragment::getBody)
         .collect(Collectors.joining());
     return createSuccessResponse(requestEvent, responseBody);
   }
 
-  private RequestEventResult createSuccessResponse(RequestEvent inputContext, String responseBody) {
+  private RequestEventHandlerResult createSuccessResponse(RequestEvent inputContext, String responseBody) {
     ClientResponse clientResponse = new ClientResponse();
     if (StringUtils.isBlank(responseBody)) {
       clientResponse.setStatusCode(HttpResponseStatus.NO_CONTENT.code());
@@ -53,7 +53,7 @@ class FragmentAssemblerHandler extends RequestEventHandler {
     }
 
     JsonObject payload = inputContext.getPayload().put("assemblerResult", clientResponse.toJson());
-    return RequestEventResult.success(
+    return RequestEventHandlerResult.success(
         new RequestEvent(inputContext.getClientRequest(), inputContext.getFragments(), payload));
   }
 

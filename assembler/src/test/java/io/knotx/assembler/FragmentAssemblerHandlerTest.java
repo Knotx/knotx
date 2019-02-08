@@ -23,17 +23,15 @@ import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +50,7 @@ public class FragmentAssemblerHandlerTest {
     RequestEvent requestEvent = new RequestEvent(clientRequest);
 
     // when
-    final RequestEventResult result = assemblerHandler.handle(requestEvent);
+    final RequestEventHandlerResult result = assemblerHandler.handle(requestEvent);
 
     // then
     assertTrue(result.getRequestEvent().isPresent());
@@ -72,7 +70,7 @@ public class FragmentAssemblerHandlerTest {
         new JsonObject());
 
     // when
-    final RequestEventResult result = assemblerHandler.handle(requestEvent);
+    final RequestEventHandlerResult result = assemblerHandler.handle(requestEvent);
 
     // then
     assertTrue(result.getRequestEvent().isPresent());

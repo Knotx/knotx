@@ -23,10 +23,9 @@ import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
-import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import io.vertx.reactivex.core.Vertx;
@@ -63,7 +62,7 @@ class FilesystemRepositoryConnectorTest {
     //when
     FilesystemRepositoryConnector connector = new FilesystemRepositoryConnector(
         vertx.fileSystem(), new FilesystemRepositoryOptions());
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -82,7 +81,7 @@ class FilesystemRepositoryConnectorTest {
     //when
     FilesystemRepositoryConnector connector = new FilesystemRepositoryConnector(
         vertx.fileSystem(), new FilesystemRepositoryOptions());
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,

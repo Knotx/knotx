@@ -16,7 +16,7 @@
 package io.knotx.repository.http;
 
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.knotx.server.api.handler.reactivex.RequestEventHandler;
 import io.reactivex.Single;
@@ -47,7 +47,7 @@ public class HttpRepositoryConnectorRoutingHandlerFactory implements RoutingHand
     }
 
     @Override
-    protected Single<RequestEventResult> handle(RequestEvent requestEvent) {
+    protected Single<RequestEventHandlerResult> handle(RequestEvent requestEvent) {
       return connector.process(requestEvent);
     }
   }

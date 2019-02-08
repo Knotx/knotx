@@ -17,12 +17,11 @@ package io.knotx.server.api.handler.reactivex;
 
 import io.knotx.server.api.context.RequestContext;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.knotx.server.api.handler.DefaultRequestContextEngine;
+import io.knotx.server.api.handler.RequestContextEngine;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.reactivex.Single;
 import io.vertx.core.Handler;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.ext.web.RoutingContext;
 
 /**
@@ -30,86 +29,32 @@ import io.vertx.reactivex.ext.web.RoutingContext;
  */
 public abstract class RequestEventHandler implements Handler<RoutingContext> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RequestEventHandler.class);
+  private final RequestContextEngine engine;
+
+  public RequestEventHandler() {
+    this.engine = new DefaultRequestContextEngine(getClass().getSimpleName());
+  }
+
+  public RequestEventHandler (RequestContextEngine engine) {
+    this.engine = engine;
+  }
 
   @Override
   public void handle(RoutingContext context) {
     RequestContext requestContext = context.get(RequestContext.KEY);
     handle(requestContext.getRequestEvent())
-        .doOnSuccess(this::traceMessage)
         .subscribe(
-            result -> {
-              if (isSuccess(result)) {
-                next(context, requestContext, result);
-              } else {
-                fail(context, requestContext, result);
-              }
-            },
-            e -> handleFatal(context, requestContext, e)
+            result -> engine.processAndSaveResult(result, context, requestContext),
+            e -> engine.handleFatal(context, requestContext, e)
         );
-  }
-
-  /**
-   * @param result - handling result
-   * @return true if handle was successful
-   */
-  protected boolean isSuccess(RequestEventResult result) {
-    return result.getRequestEvent().isPresent();
-  }
-
-  /**
-   * Enables to handle error that occurred during fragment context handling
-   *
-   * @param context - vert.x web context that contains payload passed between handlers
-   * @param requestContext - knot.x request context from the previous handler
-   * @param e - exception
-   */
-  protected void handleFatal(RoutingContext context, RequestContext requestContext, Throwable e) {
-    context.fail(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-    requestContext.fatal(getHandlerId());
-    LOGGER.error("{} failed to process {}", getHandlerId(),
-        requestContext.getRequestEvent().getClientRequest().getPath(), e);
   }
 
   /**
    * Handle RequestEvent processing
    *
    * @param requestEvent - knot.x fragment context from the previous handler
-   * @return RequestEventResult that contains handling result
+   * @return Single that contains RequestEventHandlerResult
    */
-  protected abstract Single<RequestEventResult> handle(RequestEvent requestEvent);
-
-  /**
-   * @return unique identifier of this handler
-   */
-  protected String getHandlerId() {
-    return getClass().getName();
-  }
-
-  private void traceMessage(RequestEventResult ctx) {
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("{} processed context: {}", getHandlerId(), ctx);
-    }
-  }
-
-  private void next(RoutingContext context, RequestContext requestContext,
-      RequestEventResult result) {
-    context.put(RequestContext.KEY, requestContext);
-    requestContext.success(getHandlerId(), result.getRequestEvent().get())
-        .withBody(result.getBody())
-        .withHeaders(result.getHeaders())
-        .withStatusCode(result.getStatusCode());
-    context.next();
-  }
-
-  private void fail(RoutingContext context, RequestContext requestContext,
-      RequestEventResult result) {
-    requestContext.failure(getHandlerId(), result.getErrorMessage())
-        .withBody(result.getBody())
-        .withHeaders(result.getHeaders())
-        .withStatusCode(result.getStatusCode());
-    context.fail(result.getStatusCode() != null ?
-        result.getStatusCode() : HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-  }
+  protected abstract Single<RequestEventHandlerResult> handle(RequestEvent requestEvent);
 
 }

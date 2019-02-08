@@ -29,7 +29,7 @@ import io.knotx.junit5.util.RequestUtil;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.junit5.VertxExtension;
@@ -84,7 +84,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -114,7 +114,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -148,7 +148,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -179,7 +179,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -211,7 +211,7 @@ class HttpRepositoryConnectorTest {
 
     //when
     HttpRepositoryConnector connector = new HttpRepositoryConnector(vertx, httpRepositoryOptions);
-    Single<RequestEventResult> connectorResult = connector.process(requestEvent);
+    Single<RequestEventHandlerResult> connectorResult = connector.process(requestEvent);
 
     //then
     RequestUtil.subscribeToResult_shouldSucceed(testContext, connectorResult,
@@ -225,7 +225,7 @@ class HttpRepositoryConnectorTest {
     );
   }
 
-  private ClientResponse getRepositoryResponse(RequestEventResult result) {
+  private ClientResponse getRepositoryResponse(RequestEventHandlerResult result) {
     return new ClientResponse(
         result.getRequestEvent().get().getPayload().getJsonObject("repositoryResponse"));
   }

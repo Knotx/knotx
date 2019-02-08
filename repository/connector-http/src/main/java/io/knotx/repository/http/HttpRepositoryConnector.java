@@ -18,7 +18,7 @@ package io.knotx.repository.http;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.knotx.server.util.AllowedHeadersFilter;
 import io.knotx.server.util.DataObjectsUtil;
 import io.knotx.server.util.MultiMapCollector;
@@ -58,7 +58,7 @@ class HttpRepositoryConnector {
     this.webClient = WebClient.create(vertx, configuration.getClientOptions());
   }
 
-  Single<RequestEventResult> process(RequestEvent requestEvent) {
+  Single<RequestEventHandlerResult> process(RequestEvent requestEvent) {
     ClientRequest request = requestEvent.getClientRequest();
     MultiMap requestHeaders = buildHeaders(configuration.getClientDestination().getHostHeader(),
         request.getHeaders());
@@ -78,13 +78,13 @@ class HttpRepositoryConnector {
         .onErrorResumeNext(error -> processError(error, httpRequestData));
   }
 
-  private Single<RequestEventResult> processError(Throwable error, RequestOptions httpRequestData) {
+  private Single<RequestEventHandlerResult> processError(Throwable error, RequestOptions httpRequestData) {
     final String message = String.format(ERROR_MESSAGE, getUrl(httpRequestData));
     LOGGER.error(message, error);
     final ClientResponse clientResponse = new ClientResponse()
         .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
         .setBody(io.vertx.core.buffer.Buffer.buffer(message));
-    return Single.just(RequestEventResult.fail(clientResponse));
+    return Single.just(RequestEventHandlerResult.fail(clientResponse));
   }
 
   private void logResponse(HttpResponse<Buffer> resp, RequestOptions httpRequestData,
@@ -113,9 +113,9 @@ class HttpRepositoryConnector {
     }
   }
 
-  private Single<RequestEventResult> toRequestEventResult(HttpResponse<Buffer> response,
+  private Single<RequestEventHandlerResult> toRequestEventResult(HttpResponse<Buffer> response,
       RequestEvent inputEvent) {
-    final Single<RequestEventResult> result;
+    final Single<RequestEventHandlerResult> result;
     if (HttpStatusClass.SUCCESS.contains(response.statusCode()) || HttpStatusClass.REDIRECTION
         .contains(response.statusCode())) {
       result = Single.just(response)
@@ -123,11 +123,11 @@ class HttpRepositoryConnector {
           .map(cr -> new RequestEvent(inputEvent.getClientRequest(),
               inputEvent.getFragments(),
               inputEvent.appendPayload("repositoryResponse", cr.toJson())))
-          .map(RequestEventResult::success);
+          .map(RequestEventHandlerResult::success);
     } else {
       result = Single.just(response)
           .map(this::toClientResponse)
-          .map(RequestEventResult::fail);
+          .map(RequestEventHandlerResult::fail);
     }
     return result;
   }

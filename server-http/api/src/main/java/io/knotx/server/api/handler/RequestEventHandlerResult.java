@@ -21,47 +21,47 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.reactivex.core.MultiMap;
 import java.util.Optional;
 
-public class RequestEventResult {
+public class RequestEventHandlerResult {
 
-  private String errorMessage;
   private RequestEvent requestEvent;
+  private String errorMessage;
   private Integer statusCode;
   private MultiMap headers = MultiMap.caseInsensitiveMultiMap();
   private Buffer body;
 
-  private RequestEventResult() {
+  private RequestEventHandlerResult() {
     //private
   }
 
-  public static RequestEventResult success(RequestEvent requestEvent) {
-    final RequestEventResult result = new RequestEventResult();
+  public static RequestEventHandlerResult success(RequestEvent requestEvent) {
+    final RequestEventHandlerResult result = new RequestEventHandlerResult();
     result.requestEvent = requestEvent;
     return result;
   }
 
-  public static RequestEventResult fail(String errorMessage) {
-    final RequestEventResult result = new RequestEventResult();
+  public static RequestEventHandlerResult fail(String errorMessage) {
+    final RequestEventHandlerResult result = new RequestEventHandlerResult();
     result.errorMessage = errorMessage;
 
     return result;
   }
 
   //ToDo -> finishes immediately handler routing
-  public static RequestEventResult end(ClientResponse clientResponse) {
+  public static RequestEventHandlerResult end(ClientResponse clientResponse) {
     throw new UnsupportedOperationException("Implement me!");
   }
 
-  public RequestEventResult withStatusCode(int statusCode) {
+  public RequestEventHandlerResult withStatusCode(int statusCode) {
     this.statusCode = statusCode;
     return this;
   }
 
-  public RequestEventResult withHeaders(MultiMap headers) {
+  public RequestEventHandlerResult withHeaders(MultiMap headers) {
     this.headers = headers;
     return this;
   }
 
-  public RequestEventResult withBody(Buffer body) {
+  public RequestEventHandlerResult withBody(Buffer body) {
     this.body = body;
     return this;
   }

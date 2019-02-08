@@ -76,21 +76,21 @@ public class RequestContext {
   }
 
 
-  public RequestContext withStatusCode(Integer statusCode) {
+  public RequestContext setStatusCode(Integer statusCode) {
     if (statusCode != null) {
       clientResponse.setStatusCode(statusCode);
     }
     return this;
   }
 
-  public RequestContext withHeaders(MultiMap headers) {
+  public RequestContext setHeaders(MultiMap headers) {
     if (headers != null) {
       clientResponse.getHeaders().addAll(headers);
     }
     return this;
   }
 
-  public RequestContext withBody(Buffer body) {
+  public RequestContext setBody(Buffer body) {
     if (body != null) {
       clientResponse.setBody(body);
     }

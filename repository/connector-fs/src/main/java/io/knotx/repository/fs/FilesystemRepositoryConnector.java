@@ -18,11 +18,10 @@ package io.knotx.repository.fs;
 import io.knotx.server.api.context.ClientRequest;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.Single;
 import io.vertx.core.http.impl.MimeMapping;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.reactivex.core.MultiMap;
@@ -45,7 +44,7 @@ class FilesystemRepositoryConnector {
     this.config = configuration;
   }
 
-  Single<RequestEventResult> process(RequestEvent requestEvent) {
+  Single<RequestEventHandlerResult> process(RequestEvent requestEvent) {
     ClientRequest request = requestEvent.getClientRequest();
     final String localFilePath =
         config.getCatalogue() + StringUtils.stripStart(request.getPath(), "/");
@@ -55,7 +54,7 @@ class FilesystemRepositoryConnector {
     return fileSystem.rxReadFile(localFilePath)
         .map(buffer -> this.processSuccess(buffer, localFilePath, requestEvent))
         .doOnSuccess(this::traceReadFile)
-        .map(RequestEventResult::success)
+        .map(RequestEventHandlerResult::success)
         .onErrorResumeNext(error -> processError(error, localFilePath));
   }
 
@@ -66,7 +65,7 @@ class FilesystemRepositoryConnector {
     }
   }
 
-  private Single<RequestEventResult> processError(Throwable error, String localFilePath) {
+  private Single<RequestEventHandlerResult> processError(Throwable error, String localFilePath) {
     final String message = String.format(ERROR_MESSAGE, localFilePath);
     LOGGER.error(message, error);
     HttpResponseStatus statusCode;
@@ -78,7 +77,7 @@ class FilesystemRepositoryConnector {
     final ClientResponse clientResponse = new ClientResponse()
         .setStatusCode(statusCode.code())
         .setBody(io.vertx.core.buffer.Buffer.buffer(message));
-    return Single.just(RequestEventResult.fail(clientResponse));
+    return Single.just(RequestEventHandlerResult.fail(clientResponse));
   }
 
 

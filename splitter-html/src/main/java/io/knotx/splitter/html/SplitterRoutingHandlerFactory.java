@@ -19,7 +19,7 @@ import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandler;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -57,19 +57,19 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
     }
 
     @Override
-    protected RequestEventResult handle(RequestEvent requestEvent) {
+    protected RequestEventHandlerResult handle(RequestEvent requestEvent) {
       final Optional<ClientResponse> repositoryResponse = getRepositoryResponse(requestEvent);
-      final RequestEventResult result;
+      final RequestEventHandlerResult result;
       if (repositoryResponse.isPresent()) {
         List<Fragment> fragments = splitter.split(repositoryResponse.get().getBody().toString());
         RequestEvent requestEventWithFragments = new RequestEvent(requestEvent.getClientRequest(), fragments, requestEvent.getPayload());
-        result = RequestEventResult.success(requestEventWithFragments);
+        result = RequestEventHandlerResult.success(requestEventWithFragments);
       } else {
         LOGGER.error(MISSING_REPOSITORY_PAYLOAD);
         ClientResponse failResponse = new ClientResponse()
             .setStatusCode(HttpResponseStatus.BAD_REQUEST.code())
             .setBody(Buffer.buffer(MISSING_REPOSITORY_PAYLOAD));
-        result = RequestEventResult.fail(failResponse);
+        result = RequestEventHandlerResult.fail(failResponse);
       }
       return result;
     }

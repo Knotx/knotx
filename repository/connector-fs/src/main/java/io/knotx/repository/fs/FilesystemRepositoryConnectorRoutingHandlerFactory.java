@@ -16,7 +16,7 @@
 package io.knotx.repository.fs;
 
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventResult;
+import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
 import io.knotx.server.api.handler.reactivex.RequestEventHandler;
 import io.reactivex.Single;
@@ -43,13 +43,14 @@ public class FilesystemRepositoryConnectorRoutingHandlerFactory implements Routi
     private FilesystemRepositoryConnector connector;
 
     private FilesystemRepositoryConnectorHandler(Vertx vertx, JsonObject config) {
+      super();
       connector = new FilesystemRepositoryConnector(
           FileSystem.newInstance(vertx.getDelegate().fileSystem()),
           new FilesystemRepositoryOptions(config));
     }
 
     @Override
-    protected Single<RequestEventResult> handle(RequestEvent requestEvent) {
+    protected Single<RequestEventHandlerResult> handle(RequestEvent requestEvent) {
       return connector.process(requestEvent);
     }
   }
