@@ -16,14 +16,12 @@
 package io.knotx.repository.http;
 
 import io.knotx.server.api.context.ClientRequest;
-import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.knotx.server.util.AllowedHeadersFilter;
 import io.knotx.server.util.DataObjectsUtil;
 import io.knotx.server.util.MultiMapCollector;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
@@ -78,13 +76,11 @@ class HttpRepositoryConnector {
         .onErrorResumeNext(error -> processError(error, httpRequestData));
   }
 
-  private Single<RequestEventHandlerResult> processError(Throwable error, RequestOptions httpRequestData) {
+  private Single<RequestEventHandlerResult> processError(Throwable error,
+      RequestOptions httpRequestData) {
     final String message = String.format(ERROR_MESSAGE, getUrl(httpRequestData));
     LOGGER.error(message, error);
-    final ClientResponse clientResponse = new ClientResponse()
-        .setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code())
-        .setBody(io.vertx.core.buffer.Buffer.buffer(message));
-    return Single.just(RequestEventHandlerResult.fail(clientResponse));
+    return Single.just(RequestEventHandlerResult.fail(message));
   }
 
   private void logResponse(HttpResponse<Buffer> resp, RequestOptions httpRequestData,
@@ -116,27 +112,31 @@ class HttpRepositoryConnector {
   private Single<RequestEventHandlerResult> toRequestEventResult(HttpResponse<Buffer> response,
       RequestEvent inputEvent) {
     final Single<RequestEventHandlerResult> result;
-    if (HttpStatusClass.SUCCESS.contains(response.statusCode()) || HttpStatusClass.REDIRECTION
-        .contains(response.statusCode())) {
+    if (HttpStatusClass.SUCCESS.contains(response.statusCode())) {
       result = Single.just(response)
-          .map(this::toClientResponse)
-          .map(cr -> new RequestEvent(inputEvent.getClientRequest(),
-              inputEvent.getFragments(),
-              inputEvent.appendPayload("repositoryResponse", cr.toJson())))
-          .map(RequestEventHandlerResult::success);
+          .map(repoResponse -> success(response, inputEvent));
     } else {
       result = Single.just(response)
-          .map(this::toClientResponse)
-          .map(RequestEventHandlerResult::fail);
+          .map(this::fail);
     }
     return result;
   }
 
-  private ClientResponse toClientResponse(HttpResponse<Buffer> response) {
-    return new ClientResponse()
-        .setBody(response.body() != null ? response.body().getDelegate() : Buffer.buffer().getDelegate())
-        .setHeaders(response.headers())
-        .setStatusCode(response.statusCode());
+  private RequestEventHandlerResult success(HttpResponse<Buffer> response,
+      RequestEvent inputEvent) {
+    return RequestEventHandlerResult
+        .success(inputEvent)
+        .withBody(response.body().getDelegate())
+        .withHeaders(response.headers())
+        .withStatusCode(response.statusCode());
+  }
+
+  private RequestEventHandlerResult fail(HttpResponse<Buffer> response) {
+    return RequestEventHandlerResult
+        .fail(String.format("Repository responded with %s", response.statusCode()))
+        .withBody(response.body().getDelegate())
+        .withHeaders(response.headers())
+        .withStatusCode(response.statusCode());
   }
 
   private Single<HttpResponse<Buffer>> getRequest(WebClient webClient,

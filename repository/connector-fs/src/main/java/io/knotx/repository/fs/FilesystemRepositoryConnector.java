@@ -16,7 +16,6 @@
 package io.knotx.repository.fs;
 
 import io.knotx.server.api.context.ClientRequest;
-import io.knotx.server.api.context.ClientResponse;
 import io.knotx.server.api.context.RequestEvent;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -54,14 +53,12 @@ class FilesystemRepositoryConnector {
     return fileSystem.rxReadFile(localFilePath)
         .map(buffer -> this.processSuccess(buffer, localFilePath, requestEvent))
         .doOnSuccess(this::traceReadFile)
-        .map(RequestEventHandlerResult::success)
         .onErrorResumeNext(error -> processError(error, localFilePath));
   }
 
-  private void traceReadFile(RequestEvent requestEvent) {
+  private void traceReadFile(RequestEventHandlerResult result) {
     if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("FS Repository template: {}",
-          requestEvent.getPayload().getJsonObject("repositoryResult"));
+      LOGGER.trace("FS Repository successful read: {}", result);
     }
   }
 
@@ -74,10 +71,7 @@ class FilesystemRepositoryConnector {
     } else {
       statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
-    final ClientResponse clientResponse = new ClientResponse()
-        .setStatusCode(statusCode.code())
-        .setBody(io.vertx.core.buffer.Buffer.buffer(message));
-    return Single.just(RequestEventHandlerResult.fail(clientResponse));
+    return Single.just(RequestEventHandlerResult.fail(message).withStatusCode(statusCode.code()));
   }
 
 
@@ -89,14 +83,12 @@ class FilesystemRepositoryConnector {
     return headers;
   }
 
-  // ToDo there be repository-api with repositoryResult model??
-  private RequestEvent processSuccess(Buffer buffer, String filePath,
+  private RequestEventHandlerResult processSuccess(Buffer buffer, String filePath,
       RequestEvent inputEvent) {
-    ClientResponse repositoryResponse = new ClientResponse()
-        .setBody(buffer.getDelegate())
-        .setHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)));
-    return new RequestEvent(inputEvent.getClientRequest(),
-        inputEvent.getFragments(), inputEvent.appendPayload("repositoryResponse", repositoryResponse.toJson()));
+    return RequestEventHandlerResult
+        .success(inputEvent)
+        .withBody(buffer.getDelegate())
+        .withHeaders(headers(MimeMapping.getMimeTypeForFilename(filePath)));
   }
 
 }
