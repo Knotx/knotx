@@ -17,11 +17,12 @@ package io.knotx.splitter.html;
 
 import io.knotx.fragment.Fragment;
 import io.knotx.server.api.context.ClientResponse;
+import io.knotx.server.api.context.RequestContext;
 import io.knotx.server.api.context.RequestEvent;
-import io.knotx.server.api.handler.RequestEventHandler;
+import io.knotx.server.api.handler.DefaultRequestContextEngine;
+import io.knotx.server.api.handler.RequestContextEngine;
 import io.knotx.server.api.handler.RequestEventHandlerResult;
 import io.knotx.server.api.handler.RoutingHandlerFactory;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
@@ -31,11 +32,12 @@ import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SplitterRoutingHandlerFactory.class);
-  private static final String MISSING_REPOSITORY_PAYLOAD = "repositoryResponse is missing";
+  private static final String MISSING_REPOSITORY_PAYLOAD = "Template body is missing!";
 
   @Override
   public String getName() {
@@ -48,36 +50,48 @@ public class SplitterRoutingHandlerFactory implements RoutingHandlerFactory {
   }
 
   //ToDo unit tests
-  public class KnotxSplitterHandler extends RequestEventHandler {
+  public class KnotxSplitterHandler implements Handler<RoutingContext> {
 
     private HtmlFragmentSplitter splitter;
+    private final RequestContextEngine engine;
 
     private KnotxSplitterHandler() {
+      engine = new DefaultRequestContextEngine(getClass().getSimpleName());
       splitter = new HtmlFragmentSplitter();
     }
 
     @Override
-    protected RequestEventHandlerResult handle(RequestEvent requestEvent) {
-      final Optional<ClientResponse> repositoryResponse = getRepositoryResponse(requestEvent);
+    public void handle(RoutingContext context) {
+      RequestContext requestContext = context.get(RequestContext.KEY);
+      try {
+        RequestEventHandlerResult result = splitBody(requestContext.getRequestEvent(),
+            requestContext.getClientResponse());
+        engine.processAndSaveResult(result, context, requestContext);
+      } catch (Exception e) {
+        engine.handleFatal(context, requestContext, e);
+      }
+    }
+
+    private RequestEventHandlerResult splitBody(RequestEvent requestEvent,
+        ClientResponse clientResponse) {
       final RequestEventHandlerResult result;
-      if (repositoryResponse.isPresent()) {
-        List<Fragment> fragments = splitter.split(repositoryResponse.get().getBody().toString());
-        RequestEvent requestEventWithFragments = new RequestEvent(requestEvent.getClientRequest(), fragments, requestEvent.getPayload());
+      final String template = getTemplate(clientResponse);
+      if (StringUtils.isNotBlank(template)) {
+        List<Fragment> fragments = splitter.split(template);
+        RequestEvent requestEventWithFragments = new RequestEvent(requestEvent.getClientRequest(),
+            fragments, requestEvent.getPayload());
         result = RequestEventHandlerResult.success(requestEventWithFragments);
+        clientResponse.setBody(null);
       } else {
         LOGGER.error(MISSING_REPOSITORY_PAYLOAD);
-        ClientResponse failResponse = new ClientResponse()
-            .setStatusCode(HttpResponseStatus.BAD_REQUEST.code())
-            .setBody(Buffer.buffer(MISSING_REPOSITORY_PAYLOAD));
-        result = RequestEventHandlerResult.fail(failResponse);
+        result = RequestEventHandlerResult.fail(MISSING_REPOSITORY_PAYLOAD);
       }
       return result;
     }
 
-    private Optional<ClientResponse> getRepositoryResponse(RequestEvent requestEvent) {
-      final JsonObject repositoryResponse = requestEvent.getPayload()
-          .getJsonObject("repositoryResponse");
-      return Optional.ofNullable(repositoryResponse).map(ClientResponse::new);
+    private String getTemplate(ClientResponse clientResponse) {
+      return Optional.ofNullable(clientResponse.getBody()).map(Buffer::toString)
+          .orElse(null);
     }
 
   }
