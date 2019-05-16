@@ -38,6 +38,14 @@ varying load and is designed to follow [Reactive Manifesto](http://www.reactivem
 > Knot.x 2.0 development is in progress...<br>
 > So far you may enjoy [Knot.x 2.0.0-RC1](https://search.maven.org/search?q=g:io.knotx%20AND%20v:2.0.0-RC1).
 
+## Use cases
+
+### Headless CMS
+// TODO add description here
+![Headless CMS](assets/use-cases/headless-cms.png)
+
+// TODO other use-cases: traditional CMS, Gateway API
+
 ## How to start
 
 See [knotx.io](http://knotx.io/tutorials) for tutorials and examples.
