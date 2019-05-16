@@ -15,20 +15,18 @@ Knot.x 1.X version please see this repository Tags, the latest 1.5.0 version cod
   web integration framework
 </p>
 
-Knot.x is an open source framework that allows integrating all kinds of systems like CMS,
-web APIs, databases or caches into one platform.
+Knot.x is an open source framework integrating content from different sources like headless or 
+traditional CMS, with systems like CRM, e-commerce or search engines.
 
-Knot.x contains **toolset** and defines **patterns** that enable efficient and resilient integrating 
-applications together. Those tools and patterns can be used in multiple configurations and ways 
-and thanks to that, Knot.x can be used as a dynamic templates processor as well as Web API platform
-(Knot.x can consume and expose the data).
+The heart of Knot.x is the [HTTP Server](https://github.com/Knotx/knotx-server-http) that uses 
+[Fragment Processing](https://github.com/Knotx/knotx-fragments-handler) to connect many data sources
+into one customer experience (like HTML, JSON or PDF) in the configurable, reactive, scalable and fault-tolerant way.
 
-The heart of Knot.x is [HTTP Server](https://github.com/Knotx/knotx-server-http) which handles the whole traffic.
 Knot.x comes also with a [distribution](https://github.com/Knotx/knotx-stack) that enables quick start
 with Knot.x, is a project structure and supports deployment automation (see the 
 [Cookbook](https://github.com/Knotx/knotx-cookbook) and [Docker images](https://hub.docker.com/u/knotx)).
 
-We build Knot.x on top of [Vert.x](http://vertx.io/), known as one of the leading frameworks for performant,
+We build Knot.x on top of [Vert.x](http://vertx.io/), known as one of the leading toolkits for performant,
 event-driven applications. It uses asynchronous programming principles which allows it to process a
 large number of requests using a single thread. Asynchronous programming is a style promoting the
 ability to write non-blocking code (no thread pools). The platform stays responsive under heavy and
@@ -47,11 +45,11 @@ For more information on Knot.x and where Knot.x fits into the big picture please
 
 ## Community / Issues
 
-All feature requests and bugs can be filed as issues on [Gitub](https://github.com/Cognifide/knotx/issues).
+All feature requests and bugs can be filed as issues on [GitHub](https://github.com/Cognifide/knotx/issues).
 Do not use Github issues to ask questions, post them on the
 [User Group](https://groups.google.com/forum/#!forum/knotx) or [Gitter Chat](https://gitter.im/Knotx/Lobby).
 
-## Licence
+## License
 
 **Knot.x** is licensed under the [Apache License, Version 2.0 (the "License")](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
