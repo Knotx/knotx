@@ -22,8 +22,11 @@ The heart of Knot.x is the [HTTP Server](https://github.com/Knotx/knotx-server-h
 [Fragment Processing](https://github.com/Knotx/knotx-fragments-handler) to connect many data sources
 into one customer experience (like HTML, JSON or PDF) in the configurable, reactive, scalable and fault-tolerant way.
 
+A fragment is a piece of any kind of document that can be processed independently (e.g. 
+an HTML snippet that represents the shopping cart or a JSON containing person's bookshelf).
+
 Knot.x comes also with a [distribution](https://github.com/Knotx/knotx-stack) that enables quick start
-with Knot.x, is a project structure and supports deployment automation (see the 
+with the framework, is a project structure and supports deployment automation (see the 
 [Cookbook](https://github.com/Knotx/knotx-cookbook) and [Docker images](https://hub.docker.com/u/knotx)).
 
 We build Knot.x on top of [Vert.x](http://vertx.io/), known as one of the leading toolkits for performant,
