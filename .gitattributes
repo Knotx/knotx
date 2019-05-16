@@ -1,6 +1,0 @@
-# Let all the files have the Linux line endings
-
-* text eol=lf
-
-# Denote all files that are truly binary and should not be modified.
-*.png binary

@@ -1,1 +1,0 @@
-See more details at [knotx.io](http://www.knotx.io)

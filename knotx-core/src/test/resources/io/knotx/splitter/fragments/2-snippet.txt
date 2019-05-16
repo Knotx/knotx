@@ -1,4 +1,0 @@
-<script data-knotx-knots="services,handlebars" data-knotx-service="first-service" type="text/knotx-snippet">
-  <h2>{{message}}</h2>
-  <div>{{body.a}}</div>
-</script>
