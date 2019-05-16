@@ -43,13 +43,17 @@ varying load and is designed to follow [Reactive Manifesto](http://www.reactivem
 ### CMS
 // TODO add description here
 
-![Headless CMS](assets/use-cases/traditional-cms.png)
+<p align="center">
+  <img style="max-height:400px" src="https://github.com/Knotx/knotx/raw/master/assets/use-cases/traditional-cms.png" alt="CMS"/>
+</p>
 
 
 ### Headless CMS
 // TODO add description here
 
-![Headless CMS](assets/use-cases/headless-cms.png)
+<p align="center">
+  <img style="max-height:400px" src="https://github.com/Knotx/knotx/raw/master/assets/use-cases/headless-cms.png" alt="Headless CMS"/>
+</p>
 
 // TODO other use-cases: Gateway API
 
