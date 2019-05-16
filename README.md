@@ -40,11 +40,18 @@ varying load and is designed to follow [Reactive Manifesto](http://www.reactivem
 
 ## Use cases
 
+### CMS
+// TODO add description here
+
+![Headless CMS](assets/use-cases/traditional-cms.png)
+
+
 ### Headless CMS
 // TODO add description here
+
 ![Headless CMS](assets/use-cases/headless-cms.png)
 
-// TODO other use-cases: traditional CMS, Gateway API
+// TODO other use-cases: Gateway API
 
 ## How to start
 
