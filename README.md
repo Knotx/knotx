@@ -36,7 +36,7 @@ ability to write non-blocking code (no thread pools). The platform stays respons
 varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
 > Knot.x 2.0 development is in progress...<br>
-> So far you may enjoy [Knot.x 2.0.0-RC1](https://search.maven.org/search?q=g:io.knotx%20AND%20v:2.0.0-RC1).
+> So far you may enjoy [Knot.x 2.0.0-RC2](https://search.maven.org/search?q=g:io.knotx%20AND%20v:2.0.0-RC2).
 
 ## Use cases
 
