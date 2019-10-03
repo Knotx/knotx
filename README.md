@@ -20,23 +20,18 @@ traditional CMS, with systems like CRM, e-commerce or search engines.
 
 The heart of Knot.x is the [HTTP Server](https://github.com/Knotx/knotx-server-http) that uses 
 [Fragment Processing](https://github.com/Knotx/knotx-fragments-handler) to connect many data sources
-into one customer experience (like HTML, JSON or PDF) in the configurable, reactive, scalable and fault-tolerant way.
-
-A fragment is a piece of any kind of document that can be processed independently (e.g. 
-an HTML snippet that represents the shopping cart or a JSON containing person's bookshelf).
+into one customer experience (like HTML, JSON or PDF) in the [configurable, reactive, scalable and fault-tolerant way](http://knotx.io/blog/configurable-integrations/).
 
 Knot.x comes also with a [distribution](https://github.com/Knotx/knotx-stack) that enables quick start
 with the framework, is a project structure and supports deployment automation (see the 
 [Cookbook](https://github.com/Knotx/knotx-cookbook) and [Docker images](https://hub.docker.com/u/knotx)).
+With the [Starter Kit](https://github.com/Knotx/knotx-starter-kit) template project, you can setup your project in a few minutes.
 
 We build Knot.x on top of [Vert.x](http://vertx.io/), known as one of the leading toolkits for performant,
 event-driven applications. It uses asynchronous programming principles which allows it to process a
 large number of requests using a single thread. Asynchronous programming is a style promoting the
 ability to write non-blocking code (no thread pools). The platform stays responsive under heavy and
 varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
-
-> Knot.x 2.0 development is in progress...<br>
-> So far you may enjoy [Knot.x 2.0.0-RC2](https://search.maven.org/search?q=g:io.knotx%20AND%20v:2.0.0-RC2).
 
 ## Use cases
 
@@ -56,6 +51,7 @@ varying load and is designed to follow [Reactive Manifesto](http://www.reactivem
 
 See [knotx.io](http://knotx.io/tutorials) for tutorials and examples.
 See [Knot.x Example Project](https://github.com/Knotx/knotx-example-project) for usage case examples.
+See [Knot.x Starter Kit](https://github.com/Knotx/knotx-starter-kit) template project.
 See https://github.com/Knotx extensions for user and developer documentation.
 
 For more information on Knot.x and where Knot.x fits into the big picture please see http://knotx.io.
