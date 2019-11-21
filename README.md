@@ -33,20 +33,6 @@ large number of requests using a single thread. Asynchronous programming is a st
 ability to write non-blocking code (no thread pools). The platform stays responsive under heavy and
 varying load and is designed to follow [Reactive Manifesto](http://www.reactivemanifesto.org/) principles.
 
-## Use cases
-
-### CMS
-// TODO add description here
-
-<img src="https://github.com/Knotx/knotx/raw/master/assets/use-cases/traditional-cms.png" height="400px" alt="CMS"/>
-
-### Headless CMS
-// TODO add description here
-
-<img src="https://github.com/Knotx/knotx/raw/master/assets/use-cases/headless-cms.png" height="400px" alt="Headless CMS"/>
-
-// TODO other use-cases: Gateway API
-
 ## How to start
 
 See [knotx.io](http://knotx.io/tutorials) for tutorials and examples.
