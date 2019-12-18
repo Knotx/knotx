@@ -94,8 +94,12 @@ branch is merged to `master` branch and new Knot.x version is released.
 We treat `master` branch as a stable branch that is always ready to release.
 
 ### Clear milestones, progress and branching
-You may always see the current milestone goal in [Knot.x milestones board](https://github.com/Knotx/knotx/milestones).
-You may read more about GitHub milestones [here](https://help.github.com/articles/about-milestones/).
+We are working on the next major/minor versions using milestone goals.
+You may always see the current milestone goal in [Knot.x Roadmap board](https://github.com/orgs/Knotx/projects/3) in the `Current milestone` column.
+This board contains:
+- `Backlog` that contains all areas that require some investigation and are candidates for the future milestones.
+- `Next milestone` - all candidates for the next milestone.
+- `Current milestone` - tickets representing the goal of the milestone we are currently working at. When all milestone goals are finished, we release the next version of Knot.x.
 
 ## License
 
