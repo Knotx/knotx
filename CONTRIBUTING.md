@@ -3,8 +3,9 @@ Thank you for taking the time to contribute!
 We appreciate all commits and improvements, feel free to join Knot.x community and contribute.
 
 ## How to start
-See [knotx.io](http://knotx.io/tutorials) for tutorials, examples and user documentation.
-See [Knot.x Example Project](https://github.com/Knotx/knotx-example-project) for usage examples.
+- See [knotx.io](https://knotx.io/tutorials) for tutorials and examples.
+- You will findand user documentation in every repository at https://github.com/Knotx in a form of markdown documents.
+- See [Knot.x Example Project](https://github.com/Knotx/knotx-example-project) for usage examples.
 
 ## Knot.x Contributor License Agreement
 Project License: [Apache License Version 2.0](https://github.com/Knotx/knotx/blob/master/LICENSE)
@@ -36,7 +37,10 @@ Please add the following lines to your pull request description:
 
 I hereby agree to the terms of the Knot.x Contributor License Agreement.
 ```
-Every pull request has to contain a single commit. So please remember to rebase with master and squash all commits.
+
+After the code review process, we kindly ask you to squash all commits so that every pull request contains a single commit before it is merged. 
+
+Before mreging, please remember to rebase with `master` and squash all commits, e.g. with:
 ```
 git rebase master
 git rebase -i HEAD~3
@@ -56,7 +60,7 @@ Please use convention `- [PR-ABC](https://github.com/Knotx/REPOSITORY/pull/ABC) 
 
 ## Upgrade Notes
 When changing or fixing anything related with changes in Knot.x configuration (e.g. its structure, new property etc.) or
-snippet structure (e.g. change convention of naming services) remember to update include short description in your PR.
+snippet structure (e.g. change convention of naming services) remember to include short description in your PR under `Upgrade Notes`.
 
 ## Tests naming convention
 Tests written in Knot.x should use Junit 5 `@DisplayName` annotation with proper description.
