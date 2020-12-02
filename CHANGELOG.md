@@ -1,7 +1,11 @@
 # Knot.x Releases
 All notable changes to Knot.x will be documented in this file.
 
-## Unreleased
+# 1.6.0
+This version is dependency updates only, no new features or bugfixes. If you are upgrading from older than 1.5.0 version, follow the [Upgrade Notes for 1.5](https://knotx.io/blog/release-1_5_0/) first.
+- Upgraded Vert.x to 3.7.1.
+
+## 1.5.0
 List of changes that are finished but not yet released in any final version.
  - [PR-468](https://github.com/Cognifide/knotx/pull/468) - Fragment processing failure handling (configurable fallback)
  - [PR-465](https://github.com/Cognifide/knotx/pull/465) - Action Knot functionality moved to [Knot.x Forms](https://github.com/Knotx/knotx-forms).
@@ -19,12 +23,12 @@ Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to
     "actionKnot=io.knotx.knot.action.ActionKnotVerticle"
     "actionAdapter=com.acme.adapter.action.http.HttpActionAdapterVerticle"
   ```
-  to 
+  to
   ```
     "forms=io.knotx.forms.core.FormsKnot"
     "formsAdapter=com.acme.forms.adapter.http.FormsAdapterVerticle"
-  ``` 
-  
+  ```
+
   and define forms in the `global` section
   ```
   global {
@@ -42,14 +46,14 @@ Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to
 ##### Page templates:
 
   - Rename data attributes accordingly
-    
-  | Old                        | New                              | 
+
+  | Old                        | New                              |
   | -------------------------- |:--------------------------------:|
   | data-knotx-on-             |data-knotx-forms-on-              |
   | data-knotx-action          |data-knotx-forms-adapter-name     |
-  | data-knotx-adapter-params  |data-knotx-forms-adapter-params   |   
- 
-  - In form snippet change `action` to `form`. 
+  | data-knotx-adapter-params  |data-knotx-forms-adapter-params   |
+
+  - In form snippet change `action` to `form`.
 
   For example:
 
@@ -69,7 +73,7 @@ Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to
     </form>
   </script>
   ```
-  
+
   New
   ```html
   <script data-knotx-knots="form-1" type="text/knotx-snippet">
@@ -78,8 +82,8 @@ Knot.x (<= 1.4.0) used earlier Action Knot. Please follow step below in order to
     {{/if}}
     <p>Please provide your email address</p>
     <form data-knotx-forms-adapter-name ="step1"
-      data-knotx-forms-on-success="/content/local/login/step2.html" 
-      data-knotx-forms-on-error="_self" 
+      data-knotx-forms-on-success="/content/local/login/step2.html"
+      data-knotx-forms-on-error="_self"
       data-knotx-forms-adapter-params='{"myKey":"myValue"}' method="post">
       <input type="email" name="email" value="{{#if form._result.validationError}} {{form._result.form.email}} {{/if}}" />
       <input type="submit" value="Submit"/>
@@ -92,7 +96,7 @@ Refactor your custom adapter to inherit [`io.knotx.proxy.AdapterProxy`](https://
 to [`io.knotx.forms.api.FormsAdapterProxy`](https://github.com/Knotx/knotx-forms/blob/master/api/src/main/java/io/knotx/forms/api/FormsAdapterProxy.java)
 
 #### Migration form Handlebars Knot to Knot.x Template Engine
-Knot.x (<= 1.5.0) used `HandlebarsKnot`. Please follow step below in order 
+Knot.x (<= 1.5.0) used `HandlebarsKnot`. Please follow step below in order
 to migrate your project from `HandlebarsKnot` to `Template Engine` module.
 
 Handlebars is still the default Template Engine strategy in Knot.x. Thanks to moving into Template Engine module you may now easily
@@ -107,11 +111,11 @@ See the [example project](https://github.com/Knotx/knotx-example-project) for mo
   ```
     "hbsKnot=io.knotx.knot.templating.HandlebarsKnotVerticle"
   ```
-  to 
+  to
   ```
     "templateEngine=io.knotx.te.core.TemplateEngineKnot"
-  ``` 
-  
+  ```
+
 2. Define module address in the `global` section
   ```
   global {
@@ -121,7 +125,7 @@ See the [example project](https://github.com/Knotx/knotx-example-project) for mo
   ```
 3. Replace all occurenes of the Handlebars Knot address in the Server routing `defaultFlow` from `${global.hbs.address}` to `${global.templateEngine.address}`.
 
-3. Instead including `hbsKnot.conf` change include to `templateEngine.conf`. You will find examples configuration files in 
+3. Instead including `hbsKnot.conf` change include to `templateEngine.conf`. You will find examples configuration files in
 the [knotx-stack distribution](https://github.com/Knotx/knotx-stack/blob/master/knotx-stack-manager/src/main/packaging/conf/includes).
 
 ##### Page templates:
@@ -145,7 +149,7 @@ You may introduce them by defining handlebars extension as it is presented in th
 ## 1.3.0
  - [PR-376](https://github.com/Cognifide/knotx/pull/376) - Knot.x configurations refactor - Changed the way how configurations and it's defaults are build.
  - [PR-384](https://github.com/Cognifide/knotx/pull/384) - Introduce Knot.x server backpressure mechanism
- - [PR-397](https://github.com/Cognifide/knotx/pull/397) - Introduce vertx-config module to enable configuration modularization and auto-reload. Thanks to this change, Knot.x instance Auto-redeploy itself 
+ - [PR-397](https://github.com/Cognifide/knotx/pull/397) - Introduce vertx-config module to enable configuration modularization and auto-reload. Thanks to this change, Knot.x instance Auto-redeploy itself
  after the configuration is changed, multiple configuration files format is supported (with favouring the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) and supporting nested configurations (includes).
  - [PR-399](https://github.com/Cognifide/knotx/pull/399) - Make knotx-core more concise and merge base Knot.x concepts into a single module
  - [PR-404](https://github.com/Cognifide/knotx/pull/404) - Refactoring of Knot.x Launcher, get rid of some messy hacks. That enables cleaner way to start Knot.x and extend launcher with custom commands.
@@ -192,7 +196,7 @@ You may introduce them by defining handlebars extension as it is presented in th
  - [PR-332](https://github.com/Cognifide/knotx/pull/332) - Fixed timeout issues when deploying verticles in Junit Rule
  - [PR-335](https://github.com/Cognifide/knotx/pull/335) - Added support for HttpServerOptions on the configuration level.
  - [PR-328](https://github.com/Cognifide/knotx/pull/328) - Knot.x ignore config parts related to not existing modules and allows to start the instance with warnings
- 
+
 ## Version 1.1.1
  - [PR-316](https://github.com/Cognifide/knotx/pull/316) - Gateway Processor has access to request body
  - [PR-307](https://github.com/Cognifide/knotx/pull/307) - Fixed KnotxServer default configuration

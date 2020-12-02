@@ -23,7 +23,7 @@
 
   <groupId>io.knotx</groupId>
   <artifactId>knotx-root</artifactId>
-  <version>1.5.0</version>
+  <version>1.5.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Knot.x</name>
@@ -193,9 +193,9 @@
                 <generatedSourcesDirectory>${generated.dir}</generatedSourcesDirectory>
                 <compilerArgs>
                   <arg>-Acodegen.output=${project.basedir}/src/main</arg>
-                  <arg>
-                    -Acodegen.generators=knotx-cheatsheet,data_object_converters,RxJava2,service_proxies
-                  </arg>
+<!--                  <arg>-->
+<!--                    -Acodegen.generators=data_object_converters,RxJava2,service_proxies-->
+<!--                  </arg>-->
                 </compilerArgs>
               </configuration>
             </execution>

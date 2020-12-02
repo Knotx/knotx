@@ -1,0 +1,555 @@
+= Cheatsheets
+
+[[AccessLogOptions]]
+== AccessLogOptions
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[enabled]]`@enabled`|`Boolean`|+++
+Sets if logging access to the Knot.x HTTP server is enabled or not. Default is enabled ('true')
++++
+|[[format]]`@format`|`link:enums.html#LoggerFormat[LoggerFormat]`|+++
+Set format of access log. Default is <strong>LoggerFormat.DEFAULT</strong>.
+ Available values are:
+ <ul>
+   <li>DEFAULT
+      <i>remote-client</i> - - [<i>timestamp</i>] "<i>method</i> <i>uri</i> <i>version</i>" <i>status</i> <i>content-length</i> "<i>referrer</i>" "<i>user-agent</i>
+   </li>
+   <li>SHORT
+      <i>remote-client</i> - <i>method</i> <i>uri</i> <i>version</i> <i>status</i> <i>content-length</i> <i>duration</i> ms
+   </li>
+   <li>TINY
+      <i>method</i> <i>uri</i> <i>status</i> - <i>content-length</i> <i>duration</i>
+   </li>
+ </ul>
++++
+|[[immediate]]`@immediate`|`Boolean`|+++
+Configure when to collect access log. True if after request arrives, false after sending response.
++++
+|===
+
+[[AdapterRequest]]
+== AdapterRequest
+
+++++
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[adapterParams]]`@adapterParams`|`Json object`|+++
+Set the request params
++++
+|[[params]]`@params`|`Json object`|+++
+Set the request params
++++
+|[[request]]`@request`|`link:dataobjects.html#ClientRequest[ClientRequest]`|+++
+Set the client request
++++
+|===
+
+[[AdapterResponse]]
+== AdapterResponse
+
+++++
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[response]]`@response`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
+|[[signal]]`@signal`|`String`|-
+|===
+
+[[ClientDestination]]
+== ClientDestination
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[domain]]`@domain`|`String`|+++
+Set the domain of the http repository
++++
+|[[hostHeader]]`@hostHeader`|`String`|+++
+Set the host header override to be used with a communication to the repository.
+ If it's set, it overrides any value in the 'Host' header, and sets the SNI SSL to the same value.
++++
+|[[port]]`@port`|`Number (int)`|+++
+Set the HTTP port of the http repository
++++
+|[[scheme]]`@scheme`|`String`|+++
+Set the URL scheme used to communicate with the repository
++++
+|===
+
+[[ClientRequest]]
+== ClientRequest
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[jsonFormAttributes]]`@jsonFormAttributes`|`Json object`|-
+|[[jsonHeaders]]`@jsonHeaders`|`Json object`|+++
+Serialization variants of MultiMap fields
++++
+|[[jsonParams]]`@jsonParams`|`Json object`|-
+|[[method]]`@method`|`link:enums.html#HttpMethod[HttpMethod]`|-
+|[[path]]`@path`|`String`|-
+|===
+
+[[ClientResponse]]
+== ClientResponse
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[body]]`@body`|`Buffer`|-
+|[[jsonHeaders]]`@jsonHeaders`|`Json object`|+++
+Serialization variants of MultiMap fields
++++
+|[[statusCode]]`@statusCode`|`Number (int)`|-
+|===
+
+[[CustomHttpHeader]]
+== CustomHttpHeader
+
+++++
+ Describes a custom header
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[name]]`@name`|`String`|+++
+Set the name of the request header.
++++
+|[[value]]`@value`|`String`|+++
+Set the value of the request header.
++++
+|===
+
+[[FallbackMetadata]]
+== FallbackMetadata
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[id]]`@id`|`String`|-
+|[[markup]]`@markup`|`String`|-
+|===
+
+[[FilesystemRepositoryOptions]]
+== FilesystemRepositoryOptions
+
+++++
+ Describes a file system repository configuration
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Set the EB address of the file system repository verticle
++++
+|[[catalogue]]`@catalogue`|`String`|+++
+Set the root folder of the repository on file system.
+ If catalogue equals empty string a verticle will look for the files in classpath
++++
+|===
+
+[[Fragment]]
+== Fragment
+
+++++
+ An entity representing a markup slice produced during Template fragmentation. It represents both
+ markup with static and dynamic content.
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[fallback]]`@fallback`|`Boolean`|-
+|[[raw]]`@raw`|`Boolean`|+++
+
++++
+|===
+
+[[FragmentAssemblerOptions]]
+== FragmentAssemblerOptions
+
+++++
+ Describes FragmentAssembler Knot configuration
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Set the EB address of the verticle
++++
+|[[snippetOptions]]`@snippetOptions`|`link:dataobjects.html#SnippetOptions[SnippetOptions]`|+++
+Sets snippet options (e.g. with tag and data prefix names).
++++
+|[[unprocessedStrategy]]`@unprocessedStrategy`|`link:enums.html#UnprocessedFragmentStrategy[UnprocessedFragmentStrategy]`|+++
+Set the strategy how to assembly markup with snippets that were not processed by any Knot.
+ Allowed values are:
+ <ul>
+ <li>AS_IS - Keep the whole unprocessed snippet as is</li>
+ <li>UNWRAP - Remove the wrapping script tag from the snippet</li>
+ <li>IGNORE - Remove snippet from the markup</li>
+ </ul>
+ If not set, a default value is <b>UNWRAP</b>
++++
+|===
+
+[[FragmentSplitterOptions]]
+== FragmentSplitterOptions
+
+++++
+ Describes FragmentSplitter Knot configuration
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Set the EB address of the verticle
++++
+|[[snippetOptions]]`@snippetOptions`|`link:dataobjects.html#SnippetOptions[SnippetOptions]`|+++
+Sets snippet options (e.g. with tag and data prefix names).
++++
+|===
+
+[[GatewayKnotOptions]]
+== GatewayKnotOptions
+
+++++
+ Describes a configuration of Knot.x Gateway knot
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+The event bus <code>address</code> the knot is listening on.
+ Default is <code>knotx.gateway.gatewayknot</code>
++++
+|===
+
+[[HttpRepositoryOptions]]
+== HttpRepositoryOptions
+
+++++
+ Describes a configuration of Http Repository connector
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Set the EB address of the HTTP repository verticle
++++
+|[[allowedRequestHeaders]]`@allowedRequestHeaders`|`Array of String`|+++
+Set the collection of patterns of allowed request headers. Only headers matching any
+ of the pattern from the set will be sent to the HTTP repository
++++
+|[[clientDestination]]`@clientDestination`|`link:dataobjects.html#ClientDestination[ClientDestination]`|+++
+Set the remote location of the repository
++++
+|[[clientOptions]]`@clientOptions`|`link:dataobjects.html#HttpClientOptions[HttpClientOptions]`|+++
+Set the link used by the HTTP client
+ to communicate with remote http repository
++++
+|[[customHttpHeader]]`@customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|+++
+Set the header (name and value) to be sent in every request to the remote repository
++++
+|===
+
+[[KnotContext]]
+== KnotContext
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[clientRequest]]`@clientRequest`|`link:dataobjects.html#ClientRequest[ClientRequest]`|-
+|[[clientResponse]]`@clientResponse`|`link:dataobjects.html#ClientResponse[ClientResponse]`|-
+|[[fragments]]`@fragments`|`Array of link:dataobjects.html#Fragment[Fragment]`|-
+|[[transition]]`@transition`|`String`|-
+|===
+
+[[KnotError]]
+== KnotError
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[code]]`@code`|`String`|-
+|===
+
+[[KnotTask]]
+== KnotTask
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[errors]]`@errors`|`Array of link:dataobjects.html#KnotError[KnotError]`|-
+|[[name]]`@name`|`String`|-
+|[[status]]`@status`|`link:enums.html#KnotTaskStatus[KnotTaskStatus]`|-
+|===
+
+[[KnotxCSRFOptions]]
+== KnotxCSRFOptions
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[cookieName]]`@cookieName`|`String`|+++
+Set the name of the CSRF cookie
++++
+|[[cookiePath]]`@cookiePath`|`String`|+++
+Set of the path of the CSRF cookie
++++
+|[[headerName]]`@headerName`|`String`|+++
+Set the CSRF token header name
++++
+|[[secret]]`@secret`|`String`|+++
+Set the secret used to generate CSRF token
++++
+|[[timeout]]`@timeout`|`Number (long)`|+++
+Set the timeout of the CSRF token
++++
+|===
+
+[[KnotxFlowSettings]]
+== KnotxFlowSettings
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[assembler]]`@assembler`|`String`|+++
+Sets the event bus address of the assembler verticle. Default is knotx.core.assembler
++++
+|[[repositories]]`@repositories`|`Array of link:dataobjects.html#RepositoryEntry[RepositoryEntry]`|+++
+Sets the list of RepositoryEntry items
++++
+|[[responseProvider]]`@responseProvider`|`String`|+++
+Sets the event bus address of the Custom Flow' response provider verticle. Default is 'knotx.gateway.responseprovider'
++++
+|[[routing]]`@routing`|`link:dataobjects.html#MethodRoutingEntries[MethodRoutingEntries]`|+++
+Set of HTTP method based routing entries, describing communication between Knots
+ <pre>routing": {"GET": {}, "POST": {}}</pre>
++++
+|[[splitter]]`@splitter`|`String`|+++
+Sets the event bus address of the splitter verticle. Default is knotx.core.splitter
++++
+|===
+
+[[KnotxServerOptions]]
+== KnotxServerOptions
+
+++++
+ Describes a Knot.x HTTP Server configuration
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[accessLog]]`@accessLog`|`link:dataobjects.html#AccessLogOptions[AccessLogOptions]`|+++
+Set the access log options
++++
+|[[allowedResponseHeaders]]`@allowedResponseHeaders`|`Array of String`|+++
+Set the set of response headers that can be returned by the Knot.x server
++++
+|[[backpressureBufferCapacity]]`@backpressureBufferCapacity`|`Number (long)`|+++
+Sets the backpressure buffer capacity. Default value = 1000
++++
+|[[backpressureStrategy]]`@backpressureStrategy`|`link:enums.html#BackpressureOverflowStrategy[BackpressureOverflowStrategy]`|+++
+Sets the strategy how to deal with backpressure buffer overflow. Default is DROP_LATEST.
+
+ Available values:
+ <ul>
+ <li>ERROR - terminates the whole sequence</li>
+ <li>DROP_OLDEST - drops the oldest value from the buffer</li>
+ <li>DROP_LATEST - drops the latest value from the buffer</li>
+ </ul>
++++
+|[[csrfConfig]]`@csrfConfig`|`link:dataobjects.html#KnotxCSRFOptions[KnotxCSRFOptions]`|+++
+Set the CSRF configuration of the Knot.x server
++++
+|[[customFlow]]`@customFlow`|`link:dataobjects.html#KnotxFlowSettings[KnotxFlowSettings]`|+++
+Set the Custom Flow configuration
++++
+|[[customResponseHeader]]`@customResponseHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|+++
+Set the custom response header returned by the Knot.x
++++
+|[[defaultFlow]]`@defaultFlow`|`link:dataobjects.html#KnotxFlowSettings[KnotxFlowSettings]`|+++
+Set the Default flow configuration
++++
+|[[deliveryOptions]]`@deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|+++
+Set the Event Bus Delivery options used to communicate with Knot's
++++
+|[[displayExceptionDetails]]`@displayExceptionDetails`|`Boolean`|+++
+Set whether to display or not the exception on error pages
++++
+|[[dropRequestResponseCode]]`@dropRequestResponseCode`|`Number (int)`|+++
+Sets the HTTP response code returned wheb request is dropped. Default is TOO_MANY_REQUESTS(429)
++++
+|[[dropRequests]]`@dropRequests`|`Boolean`|+++
+Enabled/disables request dropping (backpressure) on heavy load. Default is false - disabled.
++++
+|[[fileUploadDirectory]]`@fileUploadDirectory`|`String`|+++
+Set the location on Knot.x environment when uploaded files will be stored. These must be an absolute path.
++++
+|[[fileUploadLimit]]`@fileUploadLimit`|`Number (Long)`|+++
+Set the file upload limit in bytes
++++
+|[[serverOptions]]`@serverOptions`|`link:dataobjects.html#HttpServerOptions[HttpServerOptions]`|+++
+Set the HTTP Server options
++++
+|===
+
+[[MethodRoutingEntries]]
+== MethodRoutingEntries
+
+++++
+ Describes a collection of server routing entries
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[items]]`@items`|`Array of link:dataobjects.html#RoutingEntry[RoutingEntry]`|+++
+Sets the list of routing entries
++++
+|===
+
+[[RepositoryEntry]]
+== RepositoryEntry
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Event bus address of the Repository Connector modules, that should deliver content for the requested path matching the regexp in path
++++
+|[[doProcessing]]`@doProcessing`|`Boolean`|+++
+Defines if the given repository path should be processed by the Knots or not. If not set, a processing is enabled by default.
++++
+|[[path]]`@path`|`String`|+++
+Sets the Regular expression of the HTTP Request path
++++
+|===
+
+[[ResponseProviderKnotOptions]]
+== ResponseProviderKnotOptions
+
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+The <code>address</code> on event bus that the service adapter is listening for requests from
+ ServiceKnotVerticle
++++
+|===
+
+[[RoutingEntry]]
+== RoutingEntry
+
+++++
+ Describes a routing entry of Knot.x Server
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Sets the event bus address of the Knot that should process the request for a given path
++++
+|[[csrf]]`@csrf`|`Boolean`|+++
+Enables/Disabled CSRF support for a given routing entry
++++
+|[[onTransition]]`@onTransition`|`link:dataobjects.html#RoutingEntry[RoutingEntry]`|+++
+Describes routing to addresses of other Knots based on the transition trigger returned from current Knot.
+ <code>"onTransition": {
+    "go-a": {</code>,
+    "go-b": {}
+   }
+ }
++++
+|[[path]]`@path`|`String`|+++
+Sets the Regular expression of HTTP Request path
++++
+|===
+
+[[SnippetOptions]]
+== SnippetOptions
+
+++++
+ Describes SnippetOptions Knot configuration
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[defaultFallback]]`@defaultFallback`|`String`|-
+|[[fallbackTagName]]`@fallbackTagName`|`String`|-
+|[[fallbacks]]`@fallbacks`|`Array of link:dataobjects.html#FallbackMetadata[FallbackMetadata]`|-
+|[[paramsPrefix]]`@paramsPrefix`|`String`|+++
+Sets Knot.x snippet parameters prefix. Default is 'data-knotx-'
++++
+|[[tagName]]`@tagName`|`String`|+++
+Sets a Knot.x snippet HTML tag name. Default is 'script'
++++
+|===
+

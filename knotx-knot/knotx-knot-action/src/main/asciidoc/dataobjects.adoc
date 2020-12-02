@@ -1,0 +1,59 @@
+= Cheatsheets
+
+[[ActionKnotOptions]]
+== ActionKnotOptions
+
+++++
+ Describes an Action Knot configuration options
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[adapters]]`@adapters`|`Array of link:dataobjects.html#ActionSettings[ActionSettings]`|+++
+Sets the adapters that will be responsible for communicating with external services in order to
+ process the request.
++++
+|[[address]]`@address`|`String`|+++
+Sets the EB address of the verticle
++++
+|[[deliveryOptions]]`@deliveryOptions`|`link:dataobjects.html#DeliveryOptions[DeliveryOptions]`|+++
+Sets the Vert.x Event Bus Delivery Options
++++
+|[[formIdentifierName]]`@formIdentifierName`|`String`|+++
+Sets the name of the hidden input tag which is added by Action Knot.
++++
+|===
+
+[[ActionSettings]]
+== ActionSettings
+
+++++
+ Describes a physical details of HTTP service endpoint that consumes form submitions
+ from AdapterServiceKnot.
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Sets the EB address of the service adapter
++++
+|[[allowedRequestHeaders]]`@allowedRequestHeaders`|`Array of String`|+++
+Sets list of HTTP client request headers that are allowed to be passed to Adapter. No request headers are allowed if not set.
++++
+|[[allowedResponseHeaders]]`@allowedResponseHeaders`|`Array of String`|+++
+Sets list of HTTP response headers that are allowed to be sent in a client response. No response headers are allowed if not set.
++++
+|[[name]]`@name`|`String`|+++
+Set the name of the service the will be used on html snippet level.
++++
+|[[params]]`@params`|`Json object`|+++
+Set the service parameters to be consumed by the adapter.
++++
+|===
+

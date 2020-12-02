@@ -1,0 +1,30 @@
+= Cheatsheets
+
+[[HandlebarsKnotOptions]]
+== HandlebarsKnotOptions
+
+++++
+ Describes Handlebars Knot configuration
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Sets the EB address of the verticle
++++
+|[[cacheKeyAlgorithm]]`@cacheKeyAlgorithm`|`String`|+++
+Set the algorithm used to build a hash from the handlebars snippet.
+ The hash is to be used as a cache key.
+
+ The name should be a standard Java Security name (such as "SHA", "MD5", and so on).
++++
+|[[cacheSize]]`@cacheSize`|`Number (Long)`|+++
+Set the size of the cache. After reaching the max size, new elements will replace the oldest one.
++++
+|[[endDelimiter]]`@endDelimiter`|`String`|-
+|[[startDelimiter]]`@startDelimiter`|`String`|-
+|===
+

@@ -1,0 +1,61 @@
+= Cheatsheets
+
+[[ServiceAdapterOptions]]
+== ServiceAdapterOptions
+
+++++
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[address]]`@address`|`String`|+++
+Event Bus <code>address</code> the service adapter listening on. Default value is 'knotx.adapter.service.http'
++++
+|[[clientOptions]]`@clientOptions`|`link:dataobjects.html#WebClientOptions[WebClientOptions]`|+++
+Sets the Vert.x Web Client options of the Web client.
++++
+|[[customHttpHeader]]`@customHttpHeader`|`link:dataobjects.html#CustomHttpHeader[CustomHttpHeader]`|+++
+Sets the header (name and value) to be sent in every request to the services.
+ If not set, it sends <code>Server-User-Agent=Knot.x</code> header
++++
+|[[services]]`@services`|`Array of link:dataobjects.html#ServiceSettings[ServiceSettings]`|+++
+Sets the configuration of each service endpoint used by the adapter.
++++
+|===
+
+[[ServiceSettings]]
+== ServiceSettings
+
+++++
+ Describes a physical details of HTTP service endpoint the ServiceAdapter will use.
+++++
+'''
+
+[cols=">25%,25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[additionalHeaders]]`@additionalHeaders`|`Json object`|+++
+Set the additional request headers (and values) to be send in each request
++++
+|[[allowedRequestHeaders]]`@allowedRequestHeaders`|`Array of String`|+++
+Sets the allowed requests headers that should be send to the service.
+ The selected headers from the original client HTTP request are being send.
++++
+|[[domain]]`@domain`|`String`|+++
+Set the <code>domain</code> of the external service
++++
+|[[path]]`@path`|`String`|+++
+Sets the service path
++++
+|[[port]]`@port`|`Number (int)`|+++
+Sets the HTTP <code>port</code> the external service
++++
+|[[queryParams]]`@queryParams`|`Json object`|+++
+Set the additional request query parameters to be send in each request
++++
+|===
+
