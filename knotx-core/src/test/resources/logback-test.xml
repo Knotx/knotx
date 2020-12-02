@@ -26,8 +26,8 @@
     <appender-ref ref="CONSOLE"/>
   </root>
 
-  <logger name="io.netty" level="ERROR" additivity="false"/>
-  <logger name="io.vertx" level="ERROR" additivity="false"/>
+  <logger name="io.netty" level="DEBUG" additivity="false"/>
+  <logger name="io.vertx" level="DEBUG" additivity="false"/>
 
   <logger name="io.knotx" level="TRACE" additivity="false">
     <appender-ref ref="CONSOLE"/>

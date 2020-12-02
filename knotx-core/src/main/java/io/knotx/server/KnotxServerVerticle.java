@@ -31,7 +31,6 @@ import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
 import io.vertx.reactivex.ext.web.handler.CSRFHandler;
-import io.vertx.reactivex.ext.web.handler.CookieHandler;
 import io.vertx.reactivex.ext.web.handler.ErrorHandler;
 import io.vertx.reactivex.ext.web.handler.LoggerHandler;
 
@@ -70,7 +69,6 @@ public class KnotxServerVerticle extends AbstractVerticle {
     }
     router.route().handler(KnotxHeaderHandler.create(options));
     router.route().handler(SupportedMethodsAndPathsHandler.create(options));
-    router.route().handler(CookieHandler.create());
     router.route().handler(BodyHandler.create(options.getFileUploadDirectory())
         .setBodyLimit(options.getFileUploadLimit()));
 

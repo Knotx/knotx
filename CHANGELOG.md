@@ -3,7 +3,11 @@ All notable changes to Knot.x will be documented in this file.
 
 # 1.6.0
 This version is dependency updates only, no new features or bugfixes. If you are upgrading from older than 1.5.0 version, follow the [Upgrade Notes for 1.5](https://knotx.io/blog/release-1_5_0/) first.
-- Upgraded Vert.x to 3.7.1.
+- Upgraded Vert.x to 3.8.5.
+
+### Breaking changes
+- After upgrading to Vert.x 3.8, endpoints with csrf enabled, return `500` instead of `403` when requested without proper header.
+- After upgrading to Vert.x 3.8, when requesting with invalid query, `500` is returned instead of `400`.
 
 ## 1.5.0
 List of changes that are finished but not yet released in any final version.
