@@ -60,6 +60,11 @@
       <artifactId>vertx-rx-java2</artifactId>
       <scope>provided</scope>
     </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.vertx</groupId>-->
+<!--      <artifactId>vertx-codegen</artifactId>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-codegen</artifactId>
@@ -74,8 +79,7 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-proxy</artifactId>
-      <classifier>processor</classifier>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
