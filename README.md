@@ -3,9 +3,9 @@
 [![][gitter img]][gitter]
 
 > If you are directed here from https://github.com/Cognifide/knotx or you are looking for 
-Knot.x 1.X version please see this repository Tags, the latest 1.5.0 version code is available 
-[here](https://github.com/Knotx/knotx/tree/1.5.0) along with the 
-[documentation](https://github.com/Knotx/knotx/tree/1.5.0/documentation/src/main/wiki).
+Knot.x 1.X version please see this repository Tags, the latest 1.6.0 version code is available 
+[here](https://github.com/Knotx/knotx/tree/1.6.0) along with the 
+[documentation](https://github.com/Knotx/knotx/tree/1.6.0/documentation/src/main/wiki).
 
 <p align="center">
   <img src="http://knotx.io/img/logo-knotx.png" alt="Knot.x Logo"/>
